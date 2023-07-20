@@ -21,11 +21,11 @@
 | `examples` | Templates and Plugins (`Angular`, `Vue.js`, `React`, `Unreal Engine 5`, `Unity`. `.NET`)      |
 | `external` | Place for external libraries, if needed (see [External Dependencies](#external-dependencies)) |
 | `library`  | `ReFlex` .NET library                                                                         |
-| `services` | Micro services for exn´tending server capabilities                                            |
+| `services` | Micro services for extending server capabilities                                              |
 | `test`     | Test projects, test artifacts, `Insomnia` workspace                                           |
 | `tools`    | Developer Tools and Server application                                                        |
 
 ## External Dependencies
 
-* `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK]()
-* `Microsoft.Kinect.dll`, `Microsoft.Kinect.xml` from [Microsoft Kinect for Windows v2 SDK]()
+* `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense/releases)
+* `Microsoft.Kinect.dll`, `Microsoft.Kinect.xml` from [Microsoft Kinect for Windows SDK 2.0](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
