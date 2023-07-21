@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package interactionService;
+
+/* interactionService
+*/
+service InteractionProcessing {
+  rpc ComputeInteractions(PointCloud3d) returns (InteractionFrame);
+}
+
+/* interactionTypes
+*/
+
+/* gRPC equivalent for Point3
+*/
+message Point3d {
+  float x = 1;                      // x coordinate
+  float y = 2;                      // y coordinate
+  float z = 3;                      // z coordinate
+  bool is_valid = 4;                // filtered by camera
+  bool is_filtered = 5;             // filtered by preprocessing steps
+}
+
+/* gRPC equivalent for PointCloud3 class
+ */
+message PointCloud3d {
+  int32 size = 1;                   // size of the array
+  int32 size_x = 2;                 // width
+  int32 size_y = 3;                 // height
+
+  repeated Point3d values = 4;      // depth values
+}
+
+enum InteractionType {
+  NONE = 0;
+  PUSH = 1;
+  PULL = 2;
+}
+
+enum ExtremumType {
+  MINIMUM = 0;
+  MAXIMUM = 1;
+  UNDEFINED = 2;
+}
+
+message ExtremumDescription {
+  ExtremumType type = 1;
+  int32 num_fitting_points = 2;
+  float percentage_fitting_points = 3;
+}
+
+message Interaction {
+  int32 touch_id = 1;
+  Point3d position = 2;
+  InteractionType type = 3;
+  ExtremumDescription extremum_description = 4;
+  float confidence = 5;
+  int64 time = 6;
+}
+
+message InteractionFrame {
+  int32 frame_id = 1;
+  repeated Interaction interactions = 2;
+}
