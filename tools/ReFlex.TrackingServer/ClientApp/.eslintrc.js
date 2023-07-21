@@ -36,7 +36,8 @@ module.exports = {
       'environment.test.ts',
       '/artifacts',
       '/documentation',
-      'preload.js'
+      'preload.js',
+      'aspnetcore-https.js'
     ],
     rules: {
       "no-shadow": "off",
