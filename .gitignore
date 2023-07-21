@@ -3,16 +3,15 @@ library/export/Modules/*
 external/*
 
 ## ignore rcordings
-
 **/*/wwwroot/recordings/*
 
 # Angular Cache
 .angular
 
 # ts/js: compiled output
-/dist
-/tmp
-/out-tsc
+**/*/dist
+**/*/tmp
+**/*/out-tsc
 
 # dependencies
 /node_modules
