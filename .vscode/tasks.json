@@ -33,7 +33,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/tools/ReFlex.TrackingServer/TrackingServer.csproj",
+                "${workspaceFolder}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "/p:Platform=x64",
@@ -63,7 +63,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/tools/ReFlex.TrackingServer/TrackingServer.csproj",
+                "${workspaceFolder}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "/p:Platform=x64",
@@ -79,7 +79,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/tools/ReFlex.TrackingServer/TrackingServer.csproj",
+                "${workspaceFolder}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "/p:Platform=x64"
@@ -144,7 +144,7 @@
                         "regexp": "(.*?)"
                     },
                     "endsPattern": {
-                        "regexp": "Compiled successfully.|Failed to compile."
+                        "regexp": "√ Compiled successfully.|Failed to compile."
                     }
                 }
             },

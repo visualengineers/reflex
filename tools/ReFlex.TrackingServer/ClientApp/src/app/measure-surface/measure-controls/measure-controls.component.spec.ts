@@ -118,7 +118,7 @@ describe('MeasureControlsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should handle errors correctly: IsCapturing', (done) => {
+  it('should handle errors correctly: getCurrentSampleIdx', (done) => {
     const errorSampleIdx = 'TestError: measureService.getCurrentSampleIdx';
     measureService.getCurrentSampleIdx.and.returnValue(throwError(errorSampleIdx));
 
