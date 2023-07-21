@@ -1,6 +1,13 @@
 # ReFlex
 
-* App Development SDK for __Elastic Displays__ as open source mono repo
+Software Development SDK for __Elastic Displays__ as open source mono repo
+
+* .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
+* APS.NET Core / Angular server application as frontend for library 
+* can be packaged as electron app for desktop
+* Example client applications for PLAIN HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Enigne 5
+* Emulator as Development Tool
+* Example Applications
 
 Angular: Install and lint
 [![Angular Frontend - Install and Linter](https://github.com/visualengineers/reflex-server/actions/workflows/main.yml/badge.svg)](https://github.com/visualengineers/reflex-server/actions/workflows/main.yml)
