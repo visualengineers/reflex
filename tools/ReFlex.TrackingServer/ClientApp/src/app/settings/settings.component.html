@@ -1,0 +1,690 @@
+<div class="content__header">
+  <h2 class="heading-secondary">Point Cloud Filter Settings</h2>
+</div>
+<app-settings-group toggleId="settings-borders" elementTitle="Borders">
+  <!-- Left -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Left"
+    elementId="settings-leftBorder"
+    [min]="0"
+    [max]="settings.filterSettingValues.borderValue.right"
+    [(data)]="settings.filterSettingValues.borderValue.left"
+    (onChange)="saveBorder()"
+    Unit="px">
+    Specify how many depth points on the left side are ignored. Maximum value
+    corresponds with the border filter value on the right side.
+    <em>Live Preview:</em> red dots are filtered points."
+  </app-value-slider>
+
+  <!-- Right -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Right"
+    elementId="settings-rightBorder"
+    [min]="settings.filterSettingValues.borderValue.left"
+    [max]="settings.cameraConfigurationValues.width"
+    [(data)]="settings.filterSettingValues.borderValue.right"
+    (onChange)="saveBorder()"
+    unit="px">
+    Specify how many depth points on the right side are ignored. Minimum value
+    corresponds with the border filter value on the left side.
+    <em>Live Preview:</em> red dots are filtered points.
+  </app-value-slider>
+
+  <!-- Top -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Top"
+    elementId="settings-topBorder"
+    [min]="0"
+    [max]="settings.filterSettingValues.borderValue.bottom"
+    [(data)]="settings.filterSettingValues.borderValue.top"
+    (onChange)="saveBorder()"
+    unit="px">
+    Specify how many depth points on the upper side are ignored. Maximum value
+    corresponds with the border filter value on the lower side.
+    <em>Live Preview:</em> red dots are filtered points.
+  </app-value-slider>  
+
+  <!-- Bottom -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Bottom"
+    elementId="settings-bottomBorder"
+    [min]="settings.filterSettingValues.borderValue.top"
+    [max]="settings.cameraConfigurationValues.height"
+    [(data)]="settings.filterSettingValues.borderValue.bottom"
+    (onChange)="saveBorder()"
+    unit="px">
+    Specify how many depth points on the lower side are ignored. Minimum value
+    corresponds with the border filter value on the upper side.
+    <em>Live Preview:</em> red dots are filtered points.
+  </app-value-slider>  
+
+  <!-- min Distance From Sensor -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Min Distance"
+    elementId="settings-sensorDistBorder"
+    [min]="0.0"
+    [max]="settings.filterSettingValues.distanceValue.default"
+    [step]="0.01"
+    [(data)]="settings.filterSettingValues.minDistanceFromSensor"
+    (onChange)="saveMinDistanceFromSensor()"
+    unit="m">
+    Filter out points that are too close to the sensor (usually "dead points"
+    or points outside the tracking frustum)
+  </app-value-slider>
+
+  <!-- Limitation Filter Type -->
+  <app-value-selection elementTitle="Filter Type" tlementId="settings-limitationFilterType-select" class="settings__item">
+    <select selection [(ngModel)]="selectedLimitationFilterIdx"
+      class="custom-select"
+      data-enpassusermodified="yes"
+      name="settings-limitationFilterType-select"
+      id="settings-limitationFilterType-select"
+      (change)="saveLimitationFilterType()"
+      title="select filter type">
+    <option
+      *ngFor="let filter of limitationFilters; let i = index"
+      [value]="i"
+    >
+      {{ filter.name }}
+    </option>
+  </select>
+    <p description>
+      Select one of the available limitation filters from the list.
+      <br />
+      <strong>LimitationFilter:</strong> filter based on the defined borders
+      <strong>AdvancedLimitationFilter:</strong> filter based on the depth mask
+      (additional to the borders)
+    </p>
+  </app-value-selection>  
+
+  <!-- Threshold -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Threshold"
+    elementId="settings-limitationThreshold"
+    [min]="0.0"
+    [max]="settings.filterSettingValues.distanceValue.min"
+    [step]="0.01"
+    [(data)]="settings.filterSettingValues.advancedLimitationFilterThreshold"
+    (onChange)="saveLimitationFilterType()"
+    unit="m">
+    Specify maximum distance from zero plane for the points to be filtered.
+  </app-value-slider>  
+
+  <!-- Num Samples -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Samples"
+    elementId="settings-limitationSamples"
+    [min]="0"
+    [max]="20"
+    [(data)]="settings.filterSettingValues.advancedLimitationFilterSamples"
+    (onChange)="saveLimitationFilterType()"
+    unit="Samples">
+    Specify how many samples from the depth image are captured for initializing the filter.
+  </app-value-slider>  
+
+  <!-- Set Points for Advanced LimitationFilter -->
+  <div class="settings__item" *ngIf="selectedLimitationFilterIdx === 1">
+    <div class="settings__item--content-button">
+      <a
+        [ngClass]="isTrackingActive && !isCurrentlyInitializingLimitationFilter ? 'button' : 'button-disabled'"
+        (click)="initializeAdvancedLimitationFilter()"        
+        >Initialize Filter</a
+      >
+    </div>
+    <div class="settings__item--content-button">
+      <a class="button" 
+        [ngClass]="isCurrentlyInitializingLimitationFilter ? 'button-disabled' : 'button'"
+        (click)="resetAdvancedLimitationFilter()">Reset</a>
+    </div>
+    <div class="settings__item--info">
+      Creates a mask based on the current depth image: all points not in range
+      of the zero plane are filtered out.
+    </div>
+  </div>
+</app-settings-group>
+
+<app-settings-group toggleId="settings-distance" elementTitle="Distance">
+  <!-- Min -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Minimal Depth"
+    elementId="settings-minDistance"
+    [min]="0.0"
+    [max]="settings.filterSettingValues.distanceValue.max"
+    [step]="0.01"
+    [(data)]="settings.filterSettingValues.distanceValue.min"
+    (onChange)="saveDistance()"
+    unit="m">
+    Specifies the minimal depth amplitude for both
+    <strong>Push and Pull</strong> relative to the <em>Zero Plane</em>. Depth
+    values smaller than this threshold are ignored for interaction processing.
+    <em>Live Preview:</em> red planes.
+  </app-value-slider> 
+
+  <!-- Max -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Maximum Depth"
+    elementId="settings-maxDistance"
+    [min]="settings.filterSettingValues.distanceValue.min"
+    [max]="1.0"
+    [step]="0.01"
+    [(data)]="settings.filterSettingValues.distanceValue.max"
+    (onChange)="saveDistance()"
+    unit="m">
+    Specifies the maximum depth amplitude for both
+    <strong>Push and Pull</strong> relative to the <em>Zero Plane</em>. Depth
+    values larger than this threshold are ignored for interaction processing.
+    <em>Live Preview:</em> blue planes.
+  </app-value-slider>
+
+  <!-- Zero Plane -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Zero Plane"
+    elementId="settings-defaultDistance"
+    [min]="0.0"
+    [max]="3.0"
+    [step]="0.01"
+    [(data)]="settings.filterSettingValues.distanceValue.default"
+    (onChange)="saveDistance()"
+    unit="m">
+    Specifies distance of the elastic surface from the depth sensor. Used to
+    distinguish Push and Pull and to compute depth values for interactions.
+    <em>Live Preview:</em> grey plane.
+  </app-value-slider>  
+
+  <!-- auto compute zero plane -->
+  <div class="settings__item">
+    <div class="settings__item--content-button-large">
+      <a
+        [ngClass]="isTrackingActive ? 'button' : 'button-disabled'"
+        (click)="computeZeroPlane()"
+        >Compute Zero Plane</a
+      >
+    </div>
+    <div class="settings__item--info">
+      Automatically computes the distance of the zero plane based on the mean
+      distance of valid and filtered (points within specified borders) points.
+      <em>Tip: Disable Box blur for this action.</em>
+    </div>
+  </div>
+
+  <!-- Between Extrema -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Between Extrema"
+    elementId="settings-inputDistance"
+    [min]="0"
+    [max]="250"
+    [(data)]="settings.filterSettingValues.distanceValue.inputDistance"
+    (onChange)="saveDistance()"
+    unit="px">
+    Threshold for <strong>lateral distance</strong> between two extremums in
+    the depth image (<em>squared pixel distance</em>). Used to filter
+    redundant interactions which may occur due to noise.
+  </app-value-slider>  
+
+</app-settings-group>
+
+<app-settings-group toggleId="settings-confidence" elementTitle="Confidence">
+  <!-- Min -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Minimal"
+    elementId="settings-minConfidence"
+    [min]="0"
+    [max]="settings.filterSettingValues.confidence.max"
+    [(data)]="settings.filterSettingValues.confidence.min"
+    (onChange)="saveConfidence()"
+    unit="Frames">
+    Confidence describes the duration how long a depth interaction has already
+    been tracked in number of frames. Minimum value is used to filter depth
+    image interferences / noise related interactions.
+  </app-value-slider>
+
+  <!-- Max -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Maximum"
+    elementId="settings-maxConfidence"
+    [min]="settings.filterSettingValues.confidence.min"
+    [max]="30"
+    [(data)]="settings.filterSettingValues.confidence.max"
+    (onChange)="saveConfidence()"
+    unit="Frames">
+    Confidence describes the duration how long a depth interaction has already
+    been tracked in number of frames. Maximum value can be used to filter
+    depth image static elements in the depth image (e.g. at the borders).
+    <strong>Note:</strong> current implementation does not correctly use this
+    value.
+  </app-value-slider> 
+</app-settings-group>
+
+<app-settings-group toggleId="settings-filter" elementTitle="Filter">
+  <!-- Threshold -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Threshold"
+    elementId="settings-threshold"
+    [min]="0"
+    [max]="1000"
+    [(data)]="settings.filterSettingValues.threshold"
+    (onChange)="saveThreshold()"
+    unit="px">
+    Used to filter outliers from depth image. Specifies the maximum depth
+    difference between two adjacent points in the Pointcloud. Points which do not
+    satisfy this condition are filtered.
+  </app-value-slider>  
+
+  <!-- Toggle Threshold Filter-->
+  <app-option-checkbox class="settings__item" 
+    elementTitle="Use Optimized Box Filter"
+    elementId="settings-toggleOptimizedBoxFilter"
+    [(data)]="settings.filterSettingValues.useOptimizedBoxFilter"
+    (onChange)="saveOptimizedBoxFilter()">
+    Specify whether standard or optimized box filter implementation should be used.
+  </app-option-checkbox>
+
+  <!-- BoxFilterRadius -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Box-Filter Radius"
+    elementId="settings-boxFilterRadius"
+    [min]="0"
+    [max]="100"
+    [(data)]="settings.filterSettingValues.boxFilterRadius"
+    (onChange)="saveFilterRadius()"
+    unit="px">
+    The depth image is filtered using <em>box-blur</em> algorithm with the given
+    radius for the filter. A very large radius results in a very smooth depth
+    image, but only very sharp edges are detected. Additionally, the
+    computational cost increases with radius size.
+  </app-value-slider>  
+
+  <!-- BoxFilterNumPasses -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Box-Filter Passes"
+    elementId="settings-boxFilterPasses"
+    [min]="1"
+    [max]="10"
+    [(data)]="settings.filterSettingValues.boxFilterNumPasses"
+    (onChange)="saveFilterPasses()"
+    unit="passes">
+    Number of iterations the <em>box-blur</em> is applied. A larger number of iterations
+    results in a better filter result, but with decreased performance. Default Value: 3
+  </app-value-slider> 
+
+  <!-- BoxFilterNumThreads -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Box-Filter Threads"
+    elementId="settings-boxFilterThreads"
+    [min]="1"
+    [max]="32"
+    [(data)]="settings.filterSettingValues.boxFilterNumThreads"
+    (onChange)="saveFilterThreads()"
+    unit="threads">
+    Max Number of Threads to use for filtering. Best value is usually less or equal the number 
+    of logical processors. When providing '0', the system decides which is the best value, 
+    '1' means single core performance.
+  </app-value-slider> 
+
+  <!-- Min Angle -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Minimum Angle"
+    elementId="settings-minAngle"
+    [min]="0"
+    [max]="5.0"
+    [step]="0.1"
+    [(data)]="settings.filterSettingValues.minAngle"
+    (onChange)="saveMinAngle()"
+    unit="deg">
+    Minimum angle between neighboring vectors for extremum detection. used to
+    filter low frequency noise.
+  </app-value-slider>
+
+</app-settings-group>
+
+<app-settings-group toggleId="settings-smoothing" elementTitle="Smoothing">
+  <!-- Filter Type -->
+  <app-value-selection elementTitle="Filter Type" elementId="settings-filter-select" class="settings__item">
+    <select selection  [(ngModel)]="selectedFilterIdx"
+      class="custom-select"
+      data-enpassusermodified="yes"
+      name="settings-filter-select"
+      id="settings-filter-select"
+      (change)="saveFilterType()"
+      title="select smoothing filter">
+      <option *ngFor="let filter of filters; let i = index" [value]="i">
+        {{ filter.name }}
+      </option>
+    </select>
+    <p description>
+      Select one of the available Filters from the list.
+      <br />
+      <strong>Moving Average:</strong> simple average over the last n frames
+      <strong>SavitzkyGolay:</strong> polynomial regression filter
+    </p>
+  </app-value-selection>
+ 
+  <!-- NumSamples -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Smoothing"
+    elementId="settings-smoothing-numFrames"
+    [min]="0"
+    [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [(data)]="settings.filterSettingValues.smoothingValues.numSmoothingSamples"
+    (onChange)="saveSmoothingValues()"
+    unit="Frames">
+    The number of frames which are cached and used to smooth the interaction
+    samples. A high number of frames means a smoother behavior, but also
+    increases latency. 0 means that smoothing is disabled.
+  </app-value-slider>
+
+  <!-- Interaction History -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="History"
+    elementId="settings-interactionHistory"
+    [min]="0"
+    [max]="100"
+    [(data)]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    (onChange)="saveSmoothingValues()"
+    unit="Frames">
+    The number of frames which are cached and used to assign ids for
+    associated touch points (based on positional change between frames).
+  </app-value-slider>
+
+  <!-- Empty Frames Threshold -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Empty frames"
+    elementId="settings-maxEmptyFrames"
+    [min]="0"
+    [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [(data)]="settings.filterSettingValues.smoothingValues.maxNumEmptyFramesBetween"
+    (onChange)="saveSmoothingValues()"
+    unit="Frames">
+    The number of frames a touch id is reconstructed before being filtered
+    from interactions list. Prevents flickering if measurements are unstable,
+    however higher values add significant lag, so that touches remain active
+    after the user has released the surface.
+  </app-value-slider>  
+
+  <!-- Merge Distance -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Merge Distance"
+    elementId="settings-touchMergeDist"
+    [min]="0"
+    [max]="1000"
+    [(data)]="settings.filterSettingValues.smoothingValues.touchMergeDistance2D"
+    (onChange)="saveSmoothingValues()"
+    unit="px">
+    If the 2D distance between two values if smaller than this value, touch points are merged together.
+  </app-value-slider>
+  
+  <!-- Depth Scale Factor -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Depth Scale"
+    elementId="settings-depthScale"
+    [min]="0"
+    [max]="1000"
+    [(data)]="settings.filterSettingValues.smoothingValues.depthScale"
+    (onChange)="saveSmoothingValues()"
+    unit="px">
+    For filters that treat all three dimensions in the depth vector equally,
+    the Z-value should be scaled accordingly to X and Y values. Therefore,
+    this scale value should equal approximately pixel dimension of the camera
+    resolution (short side or average of both)
+  </app-value-slider>
+
+</app-settings-group>
+
+<app-settings-group toggleId="settings-extremum-classification" elementTitle="Extremum Clasification">
+
+  <!-- Extremum Check Type -->
+  <app-value-selection elementTitle="Check Type" elementId="settings-extremumCheckType-select" class="settings__item">
+    <select selection [(ngModel)]="selectedExtremumCheckIdx"
+      class="custom-select"
+      data-enpassusermodified="yes"
+      name="settings-extremumCheckType-select"
+      id="settings-extremumCheckType-select"
+      (change)="saveExtremumCheckType()"
+      title="select type of extremum check">
+      <option *ngFor="let check of checks; let i = index" [value]="i">
+        {{ check.name }}
+      </option>
+  </select>
+    <p description>
+      Select one of the available Check Method from the list.
+      <br />
+      <strong>Global:</strong> basically disable the check
+      <strong>FixedRadius:</strong> check a predefined number of positions in a
+      given radius <strong>StochasticStatic:</strong> check random positions
+      (determined on program start) <strong>StochasticDynamic:</strong> check
+      random positions (determined for each frame on each extremum)
+    </p>
+  </app-value-selection>
+
+  <!-- NumSamples -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Num Samples"
+    elementId="settings-extremum-numSamples"
+    [min]="0"
+    [max]="20"
+    [(data)]="settings.filterSettingValues.extremumSettings.numSamples"
+    (onChange)="saveExtremumValues()"
+    unit="Samples">
+    The number of samples which are used to check the extremum type. 0 means
+    that smoothing is disabled.
+  </app-value-slider>
+
+  <!-- Check Radius -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Check Radius"
+    elementId="settings-extremum-checkRadius"
+    [min]="0"
+    [max]="100"
+    [(data)]="settings.filterSettingValues.extremumSettings.checkRadius"
+    (onChange)="saveExtremumValues()"
+    unit="px">
+    The pixel radius in which points are sampled to check the type of the
+    extremum.
+  </app-value-slider>
+
+  <!-- FitPercentage -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Fit Percentage"
+    elementId="settings-extremum-fitPercentage"
+    [min]="0.5"
+    [max]="1"
+    [step]="0.01"
+    [(data)]="settings.filterSettingValues.extremumSettings.fitPercentage"
+    (onChange)="saveExtremumValues()"
+    unit="">
+    The ratio to discriminate whether a distinct extremum type is
+    detected.
+  </app-value-slider>
+</app-settings-group>
+
+<app-settings-group toggleId="settings-additional-settings" elementTitle="Additional Settings"
+>
+  <!-- Toggle LimitationFilter -->
+  <app-option-checkbox class="settings__item" 
+    elementTitle="Limitation Filter"
+    elementId="settings-limitationFilter"
+    [(data)]="settings.filterSettingValues.isLimitationFilterEnabled"
+    (onChange)="saveLimitationFilterType()">
+    Specify whether Limitation Filter should be applied to PointCloud.
+  </app-option-checkbox>
+
+  <!-- Toggle Value Filter-->
+  <app-option-checkbox class="settings__item" 
+    elementTitle="Value Filter"
+    elementId="settings-valueFilter"
+    [(data)]="settings.filterSettingValues.isValueFilterEnabled"
+    (onChange)="saveLimitationFilterType()">
+    Specify whether Value Filter should be applied to PointCloud.
+  </app-option-checkbox>
+
+  <!-- Toggle Threshold Filter-->
+  <app-option-checkbox class="settings__item" 
+    elementTitle="Threshold Filter"
+    elementId="settings-thresholdFilter"
+    [(data)]="settings.filterSettingValues.isThresholdFilterEnabled"
+    (onChange)="saveLimitationFilterType()">
+    Specify whether Threshold Filter should be applied to PointCloud.
+  </app-option-checkbox>
+
+  <!-- Toggle Box Filter-->
+  <app-option-checkbox class="settings__item" 
+    elementTitle="Box Filter"
+    elementId="settings-boxFilter"
+    [(data)]="settings.filterSettingValues.isBoxFilterEnabled"
+    (onChange)="saveLimitationFilterType()">
+    Specify whether Box Filter should be applied to PointCloud.
+  </app-option-checkbox> 
+
+  <!-- Toggle Measure Performance -->
+  <app-option-checkbox class="settings__item" 
+    elementTitle="Measure Performance"
+    elementId="settings-measurePerformance"
+    [(data)]="settings.filterSettingValues.measurePerformance"
+    (onChange)="saveLimitationFilterType()">
+    Specify whether Performance data should be captured and broadcasted.
+  </app-option-checkbox>
+
+  <div
+    class="settings__item"
+    *ngIf="settings.filterSettingValues.measurePerformance"
+  >
+    <table class="points__table margin-top-default grid-full-width">
+      <thead class="points__table--head">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">LimitationFilter</th>
+          <th scope="col">ValueFilter</th>
+          <th scope="col">ThresholdFilter</th>
+          <th scope="col">BoxFilter</th>
+          <th scope="col">UpdatePointCloud</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody class="points__table--body">
+        <tr *ngFor="let perfEntry of performanceDataFilter?.data">
+          <td scope="row">{{ perfEntry?.frameId }}</td>
+          <td scope="row">{{ perfEntry?.limitationFilter?.toFixed(2)  ?? ' - '}} ms</td>
+          <td scope="row">{{ perfEntry?.valueFilter?.toFixed(2) ?? ' - ' }} ms</td>
+          <td scope="row">{{ perfEntry?.thresholdFilter?.toFixed(2) ?? ' - '}} ms</td>
+          <td scope="row">{{ perfEntry?.boxFilter?.toFixed(2)  ?? ' - '}} ms</td>
+          <td scope="row">{{ perfEntry?.updatePointCloud?.toFixed(2)  ?? ' - ' }} ms</td>
+          <td scope="row">{{ perfEntry?.totalFilter?.toFixed(2) ?? ' - ' }} ms</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    class="settings__item"
+    *ngIf="settings.filterSettingValues.measurePerformance"
+  >
+    <app-performance-visualization
+      [data]="performanceDataFilterVis"
+      [groups]="performanceDataFilterGroups"
+      [visId]="'filterVis'"
+      [refreshRate]="5"
+      [isProcessingGraph]="false"
+      [numSamples]="99"
+    >      
+    </app-performance-visualization>
+  </div>
+
+  <div
+    class="settings__item"
+    *ngIf="settings.filterSettingValues.measurePerformance"
+  >
+  <table class="points__table margin-top-default grid-full-width">
+    <thead class="points__table--head">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Preparation</th>
+        <th scope="col">Analyze</th>
+        <th scope="col">Convert Depth</th>
+        <th scope="col">Smoothing</th>
+        <th scope="col">Extremum Type</th>
+        <th scope="col">Total</th>
+      </tr>
+    </thead>
+    <tbody class="points__table--body">
+      <tr *ngFor="let perfEntry of performanceDataProcess?.data">
+        <td scope="row">{{ perfEntry?.frameId }}</td>
+        <td scope="row">{{ perfEntry?.processingPreparation?.toFixed(2) ?? ' - ' }} ms</td>
+        <td scope="row">{{ perfEntry?.processingUpdate?.toFixed(2) ?? ' - '}} ms</td>
+        <td scope="row">{{ perfEntry?.processingConvert?.toFixed(2) ?? ' - ' }} ms</td>
+        <td scope="row">{{ perfEntry?.processingSmoothing?.toFixed(2) ?? ' - ' }} ms</td>
+        <td scope="row">{{ perfEntry?.processingExtremum?.toFixed(2) ?? ' - ' }} ms</td>
+        <td scope="row">{{perfEntry?.totalProcessing?.toFixed(2) ?? ' - ' }} ms</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div
+    class="settings__item"
+    *ngIf="settings.filterSettingValues.measurePerformance"
+  >
+    <app-performance-visualization
+      [data]="performanceDataProcessingVis"
+      [groups]="performanceDataProcessingGroups"
+      [visId]="'processingVis'"
+      [refreshRate]="5"
+      [isProcessingGraph]="true"
+      [numSamples]="199"
+    >      
+    </app-performance-visualization>
+  </div>
+</app-settings-group>
+
+<div class="settings__button-container">
+  <div class="settings__button-group">
+    <a
+      [ngClass]="canRestore ? 'button' : 'button-disabled'"
+      (click)="restoreSettings()"
+      >Restore</a
+    >
+    <a class="button" (click)="resetSettings()">Reset</a>
+    <a class="button" (click)="saveSettings(settings)">Save</a>
+  </div>
+  <div class="settings__button-group">
+    <!-- <div class="settings__item--content"> -->
+    <div class="settings__item--input">
+      <input
+        type="file"
+        (change)="uploadConfig($event)"
+        name="selectConfigFile"
+        id="selectConfigFile"
+        class="custom-file"
+      />
+      <label for="selectConfigFile" class="settings__item--label"
+        >Load Config</label
+      >
+    </div>
+    <!-- </div>             -->
+  </div>
+</div>

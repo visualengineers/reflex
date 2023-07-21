@@ -1,0 +1,20 @@
+<div class="settings__item--content">
+    <label class="settings__item--label">{{elementTitle}}</label>
+    <div class="slider checkbox">
+      <input
+        type="checkbox"
+        value="None"
+        id="{{elementId}}-checkbox"
+        class="checkbox-toggle"
+        name="{{elementId}}checkbox"
+        [(ngModel)]="data"
+        (ngModelChange)="onModelChange()"
+      />
+      <label class="checkbox-toggle-label" for="{{elementId}}-checkbox"
+        ><span class="on">ON</span><span class="off">OFF</span></label
+      >
+    </div>
+  </div>
+  <div class="settings__item--info">
+    <ng-content></ng-content>
+  </div>

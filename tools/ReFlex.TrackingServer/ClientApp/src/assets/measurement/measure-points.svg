@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <style>.cls-1{fill:none;}.cls-2{fill:#fff;}.cls-3{fill:red;}.cls-4{fill:url(#New_Pattern_3);}</style>
+        <pattern id="New_Pattern_3" x="0" y="0" width="196.06" height="196.06" patternTransform="translate(-118.58 48.19)" patternUnits="userSpaceOnUse" viewBox="0 0 196.06 196.06">
+            <g>
+                <rect class="cls-1" width="196.06" height="196.06"/>
+                <g>
+                    <path d="M115.62,72.51l-17.59,17.59-17.59-17.59c-2.19-2.19-5.74-2.19-7.93,0s-2.19,5.74,0,7.93l17.59,17.59-17.59,17.59c-2.19,2.19-2.19,5.74,0,7.93h0c2.19,2.19,5.74,2.19,7.93,0l17.59-17.59,17.59,17.59c2.19,2.19,5.74,2.19,7.93,0s2.19-5.74,0-7.93l-17.59-17.59,17.59-17.59c2.19-2.19,2.19-5.74,0-7.93h0c-2.19-2.19-5.74-2.19-7.93,0Z"/>
+                    <circle class="cls-3" cx="98.03" cy="98.03" r="7.95"/>
+                </g>
+            </g>
+        </pattern>
+    </defs>
+    <rect class="cls-4" y="0" width="1920" height="1080"/>
+    <rect class="cls-2" y="0" width="48.64" height="1080"/>
+    <rect class="cls-2" x="1871.36" y="0" width="47.24" height="1080"/>
+</svg>

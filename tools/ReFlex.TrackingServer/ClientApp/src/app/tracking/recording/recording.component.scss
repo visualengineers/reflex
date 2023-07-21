@@ -1,0 +1,32 @@
+@import 'abstracts/variables';
+
+:host {
+    margin-top: 3.6rem;
+    display:block;
+}
+
+.icon-button, 
+.icon-button-small {
+    display: block;
+    color: $color-primary;
+    
+    font-size: 2rem;
+
+    &.icon-radio-checked:before {
+        color: darkred;
+        cursor: pointer;
+    }
+        
+    &.icon-radio-disabled:before {
+        color: $color-grey-light;
+        cursor: normal;
+    }
+
+    &.icon-bin2::before {
+        cursor:pointer
+    }
+}
+
+.icon-button-small {
+    font-size: 1.6rem;
+}

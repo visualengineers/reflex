@@ -1,0 +1,89 @@
+<div class="content" [ngStyle]="{'visibility': (interactions.raw.length > 0 ? 'visible':'collapse')}">
+    <div class="content__header">
+        <h2 class="heading-secondary">List of Interactions</h2>        
+    </div>
+    <div class="interactions__list">
+        <table class="interactions__table">
+        <thead class="interactions__table--head">
+            <tr>
+                <th scope="col" class="narrowCell">Id</th>
+                <th scope="col" class="wideCell">Position</th>
+                <th scope="col" class="narrowCell">Valid</th>
+                <th scope="col" class="narrowCell">Filtered</th>
+                <th scope="col" class="narrowCell">Confidence</th>
+                <th scope="col">Time</th>
+                <th scope="col" class="narrowCell">Type</th>
+                <th scope="col" class="narrowCell">%</th>
+            </tr>
+        </thead>
+        <tbody class="interactions__table--body">
+            <tr *ngFor="let interaction of this.interactions.raw">
+                <td>{{interaction.touchId}}</td>
+                <td>[ {{interaction.position.x.toFixed(2)}} | {{interaction.position.y.toFixed(2)}} | {{interaction.position.z.toFixed(2)}} ]</td>
+                <td>{{interaction.position.isValid ? "X" : ""}}</td>
+                <td>{{interaction.position.isFiltered ? "X" : ""}}</td>
+                <td>{{interaction.confidence.toFixed(0)}}</td>
+                <td>{{getTime(interaction.time)}}</td>
+                <td>{{interaction.extremumDescription.type}}</td>
+                <td>{{interaction.extremumDescription.percentageFittingPoints*100}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="interactions__list">
+        <table class="interactions__table">
+        <thead class="interactions__table--head">
+            <tr>
+                <th scope="col" class="narrowCell">Id</th>
+                <th scope="col" class="wideCell">Position</th>
+                <th scope="col" class="narrowCell">Valid</th>
+                <th scope="col" class="narrowCell">Filtered</th>
+                <th scope="col" class="narrowCell">Confidence</th>
+                <th scope="col">Time</th>
+                <th scope="col" class="narrowCell">Type</th>
+                <th scope="col" class="narrowCell">%</th>
+            </tr>            
+        </thead>
+        <tbody class="interactions__table--body">
+            <tr *ngFor="let interaction of this.interactions.normalized">
+                <td>{{interaction.touchId}}</td>
+                <td>[ {{interaction.position.x.toFixed(2)}} | {{interaction.position.y.toFixed(2)}} | {{interaction.position.z.toFixed(2)}} ]</td>
+                <td>{{interaction.position.isValid ? "X" : ""}}</td>
+                <td>{{interaction.position.isFiltered ? "X" : ""}}</td>
+                <td>{{interaction.confidence.toFixed(0)}}</td>
+                <td>{{getTime(interaction.time)}}</td>
+                <td>{{interaction.extremumDescription.type}}</td>
+                <td>{{interaction.extremumDescription.percentageFittingPoints*100}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>    
+    <div class="interactions__list">
+        <table class="interactions__table">
+        <thead class="interactions__table--head">
+            <tr>
+                <th scope="col" class="narrowCell">Id</th>
+                <th scope="col" class="wideCell">Position</th>
+                <th scope="col" class="narrowCell">Valid</th>
+                <th scope="col" class="narrowCell">Filtered</th>
+                <th scope="col" class="narrowCell">Confidence</th>
+                <th scope="col">Time</th>
+                <th scope="col" class="narrowCell">Type</th>
+                <th scope="col" class="narrowCell">%</th>
+            </tr>
+        </thead>
+        <tbody class="interactions__table--body">
+            <tr *ngFor="let interaction of this.interactions.absolute">
+                <td>{{interaction.touchId}}</td>
+                <td>[ {{interaction.position.x.toFixed(2)}} | {{interaction.position.y.toFixed(2)}} | {{interaction.position.z.toFixed(2)}} ]</td>
+                <td>{{interaction.position.isValid ? "X" : ""}}</td>
+                <td>{{interaction.position.isFiltered ? "X" : ""}}</td>
+                <td>{{interaction.confidence.toFixed(0)}}</td>
+                <td>{{getTime(interaction.time)}}</td>
+                <td>{{interaction.extremumDescription.type}}</td>
+                <td>{{interaction.extremumDescription.percentageFittingPoints*100}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>    
+</div>

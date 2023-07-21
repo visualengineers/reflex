@@ -1,0 +1,47 @@
+{
+  "executable": "ReFlex.TrackingServer",
+  "splashscreen": {
+    "imageFile": "/wwwroot/splashscreen.jpg"
+  },  
+  "aspCoreBackendPort": 5000,
+  "ignoreAllCertificateErrors": true,
+  "name": "reflex.trackingserver",
+  "author": "Mathias Müller",
+  "description": "Backend for configuring and calibrating sensors to use with ReFlex framework",
+  "singleInstance": false,
+  "environment": "Production",
+  "build": {
+    "appId": "com.reflex.trackingserver",    
+    "productName": "ReFlex TrackingServer",
+    "copyright": "Copyright © 2023",
+    "buildVersion": "0.9.8",
+    "compression": "maximum",
+    "win": {
+      "icon": "bin/Assets/app_icon.ico"      
+    },
+    "directories": {
+      "output": "../../../bin/Desktop",
+      "buildResources": "Assets"
+    },
+    "extraResources": [
+      {
+        "from": "./bin",
+        "to": "bin",
+        "filter": [ "**/*" ]
+      },
+      {
+        "from": "../../../../../library/export/Modules",
+        "to": "bin",
+        "filter": [ "**/*" ]
+      }
+    ],
+    "files": [
+      {
+        "from": "./ElectronHostHook/node_modules",
+        "to": "ElectronHostHook/node_modules",
+        "filter": [ "**/*" ]
+      },
+      "**/*"
+    ]
+  }
+}

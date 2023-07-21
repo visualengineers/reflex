@@ -1,0 +1,372 @@
+app-root {
+    display: grid;
+    min-height: 100vh;
+
+    background-image: url('../../assets/img/footer_bg.jpg');
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: contain;
+
+    grid-template-rows: [page-start] $page-margin-top [top-start] $header-height [top-end main-start] 1fr [main-end bottom-start] $default-footer-height [bottom-end];
+
+    column-gap: $default-margin;
+    justify-content: stretch;
+    justify-self: stretch;
+    align-self: stretch;
+
+    grid-template-columns: 
+        [page-start]
+            $side-colum-width-left
+        [content-panel-start] 
+            1fr
+        [content-panel-end]                                                                             // 1 column + margin on the left side
+            $side-column-width-right
+        [bg-end page-end];
+        
+    @include respond(tab-port) {
+        grid-template-rows: [page-start] $page-margin-top [top-start] $header-height [top-end main-start] 1fr [main-end bottom-start] $small-footer-height [bottom-end];
+    }
+
+    @include respond(phone-large) {
+        grid-template-columns: 
+        [page-start]
+            $default-margin
+        [content-panel-start] 
+            1fr
+        [content-panel-end]                                                                             // 1 column + margin on the left side
+            $default-margin
+        [bg-end page-end];
+    }
+
+    
+}
+
+router-outlet {
+    display:none;
+}
+
+app-settings {
+    margin-top: 3.6rem;
+    display: block;
+}
+
+app-point-cloud {
+    display: block;
+    position: relative;
+}
+
+.main-content {
+    display: grid;
+    grid-row: main-start / main-end;
+    grid-column: content-panel-start / content-panel-end;
+    
+    grid-template-rows: auto;
+
+    align-items: start;
+}
+
+.content-panel {
+    display: grid;
+    grid-auto-rows: auto;
+    row-gap: $default-col-gap;
+    grid-template-columns: 
+        [content-start] $default-grid-columns      // 7 columns
+        [content-end];    
+
+    @include respond(tab-land) {
+        grid-template-columns: 
+        [content-start] $medium-grid-columns      // 5 columns
+        [content-end]; 
+    }
+
+    @include respond(tab-port) {
+        grid-template-columns: 
+        [content-start] $small-grid-columns      // 3 columns
+        [content-end]; 
+    }
+    
+    column-gap: $default-col-gap;   
+
+    padding: 0;
+}
+
+.settings {
+
+    grid-column: 1 / span 3; 
+
+    &__status-detail {
+        font-family: $font-primary;
+        color: $color-grey-light-2;
+    }
+
+    &__group {
+        display: grid;
+        grid-template-columns: 2.2rem 1fr;
+        margin-top: 1.6rem;
+
+        & .heading-tertiary {
+            grid-column: 2;
+        }
+
+        &--body {
+            visibility: collapse;
+            display: none;
+            grid-column: 2;
+        }  
+        
+        &--checkbox {
+            display:none;
+        }
+
+        &--button {
+            grid-column: 1;
+            background-color: $color-white;
+            height: 2rem;
+            width: 2rem;
+            padding-top: 0.2rem;
+    
+            text-align: center;
+            cursor: pointer; 
+        }
+
+        &--checkbox:checked ~&--body {
+            visibility: visible;
+            display: block;
+        }
+
+        &--checkbox:checked + &--button &--toggle-icon::before {
+            visibility: hidden;
+        }
+
+        &--toggle-icon {
+
+            margin-top: 1.1rem;
+            position: relative;
+    
+            &,
+            &::before {
+                width: 1.2rem;
+                height: 2px;
+                background-color: $color-primary;
+                display: inline-block;
+            }
+    
+            &::before {
+                content: "";  
+                position: absolute; 
+                
+                left: 0;
+                transition: all .2s;
+                
+                transform: rotate(90deg);
+                top: 0;
+                visibility: visible;                
+            }
+          
+        }
+    }
+
+    &__item,
+    &__button-container {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: $default-col-gap;
+        
+    }
+
+    &__item-narrow {
+        display: grid;
+
+        grid-template-columns: 2fr 1fr 1fr;
+        column-gap: $default-col-gap;
+    }
+
+    &__item,
+    &__item-narrow {         
+        font-size: $font-size-small;
+
+        &--content,
+        &--content-range {
+            grid-column: 1 / span 2;            
+
+            margin-top: 0.6rem;
+        }
+
+        &--content-button-large,
+        &--content-button {
+            display:flex;
+            justify-content: space-between;                       
+
+            margin-top: 0.6rem;
+
+            & .button,
+            & .button-disabled {
+                width: 100%;
+                margin-left: 0;
+                padding-top: 0.4rem;
+            }
+        }
+
+        &--content-button-large {
+            grid-column: 1 / span 2; 
+        }
+
+        // &--content-button {
+        //     grid-column: 1 / span 2; 
+        // }
+
+        &--content {
+            display:flex;
+            justify-content: space-between;
+        }
+
+        &--content-checkbox {
+            position: relative;
+            top: -0.7rem;
+            right: 0;
+            display: grid;
+            grid-template-columns: 1fr 2rem;
+            grid-column: 2 / span 2;
+            min-height: 2.7rem;
+        }
+
+        &--content-range {
+            display: grid;
+            grid-template-columns: 1fr 3rem 2fr 3rem 5rem 2rem;
+        }
+
+        &--content-range-no-tooltip {
+            display: grid;
+            grid-template-columns: 1rem 2fr 1rem;
+            grid-column: 2 / span 2;
+        }
+
+        &--input {
+            margin-left: $default-col-gap;
+        }
+
+        &--label {
+            font-family: $font-heading;
+            line-height: 2rem;            
+        }
+
+        
+        &:hover &--info {
+            visibility: visible;
+        }
+
+        &--info {
+            grid-column: 3;
+            height: 0;
+            overflow: visible; 
+            visibility: hidden;
+
+            color: $color-grey-light;
+        }
+
+        &--valueMin,
+        &--valueMax {
+            font-family: $font-tertiary;
+            color: $color-grey-light;
+        }
+
+        &--valueMin {
+            text-align: right;
+        }
+
+        &--unit {
+            font-family: $font-secondary;
+        }
+    }
+
+    &__button-group {
+        display: flex;
+
+        justify-content: flex-end;        
+        grid-column: 1 / span 2;
+        margin-top: $default-col-gap;
+        line-height: $default-button-height;
+    } 
+}
+
+.tuio-package {
+    &__visualization {
+        & code {
+            white-space: pre-wrap;
+            margin: calc(2* $default-col-gap) $default-col-gap;
+            display: block;
+            font-size: $font-size-small;
+            font-weight: 400;
+
+        }
+    }
+}
+
+.content {
+
+    margin-top: $margin-large;
+
+    &__header {
+        border-bottom: 1px solid $color-primary;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+
+
+.point-cloud, .depth-image {
+    aspect-ratio: 4 / 3;
+    height: max-content;
+}
+
+.visualization__panel, .package-details {
+    grid-column: 4 / -1;
+    height: max-content;
+
+    @include respond(tab-port) {
+        grid-column: span 3;
+    }
+}
+
+.depth-image {
+    margin-bottom: $default-col-gap;
+}
+
+.processing,
+.network,
+.log,
+.measure,
+.tuio {
+    display: grid;
+    grid-template-columns: $default-grid-columns;
+    column-gap: $default-col-gap;
+}
+
+.content__element {
+    grid-column: $default-grid-box;
+
+    @include respond(tab-port) {
+        grid-column: 1 / -1;
+    }
+}
+
+.content__element-narrow {
+    grid-column: $narrow-grid-box; 
+    
+    // @include respond(tab-port) {
+    //     grid-column: 1 / -1;
+    //     grid-row: 1;
+    // }
+}
+
+.content__element-wide {
+    grid-column: $wide-grid-box;
+
+    // @include respond(tab-land) {
+    //     grid-column: $default-grid-box;
+    // }
+
+   
+}

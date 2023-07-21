@@ -1,0 +1,131 @@
+<div class="content-panel">
+  <div class="content__element margin-top-large">
+      <div class="content__header margin-bottom-default">
+        <h2 class="heading-secondary">Welcome to the ReFlex Server!</h2>
+        <p>Version: {{(appVersion | async)?.version}}</p>
+      </div>  
+      <div class="content__body margin-bottom-default">
+        <h3 class="heading-tertiary">Introduction</h3>
+        <p>With this web application you can configure, debug and start different types of depth sensors for use with Elastic Display Client applications.</p>
+        <p>The Backend Framework is analyzing the depth image and reconstructs touch points (<strong>Single Touch</strong> or <strong>Multi Touch</strong>). 
+          Also, the Backend can be configured for broadcasting these touch events via <strong>TCP</strong> or <strong>WebSockets</strong></p>
+      </div>
+      <div class="content__body">
+        <h3 class="heading-tertiary">Start Instructions</h3>
+        <ol class="custom-list">
+          <li class="list-item">
+            Select the appropriate <strong>Depth Sensor and Resolution</strong> from <a class="link" href="/tracking">Tracking Tab</a>.
+          </li>
+          <li class="list-item">
+            <p>Activate <strong>Live Preview</strong> to view <strong>Point Cloud</strong> received from depth sensor. 
+            </p>
+            <p>in <strong>Point Cloud Visualization</strong> you can check:</p>
+            <ul class="custom-list">
+              <li>Filtered Depth Points (should be red)</li>
+              <li>Min / Max Depth Distance Planes (red / blue planes)</li>
+              <li>Dimension/Extend of the complete point cloud</li>
+              <li>Display the current depth point position values on hover (selected depth point should turn dark blue)</li>
+              <li>If <a class="link" href="/processing">Processing</a> is active, minimum and maximum values should be displayed as yellow points</li>
+            </ul>
+          </li>
+          <li class="list-item">adjust settings to filter invalid areas and find the right values for Smoothing</li>
+          <li class="list-item">Activate <a class="link" href="/processing">Interaction Processing</a> to compute depth touch points.</li>
+          <li class="list-item">For calibration of viewport and mapping of depth camera coordinates start interactive <a class="link" href="/calibration">Calibration</a>
+            <ul class="custom-list">
+              <li>Before Calibrating, activate <a class="link" href="/processing">interaction processing</a></li>
+              <li>Press <strong>Calibrate</strong> to switch to Calibration mode</li>
+              <li>If not already displayed in fullscreen, now hit <code>F11</code> to enter fullscreen mode</li>
+              <li>Drag borders so the viewport fits to the projected area</li>
+              <li>Save border by Pressing <strong>Save Area</strong></li>
+              <li>Turn on <strong>Update</strong> of interactions</li>
+              <li>Now select the point to calibrate (<strong>Point 1</strong>, <strong>Point 2</strong> or <strong>Point 3</strong></li>
+              <li>Push into the surface - Usually, only one extremum is displayed,a nd auto-selected. Click <strong>Set point</strong> to map this depth value to the calibration point. Do this for all 3 Calibration Points.</li>
+              <li>If more than one extremum is displayed, pause auto-update and select the extremum-value, you find most appropriate</li>
+              <li>After Setting all3 Points, click on <strong>Apply</strong> to compute Calibration Matrix</li>
+              <li>To validate you calibration, activate the <strong>Calibrated</strong> toggle. the displayed touch points should now be displayed in the correct positions.</li>              
+            </ul>
+          </li>
+          <li class="list-item">For broadcasting touch points to other applications, go to the <a class="link" href="/network">Network Tab</a> and select the appropriate Network Interface and configuration.</li>
+        </ol>
+      </div>
+      <div class="content__body">
+        <h3 class="heading-tertiary">Troubleshooting / Known Issues</h3>
+        <ul class="custom-list">
+          <li>Please check the <a class="link" href="/log">Log</a> if something is not working as expected.</li>
+          <li>Some errors also may be printed to the <strong>Browser Console</strong>. Hit <code>F12</code> to open it.</li>
+          <li>Web app (at least <a class="link" href="/calibration"> Calibration</a>) should be executed in FullScreen (<code>F11</code>).</li>
+        </ul>
+    </div>
+    <div class="content__header margin-bottom-default">
+      <h3 class="heading-secondary">For Developers</h3>
+    </div>
+    <div class="content__body">    
+      <h3 class="heading-tertiary">Technologies</h3>
+      <ul class="custom-list">
+        <li><a class="link" href='https://get.asp.net/'>ASP.NET Core</a> and <a class="link"
+          href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
+        <li><a class="link" href='https://angular.io/'>Angular</a> and <a class="link" href='http://www.typescriptlang.org/'>TypeScript</a> for
+          client-side code</li>
+      </ul>
+    </div>
+    <div class="content__body">    
+      <h3 class="heading-tertiary">Features</h3>
+      <ul class="custom-list">
+        <li><strong>Client-side navigation</strong>.
+        </li>
+        <li><strong>Angular CLI integration</strong>. In development mode, there's no need to run <code>ng serve</code>. It
+          runs in the background automatically, so your client-side resources are dynamically built on demand and the page
+          refreshes when you modify any file.</li>
+        <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your
+          <code>dotnet publish</code> configuration automatically invokes <code>ng build</code> to produce minified,
+          ahead-of-time compiled JavaScript files.</li>
+      </ul>          
+      <p>The <code>ClientApp</code> subdirectory is a standard Angular CLI application. If you open a command prompt in that
+        directory, you can run any <code>ng</code> command (e.g., <code>ng test</code>), or use <code>npm</code> to install
+        extra packages into it.</p>
+    </div>
+  </div> 
+  <div class="content__element margin-top-large">
+    <div class="content__header margin-bottom-default">
+      <h3 class="heading-secondary">Software Version</h3>
+    </div>
+    <div class="content__body">    
+      <h3 class="heading-tertiary">Server</h3>  
+      <table class="justified">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col">Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let versionInfo of (serverLibs | async); index as idx">
+                <th scope="col">{{idx}}</th>
+                <td class="text-column">{{versionInfo.name}}</td>
+                <td>{{versionInfo.version}}</td>
+              </tr>
+        </tbody>  
+      </table> 
+    </div>
+    <div class="content__body">    
+      <h3 class="heading-tertiary">Client</h3>  
+      <table class="justified">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col">Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let versionInfo of (clientLibs | async); index as idx">
+                <th scope="col">{{idx}}</th>
+                <td class="text-column">{{versionInfo.name}}</td>
+                <td>{{versionInfo.version}}</td>
+              </tr>
+        </tbody>  
+      </table> 
+    </div>
+  </div>
+</div>

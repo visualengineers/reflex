@@ -1,0 +1,128 @@
+<div class="processing content">
+    <div class="content__element">
+        <app-panel-header class="content__header"
+            elementTitle="Interaction Processing"
+            elementId="processing-interactionProcessing"
+            [(data)]="isInteractionProcessingActive"
+            (onChange)="isInteractionProcessingActiveChanged()"
+            [disabled]="selectedProcessorIdx < 1">         
+        </app-panel-header>
+        <h3 class="heading-tertiary" [ngClass]="{success: isInteractionProcessingActive, error: !isInteractionProcessingActive}">{{statusText}}</h3>
+        <div class="content__body">
+            <app-value-selection elementTitle="Processor" elementId="processing-processor-select" 
+                class="settings__item margin-bottom-default">
+                <select selection [(ngModel)]="selectedProcessorIdx" class="custom-select" data-enpassusermodified="yes"
+                    name="processing-processor-select" id="processing-processor-select" (change)="setProcessor()"
+                    title="select interaction processor">
+                    <option *ngFor="let proc of processors; let i = index" [ngValue]="i">{{proc}}</option>
+                </select>
+                <div description>
+                    <p>Specify the type of processing.</p> 
+                    <p><em>SingleTouch</em> simply extracts the depth value with the largest absolute distance to the zero plane.</p>
+                    <p><em>Multi touch</em> detects all extrema from the point cloud.</p>
+                    <p><em>None</em> is only available for backwards compatibility.</p>
+                </div>
+            </app-value-selection> 
+
+            <app-value-slider
+                class="settings__item"
+                elementTitle="Update Interval"
+                elementId="processing-updateInterval"
+                [min]="0"
+                [max]="1000"
+                [(data)]="interval"
+                (onChange)="setInterval()"
+                unit="ms">
+                Time interval between updates of interactions. Value should be larger than sensor frame duration.
+            </app-value-slider>
+
+            <!-- Address -->
+            <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
+                elementId="processing-remote-address-text" elementTitle="Address">
+                <input inputField class="form-control form-control-sm" type="text" 
+                    placeholder="http://127.0.0.1" [(ngModel)]="this.remoteAddress" 
+                    name="processing-remote--address-text" id="processing-remote--address-text" (change)="setAddress()">
+                <p description>Specifies the IP Address for the gRPC service processing the depth image.</p>
+            </app-value-text>
+
+            <!-- Port -->
+            <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
+                elementId="processing-remote-port-text" elementTitle="Port">
+                <input inputField class="form-control form-control-sm" type="number" 
+                    placeholder="50051" [(ngModel)]="this.remotePort" 
+                    name="processing-remote--port-text" id="processing-remote--port-text" (change)="setPort()">
+                <p description>Specifies the Port on which the gRPC server operates.</p>
+            </app-value-text>
+
+            <!-- CutOff -->
+            <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
+                elementId="processing-remote-cutOff-text" elementTitle="CutOff">
+                <input inputField class="form-control form-control-sm" type="number" 
+                    placeholder="0.1" [(ngModel)]="this.remoteSettings.cutOff" 
+                    step="0.1" min="0"
+                    name="processing-remote-cutOff-text" id="processing-remote-cutOff-text" (change)="updateSettings()">
+                   <p description>Frequency cutoff for filtering the depth image. Default: 0.1</p>
+            </app-value-text>
+
+            <!-- Factor -->
+            <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
+                elementId="processing-remote-factor-text" elementTitle="Factor">
+                <input inputField class="form-control form-control-sm" type="number" 
+                    placeholder="1200" [(ngModel)]="this.remoteSettings.factor" 
+                    name="processing-remote-factor-text" id="processing-remote-factor-text" (change)="updateSettings()">
+                   <p description>Filter factor for interpolating the depth image. Default: 1200</p>
+            </app-value-text>
+
+            <!-- NumSkipValues -->
+            <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
+                elementId="processing-remote-numSkipValues-text" elementTitle="Num Skip Values">
+                <input inputField class="form-control form-control-sm" type="number" 
+                    placeholder="0" min="0" [(ngModel)]="this.remoteSettings.numSkipValues" 
+                    name="processing-remote-numSkipValues-text" id="processing-remote-numSkipValues-text" (change)="updateSettings()">
+                   <p description>Specify the number of values to skip between two points when transferring the data.</p>
+            </app-value-text>
+
+            <!-- Toggle Complete Data -->
+            <app-option-checkbox class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
+                elementTitle="Complete Data Set"
+                elementId="processing-remote-factor-limitationFilter"
+                [(data)]="this.remoteSettings.completeDataSet"
+                (onChange)="updateSettings()">
+                Specify whether to send complete data set or only valid depth values.
+            </app-option-checkbox>
+
+            <a class="button" (click)="saveRemoteProcessingSettings()"  [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}">Save</a>
+           
+        <div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">            
+            <app-interactions #interactionsList [isProcessing]="isInteractionProcessingActive"></app-interactions>
+            <app-history #interactionHistory></app-history>
+        </div>        
+    </div>
+</div>
+
+<div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">  
+    <app-interactions-visualization #visualizationContainer [eventId]="eventId"></app-interactions-visualization>     
+    <div class="content__header">
+        <h2 class="heading-secondary">Legend</h2>
+    </div>
+    <div class="content__body">
+        <div class="legend-interaction">
+            <div class="legend-interaction-item">
+                <div class="legend-interaction-circle interaction-maximum"></div>
+                <div class="legend-interaction-label">Maximum</div>
+            </div>
+            <div class="legend-interaction-item">
+                <div class="legend-interaction-circle interaction-minimum"></div>
+                <div class="legend-interaction-label">Minimum</div>
+            </div>
+            <div class="legend-interaction-item">
+                <div class="legend-interaction-circle interaction-undefined"></div>
+                <div class="legend-interaction-label">Undefined</div>
+            </div>
+            <div class="legend-interaction-item">
+                <div class="legend-interaction-circle interaction-invalid"></div>
+                <div class="legend-interaction-label">Invalid Type</div>
+            </div>
+        </div>
+    </div>
+</div>

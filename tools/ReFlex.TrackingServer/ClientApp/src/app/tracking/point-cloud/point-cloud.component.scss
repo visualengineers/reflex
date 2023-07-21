@@ -1,0 +1,74 @@
+@import 'abstracts/variables';
+
+.point-cloud {
+    &__debug {
+        position: absolute; 
+        bottom: 1rem; 
+        right: 1rem;    
+
+        min-width: 20rem;
+        width: 15vw;
+        
+        background-color: rgba($color-grey-light-2,.4);
+
+        padding: 1rem;
+
+        z-index: 1700;
+    }
+
+    &__settings {
+        position: absolute; 
+        top: 1rem; 
+        left: 1rem; 
+
+        min-width: 35rem;
+        width: 20vw;
+
+        margin-left: 1.5rem;
+
+        z-index: 1800;
+    }
+}
+
+#point-cloud__container {
+    position: relative;
+}
+
+
+.visualization {
+
+    // functionality: display toggle fullscreen
+    
+    
+    &__view {
+        margin-top: $default-col-gap;
+        margin-bottom: $default-col-gap;
+        border: 1px solid $color-grey-light-3;      
+    }
+
+    &__render {
+
+        &.fullScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;  
+            
+            // z-index: 1500;
+            background-color: $color-white;
+
+            ~.point-cloud {
+                &__debug,
+                &__settings {
+                    position: fixed;
+                    min-width: 55rem;                    
+                }
+            }
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }    
+}

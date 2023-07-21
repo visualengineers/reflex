@@ -1,0 +1,191 @@
+// fullscreen toggle button
+.fullscreen {
+    &__checkbox {
+      display: none;
+    }
+  
+    // button on top of Background
+    &__button {
+      background-color: $color-primary;
+      height: 4rem;
+      width: 4rem;
+      position: absolute;
+      top: 0rem;
+      right: 0;
+  
+      z-index: 2000;        
+  
+      text-align: center;
+      cursor: pointer;
+    }  
+  
+    &__checkbox:checked ~&__button {
+      position: fixed;  
+      
+      top: 3rem;
+      right: 3rem;
+    }
+  
+    // button content
+    &__icon {
+      position: relative;
+      margin-top: 1.5rem;
+      display: inline-block;             
+  
+      &:before,
+      &:after {
+          width: 2.8rem;
+          height: 4px;
+          background-color: $color-white;
+          display: inline-block;
+      }
+  
+      &:before,
+      &:after {
+          content: "";  
+          position: absolute; 
+          top: 0.3rem;
+          left: -1.18rem;
+          transition: all .2s;
+      }
+  
+      &::after {
+          transform: rotate(90deg);            
+      }    
+    }
+  
+    &__button:hover &__icon:before {
+      transform: scale(0.8); 
+    }
+  
+    &__button:hover &__icon:after {
+      transform: scale(0.8) rotate(90deg); 
+    }
+  
+    &__checkbox:checked + &__button &__icon {
+      background-color: transparent;
+    }
+  
+    &__checkbox:checked + &__button &__icon::before {
+      transform: rotate(135deg);
+    }
+  
+    &__checkbox:checked + &__button &__icon::after {
+      transform: rotate(-135deg);
+    }
+  
+    &__checkbox:checked + &__button:hover &__icon::before {
+      transform: scale(0.8) rotate(135deg);
+    }
+  
+    &__checkbox:checked + &__button:hover &__icon::after {
+      transform: scale(0.8) rotate(-135deg);
+    }
+  }
+
+// Checkbox / Toggle Style 
+
+.checkbox {
+    position: relative;
+    width: 100px;
+    margin: -3px 0 0 0;
+    display: block;
+    font-size: $font-size-small;
+  }
+  
+  // Toggle Switch
+  
+  input[type="checkbox"].checkbox-toggle {
+    position: absolute;
+    left: -9999px; 
+  }
+  
+  label.checkbox-toggle-label {
+    color: $color-primary;  
+    
+    span.on {
+      position: absolute;
+      top: 4px;
+      right:26px;
+      display:none;
+      
+    }
+    span.off {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      display:inline-block;
+    }
+  
+    span.text {
+      display: block;
+      margin-top: 0.6rem;
+    }
+    
+  }
+  
+  label.checkbox-toggle-label:before   {
+      content: '';
+      background: $color-primary-light-2;
+      border-radius: 20px 20px 20px 20px;
+      border: none;
+      width: 48px; 
+      height: 20px;
+      position: absolute;
+      top: 5px;
+      right: 0px;
+  }
+  
+  
+  label.checkbox-toggle-label:after   {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        right: 30px;
+        top: 8px;
+        width: 14px;
+        height: 14px;
+        background: $color-white;
+        transition: .1s ease-in;  
+  }
+  
+  input.checkbox-toggle {
+    visibility: hidden; 
+  
+    &:disabled + label.checkbox-toggle-label {
+      color: $color-grey-light-2;
+    }
+  
+    &:disabled + label.checkbox-toggle-label:after {
+      background: $color-grey-light-2;
+    }
+  
+    &:disabled + label.checkbox-toggle-label:before {
+      background: $color-grey-light-3;
+    }
+  
+    &:checked + label.checkbox-toggle-label:after {
+      opacity: 1;
+      transform: translateX(26px);
+      background: $color-primary;
+      
+    } 
+  
+    &:checked + label.checkbox-toggle-label:before {
+      background: $color-white;
+      border: 1px solid $color-grey-dark;
+  
+    } 
+  
+    &:checked + label.checkbox-toggle-label {
+      color: $color-primary;
+      
+      span.on {        
+        display:inline-block;
+      }
+        
+      span.off {        
+          display:none;
+      }      
+    }
+  }

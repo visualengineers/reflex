@@ -1,0 +1,15 @@
+﻿syntax = "proto3";
+
+import "Protos/interactionTypes.proto";
+
+option csharp_namespace = "ReFlex.gRpc";
+
+package interactionService;
+
+service InteractionProcessing {
+  rpc ComputeInteractions(DepthValues1d) returns (InteractionFrame);
+
+  rpc GetState(StateRequest) returns (StateResponse);
+
+  rpc Configure(ConfigRequest) returns (ConfigResponse);
+}

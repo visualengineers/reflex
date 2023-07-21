@@ -1,0 +1,20 @@
+<div class="history__panel" #historyVis>
+    <svg class="history__panel--canvas">
+        <g *ngFor="let elem of history">            
+            <g *ngFor="let frame of elem.items, index as idx"> 
+                <line *ngIf="idx > 0" class="history__line"
+                    [attr.x1]="elem.items[idx-1].interaction.position.x"
+                    [attr.y1]="elem.items[idx-1].interaction.position.y"
+                    [attr.x2]="frame.interaction.position.x"
+                    [attr.y2]="frame.interaction.position.y">
+                </line>
+                <circle class="history__point"
+                    [attr.cx]="frame.interaction.position.x"
+                    [attr.cy]="frame.interaction.position.y"
+                    [attr.r]="2 + (0.1*frame.interaction.confidence)">
+                </circle>
+             </g>            
+        </g>
+    </svg>
+
+</div>

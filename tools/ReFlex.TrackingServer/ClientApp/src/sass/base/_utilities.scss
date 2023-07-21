@@ -1,0 +1,79 @@
+.success {
+    color: $color-success-light;
+}
+
+.error {
+    color: $color-error-light;
+}
+
+.margin-bottom-default {
+    margin-bottom: $default-col-gap;
+}
+
+.margin-top-default {
+    margin-top: $default-margin;
+}
+
+.margin-top-large {
+    margin-top: $margin-large
+}
+
+.justified {
+    width: 100%;
+}
+
+.rotate {
+    animation: rotation 2s;
+}
+
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-359deg);
+    }
+}
+
+.linear {
+    animation-timing-function: linear;
+}
+
+.infinite {
+    animation-iteration-count: infinite;
+}
+
+.clearBg {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: $color-grey-light-4;
+
+    z-index: 100;
+
+    top:0;
+    left:0;
+}
+
+
+.interaction-undefined {
+    background-color: $color-calibration-point;
+}
+
+.interaction-minimum {
+    background-color: $color-primary;
+}
+
+.interaction-maximum {
+    background-color: $color-success-light;
+}
+
+.interaction-invalid {
+    background-color: $color-error-light;
+}
+
+.grid-full-width {
+    grid-column: 1/ -1;
+}
+

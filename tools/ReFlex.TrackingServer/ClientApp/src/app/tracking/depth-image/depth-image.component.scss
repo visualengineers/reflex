@@ -1,0 +1,36 @@
+@import 'abstracts/variables';
+
+.depthImage {
+
+    &__view {
+        position: relative;
+
+        margin-top: $default-col-gap;
+        margin-bottom: $default-col-gap;
+        border: 1px solid $color-grey-light-3;     
+        
+        & img {      
+            display: flex;
+            width: 100%;
+            height: auto;        
+        }
+    }
+
+    &__render {      
+        
+        &.fullScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;  
+            
+            // z-index: 1500;
+            background-color: $color-white;  
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
