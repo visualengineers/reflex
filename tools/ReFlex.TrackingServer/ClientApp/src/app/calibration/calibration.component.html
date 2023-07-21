@@ -1,0 +1,350 @@
+<div #calibrationView class="calibration__background" [ngStyle]="{'visibility': (isInteractiveCalibrationVisible ? 'visible':'collapse'), 'display': (isInteractiveCalibrationVisible ? 'block':'none')}" (mouseup)="releaseAllBorders()">
+    <div class="border__rectangle--fill"
+        [ngStyle]="getBorderFill()">
+    </div>
+    <div class="border__rectangle--horizontal" draggable="false"
+        id="calibration-border-top"
+        [ngStyle]="{'transform': 'translateY('+borderOffset[0]+'px)'}"
+        (mousedown)="focusBorder(0)" (mouseup)="releaseBorder(0)" (mouseleave)="releaseBorder(0)">
+    </div>
+    <div class="border__rectangle--vertical" draggable="false"
+        id="calibration-border-left"
+        [ngStyle]="{'transform': 'translateX('+borderOffset[1]+'px)'}"
+        (mousedown)="focusBorder(1)" (mouseup)="releaseBorder(1)" (mouseleave)="releaseBorder(1)">
+    </div>
+    <div class="border__rectangle--horizontal" draggable="false"
+        id="calibration-border-bottom"
+        [ngStyle]="{'transform': 'translateY('+borderOffset[2]+'px)'}"
+        (mousedown)="focusBorder(2)" (mouseup)="releaseBorder(2)" (mouseleave)="releaseBorder(2)">
+    </div>
+    <div class="border__rectangle--vertical" draggable="false"
+        id="calibration-border-right"
+        [ngStyle]="{'transform': 'translateX('+borderOffset[3]+'px)'}"
+        (mousedown)="focusBorder(3)" (mouseup)="releaseBorder(3)" (mouseleave)="releaseBorder(3)">        
+    </div>
+   
+
+    <div *ngFor="let interaction of this.calibratedInteractions">
+        <div
+            class="calibration__calibratedPoint" 
+            [ngStyle]="getCalibratedInteractionPointStyle(interaction.type, interaction.position)"></div>
+
+    </div>
+
+    <div class="calibration__panel"
+        [ngStyle]="{'transform': 'translate('+borderOffset[3]+'px, '+borderOffset[0]+'px)'}">
+        <div class="content__header">
+            <h2  class="heading-secondary">Display Area</h2>
+        </div>
+        <div class="calibration__body--values">
+            <div class="calibration__body--item">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>Position</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Top</td><td>{{borderOffset[0]}} px</td>
+                        </tr>
+                        <tr>
+                            <td>Left</td><td>{{borderOffset[1]}} px</td>
+                        </tr>
+                        <tr>
+                            <td>Bottom</td><td>{{borderOffset[2]}} px</td>
+                        </tr>
+                        <tr>
+                            <td>Right</td><td>{{borderOffset[3]}} px</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="calibration__body--item">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Width</td><td>{{borderOffset[3] - borderOffset[1]}} px</td>
+                        </tr>
+                        <tr>
+                            <td>Height</td><td>{{borderOffset[2]- borderOffset[0]}} px</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="calibration__buttons margin-bottom-default">
+            <button type="button" class="button" (click)="updateFrameSize()">Save Area</button>
+            <button type="button" class="button" (click)="resetBorders()">Reset</button>
+        </div>
+
+        <app-panel-header class="content__header"
+            elementTitle="Update"
+            elementId="calibrations-interactions"
+            [(data)]="update"
+            (onChange)="updateCalibrationToggle()"
+            [disabled]="!isProcessingActive">           
+        </app-panel-header>
+                       
+        <div class="calibration__body">
+            <table [ngStyle]="{'visibility': (update ? 'visible':'collapse')}">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">X</th>
+                        <th scope="col">Y</th>
+                        <th scope="col">Z</th>
+                        <th scope="col">Confidence</th>
+                        <th scope="col">Accept</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let interaction of this.interactions; index as idx">
+                        <td scope="row">{{interaction.touchId}}</td>
+                        <td scope="row">{{interaction.position.x.toFixed(2)}}</td>
+                        <td scope="row">{{interaction.position.y.toFixed(2)}}</td>
+                        <td scope="row">{{interaction.position.z.toFixed(2)}}</td>
+                        <td scope="row">{{interaction.confidence.toFixed(0)}}</td>
+                        <td scope="row"><input type="checkbox" title="select point" [checked]="selectedIdx == idx" (change)="select(idx)"></td>
+                    </tr>
+                </tbody>  
+            </table>           
+        </div>
+        <div class="calibration__buttons margin-bottom-default">
+            <button type="button" class="button" [disabled]="selectedValue === undefined" (click)="submit()">Set Point</button>
+        </div>
+
+        <div class="content__header">
+            <h2  class="heading-secondary">Calibration</h2>
+        </div>
+        <div class="calibration__body--values">
+            <div class="calibration__body--item">
+            <p>Calibration Matrix</p>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>{{calibrationMatrix[0][0].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[1][0].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[2][0].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[3][0].toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{calibrationMatrix[0][1].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[1][1].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[2][1].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[3][1].toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{calibrationMatrix[0][2].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[1][2].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[2][2].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[3][2].toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{calibrationMatrix[0][3].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[1][3].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[2][3].toFixed(2)}}</td>
+                        <td>{{calibrationMatrix[3][3].toFixed(2)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="calibration__body--item">
+                <p>Point Mappings</p>      
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Point</td>
+                            <td colspan="2">Source</td>
+                            <td colspan="2">Target</td>
+                        </tr>
+                    </thead>
+                <tbody>
+                        <tr>
+                            <td scope="rox">P1</td>
+                            <td scope="row">{{this.calibrationSource[0].positionX}}</td> 
+                            <td scope="row">{{this.calibrationSource[0].positionY}}</td>
+                            <td scope="row">{{this.calibratedTargets[0].positionX}}</td>
+                            <td scope="row">{{this.calibratedTargets[0].positionY}}</td>
+                        </tr>
+                        <tr>
+                            <td scope="rox">P2</td>
+                            <td scope="row">{{this.calibrationSource[1].positionX}}</td> 
+                            <td scope="row">{{this.calibrationSource[1].positionY}}</td>
+                            <td scope="row">{{this.calibratedTargets[1].positionX}}</td>
+                            <td scope="row">{{this.calibratedTargets[1].positionY}}</td>
+                        </tr>
+                        <tr>
+                            <td scope="rox">P3</td>
+                            <td scope="row">{{this.calibrationSource[2].positionX}}</td>
+                            <td scope="row">{{this.calibrationSource[2].positionY}}</td>
+                            <td scope="row">{{this.calibratedTargets[2].positionX}}</td>
+                            <td scope="row">{{this.calibratedTargets[2].positionY}}</td>
+                        </tr>
+                </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="calibration__buttons margin-bottom-default">
+            <button type="button" class="button" (click)="display(0)">Point 1</button>
+            <button type="button" class="button" (click)="display(1)">Point 2</button>
+            <button type="button" class="button" (click)="display(2)">Point 3</button>
+
+            <button type="button" class="button" (click)="applyCalibration()">Apply</button>
+            <button type="button" class="button" (click)="resetCalibration()">Reset</button>
+        </div>
+
+        <app-panel-header class="content__header"
+            elementTitle="View"
+            elementId="calibrations-calibratedInteractions"
+            [(data)]="displayCalibratedInteractions"
+            (onChange)="updateCalibrationToggle()"
+            [disabled]="!this.update">
+            <span class="text" extraLabel>Calibrated Pos</span>          
+        </app-panel-header>
+
+        <div class="calibration__body">
+            <table [ngStyle]="{'visibility': (displayCalibratedInteractions ? 'visible':'collapse')}">
+                <thead>
+                    <tr>
+                        <th scope="col">X</th>
+                        <th scope="col">Y</th>
+                        <th scope="col">Z</th>
+                        <th scope="col">Confidence</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let interaction of this.calibratedInteractions; index as idx">
+                        <td scope="row">{{interaction.position.x.toFixed(2)}}</td>
+                        <td scope="row">{{interaction.position.y.toFixed(2)}}</td>
+                        <td scope="row">{{interaction.position.z.toFixed(2)}}</td>
+                        <td scope="row">{{interaction.confidence.toFixed(0)}}</td>                    
+                    </tr>
+                </tbody>  
+            </table>           
+        </div>
+        <div class="calibration__buttons">
+            <button type="button" class="button" (click)="toggleCalibrationMode()">{{isInteractiveCalibrationVisible ? 'Close':'Calibrate'}}</button>
+            <button type="button" class="button" (click)="saveCalibration()">Save</button>
+        </div>
+    </div>
+
+
+    <div class="calibration__main-buttons"
+    [ngStyle]="{'transform': 'translate('+borderOffset[3]+'px, '+borderOffset[2]+'px)'}">    
+        
+    </div>
+
+    <div class="calibration__point--source"
+        [ngStyle]="getCalibrationSourcePointStyle(0)">
+        1
+    </div>
+    <div class="calibration__point--source"
+        [ngStyle]="getCalibrationSourcePointStyle(1)">
+        2
+    </div>
+    <div class="calibration__point--source"
+        [ngStyle]="getCalibrationSourcePointStyle(2)">
+        3
+    </div>
+
+
+    <div class="calibration__point--target"
+        [ngStyle]="getCalibrationTargetPointStyle(0)">
+        1
+    </div>
+    <div class="calibration__point--target"
+        [ngStyle]="getCalibrationTargetPointStyle(1)">
+        2
+    </div>
+    <div class="calibration__point--target"
+        [ngStyle]="getCalibrationTargetPointStyle(2)">
+        3
+    </div>
+
+    
+</div>
+
+<div class="content">
+    <div class="calibration__values">
+        <div class="calibration__values--container">
+            <div class="content__header">
+                <h2 class="heading-secondary">Calibration Source Values</h2>
+            </div>
+            <div class="calibration__values--source">
+                <table class="points__table">
+                    <thead class="points__table--head">
+                        <tr>
+                            <th scope="col">X</th>
+                            <th scope="col">Y</th>
+                        </tr>
+                    </thead>
+                    <tbody class="points__table--body">
+                        <tr *ngFor="let point of this.currentCalibration.sourceValues">
+                            <td scope="row">{{point[0].toFixed(1)}}</td>
+                            <td scope="row">{{point[1].toFixed(1)}}</td>
+                        </tr>
+                    </tbody>  
+                </table>
+            </div>
+        </div>
+        <div class="calibration__values--container">
+            <div class="content__header">
+                <h2 class="heading-secondary">Calibration Target Values</h2>
+            </div>
+            <div class="calibration__values--target">
+                <table class="points__table">
+                    <thead class="points__table--head">
+                        <tr>
+                            <th scope="col">X</th>
+                            <th scope="col">Y</th>
+                        </tr>
+                    </thead>
+                    <tbody class="points__table--body">
+                        <tr *ngFor="let point of this.currentCalibration.targetValues">
+                            <td scope="row">{{point[0].toFixed(1)}}</td>
+                            <td scope="row">{{point[1].toFixed(1)}}</td>
+                        </tr>
+                    </tbody>  
+                </table>
+            </div>
+            </div>
+        <div class="calibration__values--container">
+            <div class="content__header">
+                <h2 class="heading-secondary">Last Update</h2>
+            </div>
+            <div class="calibration__values--source">
+                <table class="points__table">
+                    <thead class="points__table--head">
+                        <tr>
+                            <th scope="col">Index</th>
+                            <th scope="col">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody class="points__table--body">
+                        <tr *ngFor="let time of this.currentCalibration.lastUpdated; index as idx">
+                            <td scope="row">{{idx}}</td>
+                            <td scope="row">{{time}}</td>
+                        </tr>
+                    </tbody>  
+                </table>
+            </div>
+        </div>
+        <div class="calibration__values--container">
+            <div class="content__header">
+                <h2 class="heading-secondary">Upper Threshold</h2> 
+                <p>{{this.currentCalibration.upperThreshold.toFixed(1)}}</p>
+            </div>
+           
+            <div class="content__header margin-bottom-default">
+                <h2 class="heading-secondary">Lower Threshold</h2>
+                <p>{{this.currentCalibration.lowerThreshold.toFixed(1)}}</p>
+            </div>
+            
+            <div class="calibration_buttons">       
+                <button type="button" class="button" (click)="toggleCalibrationMode()">{{isInteractiveCalibrationVisible ? 'Close':'Calibrate'}}</button>
+            </div>
+        </div>
+    </div>
+</div>

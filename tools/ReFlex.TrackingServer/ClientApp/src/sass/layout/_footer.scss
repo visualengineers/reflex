@@ -1,0 +1,51 @@
+.footer {
+    grid-column: page-start / page-end;
+    grid-row: bottom-start / bottom-end; 
+
+    align-self: stretch;
+
+    overflow: visible;
+
+    margin-left: $default-margin;
+    margin-right: $default-margin;
+    
+
+
+    &__content {
+        display: flex;
+        justify-content: space-between;
+        
+        margin-left: $side-colum-width-left;
+        margin-right: $side-column-width-right;
+
+        border-top: 1px solid $color-black;
+
+        padding-top: $default-margin;
+
+        @include respond(phone-large) {
+            margin-left: $default-margin;
+            margin-right: $default-margin;
+        }
+
+        &--text {
+            justify-self: stretch;
+        }
+
+        &--logos {
+            justify-self: right;            
+
+            & img {
+                margin-left: $default-col-gap;
+                height: $default-logo-height;
+
+                @include respond(tab-port) {
+                    height: $small-logo-height;
+                }  
+            }
+
+            & img:first-child {
+                margin-left: 0;
+            }
+        }
+    }    
+}

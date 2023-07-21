@@ -1,0 +1,86 @@
+table {
+    border-collapse: collapse;
+    border-style: hidden;
+    border: none;
+    border-bottom: 2px solid $color-primary;
+    border-top: 2px solid $color-primary;
+  
+    margin-bottom: $default-col-gap;
+  
+    & td {
+      border: none;
+      text-align: center;
+      padding: 0 0.5rem;
+    }
+
+    &.fixed-height {
+      min-height: 20rem;
+      max-height: 20rem;
+
+      & tr:last-child {
+        height: 100%;
+        vertical-align: top;
+      }
+    }
+  }
+  
+  thead {  
+    color: $color-primary;
+    text-align: center;
+    font-family: $font-heading;
+  
+    & th {
+      min-width: 5em; 
+      border-bottom: 1px solid $color-primary;
+    }  
+  }
+  
+  tbody {
+  
+    tr { 
+  
+      &:nth-child(even) {
+        background-color: $color-grey-light-3;
+      }
+    
+      &.table-danger {
+        background-color: $color-error-light;
+        color: $color-white;
+        font-family: $font-heading;
+      }
+    
+      &.table-danger:nth-child(even) {
+        background-color: $color-error;
+        color: $color-white;
+        font-family: $font-heading;
+      }
+      
+      &:hover {   
+        box-shadow: inset 0px 0px 1px 1px $color-primary;
+      }
+    }
+  }
+  
+  .text-column {
+    text-align: left;
+    white-space: pre-wrap;
+    word-break: break-word;
+  
+    & div {
+      max-height: 5rem;
+      overflow: hidden;
+  
+      &:hover {        
+        max-height: -moz-fit-content;
+        max-height: fit-content;
+      }
+    }
+  }
+
+  .wideCell {
+      min-width: 15rem;
+  }
+
+  .narrowCell {
+    min-width: 4.2rem;
+}

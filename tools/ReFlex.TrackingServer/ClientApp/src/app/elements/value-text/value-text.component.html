@@ -1,0 +1,9 @@
+    <div class="settings__item--content">
+        <label for="{{elementId}}"  class="settings__item--label">{{elementTitle}}</label>
+        <div class="settings__item--input">
+            <ng-content select="[inputField]"></ng-content>
+        </div>
+    </div>
+    <div class="settings__item--info">
+        <ng-content select="[description]"></ng-content>
+    </div>       

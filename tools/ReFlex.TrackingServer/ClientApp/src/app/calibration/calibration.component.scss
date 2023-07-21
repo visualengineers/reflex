@@ -1,0 +1,187 @@
+@import 'abstracts/variables';
+
+.fullScreen {    
+    position: fixed;
+    box-sizing: border-box;
+    width: 100%;
+    width: 100vw;
+    height: 100%;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    margin: 0;
+
+    background-color: $color-white;
+}
+
+.border__rectangle {
+    &--fill {
+        position: absolute;
+        background-color: $color-grey-light-3;
+    }
+    &--horizontal,
+    &--vertical {
+        position: absolute;
+        background: #00000000;
+    }
+    
+    &--horizontal {
+        width: 100vw;
+        left: 0;
+        top: -30px;
+        height: 60px;
+    }
+    
+    &--vertical {
+        width: 60px;
+        top: 0;
+        left: -30px;
+        height: 100vh;
+    }
+    
+    &--horizontal:hover,
+    &--vertical:hover {    
+        background: #00000033;
+    }
+    
+    &--horizontal::before,
+    &--vertical::before {
+        position: relative;
+        background: $color-grey-light;
+        content:"";
+        display: block;
+        pointer-events: none;
+    }
+    
+    &--horizontal::before {
+        top: 28.5px;
+        width: 100vw;
+        height: 3px;
+    }
+    
+    &--vertical::before {
+        left: 28.5px;
+        width: 3px;
+        height: 100vh;
+    }
+    
+    &--horizontal:hover::before,
+    &--vertical:hover::before {
+        background: $color-primary-light;
+    }
+    
+}
+
+.calibration {
+    &__background {    
+       // background-color: $color-grey-light-3;
+        min-width: 600px;
+        min-height: 600px;
+    }
+
+    &__body {
+        margin-bottom: $default-col-gap;
+
+        &--values{
+            display: flex;
+            justify-content: space-between;
+        }
+    }   
+
+    &__panel {
+        position: absolute;
+        top: 5rem;
+        left: -41rem;
+        width: 36rem;
+    
+        padding: 1.5rem;
+        font-size: 80%;
+    
+        border: 1px solid $color-grey-light;
+        background-color: $color-white;
+    }
+    
+    &__point--target, 
+    &__point--source, 
+    &__calibratedPoint {
+        position:absolute;
+        border-radius: 100%;
+
+        color: $color-white;
+        
+        font-family: $font-heading;
+    }
+
+    &__point {
+        &--source, 
+        &--target {
+            border: 1px solid $color-calibration-point-border;            
+        }
+
+        &--source {
+            top: -20px;
+            left: -20px;
+
+            width: 40px;
+            height: 40px;  
+
+            padding: 0.8rem 1.5rem;
+
+            background-color: $color-calibration-point;
+        }
+
+        &--target {
+            top: -15px;
+            left: -15px;
+
+            width: 30px;
+            height: 30px;
+
+            padding: 0.3rem 1rem;
+
+            background-color: $color-success;
+        }
+    }
+
+
+    &__calibratedPoint {
+        top: -20px;
+        left: -20px;
+
+        width: 40px;
+        height: 40px;
+
+        background-color:$color-primary;        
+
+        border: 3px solid $color-calibration-point-border;
+
+        padding: 0.6rem 1.3rem;
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+
+        & .button:first-child {
+            margin-left: 0;
+        }
+    }
+
+    &__main-buttons {
+
+        position: absolute;    
+        left: -14rem;        
+        margin: 2rem;    
+    }
+
+    &__values {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        column-gap: $default-col-gap;
+
+        &--container {
+            grid-column: span 2;
+        }
+    }
+}

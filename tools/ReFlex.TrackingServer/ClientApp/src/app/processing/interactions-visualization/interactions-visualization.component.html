@@ -1,0 +1,59 @@
+<div class="content__header">
+    <h2 class="heading-secondary">Interactions View</h2>
+    <p>Count: {{interactions.raw.length}}</p>
+    <p>Num Events received: {{eventId}}</p>
+</div>
+<div class="content__body">
+    <div 
+        class="interactions__visualization"
+        [ngStyle]="getInteractionsViewStyle()"
+        #interactionVis >
+        <input type="checkbox" class="fullscreen__checkbox" id="visualization-toggle" [(ngModel)]="fullScreen" title="toggle fullscreen"/>
+        <label for="visualization-toggle" class="fullscreen__button">
+            <span class="fullscreen__icon">&nbsp;</span>
+        </label>    
+        <app-history-visualization></app-history-visualization>
+        <div *ngFor="let interaction of this.calibratedInteractions, index as idx">
+            <div
+                class="interactions__point--confidence"
+                [ngStyle]="{'transform': 'translate('+interaction.position.x+'px, '+interaction.position.y+'px) scale('+(1.0+(interaction.confidence/maxConfidence))+')'}">
+            </div>
+            <div
+                class="interactions__point"
+                [ngClass]="getClass(interaction.extremumDescription)"
+                [ngStyle]="{'transform': 'translate('+interaction.position.x+'px, '+interaction.position.y+'px) scale('+(0.5+interaction.position.z)+')'}">
+                <p class="interactions__point--id">{{interaction.touchId}}</p>
+            </div>
+            <div
+                class="interactions__description"
+                [ngStyle]="{'transform': 'translate('+interaction.position.x+'px, '+interaction.position.y+'px)'}">
+                <table>
+                    <tbody>
+                        <!-- <tr>
+                            <th scope="col" colspan="3">{{Interactions.raw[idx]?.touchId}}</th>
+                        </tr> -->
+                        <tr>
+                            <th scope="col">R</th>
+                            <td scope="row">{{interactions.raw[idx].position.x.toFixed(0)}}</td>
+                            <td scope="row">{{interactions.raw[idx].position.y.toFixed(0)}}</td>
+                            <td scope="row">{{interactions.raw[idx].position.z.toFixed(2)}}</td>                            
+                        </tr>
+                        <tr>
+                            <th scope="col">N</th>
+                            <td scope="row">{{interactions.normalized[idx].position.x.toFixed(0)}}</td>
+                            <td scope="row">{{interactions.normalized[idx].position.y.toFixed(0)}}</td>
+                            <td scope="row">{{interactions.normalized[idx].position.z.toFixed(2)}}</td>                            
+                        </tr>
+                        <tr>
+                            <th scope="col">A</th>
+                            <td scope="row">{{interactions.absolute[idx].position.x.toFixed(0)}}</td>
+                            <td scope="row">{{interactions.absolute[idx].position.y.toFixed(0)}}</td>
+                            <td scope="row">{{interactions.absolute[idx].position.z.toFixed(2)}}</td>                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="clearBg" [ngStyle]="{'visibility': (fullScreen ? 'visible':'collapse')}"></div>
+</div>

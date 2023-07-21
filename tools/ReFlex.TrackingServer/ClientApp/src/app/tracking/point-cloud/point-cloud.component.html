@@ -1,0 +1,71 @@
+<app-panel-header class="content__header"
+    elementTitle="Point Cloud Visualization"
+    elementId="pointCloud-livePreview"
+    [(data)]="livePreview"
+    (onChange)="livePreviewChanged()"
+    [disabled]="!livePreviewEnabled">
+    <p [ngStyle]="{'visibility': (numFramesReceived > 0 ? 'visible' : 'collapse')}">
+        Frames: {{numFramesReceived}}
+    </p>
+</app-panel-header>
+
+<div class="visualization__view" id="point-cloud__container">
+    <input type="checkbox" class="fullscreen__checkbox" id="visualization-toggle" 
+        [(ngModel)]="fullScreen" (ngModelChange)="updateSize()" 
+        title="Toggle PointCloud fullscreen"/>
+    <label for="visualization-toggle" class="fullscreen__button">
+        <span class="fullscreen__icon">&nbsp;</span>
+    </label>
+    <div #pointCloudRenderContainer class="visualization__render">
+
+    </div>
+
+    <app-settings-group class="point-cloud__settings" *ngIf="livePreview" toggleId="point-cloud-settings-toggle" elementTitle="Display Settings">
+        <!-- Toggle Grid -->
+        <app-option-checkbox class="settings__item-narrow" 
+            elementTitle="Show Grid"
+            elementId="pointCloud-showGrid"
+            [(data)]="showGrid"
+            (onChange)="updateGridVisibility()">
+        </app-option-checkbox>
+
+        <!-- Toggle Bounding Box -->
+        <app-option-checkbox class="settings__item-narrow" 
+            elementTitle="Show Bounding Box"
+            elementId="pointCloud-showBoundingBox"
+            [(data)]="showBoundingBox">
+        </app-option-checkbox>
+        
+        <!-- Toggle Distance Planes -->
+        <app-option-checkbox class="settings__item-narrow" 
+            elementTitle="Show Distance Planes"
+            elementId="pointCloud-showDistancePlanes"
+            [(data)]="showDistancePlanes"
+            (onChange)="updatePlanesVisibility()">
+        </app-option-checkbox>                
+
+        <app-value-slider
+            class="settings__item-narrow"
+            elementTitle="Point Size"
+            elementId="pointCloud-pointSize"
+            [min]="1"
+            [max]="10"
+            [(data)]="pointSize"
+            unit="px">
+        </app-value-slider>
+    </app-settings-group>
+
+    <div class="point-cloud__debug">
+        <div class="point-cloud__debug--mouse" [ngStyle]="{visibility: isMouseOver ? 'visible' : 'collapse'}">
+            <p><span>Mouse: [ </span>{{mouseXnormalized.toFixed(2)}}<span> | </span>{{mouseYnormalized.toFixed(2)}}<span> ]</span></p>
+        </div>        
+        <div class="point-cloud__debug--point" [ngStyle]="{visibility: hoverP === null || hoverP === undefined ? 'collapse' : 'visible'}">
+            <p><span>Coordinates: [ </span>{{hoverP?.x?.toFixed(2)}}<span> | </span>{{hoverP?.y?.toFixed(2)}}<span> | </span>{{hoverP?.z?.toFixed(2)}}<span>
+                    ] </span></p>
+        </div>
+
+        <div class="point-cloud__debug--point" [ngStyle]="{visibility: hoverP === null || hoverP === undefined ? 'collapse' : 'visible'}">
+            <p><span>Point Index: </span>{{intersectedIdx}}</p>
+        </div>
+    </div>
+</div>

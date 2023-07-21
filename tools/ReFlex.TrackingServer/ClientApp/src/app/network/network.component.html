@@ -1,0 +1,82 @@
+<div class="network content">
+    <div class="content__element">
+        <app-panel-header class="content__header"
+            elementTitle="Broadcast Interactions"
+            elementId="networking-broadcastInteractions"
+            [(data)]="isBroadcasting"
+            (onChange)="isBroadcastingChanged()"
+            [disabled]="selectedInterfaceIdx < 1">
+        </app-panel-header>
+
+        <h3 class="heading-tertiary" 
+            [ngClass]="{success: isBroadcasting, error: !isBroadcasting}">Status: {{statusText}}</h3>
+        
+        <div class="content__body">
+            <app-value-selection elementTitle="Network Interface" elementId="network-interface-select" 
+                class="settings__item margin-bottom-default">
+                <select selection [(ngModel)]="selectedInterfaceIdx" class="custom-select" data-enpassusermodified="yes"
+                    name="network-interface-select" id="network-interface-select" (change)="setNetworkInterface()"
+                    title="network interface selection">
+                    <option *ngFor="let interface of networkInterfaces; let i = index" [ngValue]="i">{{interface}}</option>
+              </select>
+                <div description>
+                    <p>Specify the method for broadcasting interactions.</p> 
+                    <p><em>Websockets</em> Use Websocket communication.</p>
+                    <p><em>TCP</em> Use default TCP Communication. For this method, <em>Endpoint</em> is ignored.</p>
+                    <p><em>None</em> is only available for backwards compatibility.</p>
+                </div>
+            </app-value-selection>
+            
+            <!-- Address -->
+            <app-value-text class="settings__item"
+                elementId="network-address-text" elementTitle="Address">
+                <input inputField class="form-control form-control-sm" type="text" 
+                    placeholder="http://127.0.0.1" [(ngModel)]="this.networkSettings.address" 
+                    name="network-address-text" id="network-address-text" (change)="setAddress()">
+                <p description>Specifies the IP Address for the broadcasting server.</p>
+            </app-value-text>
+            
+            <!-- Port -->
+            <app-value-text class="settings__item"
+                elementId="network-port-text" elementTitle="Port">
+                <input inputField class="form-control form-control-sm" type="number" 
+                    placeholder="8080" [(ngModel)]="this.networkSettings.port" 
+                    name="network-port-text" id="network-port-text" (change)="setPort()">
+                <p description>Specifies the Port on which the server operates.</p>
+            </app-value-text>
+
+            <!-- Endpoint -->
+            <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedInterfaceIdx != 1  ? 'collapse' : 'visible')}"
+                elementId="network-endpoint-text" elementTitle="Endpoint">
+                <input inputField class="form-control form-control-sm" type="text" 
+                    placeholder="/reFlex" [(ngModel)]="this.networkSettings.endpoint" 
+                    name="network-endpoint-text" id="network-endpoint-text" (change)="setEndpoint()">
+                   <p description>Endpoint for Websocket communication. Not valid for TCP protocol.</p>
+            </app-value-text>
+        </div>
+
+        <!-- Interval  -->
+        <app-value-slider
+            class="settings__item"
+            elementTitle="Update Interval"
+            elementId="network-updateInterval"
+            [min]="0"
+            [max]="1000"
+            [(data)]="networkSettings.interval"
+            (onChange)="setInterval()"
+            Unit="ms">
+            Time interval between network broadcast of interactions. Value should be larger than or equal to interaction frame processing interval. 
+            <em>Not implemented.</em>
+        </app-value-slider>
+
+        <div class="content__body" [ngStyle]="{'visibility' : (errorText === ''  ? 'collapse' : 'visible')}">
+            <h3 class="heading-tertiary error">Error:</h3>
+            <p class="text-column">
+                {{errorText}}
+            </p>
+        </div>
+
+        <a class="button" (click)="saveNetworkSettings()">Save</a>
+    </div>    
+</div>
+<app-tuio></app-tuio>

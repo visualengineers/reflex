@@ -1,0 +1,15 @@
+:host {
+    grid-column: 1/-1;
+    height: 20rem;
+}
+.visualization__panel {
+    position:relative;
+
+    width: 100%;
+    height: 100%;
+
+    & svg {
+        padding: 0;
+        margin: 0;
+    }
+}

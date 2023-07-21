@@ -14,7 +14,7 @@
     "appId": "com.reflex.trackingserver",    
     "productName": "ReFlex TrackingServer",
     "copyright": "Copyright © 2023",
-    "buildVersion": "0.9.7",
+    "buildVersion": "0.9.8",
     "compression": "maximum",
     "win": {
       "icon": "bin/Assets/app_icon.ico"      
@@ -30,7 +30,7 @@
         "filter": [ "**/*" ]
       },
       {
-        "from": "../../../../library/export/Modules",
+        "from": "../../../../../library/export/Modules",
         "to": "bin",
         "filter": [ "**/*" ]
       }

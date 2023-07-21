@@ -1,0 +1,42 @@
+@import 'abstracts/variables';
+
+:host {
+    position: absolute; 
+    top: 0rem; 
+    left: 0rem; 
+
+    width: 100%;
+
+    background-color: $color-grey-light-2;
+}
+
+.measure-controls {
+    &__container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        margin-right: 5rem;
+    }
+
+    &__item {
+        display: grid;
+        grid-template-columns: 1fr 6.4rem;
+        gap: 1.6rem;
+
+        min-height: 2.7rem;
+
+        width: 20rem;
+
+        & p, h4 {            
+            margin-top: 0.2rem;
+        }
+
+        & a {
+            cursor: pointer;
+
+            width: 15rem;
+            padding-top: 0.2rem;
+        }
+    }
+}

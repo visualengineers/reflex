@@ -1,0 +1,90 @@
+<div class="tuio content">
+    <div class="content__element">
+         <app-panel-header class="content__header"
+            elementTitle="TUIO"
+            elementId="tuio-tuioBroadcast"
+            [(data)]="isBroadcasting"
+            (onChange)="isBroadcastingChanged()"
+            [disabled]="!isConfigValid()">           
+        </app-panel-header>
+   
+        <h3 class="heading-tertiary" 
+            [ngClass]="{success: isBroadcasting, error: !isBroadcasting}">Status: {{statusText}}</h3>
+        
+        <div class="content__body">
+            <!-- Transport Protocol -->
+            <app-value-selection elementTitle="Transport Protocol" elementId="tuio-transport-select" 
+                class="settings__item margin-bottom-default">
+                <select selection [(ngModel)]="transportProtocolIdx" class="custom-select" data-enpassusermodified="yes"
+                    name="tuio-transport-select" id="tuio-transport-select" (change)="setTransportProtocol()"
+                    title="select tuio transport protocol">
+                    <option *ngFor="let protocol of transportProtocols; let i = index" [ngValue]="i">{{protocol}}</option>
+                </select>
+                <div description>
+                    <p>Specify the method for communicating with the TUIO server.</p>
+                    <p><strong>UDP</strong> default transport.</p>
+                    <p><strong>TCP</strong> Use TCP Communication. </p>
+                    <p><strong>Websockets</strong> Use Websocket communication.</p>
+                </div>
+            </app-value-selection> 
+            
+            <!-- TUIO Version -->
+            <app-value-selection elementTitle="TUIO Protocol Version" elementId="tuio-version-select" 
+                class="settings__item margin-bottom-default">
+                <select selection [(ngModel)]="tuioProtocolVersionIdx" class="custom-select" data-enpassusermodified="yes"
+                    name="tuio-version-select" id="tuio-version-select" (change)="setTuioProtocolVersion()"
+                    title="select tuio protocol version">
+                    <option *ngFor="let protocol of tuioProtocolVersions; let i = index" [ngValue]="i">{{protocol}}</option>
+                </select>
+                <div description>
+                    <p>Specify the TUIO Message Format.</p>
+                    <p><strong>1.1</strong> original specification</p>
+                    <p><strong>2.0</strong> current specification </p>
+                </div>
+            </app-value-selection> 
+            
+            <!-- TUIO Interpretation -->
+            <app-value-selection elementTitle="TUIO Interpretation" elementId="tuio-interpretation-select" 
+                class="settings__item margin-bottom-default">
+                <select selection [(ngModel)]="tuioInterpretationIdx" class="custom-select" data-enpassusermodified="yes"
+                    name="tuio-interpretation-select" id="tuio-interpretation-select" (change)="setTuioInterpretation()"
+                    title="select tuio interpretation">
+                    <option *ngFor="let interpretation of tuioInterpretations; let i = index" [ngValue]="i">{{interpretation}}</option>
+                </select>
+                <div description>
+                    <p>Specify how Interactions are interpreted</p>
+                    <p><strong>TouchPoint2DwithPressure</strong> Point on a surface, depth is mapped to pressure value.</p>
+                    <p><strong>Point3D</strong> spatial point with normalized X, Y, Z coordinates.</p>
+                </div>
+            </app-value-selection>
+                       
+            <!-- IP Address -->
+            <app-value-text class="settings__item"
+                elementId="tuio-address-text" elementTitle="Address">
+                <input inputField class="form-control form-control-sm" type="text" 
+                placeholder="http://127.0.0.1" [(ngModel)]="this.serverAddress" 
+                name="tuio-address-text" id="tuio-address-text" (change)="setAddress()">
+                <p description>Specifies the IP Address of the TUIO server.</p>
+            </app-value-text>
+
+            <!-- Port -->
+            <app-value-text class="settings__item"
+                elementId="tuio-address-port" elementTitle="Port">
+                <input inputField class="form-control form-control-sm" type="number" 
+                placeholder="8080" [(ngModel)]="this.serverPort" 
+                name="tuio-address-port" id="tuio-address-port" (change)="setPort()">
+                <p description>Specifies the Port of the TUIO server.</p>
+            </app-value-text>
+        </div>
+        
+        <div class="content__body" [ngStyle]="{'visibility' : (errorText === ''  ? 'collapse' : 'visible')}">
+            <h3 class="heading-tertiary error">Error:</h3>
+            <p class="text-column">
+                {{errorText}}
+            </p>
+        </div>
+
+        <a class="button" (click)="saveTuioConfig()">Save Config</a>
+    </div>
+    <app-package-details class="package-details" *ngIf="isBroadcasting"></app-package-details>
+</div>

@@ -1,6 +1,26 @@
-<body>
-  <app-nav-menu></app-nav-menu>
-  <div class="container">
-    <router-outlet></router-outlet>
+<header class="header">  
+  <div class="header__title">
+    <h1 class="heading-primary">
+      TrackingServer
+  </h1>
+  <a href="/home"><img class="header__logo" src="./assets/img/reflex-logo.png"></a>
   </div>
-</body>
+</header>
+<nav class="navigation"> 
+  <app-nav-menu></app-nav-menu>
+</nav>
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+<footer class="footer">
+  <div class="footer__content">
+    <div class="footer__content--text"></div>
+    <div class="footer__content--logos">
+      <img src="./assets/img/Logo_HTW_Dresden.png" alt="Logo HTW Dresden">
+      <img src="./assets/img/gtv-logo.png" alt="Logo Gesellschaft für Technische Visualistik">
+      <img src="./assets/img/gtv-company-name.png" alt="Signet Gesellschaft für Technische Visualistik">
+      <img src="./assets/img/ESF-Logo.png" alt="Logo ESF Sachsen">
+    </div>
+  </div>
+
+</footer>

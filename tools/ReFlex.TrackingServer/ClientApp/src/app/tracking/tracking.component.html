@@ -1,0 +1,61 @@
+<div class="content-panel">
+    <div class="settings content">
+        <app-panel-header class="content__header"
+            elementTitle="Camera Configuration"
+            elementId="tracking-camera"
+            [(data)]="isActive"
+            (onChange)="start()"
+            [disabled]="selectedCameraIdx < 0 || selectedConfigurationIdx < 0"
+        >
+
+        </app-panel-header>       
+        <h3 class="heading-tertiary" [ngClass]="{success: isActive, error: !isActive}">{{statusText}}</h3>
+        <p class="settings__status-detail">{{statusDetailsText}}</p>
+        <app-value-selection Title="Camera" ElementId="tracking-camera-select" class="settings__item">
+            <select selection [(ngModel)]="selectedCameraIdx" class="custom-select" data-enpassusermodified="yes"
+                name="tracking-camera-select" id="tracking-camera-select" (change)="updateConfigurations()"
+                title="Camera Selection">
+                <option *ngFor="let cam of cameras; let i = index" [ngValue]="i">{{cam.modelDescription}}</option>
+            </select>
+            <p description>Select one of the available Cameras from the list. If camera is not listed, check log for details.</p>
+        </app-value-selection>
+
+        <app-value-selection Title="Configuration" ElementId="tracking-configuration-select" class="settings__item">
+            <select selection [(ngModel)]="selectedConfigurationIdx" class="custom-select" data-enpassusermodified="yes"
+                name="tracking-configuration-select" id="tracking-configuration-select" (change)="updateState()"
+                title="Camera Configuration Selection">
+                <option *ngFor="let cfg of configurations; let i = index" [ngValue]="i">
+                    {{getConfigDescription(cfg)}}</option>
+            </select>
+            <p description>Select the resolution and framerate of the depth sensor. Changing configuration of a running camera running may require to (manually) restart tracking.</p>
+        </app-value-selection>
+        <div class="settings__item">
+            <div class="settings__item--content">
+                <label class="settings__item--label">Autostart</label>
+                <div class="slider checkbox">      
+                    <input type="checkbox" value="None" id="checkbox-autostart" class="checkbox-toggle" name="checkbox-autostart"
+                    [(ngModel)]="autostart" (ngModelChange)="saveAutoStart()"/>
+                    <label class="checkbox-toggle-label" for="checkbox-autostart"><span class="on">ON</span><span class="off">OFF</span></label> 
+                </div>
+            </div>
+            <div class="settings__item--info">
+                Specify whether Camera should be started automatically on next program start.
+            </div>
+        </div>
+        <app-recording [recordingName]="selectedCameraIdx > 0 && selectedCameraIdx < cameras.length ? cameras[selectedCameraIdx].id : ''"></app-recording>
+        <app-settings></app-settings> 
+    </div>
+    <div class="visualization__panel">
+        <div class="point-cloud content" *ngIf="displayPointCloud">        
+            <div class="point-cloud__visualization" #pointCloudContainer>
+                <app-point-cloud (fullScreenChanged)="onPointCloudFullScreenChanged($event)" [width]="pointCloudContainer.offsetWidth - 20" [livePreviewEnabled]="isActive"></app-point-cloud>
+            </div>
+        </div> 
+        
+        <div class="depth-image" *ngIf="displayDepthImage">
+            <div>
+                <app-depth-image (fullScreenChanged)="onDepthImageFullScreenChanged($event)" [livePreviewEnabled]="isActive"></app-depth-image>
+            </div>
+        </div> 
+    </div>    
+</div>

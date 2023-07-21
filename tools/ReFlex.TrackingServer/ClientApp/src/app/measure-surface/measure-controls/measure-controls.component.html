@@ -1,0 +1,20 @@
+<div class="measure-controls__container">
+  <div class="measure-controls__item">
+    <h4 class="measure-controls__item--label">Capture Id</h4>
+    <div class="settings__item--valueInput">
+      <input class="custom-input" type="text" placeholder="leftBorder"
+          [(ngModel)]="captureId" name="leftBorderInput">
+  </div>
+  </div>
+  <div class="measure-controls__item" *ngIf="isCapturing">
+    <h4 class="measure-controls__item--label">Captured Frame</h4>
+    <div class="measure-controls__item--content">
+      <p>{{ numFramesCaptured }} / 10</p>
+    </div>
+  </div>
+  <div class="measure-controls__item" *ngIf="!isCapturing">
+    <div class="measure-controls__item--content-button">
+      <a (click)="captureFrames()" class="button">Save Depth Image</a>
+    </div>
+  </div>
+</div>

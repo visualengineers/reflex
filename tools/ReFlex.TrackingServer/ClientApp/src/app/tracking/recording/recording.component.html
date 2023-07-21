@@ -1,0 +1,60 @@
+<div class="content__header">
+    <h2 class="heading-secondary">Camera Recording</h2>
+    <p [ngStyle]="{'visibility': (recordingState != null ? 'visible' : 'collapse')}">
+        Frames: {{recordingState.framesRecorded}}
+    </p>    
+    <div>
+        <a *ngIf="!isRecording" [ngClass]="(recordingEnabled ? 'icon-button icon-radio-checked' : 'icon-button icon-radio-disabled')"
+            (click)="startRecording()"></a>
+        <a *ngIf="isRecording" class="icon-button icon-stop"
+            (click)="stopRecording()"></a>
+        </div>
+</div>
+<h3 class="heading-tertiary" [ngClass]="{success: isRecording, error: !isRecording}">{{recordingStateLabel}}</h3>
+
+<!-- Name -->
+<app-value-text class="settings__item"
+    elementId="recording-name-text" elementTitle="Name">
+    <input inputField class="form-control form-control-sm" type="text" 
+    placeholder="default" [(ngModel)]="this.recordingName" 
+    name="recording-name-text" id="recording-name-text" (ngModelChange)="recordingNameChanged()">     
+    <p description> Specifies the Name for identifying recording data set. If name already exists, des recording is replaced by the new recording.</p>
+</app-value-text>
+
+<div class="content__header">
+    <h2 class="heading-secondary">Existing Recordings</h2>
+    <div>
+        <a *ngIf="!isDeleting && !isRecording && (recordings?.length ?? 0) > 0" class="icon-button icon-bin2" (click)="clearRecordings()"></a>
+        <div *ngIf="isDeleting" class="icon-button icon-spinner6 rotate linear infinite"></div>
+    </div>
+</div>
+<div>
+    <table class="points__table">
+        <thead class="points__table--head">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Resolution</th>
+                <th scope="col">Framerate</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="points__table--body">
+            <tr *ngFor="let recording of recordings">
+                <td scope="row">{{recording.name}}</td>
+                <td scope="row">
+                    <span>{{recording.width}}</span>
+                    <span>x</span>
+                    <span>{{recording.height}}</span>
+                </td>
+                <td scope="row">
+                    <span>{{recording.framerate}}</span>
+                    <span> fps</span>
+                </td>
+                <td>
+                    <a class="icon-button-small icon-bin2" *ngIf="!isDeleting && (!isRecording || recording.name !== recordingState?.sessionName)" (click)="deleteRecording(recording)"></a>
+                </td>
+            </tr>
+        </tbody>  
+    </table>
+</div>
+

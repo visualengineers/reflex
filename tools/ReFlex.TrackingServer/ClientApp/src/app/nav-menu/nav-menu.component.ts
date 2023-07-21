@@ -1,18 +1,9 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html',
-  styleUrls: ['./nav-menu.component.css']
+  templateUrl: './nav-menu.component.html'
 })
 export class NavMenuComponent {
-  isExpanded = false;
-
-  collapse() {
-    this.isExpanded = false;
-  }
-
-  toggle() {
-    this.isExpanded = !this.isExpanded;
-  }
 }

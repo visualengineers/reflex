@@ -1,0 +1,22 @@
+<div class="content__header">
+    <h2 class="heading-secondary">Depth Image Visualization</h2>
+    <p [ngStyle]="{'visibility': (numFramesReceived > 0 ? 'visible' : 'collapse')}">
+            Frames: {{numFramesReceived}}
+    </p>
+    <div class="slider checkbox">      
+        <input type="checkbox" value="None" class="checkbox-toggle" id="checkbox-livePreviewDepthImage" name="checkbox-livePreviewDepthImage" 
+        [(ngModel)]="livePreview" (ngModelChange)="livePreviewChanged()" [disabled]="!livePreviewEnabled"/>
+        
+        <label class="checkbox-toggle-label" for="checkbox-livePreviewDepthImage"><span class="on">ON</span><span class="off">OFF</span></label> 
+    </div>
+</div>
+<div class="depthImage__view" *ngIf="livePreview">
+    <input type="checkbox" class="fullscreen__checkbox" id="depthImage-fullscreen-toggle" [(ngModel)]="fullScreen" (ngModelChange)="updateSize()"/>
+    <label for="depthImage-fullscreen-toggle" class="fullscreen__button">
+        <span class="fullscreen__icon">&nbsp;</span>
+    </label>
+    <div #depthImageRenderContainer class="depthImage__render">
+        <img src="{{imageData}}">
+    </div>
+    
+</div>

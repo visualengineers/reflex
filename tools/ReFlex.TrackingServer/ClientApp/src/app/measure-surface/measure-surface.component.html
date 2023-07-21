@@ -1,0 +1,27 @@
+<div class="measure content">
+  <div class="content__element">
+    <div class="content__header">
+      <h2 class="heading-secondary">Measure Surface View</h2>
+    </div>
+    <div class="content__body">
+      <div class="measure__visualization" [ngStyle]="getViewStyle()">
+        <input
+          type="checkbox"
+          class="fullscreen__checkbox"
+          id="visualization-toggle"
+          [(ngModel)]="fullScreen"
+          title="toggle fullscreen"
+        />
+        <label for="visualization-toggle" class="fullscreen__button">
+          <span class="fullscreen__icon">&nbsp;</span>
+        </label>
+        <app-measure-grid></app-measure-grid>
+        <app-measure-controls></app-measure-controls>
+      </div>
+      <div
+        class="clearBg"
+        [ngStyle]="{ visibility: fullScreen ? 'visible' : 'collapse' }"
+      ></div>
+    </div>
+  </div>
+</div>

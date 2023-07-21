@@ -1,0 +1,16 @@
+.history {
+    &__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        &--id {
+            width: 20%;
+            text-align: center;
+        }
+
+        &--interactions {
+            width: 80%;
+        }
+    }
+}
