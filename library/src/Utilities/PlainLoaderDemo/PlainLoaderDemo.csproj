@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>ReFlex.Utilities.PlainLoaderDemo</PackageId>
+    <Authors>Mathias Müller</Authors>
+    <Copyright>Copyright ©  2020-2023</Copyright>
+    <Company>
+      GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+      Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+    </Company>
+    <Version>1.0.0</Version>
+    <Product>ReFlex.Sensor</Product>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
+    <ProjectReference Include="..\..\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
+    <ProjectReference Include="..\..\Sensor\EmulatorModule\EmulatorModule.csproj" />
+    <ProjectReference Include="..\..\Sensor\Kinect2Module\Kinect2Module.csproj" />
+    <ProjectReference Include="..\..\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
+    <ProjectReference Include="..\..\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
+    <ProjectReference Include="..\..\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />
+  </ItemGroup>
+
+</Project>

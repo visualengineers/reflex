@@ -1,0 +1,94 @@
+﻿<mah:MetroWindow x:Class="ReFlex.Utilities.MouseInputConverter.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mvvm="http://prismlibrary.com/"
+        xmlns:viewModels="clr-namespace:ReFlex.Utilities.MouseInputConverter.ViewModels"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+
+        mc:Ignorable="d"
+        mvvm:ViewModelLocator.AutoWireViewModel="True"
+
+        Title="{Binding Title}"
+        Height="{Binding WindowHeight, Mode=TwoWay}" 
+        Width="{Binding WindowWidth, Mode=TwoWay}"
+        WindowStartupLocation="CenterScreen"
+        BorderThickness="0"
+        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}">
+
+    <Window.InputBindings>
+        <KeyBinding Key="S" Command="{Binding SaveSettingsCommand}"/>
+        <KeyBinding Key="L" Command="{Binding LoadSettingsCommand}"/>
+        <KeyBinding Key="Escape" Command="{Binding TerminateApplicationCommand}"/>
+    </Window.InputBindings>
+
+    <Grid
+        Margin="20, 20">
+
+        <StackPanel>
+
+            <mah:ToggleSwitch 
+                Header="Mouse-Input" 
+                OnContent="On"
+                OffContent="Off"
+                IsOn="{Binding IsMouseInputEnabled}"/>
+
+            <StackPanel 
+                Orientation="Horizontal"
+                Margin="0 10 0 0">
+
+                <Label
+                    Width="140">
+                    Min- and Clickdistance
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding MinToClickDistance}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding MinDistance}"
+                    UpperValue="{Binding ClickDistance}"
+                    Width="200"
+                    Minimum="-1"
+                    Maximum="1"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <StackPanel
+                Orientation="Horizontal"
+                Margin="0 10 0 0">
+
+                <Button 
+                    Command="{Binding SaveSettingsCommand}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Width="146"
+                    Margin="0 0 10 0">
+                    Save
+                </Button>
+
+                <Button 
+                    Command="{Binding LoadSettingsCommand}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Width="146"
+                    Margin="0 0 10 0">
+                    Load
+                </Button>
+
+                <Button 
+                    Command="{Binding TerminateApplicationCommand}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Width="146">
+                    Close
+                </Button>
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+
+</mah:MetroWindow>

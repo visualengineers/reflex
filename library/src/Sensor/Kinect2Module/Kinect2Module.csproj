@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>ReFlex.Sensor.Kinect2Module</PackageId>
+    <Authors>Mathias Müller</Authors>
+    <Copyright>Copyright ©  2021-2023</Copyright>
+    <Company>
+      GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+      Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+    </Company>
+    <Version>1.0.0</Version>
+    <Product>ReFlex.Sensor</Product>
+    <AssemblyName>ReFlex.Sensor.Kinect2Module</AssemblyName>
+    <RootNamespace>ReFlex.Sensor.Kinect2Module</RootNamespace>
+    <Platforms>x64</Platforms>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Util\**" />
+    <EmbeddedResource Remove="Util\**" />
+    <None Remove="Util\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Prise.Plugin" Version="6.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Common\Common.csproj" />
+    <ProjectReference Include="..\..\Core\Networking\Networking.csproj" />
+    <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
+    <ProjectReference Include="..\..\Core\Util\Util.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Kinect">
+      <HintPath>..\..\..\..\external\Microsoft.Kinect.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec Command="mkdir -p ../../../export/Modules &amp;&amp; cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
+   </Target>
+</Project>

@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>ReFlex.Sensor.RealSenseD435Module</PackageId>
+    <Authors />
+    <Copyright>Copyright ©  2021</Copyright>
+    <Company>GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden</Company>
+    <Version>0.7.0</Version>
+    <Product>ReFlex.Sensor</Product>
+    <AssemblyName>ReFlex.Sensor.RealSenseD435Module</AssemblyName>
+    <RootNamespace>ReFlex.Sensor.RealSenseD435Module</RootNamespace>
+    <Platforms>x64</Platforms>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="NLog" Version="5.1.3" />
+    <PackageReference Include="Prise.Plugin" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Intel.RealSense">
+      <HintPath>..\..\..\..\external\Intel.Realsense.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec Command="mkdir -p ../../../export/Modules %26%26 cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
+  </Target>
+
+</Project>

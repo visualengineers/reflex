@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="ReFlex.Frontend.ServerWPF.Views.TrackingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:util="clr-namespace:ReFlex.Core.Tracking.Util;assembly=ReFlex.Core.Tracking"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModels="clr-namespace:ReFlex.Frontend.ServerWPF.ViewModels"
+
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+
+             d:DataContext="{d:DesignInstance viewModels:TrackingViewModel}">
+
+    <UserControl.Resources>
+        <ObjectDataProvider MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}"
+                            x:Key="DepthCameraStateValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="util:DepthCameraState" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <StackPanel
+            Width="460"
+            Margin="0 20">
+
+            <mah:ToggleSwitch 
+                Header="{Binding ChosenCameraAndStreamConfigurationString}" 
+                OnContent="On"
+                OffContent="Off"
+                IsOn="{Binding TrackingState}"
+                IsEnabled="{Binding IsCameraConfigurationChosen}"/>
+
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="230">
+                    Camera State
+                </Label>
+
+                <Label
+                    Content="{Binding CameraState}"
+                    Width="230"/>
+
+            </StackPanel>
+
+
+            <mah:DropDownButton 
+                ItemsSource="{Binding DepthCameras}"
+                DisplayMemberPath="ModelDescription"
+                Content="Supported Depth Cameras"
+                VerticalContentAlignment="Center"
+                Margin="0 0 0 10">
+
+                <mah:DropDownButton.ItemContainerStyle>
+                    <Style 
+                        TargetType="MenuItem" 
+                        BasedOn="{StaticResource {x:Type MenuItem}}">
+
+                        <Setter 
+                            Property="Header" 
+                            Value="{Binding }"/>
+
+                        <Setter 
+                            Property="Command" 
+                            Value="{Binding DataContext.ChooseCameraCommand, 
+                                RelativeSource={RelativeSource FindAncestor,
+                                AncestorType=UserControl}}"/>
+
+                        <Setter 
+                            Property="CommandParameter" 
+                            Value="{Binding }"/>
+
+                    </Style>
+                </mah:DropDownButton.ItemContainerStyle>
+            </mah:DropDownButton>
+
+            <mah:DropDownButton 
+                ItemsSource="{Binding CameraConfigurations}"
+                DisplayMemberPath="Description"
+                Content="Supported Camera Configurations"
+                VerticalContentAlignment="Center">
+
+                <mah:DropDownButton.ItemContainerStyle>
+                    <Style 
+                        TargetType="MenuItem" 
+                        BasedOn="{StaticResource {x:Type MenuItem}}">
+
+                        <Setter 
+                            Property="Header" 
+                            Value="{Binding }"/>
+
+                        <Setter 
+                            Property="Command" 
+                            Value="{Binding DataContext.ChooseCameraConfigurationCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType=UserControl}}"/>
+
+                        <Setter 
+                            Property="CommandParameter" 
+                            Value="{Binding }"/>
+
+                    </Style>
+                </mah:DropDownButton.ItemContainerStyle>
+            </mah:DropDownButton>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>
