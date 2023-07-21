@@ -1,0 +1,225 @@
+﻿<mah:MetroWindow x:Class="ReFlex.Frontend.ServerWPF.Views.CalibrationView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:mvvm="http://prismlibrary.com/"
+        xmlns:calcBinding="clr-namespace:CalcBinding;assembly=CalcBinding"
+        xmlns:components="clr-namespace:ReFlex.Frontend.ServerWPF.Components"
+        xmlns:viewModels="clr-namespace:ReFlex.Frontend.ServerWPF.ViewModels"
+
+        mc:Ignorable="d"
+        mvvm:ViewModelLocator.AutoWireViewModel="True"
+
+        Title="DSense.Calibration" 
+        Icon="Icon_noText_TrackingServer256.ico"
+        Height="{Binding WindowHeight, Mode=TwoWay}" 
+        Width="{Binding WindowWidth, Mode=TwoWay}"
+        BorderThickness="0"
+        WindowStyle="{Binding WindowStyle}"
+        WindowState="{Binding WindowState}"
+        ShowTitleBar="{Binding IsTitleBarVisible}"
+        ShowIconOnTitleBar="{Binding IsTitleBarVisible}"
+        ShowCloseButton="{Binding IsTitleBarVisible}"
+        ShowMaxRestoreButton="{Binding IsTitleBarVisible}"
+        ShowMinButton="{Binding IsTitleBarVisible}"
+        d:DataContext="{d:DesignInstance viewModels:CalibrationViewModel}">
+
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding ToggleCalibrationViewCommand}"/>
+        <KeyBinding Key="S" Command="{Binding StartCalibrationCommand}"/>
+        <KeyBinding Key="F" Command="{Binding ToggleFullscreenCommand}"/>
+        <KeyBinding Gesture="Alt+Enter" Command="{Binding ToggleFullscreenCommand}"/>
+    </Window.InputBindings>
+
+    <Grid>
+        <Grid>
+            <Grid.RenderTransform>
+                <MatrixTransform 
+                    Matrix="{Binding CalibrationMatrix}" />
+            </Grid.RenderTransform>
+
+            <Rectangle
+                Width="{Binding CanvasWidth}"
+                Height="{Binding CanvasHeight}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Stroke="BlueViolet">
+                <Rectangle.RenderTransform>
+                    <TranslateTransform 
+                        X="{Binding CalibrationStartX}" 
+                        Y="{Binding CalibrationStartY}"/>
+                </Rectangle.RenderTransform>
+            </Rectangle>
+
+            <components:VectorfieldRenderer 
+                ItemsSource="{Binding VectorfieldViewModel.Vectors}"
+                Visibility="{Binding VectorfieldViewModel.ShowVectorField, Converter={StaticResource BooleanVisibilityConverter}}"/>
+
+            <!-- Calibration Target Points -->
+
+            <ItemsControl 
+                DataContext="{Binding}" 
+                ItemsSource="{Binding CalibrationPoints}" 
+                Width="{Binding WindowWidth}"
+                Height="{Binding WindowHeight}"
+                IsHitTestVisible="False" 
+                Visibility="{Binding IsVisible, Converter={StaticResource BooleanVisibilityConverter}}">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Canvas Visibility="{Binding IsFinished, Converter={StaticResource BooleanVisibilityConverter}}">
+                            <Line 
+                                X1="{Binding Position.X}" 
+                                X2="{Binding TargetPositionX}" 
+                                Y1="{Binding Position.Y}" 
+                                Y2="{Binding TargetPositionY}" 
+                                Stroke="LightGray" 
+                                StrokeThickness="1"/>
+                        </Canvas>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+            </ItemsControl>
+
+            <!-- Calibration Source Points -->
+
+            <ItemsControl 
+                DataContext="{Binding}" 
+                ItemsSource="{Binding CalibrationPoints}" 
+                Width="{Binding WindowWidth}"
+                Height="{Binding WindowHeight}"
+                MouseLeftButtonUp="SetCalibrationPoint" 
+                Visibility="{Binding IsVisible, Converter={StaticResource BooleanVisibilityConverter}}" 
+                Background="#00FFFFFF">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid 
+                            Width="30" 
+                            Height="30" 
+                            Visibility="{Binding IsVisible, Converter={StaticResource BooleanVisibilityConverter}}">
+
+                            <Grid.RenderTransform>
+                                <TranslateTransform 
+                                    X="{calcBinding:Binding Position.X - 15}" 
+                                    Y="{calcBinding:Binding Position.Y - 15}"/>
+                            </Grid.RenderTransform>
+
+                            <Ellipse 
+                                Fill="White"
+                                Visibility="{Binding IsSelected, Converter={StaticResource BooleanVisibilityConverter}}"
+                                Width="22" Height="22"
+                                RenderTransformOrigin="0.5,0.5"/>
+
+                            <Ellipse 
+                                x:Name="CalibPoint" 
+                                Fill="Orange" 
+                                Width="20" Height="20"
+                                RenderTransformOrigin="0.5,0.5"/>
+
+                            <TextBlock 
+                                Text="{Binding Index}" 
+                                Foreground="White" 
+                                FontWeight="Bold"
+                                TextAlignment="Center"
+                                Width="20"
+                                Height="20"/>
+
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger 
+                                Binding="{Binding IsFinished}" 
+                                Value="True">
+                                <Setter 
+                                    Property="Ellipse.Fill" 
+                                    Value="Green"
+                                    TargetName="CalibPoint"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas 
+                            Background="#00FFFFFF"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+            </ItemsControl>
+
+            <ItemsControl
+            
+                DataContext="{Binding}" 
+                ItemsSource="{Binding CalibrationPoints}" 
+                Width="{Binding WindowWidth}"
+                Height="{Binding WindowHeight}"
+                Visibility="{Binding IsVisible, Converter={StaticResource BooleanVisibilityConverter}}"
+                x:Name="CalibrationCanvas">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid 
+                            Width="100" 
+                            Height="100" 
+                            Visibility="{Binding IsFinished, Converter={StaticResource BooleanVisibilityConverter}}"
+                            Background="#00FFFFFF"
+                            MouseDown="SelectCalibrationPoint" MouseLeave="UnselectCalibrationPoint" MouseUp="UnselectCalibrationPoint" MouseMove="MoveCalibrationPoint">
+
+                            <Grid.RenderTransform>
+                                <TranslateTransform 
+                                    X="{calcBinding:Binding TargetPositionX - 50}" 
+                                    Y="{calcBinding:Binding TargetPositionY - 50}"/>
+                            </Grid.RenderTransform>
+
+                            <Ellipse 
+                                Fill="White"
+                                Visibility="{Binding IsSelected, Converter={StaticResource BooleanVisibilityConverter}}"
+                                Width="12" Height="12"
+                                RenderTransformOrigin="0.5,0.5"/>
+
+                            <Ellipse 
+                                x:Name="CalibPoint" 
+                                Fill="DodgerBlue" 
+                                Width="10" Height="10"
+                                RenderTransformOrigin="0.5,0.5"/>
+
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+            </ItemsControl>
+
+        </Grid>
+
+        <Button 
+            Command="{Binding FinishCalibrationCommand}"
+            IsEnabled="{Binding IsCalibrationFinished}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Style="{StaticResource MahApps.Styles.Button.Square}"
+            Width="225"
+            Margin="0 0 30 30">
+            Accept
+        </Button>
+
+    </Grid>
+
+</mah:MetroWindow>
+
+
+

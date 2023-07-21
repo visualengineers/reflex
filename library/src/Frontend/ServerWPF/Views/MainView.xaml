@@ -1,0 +1,147 @@
+﻿<mah:MetroWindow x:Class="ReFlex.Frontend.ServerWPF.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mvvm="http://prismlibrary.com/"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:views="clr-namespace:ReFlex.Frontend.ServerWPF.Views"
+        xmlns:viewModels="clr-namespace:ReFlex.Frontend.ServerWPF.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+
+        mc:Ignorable="d"
+        mvvm:ViewModelLocator.AutoWireViewModel="True"
+
+        Title="{Binding Title}"
+        Height="{Binding WindowHeight, Mode=TwoWay}" 
+        Width="{Binding WindowWidth, Mode=TwoWay}"
+        WindowStartupLocation="CenterScreen"
+        BorderThickness="0"
+        WindowStyle="{Binding WindowStyle}"
+        WindowState="{Binding WindowState}"
+        ShowTitleBar="{Binding IsTitleBarVisible}"
+        ShowIconOnTitleBar="{Binding IsTitleBarVisible}"
+        ShowCloseButton="{Binding IsTitleBarVisible}"
+        ShowMaxRestoreButton="{Binding IsTitleBarVisible}"
+        ShowMinButton="{Binding IsTitleBarVisible}"
+        d:DataContext="{d:DesignInstance viewModels:MainViewModel}">
+
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Closing">
+            <b:InvokeCommandAction Command="{Binding WindowLoadedCommand}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding TerminateApplicationCommand}"/>
+        <KeyBinding Key="F" Command="{Binding ToggleFullscreenCommand}"/>
+        <KeyBinding Gesture="Alt+Enter" Command="{Binding ToggleFullscreenCommand}"/>
+        <KeyBinding Key="D" Command="{Binding ToggleDebugViewCommand}"/>
+        <KeyBinding Key="C" Command="{Binding ToggleCalibrationViewCommand}"/>
+        <KeyBinding Key="I" Command="{Binding ToggleInteractionVisualisationViewCommand}"/>
+    </Window.InputBindings>
+
+    <Grid
+        Width="500"
+        Margin="10 10">
+
+        <StackPanel>
+
+            <mah:MetroAnimatedTabControl>
+             
+                <mah:MetroTabItem 
+                    Header="Tracking">
+                    <views:TrackingView />
+                </mah:MetroTabItem>
+
+                <mah:MetroTabItem 
+                    Header="Filter">
+                    <views:FilterView/>
+                </mah:MetroTabItem>
+
+                <mah:MetroTabItem 
+                    Header="Processing">
+                    <views:TimerLoopView/>
+                </mah:MetroTabItem>
+
+                <mah:MetroTabItem 
+                    Header="Network">
+                    <views:ServerView/>
+                </mah:MetroTabItem>
+
+                <mah:MetroTabItem Header="Log">
+                    <views:LogView/>
+                </mah:MetroTabItem>
+
+            </mah:MetroAnimatedTabControl>
+
+            <StackPanel
+                Width="460"
+                Margin="0 20">
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Width="460">
+
+                    <ToggleButton         
+                        IsChecked="{Binding IsDebugViewVisible}"
+                        Content="{calc:Binding IsDebugViewVisible ? \'close Debug\' : \'show Debug\'}"
+                        Width="225"
+                        Margin="0 0 10 0">
+                    </ToggleButton>
+
+                    <ToggleButton         
+                        IsChecked="{Binding IsCalibrationViewVisible}"
+                        Content="{calc:Binding IsCalibrationViewVisible ? \'close Calibration\' : \'show Calibration\'}"
+                        Width="225">
+                    </ToggleButton>
+
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Width="460"
+                    Margin="0 10 0 0">
+
+                    <ToggleButton         
+                        IsChecked="{Binding IsInteractionVisualisationViewVisible}"
+                        Content="{calc:Binding IsInteractionVisualisationViewVisible ? \'close Interaction Vis\' : \'show Interaction Vis\'}"
+                        Width="225"
+                        Margin="0 0 10 0">
+                    </ToggleButton>
+
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Width="460"
+                    Margin="0 10 0 0">
+
+                    <ToggleButton         
+                        IsChecked="{Binding IsAutoStartEnabled}"
+                        Content="{calc:Binding IsAutoStartEnabled ? \'disable Autostart\' : \'enable Autostart\'}"
+                        Width="225"
+                        Margin="0 0 10 0">
+                    </ToggleButton>
+
+                    <Button 
+                        Command="{Binding TerminateApplicationCommand}"
+                        Style="{StaticResource MahApps.Styles.Button.Square}"
+                        Width="225">
+                        Close
+                    </Button>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+
+</mah:MetroWindow>
+
+
+

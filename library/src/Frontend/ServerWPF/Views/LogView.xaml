@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="ReFlex.Frontend.ServerWPF.Views.LogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:nLog="clr-namespace:NLog;assembly=NLog"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:template="clr-namespace:ReFlex.Frontend.ServerWPF.Template"
+             mc:Ignorable="d" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True" 
+             d:DataContext="{d:DesignInstance viewModels:LogViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ExtendedMessageDisplay" DataType="nLog:LogEventInfo">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="100" Text="Exception Info" FontWeight="Bold" Foreground="White"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Exception.Message}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding Exception.Data}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding Exception.StackTrace}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding Exception.InnerException}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="100" Text="Caller Info" FontWeight="Bold" Foreground="White"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding CallerClassName}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding CallerFilePath}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding CallerLineNumber}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding CallerMemberName}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="CallerInfo" DataType="nLog:LogEventInfo">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="100" Text="Caller Info" FontWeight="Bold" Foreground="White"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding CallerClassName}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding CallerFilePath}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding CallerLineNumber}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                        <TextBlock Text="{Binding CallerMemberName}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="DefaultLogDataTemplate" DataType="nLog:LogEventInfo">
+            <TextBlock Text="{Binding Message}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="Black" FontWeight="Bold"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DebugLogDataTemplate" DataType="nLog:LogEventInfo">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" Text="[Debug]" FontWeight="Bold" Foreground="LightGray"/>
+                <TextBlock Text="{Binding Message}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="LightGray"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="InfoLogDataTemplate" DataType="nLog:LogEventInfo">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" Text="[Info]" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="{Binding Message}" Width="350" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="ErrorLogDataTemplate" DataType="nLog:LogEventInfo">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="100" Text="[Error]" FontWeight="Bold" Foreground="DarkOrange"/>
+                    <TextBlock Text="{Binding FormattedMessage}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                </StackPanel>
+                <Expander Header="Details..." ContentTemplate="{StaticResource ExtendedMessageDisplay}">
+                    <Expander.Style>
+                        <Style TargetType="Expander">
+                            <Setter Property="Margin" Value="100,0,0,0"/>
+                            <Setter Property="Width" Value="{Binding ActualWidth, ElementName=LogViewer}"/>
+                        </Style>
+                    </Expander.Style>
+                </Expander>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="FatalLogDataTemplate" DataType="nLog:LogEventInfo">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="100" Text="[Fatal]" FontWeight="Bold" Foreground="Red"/>
+                    <TextBlock Text="{Binding FormattedMessage}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                </StackPanel>
+                <Expander Header="Details..." ContentTemplate="{StaticResource ExtendedMessageDisplay}">
+                    <Expander.Style>
+                        <Style TargetType="Expander">
+                            <Setter Property="Margin" Value="100,0,0,0"/>
+                            <Setter Property="Width" Value="{Binding ActualWidth, ElementName=LogViewer}"/>
+                        </Style>
+                    </Expander.Style>
+                </Expander>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="TraceLogDataTemplate" DataType="nLog:LogEventInfo">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="100" Text="[Trace]" FontWeight="Bold" Foreground="Gray"/>
+                <TextBlock Text="{Binding Message}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="Gray"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="WarnLogDataTemplate" DataType="nLog:LogEventInfo">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Width="100" Text="[Warn]" FontWeight="Bold" Foreground="DarkGoldenrod"/>
+                    <TextBlock Text="{Binding Message}" Margin="0" Padding="0" TextWrapping="Wrap" TextAlignment="Left" Foreground="White"/>
+                </StackPanel>
+                <Expander Header="Details..." ContentTemplate="{StaticResource CallerInfo}">
+                    <Expander.Style>
+                    <Style TargetType="Expander">
+                        <Setter Property="Margin" Value="100,0,0,0"/>
+                        <Setter Property="Width" Value="{Binding ActualWidth, ElementName=LogViewer}"/>
+                    </Style>
+                    </Expander.Style>
+                </Expander>
+            </StackPanel>
+        </DataTemplate>
+        <template:LogMessageDisplayTemplateSelector x:Key="LogMessageTemplateSelector"
+                                                    DefaultLogDataTemplate="{StaticResource DefaultLogDataTemplate}"        
+                                                    InfoLogDataTemplate="{StaticResource InfoLogDataTemplate}"
+                                                    DebugLogDataTemplate="{StaticResource DebugLogDataTemplate}"
+                                                    ErrorLogDataTemplate="{StaticResource ErrorLogDataTemplate}"
+                                                    FatalLogDataTemplate="{StaticResource FatalLogDataTemplate}"
+                                                    TraceLogDataTemplate="{StaticResource TraceLogDataTemplate}"
+                                                    WarnLogDataTemplate="{StaticResource WarnLogDataTemplate }"/>
+    </UserControl.Resources>
+    <Grid Height="364" Width="460">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" CanContentScroll="True" x:Name="LogViewer" Margin="-20,10,0,10">
+            <ListView ItemsSource="{Binding LogMessages}" x:Name="ListView" ItemTemplateSelector="{StaticResource LogMessageTemplateSelector}" Margin="0,0,0,0">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Margin" Value="0,0,-14,0"/>
+                        <Setter Property="Width" Value="{Binding ActualWidth, ElementName=LogViewer}"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
