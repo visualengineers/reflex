@@ -2,6 +2,10 @@
 library/export/Modules/*
 external/*
 
+## ignore rcordings
+
+**/*/wwwroot/recordings/*
+
 # Angular Cache
 .angular
 
@@ -477,3 +481,7 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+## re-include TrackingServer/Data/Log
+
+!**/*/ReFlex.TrackingServer/Data/Log
