@@ -1,5 +1,5 @@
 {
-  "executable": "TrackingServer",
+  "executable": "ReFlex.TrackingServer",
   "splashscreen": {
     "imageFile": "/wwwroot/splashscreen.jpg"
   },  
