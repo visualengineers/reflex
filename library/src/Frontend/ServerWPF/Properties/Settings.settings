@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ReFlex.Frontend.ServerWPF.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Threshold" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="LeftBorder" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">35</Value>
+    </Setting>
+    <Setting Name="RightBorder" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">485</Value>
+    </Setting>
+    <Setting Name="UpperBorder" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">35</Value>
+    </Setting>
+    <Setting Name="LowerBorder" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">355</Value>
+    </Setting>
+    <Setting Name="BoxFilterRadius" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="MinDistance" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">0.05</Value>
+    </Setting>
+    <Setting Name="MaxDistance" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">0.25</Value>
+    </Setting>
+    <Setting Name="Distance" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">0.75</Value>
+    </Setting>
+    <Setting Name="Calibration" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MinAngle" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="MinConfidence" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MaxConfidence" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="InputDistance" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="IntervalDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="Port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8080</Value>
+    </Setting>
+    <Setting Name="IsAutoStartEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ChosenCamera" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Microsoft© Kinect 2</Value>
+    </Setting>
+    <Setting Name="CalibrationStartX" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CalibrationStartY" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CalibrationSizeX" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1920</Value>
+    </Setting>
+    <Setting Name="CalibrationSizeY" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1080</Value>
+    </Setting>
+    <Setting Name="NetworkInterface" Type="ReFlex.Core.Networking.Util.NetworkInterface" Scope="User">
+      <Value Profile="(Default)">Websockets</Value>
+    </Setting>
+    <Setting Name="CameraConfiguration" Type="ReFlex.Core.Common.Util.StreamParameter" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="InteractionType" Type="ReFlex.Core.Common.Util.ObserverType" Scope="User">
+      <Value Profile="(Default)">SingleTouch</Value>
+    </Setting>
+    <Setting Name="EmulatorAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="EmulatorPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">40000</Value>
+    </Setting>
+    <Setting Name="EmulatorEndpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ReFlex</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
+

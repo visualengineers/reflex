@@ -1,0 +1,110 @@
+﻿<mah:MetroWindow x:Class="ReFlex.Frontend.ServerWPF.Views.InteractionVisualisationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:mvvm="http://prismlibrary.com/"
+
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+
+             Title="DSense.Debug" 
+             Icon="Icon_noText_TrackingServer256.ico"
+             Height="{Binding WindowHeight, Mode=TwoWay}" 
+             Width="{Binding WindowWidth, Mode=TwoWay}"
+             BorderThickness="0"
+             WindowStyle="{Binding WindowStyle}"
+             WindowState="{Binding WindowState}"
+             ShowTitleBar="{Binding IsTitleBarVisible}"
+             ShowIconOnTitleBar="{Binding IsTitleBarVisible}"
+             ShowCloseButton="{Binding IsTitleBarVisible}"
+             ShowMaxRestoreButton="{Binding IsTitleBarVisible}"
+             ShowMinButton="{Binding IsTitleBarVisible}"
+             d:DataContext="{d:DesignInstance viewModels:InteractionVisualisationViewModel}">
+
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding ToggleInteractionVisualisationViewCommand}"/>
+        <KeyBinding Key="F" Command="{Binding ToggleFullscreenCommand}"/>
+        <KeyBinding Gesture="Alt+Enter" Command="{Binding ToggleFullscreenCommand}"/>
+    </Window.InputBindings>
+
+    <Grid
+        Background="#FF1F1F1F"
+        Width="{Binding CanvasWidth}"
+        Height="{Binding CanvasHeight}"
+        VerticalAlignment="Top"
+        HorizontalAlignment="Left">
+
+        <Grid.RenderTransform>
+            <TranslateTransform 
+                X="{Binding Offset.X}"
+                Y="{Binding Offset.Y}" />
+        </Grid.RenderTransform>
+
+        <ItemsControl 
+            ItemsSource="{Binding Interactions}" 
+            Background="#FF1F1F1F">
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid>
+                        <Grid.RenderTransform>
+                            <TranslateTransform
+                                X="{Binding DisplayPosition.X}"
+                                Y="{Binding DisplayPosition.Y}" />
+                        </Grid.RenderTransform>
+
+                        <Ellipse
+                            Fill="Orange"
+                            Width="20"
+                            Height="20" 
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform 
+                                    X="-10"
+                                    Y="-10"/>
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    
+                        <TextBlock
+                            Text="{Binding PositionString}"
+                            Foreground="AliceBlue"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform 
+                                    X="-15"
+                                    Y="-30"/>
+                            </TextBlock.RenderTransform>
+
+                        </TextBlock>
+
+                    </Grid>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
+        <Rectangle
+                Width="{Binding CanvasWidth}"
+                Height="{Binding CanvasHeight}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Stroke="BlueViolet">
+        </Rectangle>
+
+    </Grid>
+
+</mah:MetroWindow>
+<!--X="{calc:Binding (Position.X * 1920) - 10}"-->

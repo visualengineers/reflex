@@ -1,0 +1,325 @@
+﻿<UserControl x:Class="ReFlex.Frontend.ServerWPF.Views.FilterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:viewModels="clr-namespace:ReFlex.Frontend.ServerWPF.ViewModels"
+
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             
+             d:DataContext="{d:DesignInstance viewModels:FilterViewModel}">
+
+    <Grid
+        Width="460">
+
+        <StackPanel
+            Margin="0 20">
+
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="140">
+                    Left- to Rightbound
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding LeftToRightBound}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding LeftBound}"
+                    UpperValue="{Binding RightBound}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="{Binding MaxWidth}"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="140">
+                    Upper- to Lowerbound
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding UpperToLowerBound}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding UpperBound}"
+                    UpperValue="{Binding LowerBound}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="{Binding MaxHeight}"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="140">
+                    Left- to Rightclipping
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding LeftToRightClipping}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding LeftClipping}"
+                    UpperValue="{Binding RightClipping}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="{Binding MonitorWidth}"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="140">
+                    Top- to Bottomclipping
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding TopToBottomClipping}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding TopClipping}"
+                    UpperValue="{Binding BottomClipping}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="{Binding MonitorHeight}"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <!-- Slider für Threshold des Thresholdfilters -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label 
+                    Width="140">
+                    Threshold
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding Threshold}">
+                </Label>
+                <Slider 
+                    Value="{Binding Threshold}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="1000"
+                    TickFrequency="10"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </Slider>
+
+            </StackPanel>
+
+            <!-- Slider für Radius des Boxblurs -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label 
+                    Width="140">
+                    Boxblur Radius
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding BoxFilterRadius}">
+                </Label>
+                <Slider 
+                    Value="{Binding BoxFilterRadius}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="100"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="0">
+                </Slider>
+
+            </StackPanel>
+
+            <!-- Slider für Distanz -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label 
+                    Width="140">
+                    Distance
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding Distance}">
+                </Label>
+                <Slider 
+                    Value="{Binding Distance}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="2"
+                    TickFrequency="0.01"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </Slider>
+
+            </StackPanel>
+
+            <!-- Slider für minimale und maximale Interaktionstiefe -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="140">
+                    Min to Max Distance
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding MinToMaxDistance}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding MinDistance}"
+                    UpperValue="{Binding MaxDistance}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="2"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <!-- Slider für minimalen Winkel des Multitouches -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label 
+                    Width="140">
+                    Min Angle
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding MinAngle}">
+                </Label>
+                <Slider 
+                    Value="{Binding MinAngle}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="2"
+                    TickFrequency="0.01"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="0">
+                </Slider>
+
+            </StackPanel>
+
+            <!-- Slider für minimale und maximale Confidence des Multitouches -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label
+                    Width="140">
+                    Min to Max Confidence
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding MinToMaxConfidence}">
+                </Label>
+                <mah:RangeSlider
+                    LowerValue="{Binding MinConfidence}"
+                    UpperValue="{Binding MaxConfidence}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="10"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </mah:RangeSlider>
+
+            </StackPanel>
+
+            <!-- Slider für input-Distanz -->
+            <StackPanel 
+                Orientation="Horizontal">
+
+                <Label 
+                    Width="140">
+                    Input Distance
+                </Label>
+                <Label 
+                    Width="120" 
+                    Content="{Binding InputDistance}">
+                </Label>
+                <Slider 
+                    Value="{Binding InputDistance}"
+                    Width="200"
+                    Minimum="0"
+                    Maximum="1000"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="2">
+                </Slider>
+
+            </StackPanel>
+
+            <StackPanel
+                Width="460"
+                Orientation="Horizontal">
+
+                <Button 
+                    Command="{Binding LoadSettingsCommand}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Width="150"
+                    Margin="0, 10, 5, 0">
+                    Load
+                </Button>
+
+                <Button 
+                    Command="{Binding SaveSettingsCommand}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Width="150"
+                    Margin="0, 10, 5, 0">
+                    Save
+                </Button>
+
+                <Button 
+                    Command="{Binding ResetSettingsCommand}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Width="150"
+                    Margin="0, 10, 0, 0">
+                    Reset
+                </Button>
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>
+
+
+
