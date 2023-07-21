@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csharp",
+        "dbaeumer.vscode-eslint",
+        "yzhang.markdown-all-in-one",
+        "esbenp.prettier-vscode",
+        "lucono.karma-test-explorer",
+        "formulahendry.dotnet-test-explorer"
+    ]
+}

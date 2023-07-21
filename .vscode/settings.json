@@ -1,0 +1,26 @@
+{
+    "csharp.unitTestDebuggingOptions": {
+    
+    },
+    "eslint.workingDirectories": [
+      "./tools/ReFlex.TrackingServer/ClientApp",
+    ],
+    "karmaTestExplorer.projectWorkspaces": [ "./tools/ReFlex.TrackingServer/ClientApp/" ],
+    "karmaTestExplorer.karmaConfFilePath": "./tools/ReFlex.TrackingServer/ClientApp/src/karma.conf.js",
+    "karmaTestExplorer.testFiles": [
+      "./**/*.spec.ts"
+    ],
+    "karmaTestExplorer.allowGlobalPackageFallback": false,
+    "karmaTestExplorer.autoWatchBatchDelay": 100,
+    "karmaTestExplorer.enableExtension": true,
+    "karmaTestExplorer.customLauncher": {
+
+      "base": "Chrome",
+      "flags": [
+        "--headless",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--remote-debugging-port=9222"
+      ]
+    }
+}

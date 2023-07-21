@@ -1,0 +1,110 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",    
+    "compounds": [
+        {
+            "name": ".NET Core & Chrome (Debug)",
+            "configurations": [
+                "Web Frontend - Angular",
+                "Server Backend - .NET Core (Debug)"
+            ]
+        },
+        {
+            "name": ".NET Core & Chrome (Release)",
+            "configurations": [
+                "Web Frontend - Angular",
+                "Server Backend - .NET Core (Release)"
+            ]
+        }
+    ],
+    "configurations": [    
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Web Frontend - Angular",
+            "preLaunchTask": "start trackingserver angular app",
+            "url": "https://localhost:5001",
+            "webRoot": "${workspaceFolder}/tools/ReFlex.TrackingServer/ClientApp",
+            "userDataDir": true
+        },
+        {
+            "name": "Start Emulator", 
+            "request": "launch",
+            "cwd": "${workspaceFolder}/examples/basic-angular",
+            "runtimeArgs": [
+                "run-script",
+                "start"
+            ],            
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",           
+            "console": "integratedTerminal",
+
+            "preLaunchTask": "open emulator"
+        },        
+        {
+            "name": "Server Backend - .NET Core (Debug)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build (Debug)",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Debug/net6.0/TrackingServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "neverOpen",
+            "externalConsole": true,
+            "launchBrowser": {
+                "enabled": false,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "development", 
+                "Platform": "x64"
+            },
+        },
+        {
+            "name": "Server Backend - .NET Core (Release)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build (Release)",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Release/net6.0/TrackingServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "neverOpen",
+            "externalConsole": true,
+            "launchBrowser": {
+                "enabled": false,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "production", 
+                "Platform": "x64"
+            },
+        }
+    ]
+}
