@@ -1,0 +1,58 @@
+<div class="content-panel">
+  <div class="content__element-narrow">
+    <div class="content__header margin-bottom-default">
+        <h2 class="heading-secondary">Options</h2>
+      </div>
+
+        <!-- Transport Protocol -->
+        <app-value-selection elementTitle="Filter Logs" elementId="log-filterSelect" 
+        class="settings__item margin-bottom-default">
+        <select selection [(ngModel)]="filterLevel" class="custom-select" data-enpassusermodified="yes"
+          name="log-filterSelect" id="log-filterSelect" (change)="filter()"
+          title="select filter for logs">
+          <option value="-1" selected="">all</option>
+          <option value="0">{{ getLogLevel(0) }}</option>
+          <option value="1">{{ getLogLevel(1) }}</option>
+          <option value="2">{{ getLogLevel(2) }}</option>
+          <option value="3">{{ getLogLevel(3) }}</option>
+          <option value="4">{{ getLogLevel(4) }}</option>
+          <option value="5">{{ getLogLevel(5) }}</option>
+          <option value="6">{{ getLogLevel(6) }}</option>
+        </select>
+        <div description>
+          Filter Log based on LogLevel.
+        </div>
+    </app-value-selection> 
+
+    <div class="content__buttons">
+        <button type="button" class="button" (click)="refresh()">Refresh</button>
+    </div>      
+</div>
+  <div class="content__element-wide">
+    <div class="content__header">
+      <h2 class="heading-secondary">Log</h2>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Message</th>
+            <th scope="col">LogLevel</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+            class="{{ getClass(message.level) }}"
+            *ngFor="let message of filteredMessages"
+            >
+            <th scope="row">{{ message.id }}</th>
+            <td class="text-column">
+                <div>{{ message.formattedMessage }}
+                </div>
+              </td>
+            <td>{{ getLogLevel(message.level) }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>    
+</div>

@@ -485,3 +485,4 @@ $RECYCLE.BIN/
 
 !**/*/ReFlex.TrackingServer/Data/Log
 !**/*/shared/log
+!**/*/src/app/log
