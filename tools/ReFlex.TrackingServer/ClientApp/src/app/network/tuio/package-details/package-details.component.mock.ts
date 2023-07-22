@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PackageDetailsComponent } from './package-details.component';
-import { TuioPackageDetails } from 'src/shared/data-formats/tuio-package-details';
+import { TuioPackageDetails } from '@reflex/shared-types';
 
 @Component({selector: 'app-package-details',  template: ''})
 export class MockPackageDetailsComponent implements Partial<PackageDetailsComponent> {
