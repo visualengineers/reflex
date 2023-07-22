@@ -2,14 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { SignalRBaseService } from './signalR.base.service';
-import { Interaction } from '../processing/interaction';
-import { Calibration } from '../config/calibration';
-import { FrameSizeDefinition } from '../config/frameSizeDefinition';
-import { CalibrationPoint } from '../config/calibrationPoint';
-import { CalibrationTransform } from '../config/calibrationTransform';
 import { concatMap, map } from 'rxjs/operators';
-import { Point3 } from '../tracking/point3';
-import { CompleteInteractionData } from '../interactions/complete-interaction.data';
 import { LogService } from 'src/app/log/log.service';
 
 @Injectable({

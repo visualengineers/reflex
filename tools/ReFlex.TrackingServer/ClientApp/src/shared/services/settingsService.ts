@@ -1,14 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { Configuration, DataFormats, TrackingServerAppSettings } from '@reflex/shared-types';
 import { Observable, Subject } from 'rxjs';
-import { Border } from '../config/border';
-import { ConfidenceParameter } from '../config/confidenceParameter';
-import { Distance } from '../config/distance';
-import { ExtremumDescriptionSettings } from '../config/extremumDescriptionSettings';
-import { FilterSettings } from '../config/filterSettings';
-import { SmoothingParameter } from '../config/smoothing-parameter';
-import { JsonSimpleValue } from '../data-formats/json-simple-value';
-import { TrackingServerAppSettings } from '../trackingServerAppSettings';
 
 @Injectable({
   providedIn: 'root'
@@ -62,85 +55,85 @@ export class SettingsService {
     this.http.get<TrackingServerAppSettings>(this.settingsRoute).subscribe((result) => this.settingsSubject.next(result));
   }
 
-  public setBorder(border: Border): Observable<Border> {
-    return this.http.post<Border>(this.setBorderRoute, border);
+  public setBorder(border: Configuration.Border): Observable<Configuration.Border> {
+    return this.http.post<Configuration.Border>(this.setBorderRoute, border);
   }
 
   public setMinDistanceFromSensor(distance: number): Observable<number> {
     return this.http.post<number>(this.setMinDistanceFromSensorRoute, distance);
   }
 
-  public setThreshold(threshold: number): Observable<JsonSimpleValue> {
-    return this.http.post<JsonSimpleValue>(this.setThresholdRoute, threshold);
+  public setThreshold(threshold: number): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.post<DataFormats.JsonSimpleValue>(this.setThresholdRoute, threshold);
   }
 
-  public setConfidence(confidence: ConfidenceParameter): Observable<ConfidenceParameter> {
-    return this.http.post<ConfidenceParameter>(this.setConfidenceRoute, confidence);
+  public setConfidence(confidence: Configuration.ConfidenceParameter): Observable<Configuration.ConfidenceParameter> {
+    return this.http.post<Configuration.ConfidenceParameter>(this.setConfidenceRoute, confidence);
   }
 
-  public setSmoothingValues(smoothing: SmoothingParameter): Observable<SmoothingParameter> {
-    return this.http.post<SmoothingParameter>(this.setSmoothingValuesRoute, smoothing);
+  public setSmoothingValues(smoothing: Configuration.SmoothingParameter): Observable<Configuration.SmoothingParameter> {
+    return this.http.post<Configuration.SmoothingParameter>(this.setSmoothingValuesRoute, smoothing);
   }
 
-  public setExtremumSettings(extremumSettings: ExtremumDescriptionSettings): Observable<ExtremumDescriptionSettings> {
-    return this.http.post<ExtremumDescriptionSettings>(this.setExtremumSettingsRoute, extremumSettings);
+  public setExtremumSettings(extremumSettings: Configuration.ExtremumDescriptionSettings): Observable<Configuration.ExtremumDescriptionSettings> {
+    return this.http.post<Configuration.ExtremumDescriptionSettings>(this.setExtremumSettingsRoute, extremumSettings);
   }
 
-  public setDistance(distance: Distance): Observable<Distance> {
-    return this.http.post<Distance>(this.setDistanceRoute, distance);
+  public setDistance(distance: Configuration.Distance): Observable<Configuration.Distance> {
+    return this.http.post<Configuration.Distance>(this.setDistanceRoute, distance);
   }
 
-  public setOptimizedBoxFilter(useOptimizedBoxFilter: boolean): Observable<JsonSimpleValue> {
-    const sValue: JsonSimpleValue = {
+  public setOptimizedBoxFilter(useOptimizedBoxFilter: boolean): Observable<DataFormats.JsonSimpleValue> {
+    const sValue: DataFormats.JsonSimpleValue = {
       name: 'UseOptimizedBoxFilter',
       value: useOptimizedBoxFilter
     };
 
-    return this.http.post<JsonSimpleValue>(`${this.setOptimizedBoxFilterRoute}`, sValue);
+    return this.http.post<DataFormats.JsonSimpleValue>(`${this.setOptimizedBoxFilterRoute}`, sValue);
   }
 
-  public setFilterRadius(filterRadius: number): Observable<JsonSimpleValue> {
-    return this.http.put<JsonSimpleValue>(`${this.setFilterRadiusRoute}/${filterRadius}`, '');
+  public setFilterRadius(filterRadius: number): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.put<DataFormats.JsonSimpleValue>(`${this.setFilterRadiusRoute}/${filterRadius}`, '');
   }
 
-  public setFilterPasses(filterPasses: number): Observable<JsonSimpleValue> {
-    return this.http.put<JsonSimpleValue>(`${this.setFilterPassesRoute}/${filterPasses}`, '');
+  public setFilterPasses(filterPasses: number): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.put<DataFormats.JsonSimpleValue>(`${this.setFilterPassesRoute}/${filterPasses}`, '');
   }
 
-  public setFilterThreads(filterThreads: number): Observable<JsonSimpleValue> {
-    return this.http.put<JsonSimpleValue>(`${this.setFilterThreadsRoute}/${filterThreads}`, '');
+  public setFilterThreads(filterThreads: number): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.put<DataFormats.JsonSimpleValue>(`${this.setFilterThreadsRoute}/${filterThreads}`, '');
   }
 
-  public setMinAngle(minAngle: number): Observable<JsonSimpleValue> {
-    return this.http.post<JsonSimpleValue>(this.setMinAngleRoute, minAngle);
+  public setMinAngle(minAngle: number): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.post<DataFormats.JsonSimpleValue>(this.setMinAngleRoute, minAngle);
   }
 
-  public setLimitationFilterType(filterSettings: FilterSettings): Observable<JsonSimpleValue> {
-    return this.http.post<JsonSimpleValue>(this.setLimitationFilterTypeRoute, filterSettings);
+  public setLimitationFilterType(filterSettings: Configuration.FilterSettings): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.post<DataFormats.JsonSimpleValue>(this.setLimitationFilterTypeRoute, filterSettings);
   }
 
-  public getCanRestore(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.canRestoreRoute);
+  public getCanRestore(): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.get<DataFormats.JsonSimpleValue>(this.canRestoreRoute);
   }
 
-  public getZeroPlaneDistance(): Observable<Distance> {
-    return this.http.get<Distance>(this.getZeroPlaneDistanceRoute);
+  public getZeroPlaneDistance(): Observable<Configuration.Distance> {
+    return this.http.get<Configuration.Distance>(this.getZeroPlaneDistanceRoute);
   }
 
-  public initializeAdvancedLimitationFilter(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.initializeAdvancedLimitationFilterRoute);
+  public initializeAdvancedLimitationFilter(): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.get<DataFormats.JsonSimpleValue>(this.initializeAdvancedLimitationFilterRoute);
   }
 
-  public resetAdvancedLimitationFilter(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.resetAdvancedLimitationFilterRoute);
+  public resetAdvancedLimitationFilter(): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.get<DataFormats.JsonSimpleValue>(this.resetAdvancedLimitationFilterRoute);
   }
 
-  public isLimitationFilterInitialized(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.limitationFilterInitStateRoute);
+  public isLimitationFilterInitialized(): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.get<DataFormats.JsonSimpleValue>(this.limitationFilterInitStateRoute);
   }
 
-  public isLimitationFilterInitializing(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.limitationFilterInitializingRoute);
+  public isLimitationFilterInitializing(): Observable<DataFormats.JsonSimpleValue> {
+    return this.http.get<DataFormats.JsonSimpleValue>(this.limitationFilterInitializingRoute);
   }
 
   public restore(): Observable<TrackingServerAppSettings> {

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
-import { ImageByteArray } from '../data-formats/image-byte-array';
+import { ImageByteArray } from '../../../../../../packages/reflex-shared-types/src/data-formats/image-byte-array';
 
 @Injectable({
   providedIn: 'root'

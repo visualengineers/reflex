@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build-complete": "npm run build --workspaces --if-present && npm run test && rm -rf dist && npm run lint && tsc -b",
+    "build:shared-types": "npm run build -w packages/reflex-shared-types",
+    "build:client": "npm run build -w tools/ReFlex.TrackingServer/ClientApp"
+  },
+  "workspaces": [
+    "tools/ReFlex.TrackingServer/ClientApp",
+    "packages/reflex-shared-types"
+  ],
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  }
+}

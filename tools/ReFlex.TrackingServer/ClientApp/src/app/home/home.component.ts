@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { DataFormats } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
-import { AppVersionInfo } from 'src/shared/data-formats/app-version-info';
 import { VersionInfoService } from 'src/shared/services/version.service';
 
 @Component({
@@ -9,10 +9,10 @@ import { VersionInfoService } from 'src/shared/services/version.service';
 })
 
 export class HomeComponent implements OnInit {
-  public serverLibs?: Observable<Array<AppVersionInfo>>;
-  public clientLibs?: Observable<Array<AppVersionInfo>>;
+  public serverLibs?: Observable<Array<DataFormats.AppVersionInfo>>;
+  public clientLibs?: Observable<Array<DataFormats.AppVersionInfo>>;
 
-  public appVersion?: Observable<AppVersionInfo>;
+  public appVersion?: Observable<DataFormats.AppVersionInfo>;
 
   public constructor(private readonly versionService: VersionInfoService) { }
 

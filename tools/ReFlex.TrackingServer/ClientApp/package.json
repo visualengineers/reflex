@@ -1,6 +1,7 @@
 {
-  "name": "trackingserver",
+  "name": "@reflex/trackingserver",
   "version": "0.9.8",
+  "description": "Platform-independent server application using ASP.NET Core as backend and Angular as frontend.",
   "main": "app.js",
   "scripts": {
     "ng": "ng",
@@ -20,6 +21,23 @@
     "lint-fix": "eslint . --fix",
     "e2e": "ng e2e"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "author": "Mathias Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  },
+  "homepage": "https://github.com/visualengineers/reflex#readme",
+  "keywords": [
+    "electron",
+    "sdk",
+    "dotnet-core",
+    "shape-changing-interfaces",
+    "elastic-displays"
+  ],
   "private": true,
   "dependencies": {
     "@angular/animations": "16.1.6",
@@ -32,6 +50,7 @@
     "@angular/platform-server": "16.1.6",
     "@angular/router": "16.1.6",
     "@microsoft/signalr": "^6.0.0",
+    "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
     "@types/d3": "^7.4.0",
     "d3": "^7.8.5",
     "rxjs": "^6.6.7",
@@ -66,8 +85,7 @@
     "karma-junit-reporter": "^2.0.1",
     "karma-spec-reporter": "^0.0.36",
     "karma-viewport": "^1.0.9",
-    "puppeteer": "^19.7.2",
-    "typescript": "^4.8.4"
+    "puppeteer": "^19.7.2"
   },
   "optionalDependencies": {
     "ts-node": "~8.4.1"

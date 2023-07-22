@@ -2,11 +2,9 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SignalRBaseService } from './signalR.base.service';
 import { fromEventPattern, Observable, using } from 'rxjs';
-import { JsonSimpleValue } from '../data-formats/json-simple-value';
-import { TuioConfiguration } from '../config/tuioConfiguration';
-import { TuioPackageDetails } from '../data-formats/tuio-package-details';
 import { concatMap, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
+import { Configuration, DataFormats } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +31,7 @@ export class TuioService extends SignalRBaseService<string> {
 
   private readonly saveTuioSettingsRoute = `${this.tuioRoute}Save`;
 
-  private readonly packages$: Observable<TuioPackageDetails>;
+  private readonly packages$: Observable<DataFormats.TuioPackageDetails>;
   private readonly startPackagesAfterConnected$: Observable<void>;
 
   public constructor(
@@ -44,7 +42,7 @@ export class TuioService extends SignalRBaseService<string> {
   ) {
     super(`${baseUrl}tuiohub`, 'tuioState', logService);
 
-    this.packages$ = fromEventPattern<TuioPackageDetails>(
+    this.packages$ = fromEventPattern<DataFormats.TuioPackageDetails>(
       (handler) => this.connection.on('currentPackage', handler),
       (handler) => this.connection.off('currentPackage', handler)
     )
@@ -59,7 +57,7 @@ export class TuioService extends SignalRBaseService<string> {
     );
   }
 
-  public getPackages(): Observable<TuioPackageDetails> {
+  public getPackages(): Observable<DataFormats.TuioPackageDetails> {
     return using(
       () => {
         this.startPackagesAfterConnected$.subscribe(() => {}, (error) => {
@@ -77,15 +75,15 @@ export class TuioService extends SignalRBaseService<string> {
     );
   }
 
-  public getIsBroadcasting(): Observable<HttpResponse<JsonSimpleValue>> {
-    return this.http.get<JsonSimpleValue>(
+  public getIsBroadcasting(): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    return this.http.get<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.getIsBroadcastingRoute,
       { observe: 'response' }
     );
   }
 
-  public getConfig(): Observable<TuioConfiguration> {
-    return this.http.get<TuioConfiguration>(
+  public getConfig(): Observable<Configuration.TuioConfiguration> {
+    return this.http.get<Configuration.TuioConfiguration>(
       this.baseUrl + this.getConfigurationRoute,
       { headers: this.headers }
     );
@@ -114,20 +112,20 @@ export class TuioService extends SignalRBaseService<string> {
 
   public setAddress(
     address: string
-  ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'Address', value: address };
+  ): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    const args: DataFormats.JsonSimpleValue = { name: 'Address', value: address };
 
-    return this.http.post<JsonSimpleValue>(
+    return this.http.post<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.setAddressRoute,
       args,
       { observe: 'response' }
     );
   }
 
-  public setPort(port: number): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'Port', value: port };
+  public setPort(port: number): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    const args: DataFormats.JsonSimpleValue = { name: 'Port', value: port };
 
-    return this.http.post<JsonSimpleValue>(
+    return this.http.post<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.setPortRoute,
       args,
       { observe: 'response' }
@@ -136,10 +134,10 @@ export class TuioService extends SignalRBaseService<string> {
 
   public setTransportProtocol(
     observerType: string
-  ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'TransportProtocol', value: observerType };
+  ): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    const args: DataFormats.JsonSimpleValue = { name: 'TransportProtocol', value: observerType };
 
-    return this.http.post<JsonSimpleValue>(
+    return this.http.post<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.selectTransportProtocolRoute,
       args,
       { observe: 'response' }
@@ -148,10 +146,10 @@ export class TuioService extends SignalRBaseService<string> {
 
   public setTuioProtocolVersion(
     observerType: string
-  ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'ProtocolVersion', value: observerType };
+  ): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    const args: DataFormats.JsonSimpleValue = { name: 'ProtocolVersion', value: observerType };
 
-    return this.http.post<JsonSimpleValue>(
+    return this.http.post<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.selectTuioProtocolRoute,
       args,
       { observe: 'response' }
@@ -160,26 +158,26 @@ export class TuioService extends SignalRBaseService<string> {
 
   public setTuioInterpretation(
     observerType: string
-  ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'TuioInterpretation', value: observerType };
+  ): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    const args: DataFormats.JsonSimpleValue = { name: 'TuioInterpretation', value: observerType };
 
-    return this.http.post<JsonSimpleValue>(
+    return this.http.post<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.selectTuioInterpretationRoute,
       args,
       { observe: 'response' }
     );
   }
 
-  public toggleBroadcasting(): Observable<HttpResponse<JsonSimpleValue>> {
-    return this.http.put<JsonSimpleValue>(
+  public toggleBroadcasting(): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    return this.http.put<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.toggleBroadcastRoute,
       { headers: this.headers },
       { observe: 'response' }
     );
   }
 
-  public saveSettings(): Observable<HttpResponse<JsonSimpleValue>> {
-    return this.http.put<JsonSimpleValue>(
+  public saveSettings(): Observable<HttpResponse<DataFormats.JsonSimpleValue>> {
+    return this.http.put<DataFormats.JsonSimpleValue>(
       this.baseUrl + this.saveTuioSettingsRoute,
       { headers: this.headers },
       { observe: 'response' }

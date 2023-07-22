@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppVersionInfo } from '../data-formats/app-version-info';
+import { AppVersionInfo } from '../../../../../../packages/reflex-shared-types/src/data-formats/app-version-info';
 
 @Injectable({
   providedIn: 'root'

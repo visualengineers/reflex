@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { SignalRBaseService } from './signalR.base.service';
 import { Interaction } from '../processing/interaction';
-import { JsonSimpleValue } from '../data-formats/json-simple-value';
+import { JsonSimpleValue } from '../../../../../../packages/reflex-shared-types/src/data-formats/json-simple-value';
 import { InteractionFrame } from '../processing/interaction-frame';
 import { InteractionHistory } from '../processing/interaction-history';
 import { LogService } from 'src/app/log/log.service';
