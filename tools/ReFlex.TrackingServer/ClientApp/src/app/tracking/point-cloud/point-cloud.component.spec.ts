@@ -9,16 +9,12 @@ import { PointCloudService } from 'src/shared/services/point-cloud.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { TrackingService } from 'src/shared/services/tracking.service';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { Point3 } from 'src/shared/tracking/point3';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 
 import { PointCloudComponent } from './point-cloud.component';
 import { MockValueSliderComponent } from 'src/app/elements/value-slider/value-slider.mock';
 import { MockOptionCheckboxComponent } from 'src/app/elements/option-checkbox/option-checkbox.component.mock';
 import { SettingsGroupComponent } from 'src/app/elements/settings-group/settings-group.component';
-import { Interaction } from 'src/shared/processing/interaction';
+import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingConfigState } from '@reflex/shared-types';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
   [

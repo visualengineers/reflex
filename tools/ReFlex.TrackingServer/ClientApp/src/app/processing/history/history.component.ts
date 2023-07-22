@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { InteractionFrame, InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { InteractionFrame } from 'src/shared/processing/interaction-frame';
-import { InteractionHistory } from 'src/shared/processing/interaction-history';
 import { ProcessingService } from 'src/shared/services/processing.service';
 
 @Component({

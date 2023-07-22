@@ -4,6 +4,7 @@ import { fromEventPattern, Observable, using } from 'rxjs';
 import { SignalRBaseService } from './signalR.base.service';
 import { concatMap, map } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
+import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, Point3 } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'

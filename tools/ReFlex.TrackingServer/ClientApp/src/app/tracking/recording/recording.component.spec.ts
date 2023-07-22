@@ -3,14 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
-import { CameraConfiguration } from 'src/shared/config/cameraConfiguration';
 import { RecordingService } from 'src/shared/services/recording.service';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { RecordingState } from 'src/shared/tracking/recordingState';
-import { RecordingStateUpdate } from 'src/shared/tracking/recordingStateUpdate';
-
 import { RecordingComponent } from './recording.component';
 import { MockValueTextComponent } from 'src/app/elements/value-text/value-text.component.mock';
+import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate } from '@reflex/shared-types';
 
 
 const recordingService = jasmine.createSpyObj<RecordingService>('fakeRecordingService', 

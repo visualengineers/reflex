@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppVersionInfo } from '../../../../../../packages/reflex-shared-types/src/data-formats/app-version-info';
 
 @Injectable({
   providedIn: 'root'

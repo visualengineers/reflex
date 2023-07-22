@@ -7,9 +7,6 @@ import { LogService } from '../log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { of } from 'rxjs';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
-import { RemoteProcessingServiceSettings } from 'src/shared/config/remote-processing-service-settings';
-import { RemoteProcessingAlgorithm } from 'src/shared/config/remote-processing-algorithm';
 import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
 import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
 import { MockValueSliderComponent } from '../elements/value-slider/value-slider.mock';
@@ -18,8 +15,7 @@ import { InteractionsVisualizationComponent } from './interactions-visualization
 import { MockHistoryVisualizationComponent } from './history-visualization/history-visualization.component.mock';
 import { MockHistoryComponent } from './history/history.component.mock';
 import { MockOptionCheckboxComponent } from '../elements/option-checkbox/option-checkbox.component.mock';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
+import { CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, RemoteProcessingAlgorithm, RemoteProcessingServiceSettings } from '@reflex/shared-types';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
   [

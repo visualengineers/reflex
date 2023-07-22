@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core';
+import { PerformanceDataItem } from '@reflex/shared-types';
 import * as d3 from 'd3';
-import { PerformanceDataItem } from 'src/shared/data-formats/performance-data-item';
 
 @Component({
   selector: 'app-performance-visualization',

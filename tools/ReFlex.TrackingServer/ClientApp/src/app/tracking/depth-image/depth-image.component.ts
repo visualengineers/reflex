@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { Tracking } from '@reflex/shared-types';
+import { DepthCameraState } from '@reflex/shared-types';
 import { BehaviorSubject, NEVER, Observable, Subscription, combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TrackingService } from 'src/shared/services/tracking.service';
@@ -47,7 +47,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
     const isTracking$ = this.trackingService.getStatus()
       .pipe(
-        map((status) => status.depthCameraStateName === DepthCameraState[Tracking.DepthCameraState.Streaming]),
+        map((status) => status.depthCameraStateName === DepthCameraState[DepthCameraState.Streaming]),
         distinctUntilChanged()
       );
 

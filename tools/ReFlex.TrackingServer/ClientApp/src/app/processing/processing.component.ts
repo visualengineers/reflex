@@ -1,19 +1,13 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
-import { ObserverType } from 'src/shared/config/observerType';
-import { ProcessingSettings } from 'src/shared/config/processingSettings';
-import { RemoteProcessingServiceSettings } from 'src/shared/config/remote-processing-service-settings';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { Interaction } from 'src/shared/processing/interaction';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
-import { TrackingServerAppSettings } from 'src/shared/trackingServerAppSettings';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 import { LogService } from '../log/log.service';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { InteractionsComponent } from './interactions/interactions.component';
+import { CompleteInteractionData, DEFAULT_SETTINGS, Interaction, ObserverType, ProcessingSettings, RemoteProcessingServiceSettings, TrackingServerAppSettings } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-processing',

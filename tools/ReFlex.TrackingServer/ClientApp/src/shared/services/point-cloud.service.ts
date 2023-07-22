@@ -3,7 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, from, fromEventPattern, Observable, using } from 'rxjs';
 import { concatMap, filter, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { Point3 } from 'src/shared/tracking/point3';
+import { Point3 } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'

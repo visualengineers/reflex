@@ -1,11 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
 import { Observable } from 'rxjs';
-import { IDepthCamera } from 'src/shared/tracking/depthCamera';
-import { CameraConfiguration } from 'src/shared/config/cameraConfiguration';
 import { SignalRBaseService } from './signalR.base.service';
 import { LogService } from 'src/app/log/log.service';
+import { CameraConfiguration, DepthCamera, TrackingConfigState } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
@@ -30,12 +28,12 @@ export class TrackingService extends SignalRBaseService<TrackingConfigState> {
     super(`${baseUrl}trkhub`, 'trackingState', logService);
   }
 
-  public getCameras(): Observable<Array<IDepthCamera>> {
-    return this.http.get<Array<IDepthCamera>>(this.baseUrl + this.cameraRoute);
+  public getCameras(): Observable<Array<DepthCamera>> {
+    return this.http.get<Array<DepthCamera>>(this.baseUrl + this.cameraRoute);
   }
 
-  public getSelectedCamera(): Observable<IDepthCamera> {
-    return this.http.get<IDepthCamera>(this.baseUrl + this.selectedCameraRoute);
+  public getSelectedCamera(): Observable<DepthCamera> {
+    return this.http.get<DepthCamera>(this.baseUrl + this.selectedCameraRoute);
   }
 
   public getSelectedCameraConfig(): Observable<CameraConfiguration> {

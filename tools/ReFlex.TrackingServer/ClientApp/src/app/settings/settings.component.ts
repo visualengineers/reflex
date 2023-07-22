@@ -5,8 +5,8 @@ import { Subscription, combineLatest, interval } from 'rxjs';
 import { LogService } from '../log/log.service';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
-import { DEFAULT_SETTINGS, DataFormats, Configuration, Tracking, TrackingServerAppSettings } from '@reflex/shared-types';
 import { switchMap } from 'rxjs/operators';
+import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-settings',
@@ -22,33 +22,33 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public isCurrentlyInitializingLimitationFilter = false;
   public isLimitationFilterInitialized = false;
 
-  public performanceDataFilter: DataFormats.PerformanceData = { data: [] };
-  public performanceDataProcess: DataFormats.PerformanceData = { data: [] };
+  public performanceDataFilter: PerformanceData = { data: [] };
+  public performanceDataProcess: PerformanceData = { data: [] };
 
-  public performanceDataFilterVis: Array<DataFormats.PerformanceDataItem> = [];
-  public performanceDataProcessingVis: Array<DataFormats.PerformanceDataItem> = [];
+  public performanceDataFilterVis: Array<PerformanceDataItem> = [];
+  public performanceDataProcessingVis: Array<PerformanceDataItem> = [];
 
   public performanceDataFilterGroups = ['limitationFilter', 'valueFilter', 'thresholdFilter', 'boxFilter', 'updatePointCloud'];
   public performanceDataProcessingGroups = ['processingPreparation', 'processingUpdate', 'processingConvert', 'processingSmoothing', 'processingExtremum'];
 
-  public filters: Array<DataFormats.JsonSimpleValue> = Object.values(Configuration.FilterType)
+  public filters: Array<JsonSimpleValue> = Object.values(FilterType)
     .filter((k) => k === Number(k))
     .map((x) => (
-      { name: Configuration.FilterType[Number(x)], value: x }));
+      { name: FilterType[Number(x)], value: x }));
 
   public selectedFilterIdx = -1;
 
-  public limitationFilters: Array<DataFormats.JsonSimpleValue> = Object.values(Configuration.LimitationFilterType)
+  public limitationFilters: Array<JsonSimpleValue> = Object.values(LimitationFilterType)
     .filter((k) => k === Number(k))
     .map((x) => (
-      { name: Configuration.LimitationFilterType[Number(x)], value: x }));
+      { name: LimitationFilterType[Number(x)], value: x }));
 
   public selectedLimitationFilterIdx = -1;
 
-  public checks: Array<DataFormats.JsonSimpleValue> = Object.values(Configuration.ExtremumTypeCheckMethod)
+  public checks: Array<JsonSimpleValue> = Object.values(ExtremumTypeCheckMethod)
     .filter((k) => k === Number(k))
     .map((x) => (
-      { name: Configuration.ExtremumTypeCheckMethod[Number(x)], value: x }));
+      { name: ExtremumTypeCheckMethod[Number(x)], value: x }));
 
   public selectedExtremumCheckIdx = -1;
 
@@ -57,9 +57,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private performanceSubscription?: Subscription;
   private limitationFilterStatePolling?: Subscription;
 
-  private _selectedFilterType: Configuration.FilterType = Configuration.FilterType.None;
-  private _selectedLimitationFilterType: Configuration.LimitationFilterType = Configuration.LimitationFilterType.LimitationFilter;
-  private _selectedCheckType: Configuration.ExtremumTypeCheckMethod = Configuration.ExtremumTypeCheckMethod.Global;
+  private _selectedFilterType: FilterType = FilterType.None;
+  private _selectedLimitationFilterType: LimitationFilterType = LimitationFilterType.LimitationFilter;
+  private _selectedCheckType: ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
 
   public constructor(
     // eslint-disable-next-line new-cap
@@ -86,7 +86,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     this.trackingStatusSubscription = this.trackingService.getStatus()
       .subscribe((result) => {
-        this.isTrackingActive = result.depthCameraStateName === Tracking.DepthCameraState[Tracking.DepthCameraState.Streaming];
+        this.isTrackingActive = result.depthCameraStateName === DepthCameraState[DepthCameraState.Streaming];
       }, (error) => {
         console.error(error);
         this.logService.sendErrorLog(`${error}`);
@@ -337,7 +337,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.selectedFilterIdx <= 0 || this.selectedFilterIdx >= this.filters.length) {
       this._selectedFilterType = FilterType.None;
     } else {
-      this._selectedFilterType = this.selectedFilterIdx as Configuration.FilterType;
+      this._selectedFilterType = this.selectedFilterIdx as FilterType;
     }
 
     this.settings.filterSettingValues.smoothingValues.type = this._selectedFilterType;
@@ -348,9 +348,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public saveLimitationFilterType(): void {
 
     if (this.selectedLimitationFilterIdx <= 0 || this.selectedLimitationFilterIdx >= this.limitationFilters.length) {
-      this._selectedLimitationFilterType = Configuration.LimitationFilterType.LimitationFilter;
+      this._selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
     } else {
-      this._selectedLimitationFilterType = this.selectedLimitationFilterIdx as Configuration.LimitationFilterType;
+      this._selectedLimitationFilterType = this.selectedLimitationFilterIdx as LimitationFilterType;
     }
 
     this.settings.filterSettingValues.limitationFilterType = this._selectedLimitationFilterType;
@@ -389,7 +389,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     fileReader.readAsText(file);
   }
 
-  private processPerformanceData(data: DataFormats.PerformanceData): void {
+  private processPerformanceData(data: PerformanceData): void {
 
     data.data.forEach((elem) => {
 

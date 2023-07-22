@@ -4,11 +4,8 @@ import { HistoryComponent } from './history.component';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { LogService } from 'src/app/log/log.service';
 import { of, throwError } from 'rxjs';
-import { Interaction } from 'src/shared/processing/interaction';
-import { InteractionFrame } from 'src/shared/processing/interaction-frame';
-import { InteractionHistory } from 'src/shared/processing/interaction-history';
-import { InteractionHistoryElement } from 'src/shared/processing/interaction-history-element';
 import { MockSettingsGroupComponent } from 'src/app/elements/settings-group/settings-group.component.mock';
+import { Interaction, InteractionFrame, InteractionHistory, InteractionHistoryElement } from '@reflex/shared-types';
 
 const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingCloudService',
   [

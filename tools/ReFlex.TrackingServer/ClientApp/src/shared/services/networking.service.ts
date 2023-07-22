@@ -2,9 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SignalRBaseService } from './signalR.base.service';
 import { Observable } from 'rxjs';
-import { JsonSimpleValue } from '../../../../../../packages/reflex-shared-types/src/data-formats/json-simple-value';
-import { NetworkAttributes } from '../../../../../../packages/reflex-shared-types/src/data-formats/network-attributes';
 import { LogService } from 'src/app/log/log.service';
+import { JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'

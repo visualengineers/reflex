@@ -1,11 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
-import { RecordingStateUpdate } from '../tracking/recordingStateUpdate';
-import { TrackingConfigState } from '../tracking/trackingConfigState';
 import { SignalRBaseService } from './signalR.base.service';
-import { CameraConfiguration } from '../config/cameraConfiguration';
 import { LogService } from 'src/app/log/log.service';
+import { CameraConfiguration, RecordingStateUpdate, TrackingConfigState } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'

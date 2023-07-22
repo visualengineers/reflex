@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { NetworkInterface } from 'src/shared/config/networkInterface';
-import { NetworkSettings } from 'src/shared/config/networkSettings';
 import { NetworkingService } from 'src/shared/services/networking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
+import { NetworkInterface, NetworkSettings } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-network',

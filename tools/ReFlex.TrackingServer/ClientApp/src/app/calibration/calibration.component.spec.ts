@@ -8,15 +8,10 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { CalibrationTransform } from 'src/shared/config/calibrationTransform';
-import { CalibrationPoint } from 'src/shared/config/calibrationPoint';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
 import { By } from '@angular/platform-browser';
-import { Interaction } from 'src/shared/processing/interaction';
+import { CalibrationPoint, CalibrationTransform, CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
   [

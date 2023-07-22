@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { TuioPackageDetails } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
-import { TuioPackageDetails } from 'src/shared/data-formats/tuio-package-details';
 import { TuioService } from 'src/shared/services/tuio.service';
 
 @Component({
