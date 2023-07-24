@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
 import { LogComponent } from './log.component';
 import { LogService } from './log.service';
 import { of, throwError } from 'rxjs';
