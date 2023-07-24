@@ -1,14 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { Border, ConfidenceParameter, Distance, ExtremumDescriptionSettings, FilterSettings, JsonSimpleValue, SmoothingParameter, TrackingServerAppSettings } from '@reflex/shared-types';
 import { Observable, Subject } from 'rxjs';
-import { Border } from '../config/border';
-import { ConfidenceParameter } from '../config/confidenceParameter';
-import { Distance } from '../config/distance';
-import { ExtremumDescriptionSettings } from '../config/extremumDescriptionSettings';
-import { FilterSettings } from '../config/filterSettings';
-import { SmoothingParameter } from '../config/smoothing-parameter';
-import { JsonSimpleValue } from '../data-formats/json-simple-value';
-import { TrackingServerAppSettings } from '../trackingServerAppSettings';
 
 @Injectable({
   providedIn: 'root'

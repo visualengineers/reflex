@@ -1,13 +1,8 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CompleteInteractionData, ElementPosition, ExtremumDescription, ExtremumType, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { ExtrmumDescription } from 'src/shared/processing/extremumDescription';
-import { ExtremumType } from 'src/shared/processing/extremumType';
-import { Interaction } from 'src/shared/processing/interaction';
 import { CalibrationService } from 'src/shared/services/calibration.service';
-import { ElementPosition } from 'src/shared/util/element-position.interface';
 
 @Component({
   selector: 'app-interactions-visualization',
@@ -89,7 +84,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  public getClass(extremum: ExtrmumDescription): string {
+  public getClass(extremum: ExtremumDescription): string {
     const extremumDef = extremum.type;
 
     if (extremumDef === ExtremumType.Undefined) {

@@ -1,4 +1,5 @@
-import { RecordingState } from './recordingState';
+import { RecordingState } from './recording-state';
+
 export interface RecordingStateUpdate {
   state: RecordingState;
   framesRecorded: number;

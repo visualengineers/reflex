@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
-import { AppVersionInfo } from 'src/shared/data-formats/app-version-info';
 import { VersionInfoService } from 'src/shared/services/version.service';
 
 @Component({

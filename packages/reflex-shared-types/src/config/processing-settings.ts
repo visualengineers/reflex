@@ -1,4 +1,4 @@
-import { ObserverType } from './observerType';
+import { ObserverType } from './observer-type';
 
 export interface ProcessingSettings {
 

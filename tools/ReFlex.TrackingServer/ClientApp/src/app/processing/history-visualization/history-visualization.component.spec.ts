@@ -2,11 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HistoryVisualizationComponent } from './history-visualization.component';
 import { LogService } from 'src/app/log/log.service';
-import { Interaction } from 'src/shared/processing/interaction';
-import { InteractionHistory } from 'src/shared/processing/interaction-history';
-import { InteractionHistoryElement } from 'src/shared/processing/interaction-history-element';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { of, throwError } from 'rxjs';
+import { Interaction, InteractionHistory, InteractionHistoryElement } from '@reflex/shared-types';
 
 const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingService',
   [

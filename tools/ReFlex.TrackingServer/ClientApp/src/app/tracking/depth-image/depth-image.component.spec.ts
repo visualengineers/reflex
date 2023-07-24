@@ -6,10 +6,9 @@ import { of, Subject } from 'rxjs';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { WebSocketService } from 'src/shared/services/webSocket.service';
 import { WebSocketServiceMock } from 'src/shared/services/webSocket.service.mock';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
 
 import { DepthImageComponent } from './depth-image.component';
+import { DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
   [

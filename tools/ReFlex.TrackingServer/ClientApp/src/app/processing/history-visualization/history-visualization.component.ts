@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { InteractionHistory } from 'src/shared/processing/interaction-history';
 import { ProcessingService } from 'src/shared/services/processing.service';
 
 @Component({

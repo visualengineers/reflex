@@ -2,11 +2,9 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SignalRBaseService } from './signalR.base.service';
 import { fromEventPattern, Observable, using } from 'rxjs';
-import { JsonSimpleValue } from '../data-formats/json-simple-value';
-import { TuioConfiguration } from '../config/tuioConfiguration';
-import { TuioPackageDetails } from '../data-formats/tuio-package-details';
 import { concatMap, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
+import { JsonSimpleValue, TuioConfiguration, TuioPackageDetails } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'

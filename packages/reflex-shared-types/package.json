@@ -1,0 +1,28 @@
+{
+  "name": "@reflex/shared-types",
+  "version": "0.9.8",
+  "description": "common types for reuse between typescript projects",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "keywords": [
+    "elastic-displays",
+    "shape-changing",
+    "interfaces",
+    "typescript",
+    "package"
+  ],
+  "author": "Mathias Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  },
+  "homepage": "https://github.com/visualengineers/reflex#readme"
+}

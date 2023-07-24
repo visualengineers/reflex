@@ -3,12 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { InteractionsVisualizationComponent } from './interactions-visualization.component';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from 'src/app/log/log.service';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
 import { of, throwError } from 'rxjs';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 import { FormsModule } from '@angular/forms';
 import { MockHistoryVisualizationComponent } from '../history-visualization/history-visualization.component.mock';
+import { CompleteInteractionData, FrameSizeDefinition } from '@reflex/shared-types';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [

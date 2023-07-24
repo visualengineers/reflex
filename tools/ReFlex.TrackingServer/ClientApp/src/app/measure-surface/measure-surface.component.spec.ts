@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MeasureSurfaceComponent } from './measure-surface.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
 import { of, throwError } from 'rxjs';
 import { MockMeasureControlsComponent } from './measure-controls/measure-control.component.mock';
 import { MeasureGridComponent } from './measure-grid/measure-grid.component';
+import { FrameSizeDefinition } from '@reflex/shared-types';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
   [

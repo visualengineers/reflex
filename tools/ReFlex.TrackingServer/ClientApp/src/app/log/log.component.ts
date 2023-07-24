@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LogMessageDetail } from 'src/shared/log/logMessageDetail';
 import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from './log.service';
-import { LogLevel } from 'src/shared/log/logLevel';
+import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-log',

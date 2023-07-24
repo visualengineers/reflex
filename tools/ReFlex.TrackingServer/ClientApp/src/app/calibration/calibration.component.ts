@@ -3,18 +3,11 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import { catchError, concatMap, startWith, switchMap, tap } from 'rxjs/operators';
-import { Calibration } from 'src/shared/config/calibration';
-import { CalibrationPoint } from 'src/shared/config/calibrationPoint';
-import { CalibrationTransform } from 'src/shared/config/calibrationTransform';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { Interaction } from 'src/shared/processing/interaction';
-import { InteractionType } from 'src/shared/processing/interaction-type';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
-import { Point3 } from 'src/shared/tracking/point3';
 import { LogService } from '../log/log.service';
+import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, InteractionType, Point3 } from '@reflex/shared-types';
 
 export interface TransformString {
   transform: string;

@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PackageDetailsComponent } from './package-details.component';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
-import { TuioPackageDetails } from 'src/shared/data-formats/tuio-package-details';
 import { of, throwError } from 'rxjs';
+import { TuioPackageDetails } from '@reflex/shared-types';
 
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService', 

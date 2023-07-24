@@ -1,13 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
 import { TrackingService } from '../../shared/services/tracking.service';
-import { IDepthCamera } from 'src/shared/tracking/depthCamera';
-import { CameraConfiguration } from 'src/shared/config/cameraConfiguration';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { mergeMap, tap } from 'rxjs/operators';
+import { CameraConfiguration, DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-tracking',
@@ -16,7 +13,7 @@ import { mergeMap, tap } from 'rxjs/operators';
 })
 export class TrackingComponent implements OnInit, OnDestroy {
 
-  public cameras = new Array<IDepthCamera>();
+  public cameras = new Array<DepthCamera>();
   public configurations = new Array<CameraConfiguration>();
 
   public selectedCameraIdx = -1;
@@ -188,7 +185,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.displayDepthImage = !fullscreen;
   }
 
-  private updateSelectedCamera(selectedCam: IDepthCamera): void {
+  private updateSelectedCamera(selectedCam: DepthCamera): void {
     this.selectedCameraIdx = selectedCam === null ? -1 : this.cameras.map((cam) => cam.id).indexOf(selectedCam.id);
 
     this.updateConfigurations();

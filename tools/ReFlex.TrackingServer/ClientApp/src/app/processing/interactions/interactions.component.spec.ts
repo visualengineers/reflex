@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { InteractionsComponent } from './interactions.component';
 import { DatePipe } from '@angular/common';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { Interaction } from 'src/shared/processing/interaction';
+import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 
 describe('InteractionsComponent', () => {
   let component: InteractionsComponent;

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FrameSizeDefinition } from 'src/shared/config/frameSizeDefinition';
 import { CalibrationService } from 'src/shared/services/calibration.service';
-import { ElementPosition } from 'src/shared/util/element-position.interface';
 import { LogService } from '../log/log.service';
+import { ElementPosition, FrameSizeDefinition } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-measure-surface',

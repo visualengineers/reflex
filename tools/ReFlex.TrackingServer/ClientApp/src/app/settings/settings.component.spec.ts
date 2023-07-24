@@ -7,15 +7,12 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 import { of } from 'rxjs';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { PerformanceData } from 'src/shared/data-formats/performance-data';
 import { MockValueSliderComponent } from '../elements/value-slider/value-slider.mock';
 import { MockOptionCheckboxComponent } from '../elements/option-checkbox/option-checkbox.component.mock';
 import { MockSettingsGroupComponent } from '../elements/settings-group/settings-group.component.mock';
 import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
+import { DEFAULT_SETTINGS, DepthCameraState, PerformanceData, TrackingConfigState } from '@reflex/shared-types';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
   [

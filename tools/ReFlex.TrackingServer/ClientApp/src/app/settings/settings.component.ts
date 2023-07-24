@@ -1,20 +1,12 @@
 /* eslint-disable max-lines */
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { TrackingServerAppSettings } from 'src/shared/trackingServerAppSettings';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription, combineLatest, interval } from 'rxjs';
-import { FilterType } from 'src/shared/config/filter-type';
-import { JsonSimpleValue } from 'src/shared/data-formats/json-simple-value';
 import { LogService } from '../log/log.service';
 import { TrackingService } from 'src/shared/services/tracking.service';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { ExtremumTypeCheckMethod } from 'src/shared/config/extremumTypeCheckMethod';
-import { LimitationFilterType } from 'src/shared/config/limitationFilterType';
 import { PerformanceService } from 'src/shared/services/performance.service';
-import { PerformanceData } from 'src/shared/data-formats/performance-data';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 import { switchMap } from 'rxjs/operators';
-import { PerformanceDataItem } from 'src/shared/data-formats/performance-data-item';
+import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-settings',

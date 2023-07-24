@@ -2,12 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { SettingsService } from 'src/shared/services/settingsService';
-import { TuioConfiguration } from 'src/shared/config/tuioConfiguration';
-import { ProtocolVersion } from 'src/shared/config/protocolVersion';
-import { TransportProtocol } from 'src/shared/config/transportProtocol';
-import { TuioInterpretation } from 'src/shared/config/tuioInterpretation';
 import { Subscription } from 'rxjs';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
+import { DEFAULT_SETTINGS, ProtocolVersion, TransportProtocol, TuioConfiguration, TuioInterpretation } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-tuio',

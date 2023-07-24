@@ -5,9 +5,6 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { of, throwError } from 'rxjs';
-import { IDepthCamera } from 'src/shared/tracking/depthCamera';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
 import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
 import { FormsModule } from '@angular/forms';
 import { MockDepthImageComponent } from './depth-image/depth-image.component.mock';
@@ -16,6 +13,7 @@ import { MockRecordingComponent } from './recording/recording.component.mock';
 import { MockSettingsComponent } from '../settings/settings.component.mock';
 import { By } from '@angular/platform-browser';
 import { ValueSelectionComponent } from '../elements/value-selection/value-selection.component';
+import { DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
     [
@@ -41,7 +39,7 @@ const trackingService_error = jasmine.createSpyObj<TrackingService>('fakeTrackin
     'setAutostartEnabled'
   ]);
 
-const camera0: IDepthCamera = {
+const camera0: DepthCamera = {
   id: '0',
   modelDescription: 'ZERO',
   state: DepthCameraState.Disconnected,
@@ -53,7 +51,7 @@ const camera0: IDepthCamera = {
   }
 };
 
-const camera1: IDepthCamera = {
+const camera1: DepthCamera = {
   id: '1',
   modelDescription: 'TestCamera',
   state: DepthCameraState.Streaming,
@@ -65,7 +63,7 @@ const camera1: IDepthCamera = {
   }
 };
 
-const camera2: IDepthCamera = {
+const camera2: DepthCamera = {
   id: '2',
   modelDescription: 'AnotherCam',
   state: DepthCameraState.Connected,

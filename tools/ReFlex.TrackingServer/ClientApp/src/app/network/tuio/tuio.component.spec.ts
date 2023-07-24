@@ -4,16 +4,14 @@ import { TuioComponent } from './tuio.component';
 import { LogService } from 'src/app/log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { TuioService } from 'src/shared/services/tuio.service';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 import { of } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { JsonSimpleValue } from 'src/shared/data-formats/json-simple-value';
 import { MockPanelHeaderComponent } from 'src/app/elements/panel-header/panel-header.component.mock';
 import { MockValueSelectionComponent } from 'src/app/elements/value-selection/value-selection.component.mock';
 import { MockValueTextComponent } from 'src/app/elements/value-text/value-text.component.mock';
 import { FormsModule } from '@angular/forms';
-import { PackageDetailsComponent } from './package-details/package-details.component';
 import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
+import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
   [

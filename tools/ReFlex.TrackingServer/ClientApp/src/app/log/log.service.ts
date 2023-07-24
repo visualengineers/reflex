@@ -2,8 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { concatMap, tap, catchError } from 'rxjs/operators';
-import { LogMessageDetail } from 'src/shared/log/logMessageDetail';
-import { JsonSimpleValue } from 'src/shared/data-formats/json-simple-value';
+import { JsonSimpleValue, LogMessageDetail } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'

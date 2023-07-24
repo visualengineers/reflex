@@ -1,13 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate, TrackingConfigState } from '@reflex/shared-types';
 import { of, Subscription } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { CameraConfiguration } from 'src/shared/config/cameraConfiguration';
 import { RecordingService } from 'src/shared/services/recording.service';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { RecordingState } from 'src/shared/tracking/recordingState';
-import { RecordingStateUpdate } from 'src/shared/tracking/recordingStateUpdate';
-import { TrackingConfigState } from 'src/shared/tracking/trackingConfigState';
 
 @Component({
   selector: 'app-recording',

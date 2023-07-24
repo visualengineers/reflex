@@ -1,4 +1,4 @@
-import { ExtremumTypeCheckMethod } from './extremumTypeCheckMethod';
+import { ExtremumTypeCheckMethod } from './extremum-type-check-method';
 
 export interface ExtremumDescriptionSettings {
   numSamples: number;

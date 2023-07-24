@@ -2,8 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed, waitForAsync } from "@angular/core/testing";
 import { LogService } from "./log.service";
-import { LogLevel } from "src/shared/log/logLevel";
-import { LogMessageDetail } from 'src/shared/log/logMessageDetail'
+import { LogLevel, LogMessageDetail } from "@reflex/shared-types";
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;

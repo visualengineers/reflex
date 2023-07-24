@@ -6,16 +6,14 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { NetworkingService } from 'src/shared/services/networking.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
 import { of, throwError } from 'rxjs';
 import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
 import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
 import { MockValueTextComponent } from '../elements/value-text/value-text.component.mock';
 import { MockValueSliderComponent } from '../elements/value-slider/value-slider.mock';
 import { MockTuioComponent } from './tuio/tuio.component.mock';
-import { NetworkAttributes } from 'src/shared/data-formats/network-attributes';
-import { JsonSimpleValue } from 'src/shared/data-formats/json-simple-value';
 import { HttpResponse } from '@angular/common/http';
+import { DEFAULT_SETTINGS, JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
 
 const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
   [

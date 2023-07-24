@@ -1,4 +1,4 @@
-import { Interaction } from '../processing/interaction';
+import { Interaction } from './interaction';
 
 export interface CompleteInteractionData {
   raw: Array<Interaction>;

@@ -1,5 +1,5 @@
 import { Point3 } from '../tracking/point3';
-import { ExtrmumDescription as ExtremumDescription } from './extremumDescription';
+import { ExtremumDescription as ExtremumDescription } from './extremum-description';
 import { InteractionType } from './interaction-type';
 
 export interface Interaction {

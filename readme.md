@@ -21,8 +21,9 @@ TrackingServer: Build Electron App (Win)
 1. [Documentation](#documentation)
 2. [Repository structure](#repository-structure)
 3. [External Dependencies](#external-dependencies)
-4. [ReFlex.TrackingServer](#reflextrackingserver)
-5. [CI](#ci)
+4. [use shared code](#use-shared-code)
+5. [ReFlex.TrackingServer](#reflextrackingserver)
+6. [CI](#ci)
 
 ## Documentation
 
@@ -38,9 +39,21 @@ TrackingServer: Build Electron App (Win)
 | `examples` | Templates and Plugins (`Angular`, `Vue.js`, `React`, `Unreal Engine 5`, `Unity`. `.NET`)      |
 | `external` | Place for external libraries, if needed (see [External Dependencies](#external-dependencies)) |
 | `library`  | `ReFlex` .NET library                                                                         |
+| `packages` | Shared Typescript code between applications (see (#use-shared-code))                          |
 | `services` | Micro services for extending server capabilities                                              |
 | `test`     | Test projects, test artifacts, `Insomnia` workspace                                           |
 | `tools`    | Developer Tools and Server application                                                        |
+
+### NPM workspaces
+
+The repository uses NPM workspaces for better management of dependencies
+
+Therefore, the repository should be initialized in the root folder by running the command `npm install` and not in the sub directories (although there are package.json files, but these files are just handling the local dependencies)
+
+### Repository initialization
+
+* copy [ExternalDependencies](#external-dependencies) into `external`
+* run `npm install` in root directory
 
 ## External Dependencies
 
@@ -48,8 +61,15 @@ TrackingServer: Build Electron App (Win)
 * __Intel RealSense R2/D435/L515__ `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense/releases)
 * __Microsoft Kinect__ `Microsoft.Kinect.dll`, `Microsoft.Kinect.xml` from [Microsoft Kinect for Windows SDK 2.0](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
 
+## use shared code
+
+* for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project, e.g. `npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp`
+* types are available by importing `@reflex/shared-types`
+
 ## ReFlex.TrackingServer
 
+* Build TrackingServer: run `npm run build:electron-win` / `npm run build:electron-osx` / `npm run build:electron-linux` (OSX can only be built in macOS)
+  
 * see [ReFlex.TrackingServer readme](tools/ReFlex.TrackingServer/readme.md)
 
 ## CI

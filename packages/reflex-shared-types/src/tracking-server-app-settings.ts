@@ -1,9 +1,9 @@
-import { FilterSettings } from './config/filterSettings';
+import { FilterSettings } from './config/filter-settings';
 import { Calibration } from './config/calibration';
-import { CameraConfiguration } from './config/cameraConfiguration';
-import { NetworkSettings } from './config/networkSettings';
-import { ProcessingSettings } from './config/processingSettings';
-import { TuioConfiguration } from './config/tuioConfiguration';
+import { CameraConfiguration } from './config/camera-configuration';
+import { NetworkSettings } from './config/network-settings';
+import { ProcessingSettings } from './config/processing-settings';
+import { TuioConfiguration } from './config/tuio-configuration';
 import { RemoteProcessingServiceSettings } from './config/remote-processing-service-settings';
 
 export interface TrackingServerAppSettings {

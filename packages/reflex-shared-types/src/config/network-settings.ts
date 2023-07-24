@@ -1,4 +1,4 @@
-import { NetworkInterface } from './networkInterface';
+import { NetworkInterface } from './network-interface';
 
 export interface NetworkSettings {
 

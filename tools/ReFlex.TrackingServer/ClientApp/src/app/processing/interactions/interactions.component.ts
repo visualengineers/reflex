@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { CompleteInteractionData } from 'src/shared/interactions/complete-interaction.data';
-import { Interaction } from 'src/shared/processing/interaction';
+import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 @Component({
   selector: 'app-interactions',
   templateUrl: './interactions.component.html',

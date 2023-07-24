@@ -1,20 +1,20 @@
 import { Calibration } from './config/calibration';
-import { CameraConfiguration } from './config/cameraConfiguration';
-import { ExtremumTypeCheckMethod } from './config/extremumTypeCheckMethod';
+import { CameraConfiguration } from './config/camera-configuration';
+import { ExtremumTypeCheckMethod } from './config/extremum-type-check-method';
 import { FilterType } from './config/filter-type';
-import { FilterSettings } from './config/filterSettings';
-import { LimitationFilterType } from './config/limitationFilterType';
-import { NetworkInterface } from './config/networkInterface';
-import { NetworkSettings } from './config/networkSettings';
-import { ObserverType } from './config/observerType';
-import { ProcessingSettings } from './config/processingSettings';
-import { ProtocolVersion } from './config/protocolVersion';
+import { FilterSettings } from './config/filter-settings';
+import { LimitationFilterType } from './config/limitation-flter-type';
+import { NetworkInterface } from './config/network-interface';
+import { NetworkSettings } from './config/network-settings';
+import { ObserverType } from './config/observer-type';
+import { ProcessingSettings } from './config/processing-settings';
+import { ProtocolVersion } from './config/protocol-version';
 import { RemoteProcessingAlgorithm } from './config/remote-processing-algorithm';
 import { RemoteProcessingServiceSettings } from './config/remote-processing-service-settings';
-import { TransportProtocol } from './config/transportProtocol';
-import { TuioConfiguration } from './config/tuioConfiguration';
-import { TuioInterpretation } from './config/tuioInterpretation';
-import { TrackingServerAppSettings } from './trackingServerAppSettings';
+import { TransportProtocol } from './config/transport-protocol';
+import { TuioConfiguration } from './config/tuio-configuration';
+import { TuioInterpretation } from './config/tuio-interpretation';
+import { TrackingServerAppSettings } from './tracking-server-app-settings';
 
 const _defaultFilter: FilterSettings = {
   threshold: 0,

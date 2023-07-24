@@ -1,6 +1,6 @@
-import { ExtremumType } from './extremumType';
+import { ExtremumType } from './extremum-type';
 
-export interface ExtrmumDescription {
+export interface ExtremumDescription {
   type: ExtremumType;
   numFittingPoints: number;
   percentageFittingPoints: number;

@@ -3,18 +3,14 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input
 import { animationFrameScheduler, BehaviorSubject, combineLatest, interval, NEVER, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { Interaction } from 'src/shared/processing/interaction';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
-import { DepthCameraState } from 'src/shared/tracking/depthCameraState';
-import { Point3 } from 'src/shared/tracking/point3';
-import { TrackingServerAppSettings } from 'src/shared/trackingServerAppSettings';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TrackingService } from '../../../shared/services/tracking.service';
 import { PointCloudService } from '../../../shared/services/point-cloud.service';
 import { HttpClient } from '@angular/common/http';
-import { DEFAULT_SETTINGS } from 'src/shared/trackingServerAppSettings.default';
+import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingServerAppSettings } from '@reflex/shared-types';
 
 
 @Component({
