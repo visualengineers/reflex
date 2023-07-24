@@ -84,7 +84,10 @@
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+        <!-- Copy files to wwwroot - paths not workign anymore, need to be adjusted (where ?) -->
+        <!-- <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath> -->
+        <!-- workign solution: copy files to resources/bin/ClientApp/dist -->
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </ResolvedFileToPublish>
