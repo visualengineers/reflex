@@ -57,6 +57,6 @@ export class TrackingService extends SignalRBaseService<TrackingConfigState> {
   }
 
   public async setDepthImagePreviewState(newState: boolean): Promise<Object> {
-    return this.http.put<number>(`${this.baseUrl}${this.setDepthImagePreviewStateRoute}`, newState, { headers: this.headers }).toPromise();
+    return this.http.put<number>(`${this.baseUrl}${this.setDepthImagePreviewStateRoute}`, newState, { headers: this.headers });
   }
 }
