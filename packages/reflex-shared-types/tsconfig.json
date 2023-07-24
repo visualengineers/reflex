@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2022",
+    "module": "es2020",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "useDefineForClassFields": false   
+  },
+  "include": ["src/**/*"],
+  "exclude": ["./**/*.spec.ts"]
+}
