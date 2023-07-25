@@ -6,9 +6,13 @@
     "build:client": "npm run build -w tools/ReFlex.TrackingServer/ClientApp",
     "build:electron-win": "npm run build:electron-win -w tools/ReFlex.TrackingServer/ClientApp",
     "build:electron-osx": "npm run build:electron-osx -w tools/ReFlex.TrackingServer/ClientApp",
-    "build:electron-linux": "npm run build:electron-linux -w tools/ReFlex.TrackingServer/ClientApp",
+    "build:electron-linux": "npm run build:electron-linux -w tools/ReFlex.TrackingServer/ClientApp",    
+    "build:emulator:electron-win": "npm run build:electron-win -w tools/emulator && npm install",
+    "build:example-angular": "npm run build -w examples/basic-angular",
+    "build:example-react": "npm run build -w examples/basic-react",
     "start:emulator": "npm start -w tools/emulator",
-    "build:emulator:electron-win": "npm run build:electron-win -w tools/emulator && npm install"
+    "start:example-angular": "npm start -w examples/basic-angular",
+    "start:example-react": "npm start -w examples/basic-react"
   },
   "workspaces": [
     "tools/ReFlex.TrackingServer/ClientApp",

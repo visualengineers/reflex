@@ -13,6 +13,12 @@ external/*
 **/*/tmp
 **/*/out-tsc
 
+app/**/*.js
+app/**/*.js.map
+
+### React ###
+build/
+
 # dependencies
 /node_modules
 
