@@ -2,17 +2,17 @@ import {Injectable} from '@angular/core';
 import {WebSocketSubject} from 'rxjs/webSocket';
 import {interval, Observable, Subject, Subscription} from 'rxjs';
 import {ConfigurationService} from './configuration.service';
-import {TouchPoint} from '../model/TouchPoint';
 import { delay, tap } from 'rxjs/operators';
+import { Interaction } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConnectionService {
 
-  private socket?: WebSocketSubject<Array<TouchPoint>>;
+  private socket?: WebSocketSubject<Array<Interaction>>;
   private sendInterval$?: Observable<number>;
-  private touchPoints: Array<TouchPoint> = new Array<TouchPoint>();
+  private touchPoints: Array<Interaction> = new Array<Interaction>();
 
   private sendIntervalSubscription?: Subscription;
   private autoReconnectSubscription?: Subscription;
@@ -59,7 +59,7 @@ export class ConnectionService {
       this.connectionSuccessful?.next(false);
   }
 
-  sendMessage(touchPoints: TouchPoint[]): void {
+  sendMessage(touchPoints: Interaction[]): void {
     this.touchPoints = touchPoints;
   }
 
@@ -91,7 +91,7 @@ export class ConnectionService {
     this.sendIntervalSubscription = this.sendInterval$.subscribe(() => this.doSend(this.touchPoints));
   }
 
-  private doSend(touchPoints: TouchPoint[]) {
+  private doSend(touchPoints: Interaction[]) {
     if (this.socket && !this.socket?.isStopped && !this.socket.closed && !this.socket.hasError)
       this.socket.next(touchPoints);
   }

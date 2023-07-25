@@ -65,7 +65,7 @@ Therefore, the repository should be initialized in the root folder by running th
 
 ## use shared code
 
-* for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project, e.g. `npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp`
+* for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project, e.g. `npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp --save`
 * types are available by importing `@reflex/shared-types`
 
 ## ReFlex.TrackingServer

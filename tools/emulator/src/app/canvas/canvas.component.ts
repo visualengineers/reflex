@@ -2,11 +2,11 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { combineLatest, fromEvent, Subscription, race} from 'rxjs';
 import { distinctUntilChanged, map, filter, publishBehavior, refCount, switchMap, takeUntil, debounceTime, withLatestFrom, startWith, pairwise } from 'rxjs/operators';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
-import { TouchPoint } from '../model/TouchPoint';
 import { ConfigurationService, Layers } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
 import { CircleDto, CircleRenderer } from '../shapes/Circle';
 import { environment } from 'src/environments/environment';
+import { ExtremumType, Interaction } from '@reflex/shared-types';
 
 interface Size {
   width: number;
@@ -407,17 +407,24 @@ export class CanvasComponent implements OnInit, OnDestroy {
    * Converts a normalized point (0.0 - 1.0) to a touch point, by multiplying x and y by the configured viewport size
    * @param p the point to convert
    */
-  private touchPointFromNormalizedPoint(p: NormalizedPoint): TouchPoint {
+  private touchPointFromNormalizedPoint(p: NormalizedPoint): Interaction {
     return {
       position: {
         x: p.x * this.configurationService.getViewPort().width,
         y: p.y * this.configurationService.getViewPort().height,
-        z: p.z
+        z: p.z,
+        isValid: true,
+        isFiltered: false
       },
       confidence: 1.0,
       time: p.time,
       type: 1,
-      touchid: -1
+      touchId: -1,
+      extremumDescription: {
+        type: ExtremumType.Undefined,
+        numFittingPoints: 0,
+        percentageFittingPoints: 0
+      }
     };
   }
 
