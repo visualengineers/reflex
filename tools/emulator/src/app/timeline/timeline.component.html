@@ -1,0 +1,7 @@
+<div class="timeline__container" [ngClass]="{'h-auto': isCollapsed, 'h-25': !isCollapsed }">
+    <div class="timeline__header float-right sticky-top">
+        <span (click)="toggleTimeline()" class="fas {{isCollapsed ? 'fa-angle-up' : 'fa-angle-down'}}"></span>
+    </div>
+    <app-timeline-canvas id="timeline-wrapper" *ngIf="!isCollapsed"></app-timeline-canvas>
+</div>
+

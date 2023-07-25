@@ -30,7 +30,15 @@
             "userDataDir": true
         },
         {
+            "type": "msedge",
             "name": "Start Emulator", 
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/tools/emulator",
+            "url": "http://localhost:4300",
+            "preLaunchTask": "run emulator"
+        },
+        {
+            "name": "Start Emulator with Basic Angular Example", 
             "request": "launch",
             "cwd": "${workspaceFolder}/examples/basic-angular",
             "runtimeArgs": [
@@ -44,8 +52,8 @@
             "type": "node",           
             "console": "integratedTerminal",
 
-            "preLaunchTask": "open emulator"
-        },        
+            "preLaunchTask": "run emulator"
+        },    
         {
             "name": "Server Backend - .NET Core (Debug)",
             "type": "coreclr",

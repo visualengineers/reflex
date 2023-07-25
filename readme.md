@@ -23,7 +23,8 @@ TrackingServer: Build Electron App (Win)
 3. [External Dependencies](#external-dependencies)
 4. [use shared code](#use-shared-code)
 5. [ReFlex.TrackingServer](#reflextrackingserver)
-6. [CI](#ci)
+6. [Emulator](#emulator)
+7. [CI](#ci)
 
 ## Documentation
 
@@ -54,6 +55,7 @@ Therefore, the repository should be initialized in the root folder by running th
 
 * copy [ExternalDependencies](#external-dependencies) into `external`
 * run `npm install` in root directory
+* if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
 
 ## External Dependencies
 
@@ -63,7 +65,7 @@ Therefore, the repository should be initialized in the root folder by running th
 
 ## use shared code
 
-* for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project, e.g. `npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp`
+* for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project, e.g. `npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp --save`
 * types are available by importing `@reflex/shared-types`
 
 ## ReFlex.TrackingServer
@@ -71,6 +73,13 @@ Therefore, the repository should be initialized in the root folder by running th
 * Build TrackingServer: run `npm run build:electron-win` / `npm run build:electron-osx` / `npm run build:electron-linux` (OSX can only be built in macOS)
   
 * see [ReFlex.TrackingServer readme](tools/ReFlex.TrackingServer/readme.md)
+
+## Emulator
+
+* Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the electron-.builder package if installed locally  
+  Therefore, `electron-builder` neds to be installed globally before executing the `build:emulator:electron-win` script
+* Additionally, `npm install` is executed after packaging to restore the dev dependencies
+* if the script `build:electron-win` is executed from within the emulator project, `npm install` has to be executed manually afterwards
 
 ## CI
 

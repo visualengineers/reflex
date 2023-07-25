@@ -38,6 +38,9 @@
     "shape-changing-interfaces",
     "elastic-displays"
   ],
+  "browserslist": [
+    "defaults"
+  ],
   "private": true,
   "dependencies": {
     "@microsoft/signalr": "^6.0.0",
