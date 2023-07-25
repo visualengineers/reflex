@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Interaction } from '@reflex/shared-types';
 import { interval, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
-import { TouchPoint } from 'src/shared/touch-point';
 
 @Component({
   selector: 'app-status',
@@ -10,7 +10,7 @@ import { TouchPoint } from 'src/shared/touch-point';
 })
 export class StatusComponent implements OnInit, OnDestroy {
 
-  _touchPoints$: Observable<TouchPoint[]> | undefined;
+  _touchPoints$: Observable<Interaction[]> | undefined;
   _touchPointSubscription: Subscription| undefined;
 
   _connectionSubscription: Subscription | undefined;

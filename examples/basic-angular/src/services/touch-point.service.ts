@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
+import { Interaction, InteractionType } from '@reflex/shared-types';
 import { Observable, Subject } from 'rxjs';
-import { TouchPoint } from 'src/shared/touch-point';
-import { WebServiceTouchpoint } from 'src/shared/webservice-touchpoint';
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +8,7 @@ import { WebServiceTouchpoint } from 'src/shared/webservice-touchpoint';
 export class TouchPointService {
     private _wss: WebSocket;
 
-    private _touchPoints: Subject<TouchPoint[]> = new Subject<TouchPoint[]>();
+    private _touchPoints: Subject<Interaction[]> = new Subject<Interaction[]>();
     private _isConnected = false;
     
     constructor(@Inject('WEBSOCKET_URL') private _address: string) {
@@ -17,7 +16,7 @@ export class TouchPointService {
         this.subscribeWebSocketEvents();
     }
 
-    public getTouchPoints() : Observable<TouchPoint[]> {
+    public getTouchPoints() : Observable<Interaction[]> {
         return this._touchPoints;
     }
 
@@ -41,23 +40,22 @@ export class TouchPointService {
         var service = this;
         this._wss.onmessage = function(evt) {
             
+            // not the most elegant workaround: convert first letter of JSON property to lowercase
+            const lowerCaseStart = evt.data.replace(/"([^"]+)":/g, 
+              ($0:string, $1:string) => { return ('"' + $1.charAt(0).toLowerCase() + $1.slice(1) + '":'); });
+
             // parse data
-            var points = JSON.parse(evt.data);
+            var points = JSON.parse(lowerCaseStart);
             
             if (points.length <= 0) {
                 service._touchPoints.next([]);
                 return;
             }
 
-            let tp = new Array<TouchPoint>();
+            let tp = new Array<Interaction>();
 
-            points.forEach((pt:WebServiceTouchpoint) => {
-                tp.push( {
-                    touchId: pt.TouchId,
-                    posX: pt.Position.X,
-                    posY: pt.Position.Y,
-                    posZ: pt.Position.Z
-                });
+            points.forEach((pt:Interaction) => {
+                tp.push(pt);
             });
 
             service._touchPoints.next(tp); 

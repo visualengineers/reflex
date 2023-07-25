@@ -11,7 +11,6 @@
   "private": true,
   "description": "basic angular web app for visualizing touches",
   "main": "main.ts",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/visualengineers/reflex.git"
@@ -30,5 +29,8 @@
   "homepage": "https://github.com/visualengineers/reflex#readme",
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "dependencies": {
+    "@reflex/shared-types": "file:../../packages/reflex-shared-types"
+  }
 }
