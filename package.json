@@ -14,7 +14,8 @@
     "tools/ReFlex.TrackingServer/ClientApp",
     "packages/reflex-shared-types",
     "tools/emulator",
-    "examples/basic-angular"
+    "examples/basic-angular",
+    "examples/basic-react"
   ],
   "dependencies": {
     "@angular/animations": "16.1.6",
@@ -27,7 +28,7 @@
     "@angular/platform-server": "16.1.6",
     "@angular/router": "16.1.6",
     "rxjs": "^6.6.7",
-    "zone.js": "~0.13.1"
+    "zone.js": "^0.13.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.1.5",
@@ -38,14 +39,14 @@
     "@nguniversal/common": "^16.1.1",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.8",
-    "@types/node": "^12.20.7",
+    "@types/node": "^12.20.55",
     "@types/ws": "<8.5.5",
-    "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.4.0",
-    "eslint": "^8.30.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.45.0",
     "eslint-config-angular": "^0.5.0",
     "eslint-plugin-angular": "^4.1.0",
-    "eslint-plugin-jsdoc": "^40.0.0",
+    "eslint-plugin-jsdoc": "^40.3.0",
     "jasmine-core": "~4.5.0",
     "jasmine-marbles": "^0.8.4",
     "jasmine-spec-reporter": "~5.0.0",
@@ -53,11 +54,11 @@
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "^2.0.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
     "karma-junit-reporter": "^2.0.1",
     "karma-spec-reporter": "^0.0.36",
     "karma-viewport": "^1.0.9",
-    "puppeteer": "^19.7.2",
+    "puppeteer": "^19.11.1",
     "typescript": "^5.1.6"
   },
   "optionalDependencies": {

@@ -1,0 +1,19 @@
+.touchpoints__panel {
+    background-color: lightslategray;
+    width: 1920px;
+    height: 1080px;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.touchpoints__item {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    background-color: lime;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+}
