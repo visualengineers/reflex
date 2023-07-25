@@ -44,7 +44,7 @@
             "type": "node",           
             "console": "integratedTerminal",
 
-            "preLaunchTask": "open emulator"
+            "preLaunchTask": "run emulator"
         },        
         {
             "name": "Server Backend - .NET Core (Debug)",

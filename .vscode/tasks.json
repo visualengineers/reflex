@@ -123,6 +123,29 @@
             }
         },
         {
+			"type": "npm",
+			"script": "start",
+			"isBackground": true,
+            "path": "tools/emulator",
+            "options": {
+                "cwd": "${workspaceRoot}/tools/emulator"
+            },
+			"problemMatcher": {
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                    	"regexp": "(.*?)"
+                    },
+                    "endsPattern": {
+                        "regexp": "√ Compiled successfully.|Failed to compile."
+                    }
+                }
+            },
+			"label": "run emulator",
+			"detail": "serve in background as preLaunchTask"
+		},
+        {
             "type": "npm",
             "script": "start",
             "path": "examples/basic-angular",
