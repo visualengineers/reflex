@@ -43,7 +43,7 @@
   ],
   "private": true,
   "dependencies": {
-    "@microsoft/signalr": "^6.0.0",
+    "@microsoft/signalr": "^6.0.20",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
     "@types/d3": "^7.4.0",
     "d3": "^7.8.5",
@@ -51,5 +51,5 @@
   },
   "devDependencies": {
     "@types/three": "^0.146.0"
-  }  
+  }
 }

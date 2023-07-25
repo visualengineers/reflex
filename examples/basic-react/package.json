@@ -1,0 +1,47 @@
+{
+  "name": "@reflex/basic-react",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.7",
+    "react-scripts": "^5.0.1"
+  },
+  "dependencies": {
+    "prop-types": "^15.8.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-redux": "^7.2.9",
+    "redux": "^4.2.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "test": "react-scripts test --env=node"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "description": "Basic React Example for visualizing touches.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "keywords": [
+    "react",
+    "elastic-displays",
+    "shape-changing-interfaces",
+    "example"
+  ],
+  "author": "Mathias Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  }
+}

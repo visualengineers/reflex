@@ -1,0 +1,36 @@
+/* reset browser-styles by using the universal selector */
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+  
+    // this defines what 1 rem is - base size definition
+    font-size: 62.5%;               // 1 rem = 10px
+
+    font-family: $font-primary;
+  
+    background-color: $color-white;
+}
+
+body {
+    font-family: $font-primary;
+    font-weight: 400;
+    font-size: $default-font-size;
+    line-height: 1.7;
+    color: $color-grey-dark; 
+    margin: 0;
+}
+
+app-status {
+    position: absolute;
+    top: 20rem;
+    left: 2rem;
+    border-left: 1px solid;
+    padding-left: 0.5rem;
+}

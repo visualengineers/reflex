@@ -179,6 +179,72 @@
             "detail": "ng serve --port 4201"
         },
         {
+            "type": "npm",
+            "script": "start",
+            "path": "examples/basic-react",
+            "options": {
+                "cwd": "${workspaceRoot}/examples/basic-react"
+            },
+            "problemMatcher": {
+                "owner": "typescript",
+                "source": "ts",
+                "applyTo": "closedDocuments",
+                "fileLocation": [
+                    "relative",
+                    "${cwd}"
+                ],
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "(.*?)"
+                    },
+                    "endsPattern": {
+                        "regexp": "Compiled successfully!|Failed to compile."
+                    }
+                }
+            },
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "label": "run react example client app",
+            "detail": "serve react app on http://localhost:3000 "
+        },
+        {
+            "type": "npm",
+            "script": "serve",
+            "path": "examples/basic-vue",
+            "options": {
+                "cwd": "${workspaceRoot}/examples/basic-vue"
+            },
+            "problemMatcher": {
+                "owner": "typescript",
+                "source": "ts",
+                "applyTo": "closedDocuments",
+                "fileLocation": [
+                    "relative",
+                    "${cwd}"
+                ],
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "(.*?)"
+                    },
+                    "endsPattern": {
+                        "regexp": "Compiled successfully|Failed to compile."
+                    }
+                }
+            },
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "label": "run vue example client app",
+            "detail": "serve vue app on http://localhost:8080 "
+        },
+        {
 			"label": "open emulator",
             "windows": {
                 "command": "start",

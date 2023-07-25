@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+
+<html>
+   <head>
+      <!-- style: revert order of messages to display newest item on top -->
+      <!-- so basic styling for message display -->
+      <style>
+         #messages
+         {
+             display: flex; 
+             flex-direction: column-reverse; 
+         }
+
+         .message__box {
+            display: flex;
+            margin-top: 0.5rem;
+            
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+         }
+
+         .message__box p {            
+            margin: 0; 
+         }
+
+         .message__id {
+            display: block;
+            width: 5rem; 
+            color: #666;
+
+            font-size: 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+         }
+
+         .message__tp {
+            padding-left: 2rem;
+            
+         }
+     </style>      
+      <script type = "text/javascript"> 
+         var msgId = 0;
+      
+         function WebSocketTest() {
+            
+            if ("WebSocket" in window) {
+               console.log("WebSocket is supported by your Browser!");
+
+               var address = "ws://localhost:40001/ReFlex";
+               
+               // Let us open a web socket
+               var ws = new WebSocket(address);
+				
+               ws.onopen = function() {
+
+                  var conn_msg = "Successfully connected to " + address;
+                  console.log(conn_msg);
+
+                  // remove button and display connection state
+                  showWebSocketState(conn_msg);
+
+               };
+				
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  msgId += 1;
+                  console.log(evt.data);
+                  // display formatted message
+                  showMessage(msgId, evt.data);                  
+               };
+				
+               ws.onclose = function() { 
+                  
+                  // websocket is closed.
+                  console.warn("Connection is closed..."); 
+               };
+            } else {
+              
+               // The browser doesn't support WebSocket
+               console.error("WebSocket NOT supported by your Browser!");
+            }
+         }
+
+         // add a div with two params that contain message id and message data
+         function showMessage(id, data) {
+            // create message container
+            let container = document.createElement("DIV");            
+            container.setAttribute("class", "message__box");
+            // create id elem
+            let id_node = document.createElement("P");
+            id_node.setAttribute("class", "message__id");
+            let id_text = document.createTextNode(id);
+            id_node.appendChild(id_text);
+            
+            container.appendChild(id_node);
+            
+            let list_node = document.createElement("DIV");
+
+            var array = JSON.parse(data);
+
+            if (array.length === 0) {
+               let empty_text = document.createTextNode("[ ]");
+               list_node.appendChild(empty_text);
+               
+            }
+            else {
+               let open_text = document.createTextNode("[ ");
+               list_node.appendChild(open_text);
+            }
+            
+            array.forEach(element => {
+               let msg_node = document.createElement("P");
+               msg_node.setAttribute("class", "message__tp");
+               let msg_text = document.createTextNode(JSON.stringify(element));
+               msg_node.appendChild(msg_text);
+
+               list_node.appendChild(msg_node);               
+            });
+            
+            container.appendChild(list_node); 
+            
+            if (array.length > 0) {
+               let close_text = document.createTextNode("] ");
+               list_node.appendChild(close_text); 
+            }
+            
+            let msgContainer = document.getElementById('messages');
+
+            msgContainer.appendChild(container);   
+
+            if (msgContainer.childElementCount > 100) {
+               msgContainer.removeChild(msgContainer.firstElementChild);
+            }            
+         }
+
+         function showWebSocketState(msg) {
+            let state_node = document.createElement("P");            
+            let state_text = document.createTextNode(msg);
+            state_node.appendChild(state_text);
+
+            document.getElementById('sse').appendChild(state_node);
+
+            let btn = document.getElementById('sse').firstElementChild;
+            document.getElementById('sse').removeChild(btn);
+         }
+      </script>
+		
+   </head>
+   
+   <body>
+      <div id="sse">
+         <a href = "javascript:WebSocketTest()">Run WebSocket</a>
+      </div>
+      <div id="messages">
+         
+      </div>
+   </body>
+</html>

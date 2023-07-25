@@ -38,6 +38,30 @@
             "preLaunchTask": "run emulator"
         },
         {
+            "type": "msedge",
+            "name": "Start Angular Example", 
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/tools/basic-angular",
+            "url": "http://localhost:4201",
+            "preLaunchTask": "run angular example client app"
+        },
+        {
+            "type": "msedge",
+            "name": "Start React Example", 
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/tools/basic-react",
+            "url": "http://localhost:3000",
+            "preLaunchTask": "run react example client app"
+        },
+        {
+            "type": "msedge",
+            "name": "Start Vue Example", 
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/tools/basic-vue",
+            "url": "http://localhost:3000",
+            "preLaunchTask": "run vue example client app"
+        },
+        {
             "name": "Start Emulator with Basic Angular Example", 
             "request": "launch",
             "cwd": "${workspaceFolder}/examples/basic-angular",

@@ -1,0 +1,38 @@
+{
+  "name": "@reflex/basic-vue",
+  "version": "0.5.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-router": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/compiler-sfc": "^3.0.0"
+  },
+  "description": "example app showcasing how to receive events from ReFlex with vue.js",
+  "main": "src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "keywords": [
+    "elastic-displays",
+    "shape-changing-interfaces",
+    "example",
+    "vue.js"
+  ],
+  "author": "Mathias Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  },
+  "homepage": "https://github.com/visualengineers/reflex#readme"
+}
