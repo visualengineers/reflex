@@ -12,17 +12,19 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && electron .",
-    "electron-build": "ng build --base-href ./ && electron-builder build --win"
+    "build:electron-win": "ng build --base-href ./ && electron-builder build --win"
   },
   "build": {
     "appId": "reflex.emulator",
     "productName": "ReFlex Emulator",
     "copyright": "Copyright © 2023",
     "buildVersion": "0.9.2",
+    "electronVersion": "23.2.4",
     "win": {
       "icon": "dist/assets/icon/app_icon_inverted.ico"
     },
     "files": [
+      "node_modules/**/*",
       "**/*"
     ],
     "directories": {
@@ -40,7 +42,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "bootstrap": "^5.3.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/visualengineers/reflex.git"
