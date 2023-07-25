@@ -10,12 +10,11 @@
     "start:emulator": "npm start -w tools/emulator",
     "build:emulator:electron-win": "npm run build:electron-win -w tools/emulator && npm install"
   },
-  "workspaces": 
-  [
+  "workspaces": [
     "tools/ReFlex.TrackingServer/ClientApp",
     "packages/reflex-shared-types",
-    "tools/emulator"
-    
+    "tools/emulator",
+    "examples/basic-angular"
   ],
   "dependencies": {
     "@angular/animations": "16.1.6",

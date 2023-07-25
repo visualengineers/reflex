@@ -1,0 +1,30 @@
+@import '../../style/abstracts/_variables';
+
+.status {
+    &__indicator {
+        display: block;
+        width: 1.5rem;
+        height: 1.5rem;
+        background-color: $color-white;
+        border-radius: 100%;
+        border: 1px solid $color-grey-light;
+        margin-right: 0.7rem;
+        transform: translate(2px, 3px);
+    }
+
+    &__stats {
+        display: grid;
+        grid-template-columns: minmax(max-content, 1fr) 2fr;
+        grid-column-gap: 1rem;
+
+        &--header {
+            display: flex;
+            font-family: $font-tertiary;
+            color: $color-primary;
+        }
+
+        &--item {
+            color: $color-grey-light;
+        }
+    }
+}

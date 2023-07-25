@@ -1,0 +1,137 @@
+
+@import '../style/abstracts/_variables';
+
+
+.toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    background-image: linear-gradient(to right, transparent, $color-grey-light-3);
+    color: $color-primary;
+    font-weight: 600;
+    font-family: $font-primary;
+
+    &__title {
+        margin-left: 8.9rem;
+        margin-top: 18.5rem;
+        font-size: 1.6rem;
+    }   
+}
+
+#reflex-logo {
+    position: absolute;
+    height: 160px;
+    top: 1rem;
+    left: 2rem;
+}
+
+#gtv-logo,
+#htw-logo {
+    height: 40px;
+    margin: 0 8px;
+}
+
+#gtv-font {
+    height: 40px;
+    margin: 0 16px;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.content {
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    background-color: $color-white;
+}
+
+.clicked {
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    background-color: $color-primary-light;
+}
+
+.card-container {
+    position: absolute;
+
+    top: 8rem;
+    right: 4rem;
+}
+
+.circle-link {
+    height: 80px;
+    width: 80px;
+    border-radius: 100%;
+    margin: 8px;
+    background-color: white;
+    border: 1px solid #eeeeee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: 0.2s ease-out;
+  }
+
+  .circle-link:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .circle-link:active {
+    background-color: $color-primary;
+    color: $color-white;
+  }
+
+  .touchPoint {
+      position: absolute;
+      top: -40px;
+      left: -40px;
+      width: 80px;
+      height: 80px;
+      
+      background-color: transparent; 
+
+      font-family: $font-tertiary;
+      color: $color-primary;
+      font-size: 3rem;
+
+      &__outerCircle {
+
+        position:relative;
+        width: 70px;
+        height: 70px;
+        border-radius: 100%;        
+        background-color: $color-primary;        
+      }
+
+      &__innerCircle {
+        position:relative;
+        width: 60px;
+        height: 60px;
+        margin-top: -65px;
+        margin-left: 5px;
+        border-radius: 100%;        
+        background-color: $color-white;
+      }
+
+      & p {
+          position: absolute;
+          width: 60px;
+          height: 30px;
+          top: 0.4rem;
+          text-align: center;
+          display: block;
+      }
+  }
+
+.clickPoint__outerCircle {
+    background-color: $color-grey-light;   
+  }

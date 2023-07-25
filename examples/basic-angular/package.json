@@ -1,0 +1,34 @@
+{
+  "name": "@reflex/basic-angular",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 4201",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "description": "basic angular web app for visualizing touches",
+  "main": "main.ts",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "keywords": [
+    "elastic-displays",
+    "shape-changing-interfaces",
+    "angular",
+    "example"
+  ],
+  "author": "Mathias Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  },
+  "homepage": "https://github.com/visualengineers/reflex#readme",
+  "browserslist": [
+    "defaults"
+  ]
+}

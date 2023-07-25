@@ -1,0 +1,11 @@
+<div class="status__stats">
+    <div class="status__stats--header">
+        <div class="status__indicator" [style.background-color]="IsConnected ? 'green' : 'red'"></div>
+        <p>Address</p>
+    </div>
+    <div class="status__stats--item">{{WebSocketAddress}}</div>
+    <div class="status__stats--header">FrameNumber</div>
+    <div class="status__stats--item">{{FrameNumber}}</div>
+    <div class="status__stats--header">Touches</div>
+    <div class="status__stats--item">{{TouchCount}}</div>
+</div>
