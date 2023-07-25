@@ -1,0 +1,173 @@
+@import '../../styles'
+
+.connection-indicator 
+  position: absolute
+  bottom: 0.7rem
+  right: -1rem
+  width: 10px
+  height: 10px
+  border-radius: 100%
+  border: 1px solid $grey-lighter
+  background: $grey
+
+  &.success
+    background: $green
+
+  &.error
+    background: $red
+
+.sidebar
+  &__absolute
+    position: absolute
+    bottom: 0
+    width: 100%
+
+  &__container
+    position: absolute
+    right: 0
+    top: 0
+    border-radius: $border-radius-default
+    margin: $margin-default
+    padding: $padding-default
+    background: $grey-dark
+    color: $grey-lighter
+    height: calc(75% - 2*#{$margin-default}) 
+    overflow-y: scroll
+
+    &::-webkit-scrollbar
+      display: none
+
+  &__content
+    position: relative
+    padding: 0 $padding-default 0 0
+    height: 100%
+    font-size: 1rem
+
+    .row
+      margin: 0  
+
+    .form-group
+      position: relative
+      padding: $padding-small    
+      padding-bottom: 0  
+      margin: 0
+
+      .custom-radio
+        margin: 0 $margin-default $margin-mini 0
+
+        &::after
+          font-size: 2rem
+
+      input[type="color"]
+        display: block
+        padding: 0
+      
+        &::-webkit-color-swatch-wrapper 
+          padding: 0
+        
+        &::-webkit-color-swatch 
+          border: none    
+
+      input[type="range"]
+        height: 3px
+        margin-bottom: $margin-mini
+        
+      input[type="checkbox"]
+        margin-right: 5px      
+
+      input[type="number"],
+      input[type="text"]
+        transition: background-color 0.3s cubic-bezier(0.57, 0.21, 0.69, 1.25), transform 0.3s cubic-bezier(0.57, 0.21, 0.69, 1.25)
+        background: $grey-darker
+        border: 1px solid $grey-darker
+        color: $grey-lighter
+        font-size: 1rem
+
+        &:focus
+          -webkit-appearance: none
+          color: $grey-lighter
+          border: 1px solid $grey 
+      
+      .input-unit-container
+        display: flex
+
+        .input-unit
+          padding: calc(0.375rem + 1px) 0
+          left: 5px
+          width: 2em
+          position: relative
+
+      label
+        line-height: 1.5rem
+        margin: $margin-mini 0   
+    
+      .value-bubble
+        position: absolute
+        bottom: $margin-default
+        right: 0
+        font-weight: bold
+        
+      select
+        font-size: 1rem
+      
+  &__column-2
+    -webkit-column-count: 2
+    -moz-column-count: 2
+    column-count: 2
+
+  &__header
+    line-height: 1
+
+  &__heading
+    font-size: 1rem
+    font-weight: 600
+
+  &__infotext
+    color: $grey
+
+  &__nav   
+    font-size: 1rem
+    font-weight: 600
+    margin-bottom: $margin-default
+
+    a
+      color: $grey
+      padding: .5rem 0
+      margin-right: $margin-default
+
+    .active
+      border-bottom: 2px solid $blue-link
+      color: $grey-lighter
+
+  &__save-btn
+    font-size: 1rem
+
+  &__tooltip
+    color: $grey
+
+@include media-breakpoint-down(sm) 
+
+  .sidebar
+    &__container
+      width: calc(100% - 2*2rem)
+    
+    &__content
+      padding: 0
+
+      .form-group
+        padding: $padding-mini 0 $padding-small 0
+
+    &__save-btn
+     position: relative
+     margin: $margin-default 0
+
+
+
+
+
+
+
+
+
+  
+

@@ -1,0 +1,63 @@
+{
+  "name": "@reflex/emulator",
+  "author": "Mathias Müller",
+  "description": "Emulator for depth sensing input for developing applications for Elastic Displays using the ReFlex framework",
+  "version": "0.9.2",
+  "main": "main.js",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 4300",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "electron": "ng build --base-href ./ && electron .",
+    "electron-build": "ng build --base-href ./ && electron-builder build --win"
+  },
+  "build": {
+    "appId": "reflex.emulator",
+    "productName": "ReFlex Emulator",
+    "copyright": "Copyright © 2023",
+    "buildVersion": "0.9.2",
+    "win": {
+      "icon": "dist/assets/icon/app_icon_inverted.ico"
+    },
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    }
+  },
+  "private": true,
+  "dependencies": {
+    "@fortawesome/angular-fontawesome": "^0.13.0",
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "bootstrap": "^5.3.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "keywords": [
+    "elastic-displays",
+    "shape-changing-interfaces",
+    "electron",
+    "developer-tool",
+    "emulator"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  },
+  "homepage": "https://github.com/visualengineers/reflex#readme",
+  "browserslist": [
+    "defaults"
+  ]
+}

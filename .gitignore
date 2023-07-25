@@ -486,5 +486,6 @@ $RECYCLE.BIN/
 !**/*/ReFlex.TrackingServer/Data/Log
 !**/*/shared/log
 !**/*/src/app/log
+!**/*/src/assets/icon
 !**/*/reflex-shared-types
 !**/*/reflex-shared-types/**/log
