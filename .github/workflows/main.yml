@@ -24,12 +24,12 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ./node_modules
+          path: ${{ github.workspace }}/node_modules
           key: modules-${{ hashFiles('./package.json') }}
       - name: install packages        
-        working-directory: ./
+        working-directory: ${{ github.workspace }}
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --include=dev
       - name: run linter
-        working-directory: ./
-        run: npm run lint
+        working-directory: ${{ github.workspace }}
+        run: npm run lint:server
