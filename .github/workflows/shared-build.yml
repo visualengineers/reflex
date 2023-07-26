@@ -1,11 +1,13 @@
 name: Shared Types - Build
 
 on: 
-  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
+    types: [ opened, reopened ]
+    branches:
+      - main
 
 jobs:
   build-shared-types:

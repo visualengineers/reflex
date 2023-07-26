@@ -1,11 +1,13 @@
 name: ReFlex.TrackingServer (Angular) - Test
 
 on: 
- workflow_dispatch:
- push:
-   branches:
-     - main
- pull_request:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, reopened ]
+    branches:
+      - main
   
 jobs:
   angular-test: 
