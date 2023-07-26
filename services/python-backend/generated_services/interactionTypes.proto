@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package interactionService;
+
+/* gRPC equivalent for Point3
+*/
+message Point3d {
+  float x = 1;                      // x coordinate
+  float y = 2;                      // y coordinate
+  float z = 3;                      // z coordinate
+  int32 i_x = 4;                    // x-index
+  int32 i_y = 5;                    // y-index
+  bool is_valid = 6;                // filtered by camera
+  bool is_filtered = 7;             // filtered by preprocessing steps
+}
+
+/* gRPC equivalent for PointCloud3 class
+ */
+message PointCloud3d {
+  int32 size_x = 1;                 // width
+  int32 size_y = 2;                 // height
+  int32 size_z = 3;                 // size of depth array
+
+  repeated Point3d points = 4;       // detailed points
+}
+
+message DepthValues1d {
+  float zero_plane = 1;              // distance to map depth values to 0
+  float min_depth = 2;               // minimum distance (zero_plane - max amplitude) - maps to -1
+  float max_depth = 3;               // minimum distance (zero_plane + max amplitude) - maps to 1
+  repeated float z = 4;              // z-values (unprocessed)
+}
+
+enum InteractionType {
+  NONE = 0;
+  PUSH = 1;
+  PULL = 2;
+}
+
+message Interaction {
+  int32 touch_id = 1;
+  int32 point_idx = 2;
+  float z = 3;
+
+  InteractionType type = 4;
+  int64 time = 5;
+}
+
+message InteractionFrame {
+  int32 frame_id = 1;
+  repeated Interaction interactions = 2;
+}
+
+message StateRequest {
+}
+
+message StateResponse {
+  bool isReady = 1;
+  int32 frame_id = 2;
+}
+
+message SaveRequest {
+  string filename = 1;
+  PointCloud3d points = 2;
+}
+
+message SaveResponse {
+  bool success = 1;
+  string file = 2;
+}
+
+message ConfigRequest {
+  float factor = 1;
+  float cutoff = 2;
+}
+
+message ConfigResponse {
+  bool success = 1;
+}
