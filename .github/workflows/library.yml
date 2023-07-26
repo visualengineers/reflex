@@ -1,39 +1,39 @@
 name: ReFlex - Build and test
 
 on: 
- workflow_dispatch:
- push:
-  branches:
-   - main
- pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    pull_request:
 
- jobs:
-  reflex:
-    runs-on: windows-latest
-    name: build and test
-    steps:
-      - name: checkout repo with submodules
-        uses: actions/checkout@v3
-        uses: actions/setup-dotnet@v3
-        with:
-         dotnet-version: '6.x'
-         cache: true
-    - name: Restore dependencies (Library)
-      run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln" -c CI
-    - name: Restore dependencies (TrackingServer)
-      run: dotnet restore "${{ github.workspace }}tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
-      - name: build ReFlex without external sensors
-        working-directory: ${{ github.workspace }}
-        run: dotnet build ReFlex.sln -c CI
-      - name: Install Required Tools
-        run: |
-          dotnet new tool-manifest
-          dotnet tool install dotnet-reportgenerator-globaltool
-          dotnet tool install dotnet-coverage
-      - name: execute tests and with code coverage
-        run: dotnet coverage collect dotnet test --output ${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura
-      - name: generate report
-        run: reportgenerator -reports:${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"${{ github.workspace }}/Test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"
+  jobs:
+    reflex:
+      runs-on: windows-latest
+      name: build and test
+      steps:
+        - name: checkout repo with submodules
+          uses: actions/checkout@v3
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: '6.x'
+          cache: true
+        - name: Restore dependencies (Library)
+          run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln" -c CI
+        - name: Restore dependencies (TrackingServer)
+          run: dotnet restore "${{ github.workspace }}tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
+        - name: build ReFlex without external sensors
+          working-directory: ${{ github.workspace }}
+          run: dotnet build ReFlex.sln -c CI
+        - name: Install Required Tools
+          run: |
+            dotnet new tool-manifest
+            dotnet tool install dotnet-reportgenerator-globaltool
+            dotnet tool install dotnet-coverage
+        - name: execute tests and with code coverage
+          run: dotnet coverage collect dotnet test --output ${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura
+        - name: generate report
+          run: reportgenerator -reports:${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"${{ github.workspace }}/Test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"
 
 
 
