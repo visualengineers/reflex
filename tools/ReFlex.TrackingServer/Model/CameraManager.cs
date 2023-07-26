@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using NLog;
 using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Sensor.AzureKinectModule;
 using ReFlex.Sensor.EmulatorModule;
+#if !NO_EXTERNAL_SENSORS
 using ReFlex.Sensor.Kinect2Module;
 using ReFlex.Sensor.RealSenseD435Module;
 using ReFlex.Sensor.RealSenseL515Module;
 using ReFlex.Sensor.RealSenseR2Module;
+#endif
 
 namespace TrackingServer.Model
 {
@@ -22,6 +22,8 @@ namespace TrackingServer.Model
         public CameraManager()
         {
             _depthCameras = new List<IDepthCamera>();
+
+#if !NO_EXTERNAL_SENSORS
 
             try
             {
@@ -70,6 +72,8 @@ namespace TrackingServer.Model
             {
                 Logger.Error(exception);
             }
+
+#endif
 
             try
             {
