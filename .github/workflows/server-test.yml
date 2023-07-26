@@ -1,4 +1,4 @@
-name: Angular Frontend - Install and Linter
+name: ReFlex.TrackingServer (Angular) - Install and Linter
 
 on: 
  workflow_dispatch:
@@ -20,10 +20,6 @@ jobs:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: ./package.json  
-      - name: install typescript
-        run:  npm install -g typescript@5.1.6
-      - name: build shared types
-        run: npm run build:shared-types 
       - name: cache node-modules
         id: cache
         uses: actions/cache@v3
@@ -34,6 +30,20 @@ jobs:
         working-directory: ${{ github.workspace }}
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --include=dev
-      - name: run linter
+      - name: build shared types
+        run: npm run build:shared-types 
+      - name: run test
         working-directory: ${{ github.workspace }}
-        run: npm run lint:server
+        run: npm run test:server
+      - name: Attach TestResults as Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ReFlex.TrackingServer (Angular) Test Report
+          path: ${{ github.workspace }}/test/artifacts/coverage 
+      - name: Publish JUnit Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '${{ github.workspace }}/test/artifacts/tests/junit-test-results.xml'
+      
+        

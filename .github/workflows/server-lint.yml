@@ -1,0 +1,37 @@
+name: ReFlex.TrackingServer (Angular) - Install and Linter
+
+on: 
+ workflow_dispatch:
+ push:
+   branches:
+     - main
+ pull_request:
+  
+jobs:
+  angular: 
+    runs-on: windows-latest
+    name: install and lint
+    steps:
+      - name: checkout repo with submodules
+        uses: actions/checkout@v3
+      - name: install node v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: ./package.json  
+      - name: cache node-modules
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: modules-${{ hashFiles('./package.json') }}
+      - name: install packages        
+        working-directory: ${{ github.workspace }}
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci --include=dev
+      - name: build shared types
+        run: npm run build:shared-types 
+      - name: run linter
+        working-directory: ${{ github.workspace }}
+        run: npm run lint:server

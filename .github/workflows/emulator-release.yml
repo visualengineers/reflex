@@ -1,0 +1,62 @@
+# This workflow will build the Emulator Electron.NET application for Windows when a release is published
+
+name: Release - Build ReFlex.Emulator Electron.NET (Win)
+
+on:
+  release:
+     types: published  
+
+jobs:
+  build-emulator:
+
+    runs-on: windows-latest
+    name: build electron app (Win)
+
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v3
+    - name: Get Release
+      id: get_release
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Get Version String
+      id: get_version
+      uses: mad9000/actions-find-and-replace-string@1
+      with: 
+        source: ${{ steps.get_release.outputs.tag_name }}
+        find: 'v'
+        replace: ''
+    - name: install node v18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: ./package.json  
+    - name: cache node-modules
+      id: cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/node_modules
+        key: modules-${{ hashFiles('./package.json') }}
+    - name: install packages        
+      working-directory: ${{ github.workspace }}
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci --include=dev
+    - name: build shared types
+      run: npm run build:shared-types 
+    - name: build electron app
+      working-directory: ${{ github.workspace }}
+      run: npm run build:emulator:electron-win 
+    - name: Attach Emulator Setup as Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Emulator ${{ steps.get_version.outputs.value }}
+        path: ${{ github.workspace }}/tools/emulator/release/ReFlex Emulator Setup ${{ steps.get_version.outputs.value }}.exe 
+    - name: Upload to Release
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
+        asset_name: Tracking Server ${{ steps.get_version.outputs.value }}
+        asset_path: ${{ github.workspace }}/tools/emulator/release/ReFlex Emulator Setup ${{ steps.get_version.outputs.value }}.exe
+        asset_content_type: application/vnd.microsoft.portable-executable 

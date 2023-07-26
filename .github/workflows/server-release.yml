@@ -1,0 +1,63 @@
+# This workflow will build the TrackingServer Electron.NET application for Windows when a release is published
+
+name: Release - Build ReFlex.TrackingServer Electron.NET (Win)
+
+on:
+  release:
+     types: published  
+
+jobs:
+  build-trackingserver:
+
+    runs-on: windows-latest
+    name: build electron app (Win)
+
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v3
+    - name: Get Release
+      id: get_release
+      uses: bruceadams/get-release@v1.3.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Get Version String
+      id: get_version
+      uses: mad9000/actions-find-and-replace-string@1
+      with: 
+        source: ${{ steps.get_release.outputs.tag_name }}
+        find: 'v'
+        replace: ''
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.x
+    - name: Restore dependencies (Library)
+      run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
+    - name: Restore dependencies (TrackingServer)
+      run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
+    - name: Build Library (CI)
+      run: dotnet build "${{ github.workspace }}/ReFlex.sln" -c CI /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary /p:Platform=x64
+    - name: cache library
+      id: cache_reflex_lib
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/library/export/Modules
+        key: library-${{ env.GITHUB_SHA }}
+    - name: Install ElectronCLI
+      run: dotnet tool install ElectronNET.CLI -g
+    - name: Electron.NET Build
+      working-directory: ${{ github.workspace }}/tools/ReFlex.TrackingServer
+      run: 
+        electronize build ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /dotnet-configuration CI /p:Platform=x64 /target win
+    - name: Attach TrackingServer Setup as Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Tracking Server ${{ steps.get_version.outputs.value }}
+        path: ${{ github.workspace }}/tools/ReFlex.TrackingServer/bin/Desktop/ReFlex TrackingServer Setup ${{ steps.get_version.outputs.value }}.exe 
+    - name: Upload to Release
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.get_release.outputs.upload_url }}
+        asset_name: Tracking Server ${{ steps.get_version.outputs.value }}
+        asset_path: ${{ github.workspace }}/tools/ReFlex.TrackingServer/bin/Desktop/ReFlex TrackingServer Setup ${{ steps.get_version.outputs.value }}.exe
+        asset_content_type: application/vnd.microsoft.portable-executable 
