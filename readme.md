@@ -37,7 +37,6 @@ TrackingServer: Build Electron App (Win)
 | Directory  | Content                                                                                       |
 | ---------- | --------------------------------------------------------------------------------------------- |
 | `apps`     | Applications using the `ReFlex` framework                                                     |
-| `ci`       | CI-files for github and gitlab                                                                |
 | `design`   | Design / Graphic source files                                                                 |
 | `examples` | Templates and Plugins (`Angular`, `Vue.js`, `React`, `Unreal Engine 5`, `Unity`. `.NET`)      |
 | `external` | Place for external libraries, if needed (see [External Dependencies](#external-dependencies)) |
