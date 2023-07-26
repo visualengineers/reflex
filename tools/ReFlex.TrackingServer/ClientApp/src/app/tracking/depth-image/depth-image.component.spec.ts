@@ -24,6 +24,7 @@ const state: TrackingConfigState = {
 }; 
 
 trackingService.getStatus.and.returnValue(of(state));
+trackingService.setDepthImagePreviewState.and.returnValue(of(true));
 
 const subject = new Subject<MessageEvent>();
 const wsMock = new WebSocketServiceMock(subject, 'mockedMessage');

@@ -4,7 +4,7 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>10</LangVersion>
-        <Configurations>Release;Debug</Configurations>
+        <Configurations>Release;Debug;CI</Configurations>
         <Platforms>x64</Platforms>
     </PropertyGroup>
 
