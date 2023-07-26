@@ -1,4 +1,4 @@
-name: ReFlex.TrackingServer (Angular) - Lint
+name: ReFlex.TrackingServer (Angular) - Build
 
 on: 
  workflow_dispatch:
@@ -32,6 +32,6 @@ jobs:
         run: npm ci --include=dev
       - name: build shared types
         run: npm run build:shared-types 
-      - name: run linter
+      - name: build server
         working-directory: ${{ github.workspace }}
-        run: npm run lint:server
+        run: npm run build:server

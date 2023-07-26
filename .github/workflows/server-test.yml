@@ -1,4 +1,4 @@
-name: ReFlex.TrackingServer (Angular) - Install and Linter
+name: ReFlex.TrackingServer (Angular) - Test
 
 on: 
  workflow_dispatch:
@@ -8,7 +8,7 @@ on:
  pull_request:
   
 jobs:
-  angular: 
+  angular-test: 
     runs-on: windows-latest
     name: install and lint
     steps:
