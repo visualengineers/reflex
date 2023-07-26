@@ -3,9 +3,9 @@
 Software Development SDK for __Elastic Displays__ as open source mono repo
 
 * .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
-* APS.NET Core / Angular server application as frontend for library 
+* APS.NET Core / Angular server application as frontend for library
 * can be packaged as electron app for desktop
-* Example client applications for PLAIN HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Enigne 5
+* Example client applications for Plain HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Engine 5
 * Emulator as Development Tool
 * Example Applications
 
@@ -24,7 +24,9 @@ TrackingServer: Build Electron App (Win)
 4. [use shared code](#use-shared-code)
 5. [ReFlex.TrackingServer](#reflextrackingserver)
 6. [Emulator](#emulator)
-7. [CI](#ci)
+7. [Python gRPC Processing service](#python-grpc-processing-service)
+8. [CI](#ci)
+9. [Known issues](#known-issues)
 
 ## Documentation
 
@@ -81,6 +83,17 @@ Therefore, the repository should be initialized in the root folder by running th
 * Additionally, `npm install` is executed after packaging to restore the dev dependencies
 * if the script `build:electron-win` is executed from within the emulator project, `npm install` has to be executed manually afterwards
 
+## Python gRPC Processing service
+
+* as an example for integrating external services, a python gRPC service for extracting interactions from the camera depth image is provided in `services/python-backend`
+* service is consumed when setting Interaction Processor to `Remote`
+* in the `ReFlex.TrackingServer`, the service is configured in `Services/RemoteInteractionProcessingService.cs`
+* Documentation: [Python gRPC service](services/python-backend/README.md)
+
 ## CI
 
 * TODO: setup and document CI
+
+## Known issues
+
+* `Karma Test Explorer` Plugin for vs code does not work with the current npm workspace setup

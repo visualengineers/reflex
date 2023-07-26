@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "generated_services/interactionTypes.proto";
+
+package interactionService;
+
+service InteractionProcessing {
+  rpc ComputeInteractions(DepthValues1d) returns (InteractionFrame);
+
+  rpc GetState(StateRequest) returns (StateResponse);
+
+  rpc Configure(ConfigRequest) returns (ConfigResponse);
+}
