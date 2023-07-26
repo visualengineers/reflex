@@ -13,9 +13,9 @@ jobs:
     name: build and test
     steps:
       - name: checkout repo with submodules
-        uses: 
-          actions/checkout@v3
-          actions/setup-dotnet@v3
+        uses: actions/checkout@v3
+      - name: install .NET
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.x'
           cache: true
