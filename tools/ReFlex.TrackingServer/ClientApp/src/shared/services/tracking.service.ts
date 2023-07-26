@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { SignalRBaseService } from './signalR.base.service';
 import { LogService } from 'src/app/log/log.service';
 import { CameraConfiguration, DepthCamera, TrackingConfigState } from '@reflex/shared-types';
@@ -56,7 +57,11 @@ export class TrackingService extends SignalRBaseService<TrackingConfigState> {
     return this.http.put<number>(`${this.baseUrl}${this.toggleTrackingRoute}${cameraIdx}`, configIdx, { headers: this.headers });
   }
 
-  public setDepthImagePreviewState(newState: boolean): Observable<Object> {
-    return this.http.put<number>(`${this.baseUrl}${this.setDepthImagePreviewStateRoute}`, newState, { headers: this.headers });
+  public setDepthImagePreviewState(newState: boolean): Observable<boolean> {
+    const result = this.http.put<number>(`${this.baseUrl}${this.setDepthImagePreviewStateRoute}`, newState, { headers: this.headers });
+
+    return result.pipe(
+      map((response: number) => response === 202)
+    );
   }
 }
