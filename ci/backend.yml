@@ -1,0 +1,49 @@
+# This workflow will build the TrackingServer Electron.NET application for Windows
+
+name: TrackingServer - Build Electron.NET (Win)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+  workflow_dispatch:    
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    name: build electron app (Win)
+
+    steps:
+    - name: checkout repo with submodules
+      uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.x
+    - name: Restore dependencies (Library)
+      run: dotnet restore "./library/src/ReFlex.Library.sln" -c CI
+    - name: Restore dependencies (TrackingServer)
+      run: dotnet restore "./tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
+    - name: Build Library (CI)
+      run: dotnet build "./library/src/ReFlex.sln" -c CI /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary /p:Platform=x64
+    - name: cache library
+      id: cache_reflex_lib
+      uses: actions/cache@v3
+      with:
+        path: ./library/export/Modules
+        key: library-${{ env.GITHUB_SHA }}
+    - name: Test
+      continue-on-error: true
+      run: dotnet test "./TrackingServer.sln" -c CI /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary /p:Platform=x64
+    - name: Install ElectronCLI
+      run: dotnet tool install ElectronNET.CLI -g
+    - name: Electron.NET Build
+      working-directory: ./tools/ReFlex.TrackingServer
+      run: 
+        electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /dotnet-configuration CI /p:Platform=x64 /target win
+    - name: Upload TrackingServer Setup
+      uses: actions/upload-artifact@v3
+      with:
+        name: Tracking Server 0.9.8
+        path: ./TrackingServer/bin/Desktop/ReFlex TrackingServer Setup 0.9.8.exe 
