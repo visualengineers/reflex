@@ -9,11 +9,16 @@ Software Development SDK for __Elastic Displays__ as open source mono repo
 * Emulator as Development Tool
 * Example Applications
 
-Angular: Install and lint
-[![Angular Frontend - Install and Linter](https://github.com/visualengineers/reflex-server/actions/workflows/main.yml/badge.svg)](https://github.com/visualengineers/reflex-server/actions/workflows/main.yml)
+[![Library:Build](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml)
+[![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
 
-TrackingServer: Build Electron App (Win)
-[![TrackingServer - Build Electron.NET (Win)](https://github.com/visualengineers/reflex-server/actions/workflows/backend.yml/badge.svg)](https://github.com/visualengineers/reflex-server/actions/workflows/backend.yml)
+[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-types-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/shared-types-build.yml)
+
+[![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
+[![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
+[![Server:Test](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml)
+
+[![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml)
 
 <!-- omit in toc -->
 ## Table of contents
