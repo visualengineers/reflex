@@ -57,8 +57,15 @@
             "type": "msedge",
             "name": "Start Vue Example", 
             "request": "launch",
-            "webRoot": "${workspaceFolder}/tools/basic-vue",
-            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/tools/basic-vue/src",
+            "sourceMapPathOverrides": {
+                "webpack:/*": "${webRoot}/*",
+                "/./*": "${webRoot}/*",
+                "/src/*": "${webRoot}/*",
+                "/*": "*",
+                "/./~/*": "${webRoot}/node_modules/*"
+            },
+            "url": "http://localhost:8080",
             "preLaunchTask": "run vue example client app"
         },
         {

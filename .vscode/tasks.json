@@ -123,28 +123,28 @@
             }
         },
         {
-			"type": "npm",
-			"script": "start",
-			"isBackground": true,
+            "type": "npm",
+            "script": "start",
+            "isBackground": true,
             "path": "tools/emulator",
             "options": {
                 "cwd": "${workspaceRoot}/tools/emulator"
             },
-			"problemMatcher": {
+            "problemMatcher": {
                 "pattern": "$tsc",
                 "background": {
                     "activeOnStart": true,
                     "beginsPattern": {
-                    	"regexp": "(.*?)"
+                        "regexp": "(.*?)"
                     },
                     "endsPattern": {
                         "regexp": "√ Compiled successfully.|Failed to compile."
                     }
                 }
             },
-			"label": "run emulator",
-			"detail": "serve in background as preLaunchTask"
-		},
+            "label": "run emulator",
+            "detail": "serve in background as preLaunchTask"
+        },
         {
             "type": "npm",
             "script": "start",
@@ -182,6 +182,7 @@
             "type": "npm",
             "script": "start",
             "path": "examples/basic-react",
+            "isBackground": true,
             "options": {
                 "cwd": "${workspaceRoot}/examples/basic-react"
             },
@@ -210,6 +211,22 @@
             },
             "label": "run react example client app",
             "detail": "serve react app on http://localhost:3000 "
+        },        
+        {
+            "label": "open emulator",
+            "windows": {
+                "command": "start"
+            },
+            "linux": {
+                "command": "xdg-open"
+            },
+            "osx": {
+                "command": "open"
+            },
+            "args": [
+                "http://localhost:4300"
+            ],
+            "type": "shell"
         },
         {
             "type": "npm",
@@ -218,47 +235,20 @@
             "options": {
                 "cwd": "${workspaceRoot}/examples/basic-vue"
             },
-            "problemMatcher": {
-                "owner": "typescript",
-                "source": "ts",
-                "applyTo": "closedDocuments",
-                "fileLocation": [
-                    "relative",
-                    "${cwd}"
-                ],
-                "pattern": "$tsc",
+            "problemMatcher": [{
+                "base": "$tsc",
                 "background": {
                     "activeOnStart": true,
-                    "beginsPattern": {
-                        "regexp": "(.*?)"
-                    },
-                    "endsPattern": {
-                        "regexp": "Compiled successfully|Failed to compile."
-                    }
+                    "beginsPattern": "(.*?)",
+                    "endsPattern": "Compiled successfully"
                 }
-            },
+            }],
             "presentation": {
                 "focus": true,
                 "panel": "dedicated"
             },
             "label": "run vue example client app",
-            "detail": "serve vue app on http://localhost:8080 "
-        },
-        {
-			"label": "open emulator",
-            "windows": {
-                "command": "start",
-            },
-            "linux": {
-                "command": "xdg-open",
-            },
-            "osx": {
-                "command": "open"
-            },
-            "args": [
-                "http://localhost:4300"
-            ],
-			"type": "shell"
-		}
+            "detail": "serve vue app on http://localhost:8080"
+        }
     ]
 }

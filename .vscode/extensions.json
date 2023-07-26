@@ -5,6 +5,7 @@
         "yzhang.markdown-all-in-one",
         "esbenp.prettier-vscode",
         "lucono.karma-test-explorer",
-        "formulahendry.dotnet-test-explorer"
+        "formulahendry.dotnet-test-explorer",
+        "vue.volar"
     ]
 }
