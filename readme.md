@@ -12,7 +12,7 @@ Software Development SDK for __Elastic Displays__ as open source mono repo
 [![Library:Build](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml)
 [![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
 
-[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-types-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/shared-types-build.yml)
+[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml)
 
 [![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
 [![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
