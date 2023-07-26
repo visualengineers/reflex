@@ -98,4 +98,4 @@ Therefore, the repository should be initialized in the root folder by running th
 
 ## Known issues
 
-* `Karma Test Explorer` Plugin for vs code does not work with the current npm workspace setup
+* `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.

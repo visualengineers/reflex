@@ -1,12 +1,13 @@
 name: Emulator - Build
 
 on: 
-  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
-
+    types: [ opened, reopened, edited ]
+    branches:
+      - main
 jobs:
   build-emulator:
     runs-on: windows-latest

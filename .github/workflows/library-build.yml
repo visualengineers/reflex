@@ -1,11 +1,13 @@
-name: ReFlex Library - Build and Test
+name: ReFlex Library - Build
 
 on: 
-  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
+    types: [ opened, reopened, edited ]
+    branches:
+      - main
 
 jobs:
   reflex:
@@ -25,22 +27,3 @@ jobs:
       - name: build ReFlex without external sensors
         working-directory: ${{ github.workspace }}
         run: dotnet build ReFlex.sln -c CI
-      - name: Install Required Tools
-        run: |
-          dotnet new tool-manifest
-          dotnet tool install dotnet-reportgenerator-globaltool
-          dotnet tool install dotnet-coverage
-      - name: execute tests and with code coverage
-        continue-on-error: true
-        run: dotnet coverage collect dotnet test --output ${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura
-      - name: generate report
-        run: dotnet reportgenerator -reports:${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"${{ github.workspace }}/Test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"
-      - name: Attach Report as Build Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: NUnit Test Report (ReFlex Library)
-          path: ${{ github.workspace }}/Test/artifacts/coverage-net/report 
-
-
-
-       

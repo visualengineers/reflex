@@ -1,11 +1,13 @@
-name: ReFlex Library - Build and Test
+name: ReFlex Library - Test
 
 on: 
-  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
+    types: [ opened, reopened, edited ]
+    branches:
+      - main
 
 jobs:
   reflex:
