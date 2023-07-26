@@ -19,7 +19,11 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: ./package.json    
+          cache-dependency-path: ./package.json  
+      - name: install typescript
+        run:  npm install -g typescript@5.1.6
+      - name: build shared types
+        run: npm run build:shared-types 
       - name: cache node-modules
         id: cache
         uses: actions/cache@v3
