@@ -22,7 +22,7 @@ jobs:
       with:
         dotnet-version: 6.x
     - name: Restore dependencies (Library)
-      run: dotnet restore "./library/src/ReFlex.Library.sln" -c CI
+      run: dotnet restore "./library/src/ReFlex.Library.sln"
     - name: Restore dependencies (TrackingServer)
       run: dotnet restore "./tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
     - name: Build Library (CI)

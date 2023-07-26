@@ -21,7 +21,7 @@ jobs:
       - name: Restore dependencies (Library)
         run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
       - name: Restore dependencies (TrackingServer)
-        run: dotnet restore "${{ github.workspace }}tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
+        run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
       - name: build ReFlex without external sensors
         working-directory: ${{ github.workspace }}
         run: dotnet build ReFlex.sln -c CI
