@@ -121,7 +121,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
   public livePreviewChanged(): void {
     this.livePreview$.next(this.livePreview);
-    this.trackingService.setDepthImagePreviewState(this.livePreview);
+    this.trackingService.setDepthImagePreviewState(this.livePreview).subscribe();
   }
 
   public updateSize(): void {
