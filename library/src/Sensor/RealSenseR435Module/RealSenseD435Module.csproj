@@ -12,6 +12,7 @@
     <RootNamespace>ReFlex.Sensor.RealSenseD435Module</RootNamespace>
     <Platforms>x64</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

@@ -15,6 +15,7 @@
     <RootNamespace>ReFlex.Core.Implementation</RootNamespace>
     <Platforms>x64</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

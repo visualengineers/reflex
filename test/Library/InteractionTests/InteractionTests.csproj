@@ -5,7 +5,7 @@
 
         <IsPackable>false</IsPackable>
 
-        <Configurations>Release;Debug</Configurations>
+        <Configurations>Release;Debug;CI</Configurations>
 
         <Platforms>x64</Platforms>
     </PropertyGroup>

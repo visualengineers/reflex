@@ -12,7 +12,7 @@
     <RootNamespace>ReFlex.Core.Tuio</RootNamespace>
     <Authors>Mathias Müller</Authors>
     <Copyright>Copyright @ 2022-2023</Copyright>
-    <Configurations>Release;Debug</Configurations>
+    <Configurations>Release;Debug;CI</Configurations>
     <Platforms>x64</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
