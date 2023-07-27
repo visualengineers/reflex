@@ -21,6 +21,22 @@
     ],
     "configurations": [    
         {
+            "name": "Launch Logging",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/tools/logging",
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "sourceMaps": true,
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal",
+            "type": "node"
+        },
+        {
             "type": "msedge",
             "request": "launch",
             "name": "Web Frontend - Angular",

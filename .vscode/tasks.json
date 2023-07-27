@@ -149,6 +149,30 @@
         },
         {
             "type": "npm",
+            "script": "debug",
+            "path": "tools/logging",
+            "options": {
+                "cwd": "${workspaceRoot}/tools/logging"
+            },
+            "problemMatcher": {
+                "owner": "typescript",
+                "source": "ts",
+                "applyTo": "closedDocuments",
+                "fileLocation": [
+                    "relative",
+                    "${cwd}"
+                ],
+                "pattern": "$tsc"                
+            },
+            "presentation": {
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "label": "run logging server",
+            "detail": "start logging server on port 4302"
+        },        
+        {
+            "type": "npm",
             "script": "start",
             "path": "examples/basic-angular",
             "options": {
