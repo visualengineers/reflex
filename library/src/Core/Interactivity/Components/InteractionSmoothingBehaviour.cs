@@ -130,7 +130,7 @@ namespace ReFlex.Core.Interactivity.Components
             
             allInteractionIds.ForEach(id =>
             {
-                var lastFrameId = frames.FirstOrDefault(frame =>
+                var lastFrameId = frames.OrderByDescending(frame => frame.FrameId).FirstOrDefault(frame =>
                         frame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id)) != null)
                     ?.FrameId ?? -1;
 
@@ -180,7 +180,7 @@ namespace ReFlex.Core.Interactivity.Components
         {
             var interactionsHistory = new List<Interaction>();
 
-            var frames = new List<InteractionFrame>(_interactionFrames);
+            var frames = new List<InteractionFrame>(_interactionFrames.OrderBy(frame => frame.FrameId));
             
             frames.ForEach(frame =>
             {
@@ -192,7 +192,7 @@ namespace ReFlex.Core.Interactivity.Components
                 interactionsHistory.Add(new Interaction(lastTouch));
             });
             
-            var smooth = interactionsHistory.FirstOrDefault();
+            var smooth = interactionsHistory.LastOrDefault();
 
             var raw = interactionsHistory.Select(interaction => interaction.Position).ToList();
 
@@ -227,6 +227,9 @@ namespace ReFlex.Core.Interactivity.Components
                 rawInteractions.ForEach(AssignMaxId);
                 return rawInteractions;
             }
+            
+            // reset touch id to negative value
+            rawInteractions.ForEach(Interaction => Interaction.TouchId = -1);
 
             // step 1: look in past frames for 
 
@@ -253,14 +256,15 @@ namespace ReFlex.Core.Interactivity.Components
 
                 while (duplicateCount != 0)
                 {
-                    // if a point has 
+                    // // if a point has no corresponding point
                     // distances.Where(dist => dist.Item2.Count == 0).ToList().ForEach(tpl =>
                     //    {
                     //        var interaction = new Interaction(candidates[tpl.Item1]);
-                    //         AssignMaxId(interaction);
+                    //         AssignMaxId(interaction);                            
                     //         result.Add(interaction);
                     //     }
                     // );
+
                     // remove all points which have no next point
                     distances.RemoveAll(dist => dist.Item2.Count == 0);
 
@@ -307,20 +311,21 @@ namespace ReFlex.Core.Interactivity.Components
                                 result.Remove(alreadyAdded);
                                 interaction.Confidence++;
                                 result.Add(interaction);
-                            }
-                            else
+                            } 
+                            else 
                             {
-                                alreadyAdded.Confidence = interaction.Confidence;
-                            }
+                               alreadyAdded.Confidence = interaction.Confidence; 
+                            }    
+
                         }
-                    }
+                    }                   
                 });
 
                 candidates = candidates.Where(interaction => interaction.TouchId < 0).ToArray();
                 
                 i--;
             }
-            
+                    
             var newInteractions =  candidates.ToList();
             newInteractions.ForEach(AssignMaxId);
             
