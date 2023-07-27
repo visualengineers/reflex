@@ -1,5 +1,6 @@
 import * as express from 'express';
 import debug from 'debug';
+var fs = require('fs');
 import { CommonRoutesConfig } from "../common/common-routes.config";
 import * as winston from 'winston';
 
@@ -67,10 +68,31 @@ export class LoggingRoutes extends CommonRoutesConfig {
             await this.writeLogMessage('results', req, res);
         });
 
-        this.app.route(`/log/data`)
+        this.app.route(`/log/data/:file`)
         .get(async (req, res) => {
-            await this.getLogMessages('sensorData', req, res);
+            try {
+                const file = `data/log/${req.params.file}_data.csv`;
+
+                const fileExists = fs.existsSync(file);
+
+                if (!fileExists) {
+                  res.status(404).send({error: `File not found: ${file}` });
+                  return;
+                }
+
+                fs.readFile(file, 'utf8', (err:any, data:any) => {
+                 if (err) {
+                   log(err);
+                   res.status(500).send(err);
+                   return;
+                 }
+                 res.status(200).send(data);
+               }); 
+             } catch (err) {
+                 res.status(500).send(err);
+             }
         })
+        this.app.route(`/log/data`)
         .post(async (req, res) => {
             await this.writeLogMessage('sensorData', req, res);
         });
@@ -87,10 +109,10 @@ export class LoggingRoutes extends CommonRoutesConfig {
 
                 this._logger = this.createLogger(name);
 
-                // write header for sensor data
-                await this.writeLogMessage('sensorData', req, res)
 
-                res.status(200).send();
+
+                // write header for sensor data
+                await this.writeLogMessage('sensorData', req, res, { file: name })
 
             }  catch (err) {
                 res.status(500).send(err);
@@ -107,18 +129,23 @@ export class LoggingRoutes extends CommonRoutesConfig {
         }
 
         try {
-           this._logger.query({ fields: [filter]},  (err, results) => {
+           this._logger.query(undefined, (err:Error, results:any) => {
                 if (err) {
-                    res.status(500).send(err);
+                    res.status(500).send(err);                    
+                } else if (filter === 'sensorData') {
+                    res.send(results);
+                } else if (filter === 'results') {
+                    res.send(JSON.stringify(results));
+                } else {
+                    res.status(500).send({ error: `Unknown log format: ${filter}`});
                 }
-                res.send(JSON.stringify(results.file));
            })
         } catch (err) {
             res.status(500).send(err);
         }
     }
 
-    private async writeLogMessage(filter: string, req: any, res: any) {
+    private async writeLogMessage(filter: string, req: any, res: any, responseBody?: any) {
         if (this._logger == undefined) {
             return res.status(500).send({ error: 'Logger needs to created before starting logging.' });
         }
@@ -127,8 +154,13 @@ export class LoggingRoutes extends CommonRoutesConfig {
          } catch (err) {
              res.status(500).send(err);
          }
-
-         res.status(200).send();
+         if (responseBody) {
+            res.status(200).send(responseBody);
+         }
+         else
+         {
+            res.status(200).send();
+         }
     }
 
 }
