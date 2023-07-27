@@ -11,7 +11,7 @@ import { LoggingRoutes } from './routes/logging.routes.config';
 
 
 const app = express();
-const port: Number = 4301;
+const port: Number = 4302;
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
 
