@@ -10,16 +10,16 @@ Small node logging server using `express` and `winston` to log sensor data and r
 
 ## REST API
 
-| endpoint      | Method   | Description                     | Example Request Body                          | Example Response Body                  |
-| ------------- | -------- | ------------------------------- | --------------------------------------------- | -------------------------------------- |  
-| `/log/create` | **POST** | create log file / start logging | `{ "message": "FrameId, IsValid, Comment;" }` | `{ "file": "2023-07-27T205105.042Z" }` |
-| `/log/data` | **POST** | log message to file | `{ "message": "2, false, +++;" }` |  |
-| `/log/data/2023-07-27T205105.042Z` | **GET** | retireve data logs | `FrameId, IsValid, Comment;`<br/>`2, false, +++;` |  |
-| `/log/result` | **POST** | log result to file | `{ "ProbandId": 3, "test": true, "result": "result" }` |  |
-| `/log/result` | **GET** | retrieve results |  |`{ "ProbandId": 3, "test": true, "result": "result" }` |
-| `/data/11` | **POST** | create data file `data_011.json` | `{`<br/>`  "data0": "test"`<br/>`  "data1": "abc"`<br/>`  "data3": "123"`<br/>`}` | `{ "file": "data/data_011.json" }` |
-| `/data/11` | **GET** | retrieve data file `data_011.json` |  | `{`<br/>`  "data0": "test"`<br/>`  "data1": "abc"`<br/>`  "data3": "123"`<br/>`}` |
-| `/data` | **GET** | list of available data sets |  | `[ 11 ]` |
+| endpoint                           | Method   | Description                        | Example Request Body                                                              | Example Response Body                                                             |
+| ---------------------------------- | -------- | ---------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `/log/create`                      | **POST** | create log file / start logging    | `{ "message": "FrameId, IsValid, Comment;" }`                                     | `{ "file": "2023-07-27T205105.042Z" }`                                            |
+| `/log/data`                        | **POST** | log message to file                | `{ "message": "2, false, +++;" }`                                                 |                                                                                   |
+| `/log/data/2023-07-27T205105.042Z` | **GET**  | retireve data logs                 | `FrameId, IsValid, Comment;`<br/>`2, false, +++;`                                 |                                                                                   |
+| `/log/result`                      | **POST** | log result to file                 | `{ "ProbandId": 3, "test": true, "result": "result" }`                            |                                                                                   |
+| `/log/result`                      | **GET**  | retrieve results                   |                                                                                   | `{ "ProbandId": 3, "test": true, "result": "result" }`                            |
+| `/data/11`                         | **POST** | create data file `data_011.json`   | `{`<br/>`  "data0": "test"`<br/>`  "data1": "abc"`<br/>`  "data3": "123"`<br/>`}` | `{ "file": "data/data_011.json" }`                                                |
+| `/data/11`                         | **GET**  | retrieve data file `data_011.json` |                                                                                   | `{`<br/>`  "data0": "test"`<br/>`  "data1": "abc"`<br/>`  "data3": "123"`<br/>`}` |
+| `/data`                            | **GET**  | list of available data sets        |                                                                                   | `[ 11 ]`                                                                          |
 
 ## Logging
 
