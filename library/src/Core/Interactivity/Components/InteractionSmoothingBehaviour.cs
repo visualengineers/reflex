@@ -130,7 +130,7 @@ namespace ReFlex.Core.Interactivity.Components
             
             allInteractionIds.ForEach(id =>
             {
-                var lastFrameId = frames.FirstOrDefault(frame =>
+                var lastFrameId = frames.OrderByDescending(frame => frame.FrameId).FirstOrDefault(frame =>
                         frame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id)) != null)
                     ?.FrameId ?? -1;
 
@@ -180,7 +180,7 @@ namespace ReFlex.Core.Interactivity.Components
         {
             var interactionsHistory = new List<Interaction>();
 
-            var frames = new List<InteractionFrame>(_interactionFrames);
+            var frames = new List<InteractionFrame>(_interactionFrames.OrderBy(frame => frame.FrameId));
             
             frames.ForEach(frame =>
             {
@@ -192,7 +192,7 @@ namespace ReFlex.Core.Interactivity.Components
                 interactionsHistory.Add(new Interaction(lastTouch));
             });
             
-            var smooth = interactionsHistory.FirstOrDefault();
+            var smooth = interactionsHistory.LastOrDefault();
 
             var raw = interactionsHistory.Select(interaction => interaction.Position).ToList();
 
@@ -302,16 +302,12 @@ namespace ReFlex.Core.Interactivity.Components
                         else
                         {
                             // TODO: find better selection of associated point (distance and time)
-                            if (alreadyAdded.Confidence < interaction.Confidence)
+                            if (alreadyAdded.Confidence > interaction.Confidence)
                             {
                                 result.Remove(alreadyAdded);
-                                interaction.Confidence++;
+                                interaction.Confidence = alreadyAdded.Confidence;
                                 result.Add(interaction);
-                            }
-                            else
-                            {
-                                alreadyAdded.Confidence = interaction.Confidence;
-                            }
+                            }                 
                         }
                     }
                 });

@@ -106,16 +106,18 @@ namespace InteractionTests
 
         
         /// <summary>
-        /// Tests if a single interaction processed in 100 frames is returned without changes having assigned the correct unique id
+        /// Tests if a single interaction processed in 100 frames is returned having assigned the correct unique id and correct confidence
         /// Also verifies the cache correctness
         /// </summary>
         [Test]
         public void TestSingleInteractionNoHistory()
         {
+            _smoothing.MaxConfidence = new Random().Next(100);
+
            for (var i = 0; i < 100; i++)
            {
                 Thread.Sleep(20);
-                var sourceInteractions = GetTestData(1, i);
+                var sourceInteractions = GetTestData(1, 0);       
                 
                 var result = _smoothing.Update(sourceInteractions);
 
@@ -123,7 +125,7 @@ namespace InteractionTests
                 var expectedMaxId = 1;
 
                 var interactionsCount = 1;
-                var confidence = new List<int> {i};
+                var confidence = new List<int> {Math.Min(i, _smoothing.MaxConfidence)};
                 var touchIds = new List<int> {0};
                 
                 var cacheSize = Math.Min(i + 1, NumFrames);
@@ -147,6 +149,8 @@ namespace InteractionTests
         public void TestTwoCloseInteractionsNoHistory()
         {
             var interactionsCount = 2;
+
+            _smoothing.MaxConfidence = new Random().Next(100);
             
             for (var i = 0; i < 100; i++)
             {
@@ -158,7 +162,8 @@ namespace InteractionTests
                 var expectedFrameId = i + 1;
                 var expectedMaxId = 2;
 
-                var confidence = new List<int> {i, i};
+                var conf = Math.Min(i, _smoothing.MaxConfidence);
+                var confidence = new List<int> {conf, conf};
                 var touchIds = new List<int> {0, 1};
                 
                 var cacheSize = Math.Min(i + 1, NumFrames);
