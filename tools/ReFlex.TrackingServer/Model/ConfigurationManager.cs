@@ -1,10 +1,6 @@
-﻿using System;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NLog;
 using Prism.Events;
-using ReFlex.Core.Events;
 using TrackingServer.Data;
 using TrackingServer.Events;
 
@@ -35,6 +31,9 @@ namespace TrackingServer.Model
             _backupPath = filePathBackup;
             _env = environment;
             _evtAggregator = evtAggregator;
+
+            // initialize Settings with default values
+            Settings = new TrackingServerAppSettings();
 
             Load();
         }
@@ -98,7 +97,10 @@ namespace TrackingServer.Model
 
             var settingJson = File.ReadAllText(fullPath);
 
-            Settings = JsonConvert.DeserializeObject<TrackingServerAppSettings>(settingJson);
+            var settings = JsonConvert.DeserializeObject<TrackingServerAppSettings>(settingJson);
+
+            if (settings != null)
+                Settings = settings;
 
             Logger.Info($"Sucessfully loaded Config from file '{fullPath}'");
             Logger.Trace($"Current config values: {Environment.NewLine}{Settings.GetCompleteValues()}");
