@@ -25,9 +25,10 @@
     "tools/ReFlex.TrackingServer/ClientApp",
     "packages/reflex-shared-types",
     "tools/emulator",
+    "tools/logging",
     "examples/basic-angular",
     "examples/basic-react",
-    "examples/basic-vue"
+    "examples/basic-vue"    
   ],
   "dependencies": {
     "@angular/animations": "16.1.6",
