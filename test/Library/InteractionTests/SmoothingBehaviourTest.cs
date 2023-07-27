@@ -37,6 +37,9 @@ namespace InteractionTests
             _smoothing.UpdateFilterType(FilterType.None);
         }
 
+        /// <summary>
+        /// Add different interactions that are not merged into one and check if they are removed correctly base on their "life span" (cf. <see cref="InteractionSmoothingBehaviour.MaxNumEmptyFramesBetween"/>
+        /// </summary>
         [Test]
         public void TestDifferentWidePointsAndReset()
         {
@@ -63,9 +66,12 @@ namespace InteractionTests
                 var expectedFrameId = i + 1;
                 var expectedMaxId = i + 1;
 
-                var interactionsCount = Math.Min(i + 1, NumFrames);
+                var interactionsCount = Math.Min(Math.Min(i + 1, NumFrames), _smoothing.MaxNumEmptyFramesBetween + 1);
                 
                 confidence.Add(0);
+                if (interactionsCount < expectedFrameId)
+                    touchIds.RemoveAt(0);
+                
                 touchIds.Add(i);
 
                 var cachedFrame = new InteractionFrame(result.FrameId,
