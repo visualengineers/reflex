@@ -63,6 +63,11 @@ Therefore, the repository should be initialized in the root folder by running th
 * run `npm install` in root directory
 * if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
 
+### Development
+
+* Adding a new workspace: `npm init -w ./path/to/workspace/directory`
+* Adding packages to workspace: `npm install -w ./path/to/workspace/directory package --save` (in workspace root directory)
+
 ## External Dependencies
 
 * The following dlls need to be placed in the `external` directory for use with the associated depth cameras
