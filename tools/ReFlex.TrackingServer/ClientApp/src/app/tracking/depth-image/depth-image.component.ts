@@ -98,7 +98,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
           if (showLiveView) {
             return this.startSocket();
           } else {
-            this.stopStocket();
+            this.stopSocket();
           }
 
           return NEVER.pipe();
@@ -155,7 +155,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
     return this.wsService.getResponseStream();
   }
 
-  private stopStocket(): void {
+  private stopSocket(): void {
     if (this._socket) {
       this._socket.complete();
     }

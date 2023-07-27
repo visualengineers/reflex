@@ -104,3 +104,4 @@ Therefore, the repository should be initialized in the root folder by running th
 ## Known issues
 
 * `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
+* if the application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open `%AppData%` Folder (Windows) and delete the folder `reflex.trackingserver`
