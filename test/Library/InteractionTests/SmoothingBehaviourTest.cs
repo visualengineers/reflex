@@ -24,7 +24,7 @@ namespace InteractionTests
             new Interaction(new Point3(100f, 200f, 0.5f), InteractionType.Push, 10f),
             new Interaction(new Point3(105f, 195f, 0.5f), InteractionType.Push, 10f), // rather close to the first
             new Interaction(new Point3(105f, 95f, 0.5f), InteractionType.Push, 10f), // far away in one direction from [0] and [1]
-            new Interaction(new Point3(115f, 145f, 0.5f), InteractionType.Push, 10f) // between [1] and [2], but out of the distance to [0]
+            new Interaction(new Point3(115f, 135f, 0.5f), InteractionType.Push, 10f) // between [1] and [2], but out of the distance to [0]
         };
         
         [SetUp]
@@ -155,7 +155,7 @@ namespace InteractionTests
             for (var i = 0; i < 100; i++)
             {
                 Thread.Sleep(20);
-                var sourceInteractions = GetTestData(2, i);
+                var sourceInteractions = GetTestData(2, 0);
                 
                 var result = _smoothing.Update(sourceInteractions);
 
@@ -275,13 +275,20 @@ namespace InteractionTests
         }
         
         /// <summary>
-        /// tests if two interactions are assigned one Id if thexy are within the range and reported in different frames 
+        /// tests, if interactions that are beyond the merge distance are not merged together
+        /// [1]: [105|195|0.5]  (a)
+        /// [2]: [115|135|0.5]  (c)
+        /// [3]: [105| 95|0.5]  (b)  
+        /// distance: 45 (a-b: 70, a-c:120, b-c:50) 
+        /// expect three interactions to be recognized
         /// </summary>
         [Test]
-        public void TestTwoCloseInteractionsMergedTogether()
+        public void TestInteractionsInLineNoMergeNoRemove()
         {
-            // 1: [1] , [3] , [2] --> single interaction in straight line
-            
+            _smoothing.TouchMergeDistance2D = 45f;
+            _smoothing.MaxConfidence = 100;
+            _smoothing.MaxNumEmptyFramesBetween = 2;
+
             var data1 = GetTestData(new[]{1});
             var interaction1 = data1[0];
            
@@ -298,125 +305,197 @@ namespace InteractionTests
 
             var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
 
-            result = _smoothing.Update(data2);
+            result = _smoothing.Update(data2);            
+
+            confidence = new List<int> {0,0};
+            touchIds = new List<int> {0,1};
             
-            // confidence and touchId shouldn't change
-            
-            CheckResult(result, 1, 2, confidence, touchIds, 1, 2);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[0]));
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
 
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
             
             result = _smoothing.Update(data3);
             
-            // confidence and touchId shouldn't change
+            confidence = new List<int> {0 ,0, 0};
+            touchIds = new List<int> {0, 1, 2};
             
-            CheckResult(result, 1, 3, confidence, touchIds, 1, 3);
+            CheckResult(result, 3, 3, confidence, touchIds, 3, 3);
+            
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[2]));
+        }
+
+        /// <summary>
+        /// tests, if interactions that are beyond the merge distance are not merged together
+        /// [1]: [105|195|0.5]  (a)
+        /// [2]: [115|135|0.5]  (c)
+        /// [3]: [105| 95|0.5]  (b)  
+        /// distance: 45 (a-b: 70, a-c:120, b-c:50) 
+        /// expect two interactions to be recognized, as first one is removed in third frame
+        /// </summary>
+        [Test]
+        public void TestInteractionsInLineNoMergeWithRemove()
+        {
+            _smoothing.TouchMergeDistance2D = 45f;
+            _smoothing.MaxConfidence = 100;
+            _smoothing.MaxNumEmptyFramesBetween = 1;
+
+            var data1 = GetTestData(new[]{1});
+            var interaction1 = data1[0];
+           
+            var result = _smoothing.Update(data1);
+            
+            var confidence = new List<int> {0};
+            var touchIds = new List<int> {0};
+            
+            CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
+            
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            
+            var data2 = GetTestData(new[]{3});
+
+            var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
+
+            result = _smoothing.Update(data2);            
+
+            confidence = new List<int> {0,0};
+            touchIds = new List<int> {0,1};
+            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+
+            var data3 = GetTestData(new[]{2});
+            var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
+            
+            result = _smoothing.Update(data3);
+            
+            // MaxNumEmptyFramesBetween = 1 --> remove first touch
+            confidence = new List<int> {0 ,0};
+            touchIds = new List<int> {1, 2};
+            
+            CheckResult(result, 2, 3, confidence, touchIds, 3, 3);
+            
+            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[1]));
+        }
+
+        /// <summary>
+        /// tests, if interactions that are beyond the merge distance are not merged together
+        /// [1]: [105|195|0.5]  (a)
+        /// [2]: [115|135|0.5]  (c)
+        /// [3]: [105| 95|0.5]  (b)  
+        /// distance: 45 (a-b: 70, a-c:120, b-c:50) 
+        /// expect two interactions to be recognized, as first one is removed in third frame
+        /// </summary>
+        [Test]
+        public void TestInteractionsInLineWithMergeNoRemove()
+        {
+            _smoothing.TouchMergeDistance2D = 65f;
+            _smoothing.MaxConfidence = 100;
+            _smoothing.MaxNumEmptyFramesBetween = 2;
+
+            var data1 = GetTestData(new[]{1});
+            var interaction1 = data1[0];
+           
+            var result = _smoothing.Update(data1);
+            
+            var confidence = new List<int> {0};
+            var touchIds = new List<int> {0};
+            
+            CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
+            
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            
+            var data2 = GetTestData(new[]{3});
+
+            var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
+
+            result = _smoothing.Update(data2);            
+
+            confidence = new List<int> {0,0};
+            touchIds = new List<int> {0,1};
+            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+
+            var data3 = GetTestData(new[]{2});
+            var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
+            
+            result = _smoothing.Update(data3);
+            
+            // Touch mergeDistance = 65 -> third touch is mapped to touchId 1 (with position of touch 3)
+            confidence = new List<int> {0 , 1};
+            touchIds = new List<int> {0, 1};
+            
+            CheckResult(result, 2, 3, confidence, touchIds, 2, 3);
+            
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[1]));
+        }
+
+        /// <summary>
+        /// tests, if interactions that are beyond the merge distance are not merged together
+        /// [1]: [105|195|0.5]  (a)
+        /// [2]: [115|135|0.5]  (c)
+        /// [3]: [105| 95|0.5]  (b)  
+        /// distance: 45 (a-b: 70, a-c:120, b-c:50) 
+        /// expect two interactions to be recognized, as first one is removed in third frame
+        /// </summary>
+        [Test]
+        public void TestInteractionsInLineWithMergeWithRemove()
+        {
+            _smoothing.TouchMergeDistance2D = 65f;
+            _smoothing.MaxConfidence = 100;
+            _smoothing.MaxNumEmptyFramesBetween = 1;
+
+            var data1 = GetTestData(new[]{1});
+            var interaction1 = data1[0];
+           
+            var result = _smoothing.Update(data1);
+            
+            var confidence = new List<int> {0};
+            var touchIds = new List<int> {0};
+            
+            CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
+            
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            
+            var data2 = GetTestData(new[]{3});
+
+            var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
+
+            result = _smoothing.Update(data2);            
+
+            confidence = new List<int> {0,0};
+            touchIds = new List<int> {0,1};
+            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+
+            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+
+            var data3 = GetTestData(new[]{2});
+            var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
+            
+            result = _smoothing.Update(data3);
+            
+            // TouchMergeDistance = 65 -> third touch is mapped to touchId 1 (with position of touch 3)
+            // MaxNumTouchesBetween = 1 -> first touch is also removed
+            confidence = new List<int> {1};
+            touchIds = new List<int> {1};
+            
+            CheckResult(result, 1, 3, confidence, touchIds, 2, 3);
             
             Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[0]));
-            
-            _smoothing.Reset();
-            
-            //  2: [1] , [2] , [3]  --> two interactions with 2 and 3 merged together
-            
-            data1 = GetTestData(new[]{1});
-            interaction1 = data1[0];
-           
-            result = _smoothing.Update(data1);
-            
-            confidence = new List<int> {0};
-            touchIds = new List<int> {0};
-            
-            CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            
-            data2 = GetTestData(new[]{2});
-
-            result = _smoothing.Update(data2);
-            
-            confidence = new List<int> {0, 0};
-            touchIds = new List<int> {0, 1};
-            
-            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);
-            
-            Assert.IsTrue(ValidateInteractionInFrame(data2[0], result.Interactions));
-            Assert.IsTrue(ValidateInteractionInFrame(data1[0], result.Interactions));
-
-            data3 = GetTestData(new[]{3});
-
-            interaction3 = new Interaction(data3[0]);// ApplyFilter(new List<Interaction> {data3[0], data2[0]});
-            interaction3.TouchId = data2[0].TouchId;
-            
-            result = _smoothing.Update(data3);
-            
-            // confidence and touchId shouldn't change
-            
-            CheckResult(result, 2, 3, confidence, touchIds, 2, 3);
-            
-            Assert.IsTrue(ValidateInteractionInFrame(data1[0], result.Interactions));
-            Assert.IsTrue(ValidateInteractionInFrame(interaction3, result.Interactions));
-            
-            _smoothing.Reset();
-            
-            //  3: [1] , [2] , [ ], [1], [3]  --> two interactions with 1 and 3 merged together
-            
-            data1 = GetTestData(new[]{1});
-            interaction1 = data1[0];
-           
-            result = _smoothing.Update(data1);
-            
-            confidence = new List<int> {0};
-            touchIds = new List<int> {0};
-            
-            CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            
-            data2 = GetTestData(new[]{2});
-
-            result = _smoothing.Update(data2);
-            
-            confidence = new List<int> {0, 0};
-            touchIds = new List<int> {0, 1};
-            
-            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);
-            
-            Assert.IsTrue(ValidateInteractionInFrame(data2[0], result.Interactions));
-            Assert.IsTrue(ValidateInteractionInFrame(data1[0], result.Interactions));
-            
-            result = _smoothing.Update(new List<Interaction>());
-            
-            CheckResult(result, 2, 3, confidence, touchIds, 2, 3);
-            
-            Assert.IsTrue(ValidateInteractionInFrame(data2[0], result.Interactions));
-            Assert.IsTrue(ValidateInteractionInFrame(data1[0], result.Interactions));
-            
-            result = _smoothing.Update(GetTestData(new[]{1}));
-            
-            CheckResult(result, 2, 4, confidence, touchIds, 2, 4);
-            
-            Assert.IsTrue(ValidateInteractionInFrame(data2[0], result.Interactions));
-            Assert.IsTrue(ValidateInteractionInFrame(data1[0], result.Interactions));
-            
-            data3 = GetTestData(new[]{3});
-
-            interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data1[0], data1[0], data3[0]});
-            interaction3.TouchId = data1[0].TouchId;
-            
-            result = _smoothing.Update(data3);
-            
-            // confidence and touchId shouldn't change
-            
-            CheckResult(result, 2, 5, confidence, touchIds, 2, 5);
-            
-            Assert.IsTrue(ValidateInteractionInFrame(data2[0], result.Interactions));
-            Assert.IsTrue(ValidateInteractionInFrame(interaction3, result.Interactions));
-            
-            _smoothing.Reset();
-
         }
         
         /// <summary>

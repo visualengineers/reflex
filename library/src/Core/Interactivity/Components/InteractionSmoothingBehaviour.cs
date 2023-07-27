@@ -227,6 +227,9 @@ namespace ReFlex.Core.Interactivity.Components
                 rawInteractions.ForEach(AssignMaxId);
                 return rawInteractions;
             }
+            
+            // reset touch id to negative value
+            rawInteractions.ForEach(Interaction => Interaction.TouchId = -1);
 
             // step 1: look in past frames for 
 
@@ -253,14 +256,15 @@ namespace ReFlex.Core.Interactivity.Components
 
                 while (duplicateCount != 0)
                 {
-                    // if a point has 
+                    // // if a point has no corresponding point
                     // distances.Where(dist => dist.Item2.Count == 0).ToList().ForEach(tpl =>
                     //    {
                     //        var interaction = new Interaction(candidates[tpl.Item1]);
-                    //         AssignMaxId(interaction);
+                    //         AssignMaxId(interaction);                            
                     //         result.Add(interaction);
                     //     }
                     // );
+
                     // remove all points which have no next point
                     distances.RemoveAll(dist => dist.Item2.Count == 0);
 
@@ -302,21 +306,26 @@ namespace ReFlex.Core.Interactivity.Components
                         else
                         {
                             // TODO: find better selection of associated point (distance and time)
-                            if (alreadyAdded.Confidence > interaction.Confidence)
+                            if (alreadyAdded.Confidence < interaction.Confidence)
                             {
                                 result.Remove(alreadyAdded);
-                                interaction.Confidence = alreadyAdded.Confidence;
+                                interaction.Confidence++;
                                 result.Add(interaction);
-                            }                 
+                            } 
+                            else 
+                            {
+                               alreadyAdded.Confidence = interaction.Confidence; 
+                            }    
+
                         }
-                    }
+                    }                   
                 });
 
                 candidates = candidates.Where(interaction => interaction.TouchId < 0).ToArray();
                 
                 i--;
             }
-            
+                    
             var newInteractions =  candidates.ToList();
             newInteractions.ForEach(AssignMaxId);
             
