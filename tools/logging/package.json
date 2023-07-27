@@ -5,7 +5,7 @@
   "description": "Small logging example using winston logger",
   "main": "loggingServer.js",
   "scripts": {
-    "start": "npm run build-server && node ./dist/loggingServer.js",
+    "start": "npm run build && node ./dist/loggingServer.js",
     "build": "tsc -p tsconfig.json",
     "debug": "SET DEBUG=* && npm run start"
   },
@@ -33,5 +33,9 @@
   "bugs": {
     "url": "https://github.com/visualengineers/reflex/issues"
   },
-  "homepage": "https://github.com/visualengineers/reflex#readme"
+  "homepage": "https://github.com/visualengineers/reflex#readme",
+  "devDependencies": {
+    "@types/debug": "^4.1.8",
+    "@types/express-fileupload": "^1.4.1"
+  }
 }

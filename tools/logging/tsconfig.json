@@ -4,16 +4,16 @@
         "module": "commonjs",        
         "outDir": "./dist",                
         "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "sourceMap": true,
         "typeRoots": [
             "node_modules/@types"
         ]
     },    
     "include": [
-        "server/"
+        "./"
     ],
     "exclude": [
-        "src",
         "dist",
         "node_modules"
     ]
