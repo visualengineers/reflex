@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointCloud.Test", "test\Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator.Benchmark", "test\Library\Emulator.Benchmark\Emulator.Benchmark.csproj", "{95BD111C-1058-49CC-B4A2-F905768211A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Test", "test\Common.Test\Common.Test.csproj", "{A47FA61B-05C6-4126-8EC6-5F1325191FFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -204,6 +206,12 @@ Global
 		{95BD111C-1058-49CC-B4A2-F905768211A8}.Release|x64.Build.0 = Release|Any CPU
 		{95BD111C-1058-49CC-B4A2-F905768211A8}.CI|x64.ActiveCfg = CI|x64
 		{95BD111C-1058-49CC-B4A2-F905768211A8}.CI|x64.Build.0 = CI|x64
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Debug|x64.Build.0 = Debug|Any CPU
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Release|x64.ActiveCfg = Release|Any CPU
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Release|x64.Build.0 = Release|Any CPU
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.CI|x64.ActiveCfg = Debug|Any CPU
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.CI|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -232,6 +240,7 @@ Global
 		{0DD60996-092E-4764-86D5-9C26E4A70A7F} = {52D3D067-85AF-47F3-A06A-B6E6932A4E0C}
 		{361E07A5-067C-49EE-8E6B-57C89D7F9BB2} = {52D3D067-85AF-47F3-A06A-B6E6932A4E0C}
 		{95BD111C-1058-49CC-B4A2-F905768211A8} = {52D3D067-85AF-47F3-A06A-B6E6932A4E0C}
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA} = {52D3D067-85AF-47F3-A06A-B6E6932A4E0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {53295A33-7C1F-4E90-81E4-C3DB8E17F8A1}
