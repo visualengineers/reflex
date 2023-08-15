@@ -6,7 +6,7 @@ namespace ReFlex.Core.Common.Components
     /// <summary>
     /// Offers some useful and fast mathematical functions
     /// </summary>
-    public class MathUtils
+    public class Math
     {
         #region methods
 
@@ -80,20 +80,25 @@ namespace ReFlex.Core.Common.Components
         /// If the value is smaller than min, the function returns min.
         /// If the value is smaller than max and greater than min, the function returns the value.
         /// </returns>
-        public static double Clamp(double value, double min, double max)
+        public static T Clamp<T>(T value, T max, T min)
+            where T : IComparable<T>
         {
-            if (min > max)
-            {
-                (max, min) = (min, max);
-            }
-            return (value < min) ? min : (value > max) ? max : value;
+            if (min.CompareTo(max) > 0)
+                (min, max) = (max, min);
+            
+            var result = value;
+            if (value.CompareTo(max) > 0)
+                result = max;
+            if (value.CompareTo(min) < 0)
+                result = min;
+            return result;
         }
             
 
         public static double ExponentialMapping(double input) =>
-            Math.Exp((input) - 1) / (Math.E - 1);
+            System.Math.Exp((input) - 1) / (System.Math.E - 1);
 
         public static double LogarithmicMapping(double input) =>
-            Math.Log(input + 1, Math.E) / Math.Log(2, Math.E);
+            System.Math.Log(input + 1, System.Math.E) / System.Math.Log(2, System.Math.E);
     }
 }

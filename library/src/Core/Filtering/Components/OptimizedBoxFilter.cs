@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
+using Math = System.Math;
 
 namespace ReFlex.Core.Filtering.Components;
 

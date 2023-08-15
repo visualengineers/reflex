@@ -1,5 +1,6 @@
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Exceptions;
+using Math = System.Math;
 
 namespace Common.Test;
 

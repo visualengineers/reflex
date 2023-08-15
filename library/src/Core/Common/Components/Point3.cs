@@ -142,7 +142,7 @@ namespace ReFlex.Core.Common.Components
         
         public static Point3 operator /(Point3 a, float scalar)
         {
-            if (Math.Abs(scalar) <= float.Epsilon)
+            if (System.Math.Abs(scalar) <= float.Epsilon)
                 scalar = scalar > 0 ? float.Epsilon : -float.Epsilon;
                 
             var rez = 1f / scalar;

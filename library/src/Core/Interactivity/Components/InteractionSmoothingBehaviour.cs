@@ -5,6 +5,7 @@ using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Filtering.Components;
 using ReFlex.Core.Interactivity.Util;
+using Math = System.Math;
 
 namespace ReFlex.Core.Interactivity.Components
 {
@@ -351,6 +352,7 @@ namespace ReFlex.Core.Interactivity.Components
                 .Where(inter => Equals(inter.TouchId, touchId)).Max(inter => inter.Confidence);
             
             // increment and clamp to max value
+            // @TODO: use Reflex.Core.Common.Components.Math.Clamp
             return (int) Math.Min(Math.Max(currentConfidence, maxExistingConfidence) + 1, MaxConfidence);
         }
     } 

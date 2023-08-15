@@ -1,18 +1,13 @@
 ﻿using Implementation.Interfaces;
-using Microsoft.AspNetCore.Builder;
 using NLog;
 using ReFlex.Core.Common.Components;
-using System;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Graphics;
 using Prism.Events;
 using TrackingServer.Events;
-using TrackingServer.Model;
 using LogLevel = NLog.LogLevel;
+using Math = System.Math;
 
 namespace TrackingServer.Services
 {
