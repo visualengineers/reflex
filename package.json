@@ -21,7 +21,8 @@
     "lint:emulator": "npm run lint -w tools/emulator",
     "lint:server": "npm run lint -w tools/ReFlex.TrackingServer/ClientApp",
     "test:emulator": "npm run test -w tools/emulator",
-    "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp"
+    "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp",
+    "test:net-with-report": "dotnet coverage collect dotnet test --output test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura && dotnet reportgenerator -reports:test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:\"test/artifacts/coverage-net/report\" -reporttypes:Html -assemblyfilters:\"+ReFlex.*;-*.Test\""
   },
   "workspaces": [
     "tools/ReFlex.TrackingServer/ClientApp",
