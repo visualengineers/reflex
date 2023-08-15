@@ -352,7 +352,6 @@ namespace ReFlex.Core.Interactivity.Components
                 .Where(inter => Equals(inter.TouchId, touchId)).Max(inter => inter.Confidence);
             
             // increment and clamp to max value
-            // @TODO: use Reflex.Core.Common.Components.Math.Clamp
             return (int) Math.Min(Math.Max(currentConfidence, maxExistingConfidence) + 1, MaxConfidence);
         }
     } 

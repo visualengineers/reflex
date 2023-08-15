@@ -25,7 +25,7 @@ public class MathUtilsTest
     public void TestSqrt(float f)
     {
         var mSqrt2 = System.Math.Sqrt(f);
-        var cSqrt = Math.Sqrt(f);
+        var cSqrt = Math.FastSqrt(f);
                 
         Assert.That(System.Math.Abs(mSqrt2-cSqrt) < 0.05f * f);
     }
@@ -52,7 +52,7 @@ public class MathUtilsTest
     [Test]
     public void TestSqrt0()
     {
-        Assert.That(Math.Sqrt(0), Is.EqualTo(0));
+        Assert.That(Math.FastSqrt(0), Is.EqualTo(0));
         Assert.That(Math.InverseSqrt(0), Is.EqualTo(0));
     }
     
@@ -60,7 +60,7 @@ public class MathUtilsTest
     public void TestNegativeSqrt()
     {
         Assert.That(float.IsNegativeInfinity(Math.InverseSqrt(-2f)), Is.True);
-        Assert.That(float.IsNaN(Math.Sqrt(-2f)), Is.True);
+        Assert.That(float.IsNaN(Math.FastSqrt(-2f)), Is.True);
     }
 
     [TestCase(0.1, 0, 1, 0, -1, -0.1)]
@@ -75,19 +75,6 @@ public class MathUtilsTest
         var remapped = Math.Remap(value, from1, to1, from2, to2);
 
         Assert.That(remapped, Is.EqualTo(expectation));
-    }
-
-    [TestCase(0,0,0,0)]
-    [TestCase(-1,0,1,0)]
-    [TestCase(2,1,1.5,1.5)]
-    [TestCase(0.5,-1,1,0.5)]
-    [TestCase(2,1,-1, 1)]
-    [TestCase(-3,0,-1, -1)]
-    public void TestClamping(double value, double min, double max, double expectation)
-    {
-        var clamped = Math.Clamp(value, min, max);
-        
-        Assert.That(clamped, Is.EqualTo(expectation));
     }
     
     [Test]
