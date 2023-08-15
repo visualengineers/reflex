@@ -2,12 +2,12 @@ using PointCloud.Benchmark.Benchmarks.IteratePointCloud;
 using ReFlex.Core.Common.Components;
 using PointCloud3 = PointCloud.Benchmark.Common.PointCloud3;
 
-namespace Emulator.Test;
+namespace PointCloud.Test;
 
 public class PointCloudTests
 {
-    private IterationMethods2 _iteration, _iterationSynthetic;
-    private PointCloud3 _pCloud, _pCloudSynthetic;
+    private IterationMethods2? _iteration, _iterationSynthetic;
+    private PointCloud3? _pCloud, _pCloudSynthetic;
     
     [SetUp]
     public void Setup()
@@ -39,6 +39,10 @@ public class PointCloudTests
     [Test]
     public void TestPointCloudIndex()
     {
+        Assert.That(_pCloud, Is.Not.Null);
+        if (_pCloud == null)
+            return;
+        
         var jaggedArray = _pCloud.AsJaggedArray();
         for (var x = 0; x < _pCloud.SizeX; x++)
         {
@@ -57,10 +61,18 @@ public class PointCloudTests
     [Test]
     public void TestPointCloudIndexMapping()
     {
+        Assert.That(_pCloud, Is.Not.Null);
+        if (_pCloud == null)
+            return;
+        
+        Assert.That(_iteration, Is.Not.Null);
+        if (_iteration == null)
+            return;
+        
         var jaggedArray = _pCloud.AsJaggedArray();
         var array = _pCloud.AsSpan();
 
-        var n_jagged = 0;
+        var nJagged = 0;
         var n = 0;
         
         for (var x = 0; x < _pCloud.SizeX; x++)
@@ -87,7 +99,7 @@ public class PointCloudTests
                 Assert.That(x, Is.EqualTo(cx));
                 Assert.That(y, Is.EqualTo(cy));
 
-                n_jagged++;
+                nJagged++;
             }
         }
 
@@ -115,12 +127,16 @@ public class PointCloudTests
             n++;
         }
 
-        Assert.That(n_jagged, Is.EqualTo(n));
+        Assert.That(nJagged, Is.EqualTo(n));
     }
     
     [Test]
     public void TestPointCloudInvalidIndex()
     {
+        Assert.That(_pCloud, Is.Not.Null);
+        if (_pCloud == null)
+            return;
+        
         var negative = _pCloud[-1];
         Assert.That(negative, Is.Not.Null);
         Assert.That(negative, Is.TypeOf<Point3>());
@@ -129,29 +145,45 @@ public class PointCloudTests
         Assert.That(outOfBounds, Is.Not.Null);
         Assert.That(outOfBounds, Is.TypeOf<Point3>());
 
+        // Assert that exception is thrown, but resulting point is NOT null !
         Assert.Throws<IndexOutOfRangeException>(() =>
         {
             var negX = _pCloud[-1, 100];
+            Assert.That(negX, Is.Not.Null);
+            Assert.That(negX, Is.TypeOf<Point3>());
+        });
+
+        // Assert that exception is thrown, but resulting point is NOT null !
+        Assert.Throws<IndexOutOfRangeException>(() =>
+        {
+            var negY = _pCloud[100, -1];
+            Assert.That(negY, Is.Not.Null);
+            Assert.That(negY, Is.TypeOf<Point3>());
         });
 
         Assert.Throws<IndexOutOfRangeException>(() =>
         {
-            var negY = _pCloud[100, -1];
+            var outOfBoundsX = _pCloud[_pCloud.SizeX, 100];
+            Assert.That(outOfBoundsX, Is.Not.Null);
+            Assert.That(outOfBoundsX, Is.TypeOf<Point3>());
         });
 
-        // var outOfBoundsX = _pCloud[_pCloud.SizeX, 100];
-        // Assert.That(outOfBoundsX, Is.Not.Null);
-        // Assert.That(outOfBoundsX, Is.TypeOf<Point3>());
-        //
-        // var outOfBoundsY = _pCloud[100, _pCloud.SizeY];
-        // Assert.That(outOfBoundsY, Is.Not.Null);
-        // Assert.That(outOfBoundsY, Is.TypeOf<Point3>());
+        Assert.Throws<IndexOutOfRangeException>(() =>
+        {
+            var outOfBoundsY = _pCloud[100, _pCloud.SizeY];
+            Assert.That(outOfBoundsY, Is.Not.Null);
+            Assert.That(outOfBoundsY, Is.TypeOf<Point3>());
+        });
 
     }
 
     [Test]
     public void TestIterationMethods()
     {
+        Assert.That(_iterationSynthetic, Is.Not.Null);
+        if (_iterationSynthetic == null)
+            return;
+        
         var resultJaggedArray = _iterationSynthetic.IterateJaggedArray();
         Console.WriteLine($"JaggedArray:  ({resultJaggedArray.Item2}) {resultJaggedArray.Item1}");
         
