@@ -262,6 +262,56 @@ public class InteractionsTest
         Assert.That(element.ExtremumDescription.PercentageFittingPoints, Is.EqualTo(extremum.PercentageFittingPoints));
         Assert.That(new DateTime(element.Time), Is.EqualTo(srcTime));
         Assert.That(element.Confidence, Is.EqualTo(confidence));
+    }
+
+    /// <summary>
+    /// Test ToString() method returns correct values
+    /// </summary>
+    [Test]
+    public void TestStringRepresentation()
+    {
+        var max = 100;
+
+        var srcTime = DateTime.Now - TimeSpan.FromHours(new Random().Next(max) + 10);
+
+        var position = new Point3(
+            new Random().Next(max) / (float)max,
+            new Random().Next(max) / (float)max,
+            2f * (new Random().Next(max) / (float)max) - 1f
+        );
+
+        var extremum = new ExtremumDescription
+        {
+            Type = ExtremumType.Minimum,
+            NumFittingPoints = new Random().Next(max),
+            PercentageFittingPoints = new Random().Next(max) / (float)max
+        };
+
+        var touchId = new Random().Next(max);
+        var confidence = new Random().Next(max);
+
+        var src = new Interaction
+        {
+            Position = position,
+            Confidence = confidence,
+            Time = srcTime.Ticks,
+            ExtremumDescription = extremum,
+            Type = InteractionType.Push,
+            TouchId = touchId
+        };
+
+        var result = src.ToString();
         
+        Assert.That(string.IsNullOrWhiteSpace(result), Is.False);
+
+        if (string.IsNullOrWhiteSpace(result))
+            return;
+        
+        Assert.That(result.Contains($"{src.TouchId}"), Is.True);
+        Assert.That(result.Contains($"{src.Position}"), Is.True);
+        Assert.That(result.Contains($"{src.Type}"), Is.True);
+        Assert.That(result.Contains($"{src.Confidence}"), Is.True);
+        
+
     }
 }

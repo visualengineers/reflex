@@ -117,6 +117,6 @@ namespace ReFlex.Core.Common.Components
         /// <returns>
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public override string ToString() => $"Position: " + Position + ", Type: " + Type + " ,Confidence: " + Confidence;
+        public override string ToString() => $"TouchId: {TouchId}, Position: " + Position + ", Type: " + Type + " ,Confidence: " + Confidence;
     }
 }
