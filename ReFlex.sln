@@ -57,7 +57,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointCloud.Test", "test\Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator.Benchmark", "test\Library\Emulator.Benchmark\Emulator.Benchmark.csproj", "{95BD111C-1058-49CC-B4A2-F905768211A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Test", "test\Common.Test\Common.Test.csproj", "{A47FA61B-05C6-4126-8EC6-5F1325191FFA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Test", "test\Library\Common.Test\Common.Test.csproj", "{A47FA61B-05C6-4126-8EC6-5F1325191FFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

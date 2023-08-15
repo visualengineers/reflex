@@ -238,6 +238,52 @@ public class ArrayUtilsTests
     }
     
     [Test]
+    public void TestReferencingArrays2dBothWithEmptyArrays()
+    {
+        var sizeX = new Random().Next(50);
+        var sizeY = new Random().Next(50);
+        
+        ArrayUtils.InitializeArray<Point3>(out Point3[,] src, sizeX,sizeY);
+        ArrayUtils.InitializeArray<Point3>(out Point3[,] target, sizeX, sizeY);
+
+        for (var i = 0; i < sizeX; i++)
+            for (var j = 0; j < sizeY; j++)
+                src[i, j] = CreateRandomPoint();
+        
+        ArrayUtils.ReferencingArrays(src, target);
+        
+        for (var i = 0; i < sizeX * sizeY; i++)
+        {
+            var row = i / sizeX;
+            var col = i % sizeX;
+                
+            Assert.That(CheckEquality(src[col, row], target[col, row]), Is.True);
+        }
+    }
+    
+    [Test]
+    public void TestReferencingArrays2dBothThrowsException()
+    {
+        var sizeX = new Random().Next(500);
+        var sizeY = new Random().Next(500);
+        
+        ArrayUtils.InitializeArray<Point3>(out Point3[,] src, sizeX, sizeY);
+        ArrayUtils.InitializeArray<Point3>(out Point3[,] target, sizeX, sizeY -1);
+
+        Assert.That(() => ArrayUtils.ReferencingArrays(src, target), Throws.TypeOf<ArraysWithDifferentSizesException>());
+        
+        // transposed array should NOT work
+        ArrayUtils.InitializeArray<Point3>(out Point3[,] target2, sizeY, sizeX);
+
+        Assert.That(() => ArrayUtils.ReferencingArrays(src, target2), Throws.TypeOf<ArraysWithDifferentSizesException>());
+        
+        //assert that second dimension is checked too
+        ArrayUtils.InitializeArray<Point3>(out Point3[,] target3, sizeX, sizeX);
+
+        Assert.That(() => ArrayUtils.ReferencingArrays(src, target3), Throws.TypeOf<ArraysWithDifferentSizesException>());
+    }
+    
+    [Test]
     public void TestReferencingArraysJaggedWithEmptyArrays()
     {
         var sizeX = new Random().Next(500);
@@ -277,6 +323,54 @@ public class ArrayUtilsTests
 
         // transposed array should work
         Assert.That(() => ArrayUtils.ReferencingArrays(src, target2), Throws.Nothing);
+    }
+    
+    [Test]
+    public void TestReferencingArraysJaggedBothWithEmptyArrays()
+    {
+        var sizeX = new Random().Next(500);
+        var sizeY = new Random().Next(500);
+        
+        ArrayUtils.InitializeArray<Point3>(out Point3[][] src, sizeX, sizeY);
+        ArrayUtils.InitializeArray<Point3>(out Point3[][] target, sizeX, sizeY);
+
+        for (var i = 0; i < sizeX; i++)
+        {
+            for (var j = 0; j < sizeY; j++)
+                src[i][j] = CreateRandomPoint();
+        }
+        
+        ArrayUtils.ReferencingArrays(src, target);
+        
+        for (var i = 0; i < sizeX * sizeY; i++)
+        {
+            var row = i / sizeX;
+            var col = i % sizeX;
+                
+            Assert.That(CheckEquality(src[col][row], target[col][row]), Is.True);
+        }
+    }
+    
+    [Test]
+    public void TestReferencingArraysJaggedBothThrowsException()
+    {
+        var sizeX = new Random().Next(500);
+        var sizeY = new Random().Next(500);
+        
+        ArrayUtils.InitializeArray<Point3>(out Point3[][] src, sizeX, sizeY);
+        ArrayUtils.InitializeArray<Point3>(out Point3[][] target, sizeX, sizeY - 1);
+
+        Assert.That(() => ArrayUtils.ReferencingArrays(src, target), Throws.TypeOf<ArraysWithDifferentSizesException>());
+        
+        ArrayUtils.InitializeArray<Point3>(out Point3[][] target2, sizeY, sizeX);
+
+        // transposed array DO NOT work
+        Assert.That(() => ArrayUtils.ReferencingArrays(src, target2), Throws.TypeOf<ArraysWithDifferentSizesException>());
+        
+        ArrayUtils.InitializeArray<Point3>(out Point3[][] target3, sizeY, sizeY);
+
+        // assert that also the second dimension is checked
+        Assert.That(() => ArrayUtils.ReferencingArrays(src, target2), Throws.TypeOf<ArraysWithDifferentSizesException>());
     }
 
     private Point3 CreateRandomPoint()

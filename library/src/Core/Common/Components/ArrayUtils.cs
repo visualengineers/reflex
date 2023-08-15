@@ -1,4 +1,6 @@
-﻿using ReFlex.Core.Common.Exceptions;
+﻿using System;
+using System.ComponentModel;
+using ReFlex.Core.Common.Exceptions;
 
 namespace ReFlex.Core.Common.Components
 {
@@ -115,12 +117,19 @@ namespace ReFlex.Core.Common.Components
         /// <param name="source">The source.</param>
         /// <param name="target">The target.</param>
         /// <exception cref="ArraysWithDifferentSizesException"></exception>
+        [Obsolete("Warning: Referencing 2d arrays is extremely slow")]
         public static void ReferencingArrays<T>(T[,] source, T[,] target)
         {
+            if (source.Rank != 2 || target.Rank != 2)
+                throw new DataMisalignedException();
+            
+            if (source.GetLength(0) != target.GetLength(0) || source.GetLength(1) != target.GetLength(1))
+                throw new ArraysWithDifferentSizesException();
+            
             for (var i = 0; i < target.Length; i++)
             {
-                if (source.GetLength(0) * source.GetLength(1) != target.GetLength(0) * target.GetLength(1))
-                    throw new ArraysWithDifferentSizesException();
+                // if (source.GetLength(0) * source.GetLength(1) != target.GetLength(0) * target.GetLength(1))
+                //     throw new ArraysWithDifferentSizesException();
 
                 for (var x = 0; x < target.GetLength(0); x++)
                     for (var y = 0; y < target.GetLength(1); y++)
@@ -137,11 +146,14 @@ namespace ReFlex.Core.Common.Components
         /// <exception cref="ArraysWithDifferentSizesException"></exception>
         public static void ReferencingArrays<T>(T[][] source, T[][] target)
         {
+            if (source.GetLength(0) != target.GetLength(0))
+                throw new ArraysWithDifferentSizesException();
+                
             for (var i = 0; i < target.Length; i++)
             {
-                if (source.Length * source[i].Length != target.Length * target[i].Length)
+                if (source[i].Length != target[i].Length)
                     throw new ArraysWithDifferentSizesException();
-
+                
                 for (var j = 0; j < target[i].Length; j++)
                     target[i][j] = source[i][j];
             }
