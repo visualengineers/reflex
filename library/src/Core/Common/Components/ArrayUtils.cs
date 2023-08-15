@@ -120,9 +120,6 @@ namespace ReFlex.Core.Common.Components
         [Obsolete("Warning: Referencing 2d arrays is extremely slow")]
         public static void ReferencingArrays<T>(T[,] source, T[,] target)
         {
-            if (source.Rank != 2 || target.Rank != 2)
-                throw new DataMisalignedException();
-            
             if (source.GetLength(0) != target.GetLength(0) || source.GetLength(1) != target.GetLength(1))
                 throw new ArraysWithDifferentSizesException();
             
