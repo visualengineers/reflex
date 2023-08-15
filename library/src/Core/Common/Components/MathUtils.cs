@@ -11,10 +11,10 @@ namespace ReFlex.Core.Common.Components
         #region methods
 
         /// <summary>
-        /// Approximates the square root of a number z.
+        /// very roughly Approximates the square root of a number z. Variance: approx. 5%.
         /// </summary>
-        /// <param name="z">The z.</param>
-        /// <returns>The square root of a number z</returns>
+        /// <param name="z">The radicand</param>
+        /// <returns>The square root of a number z, <see cref="float.NaN"/> if z is negative.</returns>
         public static float Sqrt(float z)
         {
             if (z == 0) return 0;
@@ -28,11 +28,11 @@ namespace ReFlex.Core.Common.Components
         }
 
         /// <summary>
-        /// Approximates the square root of a number z.
+        /// Approximates the square root of a number z. Variance: approx. 2% 
         /// It’s a tad slower than the first (though still nearly 2x as fast as Math.Sqrt()), but much more accurate.
         /// </summary>
-        /// <param name="z">The z.</param>
-        /// <returns>The square root of a number z</returns>
+        /// <param name="z">The radicand</param>
+        /// <returns>The square root of a number z, <see cref="float.NegativeInfinity"/> if z is negative.</returns>
         public static float InverseSqrt(float z)
         {
             if (z == 0) return 0;
