@@ -81,7 +81,14 @@ namespace ReFlex.Core.Common.Components
         /// If the value is smaller than max and greater than min, the function returns the value.
         /// </returns>
         public static double Clamp(double value, double min, double max)
-            => (value < min) ? min : (value > max) ? max : value;
+        {
+            if (min > max)
+            {
+                (max, min) = (min, max);
+            }
+            return (value < min) ? min : (value > max) ? max : value;
+        }
+            
 
         public static double ExponentialMapping(double input) =>
             Math.Exp((input) - 1) / (Math.E - 1);
