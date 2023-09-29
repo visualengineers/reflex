@@ -16,7 +16,7 @@
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <LangVersion>10</LangVersion>
-    <Configurations>Debug;Release;CI</Configurations>
+    <Configurations>Debug;Release;CI;Debug OSX;Release OSX</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -24,9 +24,18 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PlatformTarget>x64</PlatformTarget>    
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'CI' Or '$(Configuration)' == 'Debug OSX'  Or '$(Configuration)' == 'Release OSX'">
     <PlatformTarget>x64</PlatformTarget>
     <DefineAdditionalConstants>NO_EXTERNAL_SENSORS</DefineAdditionalConstants>    
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+    <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Define additional preprocessor directives -->
@@ -65,7 +74,7 @@
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' != 'CI' ">
+  <ItemGroup Condition=" '$(Configuration)' != 'CI' And '$(Configuration)' != 'Debug OSX'  And '$(Configuration)' != 'Release OSX'">
     <ProjectReference Include="..\..\library\src\Sensor\Kinect2Module\Kinect2Module.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />

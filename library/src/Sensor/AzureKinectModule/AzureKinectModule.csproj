@@ -15,7 +15,7 @@
     <RootNamespace>ReFlex.Sensor.AzureKinectModule</RootNamespace>
     <Platforms>x64</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <Configurations>Debug;Release;CI</Configurations>
+    <Configurations>Debug;Release;CI;Debug OSX;Release OSX</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -23,6 +23,17 @@
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+    <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Kinect.Sensor" Version="1.4.1" />
@@ -37,7 +48,7 @@
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Exec Command="mkdir -p ../../../export/Modules &amp;&amp; cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Exec Command="mkdir -p &quot;../../../export/Modules&quot; &amp;&amp; cp -r &quot;$(OutDir)&quot; &quot;../../../export/Modules&quot;" Condition=" '$(OS)' != 'Windows_NT' " />
   </Target>
 
   <ItemGroup>
