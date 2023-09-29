@@ -20,6 +20,9 @@
     "win": {
       "icon": "bin/Assets/app_icon.ico"      
     },
+    "mac": {
+      "icon": "bin/Assets/app_icon.png"
+    },
     "directories": {
       "output": "../../../bin/Desktop",
       "buildResources": "Assets"
