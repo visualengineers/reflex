@@ -1,22 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
 
         <IsPackable>false</IsPackable>
 
-        <Configurations>Release;Debug;CI;Debug OSX;Release OSX</Configurations>
+        <Configurations>Release;Debug;CI</Configurations>
 
-        <Platforms>x64</Platforms>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|x64' ">
-      <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
-      <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|x64' ">
-      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+        <Platforms>x64;ARM64;AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>

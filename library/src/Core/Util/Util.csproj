@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputType>Library</OutputType>
     <PackageId>ReFlex.Core.Util</PackageId>
     <Authors>Mathias Müller</Authors>
@@ -13,24 +13,9 @@
     <Product>ReFlex.Core</Product>
     <AssemblyName>ReFlex.Core.Util</AssemblyName>
     <RootNamespace>ReFlex.Core.Util</RootNamespace>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;AnyCPU</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <Configurations>Debug;Release;CI;Debug OSX;Release OSX</Configurations>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug OSX|x64' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
-    <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release OSX|x64' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+    <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Components\**" />

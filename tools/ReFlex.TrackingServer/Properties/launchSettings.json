@@ -21,7 +21,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "commandLineArgs": "/DisableElectron=true"
+      "commandLineArgs": "/DisableElectron=true",
+      "workingDirectory": "."
     },
     "IIS Express": {
       "commandName": "IISExpress",

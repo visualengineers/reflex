@@ -1,9 +1,9 @@
-﻿using System.Runtime.InteropServices;
-using NLog;
+﻿using NLog;
 using ReFlex.Core.Tracking.Interfaces;
-using ReFlex.Sensor.AzureKinectModule;
 using ReFlex.Sensor.EmulatorModule;
 #if !NO_EXTERNAL_SENSORS
+using System.Runtime.InteropServices;
+using ReFlex.Sensor.AzureKinectModule;
 using ReFlex.Sensor.Kinect2Module;
 using ReFlex.Sensor.RealSenseD435Module;
 using ReFlex.Sensor.RealSenseL515Module;
@@ -73,8 +73,6 @@ namespace TrackingServer.Model
                 Logger.Error(exception);
             }
 
-#endif
-
             try
             {
                 var azureKinectCamera = new AzureKinectCamera();
@@ -85,6 +83,8 @@ namespace TrackingServer.Model
             {
                 Logger.Error(exception);
             }
+
+#endif
 
             try
             {
