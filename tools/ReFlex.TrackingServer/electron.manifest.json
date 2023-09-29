@@ -16,6 +16,7 @@
     "copyright": "Copyright © 2023",
     "buildVersion": "0.9.8",
     "compression": "maximum",
+    "electronVersion": "23.2.0",
     "win": {
       "icon": "bin/Assets/app_icon.ico"      
     },
