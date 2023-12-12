@@ -121,43 +121,46 @@ namespace ReFlex.Core.Common.Components
             var item = CreateNewDataItem();
             lock (_performanceData)
             {
+                var existingProcessData = _performanceData.Data.FirstOrDefault(elem =>
+                                        (elem.Stage == PerformanceDataStage.ProcessingData || elem.Stage == PerformanceDataStage.Incomplete) && elem.FrameId == data.FrameId);
+                                 
+                var existingFilterData = _performanceData.Data.FirstOrDefault(elem =>
+                    elem.Stage == PerformanceDataStage.FilterDataStored && elem.FrameId == data.FrameId);
+                
                 if (data.Stage == PerformanceDataStage.Start)
                 {
-                    var existingProcessData = _performanceData.Data.FirstOrDefault(elem =>
-                        elem.Stage == PerformanceDataStage.ProcessingData && elem.FrameId == data.FrameId);
-                    if (existingProcessData != null)
-                    {
-                        item = existingProcessData;
-                        item.Stage = PerformanceDataStage.Complete;
-                        _performanceData.Data.Remove(existingProcessData);
-                    }
-                    else
-                    {
-                        var existingFilterData = _performanceData.Data.FirstOrDefault(elem =>
-                                                elem.Stage == PerformanceDataStage.FilterDataStored && elem.FrameId == data.FrameId);
-                        if (existingFilterData != null)
-                        {
-                            _frameId++;
-                            existingFilterData.Stage = PerformanceDataStage.Complete;
-                            item.FrameId = _frameId;
-                        }
-                        
-                        item.Stage = PerformanceDataStage.FilterDataStored;
-                    }
+                    item.Stage = PerformanceDataStage.FilterDataStored;
 
+                    if (existingFilterData != null)
+                    {
+                        _frameId++;
+                        existingFilterData.Stage = PerformanceDataStage.Complete;
+                        item.FrameId = _frameId;
+                    } 
+                    else if (existingProcessData != null)
+                    {
+                      item = existingProcessData;
+                      item.Stage = PerformanceDataStage.Complete;
+                      _performanceData.Data.Remove(existingProcessData);
+                    }
+                    
                     item.Filter = data.Filter;
                     _performanceData.Data.Add(item);
                     
                 }
                 else if (data.Stage == PerformanceDataStage.ProcessingData)
                 {
-                    var existing = _performanceData.Data.FirstOrDefault(elem =>
-                        elem.Stage == PerformanceDataStage.FilterDataStored && elem.FrameId == data.FrameId);
-                    if (existing != null)
+                    if (existingProcessData != null)
                     {
-                        item = existing;
+                        _frameId++;
+                        existingProcessData.Stage = PerformanceDataStage.Complete;
+                        item.FrameId = _frameId;
+                    } 
+                    else if (existingFilterData != null)
+                    {
+                        item = existingFilterData;
                         item.Stage = PerformanceDataStage.Complete;
-                        _performanceData.Data.Remove(existing);
+                        _performanceData.Data.Remove(existingFilterData);
 
                         _frameId++;
                     }
