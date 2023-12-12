@@ -181,25 +181,13 @@ namespace TrackingServer.Model
             Logger.Info($"Saved Settings for {typeof(ProcessingService).FullName}.");
         }
 
-        private InteractionHistory[] RetrieveHistory(List<InteractionFrame> frames)
+        private InteractionHistory[] RetrieveHistory(IEnumerable<InteractionFrame> frames)
         {
-            var ids = frames.SelectMany(frame => frame.Interactions.Select(interaction => interaction.TouchId)).Distinct().ToList();
+            var calibratedFrames = frames.Select(rawFrame => new InteractionFrame(rawFrame.FrameId,
+                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList()));
 
-            var result = new List<InteractionHistory>();
-            
-            ids.ForEach(id =>
-            {
-                var elements = frames.OrderByDescending(frame => frame.FrameId)
-                    .Select(rawFrame => new InteractionFrame(rawFrame.FrameId, _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList()))
-                    .Select(frame => new InteractionHistoryElement(frame.FrameId, frame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id))))
-                    .Where(elem => elem.Interaction != null).ToList();
-                if (elements.Count > 0)
-                {
-                    result.Add(new InteractionHistory(id, elements));
-                }
-            });
+            return InteractionHistory.RetrieveHistoryFromInteractionFrames(calibratedFrames).ToArray();
 
-            return result.OrderBy(history => history.TouchId).ToArray();
         }
         
         private void OnLoopRunningChanged(object sender, bool e)
