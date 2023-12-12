@@ -133,6 +133,7 @@ namespace ReFlex.Core.Common.Components
 
                     if (existingFilterData != null)
                     {
+                        // increment frame id: incomplete sample - subsequent filter samples
                         _frameId++;
                         existingFilterData.Stage = PerformanceDataStage.Complete;
                         item.FrameId = _frameId;
@@ -142,6 +143,9 @@ namespace ReFlex.Core.Common.Components
                       item = existingProcessData;
                       item.Stage = PerformanceDataStage.Complete;
                       _performanceData.Data.Remove(existingProcessData);
+
+                      // increment frame id: data complete (filter + process data)
+                      _frameId++;
                     }
                     
                     item.Filter = data.Filter;
@@ -152,6 +156,7 @@ namespace ReFlex.Core.Common.Components
                 {
                     if (existingProcessData != null)
                     {
+                        // increment frame id: incomplete sample - subsequent process samples
                         _frameId++;
                         existingProcessData.Stage = PerformanceDataStage.Complete;
                         item.FrameId = _frameId;
@@ -162,6 +167,7 @@ namespace ReFlex.Core.Common.Components
                         item.Stage = PerformanceDataStage.Complete;
                         _performanceData.Data.Remove(existingFilterData);
 
+                        // increment frame id: data complete (filter + process data)
                         _frameId++;
                     }
 
@@ -214,12 +220,6 @@ namespace ReFlex.Core.Common.Components
         {
             if (_performanceData.Data.Count > MaxPerformanceRecords)
                 _performanceData.Data.RemoveRange(0, _performanceData.Data.Count - MaxPerformanceRecords);
-
-            // var incomplete = _performanceData.Data.Where(elem => elem.Stage != PerformanceDataStage.Complete);
-            // foreach (var performanceDataItem in incomplete)
-            // {
-            //     performanceDataItem.Stage = PerformanceDataStage.Complete;
-            // }
         }
 
         /// <summary>

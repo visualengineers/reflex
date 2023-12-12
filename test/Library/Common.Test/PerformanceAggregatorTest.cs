@@ -180,7 +180,76 @@ public class PerformanceAggregatorTest
         Assert.That(data[2].FrameId, Is.EqualTo(2));
         Assert.That(data[2].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(50)));
         Assert.That(data[2].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(44)));
-        Assert.That(reporter.FrameId, Is.EqualTo(2));
+        Assert.That(reporter.FrameId, Is.EqualTo(3));
+        
+        // Act: add another processing data
+        reporter.TriggerPerformanceDataUpdatedEvent(new PerformanceDataItem
+        {
+            FrameId = reporter.FrameId, 
+            Stage = PerformanceDataStage.ProcessingData,
+            Process = new ProcessPerformance
+            {
+                ComputeExtremumType = TimeSpan.FromMilliseconds(60),
+                Preparation = TimeSpan.FromMilliseconds(61),
+                Smoothing = TimeSpan.FromMilliseconds(63),
+                Update = TimeSpan.FromMilliseconds(64),
+                ConvertDepthValue = TimeSpan.FromMilliseconds(65)
+            }
+            
+        });
+        
+        // Assert: add filter data to processing data
+        Assert.That(data.Count, Is.EqualTo(3));
+        Assert.That(numInvocations, Is.EqualTo(6));
+        Assert.That(data[0].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[0].FrameId, Is.EqualTo(0));
+        Assert.That(data[0].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(10)));
+        Assert.That(data[1].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[1].FrameId, Is.EqualTo(1));
+        Assert.That(data[1].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(20)));
+        Assert.That(data[1].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(34)));
+        Assert.That(data[2].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[2].FrameId, Is.EqualTo(2));
+        Assert.That(data[2].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(50)));
+        Assert.That(data[2].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(44)));
+        Assert.That(reporter.FrameId, Is.EqualTo(3));
+        
+        // Act: add second processing data frame
+        reporter.TriggerPerformanceDataUpdatedEvent(new PerformanceDataItem
+        {
+            FrameId = reporter.FrameId, 
+            Stage = PerformanceDataStage.ProcessingData,
+            Process = new ProcessPerformance
+            {
+                ComputeExtremumType = TimeSpan.FromMilliseconds(70),
+                Preparation = TimeSpan.FromMilliseconds(71),
+                Smoothing = TimeSpan.FromMilliseconds(73),
+                Update = TimeSpan.FromMilliseconds(74),
+                ConvertDepthValue = TimeSpan.FromMilliseconds(75)
+            }
+            
+        });
+        
+        // Assert: just processing data, no frame data - no changes
+        // Assert: add filter data to processing data
+        Assert.That(data.Count, Is.EqualTo(4));
+        Assert.That(numInvocations, Is.EqualTo(7));
+        Assert.That(data[0].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[0].FrameId, Is.EqualTo(0));
+        Assert.That(data[0].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(10)));
+        Assert.That(data[1].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[1].FrameId, Is.EqualTo(1));
+        Assert.That(data[1].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(20)));
+        Assert.That(data[1].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(34)));
+        Assert.That(data[2].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[2].FrameId, Is.EqualTo(2));
+        Assert.That(data[2].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(50)));
+        Assert.That(data[2].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(44)));
+        Assert.That(data[3].Stage, Is.EqualTo(PerformanceDataStage.Complete));
+        Assert.That(data[3].FrameId, Is.EqualTo(3));
+        Assert.That(data[3].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(0)));
+        Assert.That(data[3].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(64)));
+        Assert.That(reporter.FrameId, Is.EqualTo(4));
 
     }
 
