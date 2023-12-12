@@ -36,6 +36,62 @@ public class PerformanceAggregatorTest
         // Act & Assert
         Assert.DoesNotThrow(() => aggregator.RegisterReporter(null));
     }
+    
+    [Test]
+    public void UnregisterReporter_NullReporter_NoExceptionThrown()
+    {
+        // Arrange
+        var aggregator = new PerformanceAggregator();
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => aggregator.UnregisterReporter(null));
+    }
+
+    [Test]
+    public void CleanupData()
+    {
+        var data = new List<PerformanceDataItem>();
+        var numInvocations = 0;
+
+        // Arrange
+        var aggregator = new PerformanceAggregator();
+        var reporter = new MockPerformanceReporter();
+        aggregator.RegisterReporter(reporter);
+
+        aggregator.PerformanceDataUpdated += (sender, pData) =>
+        {
+            numInvocations++;
+            data = pData.Data;
+        };
+
+        for (int i = 0; i < 20; i++)
+        {
+            // Act: add filter data, frame i
+            reporter.TriggerPerformanceDataUpdatedEvent(new PerformanceDataItem
+            {
+                FrameId = reporter.FrameId,
+                Stage = PerformanceDataStage.Start,
+                Filter = new FilterPerformance
+                {
+                    BoxFilter = TimeSpan.FromMilliseconds(i),
+                    LimitationFilter = TimeSpan.FromMilliseconds(i + 1),
+                    ThresholdFilter = TimeSpan.FromMilliseconds(i + 2),
+                    ValueFilter = TimeSpan.FromMilliseconds(i + 3),
+                    UpdatePointCloud = TimeSpan.FromMilliseconds(i + 4)
+                }
+            });
+
+            // Assert: cleanup, if 10 elements are reached (10th element is not propagated as it is incomplete)
+            Assert.That(data.Count, Is.EqualTo(i < 10 ? i : 9));
+            Assert.That(numInvocations, Is.EqualTo(i + 1));
+            Assert.That(reporter.FrameId, Is.EqualTo(i));
+            if (i > 0)
+            {
+                var clamp = i - 10 < 0 ? 0 : i - 9;
+                Assert.That(data[0].FrameId, Is.EqualTo(clamp));
+            }
+        }
+    }
 
     [Test]
     public void AddData_WithData_ItemsAddedAndEventTriggered()
