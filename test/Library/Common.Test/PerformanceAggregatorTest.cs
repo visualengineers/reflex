@@ -121,7 +121,7 @@ public class PerformanceAggregatorTest
         Assert.That(data[1].FrameId, Is.EqualTo(1));
         Assert.That(data[1].Filter.BoxFilter, Is.EqualTo(TimeSpan.FromMilliseconds(20)));
         Assert.That(data[1].Process.Update, Is.EqualTo(TimeSpan.FromMilliseconds(34)));
-        Assert.That(reporter.FrameId, Is.EqualTo(1));
+        Assert.That(reporter.FrameId, Is.EqualTo(2));
         
 
     }

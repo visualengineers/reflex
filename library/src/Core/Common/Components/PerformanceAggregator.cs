@@ -130,8 +130,6 @@ namespace ReFlex.Core.Common.Components
                         item = existingProcessData;
                         item.Stage = PerformanceDataStage.Complete;
                         _performanceData.Data.Remove(existingProcessData);
-                        
-                        _frameId++;
                     }
                     else
                     {
@@ -139,8 +137,8 @@ namespace ReFlex.Core.Common.Components
                                                 elem.Stage == PerformanceDataStage.FilterDataStored && elem.FrameId == data.FrameId);
                         if (existingFilterData != null)
                         {
-                            existingFilterData.Stage = PerformanceDataStage.Complete;
                             _frameId++;
+                            existingFilterData.Stage = PerformanceDataStage.Complete;
                             item.FrameId = _frameId;
                         }
                         
@@ -149,8 +147,7 @@ namespace ReFlex.Core.Common.Components
 
                     item.Filter = data.Filter;
                     _performanceData.Data.Add(item);
-
-                    SyncFrameId();
+                    
                 }
                 else if (data.Stage == PerformanceDataStage.ProcessingData)
                 {
@@ -161,11 +158,15 @@ namespace ReFlex.Core.Common.Components
                         item = existing;
                         item.Stage = PerformanceDataStage.Complete;
                         _performanceData.Data.Remove(existing);
+
+                        _frameId++;
                     }
 
                     item.Process = data.Process;
                     _performanceData.Data.Add(item);
                 }
+                
+                SyncFrameId();
 
                 CleanupRecords();
 
