@@ -127,7 +127,7 @@
             "description": "Start with the 450mm profiles (12)"
         }
     ],
-    "assetDirectory": "assets/construction/",
+    "assetDirectory": "/reflex/assets/construction/",
     "pngSubDirectory": "png/",
     "svgSubDirectory": "svg/"
 }
