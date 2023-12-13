@@ -1,0 +1,133 @@
+{    
+    "slides": [
+        {
+            "id": 0,
+            "png": "final.png",
+            "svg": "construction_manual_final.svg",
+            "description": "Completely assembled Elastic Display as Tabletop"
+        },
+        {
+            "id": 1,
+            "png": "Tisch_1.png",
+            "svg": "construction_manual_Tisch_1.svg",
+            "description": "Dimensions of the Tabletop"
+        },
+        {
+            "id": 2,
+            "png": "Tisch_0.png",
+            "svg": "construction_manual_Tisch_0.svg",
+            "description": "Part List for Table"
+        },
+        {
+            "id": 3,
+            "png": "Tisch_2.png",
+            "svg": "construction_manual_Tisch_2.svg",
+            "description": "Start with assembling the upper frame"
+        },
+        {
+            "id": 4,
+            "png": "Tisch_3.png",
+            "svg": "construction_manual_Tisch_3.svg",
+            "description": "Start with assembling the upper frame"
+        },
+        {
+            "id": 5,
+            "png": "Tisch_4.png",
+            "svg": "construction_manual_Tisch_4.svg",
+            "description": "Start with assembling the upper frame"
+        },
+        {
+            "id": 6,
+            "png": "Tisch_5.png",
+            "svg": "construction_manual_Tisch_5.svg",
+            "description": "Start with assembling the upper frame"
+        },
+        {
+            "id": 7,
+            "png": "Tisch_6.png",
+            "svg": "construction_manual_Tisch_6.svg",
+            "description": "Start with assembling the upper frame"
+        },
+        {
+            "id": 8,
+            "png": "Tisch_7.png",
+            "svg": "construction_manual_Tisch_7.svg",
+            "description": "Start with assembling the upper frame"
+        },
+        {
+            "id": 9,
+            "png": "Tisch_8.png",
+            "svg": "construction_manual_Tisch_8.svg",
+            "description": "Start with assembling the upper frame"
+        },        
+        {
+            "id": 10,
+            "png": "Gestell_0.png",
+            "svg": "construction_manual_Gestell_0.svg",
+            "description": "Part list for projector / camera mount"
+        },
+        {
+            "id": 11,
+            "png": "Gestell_1.png",
+            "svg": "construction_manual_Gestell_1.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 12,
+            "png": "Gestell_2.png",
+            "svg": "construction_manual_Gestell_2.svg",
+            "description": "connect the 680mm profiles (13)"
+        },
+        {
+            "id": 13,
+            "png": "Gestell_3.png",
+            "svg": "construction_manual_Gestell_3.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 14,
+            "png": "Gestell_4.png",
+            "svg": "construction_manual_Gestell_4.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 15,
+            "png": "Gestell_5.png",
+            "svg": "construction_manual_Gestell_5.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 16,
+            "png": "Gestell_6.png",
+            "svg": "construction_manual_Gestell61.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 17,
+            "png": "Gestell_7.png",
+            "svg": "construction_manual_Gestell_7.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 18,
+            "png": "Gestell_8.png",
+            "svg": "construction_manual_Gestell_8.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 19,
+            "png": "Gestell_9.png",
+            "svg": "construction_manual_Gestell_9.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "id": 20,
+            "png": "Gestell_10.png",
+            "svg": "construction_manual_Gestell_10.svg",
+            "description": "Start with the 450mm profiles (12)"
+        }
+    ],
+    "assetDirectory": "assets/construction/",
+    "pngSubDirectory": "png/",
+    "svgSubDirectory": "svg/"
+}
