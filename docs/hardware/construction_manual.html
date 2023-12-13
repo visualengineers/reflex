@@ -32,7 +32,7 @@ title: Construction Manual
   <!-- The dots/circles -->
   <div style="text-align:center">
     {% for slide in site.data.construction_slides.slides %}
-    <span class="dot" onclick="currentSlide({{ slide.id }})"></span>
+    <span class="dot" onclick="currentSlide({{ forloop.index }})"></span>
     {% endfor %}
   </div>
 
@@ -42,7 +42,7 @@ title: Construction Manual
 
     // Next/previous controls
     function plusSlides(n) {
-        howSlides(slideIndex += n);
+        showSlides(slideIndex += n);
     }
 
     // Thumbnail image controls
@@ -58,11 +58,13 @@ title: Construction Manual
         if (n < 1) {slideIndex = slides.length}
         for (i = 0; i < slides.length; i++) {
             slides[i].style.display = "none";
+            slides[i].className.replace(" show", "");
         }
         for (i = 0; i < dots.length; i++) {
             dots[i].className = dots[i].className.replace(" active", "");
         }
         slides[slideIndex-1].style.display = "block";
+        slides[slideIndex-1].className += " show";
         dots[slideIndex-1].className += " active";
     }
   </script>
