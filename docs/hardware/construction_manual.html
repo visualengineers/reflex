@@ -16,11 +16,11 @@ title: Construction Manual
     <!-- Full-width images with number and caption text -->
     {% for slide in site.data.construction_slides.slides %}
     <div class="slides fade hide">
-      <div class="slides__numbertext"> {{ forloop.index }} / {{ forloop.length }}</div>
+      <div class="slides__caption">{{ slide.description }}</div>
       <div class="slides__image">
         <img src="{{ site.data.construction_slides.assetDirectory }}{{ site.data.construction_slides.pngSubDirectory }}{{ slide.png }}">
       </div>
-      <div class="slides__caption">{{ slide.description }}</div>
+      <div class="slides__numbertext"> {{ forloop.index }} / {{ forloop.length }}</div>
     </div>
     {% endfor %}
    

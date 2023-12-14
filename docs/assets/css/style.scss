@@ -5,8 +5,11 @@
 
 /* Slideshow container */
 .slideshow-container {
+  width: 90vw;
+
   position: relative;
   margin: auto;
+  margin-top: 3rem;
 }
 
 /* Hide the images by default */
@@ -20,7 +23,7 @@
 
   &.show {
     display: grid;
-    grid-template-rows: 3rem 70vh 3rem;
+    grid-template-rows: 5rem 70vh 3rem;
     align-items: center;
     justify-content: center;
   }
@@ -77,16 +80,18 @@
   border-radius: 3px 0 0 3px;
 }
 
-/* On hover, add a black background color with a little bit see-through */
+/* On hover, add a primary color with a bit transparency */
 .prev:hover,
 .next:hover {
-  background-color: $color-shadow-dark;
+  background-color: $color-primary-dark;
+  opacity: 0.8;
 }
 
 /* The dots/bullets/indicators */
 .nav {
   &__container {
     text-align: center;
+    margin: 2rem;
   }
 
   &__dot {
@@ -101,7 +106,7 @@
     transition: background-color 0.6s ease;
     
     &:hover {
-      background-color: $color-primary-light;
+      background-color: $color-primary-very-light;
       border: 2px solid $color-white;
     }
   }
