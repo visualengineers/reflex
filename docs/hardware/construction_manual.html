@@ -15,7 +15,7 @@ title: Construction Manual
 
     <!-- Full-width images with number and caption text -->
     {% for slide in site.data.construction_slides.slides %}
-    <div class="mySlides fade">
+    <div class="mySlides fade hide">
       <div class="numbertext"> {{ forloop.index }} / {{ forloop.length }}</div>
       <img src="{{ site.data.construction_slides.assetDirectory }}{{ site.data.construction_slides.pngSubDirectory }}{{ slide.png }}">
       <div class="text">{{ slide.description }}</div>
@@ -53,17 +53,16 @@ title: Construction Manual
     function showSlides(n) {
         let i;
         let slides = document.getElementsByClassName("mySlides");
-        let dots = document.getElementsByClassName("dot");
+        let dots = document.getElementsByClassName("nav__dot");
         if (n > slides.length) {slideIndex = 1}
         if (n < 1) {slideIndex = slides.length}
         for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-            slides[i].className.replace(" show", " hide");
+            slides[i].className = slides[i].className.replace(" show", " hide");
         }
         for (i = 0; i < dots.length; i++) {
             dots[i].className = dots[i].className.replace(" active", "");
         }
-        slides[slideIndex-1].className += " show";
+        slides[slideIndex-1].className = slides[slideIndex-1].className.replace(" hide", " show");
         dots[slideIndex-1].className += " active";
     }
   </script>
