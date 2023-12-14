@@ -15,10 +15,12 @@ title: Construction Manual
 
     <!-- Full-width images with number and caption text -->
     {% for slide in site.data.construction_slides.slides %}
-    <div class="mySlides fade hide">
-      <div class="numbertext"> {{ forloop.index }} / {{ forloop.length }}</div>
-      <img src="{{ site.data.construction_slides.assetDirectory }}{{ site.data.construction_slides.pngSubDirectory }}{{ slide.png }}">
-      <div class="text">{{ slide.description }}</div>
+    <div class="slides fade hide">
+      <div class="slides__numbertext"> {{ forloop.index }} / {{ forloop.length }}</div>
+      <div class="slides__image">
+        <img src="{{ site.data.construction_slides.assetDirectory }}{{ site.data.construction_slides.pngSubDirectory }}{{ slide.png }}">
+      </div>
+      <div class="slides__caption">{{ slide.description }}</div>
     </div>
     {% endfor %}
    
@@ -52,7 +54,7 @@ title: Construction Manual
 
     function showSlides(n) {
         let i;
-        let slides = document.getElementsByClassName("mySlides");
+        let slides = document.getElementsByClassName("slides");
         let dots = document.getElementsByClassName("nav__dot");
         if (n > slides.length) {slideIndex = 1}
         if (n < 1) {slideIndex = slides.length}
