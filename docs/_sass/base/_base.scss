@@ -1,0 +1,17 @@
+/* reset browser-styles by using the universal selector */
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+
+  // this defines what 1 rem is - base size definition
+  font-size: 62.5%;               // 1 rem = 10px
+
+  background-color: $color-white;
+}
