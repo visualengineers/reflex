@@ -6,7 +6,8 @@
 /* Slideshow container */
 .slideshow-container {
   max-width: 90vw;
-  max-height: 90vh;
+  max-height: 80vh;
+
   position: relative;
   margin: auto;
 }
@@ -14,11 +15,27 @@
 /* Hide the images by default */
 .mySlides {
   display: none;
-  box-shadow: $color-shadow-default 0px 0px 15px 3px;
+  box-shadow: $color-shadow-default 0px 0px 15px 3px;  
+
+  &.hide {
+    display: none;
+  }
+
+  &.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & img {
+    max-width: 90vw;
+    max-height: 80vh;
+  }
 }
 
 /* Next & previous buttons */
-.prev, .next {
+.prev,
+.next {
   cursor: pointer;
   position: absolute;
   top: 50%;
@@ -41,7 +58,8 @@
 }
 
 /* On hover, add a black background color with a little bit see-through */
-.prev:hover, .next:hover {
+.prev:hover,
+.next:hover {
   background-color: $color-shadow-dark;
 }
 
@@ -66,16 +84,22 @@
 }
 
 /* The dots/bullets/indicators */
-.dot {
-  cursor: pointer;
-  height: 1.5rem;
-  width: 1.5rem;
-  margin: 0 2px;
-  background-color: $color-white;
-  border: 2px solid $color-primary;
-  border-radius: 50%;
-  display: inline-block;
-  transition: background-color 0.6s ease;
+.nav {
+  &__container {
+    text-align: center;
+  }
+
+  &__dot {
+    cursor: pointer;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin: 0 2px;
+    background-color: $color-white;
+    border: 2px solid $color-primary;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+  }
 }
 
 .active {
@@ -95,6 +119,10 @@
 }
 
 @keyframes fade {
-  from {opacity: .4}
-  to {opacity: 1}
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
 }

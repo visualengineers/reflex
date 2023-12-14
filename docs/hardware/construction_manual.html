@@ -17,7 +17,7 @@ title: Construction Manual
     {% for slide in site.data.construction_slides.slides %}
     <div class="mySlides fade">
       <div class="numbertext"> {{ forloop.index }} / {{ forloop.length }}</div>
-      <img src="{{ site.data.construction_slides.assetDirectory }}{{ site.data.construction_slides.pngSubDirectory }}{{ slide.png }}" style="width:100%">
+      <img src="{{ site.data.construction_slides.assetDirectory }}{{ site.data.construction_slides.pngSubDirectory }}{{ slide.png }}">
       <div class="text">{{ slide.description }}</div>
     </div>
     {% endfor %}
@@ -30,9 +30,9 @@ title: Construction Manual
   <br>
   
   <!-- The dots/circles -->
-  <div style="text-align:center">
+  <div class="nav__container">
     {% for slide in site.data.construction_slides.slides %}
-    <span class="dot" onclick="currentSlide({{ forloop.index }})"></span>
+    <span class="nav__dot" onclick="currentSlide({{ forloop.index }})"></span>
     {% endfor %}
   </div>
 
@@ -58,12 +58,11 @@ title: Construction Manual
         if (n < 1) {slideIndex = slides.length}
         for (i = 0; i < slides.length; i++) {
             slides[i].style.display = "none";
-            slides[i].className.replace(" show", "");
+            slides[i].className.replace(" show", " hide");
         }
         for (i = 0; i < dots.length; i++) {
             dots[i].className = dots[i].className.replace(" active", "");
         }
-        slides[slideIndex-1].style.display = "block";
         slides[slideIndex-1].className += " show";
         dots[slideIndex-1].className += " active";
     }
