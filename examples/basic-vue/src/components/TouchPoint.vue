@@ -2,8 +2,12 @@
   <div>
     <div
       className="touchpoints__item"
-      :style="{ left: positionLeft + 'px', top: positionTop + 'px' }"
-    ></div>
+      :style="{ transform: 'translate(' + positionLeft + 'px, ' + positionTop + 'px) scale(' + scaleValue + ', ' + scaleValue + ')' }"
+    >
+    <p>
+      {{ pointId }}
+    </p>
+    </div>
   </div>
 </template>
 
@@ -54,7 +58,14 @@ export default {
       } else {
         return -10;
       }
-    },
+    },    
+    scaleValue() {
+      if (this.touchData.touchPoints[0]) {
+        return Math.abs(this.touchData.touchPoints[0].Position.Z);
+      } else {
+        return 0;
+      }
+    }
   },
 
   methods: {},
@@ -64,9 +75,21 @@ export default {
 <style>
 .touchpoints__item {
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  background-color: lime;
+  width: 150px;
+  height: 150px;
+  margin-top:-75px;
+  margin-left: -75px;
+  background-color: #0c5e04;
   position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.touchpoints__item p {
+  font-weight: 600;
+  font-size: 4rem;
+  color: white;
 }
 </style>
