@@ -18,16 +18,17 @@ class TouchPoint extends Component {
             }
         };
         
-        console.log(this.state);
+        console.log('state', this.state);
     }
 
     render() {
         return (
             <div className="touchpoints__item" style = {
                 {
-                  transform: `translate(${this.props.posX}px, ${this.props.posY}px)`
+                  transform: `translate(${this.props.posX}px, ${this.props.posY}px) scale(${Math.abs(this.props.posZ)}, ${Math.abs(this.props.posZ)})`
                 }
               } > 
+              <p>{this.props.id}</p>
             </div>
         )
     }

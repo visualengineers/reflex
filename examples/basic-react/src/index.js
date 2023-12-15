@@ -44,14 +44,17 @@ ws.onmessage = function (evt) {
 
   console.log(points[0]);
 
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
   // dispatch to touchpoint reducer
   store.dispatch({ 
     type: 'UPDATE', 
     payload: { 
       updatedPoint : {
-        touchId: points[0].TouchId,
-        posX: points[0].Position.X * 1920,
-        posY: points[0].Position.Y * 1080,
+        id: points[0].TouchId,
+        posX: points[0].Position.X * w,
+        posY: points[0].Position.Y * h,
         posZ: points[0].Position.Z
       }
     }   
