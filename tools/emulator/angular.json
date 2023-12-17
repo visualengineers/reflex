@@ -129,5 +129,8 @@
     "@schematics/angular:component": {
       "style": "sass"
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

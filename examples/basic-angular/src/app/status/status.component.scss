@@ -1,5 +1,13 @@
 @import '../../style/abstracts/_variables';
 
+:host {
+    position: absolute;
+    top: 24rem;
+    left: 2rem;
+    border-left: 1px solid;
+    padding-left: 0.5rem;
+}
+
 .status {
     &__indicator {
         display: block;
