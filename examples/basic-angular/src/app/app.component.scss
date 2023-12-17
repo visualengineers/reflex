@@ -87,43 +87,47 @@
 
   .touchPoint {
       position: absolute;
-      top: -40px;
-      left: -40px;
-      width: 80px;
-      height: 80px;
+      top: -90px;
+      left: -90px;
+      width: 180px;
+      height: 180px;
       
       background-color: transparent; 
 
       font-family: $font-tertiary;
       color: $color-primary;
-      font-size: 3rem;
+      font-size: 8rem;
 
       &__outerCircle {
 
         position:relative;
-        width: 70px;
-        height: 70px;
+        width: 170px;
+        height: 170px;
         border-radius: 100%;        
         background-color: $color-primary;        
+
+        &.pull {
+          background-color: $color-red-dark;  
+      
+        }
+
+        &.push {
+          background-color: $color-green-dark; 
+        }
       }
 
       &__innerCircle {
         position:relative;
-        width: 60px;
-        height: 60px;
-        margin-top: -65px;
-        margin-left: 5px;
+        width: 150px;
+        height: 150px;
+        margin-top: -160px;
+        margin-left: 10px;
         border-radius: 100%;        
         background-color: $color-white;
-      }
 
-      & p {
-          position: absolute;
-          width: 60px;
-          height: 30px;
-          top: 0.4rem;
-          text-align: center;
-          display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
   }
 

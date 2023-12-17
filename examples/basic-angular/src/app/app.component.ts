@@ -14,6 +14,7 @@ export class AppComponent implements AfterViewInit, OnInit, OnDestroy {
   public TouchPoints$ : Observable<Interaction[]>;
   public Width = 0;
   public Height = 0;
+  public Math = Math;
 
   resizeObservable$: Observable<Event> | undefined
   resizeSubscription$: Subscription | undefined;
