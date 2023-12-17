@@ -3,7 +3,6 @@
         <div class="touchpoints__panel">
          <TouchPoint  />
         </div>
-    <img alt="Vue logo" src="../assets/logo.png" />
   </div>
 </template>
 

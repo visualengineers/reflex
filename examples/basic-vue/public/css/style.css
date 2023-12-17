@@ -1,0 +1,226 @@
+@font-face {
+    font-family: 'Barlow';
+    src: url('/fonts/Barlow-Regular.ttf') format("opentype");
+}
+
+@font-face {
+    font-family: 'Barlow Italic';
+    src: url('/fonts/Barlow-Italic.ttf') format("opentype");
+}
+
+@font-face {
+    font-family: 'Barlow Demi';
+    src: url('/fonts/Barlow-SemiBold.ttf') format("opentype");
+}
+
+@font-face {
+    font-family: 'Barlow Condensed Demi';
+    src: url('/fonts/BarlowCondensed-SemiBold.ttf') format("opentype");
+}
+
+@font-face {
+    font-family: 'Barlow Condensed';
+    src: url('/fonts/BarlowCondensed-Regular.ttf') format("opentype");
+}
+
+/* variables */
+/* COLORS */
+
+:root {
+
+--color-primary: #0071B7;
+--color-primary-light: #29A6DD;
+--color-primary-light-2: #c0e0ee;
+
+--color-grey-dark: #4D4D4D;
+--color-grey-light: #949494;
+--color-grey-light-2: #C7C7C7;
+--color-grey-light-3: #E1E1E1;
+--color-grey-light-4: #EFEFEF;
+
+--color-green-dark: #0c5e04;
+
+--color-red-dark: #b1160b;
+
+--color-white: #FFF;
+
+/* FONT */
+
+--default-font-size: 1.4rem;
+--font-size-small: 1.2rem;       
+--font-size-medium: 1.6rem;      
+--font-size-large: 1.8rem;
+--font-size-huge: 2.4rem;      
+
+--font-primary: 'Barlow', sans-serif;
+--font-secondary: 'Barlow Condensed Demi', sans-serif;
+--font-tertiary: 'Barlow Condensed', sans-serif;
+--font-heading: 'Barlow Demi', sans-serif;
+
+}
+
+html {
+    box-sizing: border-box;
+  
+    font-size: 62.5%;
+    font-family: var(--font-primary);
+  
+    background-color: var(--color-white);
+
+}
+
+body {
+    font-family: var(--font-primary);
+    font-weight: 400;
+    font-size: var(--default-font-size);
+    line-height: 1.7;
+    color: var(--color-grey-dark); 
+    margin: 0;
+}
+
+.toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    background-image: linear-gradient(to right, transparent, var(--color-grey-light-3));
+    color: var(--color-primary);
+    font-weight: 600;
+    font-family: var(--font-primary);
+}
+
+.toolbar__title {
+    margin-left: 8.9rem;
+    margin-top: 24rem;
+    font-size: 1.6rem;
+   
+}
+
+#reflex-logo {
+    position: absolute;
+    height: 160px;
+    top: 1rem;
+    left: 2rem;
+}
+
+#htw-logo-img,
+#htw-logo-text {
+    height: 40px;
+    margin: 0 8px;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.content {
+    height: 100vh;
+    width: 100vw;
+    display: block;
+    background-color: var(--color-white);
+}
+
+.status__panel {
+    position: absolute;
+    top: 24rem;
+    left: 2rem;
+    border-left: 1px solid;
+    padding-left: 0.5rem;
+}
+
+.status__panel p {
+    margin: 0;
+}
+
+.status__indicator {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-white);
+    border-radius: 100%;
+    border: 1px solid var(--color-grey-light);
+    margin-right: 0.7rem;
+    transform: translate(2px, 3px);
+}
+
+.status__indicator.connected {
+    background-color: var(--color-green-dark);
+}
+
+.status__indicator.disconnected {
+    background-color: var(--color-red-dark);
+}
+
+.status__stats {
+    display: grid;
+    grid-template-columns: minmax(max-content, 1fr) 2fr;
+    grid-column-gap: 1rem;
+}
+
+.status__stats--header {
+    display: flex;
+    font-family: var(--font-tertiary);
+    color: var(--color-primary);
+}
+
+.status__stats--item {
+    color: var(--color-grey-light);
+}
+
+.touchpoints__panel {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.touchPoint {
+    position: absolute;
+    top: -90px;
+    left: -90px;
+    width: 180px;
+    height: 180px;
+    
+    background-color: transparent; 
+
+    font-family: var(--font-tertiary);
+    color: var(--color-primary);
+    font-size: 8rem;
+}
+
+.touchPoint__outerCircle {
+
+    position:relative;
+    width: 170px;
+    height: 170px;
+    border-radius: 100%;        
+    background-color: var(--color-primary);        
+}
+
+.touchPoint__outerCircle.pull {
+    background-color: var(--color-red-dark);      
+}
+
+.touchPoint__outerCircle.push {
+    background-color: var(--color-green-dark);      
+}
+
+.touchPoint__innerCircle {
+    position:relative;
+    width: 150px;
+    height: 150px;
+    margin-top: -160px;
+    margin-left: 10px;
+    border-radius: 100%;        
+    background-color: var(--color-white);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -2,12 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ReFlex | Basic Vue.js App </title>
+    <link rel="stylesheet" href="<%= BASE_URL %>css/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>Redux Counter Example</title>
   </head>
   <body>
+    <!-- Toolbar -->
+    <div class="toolbar" role="banner">
+      <img
+        id="reflex-logo"
+        alt="ReFlex Logo"
+        src="<%= BASE_URL %>img/reflex-logo.png"
+      />
+      <span class="toolbar__title">Basic Vue.js App</span>
+        <div class="spacer"></div>
+        <img id="htw-logo-img" alt="HTW-Logo" src="<%= BASE_URL %>img/logo--image.png">
+        <img id="htw-logo-text" alt="HTW-Logo" src="<%= BASE_URL %>img/logo--text.png">
+    </div>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
