@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 // component for rendering point
-class TouchPoint extends Component {
+class Status extends Component {
     constructor(props) {
         super(props);
 
@@ -21,24 +21,24 @@ class TouchPoint extends Component {
     render() {
         return (
 
-            this.props.points.map((p) => 
-            <div key={p.id} className='touchPoint' style = {
-                {
-                  transform: `translate(${p.posX}px, ${p.posY}px) scale(${Math.abs(p.posZ)}, ${Math.abs(p.posZ)})`
-                }
-              } > 
-              <div className={`touchPoint__outerCircle ${p.posZ < 0 ? ' push' : ' pull'}`}></div>
-              <div className='touchPoint__innerCircle'>
-                <p>{p.id}</p>
-              </div>
-              
-            </div>
-        )) 
+          <div className="status__stats">
+          <div className="status__stats--header">
+              <div className={`status__indicator ${this.props.isConnected ? ' connected' : ' disconnected'}`}></div>
+              <p>Address</p>
+          </div>
+          <div className="status__stats--item">{this.props.webSocketAddress}</div>
+          <div className="status__stats--header">FrameNumber</div>
+          <div className="status__stats--item">{this.props.frameNumber}</div>
+          <div className="status__stats--header">Touches</div>
+          <div className="status__stats--item">{this.props.points.length}</div>
+      </div>
+        )
     }
 }
 
 // map stet to props (according to react/redux, state should never be manipulated directly)
 const mapStateToProps = (state) => {
+    console.log(state);
     return {
       points: state.touchReducer.updatedState.points,
       frameNumber: state.touchReducer.updatedState.frameNumber,
@@ -57,7 +57,7 @@ const mapStateToProps = (state) => {
  };
 
  // just for type safety
-TouchPoint.propTypes = {
+Status.propTypes = {
     points: PropTypes.array.isRequired,
     frameNumber: PropTypes.number.isRequired,
     webSocketAddress: PropTypes.string.isRequired,
@@ -65,4 +65,4 @@ TouchPoint.propTypes = {
 }
 
 // connect mapping methods to modify state
-export default connect(mapStateToProps, mapDispatchToProps)(TouchPoint)
+export default connect(mapStateToProps, mapDispatchToProps)(Status)

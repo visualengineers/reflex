@@ -123,6 +123,53 @@ body {
     background-color: var(--color-white);
 }
 
+.status__panel {
+    position: absolute;
+    top: 24rem;
+    left: 2rem;
+    border-left: 1px solid;
+    padding-left: 0.5rem;
+}
+
+.status__panel p {
+    margin: 0;
+}
+
+.status__indicator {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-white);
+    border-radius: 100%;
+    border: 1px solid var(--color-grey-light);
+    margin-right: 0.7rem;
+    transform: translate(2px, 3px);
+}
+
+.status__indicator.connected {
+    background-color: var(--color-green-dark);
+}
+
+.status__indicator.disconnected {
+    background-color: var(--color-red-dark);
+}
+
+.status__stats {
+    display: grid;
+    grid-template-columns: minmax(max-content, 1fr) 2fr;
+    grid-column-gap: 1rem;
+}
+
+.status__stats--header {
+    display: flex;
+    font-family: var(--font-tertiary);
+    color: var(--color-primary);
+}
+
+.status__stats--item {
+    color: var(--color-grey-light);
+}
+
 .touchpoints__panel {
     background-color: transparent;
     width: 100%;
@@ -131,28 +178,6 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.touchpoints__item {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    background-color: var(--color-green-dark);
-    position: absolute;
-    margin-top: -75px;
-    margin-left: -75px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.touchpoints__item p {
-    color: var(--color-white);
-    font-weight: 600;
-    font-family: sans-serif;
-
-    font-size: 4rem;
 }
 
 .touchPoint {

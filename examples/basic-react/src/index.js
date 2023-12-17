@@ -4,6 +4,7 @@ import {Provider} from "react-redux";
 import { combineReducers, createStore } from 'redux';
 import TouchPoint from './components/TouchPoint';
 import touchpointReducer from './reducers/touchpoint-reducer';
+import Status from './components/Status';
 
 // create store with reducer for dispatching messages
 const store = createStore(combineReducers({
@@ -14,9 +15,15 @@ const rootEl = document.getElementById('root')
 
 // important: need provider to inject store into component
 const render = () => ReactDOM.render(
-  <div className="touchpoints__panel">
+  <div>
     <Provider store={store}>
-      <TouchPoint/>    
+      <div className='status__panel'>
+        <Status/>
+      </div>
+      <div className="touchpoints__panel">
+        <TouchPoint/>
+      
+      </div>
     </Provider>
   </div>,
   rootEl
