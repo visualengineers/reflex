@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setPoint } from '../actions/touchpoint-action'
 
 // component for rendering point
 class TouchPoint extends Component {
@@ -11,10 +10,10 @@ class TouchPoint extends Component {
         // initial state: touch point with default values
         this.state = {
             updatedPoint : {
-                id: props.id,
-                posX: props.posX,
-                posY: props.posY,
-                posZ: props.posZ
+                points: props.points,
+                webSocketAddress: props.webSocketAddress,
+                frameNumber: props.frameNumber,
+                isConnected: props.isConnected
             }
         };
         
@@ -23,14 +22,16 @@ class TouchPoint extends Component {
 
     render() {
         return (
-            <div className="touchpoints__item" style = {
+
+            this.props.points.map((p) => 
+            <div key={p.id} className="touchpoints__item" style = {
                 {
-                  transform: `translate(${this.props.posX}px, ${this.props.posY}px) scale(${Math.abs(this.props.posZ)}, ${Math.abs(this.props.posZ)})`
+                  transform: `translate(${p.posX}px, ${p.posY}px) scale(${Math.abs(p.posZ)}, ${Math.abs(p.posZ)})`
                 }
               } > 
-              <p>{this.props.id}</p>
+              <p>{p.id}</p>
             </div>
-        )
+        )) 
     }
 }
 
@@ -38,10 +39,10 @@ class TouchPoint extends Component {
 const mapStateToProps = (state) => {
     console.log(state);
     return {
-      id: state.touchReducer.updatedPoint.id,
-      posX: state.touchReducer.updatedPoint.posX,
-      posY: state.touchReducer.updatedPoint.posY,
-      posZ: state.touchReducer.updatedPoint.posZ
+      points: state.touchReducer.updatedState.points,
+      frameNumber: state.touchReducer.updatedState.frameNumber,
+      webSocketAddress: state.touchReducer.updatedState.webSocketAddress,
+      isConnected: state.touchReducer.updatedState.isConnected
     };
  };
 
@@ -49,17 +50,17 @@ const mapStateToProps = (state) => {
  const mapDispatchToProps = (dispatch) => {
    return {
      update: (id, x, y, z) => {
-       dispatch(setPoint(id, x, y, z));
+       dispatch(id, x, y, z);
      }
    };
  };
 
  // just for type safety
 TouchPoint.propTypes = {
-    id: PropTypes.number.isRequired,
-    posX: PropTypes.number.isRequired,
-    posY: PropTypes.number.isRequired,
-    posZ: PropTypes.number.isRequired
+    points: PropTypes.array.isRequired,
+    frameNumber: PropTypes.number.isRequired,
+    webSocketAddress: PropTypes.string.isRequired,
+    isConnected: PropTypes.bool.isRequired
 }
 
 // connect mapping methods to modify state

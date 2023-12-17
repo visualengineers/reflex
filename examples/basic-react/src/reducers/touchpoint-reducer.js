@@ -1,16 +1,16 @@
 
 // just forward point properties
-export default (state = { updatedPoint : {
-            id: 0,
-            posX: 0,
-            posY: 0,
-            posZ: 0
+export default (state = { updatedState: { 
+          points: [],
+          frameNumber: 0,
+          webSocketAddress: "ws://",
+          isConnected: false
         }
     },
     action) => {
         switch(action.type){
             case "UPDATE":
-              state = { ...state, updatedPoint: action.payload.updatedPoint };
+              state = { ...state, updatedState: action.payload };
               console.log("Updated Points", state);
               break;           
             default:

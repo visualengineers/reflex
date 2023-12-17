@@ -25,12 +25,24 @@ const render = () => ReactDOM.render(
 
 // connecting to websocket
 var address = "ws://localhost:40001/ReFlex";
+
+var frameNumber = 0;
                
 // Let us open a web socket
 var ws = new WebSocket(address);
 
 ws.onopen = function() {
-  console.log("Successfully connected to " + address)
+  console.log("Successfully connected to " + address);
+
+  store.dispatch({ 
+    type: 'UPDATE', 
+    payload: { 
+        points: [],
+        frameNumber: frameNumber,
+        webSocketAddress: address,
+        isConnected: true
+    }
+  });
 };
 
 ws.onmessage = function (evt) { 
@@ -38,33 +50,50 @@ ws.onmessage = function (evt) {
   // parse data
   var points = JSON.parse(evt.data);
   
-  if (points.length <= 0) {
+  if (!points || points.length < 0) {
     return;
   }
 
-  console.log(points[0]);
-
   const w = window.innerWidth;
   const h = window.innerHeight;
+
+  frameNumber++;
+
+  const convertedPoints = points.map((p) => {
+    return {
+      id: p.TouchId,
+      posX: p.Position.X * w,
+      posY: p.Position.Y * h,
+      posZ: p.Position.Z
+    }
+  });
 
   // dispatch to touchpoint reducer
   store.dispatch({ 
     type: 'UPDATE', 
     payload: { 
-      updatedPoint : {
-        id: points[0].TouchId,
-        posX: points[0].Position.X * w,
-        posY: points[0].Position.Y * h,
-        posZ: points[0].Position.Z
-      }
-    }   
-  })
+        points: convertedPoints,
+        frameNumber: frameNumber,
+        webSocketAddress: address,
+        isConnected: true
+    }
+  });
 };
 
 ws.onclose = function() { 
   
   // websocket is closed.
   console.warn("Connection is closed..."); 
+
+  store.dispatch({ 
+    type: 'UPDATE', 
+    payload: { 
+        points: [],
+        frameNumber: frameNumber,
+        webSocketAddress: address,
+        isConnected: false
+    }
+  });
 };
 
 render();
