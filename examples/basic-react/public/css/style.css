@@ -40,6 +40,8 @@
 
 --color-green-dark: #0c5e04;
 
+--color-red-dark: #b1160b;
+
 --color-white: #FFF;
 
 /* FONT */
@@ -151,4 +153,49 @@ body {
     font-family: sans-serif;
 
     font-size: 4rem;
+}
+
+.touchPoint {
+    position: absolute;
+    top: -90px;
+    left: -90px;
+    width: 180px;
+    height: 180px;
+    
+    background-color: transparent; 
+
+    font-family: var(--font-tertiary);
+    color: var(--color-primary);
+    font-size: 8rem;
+}
+
+.touchPoint__outerCircle {
+
+    position:relative;
+    width: 170px;
+    height: 170px;
+    border-radius: 100%;        
+    background-color: var(--color-primary);        
+}
+
+.touchPoint__outerCircle.pull {
+    background-color: var(--color-red-dark);      
+}
+
+.touchPoint__outerCircle.push {
+    background-color: var(--color-green-dark);      
+}
+
+.touchPoint__innerCircle {
+    position:relative;
+    width: 150px;
+    height: 150px;
+    margin-top: -160px;
+    margin-left: 10px;
+    border-radius: 100%;        
+    background-color: var(--color-white);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

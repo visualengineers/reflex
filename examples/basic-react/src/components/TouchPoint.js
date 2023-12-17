@@ -24,12 +24,16 @@ class TouchPoint extends Component {
         return (
 
             this.props.points.map((p) => 
-            <div key={p.id} className="touchpoints__item" style = {
+            <div key={p.id} className='touchPoint' style = {
                 {
                   transform: `translate(${p.posX}px, ${p.posY}px) scale(${Math.abs(p.posZ)}, ${Math.abs(p.posZ)})`
                 }
               } > 
-              <p>{p.id}</p>
+              <div className={`touchPoint__outerCircle ${p.posZ < 0 ? ' push' : ' pull'}`}></div>
+              <div className='touchPoint__innerCircle'>
+                <p>{p.id}</p>
+              </div>
+              
             </div>
         )) 
     }
