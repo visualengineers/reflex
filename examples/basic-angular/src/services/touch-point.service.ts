@@ -1,15 +1,20 @@
 import { Inject, Injectable } from '@angular/core';
-import { Interaction, InteractionType } from '@reflex/shared-types';
+import { Interaction, InteractionFrame } from '@reflex/shared-types';
 import { Observable, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
   })
 export class TouchPointService {
     private _wss: WebSocket;
+    private _numFrames = 0;
+    private _historyRaw: Array<InteractionFrame> = [];
 
     private _touchPoints: Subject<Interaction[]> = new Subject<Interaction[]>();
+    private _history: Subject<InteractionFrame[]> = new Subject<InteractionFrame[]>();
     private _isConnected = false;
+    private _frameNumber: Subject<number> = new Subject<number>();
     
     constructor(@Inject('WEBSOCKET_URL') private _address: string) {
         this._wss = new WebSocket(this._address);
@@ -20,8 +25,16 @@ export class TouchPointService {
         return this._touchPoints;
     }
 
+    public getHistory() : Observable<InteractionFrame[]> {
+        return this._history;
+    }
+
     public getAddress(): string {
         return this._address;
+    }
+
+    public getFrameNumber(): Observable<number> {
+        return this._frameNumber;
     }
 
     public isConnected(): boolean {
@@ -39,6 +52,9 @@ export class TouchPointService {
         // better do this with RxJS !
         var service = this;
         this._wss.onmessage = function(evt) {
+
+            service._numFrames++;
+            service._frameNumber.next(service._numFrames);
             
             // not the most elegant workaround: convert first letter of JSON property to lowercase
             const lowerCaseStart = evt.data.replace(/"([^"]+)":/g, 
@@ -49,6 +65,8 @@ export class TouchPointService {
             
             if (points.length <= 0) {
                 service._touchPoints.next([]);
+                service._historyRaw.push({ frameId: service._numFrames, interactions: []})
+                service._history.next(service._historyRaw);
                 return;
             }
 
@@ -58,7 +76,13 @@ export class TouchPointService {
                 tp.push(pt);
             });
 
-            service._touchPoints.next(tp); 
+            service._touchPoints.next(tp);
+            service._historyRaw.push({ frameId: service._numFrames, interactions: tp});
+            if (service._historyRaw.length > 100) {
+                service._historyRaw.splice(0, 1);
+            }
+
+            service._history.next(service._historyRaw);
         }
 
         this._wss.onclose = function() { 

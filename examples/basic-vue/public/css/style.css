@@ -94,7 +94,7 @@ body {
 
 .toolbar__title {
     margin-left: 8.9rem;
-    margin-top: 24rem;
+    margin-top: 20rem;
     font-size: 1.6rem;
    
 }
@@ -140,7 +140,7 @@ body {
 
     background: rgba(255,255,255,0.8);
 
-    overflow-y: auto;
+    overflow-y: auto;    
     overflow-anchor: none;
 }
 
@@ -184,7 +184,7 @@ body {
 
 .status__panel {
     position: absolute;
-    top: 24rem;
+    top: 20rem;
     left: 2rem;
     border-left: 1px solid;
     padding-left: 0.5rem;

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
@@ -14,6 +14,7 @@ export class AppComponent implements AfterViewInit, OnInit, OnDestroy {
   public TouchPoints$ : Observable<Interaction[]>;
   public Width = 0;
   public Height = 0;
+  public Math = Math;
 
   resizeObservable$: Observable<Event> | undefined
   resizeSubscription$: Subscription | undefined;

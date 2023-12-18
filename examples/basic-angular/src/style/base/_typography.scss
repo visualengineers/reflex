@@ -1,34 +1,24 @@
 @font-face {
-    font-family: 'DIN 2014 Light';
-    src: url('/assets/fonts/dpt45.otf') format("opentype");
+    font-family: 'Barlow';
+    src: url('/assets/fonts/Barlow-Regular.ttf') format("opentype");
 }
 
 @font-face {
-    font-family: 'DIN 2014 Light Italic';
-    src: url('/assets/fonts/dpt46.otf') format("opentype");
+    font-family: 'Barlow Italic';
+    src: url('/assets/fonts/Barlow-Italic.ttf') format("opentype");
 }
 
 @font-face {
-    font-family: 'DIN 2014 Regular';
-    src: url('/assets/fonts/dpt55.otf') format("opentype");
+    font-family: 'Barlow Demi';
+    src: url('/assets/fonts/Barlow-SemiBold.ttf') format("opentype");
 }
 
 @font-face {
-    font-family: 'DIN 2014 Demi';
-    src: url('/assets/fonts/dpt65.otf') format("opentype");
+    font-family: 'Barlow Condensed Demi';
+    src: url('/assets/fonts/BarlowCondensed-SemiBold.ttf') format("opentype");
 }
 
 @font-face {
-    font-family: 'DIN 2014 Narrow Light';
-    src: url('/assets/fonts/dpt47.otf') format("opentype");
-}
-
-@font-face {
-    font-family: 'DIN 2014 Narrow Regular';
-    src: url('/assets/fonts/dpt57.otf') format("opentype");
-}
-
-@font-face {
-    font-family: 'DIN 2014 Narrow Demi';
-    src: url('/assets/fonts/dpt67.otf') format("opentype");
+    font-family: 'Barlow Condensed';
+    src: url('/assets/fonts/BarlowCondensed-Regular.ttf') format("opentype");
 }
