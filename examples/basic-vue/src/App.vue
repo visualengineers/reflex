@@ -1,11 +1,5 @@
 <template>
   <div class="root">
-    <div class="touchpoint-list" :key="this.currentData" v-if="currentData != []">
-      <p>aktuelle Touchpoints</p>
-      <ul>
-        <li v-for="data in this.currentData.points">{{data}}</li>
-      </ul>
-    </div>
     <Home></Home>
   </div>
 </template>
@@ -24,7 +18,8 @@ export default {
                 webSocketAddress: "ws://",
                 frameNumber: 0,
                 isConnected: false
-            }
+            },
+            history: []
         };
     },
     methods: {
@@ -50,10 +45,19 @@ export default {
               frameNumber: frameNumber,
               isConnected: isConnected
           };
+
+          const historyItem = { frameNumber: frameNumber, points: points };
+
+          this.history.push(historyItem);
+          if (this.history.length > 100) {
+            this.history.splice(0, 1);
+          }
+          
         }
     },
     provide() {
         const touchData = {};
+        const rawData = {};
         Object.defineProperty(touchData, "points", {
             enumerable: true,
             get: () => this.currentData.points,
@@ -67,8 +71,14 @@ export default {
         Object.defineProperty(touchData, "isConnected", {
           get: () => this.currentData.isConnected
         });
+
+        Object.defineProperty(rawData, "frames", {
+          enumerable: true,
+          get: () => this.history,
+        })
         return {
-            touchData
+            touchData,
+            rawData
         };
     },
     created: function () {
