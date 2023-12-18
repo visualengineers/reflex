@@ -140,7 +140,8 @@ body {
 
     background: rgba(255,255,255,0.8);
 
-    overflow-y: auto;
+    overflow-y: auto;    
+    overflow-anchor: none;
 }
 
 
