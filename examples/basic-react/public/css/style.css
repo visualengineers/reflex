@@ -123,6 +123,64 @@ body {
     background-color: var(--color-white);
 }
 
+.message-container {
+    display: flex; 
+    flex-direction: column-reverse; 
+
+    position: absolute;
+    margin: 4rem;
+    padding: 1rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 3px;
+    top: 10vh;
+    right: 0;
+
+    width: 30vw;
+    height: 80vh;
+
+    background: rgba(255,255,255,0.8);
+
+    overflow-y: auto;
+}
+
+
+.message__box {
+    display: flex;
+    position: relative;
+    margin-top: 0.5rem;
+
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    font-stretch: condensed;
+
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.message__box p {            
+    margin: 0; 
+}
+
+.message__id {
+    display: block;
+    width: 5rem; 
+    color: var(--color-grey-dark);
+
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    font-weight: bold;
+}
+
+.message__tp {
+    padding-left: 1rem;
+
+    overflow-wrap: anywhere;
+
+    font-size: 1rem;
+
+}
+
 .status__panel {
     position: absolute;
     top: 24rem;

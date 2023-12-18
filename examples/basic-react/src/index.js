@@ -5,10 +5,13 @@ import { combineReducers, createStore } from 'redux';
 import TouchPoint from './components/TouchPoint';
 import touchpointReducer from './reducers/touchpoint-reducer';
 import Status from './components/Status';
+import History from './components/History';
+import historyReducer from './reducers/history-reducer';
 
 // create store with reducer for dispatching messages
 const store = createStore(combineReducers({
-  touchReducer: touchpointReducer
+  touchReducer: touchpointReducer,
+  historyReducer: historyReducer
 }));
 const rootEl = document.getElementById('root')
 
@@ -22,13 +25,16 @@ const render = () => ReactDOM.render(
       </div>
       <div className="touchpoints__panel">
         <TouchPoint/>
-      
+      </div>
+      <div className="message-container">
+        <History/>
       </div>
     </Provider>
   </div>,
   rootEl
 )
 
+var completeHistory = [];
 
 // connecting to websocket
 var address = "ws://localhost:40001/ReFlex";
@@ -75,6 +81,13 @@ ws.onmessage = function (evt) {
     }
   });
 
+  const historyPoints = points.map((p) => {
+    return JSON.stringify(p);
+  });
+
+  completeHistory.push();
+
+
   // dispatch to touchpoint reducer
   store.dispatch({ 
     type: 'UPDATE', 
@@ -83,6 +96,14 @@ ws.onmessage = function (evt) {
         frameNumber: frameNumber,
         webSocketAddress: address,
         isConnected: true
+    }
+  });
+  store.dispatch(
+  {
+    type: 'HISTORY', 
+    payload: {
+      frameNumber: frameNumber,
+      content: historyPoints
     }
   });
 };

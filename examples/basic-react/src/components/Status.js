@@ -38,7 +38,6 @@ class Status extends Component {
 
 // map stet to props (according to react/redux, state should never be manipulated directly)
 const mapStateToProps = (state) => {
-    console.log(state);
     return {
       points: state.touchReducer.updatedState.points,
       frameNumber: state.touchReducer.updatedState.frameNumber,
