@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';

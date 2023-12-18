@@ -1,0 +1,12 @@
+<div class="message-container">
+    <div class="message__box" *ngFor="let message of Frames">
+        <p class="message__id">{{ message.frameId }}</p>
+        <div>
+            [
+            <p *ngFor="let point of message.interactions" class="message__tp">
+                {{ JSON.stringify(point) }}
+            </p>
+            ]
+        </div>
+  </div>
+</div>

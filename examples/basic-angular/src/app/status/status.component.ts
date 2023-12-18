@@ -25,12 +25,12 @@ export class StatusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._touchPoints$ = this._pointService.getTouchPoints();
     this._touchPointSubscription = this._touchPoints$.subscribe(res => {
-      this.FrameNumber++;
       this.TouchCount = res.length;      
     });
     interval(500).subscribe(() => this.IsConnected = this._pointService.isConnected());
     console.log(this.IsConnected);
     this.WebSocketAddress = this._pointService.getAddress();
+    this._pointService.getFrameNumber().subscribe((n) => this.FrameNumber = n);
   }
 
   ngOnDestroy(): void {
