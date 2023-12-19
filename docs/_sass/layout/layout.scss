@@ -4,7 +4,7 @@ body {
     grid-template-columns: 4rem 28rem 15rem 1fr 4rem;
     grid-template-rows: 3rem 7rem 3rem 1fr 3rem 7rem 3rem;
 
-    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 75%, rgba(255,255,255,0) 95%), url("/reflex/assets/layout/footer_bg.jpg");
+    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 85%, rgba(255,255,255,0) 95%), url("/reflex/assets/layout/footer_bg.jpg");
     background-attachment: fixed;
     background-position: bottom right;
     background-size: contain;
@@ -128,4 +128,56 @@ footer {
     padding: 2rem 4rem;
 
     border-left: 2px solid $color-primary;
+}
+
+.content-nav {
+    grid-column: 2 / 2;
+    grid-row: 4 / 4;
+}
+
+.link-code {
+    position: relative;
+    margin-top: 10rem;
+    border-right: 4px solid transparent;
+
+    padding: 0.5rem 1rem;
+
+    border-radius: 5px 0 0 5px;
+
+
+    & a {
+        &::before {
+            position: absolute;
+            top: 0.7rem;
+            left: 1rem;
+            content: "";
+            width: 20px;
+            height: 20px;
+            background-image: url('/reflex/assets/layout/GitHub_logo.png');
+            background-size: contain;
+            background-position: center center;
+        }
+
+        margin-left: 35px;
+        margin-top: 0.2rem;
+        display: block;
+        font-size: $font-size-default;
+        color: $color-grey-dark;
+        font-weight: $font-weight-default;
+        font-family: $font-secondary;
+
+        &:hover {
+            color: $color-primary;
+            font-weight: $font-weight-bold;            
+        }
+    }
+
+    &:hover {
+        border-right: 4px solid $color-primary;
+
+        background-color: rgba(0,0,0,0.05);
+    }
+    
+
+
 }
