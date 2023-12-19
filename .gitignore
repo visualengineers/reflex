@@ -495,3 +495,5 @@ $RECYCLE.BIN/
 !**/*/src/assets/icon
 !**/*/reflex-shared-types
 !**/*/reflex-shared-types/**/log
+docs/Gemfile
+docs/Gemfile.lock

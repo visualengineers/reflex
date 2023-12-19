@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    {%- include head.html -%}
+    <title>{{ page.title }}</title>
+  </head>
+  <body>
+    <header>
+        <div class="logo-reflex">
+            <div class="logo-reflex__img">
+                <img src="/reflex/assets/layout/app_icon.png" alt="ReFlex Logo"/>
+            </div>
+            <div class="logo-reflex__text">
+                <img src="/reflex/assets/layout/app_logo-text.png" alt="ReFlex (Title)"/>
+            </div>
+        </div>
+        <div class="header-title">Documentation</div>
+    </header>
+    <nav class="main-nav">
+        <a href="/software">Software</a>
+        <a href="/hardware">Hardware</a>
+        <a href="/knowledge">Knowledge Base</a>
+    </nav>
+    <nav class="content-nav">
+
+        <div class="link-code">
+            <a href="https://github.com/visualengineers/reflex/">Code</a>
+        </div>
+    </nav>    
+    
+    <section class="content">
+        <h1>{{ page.title }}</h1>
+        {{ content }}
+    </section>
+    <footer>
+        <div class="logo-htw">
+            <div class="logo-htw__img">
+                <img src="/reflex/assets/layout/logo--image.png" alt="HTW Logo"/>
+            </div>
+            <div class="logo-htw__text">
+                <img src="/reflex/assets/layout/logo--text.png" alt="HTW Text"/>
+            </div>
+        </div>
+    </footer>
+    </body>
+</html>

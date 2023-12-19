@@ -5,7 +5,7 @@
 
 /* Slideshow container */
 .slideshow-container {
-  width: 90vw;
+  width: 90%;
 
   position: relative;
   margin: auto;
@@ -17,13 +17,15 @@
   display: none;
   box-shadow: $color-shadow-default 0px 0px 15px 3px;
 
+  max-height: 60vh;
+
   &.hide {
     display: none;
   }
 
   &.show {
     display: grid;
-    grid-template-rows: 9rem 70vh 3rem;
+    grid-template-rows: 12% 85% 2%;
     align-items: center;
     justify-content: center;
   }
