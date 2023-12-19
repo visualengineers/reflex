@@ -1,0 +1,84 @@
+{ "toc":
+    [
+        {
+            "name": "Software",
+            "path": "/reflex/software/",
+            "file": "index.html",
+            "content":
+            [
+                {
+                    "name": "Repository",
+                    "path": "/reflex/software/repo/",
+                    "file": "index.html",
+                    "content": [
+                        {
+                            "name": "ReFlex Framework",
+                            "path": "/reflex/software/repo/",
+                            "file": "reflex.html"
+                        },
+                        {
+                            "name": "Development Documentation",
+                            "path": "/reflex/software/repo/",
+                            "file": "dev.html"
+                        }
+                    ]
+                },
+                {
+                    "name": "Applications",
+                    "path": "/reflex/software/apps/",
+                    "file": "index.html",
+                    "content": [
+                        {
+                            "name": "Server",
+                            "path": "/reflex/software/apps/",
+                            "file": "server.html"
+                        },
+                        {
+                            "name": "Emulator",
+                            "path": "/reflex/software/apps/",
+                            "file": "emulator.html"
+                        },
+                        {
+                            "name": "Logging",
+                            "path": "/reflex/software/apps/",
+                            "file": "logging.html"
+                        },
+                        {
+                            "name": "Layers",
+                            "path": "/reflex/software/apps/",
+                            "file": "layers.html"
+                        },
+                        {
+                            "name": "Templates",
+                            "path": "/reflex/software/apps/",
+                            "file": "templates.html"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Hardware",
+            "path": "/reflex/hardware/",
+            "file": "index.html",
+            "content":
+            [
+                {
+                    "name": "Construction Manual",
+                    "path": "/reflex/hardware/",
+                    "file": "construction_manual.html"
+                },
+                {
+                    "name": "Technical Specifications",
+                    "path": "/reflex/hardware/",
+                    "file": "specs.html"
+                }
+            ]
+        },
+        {
+            "name": "Knowledge Base",
+            "path": "/reflex/knowledge/",
+            "file": "index.html"
+        }
+    ]
+}

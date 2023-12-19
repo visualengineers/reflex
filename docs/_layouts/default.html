@@ -17,11 +17,12 @@
         <div class="header-title">Documentation</div>
     </header>
     <nav class="main-nav">
-        <a href="/software">Software</a>
-        <a href="/hardware">Hardware</a>
-        <a href="/knowledge">Knowledge Base</a>
+        <a href="/software/index.html">Software</a>
+        <a href="/hardware/index.html">Hardware</a>
+        <a href="/knowledge/index.html">Knowledge Base</a>
     </nav>
     <nav class="content-nav">
+        {% include nav.html nav = site.data.navigation.toc %}
 
         <div class="link-code">
             <a href="https://github.com/visualengineers/reflex/">Code</a>
