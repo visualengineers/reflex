@@ -1,9 +1,16 @@
 <template>
   <div>
     <div
-      className="touchpoints__item"
-      :style="{ left: positionLeft + 'px', top: positionTop + 'px' }"
-    ></div>
+      className="touchPoint"
+      :style="{ transform: 'translate(' + point.posX + 'px, ' + point.posY + 'px) scale(' + scaleValue + ', ' + scaleValue + ')' }"
+    >
+    <div :class="className"></div>
+      <div class="touchPoint__innerCircle">
+        <p>
+          {{ point.id }}
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,62 +18,35 @@
 export default {
   name: "TouchPoint",
 
-  data() {
-    return {
-      Point: {
-        id: 0,
-        posX: 0,
-        posY: 0,
-        posZ: 0,
-      },
-    };
+  props: {
+    point:  
+      {
+          id: Number,
+          posX: Number,
+          posY: Number,
+          posZ: Number,
+          
+        }
   },
 
-  inject: ["touchData"],
+  computed: {    
+    scaleValue() {
+      if (this.point.posZ) {
+        return Math.abs(this.point.posZ);
+      } else {
+        return 0;
+      }
+    },
 
-  computed: {
-    pointId() {
-        this.Point.id = this.touchData.touchPoints[0].TouchId
-        return this.touchData.touchPoints[0].TouchId;
-    },
-    pointPosX() {
-        this.Point.posX = this.touchData.touchPoints[0].Position.X
-        return this.touchData.touchPoints[0].Position.X
-    },
-    pointPosY() {
-        this.Point.posY = this.touchData.touchPoints[0].Position.Y
-        return this.touchData.touchPoints[0].Position.Y;
-    },
-    pointPosZ() {
-        this.Point.posZ = this.touchData.touchPoints[0].Position.Z
-        return this.touchData.touchPoints[0].Position.Z;
-    },
-    positionTop() {
-      if (this.touchData.touchPoints[0]) {
-        return this.touchData.touchPoints[0].Position.Y * 540;
+    className() {
+      if (this.point.posZ) {
+        return `touchPoint__outerCircle ${this.point.posZ < 0 ? ' push' : ' pull'}`;
       } else {
-        return -10;
+        return "touchPoint__outerCircle";
       }
-    },
-    positionLeft() {
-      if (this.touchData.touchPoints[0]) {
-        return this.touchData.touchPoints[0].Position.X * 960;
-      } else {
-        return -10;
-      }
-    },
+    }
   },
 
   methods: {},
 };
 </script>
-
-<style>
-.touchpoints__item {
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  background-color: lime;
-  position: relative;
-}
-</style>

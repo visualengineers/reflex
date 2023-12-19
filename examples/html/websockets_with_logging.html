@@ -1,0 +1,453 @@
+<!DOCTYPE HTML>
+
+<html>
+   <head>
+      <!-- style: revert order of messages to display newest item on top -->
+      <!-- so basic styling for message display -->
+      <style>
+         .interaction__container {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+
+            top:0;
+            left:0;
+
+            pointer-events: none;
+         }
+
+         .interaction__element {
+            position: relative;
+
+            width: 150px;
+            height: 150px;
+            background-color: #013e55;
+            border: 5px solid white;
+            color: white;
+
+            border-radius: 100%;
+
+            margin-top: -75px;
+            margin-left: -75px;
+
+            display:flex;
+            align-items: center;
+            justify-content: center;
+         }
+
+         .interaction__element.pull {
+            background-color: #1b660b;
+         }
+
+         .interaction__element.push {
+            background-color: #b1160b;
+         }
+
+         .interaction__element.invalid {
+            opacity: 0.3;
+         }
+
+         .interaction__id {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: sans-serif;
+         }
+
+         .message-container
+         {
+            display: flex; 
+            flex-direction: column-reverse; 
+
+            position: absolute;
+            margin: 4rem;
+            padding: 1rem;
+            border: 1px solid #013e55;
+            border-radius: 3px;
+            top: 15vh;
+            right: 0;
+
+            width: 30vw;
+            height: 70vh;
+
+            background: rgba(255,255,255,0.8);
+
+            overflow-y: auto;
+         }
+
+         .message__box {
+            display: flex;
+            position: relative;
+            margin-top: 0.5rem;
+            
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+
+            width: 100%;
+            justify-content: flex-start;
+            align-items: center;
+         }
+
+         .message__box p {            
+            margin: 0; 
+         }
+
+         .message__id {
+            display: block;
+            width: 5rem; 
+            color: #666;
+
+            font-size: 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+         }
+
+         .message__tp {
+            padding-left: 1rem;
+
+            overflow-wrap: anywhere;
+
+            font-size: 0.7rem;
+            
+         }
+
+        .status-container {
+            position: absolute;
+            margin: 4rem;
+            padding: 1rem 2rem 1rem 4rem;
+            border: 1px solid #013e55;
+            border-radius: 3px;
+            top: 0;
+            right: 0;
+
+            width: 20rem;
+            height: 5rem;
+
+            background: rgba(255,255,255,0.8);
+            pointer-events: none;
+        }        
+
+        .status {
+         position:relative;
+         margin-bottom: 0.5rem;
+         color: #013e55;
+         font-family: sans-serif;
+        }
+
+        .status::before {
+            content: "";
+            width: 15px;
+            height: 15px;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: -30px;
+            border-radius: 100%;
+            border: 1px solid #013e55;
+
+            background-color: #eeb20c;
+        }
+
+        .status.on::before {
+            background-color: #33df10; 
+        }
+
+        .status.off::before {
+            background-color: #b1160b; 
+        }
+
+
+        .status-message {
+            color: #013e55;
+            font-family: sans-serif;
+            font-size: 0.75rem;
+        }
+
+        .button-container {
+            display: flex;
+            margin: 4rem;
+        }
+
+        .button {
+            background-color: #013e55;
+            color: white;
+
+            border: 1px solid #013e55;
+            border-radius: 3px;
+            padding: 1rem 0.5rem;
+
+            text-decoration: none;
+
+            width: 20rem;
+            text-align: center;
+            font-weight: 600;
+            font-family: sans-serif;
+
+            margin-left: 1rem;
+        }
+
+        .button:hover {
+            color: #013e55;
+            background-color: white;
+        }
+
+        .button.hide {
+            display: none;
+        }
+
+        .button.show {
+            display: block;
+        }
+     </style>      
+      <script type = "text/javascript"> 
+
+         let logMessages = false;
+         var msgId = 0;
+         
+         const address = "ws://localhost:40001/ReFlex";
+         const logAddress = "http://localhost:4302/";
+         const header = "TouchId, PosX, PosY, PosZ, IsValid, IsFiltered, Time;"
+
+         let ws;
+
+         function extractInteractions(data) {
+            let result = [];
+
+            if (!data || data.length === 0) {
+               return result;
+            }
+
+            data.forEach((interaction) => 
+               result.push(`${interaction.TouchId}, ${interaction.Position.X}, ${interaction.Position.Y}, ${interaction.Position.Z}, ${interaction.IsValid}, ${interaction.IsFiltered}, ${interaction.Time};`)
+            );
+
+            return result;
+         }
+      
+         function WebSocketTest() {
+            
+            if ("WebSocket" in window) {
+               console.log("WebSocket is supported by your Browser!");               
+               
+               // Let us open a web socket
+               ws = new WebSocket(address);
+				
+               ws.onopen = function() {
+
+                  let conn_msg = "Successfully connected to " + address;
+                  console.log(conn_msg);
+
+                  // remove button and display connection state
+                  showWebSocketState(conn_msg, true);
+               };
+				
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  msgId += 1;
+                  const data = JSON.parse(evt.data);
+                  // display formatted message
+                  showMessages(msgId, data);
+                  showInteractions(data);
+                  if (logMessages) {
+                     const interactions = extractInteractions(data);
+                     interactions.forEach((msg) => 
+                        fetch(`${logAddress}log/data`, {
+                           method: "POST",
+                           body: JSON.stringify({ message: msg }),
+                           headers: {
+                              "Content-type": "application/json; charset=UTF-8"
+                           }
+                        })                        
+                     );
+                  }
+               };
+				
+               ws.onclose = function() { 
+                  
+                  let conn_msg = "Connection is closed..."
+                  // websocket is closed.
+                  console.warn(conn_msg); 
+
+                  showWebSocketState(conn_msg, false);
+               };
+
+               ws.onerror = function(error) {
+                  let conn_msg = `Connection Error: ${error}`;
+                  // websocket is closed.
+                  console.error(conn_msg); 
+
+                  showWebSocketState(conn_msg, false);
+               }
+            } else {
+              
+               // The browser doesn't support WebSocket
+               console.error("WebSocket NOT supported by your Browser!");
+            }            
+         }
+
+         function disconnectFromWebSocket() {
+            ws?.close();
+         }
+
+         function showMessages(id, data) {
+            // create message container
+            let container = document.createElement("DIV");            
+            container.setAttribute("class", "message__box");
+            // create id elem
+            let id_node = document.createElement("P");
+            id_node.setAttribute("class", "message__id");
+            let id_text = document.createTextNode(id);
+            id_node.appendChild(id_text);
+            
+            container.appendChild(id_node);
+            
+            let list_node = document.createElement("DIV");            
+
+            if (data.length === 0) {
+               let empty_text = document.createTextNode("[ ]");
+               list_node.appendChild(empty_text);
+               
+            }
+            else {
+               let open_text = document.createTextNode("[ ");
+               list_node.appendChild(open_text);
+            }
+            
+            data.forEach(element => {
+               let msg_node = document.createElement("P");
+               msg_node.setAttribute("class", "message__tp");
+               let msg_text = document.createTextNode(JSON.stringify(element));
+               msg_node.appendChild(msg_text);
+
+               list_node.appendChild(msg_node);               
+            });
+            
+            container.appendChild(list_node); 
+            
+            if (data.length > 0) {
+               let close_text = document.createTextNode("] ");
+               list_node.appendChild(close_text); 
+            }
+            
+            let msgContainer = document.getElementById('messages');
+
+            msgContainer.appendChild(container);   
+
+            if (msgContainer.childElementCount > 100) {
+               msgContainer.removeChild(msgContainer.firstElementChild);
+            }            
+         }
+
+         // add a div with two params that contain message id and message data
+         function showInteractions(data) {
+
+            const canvas = document.getElementById('interactions');
+            interactions.innerHTML = '';
+
+            data.forEach((interaction) => {
+               const w = window.innerWidth;
+               const h = window.innerHeight;
+
+               const scale = Math.abs(interaction.Position.Z);
+
+               const transform = `transform: translate(${ w * interaction.Position.X}px, ${h*interaction.Position.Y }px) scale(${scale}, ${scale});`;
+
+               // create message container
+               let container = document.createElement("DIV");            
+               container.setAttribute("class", "interaction__element");
+
+               if (interaction.Position.IsFiltered || !interaction.Position.IsValid) {
+                  container.classList.add('invalid');
+               }              
+               container.classList.add(interaction.Position.Z < 0 ? 'push' : 'pull');               
+               
+               // create id elem
+               let id_node = document.createElement("P");
+               id_node.setAttribute("class", "interaction__id");
+               let id_text = document.createTextNode(interaction.TouchId);
+               id_node.appendChild(id_text);
+               
+               container.appendChild(id_node);
+
+               container.setAttribute('style', transform);
+
+               canvas.appendChild(container);
+            })
+                      
+         }
+
+         function showWebSocketState(msg, closed) {
+            let state_node = document.createElement("P");            
+            let state_text = document.createTextNode(msg);
+            state_node.appendChild(state_text);
+
+            const statusElem = document.getElementById('status-message');
+            statusElem.innerHTML = '';
+
+            statusElem.appendChild(state_node);
+
+            toggleElement('startWebSocket', !closed);
+            toggleElement('stopWebSocket', closed);
+            toggleElement('status-ws', closed, 'on', 'off');
+         }
+
+         function startLogging() {
+            fetch(`${logAddress}log/create`, {
+               method: "POST",
+               body: JSON.stringify({ message: header }),
+               headers: {
+                  "Content-type": "application/json; charset=UTF-8"
+               }
+            })
+            .then((response) => {
+               console.log(response);
+               logMessages = true;
+
+               toggleElement('stopLogging', true);
+               toggleElement('startLogging', false);
+
+               toggleElement('status-log', true, 'on', 'off');
+            });
+         }
+
+         function stopLogging() {
+            logMessages = false;
+            toggleElement('stopLogging', false);
+            toggleElement('startLogging', true);  
+            toggleElement('status-log', false, 'on', 'off');
+         }
+
+         function toggleElement(name, show, enabled="show", disabled="hide" ) {
+            const elem = document.getElementById(name);
+            if (show) {
+               elem.classList.replace(disabled, enabled);
+            } else {
+               elem.classList.replace(enabled, disabled);
+            }
+         }
+      </script>
+		
+   </head>
+   
+   <body>
+      <div class="status-container">
+         <div class="status off" id="status-ws">WebSocket</div>
+         <div class="status off" id="status-log">Logging</div>     
+         <div id="status-message" class="status-message"></div>
+      </div>
+      <div class="message-container">
+         <div id="messages" class="messages"></div>
+      </div>     
+
+      </div>
+      <div class="button-container">
+         <a id="startWebSocket"  class="button show" href = "javascript:WebSocketTest()">Run WebSocket</a>
+         <a id="stopWebSocket"  class="button hide" href = "javascript:disconnectFromWebSocket()">Stop WebSocket</a>
+
+         <a id="startLogging" class="button show" href = "javascript:startLogging()">Start Logging</a>
+         <a id="stopLogging" class="button hide" href = "javascript:stopLogging()">Stop Logging</a>
+      </div>      
+      <div id="interactions" class="interaction__container">
+         
+      </div>
+   </body>
+</html>

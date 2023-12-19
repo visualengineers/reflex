@@ -1,99 +1,115 @@
 <template>
   <div class="root">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <div class="touchpoint-list" :key="this.currentData" v-if="currentData != []">
-      <p>aktuelle Touchpoints</p>
-      <ul>
-        <li v-for="date in this.currentData">{{date.Position}}</li>
-      </ul>
-    </div>
-    <router-view/>
+    <Home></Home>
   </div>
 </template>
 
 <script>
+import Home from './views/Home.vue';
+
 
 export default {
-  name: "App",
-
-  data () {
-    return {
-      connection: null,
-      currentData: []
-    };
-  },
-
-  methods: {
-    sendMessage: function (message) {
-      console.log("Hello");
-      console.log(this.connection);
-      this.connection.send(message);
+    name: "App",
+    data() {
+        return {
+            connection: null,
+            currentData: {
+                points: [],
+                webSocketAddress: "ws://",
+                frameNumber: 0,
+                isConnected: false
+            },
+            history: []
+        };
     },
-    updateData(points){
-      this.currentData=points
-    }
-  },
+    methods: {
+        sendMessage: function (message) {
+            this.connection.send(message);
+        },
+        updateData(points, address, frameNumber, isConnected) {
+          const width = window.innerWidth;
+          const height = window.innerHeight;          
 
-  provide() {
-    const touchData = {};
-    Object.defineProperty(touchData, "touchPoints", {
-      enumerable: true,
-      get: () => this.currentData,
-    });
-    return {
-      touchData
-    }
-  },
+          const convertedPoints = points.map((p) => {
+            return {
+              id: p.TouchId,
+              posX: p.Position.X * width,
+              posY: p.Position.Y * height,
+              posZ: p.Position.Z
+            }
+          })
 
-  created: function () {
-    const that = this
-    console.log("Starting connection to WebSocket Server");
-    this.connection = new WebSocket("ws://localhost:40001/ReFlex");
+          this.currentData = {
+              points: convertedPoints,
+              webSocketAddress: address,
+              frameNumber: frameNumber,
+              isConnected: isConnected
+          };
 
-    this.connection.onmessage = function (event) {
-      if (event.data != []) {
-        //console.log("new message detected");
-        //console.log(event.data);
-        var points = JSON.parse(event.data);
+          const historyItem = { frameNumber: frameNumber, points: points };
 
-        if (points.length <= 0) {
-          return;
+          this.history.push(historyItem);
+          if (this.history.length > 100) {
+            this.history.splice(0, 1);
+          }
+          
         }
+    },
+    provide() {
+        const touchData = {};
+        const rawData = {};
+        Object.defineProperty(touchData, "points", {
+            enumerable: true,
+            get: () => this.currentData.points,
+        });
+        Object.defineProperty(touchData, "webSocketAddress", {
+          get: () => this.currentData.webSocketAddress
+        });
+        Object.defineProperty(touchData, "frameNumber", {
+          get: () => this.currentData.frameNumber
+        });
+        Object.defineProperty(touchData, "isConnected", {
+          get: () => this.currentData.isConnected
+        });
 
-        that.updateData(points)
-      }
-    };
-
-    this.connection.onopen = function (event) {
-      console.log(event);
-      console.log("Successfully connected to the echo websocket server...");
-    };
-  },
+        Object.defineProperty(rawData, "frames", {
+          enumerable: true,
+          get: () => this.history,
+        })
+        return {
+            touchData,
+            rawData
+        };
+    },
+    created: function () {
+        const address = "ws://localhost:40001/ReFlex";
+        var frameNumber = 0;
+        const that = this;
+        console.log("Starting connection to WebSocket Server");
+        this.connection = new WebSocket("ws://localhost:40001/ReFlex");
+        this.connection.onmessage = function (event) {
+            if (event.data != []) {
+                //console.log("new message detected");
+                //console.log(event.data);
+                var points = JSON.parse(event.data);
+                if (points.length < 0) {
+                    return;
+                }
+                frameNumber++;
+                that.updateData(points, address, frameNumber, true);
+            }
+        };
+        this.connection.onopen = function (event) {
+            console.log(event);
+            console.log("Successfully connected to the echo websocket server...");
+            that.updateData([], address, frameNumber, true);
+        };
+        this.connection.onclose = function (event) {
+            console.log(event);
+            console.log("Connection closed.");
+            that.updateData([], address, frameNumber, false);
+        };
+    },
+    components: { Home }
 };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
