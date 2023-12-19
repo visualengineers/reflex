@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 4rem 28rem 15rem 1fr 4rem;
+    grid-template-rows: 3rem 7rem 3rem 1fr 3rem 7rem 3rem;
+
+    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 85%, rgba(255,255,255,0) 95%), url("/reflex/assets/layout/footer_bg.jpg");
+    background-attachment: fixed;
+    background-position: bottom right;
+    background-size: contain;
+    background-repeat: no-repeat;    
+    background-blend-mode: normal;
+
+    min-height: 100vh;
+  }

@@ -1,13 +1,21 @@
+
 <ul>
     {% for item in include.nav %}
-    <li>
+    <li class="nav-item">
         {% if item.path %}
-            <a href="{{ item.path }}{{ item.file }}">{{ item.name }}</a>        
+            {% assign fullPath = item.path | append: item.file %}
+            {% assign pad = include.padding | plus: 1 %}
+            <div class="nav-link {% if fullPath == page.url %}current{% endif %}">                
+                <a href="{{include.base}}{{ item.path }}{{ item.file }}"
+                    style="padding-left: {{ pad }}rem;">
+                        {{ item.name }}
+                </a>
+            </div>        
             {% if item.content %}
-                {% include nav.html nav=item.content %}
+                {% include nav.html nav=item.content base=include.base padding=pad%}
             {% endif %}
         {% else %}
-        <a href="{{ item.file }}">{{ item.name }}</a>   
+        <a href="{{include.base}}{{ item.file }}">{{ item.name }}</a>   
         {% endif %}
     </li>
   {% endfor %}  

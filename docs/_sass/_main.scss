@@ -3,4 +3,8 @@
 @import "base/base";
 @import "base/typography";
 
-@import "layout/layout";
+@import "layout/base";
+@import "layout/content";
+@import "layout/footer";
+@import "layout/header";
+@import "layout/navigation";
