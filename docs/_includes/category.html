@@ -1,27 +1,21 @@
-{% assign categories = include.nav | where: "type", "category" %}
-{% assign currentCat = '' %}
-
-{%if categories.size == 0 %}
-    {% for item in include.nav %}        
-        {% if item.path %}
-            {% assign fullPath = item.path | append: item.file %}
-            {% if fullPath == page.url %}
-                {% assign currentCat = include.category %}
+{% for item in include.nav %}        
+    {% if item.path %}
+        {% assign fullPath = item.path | append: item.file %}
+        {% if fullPath == page.url %}
+            {%if item.type and item.type == 'category' %}  
+                {% capture currentCategory %}{{item.name}}{% endcapture %}
+                <p>{{currentCat}}</p>
+            {% else %}
+                {% capture currentCategory %}{{include.category}}{% endcapture %}
             {% endif %}
-            
-            {% if item.content %}
-                {% include category.html nav=item.content base=include.base category=include.category %}
-            {% endif %} 
         {% endif %}
-    {% endfor %}  
-
-{% else %}
-    {% for item in include.nav %}         
-        {% include category.html nav=item.content base=include.base category=item.name%}
-    {%endfor %}
-{% endif %}
-
-{%if currentCat != '' %}
-    {% capture currentCategory %}{{currentCat}}{% endcapture %}
-
-{% endif %}
+        
+        {% if item.content %}
+            {%if item.type and item.type == 'category' %}                
+                {% include category.html nav=item.content base=include.base category=item.name %}
+            {% else %}
+                {% include category.html nav=item.content base=include.base category=include.category %}
+            {% endif %}
+        {% endif %} 
+    {% endif %}
+{% endfor %}

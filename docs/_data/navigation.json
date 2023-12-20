@@ -3,7 +3,7 @@
         {
             "name": "Software",
             "path": "/software/",
-            "file": "index.html",
+            "file": "overview.html",
             "type": "category",
             "content":
             [
@@ -61,7 +61,7 @@
         {
             "name": "Hardware",
             "path": "/hardware/",
-            "file": "index.html",
+            "file": "overview.html",
             "type": "category",
             "content":
             [
@@ -80,7 +80,7 @@
         {
             "name": "Knowledge Base",
             "path": "/knowledge/",
-            "file": "index.html",
+            "file": "overview.html",
             "type": "category"
         }
     ]

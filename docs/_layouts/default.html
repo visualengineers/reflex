@@ -20,15 +20,12 @@
     <nav class="main-nav">
         {% include category.html nav = site.data.navigation.toc base = '/reflex' %}
         {% assign current=currentCategory %}
-        <a href="/software/index.html" {% if current == 'Software' %} class="current"{% endif %}>Software</a>
-        <a href="/hardware/index.html" {% if current == 'Hardware' %} class="current"{% endif %}>Hardware</a>
-        <a href="/knowledge/index.html" {% if current == 'Knowledge Base' %} class="current"{% endif %}>Knowledge Base</a>
+        <a href="/reflex/software/overview.html" {% if current == 'Software' %} class="current"{% endif %}>Software</a>
+        <a href="/reflex/hardware/overview.html" {% if current == 'Hardware' %} class="current"{% endif %}>Hardware</a>
+        <a href="/reflex/knowledge/overview.html" {% if current == 'Knowledge Base' %} class="current"{% endif %}>Knowledge Base</a>
     </nav>
-    <nav class="content-nav">
-       
-
+    <nav class="content-nav">    
         {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 2 selectedCategory = current %}
-
         <div class="nav-link special">
             <a href="https://github.com/visualengineers/reflex/">Code</a>
         </div>
