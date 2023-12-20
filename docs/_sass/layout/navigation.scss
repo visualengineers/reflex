@@ -15,7 +15,8 @@
         font-weight: $font-weight-light;
         font-size: $font-size-medium;
 
-        &:hover {
+        &:hover,
+        &.current {
             color: $color-primary;
             font-weight: $font-weight-default;
         }

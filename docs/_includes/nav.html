@@ -1,22 +1,33 @@
+{% assign categories = include.nav | where: "type", "category" %}
 
+{%if categories.size == 0 %}
 <ul>
-    {% for item in include.nav %}
-    <li class="nav-item">
-        {% if item.path %}
-            {% assign fullPath = item.path | append: item.file %}
-            {% assign pad = include.padding | plus: 1 %}
-            <div class="nav-link {% if fullPath == page.url %}current{% endif %}">                
-                <a href="{{include.base}}{{ item.path }}{{ item.file }}"
-                    style="padding-left: {{ pad }}rem;">
-                        {{ item.name }}
-                </a>
-            </div>        
-            {% if item.content %}
-                {% include nav.html nav=item.content base=include.base padding=pad%}
+    {% for item in include.nav %}        
+        <li class="nav-item">
+            {% if item.path %}
+                {% assign fullPath = item.path | append: item.file %}
+                {% assign pad = include.padding | plus: 1 %}
+                <div class="nav-link {% if fullPath == page.url %}current{% endif %}">                
+                    <a href="{{include.base}}{{ item.path }}{{ item.file }}"
+                        style="padding-left: {{ pad }}rem;">
+                            {{ item.name }}
+                    </a>
+                </div>        
+                {% if item.content %}
+                    {% include nav.html nav=item.content base=include.base padding=pad category=include.category selectedCategory = include.selectedCategory %}
+                {% endif %}
+            {% else %}
+            <a href="{{include.base}}{{ item.file }}">{{ item.name }}</a>   
             {% endif %}
-        {% else %}
-        <a href="{{include.base}}{{ item.file }}">{{ item.name }}</a>   
-        {% endif %}
-    </li>
+        </li>
   {% endfor %}  
 </ul>
+
+ {% else %}
+    {% for item in include.nav %}
+        {% if item.name == include.selectedCategory %}
+            {% include nav.html nav=item.content base=include.base padding=include.padding category=item.name selectedCategory = include.selectedCategory %}
+       {% endif %}
+    {%endfor %}
+{% endif %}
+       

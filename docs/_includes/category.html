@@ -1,0 +1,27 @@
+{% assign categories = include.nav | where: "type", "category" %}
+{% assign currentCat = '' %}
+
+{%if categories.size == 0 %}
+    {% for item in include.nav %}        
+        {% if item.path %}
+            {% assign fullPath = item.path | append: item.file %}
+            {% if fullPath == page.url %}
+                {% assign currentCat = include.category %}
+            {% endif %}
+            
+            {% if item.content %}
+                {% include category.html nav=item.content base=include.base category=include.category %}
+            {% endif %} 
+        {% endif %}
+    {% endfor %}  
+
+{% else %}
+    {% for item in include.nav %}         
+        {% include category.html nav=item.content base=include.base category=item.name%}
+    {%endfor %}
+{% endif %}
+
+{%if currentCat != '' %}
+    {% capture currentCategory %}{{currentCat}}{% endcapture %}
+
+{% endif %}

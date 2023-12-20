@@ -5,6 +5,7 @@
     <title>{{ page.title }}</title>
   </head>
   <body>
+    
     <header>
         <div class="logo-reflex">
             <div class="logo-reflex__img">
@@ -17,12 +18,16 @@
         <div class="header-title">Documentation</div>
     </header>
     <nav class="main-nav">
-        <a href="/software/index.html">Software</a>
-        <a href="/hardware/index.html">Hardware</a>
-        <a href="/knowledge/index.html">Knowledge Base</a>
+        {% include category.html nav = site.data.navigation.toc base = '/reflex' %}
+        {% assign current=currentCategory %}
+        <a href="/software/index.html" {% if current == 'Software' %} class="current"{% endif %}>Software</a>
+        <a href="/hardware/index.html" {% if current == 'Hardware' %} class="current"{% endif %}>Hardware</a>
+        <a href="/knowledge/index.html" {% if current == 'Knowledge Base' %} class="current"{% endif %}>Knowledge Base</a>
     </nav>
     <nav class="content-nav">
-        {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 2 %}
+       
+
+        {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 2 selectedCategory = current %}
 
         <div class="nav-link special">
             <a href="https://github.com/visualengineers/reflex/">Code</a>
