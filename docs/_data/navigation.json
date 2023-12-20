@@ -10,7 +10,7 @@
                 {
                     "name": "Repository",
                     "path": "/software/repo/",
-                    "file": "index.html",
+                    "file": "overview.html",
                     "content": [
                         {
                             "name": "ReFlex Framework",
@@ -27,7 +27,7 @@
                 {
                     "name": "Applications",
                     "path": "/software/apps/",
-                    "file": "index.html",
+                    "file": "overview.html",
                     "content": [
                         {
                             "name": "Server",

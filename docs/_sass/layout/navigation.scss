@@ -5,6 +5,8 @@
     justify-self: flex-end;
     margin-right: 3rem;
 
+    margin-bottom: -0.5rem;
+
     display: flex;
 
     & a {
@@ -15,10 +17,14 @@
         font-weight: $font-weight-light;
         font-size: $font-size-medium;
 
+        border-bottom: 4px solid transparent;
+
         &:hover,
         &.current {
             color: $color-primary;
             font-weight: $font-weight-default;
+
+            border-bottom: 4px solid $color-primary;
         }
     }
 }
@@ -27,6 +33,8 @@
 .content-nav {
     grid-column: 2 / 2;
     grid-row: 4 / 4;
+
+    margin-top: 7rem;    
 }
 
 .nav-item {
@@ -35,6 +43,7 @@
 
 ul {
     padding: 0;
+    padding-bottom: 2rem;
 }
 
 .nav-link {
@@ -42,9 +51,11 @@ ul {
     
     border-right: 4px solid transparent;
 
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 1rem;
 
     border-radius: 5px 0 0 5px;
+
+    margin-bottom: 0.4rem;
 
     &.special {
         margin-top: 10rem;
