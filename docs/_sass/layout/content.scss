@@ -5,4 +5,23 @@
     padding: 2rem 4rem;
 
     border-left: 2px solid $color-primary;
+    
+    font-size: $font-size-small; 
+    font-family: $font-primary;
+    font-weight: $font-weight-light;
+
+    & ul {
+        color: $color-grey-dark;
+        margin-left: 3rem;     
+          
+    }
+
+    & a {
+        font-family: $font-secondary;
+        font-weight: $font-weight-default;
+        &:hover {
+            font-weight: $font-weight-bold;
+        }
+    }
+
 }

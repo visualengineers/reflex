@@ -15,14 +15,24 @@ h1 {
 }
 
 h2 {
-  font-family: $font-secondary;
+  font-family: $font-primary;
   font-weight: $font-weight-bold;
+
+  font-size: $font-size-medium;
+
+  color: $color-primary-dark;
+  margin: 3rem 0rem 1rem 0rem;
+}
+
+h3 {
+  font-family: $font-secondary;
+  font-weight: $font-weight-default;
 
   font-size: $font-size-default;
 
-  color: $color-grey-dark;
+  color: $color-primary-light;
 
-  margin-left: 4rem;
+  margin: 2rem 0rem 1rem 0rem;
 }
 
 p {
@@ -32,4 +42,14 @@ p {
   color: $color-grey-dark;
 
   font-size: $font-size-small;
+
+  & strong {
+    color: $color-primary-dark;
+    font-family: $font-primary;    
+  }
+}
+
+code {
+  color: $color-secondary;
+  font-weight: $font-weight-bold;
 }
