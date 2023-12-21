@@ -19,6 +19,7 @@ table {
 
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 1rem;
 
   min-width: 60%;
 }
@@ -40,3 +41,11 @@ tbody tr:nth-child(even) {
   background-color: $color-grey-x-light;
 }
 
+div.highlight {
+  margin: 1rem 3rem;
+  padding: 1rem 0 0.5rem 0;
+  display: block;
+  box-shadow: 0px -5px 10px 0px rgba(33, 33, 33, 0.15), 0px 5px 10px 0px rgba(33, 33, 33, 0.15);
+
+  color: $color-primary-dark;
+}
