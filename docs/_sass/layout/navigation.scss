@@ -34,7 +34,10 @@
     grid-column: 2 / 2;
     grid-row: 4 / 4;
 
-    margin-top: 7rem;    
+    margin-top: 2rem;
+    padding-top: 5rem;    
+
+    border-right: 2px solid $color-primary;
 }
 
 .nav-item {

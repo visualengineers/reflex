@@ -3,8 +3,6 @@
     grid-row: 4 / 4;
 
     padding: 2rem 4rem;
-
-    border-left: 2px solid $color-primary;
     
     font-size: $font-size-small; 
     font-family: $font-primary;
@@ -15,12 +13,12 @@
     &__title-image {
         margin: 2rem 0;
         max-height: 40vh;
+        width: 100%;
     }
 
     & ul {
         color: $color-grey-dark;
-        margin-left: 3rem;     
-          
+        margin-left: 3rem;   
     }
 
     & a {
@@ -30,5 +28,4 @@
             font-weight: $font-weight-bold;
         }
     }
-
 }
