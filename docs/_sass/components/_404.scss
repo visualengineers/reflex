@@ -1,0 +1,30 @@
+.error-page {
+    margin: 10px auto;
+    max-width: 600px;
+    text-align: center;
+
+    h1 {
+        margin: 30px 0;
+        font-size: 4em;
+        line-height: 1;
+        letter-spacing: -1px;
+    }
+}
+
+.home-button {
+    margin: 3rem auto;
+    width: 15rem;
+    padding: 1rem;
+    border-bottom: 4px solid transparent;
+    border-radius: 5px 5px 0px 0px;
+
+    &:hover {
+        background-color: $color-grey-x-light;
+        
+        border-bottom: 4px solid $color-primary;
+    }
+
+    & a {
+        display: block;
+    }
+}
