@@ -81,7 +81,15 @@
             "name": "Knowledge Base",
             "path": "/knowledge/",
             "file": "overview.html",
-            "type": "category"
+            "type": "category",
+            "content":
+            [
+                {
+                    "name": "publications",
+                    "path": "/knowledge/",
+                    "file": "publications.html"
+                }
+            ]
         }
     ]
 }

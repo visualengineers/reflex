@@ -1,0 +1,315 @@
+{
+  "years": [
+    { 
+      "name": 2023,
+      "elements": [
+        {
+          "id": "2023_MuC",
+          "title": "Exploring Dynamic Vibrotactile Feedback for Layer-Based Interaction on Elastic Displays",
+          "authors": "Mathias Müller, Alexander Ramian, Dennis Wittchen, Georg Freitag & Dietrich Kammer",
+          "reference": "Mensch und Computer 2023, Zürich",
+          "image": "2023_MuC.jpg",
+          "preview": "2023_MuC_prev.jpg",
+          "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "User Experience", "Haptics", "Vibrotactile Feedback"],
+          "doi": "https://doi.org/10.1145/3603555.3608534",
+          "abstract": "2023_MuC.html",
+          "lang": "en",
+          "type": "poster"
+        }
+      ]
+    },
+    { 
+      "name": 2022,
+      "elements": [
+        {
+          "id": "2022_CTU",
+          "title": "ReFlex - A Framework for Research on Elastic Displays",
+          "authors": "Mathias Müller & Dietrich Kammer",
+          "reference": "25th Bilateral Student Workshop CTU Prague - HTW Dresden - User Interfaces & Visualization 2022, Dresden",
+          "image": "2022_CTU-Prag.jpg",
+          "preview": "2022_CTU-Prag_prev.jpg",
+          "keywords": [ "Shape-Changing Interfaces", "Elastic Displays", "Software Frameworks", "Development Tools" ],
+          "doi": "",
+          "abstract": "2022_CTU-Prag.html",
+          "lang": "en",
+          "type": "conference"
+        },
+        {
+          "id": "2022_MuC",
+          "title": "Augmenting Elastic Displays with Active Vibrotactile Feedback",
+          "authors": "Mathias Müller, Dietrich Kammer, Alexander Ramian, Dennis Wittchen & Georg Freitag",
+          "reference": "Mensch und Computer 2022, Workshop Begreifbare Interaktion, Darmstadt",
+          "image": "2022_MuC.jpg",
+          "preview": "2022_MuC_prev.jpg",
+          "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Interaction Design", "Interaction Metaphors", "Tactile Feedback"],
+          "doi": "",
+          "abstract": "2022_MuC.html",
+          "lang": "en",
+          "type": "conference"
+
+        },
+        {
+          "id": "2022_AVI-Poster",
+          "title": "ReFlex Framework: Rapid Prototyping for Elastic Displays",
+          "authors": "Mathias Müller, Dietrich Kammer, Lasse Grimm, Konrad Fabian & Diana Simon",
+          "reference": "AVI - Advanced Visual Interfaces 2022, Rom",
+          "image": "2022_AVI_Poster.jpg",
+          "preview": "2022_AVI_Poster_prev.jpg",
+          "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Interaction Design", "Software Frameworks", "Development Tools", "Rapid Prototyping", "User Experience"],
+          "doi": "https://doi.org/10.1145/3531073.3534482",
+          "abstract": "2022_AVI-Poster.html",
+          "lang": "en",
+          "type": "poster"
+        },
+        {
+          "id": "2022_AVI",
+          "title": "Investigating Usability and User Experience of Layer-Based Interaction with a Deformable Elastic Display",
+          "authors": "Mathias Müller, Elena Stoll, Anna-Magdalena Krauß, Franziska Hannß & Dietrich Kammer",
+          "reference": "AVI - Advanced Visual Interfaces 2022, Rom",
+          "image": "2022_AVI.jpg",
+          "preview": "2022_AVI_prev.jpg",
+          "keywords": ["Usability", "User Experience", "Shape-Changing Interfaces", "Elastic Displays", "User Study", "Evaluation"],
+          "doi": "https://doi.org/10.1145/3531073.3531101",
+          "abstract": "2022_AVI.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2021,
+      "elements": [
+        {
+          "id": "2021_MuC",
+          "title": "Designing Interfaces for Elastic Displays using Workshop and Prototyping Methods",
+          "authors": "Franziska Hannß, Mathias Müller & Dietrich Kammer",
+          "reference": "Mensch und Computer 2021, Workshop Begreifbare Interaktion, Ingolstadt",
+          "image": "2021_MuC.jpg",
+          "preview": "2021_MuC_prev.jpg",
+          "keywords": ["Elastic Displays", "Interaction Design", "Design Methodology", "Design Thinking", "User Centered Design"],
+          "doi": "https://doi.org/10.18420/muc2021-mci-ws09-391",
+          "abstract": "2021_MuC.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2020,
+      "elements": [
+        {
+          "id": "2020_MuC",
+          "title": "A Tangible Concept for Layered Map Visualization: Supporting On-Site Civil Engineering Construction Consultations using Elastic Displays",
+          "authors": "Mathias Müller, Erik Lier, Rainer Groh & Franziska Hannß",
+          "reference": "Mensch und Computer 2020, Workshop Begreifbare Interaktion, Magdeburg",
+          "image": "2020_MuC.jpg",
+          "preview": "2020_MuC_prev.jpg",
+          "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Building Information Management", "Tangible Interaction", "Interface Design", "Information Visualization"],
+          "doi": "https://doi.org/10.18420/muc2020-ws121-368",
+          "abstract": "2020_MuC.html",
+          "lang": "en",
+          "type": "conference"
+        },
+        {
+          "id": "2020_EuroHaptics",
+          "title": "Research Agenda on Designing the Future of Eladtic Touch",
+          "authors": "Mathias Müller, Elena Stoll, Lukas Büschel, Stefan Gehrke, Franziska Hannß & Dietrich Kammer",
+          "reference": "Designing Digital Touch: Social and Sensory Aspects and Challenges. Workshop at EuroHaptics 2020, Leiden",
+          "image": "2020_EuroHaptics.jpg",
+          "preview": "2020_EuroHaptics_prev.jpg",
+          "keywords": ["Elastic Displays", "Shape-Changing Interfaces", "Tangible Interaction", "Touch"],
+          "doi": "",
+          "abstract": "2020_EuroHaptics.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2018,
+      "elements": [
+        {
+          "id": "2018_icom",
+          "title": "New Impressions in Interaction Design: A Task Taxonomy for Elastic Displays",
+          "authors": "Dietrich Kammer, Mathias Müller, Jan Wojdziak & Ingmar S. Franke",
+          "reference": "i-com, 17(3)",
+          "image": "2018_iCom.jpg",
+          "preview": "2018_iCom_prev.jpg",
+          "keywords": ["Human-Computer Interaction", "Interaction Design", "Tangible Interaction", "Organic User Interfaces", "Shape-Changing Interfaces", "Elastic Displays", "Physics-Based Interaction", "Task Taxonomy"],
+          "doi": "https://doi.org/10.1515/icom-2018-0021",
+          "abstract": "2018_icom.html",
+          "lang": "en",
+          "type": "journal"
+        },
+        {
+          "id": "2018_MuC",
+          "title": "Zoomable User Interfaces für Elastic Displays",
+          "authors": "Mathias Müller, Erik Lier & Thomas Gründer",
+          "reference": "Mensch und Computer 2018, Workshop Begreifbare Interaktion, Dresden",
+          "image": "2018_MuC.jpg",
+          "preview": "2018_MuC_prev.jpg",
+          "keywords": ["Elastic Displays", "Shape-Changing Interfaces", "Interaction Design", "User Interface", "Zoomable User Interface"],
+          "doi": "https://doi.org/10.18420/muc2018-ws05-0502",
+          "abstract": "2018_MuC.html",
+          "lang": "de",
+          "type": "conference"
+        }   
+      ]
+    },
+    { 
+      "name": 2017,
+      "elements": [
+        {
+          "id": "2017_xCoAx",
+          "title": "A Zoomable Product Browser for Elastic Displays",
+          "authors": "Mathias Müller, Mandy Keck, Thomas Gründer, Natalie Hube & Rainer Groh",
+          "reference": "Conference on Computation, Communication, Aesthetics and X (xCoAx 2017), Lissabon",
+          "image": "2017_xCoAx.jpg",
+          "preview": "2017_xCoAx_prev.jpg",
+          "keywords": ["Elastic Displays", "Information Visualization",  "Interaction Design", "Zoomable User Interface", "Browsing", "Similarity-Based Search", "Glyph-Based Visualization"],
+          "doi": "",
+          "abstract": "2017_xCoAx.html",
+          "lang": "en",
+          "type": "conference"
+        },
+        {
+          "id": "2017_MuC",
+          "title": "Exploring Big Data Landscapes with Elastic Displays",
+          "authors": "Dietrich Kammer, Mandy Keck, Mathias Müller, Thomas Gründer & Rainer Groh",
+          "reference": "Mensch und Computer 2017, Workshop Begreifbare Interaktion, Regensburg",
+          "image": "2017_MuC.jpg",
+          "preview": "2017_MuC_prev.jpg",
+          "keywords": ["Elastic Displays", "Information Visualization",  "Interaction Design", "Zoomable User Interface", "Data Analysis", "Data Science", "Big Data", "Glyph-Based Visualization"],
+          "doi": "https://doi.org/10.18420/muc2017-ws08-0342",
+          "abstract": "2017_MuC.html",
+          "lang": "en",
+          "type": "conference"
+        },        
+        {
+          "id": "2017_DGfGG",
+          "title": "Interaktive Bilder auf Elastischen Displays",
+          "authors": "Rainer Groh, Mathias Müller & Dietrich Kammer",
+          "reference": "DGfGG Tagung 2017 “Lösungsbilder“, Erfurt",
+          "image": "2017_DGfGG.jpg",
+          "preview": "2017_DGfGG_prev.jpg",
+          "keywords": ["Elastic Displays", "Information Visualization", "Interaction Metaphors", "Interaction Design", "Human-Computer Interaction"],
+          "doi": "",
+          "abstract": "2017_DGfGG.html",
+          "lang": "de",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2016,
+      "elements": [
+        {
+          "id": "2016_MuC",
+          "title": "Elastische Displays im Einsatz",
+          "authors": "Mathias Müller, Dietrich Kammer & Rainer Groh",
+          "reference": "Mensch und Computer 2016, Workshop Begreifbare Interaktion, Aachen",
+          "image": "2016_MuC.jpg",
+          "preview": "2016_MuC_prev.jpg",
+          "keywords": ["Elastic Displays", "User Interface", "Interaction Design", "Information Visualization", "Graph Visualization", "Zoomable User Interface"],
+          "doi": "https://doi.org/10.18420/muc2016-ws10-0007",
+          "abstract": "2016_MuC.html",
+          "lang": "de",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2015,
+      "elements": [
+        {
+          "id": "2015_xCoAx",
+          "title": "Data Exploration on Elastic Displays using Physical Metaphors",
+          "authors": "Mathias Müller, Thomas Gründer & Rainer Groh",
+          "reference": "Conference on Computation, Communication, Aesthetics and X (xCoAx 2015), Glasgow",
+          "image": "2015_xCoAx.jpg",
+          "preview": "2015_xCoAx.jpg",
+          "keywords": ["Elastic Displays", "Information Visualization", "Haptic Interaction"],
+          "doi": "",
+          "abstract": "2015_xCoAx.html",
+          "lang": "en",
+          "type": "conference"
+        },
+        {
+          "id": "2015_IFF",
+          "title": "Auf dem Weg zu mobilen, flexiblen Interaktionsoberflächen",
+          "authors": "Ingmar S. Franke, Mathias Müller & Rainer Groh",
+          "reference": "Die Zukunft interaktiver Oberflächen im Kontext durchgängigen digitalen Engineerings - 18. IFF-Wissenschaftstage 2015, Magdeburg",
+          "image": "2015_IFF.jpg",
+          "preview": "2015_IFF_prev.jpg",
+          "keywords": ["Elastic Displays", "Digital Engineering", "Building Information Management", "Interaction Design", "Information Visualization"],
+          "doi": "",
+          "abstract": "2015_IFF.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2014,
+      "elements": [
+        {
+          "id": "2014_ITS",
+          "title": "FlexiWall: Exploring Layered Data with Elastic Displays",
+          "authors": "Mathias Müller, Anja Knöfel, Thomas Gründer, Ingmar S. Franke & Rainer Groh",
+          "reference": "ITS - Interactive Surfaces and Systems 2014, Dresden",
+          "image": "2014_ITS.jpg",
+          "preview": "2014_ITS_prev.jpg",
+          "keywords": ["Elastic Displays", "Tangible Interaction", "Layered Data", "Information Visualization", "Interaction Design"],
+          "doi": "https://doi.org/10.1145/2669485.2669529",
+          "abstract": "2014_ITS.html",
+          "lang": "en",
+          "type": "poster"
+        },
+        {
+          "id": "2014_HCII-FlexiWall",
+          "title": "FlexiWall: Interaction In-Between 2D and 3D Interfaces",
+          "authors": "Ingmar S. Franke, Mathias Müller, Thomas Gründer & Rainer Groh",
+          "reference": "Human-Computer Interaction: Design and Development Approaches, HCI International 2014, Heraklion",
+          "image": "2014_HCII_FlexiWall.jpg",
+          "preview": "2014_HCII_FlexiWall_prev.jpg",
+          "keywords": ["Elastic Displays", "Haptic Interaction", "Natural User Interfaces"],
+          "doi": "https://doi.org/10.1007/978-3-319-07857-1_73",
+          "abstract": "2014_HCII-FlexiWall.html",
+          "lang": "en",
+          "type": "poster"
+        },
+        {
+          "id": "2014_IFF",
+          "title": "Forschung und Anwendung auf dem Gebiet kognitiver Benutzerschnittstellen - Cognitive Interface Technologies",
+          "authors": "Ingmar S. Franke, Anja Knöfel, Mathias Müller & Rainer Groh",
+          "reference": "17. IFF-Wissenschaftstage 2014, Magdeburg",
+          "image": "2014_IFF.jpg",
+          "preview": "2014_IFF_prev.jpg",
+          "keywords": ["Digital Engineering", "Virtual Environments", "Elastic Displays", "Human-Computer Interaction", "Depth Perception", "Human Perception", "User Interface", "User Experience"],
+          "doi": "",
+          "abstract": "2014_IFF.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
+      "name": 2013,
+      "elements": [
+        {
+          "id": "2013_MuC-Sounds",
+          "title": "Shaping Sounds - A Vision for Tangible Music Interaction",
+          "authors": "Sebastian Walther, Mathias Müller, Marius Brade & Rainer Groh",
+          "reference": "Mensch und Computer 2013: Interaktive Vielfalt, Bremen",
+          "image": "2013_MuC_Sounds.jpg",
+          "preview": "2013_MuC_Sounds_prev.jpg",
+          "keywords": ["Elastic Displays", "Tangible Interaction", "Music Composition", "Interaction Design", "Interaction Metaphors"],
+          "doi": "",
+          "abstract": "2013_MuC-Sounds.html",
+          "lang": "en",
+          "type": "poster"
+        }
+      ]
+    }    
+  ]
+}
