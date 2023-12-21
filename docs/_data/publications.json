@@ -122,6 +122,19 @@
           "abstract": "2020_EuroHaptics.html",
           "lang": "en",
           "type": "conference"
+        },
+        {
+          "id": "2020_AVI",
+          "title": "Online Knowledge Base for Designing Shape-changing Interfaces using Modular Workshop Elements",
+          "authors": "Elena Stoll & Dietrich Kammer",
+          "reference": "Workshop on Visual Interface Design Methods (VIDEM 2020). AVI 2020, Ischia",
+          "image": "2020_AVI.jpg",
+          "preview": "2020_AVI_prev.jpg",
+          "keywords": ["Shape-changing interfaces", "Knowledge Base", "Design Methods", "Workshops"],
+          "doi": "",
+          "abstract": "2020_AVI.html",
+          "lang": "en",
+          "type": "conference"
         }
       ]
     },
@@ -308,8 +321,39 @@
           "abstract": "2013_MuC-Sounds.html",
           "lang": "en",
           "type": "poster"
+        },
+        {
+          "id": "2013_CHI",
+          "title": "Towards a Design Space for Elastic Displays",
+          "authors": "Thomas Gründer, Dietrich Kammer, Marius Brade & Rainer Groh",
+          "reference": "CHI 2013 Workshop: Displays Take New Shape: An Agenda for Interactive Surfaces",
+          "image": "2013_CHI.jpg",
+          "preview": "2013_CHI_prev.jpg",
+          "keywords": ["Tangible Computing", "Elastic Displays", "Tabletops", "Multi-touch", "Natural User Interfaces"],
+          "doi": "",
+          "abstract": "2013_CHI.html",
+          "lang": "en",
+          "type": "conference"
         }
       ]
-    }    
+    },
+    { 
+      "name": 2012,
+      "elements": [
+        {
+          "id": "2012_AVI",
+          "title": "DepthTouch: An Elastic Surface for Tangible Computing",
+          "authors": "Joshua Peschke, Fabian Göbel, Thomas Gründer, Mandy Keck, Dietrich Kammer & Rainer Groh",
+          "reference": "AVI - Advanced Visual Interfaces 2022, Capri",
+          "image": "2012_AVI.jpg",
+          "preview": "2012_AVI_prev.jpg",
+          "keywords": ["Tangible Computing", "Natural User Interfaces", "Depth Sensors"],
+          "doi": "https://doi.org/10.1145/2254556.2254706",
+          "abstract": "2012_AVI.html",
+          "lang": "en",
+          "type": "poster"
+        }
+      ]
+    }     
   ]
 }
