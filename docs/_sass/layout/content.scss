@@ -29,3 +29,25 @@
         }
     }
 }
+
+.sections {
+    display: grid;
+    align-items: stretch;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 3rem; 
+
+
+    &__title-image {
+        width: 100%;
+        height: 20rem;
+    }
+
+    & h2 {
+        text-align: center;
+    }
+
+    &__item {
+        border-bottom: 4px solid $color-primary;
+    }
+}
+

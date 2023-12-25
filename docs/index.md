@@ -1,5 +1,45 @@
 # Welcome to ReFlex Documentation
 
-<img src="/reflex/assets/img/overview/title.jpg" class="content__title-image">
+<img src="/reflex/assets/img/overview/title.jpg" class="content__title-image" alt="Title Image: Elastic Displays">
 
-This page is intended to give you all information about **Elastic Displays**. It contains of a documentation of the **ReFlex** [Software-Framework](software/overview.html) and its most relevant components, a guide about [Hardware](hardware/overview.html) and a [Knwoledge Base](knowledge/overview.html)
+## What is the ReFlex Framework ?
+
+The ReFlex framework provides an open source, platform independent software framework to develop application for Elastic Displays. Elastic Displays are a specific type of Shape-Changing Interfaces, that feature a deformable surface. The surface deformation can be used for interaction. That means that Elastic Displays provide a from of three-dimensional touch interaction with basic (passive) haptic feedback. More details about the concepts of Elastic Displays are described in the Knowledge Base.
+
+The ReFlex Framework has been developed since 2014. The idea is to provide an easy way to explore interaction concepts for Elastic Displays  and develop applications for this specific hardware.  
+
+<div class="sections">
+    <div class="sections__item">
+        <img class="sections__title-image"/>
+
+        <h2><a href="software/overview.html"> Software </a></h2>
+
+        <p>
+        This section contains information about the ReFlex software framework. This includes the structure of the github repository, core components, and a short developer documentation.
+        </p>
+
+        <p>
+        Furthermore, the development tools, application templates for several client technologies and example applications are described.
+        </p>
+    </div>
+
+    <div class="sections__item">
+        <img class="sections__title-image"/>
+
+        <h2><a href="hardware/overview.html"> Hardware </a></h2>
+
+        <p>
+        This section contains information about a basic tabletop setup using consumer hardware. It consists of a construction manual for the frame and projector adjustment and the description of the hardware components as well as lessons learned from several iterations of prototypes.
+        </p>
+    </div>
+
+    <div class="sections__item">
+        <img class="sections__title-image"/>
+
+        <h2><a href="knowledge/overview.html"> Knowledge Base </a></h2>
+
+        <p>
+        This section contains the scientific foundation for the term Elastic Displays and related technologies. There are also descriptions of past prototypes and publications.
+        </p>
+    </div>
+</div>
