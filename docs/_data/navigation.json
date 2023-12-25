@@ -52,7 +52,40 @@
                         {
                             "name": "Templates",
                             "path": "/software/apps/",
-                            "file": "templates.html"
+                            "file": "templates.html",
+                            "content": 
+                            [
+                                {
+                                    "name": "Plain HTML",
+                                    "path": "/software/apps/templates",
+                                    "file": "plain_html.html"
+                                },
+                                {
+                                    "name": "Angular",
+                                    "path": "/software/apps/templates",
+                                    "file": "angular.html"
+                                },
+                                {
+                                    "name": "React",
+                                    "path": "/software/apps/templates",
+                                    "file": "react.html"
+                                },
+                                {
+                                    "name": "Vue.js",
+                                    "path": "/software/apps/templates",
+                                    "file": "vue.html"
+                                },
+                                {
+                                    "name": "Unity",
+                                    "path": "/software/apps/templates",
+                                    "file": "unity.html"
+                                },
+                                {
+                                    "name": "Unreal Engine 4/5",
+                                    "path": "/software/apps/templates",
+                                    "file": "ue.html"
+                                }
+                            ]
                         }
                     ]
                 }
