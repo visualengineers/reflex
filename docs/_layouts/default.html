@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    {%- include head.html -%}
+    <title>{{ page.title }}</title>
+  </head>
+  <body>
+    
+    <header>
+        <a href="/reflex/"class="logo-reflex">
+            <div class="logo-reflex__img">
+                <img src="/reflex/assets/layout/app_icon.png" alt="ReFlex Logo"/>
+            </div>
+            <div class="logo-reflex__text">
+                <img src="/reflex/assets/layout/app_logo-text.png" alt="ReFlex (Title)"/>
+            </div>
+        </a>
+        <div class="header-title">Documentation</div>
+    </header>
+    <nav class="main-nav">
+        {% comment %} render category navigation with current category highlighted and store current category {% endcomment %}
+        {% include category.html nav = site.data.navigation.toc base = '/reflex' %}
+        {% assign current=currentCategory %}
+        
+    </nav>
+
+    {% comment %} only render navigation if there are items to display {% endcomment %}
+    {% if currentCategory %}
+        <nav class="content-nav">   
+            {% comment %} render category navigation {% endcomment %} 
+            {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 2 selectedCategory = current %}
+            <div class="nav-link special">
+                <a href="https://github.com/visualengineers/reflex/">Code</a>
+            </div>
+        </nav>
+    {% endif %}
+    
+    <section class="content">
+        {{ content }}
+    </section>
+    <footer>
+        <div class="logo-htw">
+            <div class="logo-htw__img">
+                <img src="/reflex/assets/layout/logo--image.png" alt="HTW Logo"/>
+            </div>
+            <div class="logo-htw__text">
+                <img src="/reflex/assets/layout/logo--text.png" alt="HTW Text"/>
+            </div>
+        </div>
+    </footer>
+    </body>
+</html>

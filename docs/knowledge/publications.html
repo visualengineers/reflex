@@ -1,0 +1,92 @@
+---
+title: Publikationen
+---
+
+    <h1>{{ page.title }}</h1>
+    <div class="timeline">      
+      <ul class="timeline__year--list">
+        {% for year in site.data.publications.years %}
+        <li class="timeline__year--element">
+          <div class="timeline__line" role="presentation"></div>
+            <h2 class="timeline__year--date">{{ year.name }}</h2>
+            <div class="timeline__year--content">
+              <ul class="timeline__publication--list">
+                  {% for element in year.elements %}
+                  <li class="timeline__publication--element">                 
+                    <div class="timeline__publication--content">
+                      <input type="checkbox" name="collapse" id="{{ element.id }}">
+                      <label for="{{ element.id }}" class="timeline__publication--summary">
+                        <div class="timeline__publication--image">                
+                          <div class="timeline__publication--image-preview">                        
+                            <img src="../assets/img/{{ element.preview }}" alt="{{ element.title }} (Preview)">
+                          </div>
+                          <div class="timeline__publication--image-detail">                        
+                            <img src="../assets/img/{{ element.image }}" alt="{{ element.title }} (Detail)">
+                          </div>
+                        </div>
+                        <div class="timeline__publication--description">
+                          <h3 class="timeline__publication--title">{{ element.title }}</h3>
+                          <h4 class="timeline__publication--author">{{ element.authors }}</h4>
+                          <p class="timeline__publication--location">{{ element.reference }}</p>                        
+                        </div>
+                        <div class="timeline__publication--icons">
+                          {% if element.doi and element.doi != nil and element.doi != '' %}
+                            <div class="icon__publication">
+                              <a title="download reference {{ element.id }}" href="{{ element.doi }}" target="_blank" class="icon__publication--download"></a>
+                            </div>
+                          {% endif %}
+                          <div class="icon__publication">
+                            {% case element.type %}
+                              {% when 'monography' %}
+                              <div class="icon__publication--book"></div>
+                              {% when 'poster' %}
+                              <div class="icon__publication--poster"></div>
+                              {% when 'journal' %}
+                              <div class="icon__publication--journal"></div>
+                              {% when 'conference' %}
+                              <div class="icon__publication--conference"></div>
+                              {% else %}
+                              <div class="icon__publication--undefined"></div>
+                            {% endcase %}
+                          </div>
+                          <div class="icon__language">
+                            {{ element.lang }}
+                          </div>                            
+                        </div>
+                      </label> 
+                      <div class="timeline__publication--detail-view">
+                        <div class="timeline__publication--detail-container">
+                          <div class="timeline__publication--abstract">
+                            <div class="timeline__publication--abstract-title">
+                              Zusammenfassung
+                            </div>
+                            <div class="timeline_publication--abstract-content">
+                              {% if element.abstract and element.abstract != '' and element.abstract != nil %}
+                                {%- include abstracts/{{element.abstract}} -%}
+                              {% endif %}
+                            </div>                                                  
+                          </div>
+                          <div class="timeline__publication--keywords">
+                            {% for word in element.keywords %}
+                              <span>{{ word }}</span>
+                            {% endfor %}
+                          </div>
+                          {% if element.doi and element.doi != '' and element.doi != nil %}
+                          <div class="timeline__publication--doi">
+                            <a href="{{ element.doi }}">{{element.doi}}</a>
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+              </ul>
+            </div>
+            
+        </li>
+        {% endfor %}
+    </ul>
+    </div>
+  </body>
+</html>

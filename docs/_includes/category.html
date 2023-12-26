@@ -1,0 +1,35 @@
+{% comment %} traverse complete nav tree recursively: find current category {% endcomment %}
+{% for item in include.nav %}        
+    {% if item.path %}
+        {% assign fullPath = item.path | append: item.file %}
+        {% if fullPath == page.url %}
+        {% comment %} use capture to store value for use in other parts of the page ! {% endcomment %}
+            {%if item.type and item.type == 'category' %}
+                {% capture currentCategory %}{{item.name}}{% endcapture %}
+            {% else %}
+                {% capture currentCategory %}{{include.category}}{% endcapture %}
+            {% endif %}
+        {% endif %}
+    {% endif %}       
+
+    {% if item.content %}
+
+        {% comment %} for displaying current navigation when displaying category overview page {% endcomment %}
+
+        {%if item.type and item.type == 'category' %}                
+            {% include category.html nav=item.content base=include.base category=item.name %}
+        {% else %}
+            {% include category.html nav=item.content base=include.base category=include.category %}
+        {% endif %}
+        
+    {% endif %}
+{% endfor %}
+
+{% comment %} 2nd loop: render categories (necessary, as current category has to be identified first by traversing complete nav tree) {% endcomment %}
+
+{% for item in include.nav %} 
+    {%if item.type and item.type == 'category' %}  
+    {% assign fullPath = item.path | append: item.file %}
+        <a href="/reflex{{fullPath}}" {% if currentCategory == item.name %}class="current"{% endif %}>{{item.name}}</a>
+    {% endif %}
+{% endfor %}

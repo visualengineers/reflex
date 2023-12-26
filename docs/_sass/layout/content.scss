@@ -1,0 +1,53 @@
+.content {
+    grid-column: 3 / 5;
+    grid-row: 4 / 4;
+
+    padding: 2rem 4rem;
+    
+    font-size: $font-size-small; 
+    font-family: $font-primary;
+    font-weight: $font-weight-light;
+
+    max-width: 120rem;
+
+    &__title-image {
+        margin: 2rem 0;
+        max-height: 40vh;
+        width: 100%;
+    }
+
+    & ul {
+        color: $color-grey-dark;
+        margin-left: 3rem;   
+    }
+
+    & a {
+        font-family: $font-secondary;
+        font-weight: $font-weight-default;
+        &:hover {
+            font-weight: $font-weight-bold;
+        }
+    }
+}
+
+.sections {
+    display: grid;
+    align-items: stretch;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 3rem; 
+
+
+    &__title-image {
+        width: 100%;
+        height: 20rem;
+    }
+
+    & h2 {
+        text-align: center;
+    }
+
+    &__item {
+        border-bottom: 4px solid $color-primary;
+    }
+}
+

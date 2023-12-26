@@ -1,0 +1,112 @@
+{    
+    "slides": [
+        {
+            "png": "Tisch_1.png",
+            "svg": "construction_manual_Tisch_1.svg",
+            "description": "Dimensions of the Tabletop"
+        },
+        {
+            "png": "Tisch_0.png",
+            "svg": "construction_manual_Tisch_0.svg",
+            "description": "Part list for the frame"
+        },
+        {
+            "png": "Tisch_2.png",
+            "svg": "construction_manual_Tisch_2.svg",
+            "description": "Start with assembling the upper frame with 1160mm profiles (2) and 620mm profiles (4)"
+        },
+        {
+            "png": "Tisch_3.png",
+            "svg": "construction_manual_Tisch_3.svg",
+            "description": "Connect the sides of the table with the 970 mm profiles (1)"
+        },
+        {
+            "png": "Tisch_4.png",
+            "svg": "construction_manual_Tisch_4.svg",
+            "description": "Fasten the sides with corner elements (8)"
+        },
+        {
+            "png": "Tisch_5.png",
+            "svg": "construction_manual_Tisch_5.svg",
+            "description": "Side elements should be attached to two corners each"
+        },
+        {
+            "png": "Tisch_6.png",
+            "svg": "construction_manual_Tisch_6.svg",
+            "description": "Continue with the lower frame - 1100mm profile (3) and 620mm profiles (4) and three corner elements (8) for each side"
+        },
+        {
+            "png": "Tisch_7.png",
+            "svg": "construction_manual_Tisch_7.svg",
+            "description": "Finally, drill the feet into the holes of the side profiles"
+        },
+        {
+            "png": "Tisch_8.png",
+            "svg": "construction_manual_Tisch_8.svg",
+            "description": "Flip the table onto its feet, and adjust feet for firm stand"
+        },        
+        {
+            "png": "Gestell_0.png",
+            "svg": "construction_manual_Gestell_0.svg",
+            "description": "Part list for projector / camera mount"
+        },
+        {
+            "png": "Gestell_1.png",
+            "svg": "construction_manual_Gestell_1.svg",
+            "description": "Start with the 450mm profiles (12)"
+        },
+        {
+            "png": "Gestell_2.png",
+            "svg": "construction_manual_Gestell_2.svg",
+            "description": "Connect the 680mm profiles (13)"
+        },
+        {
+            "png": "Gestell_3.png",
+            "svg": "construction_manual_Gestell_3.svg",
+            "description": "Add another 450mm profile (12) which will hold the camera later."
+        },
+        {
+            "png": "Gestell_4.png",
+            "svg": "construction_manual_Gestell_4.svg",
+            "description": "On the opposite side, connect the pivoting elements for the projector table (22) mounted on the 200mm profiles (14)"
+        },
+        {
+            "png": "Gestell_5.png",
+            "svg": "construction_manual_Gestell_5.svg",
+            "description": "Continue with the base for the projector by connecting the 330mm (15) profiles and the 350mm profiles (16) with corner elements (25)"
+        },
+        {
+            "png": "Gestell_6.png",
+            "svg": "construction_manual_Gestell6.svg",
+            "description": "Attach another 330mm profile (15)"
+        },
+        {
+            "png": "Gestell_7.png",
+            "svg": "construction_manual_Gestell_7.svg",
+            "description": "Connect the frames by inserting the small frame in the pivoting elements"
+        },
+        {
+            "png": "Gestell_8.png",
+            "svg": "construction_manual_Gestell_8.svg",
+            "description": "Mount the projector onto the small frame by either using a custom plate or the optional ceiling mount, which can be disassembled and connected to the cross brace of the small frame"
+        },
+        {
+            "png": "Gestell_9.png",
+            "svg": "construction_manual_Gestell_9.svg",
+            "description": "Use the 300mm profile (11) to mount the camera and its head to the frame"
+        },
+        {
+            "png": "Gestell_10.png",
+            "svg": "construction_manual_Gestell_10.svg",
+            "description": "Both camera and projector should look inwards"
+        },
+        {
+            "png": "final.png",
+            "svg": "construction_manual_final.svg",
+            "description": "Connect the projector / camera mount with the table"
+        }
+    ],
+    "assetDirectory": "/reflex/assets/construction/",
+    "pngSubDirectory": "png/",
+    "svgSubDirectory": "svg/"
+}

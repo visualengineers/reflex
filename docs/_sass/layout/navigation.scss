@@ -1,0 +1,129 @@
+.main-nav {
+    grid-row: 2 / 2;
+    grid-column: 4 / 4;
+    align-self: end;
+    justify-self: flex-end;
+    margin-right: 3rem;
+
+    margin-bottom: -0.5rem;
+
+    display: flex;
+
+    & a {
+        display: block;
+        margin: 0 4rem;
+        color: $color-grey-dark;
+
+        font-weight: $font-weight-light;
+        font-size: $font-size-medium;
+
+        border-bottom: 4px solid transparent;
+
+        &:hover,
+        &.current {
+            color: $color-primary;
+            font-weight: $font-weight-default;
+
+            border-bottom: 4px solid $color-primary;
+        }
+    }
+}
+
+
+.content-nav {
+    grid-column: 2 / 2;
+    grid-row: 4 / 4;
+
+    margin-top: 2rem;
+    padding-top: 5rem;    
+
+    border-right: 2px solid $color-primary;
+}
+
+.nav-item {
+    display: block;
+}
+
+ul {
+    padding: 0;
+    padding-bottom: 2rem;
+}
+
+.nav-link,
+.nav-category {
+    position: relative;
+
+    padding: 0.4rem 1rem;
+
+    margin-bottom: 0.4rem;
+}
+
+.nav-category p {
+    padding: 0;
+    margin: 0;
+    margin-top: 0.2rem;
+    display: block;
+    font-size: $font-size-default;
+    color: $color-primary-light;
+    font-weight: $font-weight-bold;
+    font-family: $font-primary;
+
+}
+
+.nav-link {
+    border-right: 4px solid transparent;
+    border-radius: 5px 0 0 5px;
+
+    &.special {
+        margin-top: 10rem;
+                
+        &::before {
+            position: absolute;
+            top: 0.7rem;
+            left: 1rem;
+            content: "";
+            width: 20px;
+            height: 20px;
+            background-image: url('/reflex/assets/layout/GitHub_logo.png');
+            background-size: contain;
+            background-position: center center;
+        }
+
+        & a {
+            margin-left: 35px;
+        }
+        
+    }    
+
+    & a { 
+        margin-top: 0.2rem;
+        display: block;
+        font-size: $font-size-default;
+        color: $color-grey-dark;
+        font-weight: $font-weight-default;
+        font-family: $font-secondary;
+
+        &:hover {
+            color: $color-primary;
+            font-weight: $font-weight-bold;            
+        }
+    }
+
+    &.current a {
+        font-weight: bold;
+        color: $color-white;
+    }
+
+    &:hover,
+    &.current {
+        border-right: 4px solid $color-primary;
+    }
+
+    &:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+
+    &.current {
+        background-color: $color-primary;
+    }
+}

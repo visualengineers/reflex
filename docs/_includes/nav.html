@@ -1,0 +1,36 @@
+{% assign categories = include.nav | where: "type", "category" %}
+
+{%if categories.size == 0 %}
+<ul>
+    {% for item in include.nav %} 
+    {% assign pad = include.padding | plus: 1.5 %}       
+        <li class="nav-item">
+            {% if item.path %}
+                {% assign fullPath = item.path | append: item.file %}
+                <div class="nav-link {% if fullPath == page.url and item.type == 'page' %}current{% endif %}">                
+                    <a href="{{include.base}}{{ item.path }}{{ item.file }}"
+                        style="padding-left: {{ pad }}rem;">
+                            {{ item.name }}
+                    </a>
+                </div>
+            {% else %}
+                <div class="nav-category">
+                    <p style="padding-left: {{ pad }}rem;">{{ item.name }}</p>
+                </div>   
+            {% endif %}
+                
+            {% if item.content %}
+                {% include nav.html nav=item.content base=include.base padding=pad category=include.category selectedCategory = include.selectedCategory %}
+            {% endif %}
+        </li>
+  {% endfor %}  
+</ul>
+
+ {% else %}
+    {% for item in include.nav %}
+        {% if item.name == include.selectedCategory %}
+            {% include nav.html nav=item.content base=include.base padding=include.padding category=item.name selectedCategory = include.selectedCategory %}
+       {% endif %}
+    {%endfor %}
+{% endif %}
+       

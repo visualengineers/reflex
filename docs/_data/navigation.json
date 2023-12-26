@@ -1,0 +1,140 @@
+{ "toc":
+    [
+        {
+            "name": "Software",
+            "path": "/software/repo/",
+            "file": "reflex.html",
+            "type": "category",
+            "content":
+            [
+                {
+                    "name": "Repository",
+                    "type": "subcategory",
+                    "content": [
+                        {
+                            "name": "ReFlex Framework",
+                            "path": "/software/repo/",
+                            "file": "reflex.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Development Documentation",
+                            "path": "/software/repo/",
+                            "file": "dev.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Applications",
+                    "type": "subcategory",
+                    "content": [
+                        {
+                            "name": "Server",
+                            "path": "/software/apps/",
+                            "file": "server.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Emulator",
+                            "path": "/software/apps/",
+                            "file": "emulator.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Logging",
+                            "path": "/software/apps/",
+                            "file": "logging.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Layers",
+                            "path": "/software/apps/",
+                            "file": "layers.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Templates",
+                            "type": "subcategory",
+                            "content": 
+                            [
+                                {
+                                    "name": "Plain HTML",
+                                    "path": "/software/apps/templates",
+                                    "file": "plain_html.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Angular",
+                                    "path": "/software/apps/templates",
+                                    "file": "angular.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "React",
+                                    "path": "/software/apps/templates",
+                                    "file": "react.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Vue.js",
+                                    "path": "/software/apps/templates",
+                                    "file": "vue.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Unity",
+                                    "path": "/software/apps/templates",
+                                    "file": "unity.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Unreal Engine 4/5",
+                                    "path": "/software/apps/templates",
+                                    "file": "ue.html",
+                                    "type": "page"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Hardware",
+            "path": "/hardware/",
+            "file": "construction_manual.html",
+            "type": "category",
+            "content":
+            [
+                {
+                    "name": "Construction Manual",
+                    "path": "/hardware/",
+                    "file": "construction_manual.html",
+                    "type": "page"
+                },
+                {
+                    "name": "Technical Specifications",
+                    "path": "/hardware/",
+                    "file": "specs.html",
+                    "type": "page"
+                }
+            ]
+        },
+        {
+            "name": "Knowledge Base",
+            "path": "/knowledge/",
+            "file": "publications.html",
+            "type": "category",
+            "content":
+            [
+                {
+                    "name": "publications",
+                    "path": "/knowledge/",
+                    "file": "publications.html",
+                    "type": "page"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+a {
+  text-decoration: none;
+  color: $color-primary-light;
+  font-weight: $font-weight-default;
+}
+
+h1 {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+
+  color: $color-primary;
+
+  font-size: $font-size-medium;
+}
+
+h2 {
+  font-family: $font-primary;
+  font-weight: $font-weight-bold;
+
+  font-size: $font-size-medium;
+
+  color: $color-primary-dark;
+  margin: 3rem 0rem 1rem 0rem;
+}
+
+h3 {
+  font-family: $font-secondary;
+  font-weight: $font-weight-default;
+
+  font-size: $font-size-default;
+
+  color: $color-primary-light;
+
+  margin: 2rem 0rem 1rem 0rem;
+}
+
+p {
+  font-family: $font-secondary;
+  font-weight: $font-weight-default;
+
+  color: $color-grey-dark;
+
+  font-size: $font-size-small;
+
+  & strong {
+    color: $color-primary-dark;
+    font-family: $font-primary;    
+  }
+}
+
+code {
+  color: $color-secondary;
+  font-weight: $font-weight-bold;
+}

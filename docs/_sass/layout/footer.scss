@@ -1,0 +1,10 @@
+
+footer {
+    grid-column: 2 / -2;
+    grid-row: 6 / 6;
+    background-size: cover;
+    background-position-y: bottom;
+    justify-content: flex-end;
+    align-items: flex-end;
+    display: flex;
+}
