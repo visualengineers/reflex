@@ -201,11 +201,11 @@
       <script type = "text/javascript"> 
 
          let logMessages = false;
-         var msgId = 0;
+         let msgId = 0;
          
          const address = "ws://localhost:40001/ReFlex";
          const logAddress = "http://localhost:4302/";
-         const header = "TouchId, PosX, PosY, PosZ, IsValid, IsFiltered, Time;"
+         const header = "TouchId, PosX, PosY, PosZ, IsValid, IsFiltered, Time"
 
          let ws;
 
@@ -217,7 +217,7 @@
             }
 
             data.forEach((interaction) => 
-               result.push(`${interaction.TouchId}, ${interaction.Position.X}, ${interaction.Position.Y}, ${interaction.Position.Z}, ${interaction.IsValid}, ${interaction.IsFiltered}, ${interaction.Time};`)
+               result.push(`${interaction.TouchId}, ${interaction.Position.X}, ${interaction.Position.Y}, ${interaction.Position.Z}, ${interaction.IsValid}, ${interaction.IsFiltered}, ${interaction.Time}`)
             );
 
             return result;
@@ -233,7 +233,7 @@
 				
                ws.onopen = function() {
 
-                  let conn_msg = "Successfully connected to " + address;
+                  const conn_msg = "Successfully connected to " + address;
                   console.log(conn_msg);
 
                   // remove button and display connection state
@@ -241,7 +241,6 @@
                };
 				
                ws.onmessage = function (evt) { 
-                  var received_msg = evt.data;
                   msgId += 1;
                   const data = JSON.parse(evt.data);
                   // display formatted message
@@ -263,7 +262,7 @@
 				
                ws.onclose = function() { 
                   
-                  let conn_msg = "Connection is closed..."
+                  const conn_msg = "Connection is closed...";
                   // websocket is closed.
                   console.warn(conn_msg); 
 
@@ -271,7 +270,7 @@
                };
 
                ws.onerror = function(error) {
-                  let conn_msg = `Connection Error: ${error}`;
+                  const conn_msg = `Connection Error: ${error}`;
                   // websocket is closed.
                   console.error(conn_msg); 
 

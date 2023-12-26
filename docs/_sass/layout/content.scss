@@ -28,6 +28,15 @@
             font-weight: $font-weight-bold;
         }
     }
+
+    & img {
+        margin: 1rem 0;
+        max-height: 40vh;
+        width: 100%;
+
+        border: 1px solid $color-grey-light;
+        padding: 1rem;
+    }
 }
 
 .sections {
