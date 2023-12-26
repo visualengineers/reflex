@@ -1,3 +1,6 @@
+---
+
+---
 # Welcome to ReFlex Documentation
 
 <img src="/reflex/assets/img/overview/title.jpg" class="content__title-image" alt="Title Image: Elastic Displays">
@@ -8,11 +11,13 @@ The ReFlex framework provides an open source, platform independent software fram
 
 The ReFlex Framework has been developed since 2014. The idea is to provide an easy way to explore interaction concepts for Elastic Displays  and develop applications for this specific hardware.  
 
+{% assign categories = site.data.navigation.toc | where: "type", "category" %}
+
 <div class="sections">
     <div class="sections__item">
         <img class="sections__title-image"/>
 
-        <h2><a href="software/overview.html"> Software </a></h2>
+        <h2><a href="/reflex{{ categories[0].path }}{{ categories[0].file }}"> {{ categories[0].name }} </a></h2>
 
         <p>
         This section contains information about the ReFlex software framework. This includes the structure of the github repository, core components, and a short developer documentation.
@@ -26,7 +31,7 @@ The ReFlex Framework has been developed since 2014. The idea is to provide an ea
     <div class="sections__item">
         <img class="sections__title-image"/>
 
-        <h2><a href="hardware/overview.html"> Hardware </a></h2>
+        <h2><a href="/reflex{{ categories[1].path }}{{ categories[1].file }}"> {{ categories[1].name }} </a></h2>
 
         <p>
         This section contains information about a basic tabletop setup using consumer hardware. It consists of a construction manual for the frame and projector adjustment and the description of the hardware components as well as lessons learned from several iterations of prototypes.
@@ -36,7 +41,7 @@ The ReFlex Framework has been developed since 2014. The idea is to provide an ea
     <div class="sections__item">
         <img class="sections__title-image"/>
 
-        <h2><a href="knowledge/overview.html"> Knowledge Base </a></h2>
+        <h2><a href="/reflex{{ categories[2].path }}{{ categories[2].file }}"> {{ categories[2].name }} </a></h2>
 
         <p>
         This section contains the scientific foundation for the term Elastic Displays and related technologies. There are also descriptions of past prototypes and publications.

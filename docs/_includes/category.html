@@ -9,18 +9,19 @@
             {% else %}
                 {% capture currentCategory %}{{include.category}}{% endcapture %}
             {% endif %}
-        {% endif %}        
+        {% endif %}
+    {% endif %}       
 
-        {% if item.content %}
+    {% if item.content %}
 
         {% comment %} for displaying current navigation when displaying category overview page {% endcomment %}
 
-            {%if item.type and item.type == 'category' %}                
-                {% include category.html nav=item.content base=include.base category=item.name %}
-            {% else %}
-                {% include category.html nav=item.content base=include.base category=include.category %}
-            {% endif %}
-        {% endif %} 
+        {%if item.type and item.type == 'category' %}                
+            {% include category.html nav=item.content base=include.base category=item.name %}
+        {% else %}
+            {% include category.html nav=item.content base=include.base category=include.category %}
+        {% endif %}
+        
     {% endif %}
 {% endfor %}
 

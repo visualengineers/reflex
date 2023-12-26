@@ -49,16 +49,30 @@ ul {
     padding-bottom: 2rem;
 }
 
-.nav-link {
+.nav-link,
+.nav-category {
     position: relative;
-    
-    border-right: 4px solid transparent;
 
     padding: 0.4rem 1rem;
 
-    border-radius: 5px 0 0 5px;
-
     margin-bottom: 0.4rem;
+}
+
+.nav-category p {
+    padding: 0;
+    margin: 0;
+    margin-top: 0.2rem;
+    display: block;
+    font-size: $font-size-default;
+    color: $color-primary-light;
+    font-weight: $font-weight-bold;
+    font-family: $font-primary;
+
+}
+
+.nav-link {
+    border-right: 4px solid transparent;
+    border-radius: 5px 0 0 5px;
 
     &.special {
         margin-top: 10rem;
@@ -97,13 +111,19 @@ ul {
 
     &.current a {
         font-weight: bold;
-        color: $color-primary;
+        color: $color-white;
     }
 
     &:hover,
     &.current {
         border-right: 4px solid $color-primary;
+    }
 
+    &:hover {
         background-color: rgba(0,0,0,0.05);
+    }
+
+    &.current {
+        background-color: $color-primary;
     }
 }

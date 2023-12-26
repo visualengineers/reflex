@@ -2,88 +2,97 @@
     [
         {
             "name": "Software",
-            "path": "/software/",
-            "file": "overview.html",
+            "path": "/software/repo/",
+            "file": "reflex.html",
             "type": "category",
             "content":
             [
                 {
                     "name": "Repository",
-                    "path": "/software/repo/",
-                    "file": "overview.html",
+                    "type": "subcategory",
                     "content": [
                         {
                             "name": "ReFlex Framework",
                             "path": "/software/repo/",
-                            "file": "reflex.html"
+                            "file": "reflex.html",
+                            "type": "page"
                         },
                         {
                             "name": "Development Documentation",
                             "path": "/software/repo/",
-                            "file": "dev.html"
+                            "file": "dev.html",
+                            "type": "page"
                         }
                     ]
                 },
                 {
                     "name": "Applications",
-                    "path": "/software/apps/",
-                    "file": "overview.html",
+                    "type": "subcategory",
                     "content": [
                         {
                             "name": "Server",
                             "path": "/software/apps/",
-                            "file": "server.html"
+                            "file": "server.html",
+                            "type": "page"
                         },
                         {
                             "name": "Emulator",
                             "path": "/software/apps/",
-                            "file": "emulator.html"
+                            "file": "emulator.html",
+                            "type": "page"
                         },
                         {
                             "name": "Logging",
                             "path": "/software/apps/",
-                            "file": "logging.html"
+                            "file": "logging.html",
+                            "type": "page"
                         },
                         {
                             "name": "Layers",
                             "path": "/software/apps/",
-                            "file": "layers.html"
+                            "file": "layers.html",
+                            "type": "page"
                         },
                         {
                             "name": "Templates",
-                            "path": "/software/apps/",
-                            "file": "templates.html",
+                            "type": "subcategory",
                             "content": 
                             [
                                 {
                                     "name": "Plain HTML",
                                     "path": "/software/apps/templates",
-                                    "file": "plain_html.html"
+                                    "file": "plain_html.html",
+                                    "type": "page"
                                 },
                                 {
                                     "name": "Angular",
                                     "path": "/software/apps/templates",
-                                    "file": "angular.html"
+                                    "file": "angular.html",
+                                    "type": "page"
                                 },
                                 {
                                     "name": "React",
                                     "path": "/software/apps/templates",
-                                    "file": "react.html"
+                                    "file": "react.html",
+                                    "type": "page"
                                 },
                                 {
                                     "name": "Vue.js",
                                     "path": "/software/apps/templates",
-                                    "file": "vue.html"
+                                    "file": "vue.html",
+                                    "type": "page"
                                 },
                                 {
                                     "name": "Unity",
                                     "path": "/software/apps/templates",
-                                    "file": "unity.html"
+                                    "file": "unity.html",
+                                    "type": "page"
                                 },
                                 {
                                     "name": "Unreal Engine 4/5",
                                     "path": "/software/apps/templates",
-                                    "file": "ue.html"
+                                    "file": "ue.html",
+                                    "type": "page"
                                 }
                             ]
                         }
@@ -94,33 +103,36 @@
         {
             "name": "Hardware",
             "path": "/hardware/",
-            "file": "overview.html",
+            "file": "construction_manual.html",
             "type": "category",
             "content":
             [
                 {
                     "name": "Construction Manual",
                     "path": "/hardware/",
-                    "file": "construction_manual.html"
+                    "file": "construction_manual.html",
+                    "type": "page"
                 },
                 {
                     "name": "Technical Specifications",
                     "path": "/hardware/",
-                    "file": "specs.html"
+                    "file": "specs.html",
+                    "type": "page"
                 }
             ]
         },
         {
             "name": "Knowledge Base",
             "path": "/knowledge/",
-            "file": "overview.html",
+            "file": "publications.html",
             "type": "category",
             "content":
             [
                 {
                     "name": "publications",
                     "path": "/knowledge/",
-                    "file": "publications.html"
+                    "file": "publications.html",
+                    "type": "page"
                 }
             ]
         }
