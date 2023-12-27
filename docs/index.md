@@ -15,7 +15,7 @@ The ReFlex Framework has been developed since 2014. The idea is to provide an ea
 
 <div class="sections">
     <div class="sections__item">
-        <img class="sections__title-image"/>
+        <img class="sections__title-image" src="/reflex/assets/img/overview/software.png" alt="Title Image: Software"/>
 
         <h2><a href="/reflex{{ categories[0].path }}{{ categories[0].file }}"> {{ categories[0].name }} </a></h2>
 
@@ -29,7 +29,8 @@ The ReFlex Framework has been developed since 2014. The idea is to provide an ea
     </div>
 
     <div class="sections__item">
-        <img class="sections__title-image"/>
+        <img class="sections__title-image"
+        src="/reflex/assets/img/overview/hardware.jpg" alt="Title Image: Hardware"/>
 
         <h2><a href="/reflex{{ categories[1].path }}{{ categories[1].file }}"> {{ categories[1].name }} </a></h2>
 
@@ -39,7 +40,7 @@ The ReFlex Framework has been developed since 2014. The idea is to provide an ea
     </div>
 
     <div class="sections__item">
-        <img class="sections__title-image"/>
+        <img class="sections__title-image" src="/reflex/assets/img/overview/knowledge.png" alt="Title Image: Knowledge Base"/>
 
         <h2><a href="/reflex{{ categories[2].path }}{{ categories[2].file }}"> {{ categories[2].name }} </a></h2>
 
