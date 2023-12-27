@@ -10,10 +10,13 @@
 
     max-width: 120rem;
 
-    &__title-image {
+    & &__title-image {
         margin: 2rem 0;
         max-height: 40vh;
         width: 100%;
+
+        padding: 0;
+        border: none;
     }
 
     & ul {
