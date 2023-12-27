@@ -1,5 +1,12 @@
 # Template: Plain HTML
 
+<!-- omit in toc -->
+## Table of contents
+
+1. [Example I: Basic example](#example-i-basic-example)
+2. [Example II: Logging and visualization](#example-ii-logging-and-visualization)
+3. [Code](#code-1)
+
 ## Example I: Basic example
 
 * location: `examples/html/websockets.html`
@@ -9,6 +16,8 @@
 * most basic example for testing and understanding structure of received interaction data
 
 ![Screenshot of plain html example](/reflex/assets/img/templates/screen_plain-html.png)
+
+__[⬆ back to top](#table-of-contents)__
 
 ### Code
 
@@ -51,6 +60,8 @@ To receive interactions from ReFlex framework, simply open a new WebSocket conne
 
 {% endhighlight %}
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Example II: Logging and visualization
 
 * location: `examples/html/websockets_with_logging.html`
@@ -64,6 +75,8 @@ To receive interactions from ReFlex framework, simply open a new WebSocket conne
   * visualize connection state and connectivity to logging server
 
 ![Screenshot of plain html example](/reflex/assets/img/templates/screen_html-logging.png)
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Code
 
@@ -130,3 +143,5 @@ To receive interactions from ReFlex framework, simply open a new WebSocket conne
     }
 
 {% endhighlight %}
+
+__[⬆ back to top](#table-of-contents)__

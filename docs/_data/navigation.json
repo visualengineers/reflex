@@ -33,7 +33,40 @@
                             "name": "Server",
                             "path": "/software/apps/",
                             "file": "server.html",
-                            "type": "page"
+                            "type": "page",
+                            "content": 
+                            [
+                                {
+                                    "name": "Tracking view",
+                                    "path": "/software/apps/server/",
+                                    "file": "tracking-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Configuration view",
+                                    "path": "/software/apps/server/",
+                                    "file": "config-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Calibration view",
+                                    "path": "/software/apps/server/",
+                                    "file": "calibration-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Processing view",
+                                    "path": "/software/apps/server/",
+                                    "file": "processing-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Networking view",
+                                    "path": "/software/apps/server/",
+                                    "file": "networking-view.html",
+                                    "type": "page"
+                                }
+                            ]
                         },
                         {
                             "name": "Emulator",
