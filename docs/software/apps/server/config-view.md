@@ -54,6 +54,8 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Performance Visualization
 
-![Performance Visualization](/reflex/assets/img/server/config-view_performance.png)
+![Performance Visualization for Tracking  Data](/reflex/assets/img/server/config-view_performance-tracking.png)
+
+![Performance Visualization for Processing  Data](/reflex/assets/img/server/config-view_performance-processing.png)
 
 __[⬆ back to top](#table-of-contents)__
