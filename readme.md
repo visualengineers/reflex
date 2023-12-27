@@ -9,16 +9,16 @@ Software Development SDK for __Elastic Displays__ as open source mono repo
 * Emulator as Development Tool
 * Example Applications
 
-[![Library:Build](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml)
-[![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
+[![Library:Build](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml)
+[![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
 
-[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml)
+[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml)
 
-[![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
-[![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
-[![Server:Test](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml)
+[![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
+[![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
+[![Server:Test](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml)
 
-[![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml)
+[![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml)
 
 <!-- omit in toc -->
 ## Table of contents

@@ -14,7 +14,7 @@
 
 To receive interactions from ReFlex framework, simply open a new WebSocket connection and handle `onmessage` events of the WebSocket.
 
-``` JavaScript
+{% highlight js linenos %}
 
     // Let us open a web socket
     const ws = new WebSocket(address);
@@ -49,7 +49,7 @@ To receive interactions from ReFlex framework, simply open a new WebSocket conne
         // handle error (log, reconnect, ...)
     }
 
-```
+{% endhighlight %}
 
 ## Example II: Logging and visualization
 
@@ -67,8 +67,7 @@ To receive interactions from ReFlex framework, simply open a new WebSocket conne
 
 ## Code
 
-``` JavaScript
-
+{% highlight js linenos %}
     // open the websocket
     ws = new WebSocket(address);
     
@@ -130,4 +129,4 @@ To receive interactions from ReFlex framework, simply open a new WebSocket conne
         showWebSocketState(conn_msg, false);
     }
 
-```
+{% endhighlight %}
