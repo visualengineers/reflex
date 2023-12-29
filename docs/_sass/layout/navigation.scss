@@ -22,9 +22,12 @@
         &:hover,
         &.current {
             color: $color-primary;
-            font-weight: $font-weight-default;
 
             border-bottom: 4px solid $color-primary;
+        }
+
+        &.current {
+            font-weight: $font-weight-default;
         }
     }
 }
@@ -105,12 +108,12 @@ ul {
 
         &:hover {
             color: $color-primary;
-            font-weight: $font-weight-bold;            
+            font-weight: $font-weight-default;            
         }
     }
 
     &.current a {
-        font-weight: bold;
+        font-weight: $font-weight-default;
         color: $color-white;
     }
 

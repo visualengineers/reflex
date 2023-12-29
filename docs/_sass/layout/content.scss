@@ -17,6 +17,7 @@
 
         padding: 0;
         border: none;
+        box-shadow: none;
     }
 
     & ul {
@@ -27,9 +28,13 @@
     & a {
         font-family: $font-secondary;
         font-weight: $font-weight-default;
+
         &:hover {
-            font-weight: $font-weight-bold;
+            color: $color-primary-dark;
+            border-bottom: 1px dotted $color-primary;
         }
+
+
     }
 
     & img {
@@ -37,8 +42,9 @@
         max-height: 40vh;
         max-width: 100%;
 
-        border: 1px solid $color-grey-light;
+        box-shadow: 0 0 15px 3px $color-shadow-default;
         padding: 1rem;
+        background-color: $color-white;
     }
 
     & img[src$="#build-status"] {

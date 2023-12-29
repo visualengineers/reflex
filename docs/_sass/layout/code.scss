@@ -1,3 +1,14 @@
+.rouge-table {
+    margin: 1rem auto;
+    // box-shadow: 0 0 15px 3px $color-shadow-default;
+    background-color: rgba(255,255,255, 0.8);
+
+    & tbody {
+        padding-top: 1rem;
+        display: block;
+    }
+}
+
 .lineno {
     font-weight: $font-weight-light;
     color: $color-grey-light;
