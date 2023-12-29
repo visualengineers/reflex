@@ -32,7 +32,7 @@
     </div>
 
     <div class="calibration__panel"
-        [ngStyle]="{'transform': 'translate('+borderOffset[3]+'px, '+borderOffset[0]+'px)'}">
+        [ngStyle]="{'transform': 'translate('+borderOffset[1]+'px, '+borderOffset[0]+'px)'}">
         <div class="content__header">
             <h2  class="heading-secondary">Display Area</h2>
         </div>
@@ -201,7 +201,7 @@
             [(data)]="displayCalibratedInteractions"
             (onChange)="updateCalibrationToggle()"
             [disabled]="!this.update">
-            <span class="text" extraLabel>Calibrated Pos</span>          
+            <span class="text" extraLabel>Calibrated</span>          
         </app-panel-header>
 
         <div class="calibration__body">
