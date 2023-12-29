@@ -33,7 +33,40 @@
                             "name": "Server",
                             "path": "/software/apps/",
                             "file": "server.html",
-                            "type": "page"
+                            "type": "page",
+                            "content": 
+                            [
+                                {
+                                    "name": "Tracking view",
+                                    "path": "/software/apps/server/",
+                                    "file": "tracking-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Configuration view",
+                                    "path": "/software/apps/server/",
+                                    "file": "config-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Calibration view",
+                                    "path": "/software/apps/server/",
+                                    "file": "calibration-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Processing view",
+                                    "path": "/software/apps/server/",
+                                    "file": "processing-view.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Networking view",
+                                    "path": "/software/apps/server/",
+                                    "file": "networking-view.html",
+                                    "type": "page"
+                                }
+                            ]
                         },
                         {
                             "name": "Emulator",
@@ -60,37 +93,37 @@
                             [
                                 {
                                     "name": "Plain HTML",
-                                    "path": "/software/apps/templates",
+                                    "path": "/software/templates/",
                                     "file": "plain_html.html",
                                     "type": "page"
                                 },
                                 {
                                     "name": "Angular",
-                                    "path": "/software/apps/templates",
+                                    "path": "/software/templates/",
                                     "file": "angular.html",
                                     "type": "page"
                                 },
                                 {
                                     "name": "React",
-                                    "path": "/software/apps/templates",
+                                    "path": "/software/templates/",
                                     "file": "react.html",
                                     "type": "page"
                                 },
                                 {
                                     "name": "Vue.js",
-                                    "path": "/software/apps/templates",
+                                    "path": "/software/templates/",
                                     "file": "vue.html",
                                     "type": "page"
                                 },
                                 {
                                     "name": "Unity",
-                                    "path": "/software/apps/templates",
+                                    "path": "/software/templates/",
                                     "file": "unity.html",
                                     "type": "page"
                                 },
                                 {
                                     "name": "Unreal Engine 4/5",
-                                    "path": "/software/apps/templates",
+                                    "path": "/software/templates/",
                                     "file": "ue.html",
                                     "type": "page"
                                 }

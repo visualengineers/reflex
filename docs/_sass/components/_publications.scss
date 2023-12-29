@@ -146,6 +146,11 @@
         & img {
           max-width: 50vw;
           max-height: 50vh;
+
+          padding: 0;
+          margin: 0;
+          border: none;
+          box-shadow: none;
         }
       }
   
@@ -170,6 +175,11 @@
           max-height: 6.2rem;
   
           border: 1px solid $color-black;
+
+          padding: 0;
+          margin: 0;
+          box-shadow: none;
+
         }
       }    
   

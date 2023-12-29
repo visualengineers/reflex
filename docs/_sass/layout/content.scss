@@ -10,10 +10,14 @@
 
     max-width: 120rem;
 
-    &__title-image {
+    & &__title-image {
         margin: 2rem 0;
         max-height: 40vh;
         width: 100%;
+
+        padding: 0;
+        border: none;
+        box-shadow: none;
     }
 
     & ul {
@@ -24,9 +28,29 @@
     & a {
         font-family: $font-secondary;
         font-weight: $font-weight-default;
+
         &:hover {
-            font-weight: $font-weight-bold;
+            color: $color-primary-dark;
+            border-bottom: 1px dotted $color-primary;
         }
+
+
+    }
+
+    & img {
+        margin: 1rem 0;
+        max-height: 40vh;
+        max-width: 100%;
+
+        box-shadow: 0 0 15px 3px $color-shadow-default;
+        padding: 1rem;
+        background-color: $color-white;
+    }
+
+    & img[src$="#build-status"] {
+        margin: 1rem;
+        border: none;
+        padding: 0;
     }
 }
 
@@ -39,7 +63,6 @@
 
     &__title-image {
         width: 100%;
-        height: 20rem;
     }
 
     & h2 {

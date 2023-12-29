@@ -1,0 +1,57 @@
+.rouge-table {
+    margin: 1rem auto;
+    // box-shadow: 0 0 15px 3px $color-shadow-default;
+    background-color: rgba(255,255,255, 0.8);
+
+    & tbody {
+        padding-top: 1rem;
+        display: block;
+    }
+}
+
+.lineno {
+    font-weight: $font-weight-light;
+    color: $color-grey-light;
+}
+
+.c1 {
+    font-weight: $font-weight-light;
+    color: $color-secondary;
+    font-style: italic;
+}
+
+.nx {
+    font-weight: $font-weight-bold;
+    color: $color-primary-light;
+}
+
+.na {
+    font-weight: $font-weight-default;
+    color: $color-secondary-dark;
+}
+
+.kd {
+    font-weight: $font-weight-default;
+    color: $color-tertiary-light;
+}
+
+.k {
+    font-weight: $font-weight-default;
+    color: $color-tertiary;
+}
+
+.kc, .mi {
+    font-weight: $font-weight-default;
+    color: $color-tertiary-light;
+}
+
+.o, .p {
+    font-weight: $font-weight-bold;
+    color: $color-grey-light;
+}
+
+.s2 {
+    font-weight: $font-weight-default;
+    font-style: italic;
+    color: $color-primary-dark;
+}
