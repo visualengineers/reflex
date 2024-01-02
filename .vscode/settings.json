@@ -1,8 +1,5 @@
 {
-    "csharp.unitTestDebuggingOptions": {
-    
-    },
-    "eslint.workingDirectories": [
+  "eslint.workingDirectories": [
       "./tools/ReFlex.TrackingServer/ClientApp",
     ],    
     "karmaTestExplorer.projectWorkspaces": [ 
@@ -23,5 +20,6 @@
         "--disable-dev-shm-usage",
         "--remote-debugging-port=9222"
       ]
-    }
+    },
+    "dotnet.unitTestDebuggingOptions": {}
 }

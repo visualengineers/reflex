@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <PackageId>ReFlex.Sensor.AzureKinectModule</PackageId>
     <Authors>Mathias Müller</Authors>
     <Copyright>Copyright ©  2021-2023</Copyright>
@@ -13,7 +13,7 @@
     <Product>ReFlex.Sensor</Product>
     <AssemblyName>ReFlex.Sensor.AzureKinectModule</AssemblyName>
     <RootNamespace>ReFlex.Sensor.AzureKinectModule</RootNamespace>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;AnyCPU</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
@@ -37,7 +37,7 @@
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Exec Command="mkdir -p ../../../export/Modules &amp;&amp; cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
+    <Exec Command="mkdir -p &quot;../../../export/Modules&quot; &amp;&amp; cp -r &quot;$(OutDir)&quot; &quot;../../../export/Modules&quot;" Condition=" '$(OS)' != 'Windows_NT' " />
   </Target>
 
   <ItemGroup>

@@ -248,12 +248,28 @@ ___
     electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target linux
   ```
 
+  For building for the ARM64 Platform, the custom target must be specified to build for ARM-based MACs:
+
+  ```bash
+    electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "osx-arm64;" /electron-arch arm64
+  ```
+
+  or for Linux-ARM:
+
+  ```bash
+
+  electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "linux-arm64;" /electron-arch arm64 
+
+  ```
+
   or use the prepared npm commands (from `ClientApp` directory):
 
   ``` bash
     npm run build:electron-win
     npm run build:electron-osx
+    npm run build:electron-osx-arm64
     npm run build:electron-linux
+    npm run build:electron-linux-arm64
   ```
 
 

@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
 
-        <Configurations>Debug;Release;CI</Configurations>
+        <Configurations>Debug;Release;CI;Debug OSX;Release OSX</Configurations>
 
-        <Platforms>AnyCPU;x64</Platforms>
+        <Platforms>AnyCPU;x64;ARM64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
