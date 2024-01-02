@@ -394,6 +394,8 @@ Global
 		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Release|x64.ActiveCfg = Release|x64
 		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Release|x64.Build.0 = Release|x64
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A47FA61B-05C6-4126-8EC6-5F1325191FFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

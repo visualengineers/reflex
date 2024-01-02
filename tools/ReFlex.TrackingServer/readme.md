@@ -382,7 +382,6 @@ However, this behaviour can be stopped by editing the targets file of the nuget 
   <!-- <Target Name="EnsureAzureKinectPlatform" BeforeTargets="PrepareForBuild">
     <Error Condition="'$(Platform)' != 'x64' AND '$(Platform)' != 'x86'" Text="Azure Kinect only supports the x86/x64 platform ('$(Platform)' not supported)" />
   </Target> -->
-
 ```
 
 - if __Microsoft Azure Kinect__ is not available as sensor and the error `k4a.dll cannot be found` is logged: make sure __Visual C++ Redistributable__ is installed on the machine (see [Prerequisites](#installation-and-start)).
