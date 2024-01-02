@@ -64,6 +64,7 @@ ___
     `dotnet tool install --global dotnet-reportgenerator-globaltool`
   - each test project needs to have nuget package `coverlet.collector` installed
 
+  - delete directory `./test/artifacts/coverage-net/`
   - execute tests and generate reports in `./test/artifacts/coverage-net/cobertura`
     `dotnet test --collect:"XPlat Code Coverage" --results-directory: ./test/artifacts/coverage-net/cobertura/`
     **REMARKS:** a folder named with a random guid containing the report is generated for each test assembly

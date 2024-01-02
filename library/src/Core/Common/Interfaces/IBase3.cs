@@ -38,6 +38,14 @@
         ///   <c>true</c> if this instance is enabled; otherwise, <c>false</c>.
         /// </value>
         bool IsValid { get; set; }
+        
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is filtered / not valid.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is filtered; otherwise, <c>false</c>.
+        /// </value>
+        bool IsFiltered { get; set; }
 
         #endregion
 

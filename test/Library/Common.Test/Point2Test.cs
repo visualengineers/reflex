@@ -2,7 +2,7 @@ using ReFlex.Core.Common.Components;
 
 namespace Common.Test;
 
-public class Point2Tests
+public class Point2Test
 {
     [SetUp]
     public void Setup()
@@ -189,7 +189,7 @@ public class Point2Tests
     }
 
     /// <summary>
-    /// Test that Equals only compares coordinates creates a real copy.
+    /// Test that Equals only compares coordinates.
     /// </summary>
     [Test]
     public void TestEquality()
