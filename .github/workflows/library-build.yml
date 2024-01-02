@@ -19,7 +19,7 @@ jobs:
       - name: install .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.x'
+          dotnet-version: '7.x'
       - name: Restore dependencies (Library)
         run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
       - name: Restore dependencies (TrackingServer)
