@@ -88,7 +88,7 @@ namespace ReFlex.Core.Filtering.Components
             {
                 for (var i = 0; i <= polynomialOrder; ++i)
                 {
-                    a[m + _sidePoints, i] = Math.Pow(m, i);
+                    a[m + _sidePoints, i] = System.Math.Pow(m, i);
                 }
             }
 

@@ -5,7 +5,8 @@ namespace ReFlex.Core.Common.Components
 {
     /// <inheritdoc />
     /// <summary>
-    /// A threedimensional point.
+    /// A three dimensional point.
+    /// @todo: checks and fallback values for null references for operators and methods
     /// </summary>
     /// <seealso cref="IBase3" />
     public class Point3 : IBase3
@@ -84,8 +85,8 @@ namespace ReFlex.Core.Common.Components
         /// <summary>
         /// Copies this instance.
         /// </summary>
-        /// <returns></returns>
-        public IBase3 Copy() => new Point3(this);
+        /// <returns>a copy of this instance</returns>
+        public IBase3 Copy() => new Point3(this) { IsValid = IsValid, IsFiltered = IsFiltered };
 
         /// <inheritdoc />
         /// <summary>
@@ -142,8 +143,8 @@ namespace ReFlex.Core.Common.Components
         
         public static Point3 operator /(Point3 a, float scalar)
         {
-            if (Math.Abs(scalar) <= float.Epsilon)
-                scalar = scalar > 0 ? float.Epsilon : -float.Epsilon;
+            if (System.Math.Abs(scalar) <= float.Epsilon)
+                scalar = scalar >= 0 ? float.Epsilon : -float.Epsilon;
                 
             var rez = 1f / scalar;
             return new Point3(a.X * rez, a.Y * rez, a.Z * rez);

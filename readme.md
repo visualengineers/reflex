@@ -60,6 +60,7 @@ __[⬆ back to top](#table-of-contents)__
 ### Repository initialization
 
 * copy [ExternalDependencies](#external-dependencies) into `external`
+* run `npm run build:shared-types` to build shared types library
 * run `npm install` in root directory
 * if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
 

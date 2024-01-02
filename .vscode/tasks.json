@@ -17,6 +17,21 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "build (Debug ARM64)",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "/p:Platform=arm64",
+                "-c",
+                "Debug"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "build library (Debug)",
             "command": "dotnet",
             "type": "process",

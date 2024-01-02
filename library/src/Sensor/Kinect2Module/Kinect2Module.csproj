@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <PackageId>ReFlex.Sensor.Kinect2Module</PackageId>
     <Authors>Mathias Müller</Authors>
     <Copyright>Copyright ©  2021-2023</Copyright>
@@ -12,7 +12,7 @@
     <Product>ReFlex.Sensor</Product>
     <AssemblyName>ReFlex.Sensor.Kinect2Module</AssemblyName>
     <RootNamespace>ReFlex.Sensor.Kinect2Module</RootNamespace>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;AnyCPU</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
@@ -28,6 +28,7 @@
     <None Remove="Util\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.8.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Prise.Plugin" Version="6.0.0" />

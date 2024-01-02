@@ -13,14 +13,14 @@ namespace ReFlex.Core.Common.Components
         /// Id for tracking a touch point over time
         /// </summary>
         public int TouchId { get; set; } = -1;
-        
+
         /// <summary>
         /// Gets the position.
         /// </summary>
         /// <value>
         /// The position.
         /// </value>
-        public Point3 Position { get; set; }
+        public Point3 Position { get; set; } = new Point3();
 
         /// <summary>
         /// Gets the type.
@@ -61,7 +61,7 @@ namespace ReFlex.Core.Common.Components
         /// </summary>
         public Interaction()
         {
-            
+            Time = DateTime.Now.Ticks;
         }
 
         /// <summary>
@@ -117,6 +117,6 @@ namespace ReFlex.Core.Common.Components
         /// <returns>
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public override string ToString() => $"Position: " + Position + ", Type: " + Type + " ,Confidence: " + Confidence;
+        public override string ToString() => $"TouchId: {TouchId}, Position: " + Position + ", Type: " + Type + " ,Confidence: " + Confidence;
     }
 }

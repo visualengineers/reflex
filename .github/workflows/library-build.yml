@@ -19,11 +19,11 @@ jobs:
       - name: install .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.x'
+          dotnet-version: '7.x'
       - name: Restore dependencies (Library)
         run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
       - name: Restore dependencies (TrackingServer)
         run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
       - name: build ReFlex without external sensors
         working-directory: ${{ github.workspace }}
-        run: dotnet build ReFlex.sln -c CI
+        run: dotnet build ReFlex.sln -c CI /p:Platform=x64

@@ -56,28 +56,40 @@ ___
 
 ## .NET Testing
 
-- Test coverage and HTML based coverage report are stored in `./Test/artifacts/coverage-net/`
+- Test coverage and HTML based coverage report are stored in `./test/artifacts/coverage-net/`
 
 - Prerequisites:
-  - dotnet-coverage
-    `dotnet tool install --global dotnet-coverage`
+
   - dotnet-reportgenerator-globaltool
     `dotnet tool install --global dotnet-reportgenerator-globaltool`
+  - each test project needs to have nuget package `coverlet.collector` installed
 
-- execute tests and generate coverage report: 
-  `dotnet coverage collect dotnet test --output .\Test\artifacts\coverage-net\cobertura-coverage.xml --output-format cobertura`
+  - delete directory `./test/artifacts/coverage-net/`
+  - execute tests and generate reports in `./test/artifacts/coverage-net/cobertura`
+    `dotnet test --collect:"XPlat Code Coverage" --results-directory: ./test/artifacts/coverage-net/cobertura/`
+    **REMARKS:** a folder named with a random guid containing the report is generated for each test assembly
+  - generate report by collecting all cobertura files (when using globbing for specifying reports in subdirectories the argument for `reports` must be wrapped in `"`)
+    `reportgenerator -reports:"./test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"./test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`    
 
-- generate report:
-  `reportgenerator -reports:.\Test\artifacts\coverage-net\cobertura-coverage.xml -targetdir:".\Test\artifacts\coverage-net\report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`
+For more options, refer to [Online Configuration Tool for Report Generator](https://reportgenerator.io/usage)
 
 - for including in gitlab ci / as github action: see [Generating Code Coverage Reports in .NET Core](https://dotnetthoughts.net/generating-code-coverage-reports-in-dotnet-core/)
   - basically install steps need to be done on start, then commands above can be run
+
+Alternative, using tool dotnet-coverage (only on Windows)
+
+- Install **dotnet-coverage**
+  `dotnet tool install --global dotnet-coverage`
+- execute tests and generate coverage report: 
+  `dotnet coverage collect dotnet test --output ./test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura`
+- generate report:
+  `reportgenerator -reports:./test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"./test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`
 
 - further information:
   - [online configuration](https://reportgenerator.io/usage)
   - [github repo](https://github.com/danielpalme/ReportGenerator)
 
-- *Remarks*: if specifying more than one argument for parameter `assemblyfilters`, the argument need to be wrapped in `"` (at least when using powershell (?))
+- *REMARKS*: if specifying more than one argument for parameter `assemblyfilters`, the argument need to be wrapped in `"` 
   - use `-assemblyfilters:"+ReFlex.*;-*.Test"` instead of `-assemblyfilters:+ReFlex.*;-*.Test`
 
 ## Backend Logging
@@ -248,12 +260,28 @@ ___
     electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target linux
   ```
 
+  For building for the ARM64 Platform, the custom target must be specified to build for ARM-based MACs:
+
+  ```bash
+    electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "osx-arm64;" /electron-arch arm64
+  ```
+
+  or for Linux-ARM:
+
+  ```bash
+
+  electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "linux-arm64;" /electron-arch arm64 
+
+  ```
+
   or use the prepared npm commands (from `ClientApp` directory):
 
   ``` bash
     npm run build:electron-win
     npm run build:electron-osx
+    npm run build:electron-osx-arm64
     npm run build:electron-linux
+    npm run build:electron-linux-arm64
   ```
 
 
@@ -355,7 +383,6 @@ However, this behaviour can be stopped by editing the targets file of the nuget 
   <!-- <Target Name="EnsureAzureKinectPlatform" BeforeTargets="PrepareForBuild">
     <Error Condition="'$(Platform)' != 'x64' AND '$(Platform)' != 'x86'" Text="Azure Kinect only supports the x86/x64 platform ('$(Platform)' not supported)" />
   </Target> -->
-
 ```
 
 - if __Microsoft Azure Kinect__ is not available as sensor and the error `k4a.dll cannot be found` is logged: make sure __Visual C++ Redistributable__ is installed on the machine (see [Prerequisites](#installation-and-start)).

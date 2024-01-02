@@ -12,21 +12,16 @@
     <Product>ReFlex.Core</Product>
     <AssemblyName>ReFlex.Core.Calibration</AssemblyName>
     <RootNamespace>ReFlex.Core.Calibration</RootNamespace>
-    <Platforms>x64</Platforms>
-    <TargetFramework>net6.0</TargetFramework>    
+    <Platforms>x64;ARM64;AnyCPU</Platforms>
+    <TargetFramework>net7.0</TargetFramework>    
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>    
     <Configurations>Debug;Release;CI</Configurations>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics">
       <Version>5.0.0</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.8.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>

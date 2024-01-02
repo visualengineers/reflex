@@ -68,7 +68,7 @@ namespace ReFlex.Core.Filtering.Components
         /// <returns>
         ///   <c>true</c> if the specified source is outlier; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsOutlier(Point3 source, Point3 target) => Math.Abs(target.Z - source.Z) >= Threshold;
+        public bool IsOutlier(Point3 source, Point3 target) => System.Math.Abs(target.Z - source.Z) >= Threshold;
 
         #endregion
     }

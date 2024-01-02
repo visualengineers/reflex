@@ -6,16 +6,16 @@ namespace ReFlex.Core.Common.Components
     /// <summary>
     /// Offers some useful and fast mathematical functions
     /// </summary>
-    public class MathUtils
+    public class Math
     {
         #region methods
 
         /// <summary>
-        /// Approximates the square root of a number z.
+        /// very roughly Approximates the square root of a number z. Variance: approx. 5%.
         /// </summary>
-        /// <param name="z">The z.</param>
-        /// <returns>The square root of a number z</returns>
-        public static float Sqrt(float z)
+        /// <param name="z">The radicand</param>
+        /// <returns>The square root of a number z, <see cref="float.NaN"/> if z is negative.</returns>
+        public static float FastSqrt(float z)
         {
             if (z == 0) return 0;
             FloatIntUnion u;
@@ -28,11 +28,11 @@ namespace ReFlex.Core.Common.Components
         }
 
         /// <summary>
-        /// Approximates the square root of a number z.
+        /// Approximates the square root of a number z. Variance: approx. 2% 
         /// It’s a tad slower than the first (though still nearly 2x as fast as Math.Sqrt()), but much more accurate.
         /// </summary>
-        /// <param name="z">The z.</param>
-        /// <returns>The square root of a number z</returns>
+        /// <param name="z">The radicand</param>
+        /// <returns>The square root of a number z, <see cref="float.NegativeInfinity"/> if z is negative.</returns>
         public static float InverseSqrt(float z)
         {
             if (z == 0) return 0;
@@ -68,25 +68,11 @@ namespace ReFlex.Core.Common.Components
         /// <returns>The remapped value.</returns>
         public static double Remap(double value, double from1, double to1, double from2, double to2)
             => (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-
-        /// <summary>
-        /// Clamps the specified value between two borders.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="min">The minimum.</param>
-        /// <param name="max">The maximum.</param>
-        /// <returns>
-        /// If the value is greaer than max, the function returns max.
-        /// If the value is smaller than min, the function returns min.
-        /// If the value is smaller than max and greater than min, the function returns the value.
-        /// </returns>
-        public static double Clamp(double value, double min, double max)
-            => (value < min) ? min : (value > max) ? max : value;
-
+        
         public static double ExponentialMapping(double input) =>
-            Math.Exp((input) - 1) / (Math.E - 1);
+            System.Math.Exp((input) - 1) / (System.Math.E - 1);
 
         public static double LogarithmicMapping(double input) =>
-            Math.Log(input + 1, Math.E) / Math.Log(2, Math.E);
+            System.Math.Log(input + 1, System.Math.E) / System.Math.Log(2, System.Math.E);
     }
 }

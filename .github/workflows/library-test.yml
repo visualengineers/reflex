@@ -19,28 +19,27 @@ jobs:
       - name: install .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.x'
+          dotnet-version: '7.x'
       - name: Restore dependencies (Library)
         run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
       - name: Restore dependencies (TrackingServer)
         run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
       - name: build ReFlex without external sensors
         working-directory: ${{ github.workspace }}
-        run: dotnet build ReFlex.sln -c CI
+        run: dotnet build ReFlex.sln -c CI /p:Platform=x64
       - name: Install Required Tools
         run: |
-          dotnet new tool-manifest
+          dotnet new tool-manifest --force
           dotnet tool install dotnet-reportgenerator-globaltool
-          dotnet tool install dotnet-coverage
       - name: execute tests and with code coverage
-        run: dotnet coverage collect dotnet test --output ${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura
+        run: dotnet test --collect:"XPlat Code Coverage" --results-directory:${{ github.workspace }}/test/artifacts/coverage-net/cobertura/
       - name: generate report
-        run: dotnet reportgenerator -reports:${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"${{ github.workspace }}/Test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"
+        run: dotnet reportgenerator -reports:"${{ github.workspace }}/test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"${{ github.workspace }}/test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"
       - name: Attach Report as Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: NUnit Test Report (ReFlex Library)
-          path: ${{ github.workspace }}/Test/artifacts/coverage-net/report 
+          path: ${{ github.workspace }}/test/artifacts/coverage-net/report 
 
 
 
