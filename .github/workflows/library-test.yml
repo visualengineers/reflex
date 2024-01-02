@@ -26,7 +26,7 @@ jobs:
         run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
       - name: build ReFlex without external sensors
         working-directory: ${{ github.workspace }}
-        run: dotnet build ReFlex.sln -c CI
+        run: dotnet build ReFlex.sln -c CI /p:Platform=x64
       - name: Install Required Tools
         run: |
           dotnet new tool-manifest
