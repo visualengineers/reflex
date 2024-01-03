@@ -29,15 +29,15 @@ jobs:
     needs: generate_test-report_library
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
+      - name: Create subfolder for .Net report
+        shell: bash
+        run: mkdir -p docs/test/net/report          
+      - name: Download artifact        
+        uses: actions/download-artifact@v3        
         with:
           name: ${{ needs.generate_test-report_library.outputs.artifact_name }}
-      - name: Copy to docs
-        shell: bash
-        run: |
-          mkdir -p docs/test/net/report
-          mv ./* docs/test/net/report/
+          path: ${GITHUB_WORKSPACE}/docs/test/net/report/
+      
   # Build job
   build-pages:
     runs-on: ubuntu-latest
