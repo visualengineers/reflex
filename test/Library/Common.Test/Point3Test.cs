@@ -384,7 +384,7 @@ public class Point3Test
         var p2 = new Point3((float)new Random().NextDouble(), (float)new Random().NextDouble(), (float)new Random().NextDouble());
 
         var dist = Point3.Distance(p1, p2);
-        var expected = (float) Math.Sqrt(Math.Pow(p2.X - p1.X, 2f) + Math.Pow(p2.Y - p1.Y, 2f) + Math.Pow(p2.Z - p1.Z, 2f)); 
+        var expected = (float) Math.Sqrt((float) Math.Pow(p2.X - p1.X, 2f) + (float) Math.Pow(p2.Y - p1.Y, 2f) + (float) Math.Pow(p2.Z - p1.Z, 2f)); 
         
         Assert.That(Math.Abs(expected - dist) <= float.Epsilon, Is.True);
     }
