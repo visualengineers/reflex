@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<coverage version="1.0" date="2024-01-03_23-38-49" tag="">
+  <assembly name="ReFlex.Core.Calibration">
+    <class name="ReFlex.Core.Calibration.Components.Calibrator" coveredlines="0" coverablelines="196" totallines="326" coveredbranches="0" totalbranches="62" coveredcodeelements="0" totalcodeelements="25" />
+    <class name="ReFlex.Core.Calibration.Components.DepthProcessorBase" coveredlines="0" coverablelines="16" totallines="52" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="4" />
+    <class name="ReFlex.Core.Calibration.Components.GradientProcessor" coveredlines="0" coverablelines="49" totallines="94" coveredbranches="0" totalbranches="20" coveredcodeelements="0" totalcodeelements="3" />
+    <class name="ReFlex.Core.Calibration.Util.Calibration" coveredlines="0" coverablelines="34" totallines="89" coveredbranches="0" totalbranches="4" coveredcodeelements="0" totalcodeelements="6" />
+  </assembly>
+  <assembly name="ReFlex.Core.Common">
+    <class name="ReFlex.Core.Common.Adapter.ClientWebSocketAdapter" coveredlines="4" coverablelines="17" totallines="40" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="6" />
+    <class name="ReFlex.Core.Common.Adapter.TcpClientAdapter" coveredlines="4" coverablelines="17" totallines="37" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="6" />
+    <class name="ReFlex.Core.Common.Components.ArrayUtils" coveredlines="63" coverablelines="63" totallines="159" coveredbranches="44" totalbranches="44" coveredcodeelements="8" totalcodeelements="8" />
+    <class name="ReFlex.Core.Common.Components.ExtremumDescription" coveredlines="3" coverablelines="3" totallines="29" coveredbranches="0" totalbranches="0" coveredcodeelements="3" totalcodeelements="3" />
+    <class name="ReFlex.Core.Common.Components.ImageByteArray" coveredlines="23" coverablelines="23" totallines="70" coveredbranches="4" totalbranches="4" coveredcodeelements="7" totalcodeelements="7" />
+    <class name="ReFlex.Core.Common.Components.Interaction" coveredlines="42" coverablelines="42" totallines="122" coveredbranches="1" totalbranches="2" coveredcodeelements="12" totalcodeelements="12" />
+    <class name="ReFlex.Core.Common.Components.InteractionFrame" coveredlines="10" coverablelines="10" totallines="39" coveredbranches="0" totalbranches="0" coveredcodeelements="4" totalcodeelements="4" />
+    <class name="ReFlex.Core.Common.Components.InteractionHistory" coveredlines="25" coverablelines="25" totallines="62" coveredbranches="4" totalbranches="4" coveredcodeelements="4" totalcodeelements="4" />
+    <class name="ReFlex.Core.Common.Components.InteractionHistoryElement" coveredlines="7" coverablelines="7" totallines="29" coveredbranches="0" totalbranches="0" coveredcodeelements="3" totalcodeelements="3" />
+    <class name="ReFlex.Core.Common.Components.Math" coveredlines="21" coverablelines="21" totallines="78" coveredbranches="4" totalbranches="4" coveredcodeelements="5" totalcodeelements="5" />
+    <class name="ReFlex.Core.Common.Components.PerformanceAggregator" coveredlines="110" coverablelines="110" totallines="236" coveredbranches="29" totalbranches="30" coveredcodeelements="11" totalcodeelements="11" />
+    <class name="ReFlex.Core.Common.Components.Point2" coveredlines="20" coverablelines="20" totallines="124" coveredbranches="6" totalbranches="6" coveredcodeelements="13" totalcodeelements="13" />
+    <class name="ReFlex.Core.Common.Components.Point3" coveredlines="55" coverablelines="55" totallines="199" coveredbranches="11" totalbranches="12" coveredcodeelements="21" totalcodeelements="21" />
+    <class name="ReFlex.Core.Common.Components.Point3Indexed" coveredlines="0" coverablelines="17" totallines="69" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="8" />
+    <class name="ReFlex.Core.Common.Components.PointCloud2" coveredlines="0" coverablelines="30" totallines="135" coveredbranches="0" totalbranches="14" coveredcodeelements="0" totalcodeelements="12" />
+    <class name="ReFlex.Core.Common.Components.PointCloud3" coveredlines="0" coverablelines="37" totallines="163" coveredbranches="0" totalbranches="14" coveredcodeelements="0" totalcodeelements="14" />
+    <class name="ReFlex.Core.Common.Components.Rectangle" coveredlines="0" coverablelines="16" totallines="29" coveredbranches="0" totalbranches="6" coveredcodeelements="0" totalcodeelements="8" />
+    <class name="ReFlex.Core.Common.Components.SerializationUtils" coveredlines="0" coverablelines="40" totallines="118" coveredbranches="0" totalbranches="6" coveredcodeelements="0" totalcodeelements="6" />
+    <class name="ReFlex.Core.Common.Components.Vector2" coveredlines="8" coverablelines="24" totallines="148" coveredbranches="0" totalbranches="8" coveredcodeelements="5" totalcodeelements="17" />
+    <class name="ReFlex.Core.Common.Components.Vector3" coveredlines="11" coverablelines="24" totallines="146" coveredbranches="0" totalbranches="10" coveredcodeelements="7" totalcodeelements="15" />
+    <class name="ReFlex.Core.Common.Components.VectorField2" coveredlines="0" coverablelines="56" totallines="181" coveredbranches="0" totalbranches="20" coveredcodeelements="0" totalcodeelements="14" />
+    <class name="ReFlex.Core.Common.Exceptions.ArraysWithDifferentSizesException" coveredlines="1" coverablelines="2" totallines="25" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="2" />
+    <class name="ReFlex.Core.Common.Util.DepthImageFormatTools" coveredlines="0" coverablelines="16" totallines="45" coveredbranches="0" totalbranches="12" coveredcodeelements="0" totalcodeelements="3" />
+    <class name="ReFlex.Core.Common.Util.DisableTypeConverterContractResolver`1" coveredlines="0" coverablelines="7" totallines="42" coveredbranches="0" totalbranches="2" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="ReFlex.Core.Common.Util.DisableTypeConverterJsonConverter`1" coveredlines="0" coverablelines="12" totallines="42" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="4" />
+    <class name="ReFlex.Core.Common.Util.FilterPerformance" coveredlines="5" coverablelines="5" totallines="13" coveredbranches="0" totalbranches="0" coveredcodeelements="5" totalcodeelements="5" />
+    <class name="ReFlex.Core.Common.Util.PerformanceData" coveredlines="1" coverablelines="1" totallines="10" coveredbranches="0" totalbranches="0" coveredcodeelements="1" totalcodeelements="1" />
+    <class name="ReFlex.Core.Common.Util.PerformanceDataItem" coveredlines="5" coverablelines="5" totallines="15" coveredbranches="0" totalbranches="0" coveredcodeelements="5" totalcodeelements="5" />
+    <class name="ReFlex.Core.Common.Util.ProcessingResult" coveredlines="0" coverablelines="13" totallines="24" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="3" />
+    <class name="ReFlex.Core.Common.Util.ProcessPerformance" coveredlines="5" coverablelines="5" totallines="20" coveredbranches="0" totalbranches="0" coveredcodeelements="5" totalcodeelements="5" />
+    <class name="ReFlex.Core.Common.Util.RecordingStateUpdate" coveredlines="0" coverablelines="9" totallines="18" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="4" />
+    <class name="ReFlex.Core.Common.Util.SteppedIterator" coveredlines="0" coverablelines="6" totallines="16" coveredbranches="0" totalbranches="2" coveredcodeelements="0" totalcodeelements="1" />
+    <class name="ReFlex.Core.Common.Util.StreamParameter" coveredlines="0" coverablelines="22" totallines="94" coveredbranches="0" totalbranches="10" coveredcodeelements="0" totalcodeelements="9" />
+    <class name="ReFlex.Core.Common.Util.StreamParameterConverter" coveredlines="0" coverablelines="19" totallines="80" coveredbranches="0" totalbranches="6" coveredcodeelements="0" totalcodeelements="3" />
+  </assembly>
+  <assembly name="ReFlex.Core.Events">
+    <class name="ReFlex.Core.Events.TrackingStateChangedEventArgs" coveredlines="0" coverablelines="7" totallines="18" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="3" />
+  </assembly>
+  <assembly name="ReFlex.Core.Filtering">
+    <class name="ReFlex.Core.Filtering.Components.AdvancedLimitationFilter" coveredlines="0" coverablelines="113" totallines="169" coveredbranches="0" totalbranches="48" coveredcodeelements="0" totalcodeelements="7" />
+    <class name="ReFlex.Core.Filtering.Components.Base2DFilter" coveredlines="0" coverablelines="27" totallines="75" coveredbranches="0" totalbranches="6" coveredcodeelements="0" totalcodeelements="9" />
+    <class name="ReFlex.Core.Filtering.Components.BoxFilter" coveredlines="0" coverablelines="65" totallines="148" coveredbranches="0" totalbranches="26" coveredcodeelements="0" totalcodeelements="8" />
+    <class name="ReFlex.Core.Filtering.Components.ButterworthFilter" coveredlines="0" coverablelines="57" totallines="84" coveredbranches="0" totalbranches="12" coveredcodeelements="0" totalcodeelements="5" />
+    <class name="ReFlex.Core.Filtering.Components.CalibrationFilter" coveredlines="0" coverablelines="28" totallines="68" coveredbranches="0" totalbranches="4" coveredcodeelements="0" totalcodeelements="6" />
+    <class name="ReFlex.Core.Filtering.Components.GaussianBlur" coveredlines="0" coverablelines="39" totallines="85" coveredbranches="0" totalbranches="14" coveredcodeelements="0" totalcodeelements="3" />
+    <class name="ReFlex.Core.Filtering.Components.LimitationFilter" coveredlines="0" coverablelines="62" totallines="112" coveredbranches="0" totalbranches="18" coveredcodeelements="0" totalcodeelements="19" />
+    <class name="ReFlex.Core.Filtering.Components.OptimizedBoxFilter" coveredlines="0" coverablelines="128" totallines="266" coveredbranches="0" totalbranches="38" coveredcodeelements="0" totalcodeelements="14" />
+    <class name="ReFlex.Core.Filtering.Components.PolynomialFitFilter" coveredlines="0" coverablelines="15" totallines="30" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="3" />
+    <class name="ReFlex.Core.Filtering.Components.SavitzkyGolayFilter" coveredlines="0" coverablelines="56" totallines="101" coveredbranches="0" totalbranches="18" coveredcodeelements="0" totalcodeelements="5" />
+    <class name="ReFlex.Core.Filtering.Components.SimpleMovingAverageFilter" coveredlines="4" coverablelines="27" totallines="49" coveredbranches="0" totalbranches="12" coveredcodeelements="1" totalcodeelements="3" />
+    <class name="ReFlex.Core.Filtering.Components.ThresholdFilter" coveredlines="0" coverablelines="17" totallines="75" coveredbranches="0" totalbranches="12" coveredcodeelements="0" totalcodeelements="4" />
+    <class name="ReFlex.Core.Filtering.Components.ValueFilter" coveredlines="0" coverablelines="35" totallines="112" coveredbranches="0" totalbranches="20" coveredcodeelements="0" totalcodeelements="6" />
+    <class name="ReFlex.Core.Filtering.Components.WeightedMovingAverageFilter" coveredlines="0" coverablelines="33" totallines="60" coveredbranches="0" totalbranches="14" coveredcodeelements="0" totalcodeelements="3" />
+    <class name="ReFlex.Core.Filtering.Components.WeightedPolynomialFitFilter" coveredlines="0" coverablelines="17" totallines="35" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="3" />
+  </assembly>
+  <assembly name="ReFlex.Core.Implementation">
+    <class name="Implementation.Components.CalibrationManager" coveredlines="0" coverablelines="68" totallines="119" coveredbranches="0" totalbranches="20" coveredcodeelements="0" totalcodeelements="11" />
+    <class name="Implementation.Components.DepthImageManager" coveredlines="0" coverablelines="49" totallines="100" coveredbranches="0" totalbranches="12" coveredcodeelements="0" totalcodeelements="12" />
+    <class name="Implementation.Components.FilterManager" coveredlines="0" coverablelines="127" totallines="199" coveredbranches="0" totalbranches="60" coveredcodeelements="0" totalcodeelements="22" />
+    <class name="Implementation.Components.InteractionManager" coveredlines="0" coverablelines="212" totallines="400" coveredbranches="0" totalbranches="107" coveredcodeelements="0" totalcodeelements="51" />
+    <class name="Implementation.Components.NetworkManager" coveredlines="0" coverablelines="71" totallines="141" coveredbranches="0" totalbranches="36" coveredcodeelements="0" totalcodeelements="17" />
+    <class name="Implementation.Components.TimerLoop" coveredlines="0" coverablelines="52" totallines="97" coveredbranches="0" totalbranches="30" coveredcodeelements="0" totalcodeelements="7" />
+    <class name="Implementation.Components.TrackingManager" coveredlines="0" coverablelines="55" totallines="133" coveredbranches="0" totalbranches="30" coveredcodeelements="0" totalcodeelements="13" />
+  </assembly>
+  <assembly name="ReFlex.Core.Interactivity">
+    <class name="ReFlex.Core.Interactivity.Components.InteractionObserverBase" coveredlines="0" coverablelines="234" totallines="469" coveredbranches="0" totalbranches="79" coveredcodeelements="0" totalcodeelements="39" />
+    <class name="ReFlex.Core.Interactivity.Components.InteractionSmoothingBehaviour" coveredlines="157" coverablelines="203" totallines="358" coveredbranches="40" totalbranches="59" coveredcodeelements="18" totalcodeelements="20" />
+    <class name="ReFlex.Core.Interactivity.Components.MultiInteractionObserver" coveredlines="0" coverablelines="141" totallines="258" coveredbranches="0" totalbranches="50" coveredcodeelements="0" totalcodeelements="10" />
+    <class name="ReFlex.Core.Interactivity.Components.NoInteractionObserver" coveredlines="0" coverablelines="7" totallines="24" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="4" />
+    <class name="ReFlex.Core.Interactivity.Components.RemoteInteractionProcessor" coveredlines="0" coverablelines="59" totallines="92" coveredbranches="0" totalbranches="20" coveredcodeelements="0" totalcodeelements="5" />
+    <class name="ReFlex.Core.Interactivity.Components.SingleInteractionObserver" coveredlines="0" coverablelines="131" totallines="242" coveredbranches="0" totalbranches="52" coveredcodeelements="0" totalcodeelements="9" />
+    <class name="ReFlex.Core.Interactivity.Util.MockRemoteInteractionProcessorService" coveredlines="0" coverablelines="22" totallines="42" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="6" />
+  </assembly>
+  <assembly name="ReFlex.Core.Networking">
+    <class name="ReFlex.Core.Networking.Components.NetworkClient" coveredlines="0" coverablelines="58" totallines="102" coveredbranches="0" totalbranches="6" coveredcodeelements="0" totalcodeelements="16" />
+    <class name="ReFlex.Core.Networking.Components.NetworkServer" coveredlines="0" coverablelines="76" totallines="140" coveredbranches="0" totalbranches="30" coveredcodeelements="0" totalcodeelements="18" />
+    <class name="ReFlex.Core.Networking.Components.WebSocketClient" coveredlines="0" coverablelines="66" totallines="125" coveredbranches="0" totalbranches="12" coveredcodeelements="0" totalcodeelements="17" />
+    <class name="ReFlex.Core.Networking.Components.WebSocketServer" coveredlines="0" coverablelines="91" totallines="208" coveredbranches="0" totalbranches="48" coveredcodeelements="0" totalcodeelements="19" />
+    <class name="ReFlex.Core.Networking.Event.InteractionsReceivedEventArgs" coveredlines="0" coverablelines="5" totallines="16" coveredbranches="0" totalbranches="2" coveredcodeelements="0" totalcodeelements="2" />
+    <class name="ReFlex.Core.Networking.Util.BroadcastService" coveredlines="0" coverablelines="5" totallines="23" coveredbranches="0" totalbranches="2" coveredcodeelements="0" totalcodeelements="2" />
+    <class name="ReFlex.Core.Networking.Util.EmulatedPointCloud" coveredlines="0" coverablelines="146" totallines="246" coveredbranches="0" totalbranches="56" coveredcodeelements="0" totalcodeelements="14" />
+    <class name="ReFlex.Core.Networking.Util.EmulatorParameters" coveredlines="0" coverablelines="6" totallines="12" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="6" />
+    <class name="ReFlex.Core.Networking.Util.EmulatorService" coveredlines="0" coverablelines="18" totallines="45" coveredbranches="0" totalbranches="12" coveredcodeelements="0" totalcodeelements="5" />
+    <class name="ReFlex.Core.Networking.Util.NetworkingDataMessage" coveredlines="0" coverablelines="7" totallines="17" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="3" />
+  </assembly>
+  <assembly name="ReFlex.Core.Tracking">
+    <class name="ReFlex.Core.Tracking.Util.DepthCameraFrame" coveredlines="0" coverablelines="1" totallines="18" coveredbranches="0" totalbranches="0" coveredcodeelements="0" totalcodeelements="1" />
+  </assembly>
+  <assembly name="ReFlex.Core.Tuio">
+    <class name="ReFlex.Core.Tuio.Components.TuioMessageBuilder" coveredlines="136" coverablelines="162" totallines="256" coveredbranches="12" totalbranches="22" coveredcodeelements="2" totalcodeelements="5" />
+    <class name="ReFlex.Core.Tuio.Components.TuioSender" coveredlines="87" coverablelines="123" totallines="244" coveredbranches="46" totalbranches="54" coveredcodeelements="7" totalcodeelements="10" />
+    <class name="ReFlex.Core.Tuio.TuioBroadcast" coveredlines="63" coverablelines="63" totallines="192" coveredbranches="18" totalbranches="18" coveredcodeelements="12" totalcodeelements="12" />
+    <class name="ReFlex.Core.Tuio.Util.TuioConfiguration" coveredlines="23" coverablelines="23" totallines="80" coveredbranches="4" totalbranches="4" coveredcodeelements="10" totalcodeelements="10" />
+    <class name="ReFlex.Core.Tuio.Util.TuioParameters" coveredlines="25" coverablelines="25" totallines="75" coveredbranches="2" totalbranches="2" coveredcodeelements="7" totalcodeelements="7" />
+  </assembly>
+</coverage>

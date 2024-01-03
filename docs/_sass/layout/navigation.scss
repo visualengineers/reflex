@@ -75,10 +75,10 @@ ul {
 
 .nav-link {
     border-right: 4px solid transparent;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px 0 0 5px;    
 
-    &.special {
-        margin-top: 10rem;
+    &.code, 
+    &.report {
                 
         &::before {
             position: absolute;
@@ -86,17 +86,23 @@ ul {
             left: 1rem;
             content: "";
             width: 20px;
-            height: 20px;
-            background-image: url('/reflex/assets/layout/GitHub_logo.png');
+            height: 20px;    
             background-size: contain;
             background-position: center center;
         }
 
         & a {
             margin-left: 35px;
-        }
-        
+        }        
     }    
+
+    &.code::before {
+        background-image: url('/reflex/assets/icons/GitHub_logo.png');
+    }
+
+    &.report::before {
+        background-image: url('/reflex/assets/icons/report.png');
+    }
 
     & a { 
         margin-top: 0.2rem;
