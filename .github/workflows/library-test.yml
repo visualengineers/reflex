@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/library-build.yml
   test-library:
     runs-on: windows-latest
+    needs: build-library
     name: library
     env:
       artifact_name: .NET Test Report (ReFlex Library)
