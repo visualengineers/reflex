@@ -1,5 +1,5 @@
 # Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+name: Deploy GitHub pages with test reports
 
 on:
   # Runs on pushes targeting the default branch
@@ -22,9 +22,37 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job
-  build:
+  # build library, generate test report and upload as artifact
+  generate_test-report_library:
+    uses: ./.github/workflows/library-test.yml
+  # build server, generate test report and upload as artifact
+  generate_test-report_server:
+    uses: ./.github/workflows/server-test.yml
+  copy_test-report:
+    needs: [ generate_test-report_library, generate_test-report_server ]
     runs-on: ubuntu-latest
+    steps:
+      - name: Create subfolder for library report
+        shell: bash
+        run: mkdir -p docs/test/library/report 
+      - name: Create subfolder for Server report
+        shell: bash
+        run: mkdir -p docs/test/server/report          
+      - name: Download library report        
+        uses: actions/download-artifact@v3        
+        with:
+          name: ${{ needs.generate_test-report_library.outputs.artifact_name }}
+          path: ${{ github.workspace }}/docs/test/library/report/
+      - name: Download server report        
+        uses: actions/download-artifact@v3        
+        with:
+          name: ${{ needs.generate_test-report_server.outputs.artifact_name }}
+          path: ${{ github.workspace }}/docs/test/server/report/
+      
+  # Build job
+  build-pages:
+    runs-on: ubuntu-latest
+    needs: copy_test-report
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +60,7 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Copy Existing Files
         working-directory: ./
-        run: bash ${GITHUB_WORKSPACE}/scripts/copy_docs.sh          
+        run: bash ${{ github.workspace }}/scripts/copy_docs.sh          
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
@@ -42,12 +70,12 @@ jobs:
         uses: actions/upload-pages-artifact@v2
 
   # Deployment job
-  deploy:
+  deploy-pages:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-pages
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
