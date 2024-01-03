@@ -5,14 +5,14 @@ on:
     branches:
       - main
   pull_request:
-    types: [ opened, reopened, edited ]
+    types: [ opened, reopened, edited, synchronize ]
     branches:
       - main
   
 jobs:
   angular-lint: 
     runs-on: windows-latest
-    name: install and lint
+    name: install and build
     steps:
       - name: checkout repo with submodules
         uses: actions/checkout@v3
