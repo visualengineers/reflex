@@ -46,7 +46,7 @@ jobs:
       - name: execute tests and with code coverage
         run: dotnet test --collect:"XPlat Code Coverage" --results-directory:${{ github.workspace }}/test/artifacts/coverage-net/cobertura/
       - name: generate report
-        run: dotnet reportgenerator -reports:"${{ github.workspace }}/test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"${{ github.workspace }}/test/artifacts/coverage-net/report" -reporttypes:"Html_Light;HtmlSummary;Cobertura;XML;XMLSummary;JsonSummary;MarkdownSummaryGithub;Badges -title:"ReFlex - Library" -assemblyfilters:"+ReFlex.*;-*.Test"
+        run: dotnet reportgenerator -reports:"${{ github.workspace }}/test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"${{ github.workspace }}/test/artifacts/coverage-net/report" -reporttypes:"Html_Light;HtmlSummary;Cobertura;XML;XMLSummary;JsonSummary;MarkdownSummaryGithub;Badges" -title:"ReFlex - Library" -assemblyfilters:"+ReFlex.*;-*.Test"
       - name: Attach Report as Build Artifact
         uses: actions/upload-artifact@v3
         with:
