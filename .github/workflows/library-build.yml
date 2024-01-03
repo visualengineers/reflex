@@ -5,6 +5,7 @@ on:
   workflow_call:
   # this workflow can be triggered manually
   workflow_dispatch: 
+  push:
 
 jobs:
   build-library:
