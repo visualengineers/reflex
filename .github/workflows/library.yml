@@ -1,6 +1,12 @@
 name: ReFlex Library - Test
 
 on: 
+  # make this wortkflow reusable
+  workflow_call:
+    outputs:
+      artifact_name:
+        description: "name of the artifact that has been uploaded"
+        value: ${{ jobs.build-and-test.outputs.artifact_name }}
   push:
     branches:
       - main
@@ -10,9 +16,13 @@ on:
       - main
 
 jobs:
-  reflex:
+  build-and-test:
     runs-on: windows-latest
-    name: build and test
+    name: library
+    env:
+      artifact_name: .NET Test Report (ReFlex Library)
+    outputs:
+      artifact_name: $artifact_name
     steps:
       - name: checkout repo with submodules
         uses: actions/checkout@v3
@@ -38,7 +48,7 @@ jobs:
       - name: Attach Report as Build Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: NUnit Test Report (ReFlex Library)
+          name: $artifact_name
           path: ${{ github.workspace }}/test/artifacts/coverage-net/report 
 
 

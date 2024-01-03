@@ -1,6 +1,7 @@
 name: Shared Types - Build
 
 on: 
+  workflow_call:
   push:
     branches:
       - main
