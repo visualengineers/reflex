@@ -1,16 +1,29 @@
 name: ReFlex Library - Build
 
+env: 
+    current_cache_key: library-${{ github.sha }}
+    current_cache_path: ${{ github.workspace }}/
+
 on: 
-  # make this wortkflow reusable
+  # make this workflow reusable
   workflow_call:
+    outputs: 
+        cache_key:
+            description: "Key for restoring build artifacts that have been cached"
+            value: ${{ jobs.build-library.outputs.cache_key }}
+        cache_path:
+            description: "Path for cache restore"
+            value: ${{ jobs.build-library.outputs.cache_path }}
   # this workflow can be triggered manually
   workflow_dispatch: 
-  push:
 
 jobs:
   build-library:
     runs-on: windows-latest
-    name: library
+    name: build library and cache
+    outputs:
+        cache_key: ${{ env.current_cache_key }}
+        cache_path: ${{ env.current_cache_path }}
     steps:
       - name: checkout repo with submodules
         uses: actions/checkout@v3
@@ -25,3 +38,9 @@ jobs:
       - name: build ReFlex without external sensors
         working-directory: ${{ github.workspace }}
         run: dotnet build ReFlex.sln -c CI /p:Platform=x64
+      - name: cache workspace with build output
+        id: cache-library-build
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.current_cache_path }}
+          key: ${{ env.current_cache_key }}

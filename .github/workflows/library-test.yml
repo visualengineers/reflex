@@ -1,7 +1,7 @@
 name: ReFlex Library - Test
 
 on: 
-  # make this wortkflow reusable
+  # make this workflow reusable
   workflow_call:
     # this workflow can be triggered manually
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-library:
-    uses: ./.github/workflows/library-build.yml
+    uses: ./.github/workflows/library-build.yml   
   test-library:
     runs-on: windows-latest
     needs: build-library
@@ -19,6 +19,12 @@ jobs:
     outputs:
       artifact_name: ${{ env.artifact_name }}
     steps:
+      - name: restore build artifacts
+        uses: actions/cache/restore@v3
+        id: cache-library-build
+        with:
+          path: ${{ needs.build-library.outputs.cache_path }}
+          key: ${{ needs.build-library.outputs.cache_key }}
       - name: Install Required Tools
         run: |
           dotnet new tool-manifest --force
