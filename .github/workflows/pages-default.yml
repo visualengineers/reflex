@@ -1,12 +1,12 @@
 # Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy GitHub pages only
+name: Deploy GitHub pages restoring test report cache
 
 on:
   # Runs on pushes targeting the default branch
-   # Runs on pushes targeting the default branch
   push:
     branches: 
       - pages
+      - main
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
