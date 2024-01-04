@@ -139,8 +139,24 @@ __[⬆ back to top](#table-of-contents)__
 Workflows to be run:
 
 * [ReFlex: Build & Test](#reflex-build--test-build-test-completeyml)
+* Cleanup PR Caches
+* ReFlex Emulator: Build
+* ReFlex Library: Build, ReFlex Library: Test (triggered by [ReFlex: Build & Test](#reflex-build--test-build-test-completeyml))
+* ReFlex Server: Build
+* ReFlex Server: Lint
+* ReFlex Server: Test
+* ReFlex Shared Types: Build
 
 #### ReFlex: Build & Test (build-test-complete.yml)
+
+Composite workflow that:
+
+* Builds and tests ReFlex Library
+* Builds and tests ReFlex Server
+* Collects Reports for Server ans Library
+* Saves these reports in Cache `test-reports`
+
+Prerequisite step for `Pages: Deploy`
 
 ```mermaid
 %%{init: {"flowchart": {"htmlLabels": false}} }%%
@@ -170,6 +186,19 @@ flowchart TD
     E(["`ReFlex: Build & Test
         *build-test-complete.yml*`"])
 ```
+
+#### Pages: Deploy (pages-deploy.yml)
+
+* collects test report from cache `test-reports`
+* __REMARKS__ Caches for github actions are scoped to the current branch (or `main` branch). this means that cached reports created on a feature branch or PR are not restored. Instead, in this case the last cache created on `main` branch is retrieved. This should not be an issue, as by default, commits / PRs for `pages` should not contain changes to documentation. However, after merging a PR that changed the documentation, the updated documentation is only retrieved from cache when `Pages: Deploy` runs __AFTER__ `ReFlex: Build & Test`. As this order is not enforced, it might be necessary to manually trigger `Pages: Deploy` on `main` afterwards to update pages with the new version of the documentation
+* copies readme files from repository to `docs` (using `scripts/copy_docs.sh`)
+* builds page with jekyll
+* deploy github page artifact
+
+#### Cleanup PR Caches
+
+When creating a PR and running checks, the caches created during these workflow runs are only valid when PR is updated. As Caches are scoped to that current PR branch, these caches are not longer useful for other workflow runs. This workflow deletes these cache automatically, to free up space.
+More information: [github Documentation](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#force-deleting-cache-entries)
 
 __[⬆ back to top](#table-of-contents)__
 
