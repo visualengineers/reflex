@@ -159,30 +159,24 @@ Composite workflow that:
 Prerequisite step for `Pages: Deploy`
 
 ```mermaid
+%%{ init: { "flowchart": {"htmlLabels": false}}}%%
+
 flowchart TD
-    A(["`ReFlex Library: Build
-        *library-build.yml*`"]) 
-        -. build-library .-> 
-    B(["`ReFlex Library: Test
-        *library-test.yml*`"])
+    A(["`ReFlex Library: Build *library-build.yml*`"]) 
+    -. build-library .-> 
+    B(["`ReFlex Library: Test *library-test.yml*`"])
 
-    B(["`ReFlex Library: Test
-        *library-test.yml*`"])
-        -. generate_test-report_library .->
-    D(["`ReFlex: Build & Test
-        *build-test-complete.yml*`"])
+    B(["`ReFlex Library: Test *library-test.yml*`"])
+    -. generate_test-report_library .->
+    D(["`ReFlex: Build & Test *build-test-complete.yml*`"])
 
-    C(["`ReFlex Server: Test
-        *server-test.yml*`"])
-        -. generate_test-report_server .->
-    D(["`ReFlex: Build & Test
-        *build-test-complete.yml*`"])
+    C(["`ReFlex Server: Test *server-test.yml*`"])
+    -. generate_test-report_server .->
+    D(["`ReFlex: Build & Test *build-test-complete.yml*`"])
 
-    D(["`ReFlex: Build & Test
-        *build-test-complete.yml*`"])
-        -. collect-cache_data .->
-    E(["`ReFlex: Build & Test
-        *build-test-complete.yml*`"])
+    D(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+    -. collect-cache_data .->
+    E(["`ReFlex: Build & Test *build-test-complete.yml*`"])
 ```
 
 #### Pages: Deploy (pages-deploy.yml)
