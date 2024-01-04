@@ -5,26 +5,30 @@ teaser:  An interview with Mathias M&uuml;ller about different approaches of tra
 image: /assets/img/kb/flexiwall-mathias.jpg
 ---
 
-**Why is tracking needed on an elastic display?**  
+**Why is tracking needed on an elastic display?**
+
 With the help of tracking we determine the positions, the depth and the type of interaction on the elastic display.
 
 **Can you briefly describe the tracking setup? What is particularly important?**  
 Below the surface of the elastic display is a depth camera, e.g. an Azure Kinect, which optimally captures the entire touch surface. In order to avoid recalibrations, a stable and secure positioning of the camera is very important in practice.
 
-**Why did you choose tracking with depth cameras?**  
+**Why did you choose tracking with depth cameras?**
+
 The camera works on the Time-of-Flight (ToF) principle by emitting light in the near infrared spectrum (NIR) and measuring the time until the reflection of the light arrives again. This allows for direct and fast calculation and transmission of the depth map independent of interfering light, i.e. light that is outside the infrared spectrum. The image projected onto the surface of the elastic display, texture and color of the surface thus do not influence the tracking.
 
 **Are there significant differences between currently available depth sensors in technological aspects?**
+
 Basically, there are two approaches which can be used for tracking the surface deformation of [Elastic Displays]({{ site.baseurl }}/knowledge/terms/elastic-display):
 
 * *Time-of-Filght (ToF)* sensors (*Kinect 2*, *Azure Kinect*) constantly emit infrared light with modulated waves. They measure the time emitted light takes from the camera to the object and back by detecting the shifted phase of the returning light.
 * *Pattern Projection* (*Kinect 1*, *Intel RealSense*) project a known infrared pattern into the scene and compute depth based on the distortion of the pattern
-  
-[Comparison](https://www.dfki.de/fileadmin/user_upload/import/8767_wasenmuller2016comparison.pdf)
+
+(more information: [Comparison of Kinect 1 and Kinect 2 sensors](https://www.dfki.de/fileadmin/user_upload/import/8767_wasenmuller2016comparison.pdf))
 
 Usually, also *stereo-cameras* (e.g. *StereoLabs ZED 2*) can be used for 3d reconstruction. However, these are not suitable for Elastic Displays, as the tracked surface may not contain enough visual correspondence points (high contrast areas / edges, etc.) to reliably track the surface deformation of the Elastic Display.
 
-**Which camera do you use and why?**  
+**Which camera do you use and why?**
+
 For our purposes currently probably the Azure Kinect, as it has the highest resolution and accuracy (1-megapixel ToF imaging chip).
 
 **What data does the camera capture and what does the data stream it sends look like?**
@@ -37,6 +41,7 @@ For our purposes currently probably the Azure Kinect, as it has the highest reso
 We use a data stream consisting of the depth image (16-bit grayscale, big-endian encoded) and the RGB color image (mode-dependent, MJPEG, NV12, or YUY2).
 
 **Are there any other technologies for tracking surface deformation?**
+
 Touches could be tracked by electroconductive fabrics. However, this would not necessarily also track the surface deformation and these fabrics are difficult to produce, vulnerable to mechanical strain or less durable than normal fabric.
 
 By utilizing robotics, the touches and deformation could be tracked mechanically. the drawback of this approach is the high complexity of the robotics components.
