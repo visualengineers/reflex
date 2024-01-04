@@ -7,13 +7,6 @@ on:
       artifact_name:
         description: "name of the artifact that has been uploaded"
         value: ${{ jobs.test-library.outputs.artifact_name }}
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [ opened, reopened, edited, synchronize ]
-    branches:
-      - main
     # this workflow can be triggered manually
   workflow_dispatch:
 
