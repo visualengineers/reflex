@@ -5,13 +5,13 @@ on:
     branches:
       - main
   pull_request:
-    types: [ opened, reopened, edited ]
+    types: [ opened, reopened, edited, synchronize ]
     branches:
       - main
 jobs:
   build-emulator:
     runs-on: windows-latest
-    name: install and biuld
+    name: install and build
     steps:
       - name: checkout repo with submodules
         uses: actions/checkout@v3

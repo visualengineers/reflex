@@ -1,5 +1,5 @@
-﻿using System;
-using ReFlex.Core.Common.Components;
+﻿using ReFlex.Core.Common.Components;
+using Math = System.Math;
 
 namespace ReFlex.Core.Filtering.Components
 {

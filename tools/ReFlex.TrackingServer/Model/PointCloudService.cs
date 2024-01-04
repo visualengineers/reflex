@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Concurrent;
-using System.Linq;
 using System.Reactive.Linq;
 using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
@@ -32,7 +30,7 @@ namespace TrackingServer.Model {
             _pointCloudObservable = pointCloudObservable
                 .Sample(TimeSpan.FromMilliseconds(100)) 
                 .Select(evt => evt.EventArgs.AsArray())
-                .Select(points => points.Where(p => !(Math.Abs(p.X) < TOLERANCE && Math.Abs(p.Y) < TOLERANCE )).ToArray()) // && Math.Abs(p.Z) < TOLERANCE
+                .Select(points => points.Where(p => !(System.Math.Abs(p.X) < TOLERANCE && System.Math.Abs(p.Y) < TOLERANCE )).ToArray()) // && Math.Abs(p.Z) < TOLERANCE
                  .Select(array => 
                  {
                      if (array.Length <= shrunkSize) {

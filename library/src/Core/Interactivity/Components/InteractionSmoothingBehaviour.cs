@@ -5,6 +5,7 @@ using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Filtering.Components;
 using ReFlex.Core.Interactivity.Util;
+using Math = System.Math;
 
 namespace ReFlex.Core.Interactivity.Components
 {

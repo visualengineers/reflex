@@ -1,4 +1,5 @@
 ﻿using ReFlex.Core.Common.Components;
+using Math = System.Math;
 
 namespace PointCloud.Benchmark.Filter;
 

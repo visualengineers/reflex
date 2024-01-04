@@ -1,47 +1,48 @@
-name: ReFlex Library - Test
+name: ReFlex Library - Build & Test
 
 on: 
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [ opened, reopened, edited ]
-    branches:
-      - main
+  # make this workflow reusable
+  workflow_call:
+    outputs:
+      artifact_name:
+        description: "name of the artifact that has been uploaded"
+        value: ${{ jobs.test-library.outputs.artifact_name }}
+    # this workflow can be triggered manually
+  workflow_dispatch:
 
 jobs:
-  reflex:
+  build-library:
+    uses: ./.github/workflows/library-build.yml   
+  test-library:
     runs-on: windows-latest
-    name: build and test
+    needs: build-library
+    name: library
+    env:
+      artifact_name: .NET Test Report (ReFlex Library)
+    outputs:
+      artifact_name: ${{ env.artifact_name }}
     steps:
-      - name: checkout repo with submodules
-        uses: actions/checkout@v3
       - name: install .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.x'
-      - name: Restore dependencies (Library)
-        run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
-      - name: Restore dependencies (TrackingServer)
-        run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
-      - name: build ReFlex without external sensors
-        working-directory: ${{ github.workspace }}
-        run: dotnet build ReFlex.sln -c CI
+          dotnet-version: '7.x'      
+      - name: restore build artifacts
+        uses: actions/cache/restore@v3
+        id: cache-library-build
+        with:
+          path: ${{ needs.build-library.outputs.cache_path }}
+          key: ${{ needs.build-library.outputs.cache_key }} 
+      # needs to be dona AFTER restoring nuget packages due to changed manifest file
       - name: Install Required Tools
         run: |
-          dotnet new tool-manifest
-          dotnet tool install dotnet-reportgenerator-globaltool
-          dotnet tool install dotnet-coverage
+          dotnet new tool-manifest --force
+          dotnet tool install dotnet-reportgenerator-globaltool     
       - name: execute tests and with code coverage
-        run: dotnet coverage collect dotnet test --output ${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura
+        run: dotnet test --collect:"XPlat Code Coverage" --results-directory:${{ github.workspace }}/test/artifacts/coverage-net/cobertura/
       - name: generate report
-        run: dotnet reportgenerator -reports:${{ github.workspace }}/test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"${{ github.workspace }}/Test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"
+        run: dotnet reportgenerator -reports:"${{ github.workspace }}/test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"${{ github.workspace }}/test/artifacts/coverage-net/report" -reporttypes:"Html_Light;HtmlSummary;Cobertura;XML;XMLSummary;JsonSummary;MarkdownSummaryGithub;Badges" -title:"ReFlex - Library" -assemblyfilters:"+ReFlex.*;-*.Test"
       - name: Attach Report as Build Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: NUnit Test Report (ReFlex Library)
-          path: ${{ github.workspace }}/Test/artifacts/coverage-net/report 
-
-
-
-       
+          name: ${{ env.artifact_name }}
+          path: ${{ github.workspace }}/test/artifacts/coverage-net/report

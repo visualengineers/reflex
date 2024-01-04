@@ -106,7 +106,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build (Debug)",
-            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Debug/net6.0/ReFlex.TrackingServer.dll",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Debug/net7.0/ReFlex.TrackingServer.dll",
             "args": [],
             "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
             "stopAtEntry": false,
@@ -136,7 +136,37 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build (Release)",
-            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Release/net6.0/ReFlex.TrackingServer.dll",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Release/net7.0/ReFlex.TrackingServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "neverOpen",
+            "externalConsole": true,
+            "launchBrowser": {
+                "enabled": false,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "production", 
+                "Platform": "x64"
+            },
+        },
+        {
+            "name": "Server Backend - .NET Core (Debug ARM64)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build (Debug ARM64)",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/ARM64/Debug/net7.0/ReFlex.TrackingServer.dll",
             "args": [],
             "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
             "stopAtEntry": false,

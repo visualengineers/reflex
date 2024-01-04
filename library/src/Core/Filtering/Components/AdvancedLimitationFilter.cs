@@ -97,7 +97,7 @@ namespace ReFlex.Core.Filtering.Components
                     for (var y = 0; y < col.Length; y++)
                     {
                         var depth = col[y].Z;
-                        var isOnZeroPlane = Math.Abs(depth - _zeroPlaneValue) < _threshold;
+                        var isOnZeroPlane = System.Math.Abs(depth - _zeroPlaneValue) < _threshold;
                         _filterMask[x][y] = _filterMask[x][y] && isOnZeroPlane;
                     }
                 }

@@ -178,7 +178,9 @@ namespace ReFlex.Core.Tuio.Components
             var format = new BinaryFormatter();
             try
             {
+
                 format.Serialize(TcpClient.GetStream(), msg.Address.Value);
+
                 foreach (var arg in msg.Arguments)
                 {
                     format.Serialize(TcpClient.GetStream(), arg);

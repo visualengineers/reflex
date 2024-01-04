@@ -1,0 +1,1 @@
+dotnet reportgenerator -reports:"../test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"../test/artifacts/coverage-net/report" -reporttypes:"Html_Light;HtmlSummary;Cobertura;OpenCover;XML;XMLSummary;JsonSummary;MarkdownSummaryGithub;Badges" -title:"ReFlex - Library" -assemblyfilters:"+ReFlex.*;-*.Test" -historydir:../test/coverage-history/

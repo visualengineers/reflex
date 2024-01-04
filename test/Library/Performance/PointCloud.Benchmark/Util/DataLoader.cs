@@ -6,8 +6,8 @@ public class DataLoader
 {
     private static string[] FileNames = new[]
     {
-        "Resources\\4.csv",
-        "Resources\\5.csv"
+        @"Resources/4.csv",
+        @"Resources/5.csv"
     };
 
     public static Tuple<int, int, Point3[]> Load(int index = 1)

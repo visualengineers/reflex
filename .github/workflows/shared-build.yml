@@ -1,18 +1,20 @@
 name: Shared Types - Build
 
 on: 
+  # make this workflow reusable
+  workflow_call:
   push:
     branches:
       - main
   pull_request:
-    types: [ opened, reopened, edited ]
+    types: [ opened, reopened, edited, synchronize ]
     branches:
       - main
 
 jobs:
   build-shared-types:
     runs-on: windows-latest
-    name: install and biuld
+    name: build shared ts types
     steps:
       - name: checkout repo with submodules
         uses: actions/checkout@v3

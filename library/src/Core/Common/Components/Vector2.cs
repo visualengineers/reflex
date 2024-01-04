@@ -75,7 +75,7 @@ namespace ReFlex.Core.Common.Components
         /// <value>
         /// The length.
         /// </value>
-        public float Length => (float)Math.Sqrt(X * X + Y * Y);
+        public float Length => (float)System.Math.Sqrt(X * X + Y * Y);
 
         /// <summary>
         /// Gets the normalized copy.
