@@ -6,6 +6,9 @@ on:
   push:
     branches: 
       - pages
+      # this may be an issue, as it is not guaranteed that test reports are gernerated before this workflow runs 
+      # Therefore, this can cause an outdated version of test reports to be restored.
+      # current workaround: manual dispatch of pages-default after merging a PR
       - main
   
   # Allows you to run this workflow manually from the Actions tab
