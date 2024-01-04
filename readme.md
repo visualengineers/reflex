@@ -121,6 +121,14 @@ __[⬆ back to top](#table-of-contents)__
 
 * TODO: setup and document CI
 
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
 __[⬆ back to top](#table-of-contents)__
 
 ## Known issues
