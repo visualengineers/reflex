@@ -1,4 +1,4 @@
-name: Emulator - Build
+name: "ReFlex Emulator: Build"
 
 on: 
   push:

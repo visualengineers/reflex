@@ -162,11 +162,123 @@
             "content":
             [
                 {
-                    "name": "publications",
-                    "path": "/knowledge/",
-                    "file": "publications.html",
-                    "type": "page"
-                }
+                    "name": "Research",
+                    "type": "subcategory",
+                    "content": 
+                    [
+                        {
+                            "name": "Publications",
+                            "path": "/knowledge/",
+                            "file": "publications.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Best Practices",
+                    "type": "subcategory",
+                    "content": 
+                    [
+                        {
+                            "name": "Designing Application and Content",
+                            "path": "/knowledge/",
+                            "file": "application-content.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Design Prototyping",
+                            "path": "/knowledge/",
+                            "file": "design-prototyping.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Paper Prototyping",
+                            "path": "/knowledge/",
+                            "file": "paper-prototyping.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Stop Motion",
+                            "path": "/knowledge/",
+                            "file": "stop-motion.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Interviews",
+                    "type": "subcategory",
+                    "content": 
+                    [
+                        {
+                            "name": "Display Construction",
+                            "path": "/knowledge/interviews/",
+                            "file": "display-construction.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Tracking",
+                            "path": "/knowledge/interviews/",
+                            "file": "tracking.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Interaction Design",
+                            "path": "/knowledge/interviews/",
+                            "file": "interaction-design.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Workshops",
+                            "path": "/knowledge/interviews/",
+                            "file": "workshops.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Terms",
+                    "type": "subcategory",
+                    "content": 
+                    [
+                        {
+                            "name": "Actuated Display",
+                            "path": "/knowledge/terms/",
+                            "file": "actuated-display.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Elastic Display",
+                            "path": "/knowledge/terms/",
+                            "file": "elastic-display.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Flexible Display",
+                            "path": "/knowledge/terms/",
+                            "file": "flexible-display.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Organic User Interface",
+                            "path": "/knowledge/terms/",
+                            "file": "organic-user-interface.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Shape-Changing Interface",
+                            "path": "/knowledge/terms/",
+                            "file": "shape-changing-interface.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Tangible User Interface",
+                            "path": "/knowledge/terms/",
+                            "file": "tangible-user-interface.html",
+                            "type": "page"
+                        }
+                    ]
+                },
             ]
         }
     ]

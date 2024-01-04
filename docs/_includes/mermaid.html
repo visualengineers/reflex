@@ -1,0 +1,18 @@
+{%- if content contains 'mermaid' -%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>
+<script type="module">
+
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    
+const config = {
+    startOnLoad:true,
+    theme: 'light',
+    flowchart: {
+        useMaxWidth:false,
+        htmlLabels:true
+        }
+};
+mermaid.initialize(config);
+mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+{% endif %}

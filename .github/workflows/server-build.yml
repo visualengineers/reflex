@@ -1,4 +1,4 @@
-name: ReFlex.TrackingServer (Angular) - Build
+name: "ReFlex Server: Build"
 
 on: 
   push:

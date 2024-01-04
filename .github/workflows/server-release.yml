@@ -1,6 +1,6 @@
 # This workflow will build the TrackingServer Electron.NET application for Windows when a release is published
 
-name: Release - Build ReFlex.TrackingServer Electron.NET (Win)
+name: "ReFlex Server: Publish (Win)"
 
 on:
   release:

@@ -1,0 +1,46 @@
+.interview {
+    &__header {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        grid-column-gap: 3rem;
+        align-items: center;
+        justify-items: end;
+        justify-content: center;
+        align-content: center;
+
+        & img {
+            width: 100%;
+            max-height: max-content;
+        }
+    }
+
+    &__title {
+
+        margin: 9rem 6rem 3rem 9rem;
+        font-style: italic;
+        text-transform: none;
+        font-size: $font-size-huge;
+        text-indent: -$font-size-huge;
+
+        &::before {            
+            content: "\201d";
+            transform: translate(0rem, -2rem);
+        }
+
+        &::after {
+            content: "\201c";
+            transform: translate(4rem, 2rem);
+        }
+
+        &::before,
+        &::after {
+            font-size: 7.2rem;
+            color: $color-grey-very-light;
+            position: absolute;
+        }
+    }
+
+    &__teaser {
+        margin-bottom: 3rem;
+    }
+}

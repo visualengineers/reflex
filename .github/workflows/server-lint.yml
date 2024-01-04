@@ -1,4 +1,4 @@
-name: ReFlex.TrackingServer (Angular) - Lint
+name: "ReFlex Server: Lint"
 
 on: 
   push:
