@@ -41,6 +41,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/docs/test
           key: test-reports
+          enableCrossOsArchive: true
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:

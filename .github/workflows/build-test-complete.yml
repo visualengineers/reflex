@@ -56,3 +56,4 @@ jobs:
         with:
           path: ${{ github.workspace }}/docs/test
           key: test-reports
+          enableCrossOsArchive: true
