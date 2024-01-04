@@ -38,7 +38,7 @@ Software Development SDK for __Elastic Displays__ as open source mono repo
 | ---------- | --------------------------------------------------------------------------------------------- |
 | `apps`     | Applications using the `ReFlex` framework                                                     |
 | `design`   | Design / Graphic source files                                                                 |
-| `docs`   | documentation for github pages                                                                 |
+| `docs`     | documentation for github pages                                                                |
 | `examples` | Templates and Plugins (`Angular`, `Vue.js`, `React`, `Unreal Engine 5`, `Unity`. `.NET`)      |
 | `external` | Place for external libraries, if needed (see [External Dependencies](#external-dependencies)) |
 | `library`  | `ReFlex` .NET library                                                                         |
@@ -119,14 +119,56 @@ __[⬆ back to top](#table-of-contents)__
 
 ## CI
 
-* TODO: setup and document CI
+| File                      | Name                           | Description                                                | PR  | Push | Release | reusable | manual |
+| ------------------------- | ------------------------------ | ---------------------------------------------------------- | --- | ---- | ------- | -------- | ------ |
+| `build-test-complete.yml` | ReFlex: Build & Test           | Build and test Library and Server, and generate reports    | X   | X    |         |          | X      |
+| `cache-cleanup.yml`       | Cleanup PR Caches              | Cleanup caches created for PR when PR is closed            | X   |      |         |          |        |
+| `emulator-build.yml`      | ReFlex Emulator: Build         | Build Emulator App                                         | X   | X    |         |          |        |
+| `emulator-release.yml`    | ReFlex Emulator: Publish (Win) | Create Emulator Electron App as release                    |     |      | X       |          |        |
+| `library-build.yml`       | ReFlex Library: Build          | Build Library (.NET)                                       |     |      |         | X        |      |
+| `library-test.yml`        | ReFlex Library: Test           | Build and Test Library (.NET)                              |     |      |         | X        |       |
+| `pages-deploy.yml`        | Pages: Deploy                  | Deploy Documentation with test reports restored from Cache |     | X    |         |          | X      |
+| `server-build.yml`        | ReFlex Server: Build           | Build Server (Angular)                                     | X   | X    |         |          |       |
+| `server-lint.yml`         | ReFlex Server: Lint            | Run Linter for Server (Angular)                            | X   | X    |         |          |       |
+| `server-release.yml`      | ReFlex Server: Publish (Win)   | Create Server Electron App as release                      |     |      | X       |          |        |
+| `server-test.yml`         | ReFlex Server: Test            | Test Server (Angular)                                      | X   | X    |         |          |       |
+| `shared-test.yml`         | ReFlex Shared Types: Build     | Build Shared Types Lib (Typescript)                        | X   | X    |         | X        |        |
+
+### Pull Request (main)
+
+Workflows to be run:
+
+* [ReFlex: Build & Test](#reflex-build--test-build-test-completeyml)
+
+#### ReFlex: Build & Test (build-test-complete.yml)
 
 ```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+
+flowchart TD
+    A(["`ReFlex Library: Build
+        *library-build.yml*`"]) 
+        -. build-library .-> 
+    B(["`ReFlex Library: Test
+        *library-test.yml*`"])
+
+    B(["`ReFlex Library: Test
+        *library-test.yml*`"])
+        -. generate_test-report_library .->
+    D(["`ReFlex: Build & Test
+        *build-test-complete.yml*`"])
+
+    C(["`ReFlex Server: Test
+        *server-test.yml*`"])
+        -. generate_test-report_server .->
+    D(["`ReFlex: Build & Test
+        *build-test-complete.yml*`"])
+
+    D(["`ReFlex: Build & Test
+        *build-test-complete.yml*`"])
+        -. collect-cache_data .->
+    E(["`ReFlex: Build & Test
+        *build-test-complete.yml*`"])
 ```
 
 __[⬆ back to top](#table-of-contents)__
