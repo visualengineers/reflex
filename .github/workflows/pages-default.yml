@@ -1,11 +1,13 @@
 # Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy GitHub pages with test reports
+name: Deploy GitHub pages only
 
 on:
   # Runs on pushes targeting the default branch
+   # Runs on pushes targeting the default branch
   push:
-    branches: ["main", "pages"]
-
+    branches: 
+      - pages
+  
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -22,16 +24,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # build library, generate test report and upload as artifact
-  generate_test-report_library:
-    uses: ./.github/workflows/library-test.yml
-  # build server, generate test report and upload as artifact
-  generate_test-report_server:
-    uses: ./.github/workflows/server-test.yml      
   # Build job
   build-pages:
     runs-on: ubuntu-latest
-    needs: [ generate_test-report_library, generate_test-report_server ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,22 +35,12 @@ jobs:
       - name: Copy Existing Files
         working-directory: ./
         run: bash ${{ github.workspace }}/scripts/copy_docs.sh 
-      - name: Create subfolder for library report
-        shell: bash
-        run: mkdir -p docs/test/library/report 
-      - name: Create subfolder for Server report
-        shell: bash
-        run: mkdir -p docs/test/server/report          
-      - name: Download library report        
-        uses: actions/download-artifact@v3        
+      - name: restore test reports cache
+        uses: actions/cache/restore@v3
+        id: cache-reports
         with:
-          name: ${{ needs.generate_test-report_library.outputs.artifact_name }}
-          path: ${{ github.workspace }}/docs/test/library/report/
-      - name: Download server report        
-        uses: actions/download-artifact@v3        
-        with:
-          name: ${{ needs.generate_test-report_server.outputs.artifact_name }}
-          path: ${{ github.workspace }}/docs/test/server/report/         
+          path: ${{ github.workspace }}/docs/test
+          key: test-reports
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
