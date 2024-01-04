@@ -1,4 +1,4 @@
-name: ReFlex Library - Build & Test
+name: "ReFlex Library: Test"
 
 on: 
   # make this workflow reusable
@@ -7,8 +7,6 @@ on:
       artifact_name:
         description: "name of the artifact that has been uploaded"
         value: ${{ jobs.test-library.outputs.artifact_name }}
-    # this workflow can be triggered manually
-  workflow_dispatch:
 
 jobs:
   build-library:

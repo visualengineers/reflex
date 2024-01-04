@@ -1,6 +1,6 @@
 # This workflow will build the Emulator Electron.NET application for Windows when a release is published
 
-name: Release - Build ReFlex.Emulator Electron.NET (Win)
+name: "ReFlex Emulator: Publish (Win)"
 
 on:
   release:

@@ -1,4 +1,4 @@
-name: Shared Types - Build
+name: "ReFlex Shared Types: Build"
 
 on: 
   # make this workflow reusable

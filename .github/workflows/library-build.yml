@@ -1,4 +1,4 @@
-name: ReFlex Library - Build
+name: "ReFlex Library: Build"
 
 env: 
     current_cache_key: library-${{ github.sha }}
@@ -13,9 +13,7 @@ on:
             value: ${{ jobs.build-library.outputs.cache_key }}
         cache_path:
             description: "Path for cache restore"
-            value: ${{ jobs.build-library.outputs.cache_path }}
-  # this workflow can be triggered manually
-  workflow_dispatch: 
+            value: ${{ jobs.build-library.outputs.cache_path }} 
 
 jobs:
   build-library:

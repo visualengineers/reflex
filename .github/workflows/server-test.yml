@@ -1,4 +1,4 @@
-name: ReFlex.TrackingServer (Angular) - Test
+name: "ReFlex Server: Test"
 
 on: 
   # make this workflow reusable
