@@ -159,8 +159,6 @@ Composite workflow that:
 Prerequisite step for `Pages: Deploy`
 
 ```mermaid
-%%{init: {"flowchart": {"htmlLabels": false}} }%%
-
 flowchart TD
     A(["`ReFlex Library: Build
         *library-build.yml*`"]) 
