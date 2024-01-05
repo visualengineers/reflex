@@ -86,48 +86,79 @@
                             "file": "layers.html",
                             "type": "page"
                         },
+                    ]
+                },
+                {
+                    "name": "Templates",
+                    "type": "subcategory",
+                    "content": 
+                    [
                         {
-                            "name": "Templates",
-                            "type": "subcategory",
-                            "content": 
-                            [
-                                {
-                                    "name": "Plain HTML",
-                                    "path": "/software/templates/",
-                                    "file": "plain_html.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Angular",
-                                    "path": "/software/templates/",
-                                    "file": "angular.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "React",
-                                    "path": "/software/templates/",
-                                    "file": "react.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Vue.js",
-                                    "path": "/software/templates/",
-                                    "file": "vue.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Unity",
-                                    "path": "/software/templates/",
-                                    "file": "unity.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Unreal Engine 4/5",
-                                    "path": "/software/templates/",
-                                    "file": "ue.html",
-                                    "type": "page"
-                                }
-                            ]
+                            "name": "Plain HTML",
+                            "path": "/software/templates/",
+                            "file": "plain_html.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Angular",
+                            "path": "/software/templates/",
+                            "file": "angular.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "React",
+                            "path": "/software/templates/",
+                            "file": "react.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Vue.js",
+                            "path": "/software/templates/",
+                            "file": "vue.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Unity",
+                            "path": "/software/templates/",
+                            "file": "unity.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Unreal Engine 4/5",
+                            "path": "/software/templates/",
+                            "file": "ue.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Design",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Style Guide",
+                            "path": "/design/",
+                            "file": "style-guide.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Components",
+                            "path": "/design/",
+                            "file": "components.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Icons",
+                            "path": "/design/",
+                            "file": "icons.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Design Resources",
+                            "path": "/design/",
+                            "file": "resources.html",
+                            "type": "page"
                         }
                     ]
                 }
@@ -153,40 +184,7 @@
                     "type": "page"
                 }
             ]
-        },
-        {
-            "name": "Design",
-            "path": "/design/",
-            "file": "style-guide.html",
-            "type": "category",
-            "content":
-            [
-                {
-                    "name": "Style Guide",
-                    "path": "/design/",
-                    "file": "style-guide.html",
-                    "type": "page"
-                },
-                {
-                    "name": "Components",
-                    "path": "/design/",
-                    "file": "components.html",
-                    "type": "page"
-                },
-                {
-                    "name": "Icons",
-                    "path": "/design/",
-                    "file": "icons.html",
-                    "type": "page"
-                },
-                {
-                    "name": "Design Resources",
-                    "path": "/design/",
-                    "file": "resources.html",
-                    "type": "page"
-                }
-            ]
-        },
+        },        
         {
             "name": "Knowledge Base",
             "path": "/knowledge/",
