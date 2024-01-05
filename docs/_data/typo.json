@@ -1,0 +1,70 @@
+{
+    "typoStyles": [        
+        {
+            "name": "Button_Text",
+            "font": "Barlow Semi Condensed",
+            "weight": 600,
+            "size": 1.4
+        },
+        {
+            "name": "Form_Dropdown",
+            "font": "Barlow",
+            "weight": 700,
+            "size": 1.2
+        },
+        {
+            "name": "Form_GroupLabel",
+            "font": "Barlow",
+            "weight": 700,
+            "size": 1.6
+        },
+        {
+            "name": "Form_Input",
+            "font": "Barlow Condensed",
+            "weight": 400,
+            "size": 1.2
+        },
+        {
+            "name": "Form_Label",
+            "font": "Barlow",
+            "weight": 700,
+            "size": 1.4
+        },
+        {
+            "name": "Form_Label-Narrow",
+            "font": "Barlow Condensed",
+            "weight": 700,
+            "size": 1.4
+        },
+        {
+            "name": "Form_Unit",
+            "font": "Barlow Condensed",
+            "weight": 500,
+            "size": 1.2
+        },
+        {
+            "name": "Text",
+            "font": "Barlow",
+            "weight": 700,
+            "size": 1.2
+        },
+        {
+            "name": "Title",
+            "font": "Barlow",
+            "weight": 700,
+            "size": 1.2
+        },        
+        {
+            "name": "Title_Label",
+            "font": "Barlow",
+            "weight": 400,
+            "size": 1.4
+        },
+        {
+            "name": "Toggle",
+            "font": "Barlow",
+            "weight": 400,
+            "size": 1.2
+        }
+    ]
+}

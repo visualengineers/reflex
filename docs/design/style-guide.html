@@ -1,0 +1,56 @@
+---
+title: Style Guide
+---
+
+<h1>{{page.title}}</h1>
+
+<h2>Colors</h2>
+
+<div class="style-guide__color-container">
+    {% for class in site.data.colors.classes %}
+    <div class="style-guide__color-class">
+        <h3>{{ class.name }}</h3>
+        <div class="style-guide__color-class--container">
+            {% for color in class.colors %}
+            <div class="style-guide__color">
+                <div class="style-guide__color--field">
+                    <div style="background-color: {{ color.code }}; opacity: {{ color.opacity }}"></div>                    
+                </div>
+                <div class="style-guide__color--description">
+                    <div class="style-guide__color--name">{{ color.name }}</div>
+                    <div class="style-guide__color--code">{{ color.code }}, Alpha: {{ color.opacity | times: 100 | round }}%</div>
+                </div>
+                
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Text Styles</h2>
+
+<div class="style-guide__text-container">
+    {% for style in site.data.typo.typoStyles %}
+    <div class="style-guide__text-item">
+       <div class="style-guide__text-preview">
+            <p style="font-family: '{{style.font}}'; font-size: {{ style.size }}rem; font-weight: {{style.weight}};">
+                Sample Text
+            </p>
+       </div>
+       <div class="style-guide__text-description">
+            <h3>{{ style.name }}</h3>
+            <div class="style-guide__text-font">
+                {{ style.font }}
+            </div>
+            <div class="style-guide__text-props">
+                {{ style.size | times:10 | round }}px | {{ style.weight }}
+            </div>
+       </div>
+
+    </div>
+    
+
+    {% endfor %}
+</div>
+

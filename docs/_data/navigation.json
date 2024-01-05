@@ -155,6 +155,39 @@
             ]
         },
         {
+            "name": "Design",
+            "path": "/design/",
+            "file": "style-guide.html",
+            "type": "category",
+            "content":
+            [
+                {
+                    "name": "Style Guide",
+                    "path": "/design/",
+                    "file": "style-guide.html",
+                    "type": "page"
+                },
+                {
+                    "name": "Components",
+                    "path": "/design/",
+                    "file": "components.html",
+                    "type": "page"
+                },
+                {
+                    "name": "Icons",
+                    "path": "/design/",
+                    "file": "icons.html",
+                    "type": "page"
+                },
+                {
+                    "name": "Design Resources",
+                    "path": "/design/",
+                    "file": "resources.html",
+                    "type": "page"
+                }
+            ]
+        },
+        {
             "name": "Knowledge Base",
             "path": "/knowledge/",
             "file": "publications.html",
