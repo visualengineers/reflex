@@ -26,7 +26,7 @@ title: "FlexiWall: Overview"
                           <p class="timeline__element--description">
                             {{ element.description }}
                           {% if element.link and element.link != nil and element.link != '' %}
-                            | <a title="link to external resopurce for {{ element.id }}" href="{{ element.link }}" target="_blank">Link</a>
+                            | <a title="link to external resource for {{ element.id }}" href="{{ element.link }}" target="_blank">Link</a>
                           {% endif %}
                           </p>
                     </div>
