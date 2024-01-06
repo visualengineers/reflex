@@ -32,9 +32,12 @@
         &:hover {
             color: $color-primary-dark;
             border-bottom: 1px dotted $color-primary;
+
+            & img {
+                transform: scale(1.05);
+                transition: transform 0.2s ease-in-out;
+            }
         }
-
-
     }
 
     & img {

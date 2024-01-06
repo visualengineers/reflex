@@ -5,6 +5,14 @@
             "path": "/software/repo/",
             "file": "reflex.html",
             "type": "category",
+            "description": {
+                "p": [
+                    "This section contains information about the ReFlex software framework. This includes the structure of the github repository, core components, and a short developer documentation.",
+                    "Furthermore, the development tools, application templates for several client technologies and example applications are described."
+                ],
+                "img": "/assets/img/overview/software.png",
+                "alt": "Title Image: Software"
+            },
             "content":
             [
                 {
@@ -85,7 +93,7 @@
                             "path": "/software/apps/",
                             "file": "layers.html",
                             "type": "page"
-                        },
+                        }
                     ]
                 },
                 {
@@ -169,6 +177,13 @@
             "path": "/hardware/",
             "file": "construction_manual.html",
             "type": "category",
+            "description": {
+                "p": [
+                    "This section contains information about a basic tabletop setup using consumer hardware. It consists of a construction manual for the frame and projector adjustment and the description of the hardware components as well as lessons learned from several iterations of prototypes."
+                ],
+                "img": "/assets/img/overview/hardware.jpg",
+                "alt": "Title Image: Hardware"
+            },
             "content":
             [
                 {
@@ -190,6 +205,13 @@
             "path": "/knowledge/",
             "file": "publications.html",
             "type": "category",
+            "description": {
+                "p": [
+                    "This section contains the scientific foundation for the term Elastic Displays and related technologies. There are also descriptions of past prototypes and publications."
+                ],
+                "img": "/assets/img/overview/knowledge.png",
+                "alt": "Title Image: Knowledge Base"
+            },
             "content":
             [
                 {
