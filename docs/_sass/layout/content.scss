@@ -38,6 +38,10 @@
                 transition: transform 0.2s ease-in-out;
             }
         }
+
+        &:has(img):hover {
+            border: none;
+        }
     }
 
     & img {
