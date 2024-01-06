@@ -45,19 +45,34 @@
     }
 
     & img {
-        margin: 1rem 0;
+        margin: 1rem auto;
         max-height: 40vh;
         max-width: 100%;
 
         box-shadow: 0 0 15px 3px $color-shadow-default;
         padding: 1rem;
         background-color: $color-white;
+        display: flex;
     }
 
     & img[src$="#build-status"] {
         margin: 1rem;
         border: none;
         padding: 0;
+        display: inline-block;
+    }
+
+    & .media-wrapper {
+        display: flex;
+        justify-content: center;
+        height: min-content;
+        align-items: stretch;
+        padding: 1rem 1rem 3rem 1rem;
+
+        & iframe {
+            width: 40vw;
+            height: 30vh;
+        }
     }
 }
 

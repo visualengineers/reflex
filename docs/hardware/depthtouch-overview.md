@@ -6,6 +6,8 @@ title: "DepthTouch: Overview"
 
 # {{ page.title }}
 
+<img src="{{ site.baseurl}}/assets/img/hardware/depthtouch_title.jpg" class="content__title-image" alt="title image showing DepthTouch prototype"/>
+
 ## History
 
  <div class="timeline">      
@@ -54,3 +56,5 @@ The first prototypes used a mirror for extending the distance between projector 
 ![DepthTouch - construction with mirror]({{ site.baseurl }}/assets/img/hardware/Aufbau_DepthTouch.png)
 
 By using short throw projectors, the tabletop can be constructed without the need for a mirror, which makes adjusting the optical system rather easy and assembling the system is also less time consuming.
+
+![DepthTouch - construction with mirror]({{ site.baseurl }}/assets/img/hardware/Tisch2.png)
