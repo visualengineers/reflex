@@ -175,7 +175,7 @@
         {
             "name": "Hardware",
             "path": "/hardware/",
-            "file": "construction_manual.html",
+            "file": "depthtouch-overview.html",
             "type": "category",
             "description": {
                 "p": [
@@ -184,22 +184,54 @@
                 "img": "/assets/img/overview/hardware.jpg",
                 "alt": "Title Image: Hardware"
             },
-            "content":
+            "content": 
             [
                 {
-                    "name": "Construction Manual",
-                    "path": "/hardware/",
-                    "file": "construction_manual.html",
-                    "type": "page"
+                    "name": "Tabletop (DepthTouch)",
+                    "type": "subcategory",
+                    "content": 
+                    [
+                        {
+                            "name": "Overview",
+                            "path": "/hardware/",
+                            "file": "depthtouch-overview.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Construction Manual",
+                            "path": "/hardware/",
+                            "file": "construction_manual.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Technical Specifications",
+                            "path": "/hardware/",
+                            "file": "depthtouch-specs.html",
+                            "type": "page"
+                        }
+                    ]
                 },
                 {
-                    "name": "Technical Specifications",
-                    "path": "/hardware/",
-                    "file": "specs.html",
-                    "type": "page"
+                    "name": "Wall Display (FlexiWall)",
+                    "type": "subcategory",
+                    "content": 
+                    [
+                        {
+                            "name": "Overview",
+                            "path": "/hardware/",
+                            "file": "flexiwall-overview.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Technical Specifications",
+                            "path": "/hardware/",
+                            "file": "flexiwall-specs.html",
+                            "type": "page"
+                        }
+                    ]
                 }
             ]
-        },        
+        },
         {
             "name": "Knowledge Base",
             "path": "/knowledge/",

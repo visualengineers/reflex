@@ -13,6 +13,43 @@
         height:100%;
         min-height:100%;
     }
+
+    &__element {
+      &--detail {
+        margin-top: 4rem;
+      }
+
+        
+      &--title {
+        font-family: $font-primary;
+        font-weight: $font-weight-bold;
+      
+        color: $color-primary;
+      
+        font-size: $font-size-medium;
+      }
+
+      &--type {
+
+        font-family: $font-primary;
+        font-weight: $font-weight-default;
+        font-style: italic;
+        
+        color: $color-grey-dark;
+        
+        font-size: $font-size-small;
+      }
+    
+      &--description {
+          font-family: $font-secondary;
+          font-weight: $font-weight-default;
+        
+          color: $color-grey-dark;
+        
+          font-size: $font-size-small;
+        }
+      }
+    
     
     li:last-child &__line {
       display: none;
