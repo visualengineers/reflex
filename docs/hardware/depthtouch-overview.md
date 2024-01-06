@@ -70,3 +70,109 @@ By using short throw projectors, the tabletop can be constructed without the nee
     <img src="{{ site.baseurl }}/assets/img/hardware/Tisch2.png" alt="DepthTouch - Elastic Display as TableTop"/>
   </div>
 </div>
+
+## Attachment of the fabric
+
+There are different options for attaching the fabric to the frame, however, there are several requirements to meet:
+
+1. The fabric needs to be exchanged / washed regularly. Therefore, removing the fabric from the frame should at least not damage the fabric. In the best case changing should be easy and fast to achieve.
+2. The mounted fabric should have an equal surface tension
+3. Deforming the screen exerts a lot of force to the fabric. Mounting should be stable enough so that the fabric does not get lose.
+
+During the last years, several option hav been explored:
+
+### Velcro straps
+
+Velcro is sewed onto the borders of the fabric and glued onto the aluminium frame.
+
+<div class="pro-contra__container">
+  <div class="pro-contra__item" markdown="1">
+  __Advantages__
+
+  * Changing the fabric is easy
+  * Velcro can be washed, too
+  * with strong velcro, the fabric does not get loose
+
+  </div>
+  <div class="pro-contra__item" markdown="1">
+
+  __Disadvantages__
+
+  * Velcro needs to be sewed onto the fabric: exact dimensions necessary, with very stretchy lycra, it is difficult to create an equal surface tension
+  
+  </div>
+</div>
+
+### Clipping into metal frame using rubber coverings
+
+There are rubber coverings that fit into the notch of the aluminium profiles. The fabric can be can be clipped in between.
+
+<div class="pro-contra__container">
+  <div class="pro-contra__item" markdown="1">
+
+  __Advantages__
+
+  * Changing the fabric is rather easy
+  * surface tension can be adjusted to individual needs
+  * the fabric does not get loose
+
+  </div>
+  <div class="pro-contra__item" markdown="1">
+
+  __Disadvantages__
+
+  * low durability: the clipping does mechanically damage the fabric, therefore this option means, that the fabric needs to renewed from time to time
+
+  </div>
+</div>
+
+### Clipping with an extra frame
+
+An additional frame is mounted on the table, and fixed with screws on the table sides. Additionally, there are rubber coverings on thew parts of the table and the additional frame, that are positioned on top of each other. The fabric is attached between these two rubber covers.
+
+<div class="pro-contra__container">
+  <div class="pro-contra__item" markdown="1">
+  __Advantages__
+
+  * changing the fabric with moderate effort
+  * surface tension can be adjusted to individual needs
+  * the fabric does get loose often, but it can be readjusted quite easy
+  * less mechanical stress on the fabric compared to the previous approach
+
+  </div>
+  <div class="pro-contra__item" markdown="1">
+
+  __Disadvantages__
+
+  * higher build complexity - more complex and heavier construction
+
+  </div>
+</div>
+
+### Springs
+
+Comparable to the velcro straps, but this time, springs are used to connect the fabric with the frame
+
+<div class="pro-contra__container">
+  <div class="pro-contra__item" markdown="1">
+  __Advantages__
+
+  * changing the fabric is doable (but takes time)
+  * the fabric does not get loose
+  * dynamic attachment of the fabric - interaction towards the borders feels more natural, better distribution of haptioc 
+    feedback over the screen area
+
+  </div>
+  <div class="pro-contra__item" markdown="1">
+
+  __Disadvantages__
+
+  * same as with velcro: sewing the borders is not trivial
+  * higher build complexity for the springs (one-time-effort as the can remain in the frame)
+  * spring attachment by piercings in the fabric - damage which may lead to tears in the fabric
+  * differences of the surface tension between the springs (can be compensated with more springs)
+
+  </div>
+</div>
+
+![Lycra Fabric attachment using springs]({{ site.baseurl }}/assets/img/hardware/fabric_2.jpg)

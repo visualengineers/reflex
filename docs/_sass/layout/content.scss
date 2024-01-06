@@ -112,3 +112,29 @@
         height: auto;
     }
 }
+
+.pro-contra {
+
+    &__container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        column-gap: 3rem;
+
+        & ul {
+            list-style: none;
+        }
+    }
+
+    &__item:nth-child(odd) li::before {
+        content: "+";
+        margin-left: -1rem;
+        margin-right: .5rem;
+    }
+
+    &__item:nth-child(even) li::before {
+        content: "-";
+        margin-left: -1rem;
+        margin-right: .5rem;
+    }
+}
