@@ -31,7 +31,7 @@ The most important specs are *Throw Ratio*, *Minimum Projection Distance* and *N
 
 * there are also Ultra-Short throw projectors available, which have an even better throw ratio and also offer a higher resolution. However, the issue is that these projectors have a very shallow range in which the projection is focused (often the projected image is not even completely in focus over the whole projection area but starts to soften in direction of the corners ). This is a severe issue when deforming the surface, as the deformed parts quickly move out of focus and content becomes blurry and unreadable.
 * the mentioned projector is discontinued; and a newer model is available. Although we do not have practical experience with the model (yet),  the tech specs of the [Optoma GT2000HDR](https://www.optomaeurope.com/product/gt2000hdr) imply that it may be suitable for building the Elastic Display tabletop. Most of the relevant spec are equal or even better that the reference model.
-* another alternative with similar specs, but featuring native 4k resolution is the [Optoma UHZ35ST](https://www.optomaeurope.com/product/uhz35st). The question is whether the 4K resolution is really visible, as the fabric has usually a visible structure which limits the visibility of fine details of the projection.
+* another alternative with similar specs, but featuring native 4k resolution is the [Optoma UHZ35ST](https://www.optomaeurope.com/product/uhz35st). The question is whether the 4K resolution make a noticeable difference, as the fabric has usually a visible structure which limits the visibility of fine details of the projection.
 
 ## Depth Sensor
 
