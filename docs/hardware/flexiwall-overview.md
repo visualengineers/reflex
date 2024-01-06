@@ -51,7 +51,14 @@ Finally, a depth camera which is mounted next to the projector is tracking the d
 
 The whole system can be built using consumer hardware and inexpensive aluminium profiles. Again, due to the size of the installation, the aluminium frame is a little more expensive and needs some additional material for stabilization. Our approach was to build a stable shelve for the projector and the depth sensor and connect this with a lightweight frame for the display using two aluminum bars on the top.
 
-![FlexiWall - construction]({{ site.baseurl }}/assets/img/hardware/flexiwall_interaktion.png)
+<div class="image-container">
+  <div style="flex:calc(1273/1094);">
+    <img src="{{ site.baseurl }}/assets/img/hardware/flexiwall_interaktion.png" alt="FlexiWall - construction"/>
+  </div>
+  <div style="flex:calc(2000/1334);">
+    <img src="{{ site.baseurl }}/assets/img/hardware/flexiwall.jpg" alt="FlexiWall - Elastic Display as large Display Wall"/>
+  </div>
+</div>
 
 Using a projector with a large throw ratio is recommended to minimize the size of the area behind the screen. The following image shows the floor plan for our installation using the hardware described in the [technical specification]({{ site.baseurl}}/hardware/flexiwall-specs).
 
