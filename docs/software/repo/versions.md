@@ -6,6 +6,8 @@ title: ReFlex Version history
 
 # {{ page.title }}
 
+<img src="{{ site.baseurl}}/assets/img/titles/deep.jpg" class="content__title-image" alt="title image showing FlexiWall prototype"/>
+
  <div class="timeline">      
     <ul class="timeline__year--list">
         {% for v in site.data.version-history.versions %}
