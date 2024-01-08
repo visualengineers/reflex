@@ -1,6 +1,6 @@
 ---
 
-title: "DepthTouch: Technical Specifications"
+title: "FlexiWall: Technical Specifications"
 
 ---
 
@@ -8,9 +8,7 @@ title: "DepthTouch: Technical Specifications"
 
 ## Projector
 
-![Optoma GT 1070Xe]({{ site.baseurl }}/assets/img/hardware/optoma_gt1070xe.jpg)
-
-**Optoma GT 1070Xe**
+**Acer XYZ**
 
 cf. [Product page](https://www.optoma.de/product/gt1070xe)
 
@@ -25,13 +23,7 @@ cf. [Product page](https://www.optoma.de/product/gt1070xe)
 | Minimum Projection Distance | 0.5m        | also important for height of the table                                                                                                                                      |
 | Native Offset               | 116%        | this means image is projected "above" the projector, which allows that the projector "looks outside" the table and therefore the height of the table can be reduced further |
 
-The most important specs are *Throw Ratio*, *Minimum Projection Distance* and *Native Offset*, which in this combination allow the projection without utilizing mirrors to extend projection distance.
-
-### remarks
-
-* there are also Ultra-Short throw projectors available, which have an even better throw ratio and also offer a higher resolution. However, the issue is that these projectors have a very shallow range in which the projection is focused (often the projected image is not even completely in focus over the whole projection area but starts to soften in direction of the corners ). This is a severe issue when deforming the surface, as the deformed parts quickly move out of focus and content becomes blurry and unreadable.
-* the mentioned projector is discontinued; and a newer model is available. Although we do not have practical experience with the model (yet),  the tech specs of the [Optoma GT2000HDR](https://www.optomaeurope.com/product/gt2000hdr) imply that it may be suitable for building the Elastic Display tabletop. Most of the relevant spec are equal or even better that the reference model.
-* another alternative with similar specs, but featuring native 4k resolution is the [Optoma UHZ35ST](https://www.optomaeurope.com/product/uhz35st). The question is whether the 4K resolution make a noticeable difference, as the fabric has usually a visible structure which limits the visibility of fine details of the projection.
+The space between elastic projection area an projector is large enough, therefore, *Throw Ratio* is less important than in the [Tabletop setup]({{ site.baseurl }}/hardware/depthtouch-specs). More important is the *Brightness*, as in our experience, the display wall is more often used in brighter environments (or the large installation cannot be shaded from sunlight as easy as the smaller tabletop). However, using a projector with a large throw ratio can minimize the size of the area behind the screen (The depth sensor's field of view usually is larger than the projection frustum).
 
 ## Depth Sensor
 
@@ -58,22 +50,33 @@ cf. [Product page](https://www.microsoft.com/en-us/d/azure-kinect-dk/8pp5vxmd9nh
 
 ## Fabric
 
-![Lycra Fabric]({{ site.baseurl }}/assets/img/hardware/fabric.jpg)
+<div class="image-container">
+  <div style="flex:calc(2000/1810);">
+    <img src="{{ site.baseurl }}/assets/img/hardware/flexiwall_fabric.jpg" alt="FlexiWall - fabric"/>
+  </div>
+  <div style="flex:calc(2000/1355);">
+    <img src="{{ site.baseurl }}/assets/img/hardware/flexiwall_fabric-2.jpg" alt="FlexiWall - fabric"/>
+  </div>
+</div>
 
 * Lycra fabric (8 - 20% Elastan)
 * Density: 200 - 300g/qm
 * white color
 
+The core issue with our setup is the size of the fabric, as most shops only offer panels of 1.5m width. As the projection area has a height of about 1.5m, the technical setup could be extended with additional horizontal cross braces on which the panel can attached.
+
 ## Dimensions
 
-![Dimensions of the tabletop]({{site.baseurl}}/assets/img/hardware/Tisch_1.png)
+The following image shows the top down view for our installation. The interaction space in front of the wall should be relatively large as most interactions follow the single presenter - multiple spectators pattern: 1 person interacts with the screen presenting content and other persons standing next to the screen observing the presenter.
 
-|                                                  |       |
-| ------------------------------------------------ | ----- |
-| Width of the metal frame                         | 1.16m |
-| Height of the metal frame (without feet)         | 1.0m  |
-| Depth of the metal frame                         | 0.68m |
-| Width of the projected image                     | 1.1m  |
-| height of the projected image                    | 0.62m |
-| distance between projector front lens and fabric | 0.5m  |
-| distance between depth sensor and fabric         | 0.4m  |
+![FlexiWall - floor plan]({{ site.baseurl }}/assets/img/hardware/floor_plan.png)
+
+|                                                  |                    |
+| ------------------------------------------------ | ------------------ |
+| Width of the metal frame                         | 2,6m               |
+| Height of the metal frame                        | 2.5m               |
+| width of the projected image                     | 2.52m              |
+| height of the projected image                    | 1.42m              |
+| distance between projector front lens and fabric | 1.5m               |
+| distance between depth sensor and fabric         | 1.5m               |
+| dimensions of the shelf (W x H X D)              | 0.5m x 2.6m x 0.4m |

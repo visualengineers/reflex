@@ -59,7 +59,3 @@ The whole system can be built using consumer hardware and inexpensive aluminium 
     <img src="{{ site.baseurl }}/assets/img/hardware/flexiwall.jpg" alt="FlexiWall - Elastic Display as large Display Wall"/>
   </div>
 </div>
-
-Using a projector with a large throw ratio is recommended to minimize the size of the area behind the screen. The following image shows the floor plan for our installation using the hardware described in the [technical specification]({{ site.baseurl}}/hardware/flexiwall-specs).
-
-![FlexiWall - floor plan]({{ site.baseurl }}/assets/img/hardware/floor_plan.png)
