@@ -30,7 +30,14 @@
                             "path": "/software/repo/",
                             "file": "dev.html",
                             "type": "page"
+                        },
+                        {
+                            "name": "Version History",
+                            "path": "/software/repo/",
+                            "file": "versions.html",
+                            "type": "page"
                         }
+
                     ]
                 },
                 {
