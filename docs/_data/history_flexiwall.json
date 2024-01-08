@@ -35,6 +35,19 @@
             ]
         },
         { 
+            "name": 2016,
+            "elements": [
+                {
+                    "id": "2016_TechnischeSammlungen",
+                    "type": "Interactive Installation",
+                    "title": "\"The best of the possible worlds\"",
+                    "description": "Interactive Visualization of mathematical computation of the evolution of a bicontinuos structure as part of an exhibition at the Technische Sammlungen Dresden",
+                    "image": "/assets/img/2017_MuC_prev.jpg.jpg",
+                    "link": "https://vimeo.com/247819326"
+                }
+            ]
+        },
+        { 
             "name": 2017,
             "elements": [
                 {
@@ -46,6 +59,20 @@
                     "link": "https://youtu.be/DGWD3ZlLgXc?si=xsCJCvwmgFcxTx5I"
                 }
             ]
-        }
+        },
+        
+        { 
+            "name": 2023,
+            "elements": [
+                {
+                    "id": "2018_GAMM",
+                    "type": "Interactive Installation",
+                    "title": "FlexiWall@GAMM Dresden",
+                    "description": "Interactive Visualization of mathematical computation of the evolution of a bicontinuos structure at the 93rd annual meeting of the International Association of Applied Mathematics and Mechanics",
+                    "image": "/assets/img/2017_MuC_prev.jpg.jpg",
+                    "link": "https://vimeo.com/247819326"
+                }
+            ]
+        },
     ]
 }
