@@ -1,7 +1,5 @@
 ---
-
 title: Interactions Format
-
 ---
 
 # {{ page.title }}
@@ -50,7 +48,8 @@ For the Z coordinate, 0 represents the zero plane, respectively the distance of 
 
 ## Message Format (JSON)
 
-``` JSON
+{% highlight json linenos %}
+
 [
     {
       "TouchId":0,
@@ -72,11 +71,11 @@ For the Z coordinate, 0 represents the zero plane, respectively the distance of 
     }
 ]
 
-```
+{% endhighlight %}
 
 ## Conversion between .NET timestamp and TypeScript/JavaScript DateTime 
 
-``` TypeScript
+{% highlight ts linenos %}
 
     public getTime(ticks: number): string {
         // ticks are in nanotime; convert to microtime
@@ -93,4 +92,4 @@ For the Z coordinate, 0 represents the zero plane, respectively the distance of 
         return this._datePipe.transform(resultDate.getTime(), 'HH:mm:ss.SSS') as string;
     }
 
-```
+{% endhighlight %}

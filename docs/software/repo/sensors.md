@@ -26,7 +26,7 @@ Camera must be connected when application starts, otherwise an error is thrown (
 
 ### Microsoft Kinect 2
 
-INstalling SDK and connecting sensor should be sufficient
+Installing SDK and connecting sensor should be sufficient.
 
 ### Intel RealSense
 
