@@ -75,7 +75,7 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 
 implemented Sensor-Hardware
 
-* Intel RealSense R2 (*RealSenseR2Module*)
+* Intel RealSense R200 (*RealSenseR2Module*)
 * Intel RealSense D435 (*RealSenseD435Module*)
 * Intel RealSense L515 (*RealSenseL515Module*)
 * Microsoft Kinect 2 (*Kinect2Module*)
