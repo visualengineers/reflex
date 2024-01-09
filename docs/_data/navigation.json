@@ -24,7 +24,13 @@
                             "path": "/software/repo/",
                             "file": "reflex.html",
                             "type": "page"
-                        },                        
+                        },
+                        {
+                            "name": "Architecture",
+                            "path": "/software/repo/",
+                            "file": "architecture.html",
+                            "type": "page"
+                        },
                         {
                             "name": "ReFlex Library (.NET)",
                             "path": "/software/repo/",
@@ -32,9 +38,21 @@
                             "type": "page"
                         },
                         {
+                            "name": "Processing Pipeline",
+                            "path": "/software/repo/",
+                            "file": "pipeline.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Interactions",
                             "path": "/software/repo/",
                             "file": "interactions.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Supported Sensors",
+                            "path": "/software/repo/",
+                            "file": "sensors.html",
                             "type": "page"
                         },
                         {
@@ -177,41 +195,41 @@
                     "content":
                     [
                         {
-                            "name": "Implement a Depth Sensor",
+                            "name": "Library: Implement a Depth Sensor",
                             "path": "/recipes/",
                             "file": "implement-sensor.html",
                             "type": "page"
                         },
                         {
-                            "name": "Implement an Interaction Processor",
+                            "name": "Library: Implement an Interaction Processor",
                             "path": "/recipes/",
                             "file": "interaction-processor.html",
                             "type": "page"
                         },
                         {
-                            "name": "Implement alternative Calibration procedure",
+                            "name": "Library: Implement alternative Calibration procedure",
                             "path": "/recipes/",
                             "file": "extend-calibration.html",
                             "type": "page"
                         }, 
                         {
-                            "name": "Stream depth image",
+                            "name": "Client: Stream depth image",
                             "path": "/recipes/",
                             "file": "icons.html",
                             "type": "page"
-                        },
+                        },                        
                         {
-                            "name": "Create gRPC micro service",
-                            "path": "/recipes/",
-                            "file": "grpc-service.html",
-                            "type": "page"
-                        },
-                        {
-                            "name": "Configure Server using REST API",
+                            "name": "Client: Configure Server using REST API",
                             "path": "/design/",
                             "file": "icons.html",
                             "type": "page"
-                        }                        
+                        }, 
+                        {
+                            "name": "Server: Create gRPC micro service",
+                            "path": "/recipes/",
+                            "file": "grpc-service.html",
+                            "type": "page"
+                        }                      
                     ]
                 },
                 {

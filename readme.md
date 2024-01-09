@@ -93,7 +93,7 @@ __[⬆ back to top](#table-of-contents)__
 * for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project with
   
   ``` bash
-  npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp --save
+    npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp --save
   ```
 
 * types are available by importing `@reflex/shared-types`

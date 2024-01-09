@@ -6,12 +6,12 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 
 ### Frameworks
 
-* __.NET 7.0
+* .NET 7.0
 
 ### IDEs
 
-* Visual Studio 2019 (Ultimate)
-* recommended: ReSharper
+* Microsoft Visual Studio
+  * recommended: ReSharper Extension
 * JetBrains Rider
 * Visual Studio Code
 
@@ -47,9 +47,7 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 | __coverlet.collector__     | 6.0.0   | necessary for generating test reports (platform independent) |
 | __Microsoft.CodeCoverage__ | 17.8.0  | Code coverage                                                |
 
-
 ## Project Structure
-
 
 | Group           | Project                                | Description                                                                                                                                                                                                                                                                                                                |
 | --------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -139,33 +137,7 @@ Parameters:
 
 * __X__,__Y__,__Z__: values for filtering: depth value of [x,y,z] is removed 
 
-## Code Example
-
-### Interactions Message Format (JSON)
-
-``` JSON
-[
-    {
-      "TouchId":0,
-      "Position": {
-        "X":0.3944792,
-        "Y":0.38191035,
-        "Z":-0.20515493,
-        "IsValid":true,
-        "IsFiltered":false
-      },
-      "Type":0,
-      "ExtremumDescription":{
-        "Type":0,
-        "NumFittingPoints":10,
-        "PercentageFittingPoints":1
-      },
-      "Confidence":30,
-      "Time":638404355384290300
-    }
-]
-
-```
+## Code Examples
 
 ### TCP-Client
 
