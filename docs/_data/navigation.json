@@ -24,7 +24,25 @@
                             "path": "/software/repo/",
                             "file": "reflex.html",
                             "type": "page"
+                        },                        
+                        {
+                            "name": "ReFlex Library (.NET)",
+                            "path": "/software/repo/",
+                            "file": "library.html",
+                            "type": "page"
                         },
+                        {
+                            "name": "Interactions",
+                            "path": "/software/repo/",
+                            "file": "interactions.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "github CI",
+                            "path": "/software/repo/",
+                            "file": "ci.html",
+                            "type": "page"
+                        },                        
                         {
                             "name": "Development Documentation",
                             "path": "/software/repo/",
@@ -80,7 +98,14 @@
                                     "path": "/software/apps/server/",
                                     "file": "networking-view.html",
                                     "type": "page"
+                                },
+                                {
+                                    "name": "Video tutorials",
+                                    "path": "/software/apps/server/",
+                                    "file": "video-tutorial.html",
+                                    "type": "page"
                                 }
+
                             ]
                         },
                         {
@@ -144,6 +169,49 @@
                             "file": "ue.html",
                             "type": "page"
                         }
+                    ]
+                },
+                {
+                    "name": "Recipes",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Implement a Depth Sensor",
+                            "path": "/recipes/",
+                            "file": "implement-sensor.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Implement an Interaction Processor",
+                            "path": "/recipes/",
+                            "file": "interaction-processor.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Implement alternative Calibration procedure",
+                            "path": "/recipes/",
+                            "file": "extend-calibration.html",
+                            "type": "page"
+                        }, 
+                        {
+                            "name": "Stream depth image",
+                            "path": "/recipes/",
+                            "file": "icons.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Create gRPC micro service",
+                            "path": "/recipes/",
+                            "file": "grpc-service.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Configure Server using REST API",
+                            "path": "/design/",
+                            "file": "icons.html",
+                            "type": "page"
+                        }                        
                     ]
                 },
                 {
@@ -370,7 +438,7 @@
                             "type": "page"
                         }
                     ]
-                },
+                }
             ]
         }
     ]
