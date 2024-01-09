@@ -66,7 +66,7 @@ ___
 
   - delete directory `./test/artifacts/coverage-net/`
   - execute tests and generate reports in `./test/artifacts/coverage-net/cobertura`
-    `dotnet test --collect:"XPlat Code Coverage" --results-directory: ./test/artifacts/coverage-net/cobertura/`
+    `dotnet test --collect:"XPlat Code Coverage" --results-directory: ./test/artifacts/coverage-net/cobertura/`  
     **REMARKS:** a folder named with a random guid containing the report is generated for each test assembly
   - generate report by collecting all cobertura files (when using globbing for specifying reports in subdirectories the argument for `reports` must be wrapped in `"`)
     `reportgenerator -reports:"./test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"./test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`    
