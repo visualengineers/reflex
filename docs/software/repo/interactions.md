@@ -4,6 +4,17 @@ title: Interactions Format
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Interaction Format Specification](#interaction-format-specification)
+3. [Point3 Specification](#point3-specification)
+4. [ExtremumDescription Specification](#extremumdescription-specification)
+5. [Normalized coordinates](#normalized-coordinates)
+6. [Message Format (JSON)](#message-format-json)
+7. [Conversion between .NET timestamp and TypeScript/JavaScript DateTime](#conversion-between-net-timestamp-and-typescriptjavascript-datetime)
+
+
 ## Introduction
 
 ## Interaction Format Specification
@@ -17,6 +28,8 @@ title: Interactions Format
 | Confidence          | int                                               | longest period of frames which this touch has been observed without interruption. If a touchpoint gets lost, this is decremented each frame                    |
 | Time                | long                                              | .NET Timestamp for the frame capture (number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001 in the Gregorian calendar) |
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Point3 Specification
 
 | Property                | Type (.NET) | Description                                                  |
@@ -26,6 +39,8 @@ title: Interactions Format
 | Z                       | float       | depth value (normalized) [ -1 .. 1 ]                  |
 | IsValid        | bool         | flag to determine whether this point represents a valid spatial position (true) or has been marked as invalid by being outside the tracking volume range        |
 | IsFiltered | bool         | usually the inverted IsValid flag, but can be set additional is another filter removed this point from the valid points  |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## ExtremumDescription Specification
 
@@ -40,11 +55,15 @@ The extremum is always described relative to the surface, that means, a maximum 
 | NumFittingPoints        | int                                  | absolute number of samples that fit into estimation          |
 | PercentageFittingPoints | int                                  | relative number of samples that fit into estimation [0 .. 1] |
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Normalized coordinates
 
 The lateral position values X,Y are mapped to the numeric interval [0, 1]. X = 0 and Y = 0 represents the upper left corner of the projection screen, X = 1 and Y = 1 the lower right corner of the screen.
 
 For the Z coordinate, 0 represents the zero plane, respectively the distance of the fabric from the sensor without deformation. Negative Z values are closer to the sensor than the zero plane (push into the surface), positive values are farther away (pull the surface towards the user)
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Message Format (JSON)
 
@@ -73,6 +92,8 @@ For the Z coordinate, 0 represents the zero plane, respectively the distance of 
 
 {% endhighlight %}
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Conversion between .NET timestamp and TypeScript/JavaScript DateTime 
 
 {% highlight ts linenos %}
@@ -93,3 +114,5 @@ For the Z coordinate, 0 represents the zero plane, respectively the distance of 
     }
 
 {% endhighlight %}
+
+__[⬆ back to top](#table-of-contents)__

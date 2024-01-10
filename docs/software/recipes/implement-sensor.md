@@ -8,6 +8,15 @@ title: "ReFlex Library: How add a new sensor"
 
 <img src="{{ site.baseurl}}/assets/img/titles/pointcloud.png" class="content__title-image" alt="title image showing a pointcloud representation of two hands deforming the surface"/>
 
+<!-- omit in toc-->
+## Table of Contents
+
+1. [Table of Contents](#table-of-contents)
+2. [General approach](#general-approach)
+3. [The `IDepthCamera` Interface](#the-idepthcamera-interface)
+4. [Example Implementation: `AzureKinectCamera`](#example-implementation-azurekinectcamera)
+5. [Registering the Sensor with `CameraManager`](#registering-the-sensor-with-cameramanager)
+
 ## General approach
 
 * Depth sensors must implement the interface `IDepthCamera` in the namespace `ReFlex.Core.Tracking.Interfaces`
@@ -22,6 +31,8 @@ title: "ReFlex Library: How add a new sensor"
 * sensors that do not require external dependencies (e.g. software-emulator, ... ) can ignore this rule
 * if a sensor should be constrained to be available on a specific platform only, the check `RuntimeInformation.IsOSPlatform()` can be used
 * for more information, see [Registering the Sensor](#registering-the-sensor-with-cameramanager)
+
+__[⬆ back to top](#table-of-contents)__
 
 ## The `IDepthCamera` Interface
 
@@ -41,6 +52,8 @@ title: "ReFlex Library: How add a new sensor"
 | StartStream()                           | starts tracking with the previously set configuration                                                     |
 | StopStream()                            | stops tracking                                                                                            |
 | Dispose()                               | cleanup code when the app is stopped (e.g. stop sensor and free resources)                                |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Example Implementation: `AzureKinectCamera`
 
@@ -171,6 +184,8 @@ title: "ReFlex Library: How add a new sensor"
 
 {% endhighlight %}
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Registering the Sensor with `CameraManager`
 
 To make camera available in the server, the module must be registered in the `CameraManager` of `ReFlex.TrackingServer`.
@@ -224,3 +239,5 @@ To make camera available in the server, the module must be registered in the `Ca
     }
 
 {% endhighlight %}
+
+__[⬆ back to top](#table-of-contents)__

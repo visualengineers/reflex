@@ -7,6 +7,13 @@ title: Supported Depth Sensors
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of contents
+
+1. [List of Sensors](#list-of-sensors)
+2. [Installation Notices](#installation-notices)
+3. [Troubleshooting](#troubleshooting)
+
 ## List of Sensors
 
 | Sensor                    | Web Link                                                                                               | SDK                          | Tested Version | OS                |
@@ -16,6 +23,8 @@ title: Supported Depth Sensors
 | Intel RealSense R200       | [Intel RealSense R200](https://www.mouser.com/pdfdocs/intel_realsense_camera_r200.pdf) | `librealsense` |  | Windows          |
 | Intel RealSense D435       | [Intel RealSense D435](https://www.intelrealsense.com/depth-camera-d435f/) | `Intel RealSense SDK 2.0` | 2.54.2 | Windows, Linux, OSX           |
 | Intel RealSense L515      | [Intel RealSense L515](https://www.intelrealsense.com/lidar-camera-l515/) | `Intel RealSense SDK 2.0` | 2.50.0 | Windows, Linux, OSX           |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Installation Notices
 
@@ -39,7 +48,11 @@ Copy the following dlls from SDK into `external` directory:
 
 Build application afterwards, then sensor should be available.
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Troubleshooting
 
 * in general, try to connect the camera with the original manufacturer cable to a fast USB3 port
 * most cameras have issues if other devices are connected to the same USB-Controller
+
+__[⬆ back to top](#table-of-contents)__
