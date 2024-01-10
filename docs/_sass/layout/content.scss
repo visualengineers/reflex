@@ -138,3 +138,18 @@
         margin-right: .5rem;
     }
 }
+
+#table-of-contents {
+    position: absolute;
+    right: 4rem;
+    top: 18rem;
+
+    width: 15vw;
+
+    & + ol:first-of-type {
+        position: absolute;
+        right: 4rem;
+        width: 15vw;
+        top: 24rem;
+    }
+}
