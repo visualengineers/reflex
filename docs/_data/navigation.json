@@ -196,37 +196,37 @@
                     [
                         {
                             "name": "Library: Implement a Depth Sensor",
-                            "path": "/recipes/",
+                            "path": "/software/recipes/",
                             "file": "implement-sensor.html",
                             "type": "page"
                         },
                         {
                             "name": "Library: Implement an Interaction Processor",
-                            "path": "/recipes/",
+                            "path": "/software/recipes/",
                             "file": "interaction-processor.html",
                             "type": "page"
                         },
                         {
                             "name": "Library: Implement alternative Calibration procedure",
-                            "path": "/recipes/",
+                            "path": "/software/recipes/",
                             "file": "extend-calibration.html",
                             "type": "page"
                         }, 
                         {
                             "name": "Client: Stream depth image",
-                            "path": "/recipes/",
+                            "path": "/software/recipes/",
                             "file": "icons.html",
                             "type": "page"
                         },                        
                         {
                             "name": "Client: Configure Server using REST API",
-                            "path": "/design/",
+                            "path": "/software/design/",
                             "file": "icons.html",
                             "type": "page"
                         }, 
                         {
                             "name": "Server: Create gRPC micro service",
-                            "path": "/recipes/",
+                            "path": "/software/recipes/",
                             "file": "grpc-service.html",
                             "type": "page"
                         }                      
