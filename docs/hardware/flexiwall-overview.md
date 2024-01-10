@@ -6,6 +6,12 @@ title: "FlexiWall: Overview"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of Contents
+
+1. [History](#history)
+2. [Concept](#concept)
+
 <img src="{{ site.baseurl}}/assets/img/hardware/flexiwall_title.jpg" class="content__title-image" alt="title image showing FlexiWall prototype"/>
 
 ## History
@@ -39,6 +45,8 @@ title: "FlexiWall: Overview"
     </ul>
     </div>
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Concept
 
 ![FlexiWall - Elastic Display as Display Wall]({{ site.baseurl }}/assets/img/hardware/flexiwall_aufbau.png)
@@ -59,3 +67,5 @@ The whole system can be built using consumer hardware and inexpensive aluminium 
     <img src="{{ site.baseurl }}/assets/img/hardware/flexiwall.jpg" alt="FlexiWall - Elastic Display as large Display Wall"/>
   </div>
 </div>
+
+__[⬆ back to top](#table-of-contents)__

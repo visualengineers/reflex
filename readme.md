@@ -134,6 +134,8 @@ __[⬆ back to top](#table-of-contents)__
 | `npm run test:net-with-report`                       | executes .NET tests on .NET Solution *ReFlex.sln* and generates report for tests  | Currently only compatible with Windows  |
 | `npm run test:server`                       | executes tests on *ReFlex.TrackingServer* project |  |
 
+__[⬆ back to top](#table-of-contents)__
+
 ### Known issues
 
 * Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  

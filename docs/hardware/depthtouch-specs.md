@@ -6,6 +6,14 @@ title: "DepthTouch: Technical Specifications"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of Contents
+
+1. [Projector](#projector)
+2. [Depth Sensor](#depth-sensor)
+3. [Fabric](#fabric)
+4. [Dimensions](#dimensions)
+
 ## Projector
 
 ![Optoma GT 1070Xe]({{ site.baseurl }}/assets/img/hardware/optoma_gt1070xe.jpg)
@@ -33,6 +41,8 @@ The most important specs are *Throw Ratio*, *Minimum Projection Distance* and *N
 * the mentioned projector is discontinued; and a newer model is available. Although we do not have practical experience with the model (yet),  the tech specs of the [Optoma GT2000HDR](https://www.optomaeurope.com/product/gt2000hdr) imply that it may be suitable for building the Elastic Display tabletop. Most of the relevant spec are equal or even better that the reference model.
 * another alternative with similar specs, but featuring native 4k resolution is the [Optoma UHZ35ST](https://www.optomaeurope.com/product/uhz35st). The question is whether the 4K resolution make a noticeable difference, as the fabric has usually a visible structure which limits the visibility of fine details of the projection.
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Depth Sensor
 
 ![Azure Kinect]({{ site.baseurl }}/assets/img/hardware/azure_kinect.jpg)
@@ -56,6 +66,8 @@ cf. [Product page](https://www.microsoft.com/en-us/d/azure-kinect-dk/8pp5vxmd9nh
 * the *Field of View* is a little bit misleading, as the shape of the depth image is not rectangular, but has a diamond shape (or circle in case of the wide field of view), which means that the area of the display which can be tracked needs to fit into the diagonal of the field of view
 * see also: [Azure Kinect DK hardware specifications](https://learn.microsoft.com/en-us/azure/Kinect-dk/hardware-specification)
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Fabric
 
 ![Lycra Fabric]({{ site.baseurl }}/assets/img/hardware/fabric.jpg)
@@ -77,3 +89,5 @@ cf. [Product page](https://www.microsoft.com/en-us/d/azure-kinect-dk/8pp5vxmd9nh
 | height of the projected image                    | 0.62m |
 | distance between projector front lens and fabric | 0.5m  |
 | distance between depth sensor and fabric         | 0.4m  |
+
+__[⬆ back to top](#table-of-contents)__

@@ -6,6 +6,13 @@ title: "DepthTouch: Overview"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of Contents
+
+1. [History](#history)
+2. [Concept](#concept)
+3. [Attachment of the fabric](#attachment-of-the-fabric)
+
 <img src="{{ site.baseurl}}/assets/img/hardware/depthtouch_title.jpg" class="content__title-image" alt="title image showing DepthTouch prototype"/>
 
 ## History
@@ -38,6 +45,9 @@ title: "DepthTouch: Overview"
         {% endfor %}
     </ul>
     </div>
+
+__[⬆ back to top](#table-of-contents)__
+
 ## Concept
 
 The __DepthTouch__ is an Elastic Display build as a tabletop. The deformable screen is made of an elastic fabric. Usually, _Lycra_ is used, which is a common fabric used for swimsuits and can be purchased in most textile shops.
@@ -70,6 +80,8 @@ By using short throw projectors, the tabletop can be constructed without the nee
     <img src="{{ site.baseurl }}/assets/img/hardware/Tisch2.png" alt="DepthTouch - Elastic Display as TableTop"/>
   </div>
 </div>
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Attachment of the fabric
 
@@ -176,3 +188,5 @@ Comparable to the velcro straps, but this time, springs are used to connect the 
 </div>
 
 ![Lycra Fabric attachment using springs]({{ site.baseurl }}/assets/img/hardware/fabric_2.jpg)
+
+__[⬆ back to top](#table-of-contents)__

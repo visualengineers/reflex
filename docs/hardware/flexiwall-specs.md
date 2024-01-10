@@ -6,6 +6,14 @@ title: "FlexiWall: Technical Specifications"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of Contents
+
+1. [Projector](#projector)
+2. [Depth Sensor](#depth-sensor)
+3. [Fabric](#fabric)
+4. [Dimensions](#dimensions)
+
 ## Projector
 
 **Acer XYZ**
@@ -24,6 +32,8 @@ cf. [Product page](https://www.optoma.de/product/gt1070xe)
 | Native Offset               | 116%        | this means image is projected "above" the projector, which allows that the projector "looks outside" the table and therefore the height of the table can be reduced further |
 
 The space between elastic projection area an projector is large enough, therefore, *Throw Ratio* is less important than in the [Tabletop setup]({{ site.baseurl }}/hardware/depthtouch-specs). More important is the *Brightness*, as in our experience, the display wall is more often used in brighter environments (or the large installation cannot be shaded from sunlight as easy as the smaller tabletop). However, using a projector with a large throw ratio can minimize the size of the area behind the screen (The depth sensor's field of view usually is larger than the projection frustum).
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Depth Sensor
 
@@ -48,6 +58,8 @@ cf. [Product page](https://www.microsoft.com/en-us/d/azure-kinect-dk/8pp5vxmd9nh
 * the *Field of View* is a little bit misleading, as the shape of the depth image is not rectangular, but has a diamond shape (or circle in case of the wide field of view), which means that the area of the display which can be tracked needs to fit into the diagonal of the field of view
 * see also: [Azure Kinect DK hardware specifications](https://learn.microsoft.com/en-us/azure/Kinect-dk/hardware-specification)
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Fabric
 
 <div class="image-container">
@@ -65,6 +77,8 @@ cf. [Product page](https://www.microsoft.com/en-us/d/azure-kinect-dk/8pp5vxmd9nh
 
 The core issue with our setup is the size of the fabric, as most shops only offer panels of 1.5m width. As the projection area has a height of about 1.5m, the technical setup could be extended with additional horizontal cross braces on which the panel can attached.
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Dimensions
 
 The following image shows the top down view for our installation. The interaction space in front of the wall should be relatively large as most interactions follow the single presenter - multiple spectators pattern: 1 person interacts with the screen presenting content and other persons standing next to the screen observing the presenter.
@@ -80,3 +94,5 @@ The following image shows the top down view for our installation. The interactio
 | distance between projector front lens and fabric | 1.5m               |
 | distance between depth sensor and fabric         | 1.5m               |
 | dimensions of the shelf (W x H X D)              | 0.5m x 2.6m x 0.4m |
+
+__[⬆ back to top](#table-of-contents)__
