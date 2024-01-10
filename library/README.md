@@ -2,6 +2,16 @@
 
 Core Library for Development of applications for __Elastic Displays__. Created in context of research project __ZELASTO__ (EFRE-project no. 100376687) in cooperation with HTW Dresden.
 
+<!-- omit in toc -->
+## Table of contents
+
+1. [Project setup](#project-setup)
+2. [Project Structure](#project-structure)
+3. [Sensor Modules](#sensor-modules)
+4. [Specific components](#specific-components)
+5. [Code Examples](#code-examples)
+6. [Configurable Clients (TCP/WebSockets)](#configurable-clients-tcpwebsockets)
+
 ## Project setup
 
 ### Frameworks
