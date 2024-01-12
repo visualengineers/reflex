@@ -16,7 +16,7 @@ title: "FlexiWall: Technical Specifications"
 
 ## Projector
 
-**Acer XYZ**
+**Acer H7550ST**
 
 cf. [Product page](https://www.optoma.de/product/gt1070xe)
 
@@ -25,11 +25,10 @@ cf. [Product page](https://www.optoma.de/product/gt1070xe)
 | Type                        | Value       | Relevance for Tabletop                                                                                                                                                      |
 | --------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Resolution                  | 1920 x 1080 | 1080p resolution for text legibility, higher is better                                                                                                                      |
-| Brightness                  | 2800 lumens | especially in sun light, backprojection needs a bright light source                                                                                                         |
-| Keystone - Vertical         | +/- 40°     | correcting distortions dur to sloped mounting of the projector                                                                                                              |
-| Throw Ratio                 | 0.49 : 1    | lower is better - necessary to preserve usable height of the table                                                                                                          |
-| Minimum Projection Distance | 0.5m        | also important for height of the table                                                                                                                                      |
-| Native Offset               | 116%        | this means image is projected "above" the projector, which allows that the projector "looks outside" the table and therefore the height of the table can be reduced further |
+| Brightness                  | 3000 lumens | especially in sun light, backprojection needs a bright light source                                                                                                         |
+| Keystone - Vertical         | +/- 30°     |                                                                                                               |
+| Throw Ratio                 | 0,69 - 0,76:1    | lower is better - necessary to reduce the size of the whole installation table                                                                                                          |
+| Minimum Projection Distance | 0.9m        | also important for size of the whole instalation                                                                                                                                      |
 
 The space between elastic projection area an projector is large enough, therefore, *Throw Ratio* is less important than in the [Tabletop setup]({{ site.baseurl }}/hardware/depthtouch-specs). More important is the *Brightness*, as in our experience, the display wall is more often used in brighter environments (or the large installation cannot be shaded from sunlight as easy as the smaller tabletop). However, using a projector with a large throw ratio can minimize the size of the area behind the screen (The depth sensor's field of view usually is larger than the projection frustum).
 
