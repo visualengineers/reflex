@@ -499,3 +499,6 @@ docs/Gemfile
 docs/Gemfile.lock
 docs/software/repo/library.md
 docs/software/repo/reflex.md
+docs/software/apps/emulator.md
+docs/software/apps/logging.md
+docs/software/apps/server.md
