@@ -18,11 +18,11 @@
     <LangVersion>10</LangVersion>
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PlatformTarget>x64;arm64</PlatformTarget>
+  <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
+    <PlatformTarget>arm64</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <PlatformTarget>x64;arm64</PlatformTarget>    
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'CI' Or '$(Platform)' == 'ARM64' Or '$(Platform)' == 'AnyCPU'">
     <PlatformTarget>ARM64</PlatformTarget>
