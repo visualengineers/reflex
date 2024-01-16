@@ -15,7 +15,6 @@
                 </TransformGroup>
             </Grid.RenderTransform>
             <Ellipse Fill="{StaticResource ColorWhite}"
-                     Stroke="{StaticResource PrimaryColor}"
                      StrokeThickness="4"
                      RenderTransformOrigin="0.5,0.5">
                 <Ellipse.RenderTransform>
@@ -23,10 +22,25 @@
                         <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
                     </TransformGroup>
                 </Ellipse.RenderTransform>
+                <Ellipse.Style>
+                    <Style x:Name="InteractionEllipse" TargetType="Ellipse">
+                        <Setter Property="Stroke" Value="{StaticResource PrimaryColor}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Type}" Value="0">
+                                <Setter Property="Stroke" Value="{StaticResource BrushConnectionStatusConnected}"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="1">
+                                <Setter Property="Stroke" Value="{StaticResource BrushConnectionStatusDisconnected}"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Ellipse.Style>
             </Ellipse>
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
                 Text="{Binding AssociatedInteraction.TouchId}"
                 Foreground="{StaticResource PrimaryColor}"
-                FontSize="30"/>
+                FontSize="30"
+                FontFamily="{StaticResource FontCondensed}"
+                />
         </Grid>
 </UserControl>

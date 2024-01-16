@@ -33,6 +33,14 @@
             Margin="20,10"
             Fill="{StaticResource ReFlexLogo}"/>
         
+        <TextBlock 
+            Grid.Row="1" Grid.Column="0"
+            FontFamily="{StaticResource FontDefault}"
+            FontSize="14"
+            FontWeight="DemiBold"
+            Foreground="{StaticResource PrimaryColor}"
+            Margin="89, 60,0 ,0">Basic WPF Application Template</TextBlock>
+        
         <local:ServerView Grid.Column="0" Grid.Row="1" Margin="0,100,0,0"/>
     </Grid>
 </UserControl>
