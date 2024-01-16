@@ -12,7 +12,7 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 * Visual Studio 2019 (Ultimate)
 * recomnmended: ReSharper
 
-### nuget Packages
+<### nuget Packages
 #### general
 
 * __Newtonsoft.JSon v12.0__  
