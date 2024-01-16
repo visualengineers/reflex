@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:viewModels="clr-namespace:ExampleWPF.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{viewModels:InteractionVisualizationViewModel}">
+             d:DataContext="{d:DesignInstance viewModels:InteractionVisualizationViewModel}"
+             prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <ItemsControl ItemsSource="{Binding Interactions}">
             <ItemsControl.ItemsPanel>

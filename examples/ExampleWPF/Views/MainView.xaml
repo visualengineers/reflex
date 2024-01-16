@@ -17,6 +17,7 @@
             <RowDefinition Height="200"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        <local:InteractionVisualizationView Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
         <Rectangle Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
                    Fill="{StaticResource TitleGradient}"/>
         <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
@@ -32,7 +33,6 @@
             Margin="20,10"
             Fill="{StaticResource ReFlexLogo}"/>
         
-        <local:InteractionVisualizationView Grid.ColumnSpan="2" Grid.RowSpan="2"/>
         <local:ServerView Grid.Column="0" Grid.Row="1" Margin="0,100,0,0"/>
     </Grid>
 </UserControl>
