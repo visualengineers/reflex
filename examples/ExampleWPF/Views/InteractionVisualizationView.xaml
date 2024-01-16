@@ -5,22 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewModels="clr-namespace:ExampleWPF.ViewModels"
+             xmlns:util="clr-namespace:ExampleWPF.Util"
+             xmlns:views="clr-namespace:ExampleWPF.Views"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModels:InteractionVisualizationViewModel}"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
-        <ItemsControl ItemsSource="{Binding Interactions}">
+        <util:DataPiping.DataPipes>
+            <util:DataPipeCollection>
+                <util:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualWidth}"
+                            Target="{Binding Path=CanvasWidth, Mode=OneWayToSource}"/>
+                <util:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualHeight}"
+                            Target="{Binding Path=CanvasHeight, Mode=OneWayToSource}"/>
+            </util:DataPipeCollection>
+        </util:DataPiping.DataPipes>
+        <ItemsControl 
+            ItemsSource="{Binding Interactions}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas></Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid Width="50" Height="50">
-                        <Ellipse Fill="Blue"></Ellipse>
-                    </Grid>
+                 <DataTemplate>
+                   <views:InteractionView/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

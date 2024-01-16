@@ -14,10 +14,32 @@ namespace ExampleWPF.ViewModels;
 public class InteractionVisualizationViewModel: BindableBase, IDisposable
 {
     private readonly ServerConnection _server;
-    private readonly ObservableCollection<InteractionViewModel> _interactions = new ObservableCollection<InteractionViewModel>();
 
-    public ObservableCollection<InteractionViewModel> Interactions => _interactions; 
+    private double _canvasWidth;
+    private double _canvasHeight;
+
+    public ObservableCollection<InteractionViewModel> Interactions { get; } = new ObservableCollection<InteractionViewModel>();
+
+    public double CanvasWidth
+    {
+        get => _canvasWidth;
+        set
+        {
+            _canvasWidth = value;
+            RaisePropertyChanged();
+        }
+    }
     
+    public double CanvasHeight
+    {
+        get => _canvasHeight;
+        set
+        {
+            _canvasHeight = value;
+            RaisePropertyChanged();
+        }
+    }
+
     public InteractionVisualizationViewModel()
     {
         _server = ContainerLocator.Current.Resolve<ServerConnection>();
@@ -40,8 +62,8 @@ public class InteractionVisualizationViewModel: BindableBase, IDisposable
 
         dispatcher?.BeginInvoke(new Action(() =>
         {
-            _interactions.Clear();
-            _interactions.AddRange(interactions.Select(i => new InteractionViewModel(i)));
+            Interactions.Clear();
+            Interactions.AddRange(interactions.Select(i => new InteractionViewModel(i, _canvasWidth, _canvasHeight)));
         }));
     } 
 }
