@@ -26,6 +26,51 @@
       <Content Include="App.config">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Resources\img\logo--image.png" />
+      <Content Include="Resources\img\logo--image.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\img\logo--text.png" />
+      <Content Include="Resources\img\logo--text.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\img\reflex-logo.png" />
+      <Content Include="Resources\img\reflex-logo.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\favicon.ico" />
+      <Content Include="Resources\favicon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Folder Include="Resources\" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <None Remove="Resources\fonts\Barlow-Italic.ttf" />
+      <Content Include="Resources\fonts\Barlow-Italic.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\fonts\Barlow-Regular.ttf" />
+      <Content Include="Resources\fonts\Barlow-Regular.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\fonts\Barlow-SemiBold.ttf" />
+      <Content Include="Resources\fonts\Barlow-SemiBold.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\fonts\BarlowCondensed-Regular.ttf" />
+      <Content Include="Resources\fonts\BarlowCondensed-Regular.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Resources\fonts\BarlowCondensed-SemiBold.ttf" />
+      <Content Include="Resources\fonts\BarlowCondensed-SemiBold.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

@@ -9,25 +9,43 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance viewModels:ServerViewModel}"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid Background="Bisque">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="50"></ColumnDefinition>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="200"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding ServerAddress}"></TextBlock>
-        <Ellipse Grid.Column="1" Fill="Firebrick" Visibility="{Binding IsDisconnected, Converter={StaticResource BoolVisConv}}"></Ellipse>
-        <Ellipse Grid.Column="1" Fill="LimeGreen" Visibility="{Binding IsConnected, Converter={StaticResource BoolVisConv}}"></Ellipse>
-        <Button Grid.Column="3"
-                Command="{Binding ConnectCommand}"
-                Visibility="{Binding IsDisconnected, Converter={StaticResource BoolVisConv}}">
-            Connect
-        </Button>
-        <Button Grid.Column="3"
-                Command="{Binding DisconnectCommand}"
-                Visibility="{Binding IsConnected, Converter={StaticResource BoolVisConv}}">
-            Disconnect
-        </Button>
-    </Grid>
+    <Border Style="{StaticResource StatusPanelBorder}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse
+                        Style="{StaticResource ConnectionStateVisual}"
+                        Visibility="{Binding IsDisconnected, Converter={StaticResource BoolVisConv}}"
+                        Fill="{StaticResource BrushConnectionStatusDisconnected}"
+                        />
+                    <Ellipse
+                        Style="{StaticResource ConnectionStateVisual}"
+                        Visibility="{Binding IsConnected, Converter={StaticResource BoolVisConv}}"
+                        Fill="{StaticResource BrushConnectionStatusConnected}"
+                    />
+                    <TextBlock Style="{StaticResource TextDescriptionLabel}">Address</TextBlock>
+                </StackPanel>
+                <TextBlock Style="{StaticResource TextDescriptionLabel}">FrameNumber</TextBlock>
+                <TextBlock Style="{StaticResource TextDescriptionLabel}">Touches</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Vertical">
+                <TextBlock Style="{StaticResource TextDescriptionItem}" Text="{Binding ServerAddress}"/>
+                <TextBlock Style="{StaticResource TextDescriptionItem}" Text="{Binding FrameNumber}"/>
+                <TextBlock Style="{StaticResource TextDescriptionItem}" Text="{Binding NumTouches}"/>
+                <Button Command="{Binding ConnectCommand}"
+                        Visibility="{Binding IsDisconnected, Converter={StaticResource BoolVisConv}}">
+                    Connect
+                </Button>
+                <Button Command="{Binding DisconnectCommand}"
+                        Visibility="{Binding IsConnected, Converter={StaticResource BoolVisConv}}">
+                    Disconnect
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

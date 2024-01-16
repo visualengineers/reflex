@@ -1,13 +1,62 @@
 ﻿<prism:PrismApplication x:Class="ExampleWPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ExampleWPF"
              xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
+                    <SolidColorBrush x:Key="BrushConnectionStatusConnected" Color="#008000"/>
+                    <SolidColorBrush x:Key="BrushConnectionStatusDisconnected" Color="#B1160B"/>
+                    <SolidColorBrush x:Key="BrushConnectionStatusUndefined" Color="#FFF"/>
+                    <SolidColorBrush x:Key="PrimaryColor" Color="#0071B7"/>
+                    <SolidColorBrush x:Key="GreyLight" Color="#949494"></SolidColorBrush>
+                    <SolidColorBrush x:Key="ColorBlack" Color="#000"></SolidColorBrush>
+                    <SolidColorBrush x:Key="ColorWhite" Color="#fff"></SolidColorBrush>
+                    <LinearGradientBrush x:Key="TitleGradient">
+                        <GradientStop Offset="0" Color="#00ffffff"></GradientStop>
+                        <GradientStop Offset="1" Color="#33000000"></GradientStop>
+                    </LinearGradientBrush>
+                    <ImageBrush x:Key="ReFlexLogo" ImageSource="pack://application:,,,/ExampleWPF;component/Resources/img/reflex-logo.png"/>
+                    <ImageBrush x:Key="HTWLogo" ImageSource="pack://application:,,,/ExampleWPF;component/Resources/img/logo--image.png"/>
+                    <ImageBrush x:Key="HTWText" ImageSource="pack://application:,,,/ExampleWPF;component/Resources/img/logo--text.png"/>
+                    <FontFamily x:Key="FontCondensed">
+                        pack://application:,,,/ExampleWPF;component/Resources/fonts/#Barlow Condensed Regular
+                    </FontFamily>
+                    <FontFamily x:Key="FontDefault">
+                        pack://application:,,,/ExampleWPF;component/Resources/fonts/#Barlow Regular
+                    </FontFamily>
                     <BooleanToVisibilityConverter x:Key="BoolVisConv"></BooleanToVisibilityConverter>
+                    <Style x:Key="StatusPanelBorder" TargetType="Border">
+                        <Setter Property="BorderBrush" Value="{StaticResource ColorBlack}"/>
+                        <Setter Property="BorderThickness" Value="1,0,0,0"/>
+                        <Setter Property="Margin" Value="20,5"/>
+                        <Setter Property="Padding" Value="5"></Setter>
+                    </Style>
+                    <Style TargetType="Ellipse" x:Key="ConnectionStateVisual">
+                        <Setter Property="Width" Value="15"/>   
+                        <Setter Property="Height" Value="15"/>
+                        <Setter Property="Margin" Value="0,0,10,0"/>
+                        <Setter Property="Stroke" Value="{StaticResource GreyLight}"/>
+                        <Setter Property="StrokeThickness" Value="1"/>
+                    </Style>
+                    <Style x:Key="TextDescriptionLabel" TargetType="TextBlock">
+                        <Setter Property="FontFamily" Value="{StaticResource FontCondensed}"/>
+                        <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                    </Style>
+                    <Style x:Key="TextDescriptionItem" TargetType="{x:Type TextBlock}">
+                        <Setter Property="FontFamily" Value="{StaticResource FontDefault}"/>
+                        <Setter Property="Foreground" Value="{StaticResource GreyLight}"/>
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource ColorWhite}"/>
+                        <Setter Property="Foreground" Value="{StaticResource ColorWhite}"/>
+                        <Setter Property="FontFamily" Value="{StaticResource FontDefault}"/>
+                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Height" Value="25"/>
+                        <Setter Property="Margin" Value="0,10"/>
+                    </Style>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -5,17 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ExampleWPF.Views"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="400"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
+            <RowDefinition Height="200"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        <Rectangle Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
+                   Fill="{StaticResource TitleGradient}"/>
+        <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,0">
+            <Rectangle Fill="{StaticResource HTWLogo}" Width="136" Height="40"/>
+            <Rectangle Fill="{StaticResource HTWText}" Width="136" Height="40"/>
+        </StackPanel>
+        <Rectangle 
+            Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" 
+            Width="110"
+            Height="160"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Margin="20,10"
+            Fill="{StaticResource ReFlexLogo}"/>
+        
         <local:InteractionVisualizationView Grid.ColumnSpan="2" Grid.RowSpan="2"/>
-        <local:ServerView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"></local:ServerView>
+        <local:ServerView Grid.Column="0" Grid.Row="1" Margin="0,100,0,0"/>
     </Grid>
 </UserControl>

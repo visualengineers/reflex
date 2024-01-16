@@ -29,17 +29,12 @@ namespace ReFlex.Core.Networking.Components
         public string Id => _clientId.ToString();
 
         public WebSocketClient(string address, int port, string endpoint)
-        { 
+        {
             _address = address;
             _port = port;
-            _endpoint = endpoint;  
-            
-            _client = new WebSocket($"{_address}:{_port}{_endpoint}");
-           _client.OnOpen += WebSocketOpened;
-           _client.OnMessage += WebSocketMessageReceived;
-           _client.OnClose += WebSocketClosed;
-           _client.OnError += HandleWebSocketError;
+            _endpoint = endpoint;
 
+            _client = new WebSocket($"{_address}:{_port}{_endpoint}");
             IsInitialized = true;
         }
 
@@ -51,7 +46,11 @@ namespace ReFlex.Core.Networking.Components
         /// <returns></returns>
         public bool Connect()
         {
-           _client.Connect();
+            _client.Connect();
+            _client.OnOpen += WebSocketOpened;
+            _client.OnMessage += WebSocketMessageReceived;
+            _client.OnClose += WebSocketClosed;
+            _client.OnError += HandleWebSocketError;
 
             IsConnected = _client.ReadyState == WebSocketState.Open;
 
@@ -118,8 +117,8 @@ namespace ReFlex.Core.Networking.Components
 
         public void Dispose()
         {
-             Disconnect($"App for client {_clientId} is closing.");
-            ((IDisposable) _client)?.Dispose();
+            Disconnect($"App for client {_clientId} is closing.");
+            ((IDisposable)_client)?.Dispose();
         }
     }
 }

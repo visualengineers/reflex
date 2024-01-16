@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:ExampleWPF.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="ReFlex | WPF Example" Height="450" Width="800" 
+        Icon="Resources/favicon.ico" 
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
         <views:MainView/>
     </Grid>
