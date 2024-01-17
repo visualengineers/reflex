@@ -62,6 +62,6 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Configuration
 
-The Tracking view also provides access to all settings related to depth sensing and reconstruction. More details on the description of the [Configuration View](configuration-view.html)
+The Tracking view also provides access to all settings related to depth sensing and reconstruction. More details on the description of the [Configuration View](config-view.html)
 
 __[⬆ back to top](#table-of-contents)__
