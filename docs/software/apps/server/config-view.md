@@ -14,32 +14,50 @@
 
 ## Overview
 
+This section contains the configuration for the filtering depth data and basic calibration of the whole system as wel as settings for extremum classification and smoothing. Furthermore, performance data for the different pipeline stages are available.
+
+Settings are stored in `TrackingSettings.json` in `Config` directory of the application (Directory `Resources/bin/wwwRoot/` in installed application or `wwwRoot/Config` in Project __ReFlex.TrackingServer__)
+
 __[⬆ back to top](#table-of-contents)__
 
 ## Borders
 
-![Configuration for Borders](/reflex/assets/img/server/config-view_borders.png)
-
 Settings that determine which parts of the point cloud are invalidated before filtering and processing steps. Most prominently used to trim point cloud in horizontal and vertical direction to eliminate areas that do not belong ro the interactive surface (e.g. parts of the frame)
+
+![Configuration for Borders](/reflex/assets/img/server/config-view_borders.png)
 
 | Setting | Value Range          | Description                                                                                                                                                                       | Unit |
 | ------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| Left    | [0, Right Border]    | Specify how many depth points on the left side are ignored. Maximum value corresponds with the border filter value on the right side. Live Preview: red dots are filtered points. | Pixel (in the depth image) |
-| Right   | [Left Border, Frame Width] | Specify how many depth points on the right side are ignored. Minimum value corresponds with the border filter value on the left side. Live Preview: red dots are filtered points. | Pixel (in the depth image) |
-| Top     | [0, Bottom Border]   | Specify how many depth points on the upper side are ignored. Maximum value corresponds with the border filter value on the lower side. Live Preview: red dots are filtered points. | Pixel (in the depth image) |
-| Bottom   | [Top Border, Frame Height]        | Specify how many depth points on the lower side are ignored. Minimum value corresponds with the border filter value on the upper side. Live Preview: red dots are filtered points. | Pixel (in the depth image) |
+| Left    | [0, Right Border]    | Specify how many depth points on the left side are ignored. Maximum value corresponds with the border filter value on the right side. *Live Preview*: red dots are filtered points. | Pixel (in the depth image) |
+| Right   | [Left Border, Frame Width] | Specify how many depth points on the right side are ignored. Minimum value corresponds with the border filter value on the left side. *Live Preview*: red dots are filtered points. | Pixel (in the depth image) |
+| Top     | [0, Bottom Border]   | Specify how many depth points on the upper side are ignored. Maximum value corresponds with the border filter value on the lower side. *Live Preview*: red dots are filtered points. | Pixel (in the depth image) |
+| Bottom   | [Top Border, Frame Height]        | Specify how many depth points on the lower side are ignored. Minimum value corresponds with the border filter value on the upper side. *Live Preview*: red dots are filtered points. | Pixel (in the depth image) |
 | Min Distance   | [0, 1.44] | Filter out points that are too close to the sensor (usually "dead points" or points outside the tracking frustum) | meters (from the sensor) |
 | Threshold  | [0, 0.1] | Specify maximum distance from zero plane for the points to be filtered | meters (from the zero plane) |
 | Filter Type | - | Available limitation filters. *LimitationFilter*: filter based on the defined borders *AdvancedLimitationFilter*: filter based on the depth mask (additional to the borders) | - |
 | Samples  | [0, 20] | Specify how many samples from the depth image are captured for initializing the filter. | number |
 
-__REMARKS:__ *Top*, *Bottom*, *Left*, *Right* refer to the camera coordinate system and are not affected by Calibration. This means that these values may be mirrored in regard to the users perspective
+__REMARKS:__
+
+* *Top*, *Bottom*, *Left*, *Right* refer to the camera coordinate system and are not affected by Calibration. This means that these values may be mirrored in regard to the users perspective
+* Before `Initialize Filter`, it is recommended to deactivate `Box Filter` in [Additional Settings](#additional-settings)
 
 __[⬆ back to top](#table-of-contents)__
 
 ## Distance
 
+Basic configuration of the system: distance between sensor and fabric (zero plane), interaction space (maximum and minimum amplitude of deformation) and minimum distance between two touch points can be specified.
+
+Zero plane can be computed automatically, which is done by measuring the mean distance of valid points (fabric must not be deformed for a precise measurement).
+
 ![Configuration for Borders](/reflex/assets/img/server/config-view_distance.png)
+
+| Setting | Value Range | Description | Unit |
+| --- | --- | --- | --- |
+| Minimal Depth | [0, 0.3] | Specifies the minimal depth amplitude for both __Push__ and __Pull__ relative to the *Zero Plane*. Depth values smaller than this threshold are ignored for interaction processing. *Live Preview*: red planes. | meters (from the zero plane) |
+| Maximum Depth | [0, 1] | Specifies the maximum depth amplitude for both __Push__ and __Pull__ relative to the *Zero Plane*. Depth values larger than this threshold are ignored for interaction processing. *Live Preview*: blue planes. | meters (from the zero plane) |
+| Zero Plane | [0,3] | Specifies distance of the elastic surface from the depth sensor. Used to distinguish __Push__ and __Pull__ and to compute depth values for interactions. *Live Preview*: grey plane. | meters (from the sensor) |
+| Between Extrema | [0, 250] | Threshold for __lateral distance__ between two extremums in the depth image (*pixel distance*). Used to filter redundant interactions which may occur due to noise. | pixel between x,y coordinates of extrema |
 
 __[⬆ back to top](#table-of-contents)__
 
