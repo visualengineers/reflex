@@ -113,6 +113,8 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Additional Settings
 
+Toggles for enabling / disabling different filters for point cloud processing and the switch to enable/disable performance measurements (which activates / deactivates [Performance Visualization](#performance-visualization))
+
 ![Additional Settings](/reflex/assets/img/server/config-view_additional.png)
 
 __[⬆ back to top](#table-of-contents)__
