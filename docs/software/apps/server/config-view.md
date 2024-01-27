@@ -77,13 +77,37 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Filter
 
+Settings in this section specify option for several aspects in regard of processing the point cloud derived from the depth image.
+
 ![Point Cloud Filter Settings](/reflex/assets/img/server/config-view_filter.png)
+
+| Setting | Value Range | Description | Unit |
+| --- | --- | --- | --- |
+| Threshold | [0, 1000] | Used to filter outliers from depth image. Specifies the maximum depth difference between two adjacent points in the Pointcloud. Points which do not satisfy this condition are filtered. | (Pixel) Distance in z-direction between two pints |
+| Use optimized Box Filter | on, off | Specifies whether standard or optimized box filter implementation should be used. Optimized version is faster in general | - |
+| Box-Filter radius | [0,100] | The depth image is filtered using *box-blur algorithm* with the given radius for the filter. A very large radius results in a very smooth depth image, but only very sharp edges are detected. Additionally, the computational cost increases with radius size. | Pixel |
+| Box-Filter passes | [0,10] | Number of iterations the box-blur is applied. A larger number of iterations results in a better filter result, but with decreased performance. | - |
+| Box-Filter Threads | [0, 32] | Max Number of Threads to use for filtering. Best value is usually less or equal the number of logical processors. When providing `0`, the system decides which is the best value, `1` means single core performance. | - |
+| Minimum angle | [0, 5] | Minimum angle between neighboring vectors for extremum detection. Used to filter low frequency noise. | Degrees |
 
 __[⬆ back to top](#table-of-contents)__
 
 ## Extremum Classification
 
+Detected extrema are classified (local minimum, local maximum or undefined) based on the depth values of the neighboring pixels. There are different algorithms available:
+
+* __Global__: basically disable the check: depth value below 0.5 means minimum, above maximum.
+* __FixedRadius__: check a predefined number of positions in a given radius
+* __StochasticStatic__: check random positions (determined on program start)
+* __StochasticDynamic__: check random positions (determined for each frame on each extremum)
+
 ![Configuration Classification of Extremums](/reflex/assets/img/server/config-view_extremums.png)
+
+| Setting | Value Range | Description | Unit |
+| --- | --- | --- | --- |
+| Num Samples | [0, 20] | The number of samples which are used to check the extremum type. 0 means that no check is executed. | - |
+| Check Radius | [0, 100] | The pixel radius in which points are sampled to check the type of the extremum. | Pixel in the depth image |
+| Fit percentage | [0.5, 1.0] | The ratio to discriminate whether a distinct extremum type is detected. | The ratio of pixels with lower vs. higher depth value |
 
 __[⬆ back to top](#table-of-contents)__
 
