@@ -63,7 +63,15 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Confidence
 
+Confidence describes to which extent an interaction is based on a measurement error (e.g. jitter) or can be categorized as stable touch detection. To compute the value, on each frame, the associated touch point is recognized, the confidence value is increased (to a maximum value specified by `Maximum`). When an interaction is not recognized anymore, the confidence value is decreased for every frame the interaction is not detected (until the confidence value is 0).
+This prevents flickering in case a touch point is not recognized anymore by some frames, but also introduces a certain lag, as the interaction is still "valid" when not touching the display, until the confidence value falls below the `Minimal` value. The lag also occurs if the `Minimal` value is rather high, as the interaction needs to be detected for the number of consecutive frames, before the interaction is marked as valid.
+
 ![Configuration for Distances](/reflex/assets/img/server/config-view_confidence.png)
+
+| Setting | Value Range | Description | Unit |
+| --- | --- | --- | --- |
+| Minimal | [0, Maximum] | The minimal confidence for which the interaction is categorized as valid measurement | - |
+| Maximum | [Minimum, 30] | The maximum confidence for an interaction. After reaching this value the confidence is not increased anymore | - |
 
 __[⬆ back to top](#table-of-contents)__
 
