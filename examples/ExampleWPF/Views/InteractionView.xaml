@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="ExampleWPF.Views.InteractionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ExampleWPF.Views"
+             xmlns:viewModels="clr-namespace:ExampleWPF.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance viewModels:InteractionViewModel}">
+        <Grid Width="75" Height="75">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform X="{Binding OffsetX}" Y="{Binding OffsetY}"></TranslateTransform>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Ellipse Fill="{StaticResource ColorWhite}"
+                     StrokeThickness="4"
+                     RenderTransformOrigin="0.5,0.5">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+                <Ellipse.Style>
+                    <Style x:Name="InteractionEllipse" TargetType="Ellipse">
+                        <Setter Property="Stroke" Value="{StaticResource PrimaryColor}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Type}" Value="0">
+                                <Setter Property="Stroke" Value="{StaticResource BrushConnectionStatusConnected}"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="1">
+                                <Setter Property="Stroke" Value="{StaticResource BrushConnectionStatusDisconnected}"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Ellipse.Style>
+            </Ellipse>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                Text="{Binding AssociatedInteraction.TouchId}"
+                Foreground="{StaticResource PrimaryColor}"
+                FontSize="30"
+                FontFamily="{StaticResource FontCondensed}"
+                />
+        </Grid>
+</UserControl>
