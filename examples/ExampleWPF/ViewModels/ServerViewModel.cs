@@ -28,10 +28,8 @@ public class ServerViewModel : BindableBase, IDisposable
     {
         _server = ContainerLocator.Current.Resolve<ServerConnection>();
 
-        ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected);
-        (ConnectCommand as DelegateCommand).ObservesCanExecute(() => IsDisconnected);
-        DisconnectCommand = new DelegateCommand(Disconnect, () => IsConnected);
-        (DisconnectCommand as DelegateCommand).ObservesCanExecute(() => IsConnected);
+        ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected).ObservesCanExecute(() => IsDisconnected);
+        DisconnectCommand = new DelegateCommand(Disconnect, () => IsConnected).ObservesCanExecute(() => IsConnected);
     }
 
     private void Connect()

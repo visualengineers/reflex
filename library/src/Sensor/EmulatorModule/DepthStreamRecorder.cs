@@ -93,7 +93,7 @@ namespace ReFlex.Sensor.EmulatorModule
 
             FrameId = 0;
 
-            return JsonConvert.SerializeObject(_sessionParams);
+            return await Task.Run(() => JsonConvert.SerializeObject(_sessionParams));
         }
 
         
@@ -108,19 +108,19 @@ namespace ReFlex.Sensor.EmulatorModule
 
             
 
-            Task.Run(() => {
+            Task.Run(async () => {
 
                 switch (cameraData.Format)
                 {
                     case DepthImageFormat.Greyccale48bpp:
-                        SaveAsync<Rgb48>(fileName, cameraData);
+                        await SaveAsync<Rgb48>(fileName, cameraData);
                         break;
                     case DepthImageFormat.Greyscale8bpp:
-                        SaveAsync<L8>(fileName, cameraData);
+                        await SaveAsync<L8>(fileName, cameraData);
                         break;
                     case DepthImageFormat.Rgb24bpp:                                           
                     default:
-                        SaveAsync<Rgb24>(fileName, cameraData);
+                        await SaveAsync<Rgb24>(fileName, cameraData);
                         break;
                 }
             });
