@@ -9,7 +9,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="400"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -43,6 +43,6 @@
             Margin="89, 60,0 ,0">Basic WPF Application Template</TextBlock>
         
         <local:ServerView Grid.Column="0" Grid.Row="1" Margin="0,100,0,0"/>
-        <local:InteractionListView Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="100,50 ,50 ,50"/>
+        <local:InteractionListView Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" Margin="0,50 ,50 ,50" MaxWidth="400"/>
     </Grid>
 </UserControl>
