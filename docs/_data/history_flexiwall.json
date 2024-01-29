@@ -1,0 +1,78 @@
+{
+    "years": [
+        { 
+            "name": 2014,
+            "elements": [
+                {
+                    "id": "2014_HCII",
+                    "type": "Scientific Publication",
+                    "title": "FlexiWall: Interaction In-Between 2D and 3D Interfaces",
+                    "description": "design concepts and interaction techniques for Elastic Displays",
+                    "image": "/assets/img/2014_HCII_FlexiWall_prev.jpg",
+                    "link": "https://doi.org/10.1007/978-3-319-07857-1_73"
+                },
+                {
+                    "id": "2014_ITS",
+                    "type": "Prototype / Demonstrator",
+                    "title": "FlexiWall: Exploring Layered Data with Elastic Displays",
+                    "description": "publication of the system including a demo at the conference",
+                    "image": "/assets/img/2014_ITS_prev.jpg",
+                    "link": "https://doi.org/10.1145/2669485.2669529"
+                }
+            ]
+        },
+        { 
+            "name": 2015,
+            "elements": [
+                {
+                    "id": "2015_xCoAx",
+                    "title": "Data Exploration on Elastic Displays using Physical Metaphors",
+                    "type": "Prototype / Demonstrator",                    
+                    "description": "Prototype illustrating physically-based interaction metaphors and zoomable ui visualization techniques",
+                    "image": "/assets/img/2015_xCoAx_prev.jpg",
+                    "link": "https://youtu.be/5m3uHXCfaAg?si=BfUC6CeMj8cEHYCZ"
+                }
+            ]
+        },
+        { 
+            "name": 2016,
+            "elements": [
+                {
+                    "id": "2016_TechnischeSammlungen",
+                    "type": "Interactive Installation",
+                    "title": "\"The best of the possible worlds\"",
+                    "description": "Interactive Visualization of mathematical computation of the evolution of a bicontinuos structure as part of an exhibition at the Technische Sammlungen Dresden",
+                    "image": "/assets/img/2017_MuC_prev.jpg.jpg",
+                    "link": "https://vimeo.com/247819326"
+                }
+            ]
+        },
+        { 
+            "name": 2017,
+            "elements": [
+                {
+                    "id": "2017_MuC",
+                    "type": "Prototype / Demonstrator",
+                    "title": "Exploring Big Data Landscapes with Elastic Displays",
+                    "description": "Interaction metaphors and visualization concepts for exploring Big Data visualizations on a large Elastic Display wall",
+                    "image": "/assets/img/2017_MuC_prev.jpg.jpg",
+                    "link": "https://youtu.be/DGWD3ZlLgXc?si=xsCJCvwmgFcxTx5I"
+                }
+            ]
+        },
+        
+        { 
+            "name": 2023,
+            "elements": [
+                {
+                    "id": "2018_GAMM",
+                    "type": "Interactive Installation",
+                    "title": "FlexiWall@GAMM Dresden",
+                    "description": "Interactive Visualization of mathematical computation of the evolution of a bicontinuos structure at the 93rd annual meeting of the International Association of Applied Mathematics and Mechanics",
+                    "image": "/assets/img/2017_MuC_prev.jpg.jpg",
+                    "link": "https://vimeo.com/247819326"
+                }
+            ]
+        },
+    ]
+}

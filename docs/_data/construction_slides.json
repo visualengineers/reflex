@@ -1,11 +1,6 @@
 {    
     "slides": [
         {
-            "png": "Tisch_1.png",
-            "svg": "construction_manual_Tisch_1.svg",
-            "description": "Dimensions of the Tabletop"
-        },
-        {
             "png": "Tisch_0.png",
             "svg": "construction_manual_Tisch_0.svg",
             "description": "Part list for the frame"

@@ -1,0 +1,22 @@
+---
+title: Components
+---
+
+<h1>{{page.title}}</h1>
+
+<div class="style-guide__components-container">
+    {% for component in site.data.components.components %}
+    <div class="style-guide__component">
+        <div class="style-guide__component--image-container">
+            {% for item in component.items %}
+            <div class="style-guide__component--image">
+                <img src="{{site.baseurl}}/assets/img/design/{{item.image}}.svg"/>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="style-guide__component-description">
+            <h3>{{ component.description }}</h3>
+        </div>
+    </div>
+    {% endfor %}
+</div>

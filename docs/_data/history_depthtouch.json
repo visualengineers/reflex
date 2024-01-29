@@ -1,0 +1,74 @@
+{
+    "years": [
+        { 
+            "name": 2012,
+            "elements": [
+                {
+                    "id": "2012_AVI",
+                    "type": "Prototype / Demonstrator",
+                    "title": "DepthTouch: An Elastic Surface for Tangible Computing",
+                    "description": "first publication of the system including a demo at the conference",
+                    "image": "/assets/img/2012_AVI_prev.jpg",
+                    "link": "https://doi.org/10.1145/2254556.2254706"
+                }
+            ]
+        },
+        { 
+            "name": 2013,
+            "elements": [
+                {
+                    "id": "2013_CHI",
+                    "type": "Scientific Publication",
+                    "title": "Towards a Design Space for Elastic Displays",
+                    "description": "Advanced design concepts and interaction techniques for Elastic Displays as tabletops",
+                    "image": "/assets/img/2013_CHI_prev.jpg"
+                }
+            ]
+        },
+        { 
+            "name": 2018,
+            "elements": [
+                {
+                    "id": "2018_HNF",
+                    "type": "Interactive Installation",
+                    "title": "Heinz-Nixdorf Museumsforum, Paderborn",
+                    "description": "DepthTouch as part of the museum exhibition featuring three simple visualizations including a mini-game utilizing physics-based interaction metaphors",
+                    "image": "/assets/img/HNF_prev.jpg",
+                    "link": "https://visualistik.de/referenzuebersicht/ein-touchdisplay-das-nachgibt"
+                }
+            ]
+        },
+        { 
+            "name": 2022,
+            "elements": [
+                {
+                    "id": "2022_AVI",
+                    "type": "User Study",
+                    "title": "Usability of Layer-Based Interaction on Elastic Displays",
+                    "description": "A user study investigating the feasibility and possible limitations of layer-based interaction on an Elastic Displays",
+                    "image": "/assets/img/2022_AVI_prev.jpg",
+                    "link": "https://doi.org/10.1145/3531073.3531101"
+                }
+            ]
+        },
+        { 
+            "name": 2023,
+            "elements": [
+                {
+                    "id": "2022_Lehrwunder",
+                    "type": "Interactive Installation",
+                    "title": "Layers App as part of the Lehrwunder project, Magdeburg",
+                    "description": "DepthTouch as interactive installation for utilization in educational scenarios",
+                    "image": "/assets/img/2022_Lehrwunder_prev.jpg"
+                },
+                {
+                    "id": "2022_Duisburg",
+                    "type": "Interactive Installation",
+                    "title": "DepthTouch@University of Duisburg-Essen",
+                    "description": "DepthTouch for interactive scientific data visualization",
+                    "image": "/assets/img/2022_uni-due_prev.jpg"
+                }
+            ]
+        }
+    ]
+}
