@@ -14,4 +14,12 @@ html {
   font-size: 62.5%;               // 1 rem = 10px
 
   background-color: $color-white;
+
+  @media only screen and (max-width: $bp-largest) {
+    font-size: 50%;
+  }
+
+  @media only screen and (min-width: $bp-ultra-large) {
+    font-size: 72.5%;
+  }
 }
