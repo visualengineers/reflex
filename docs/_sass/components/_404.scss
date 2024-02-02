@@ -18,6 +18,8 @@
     border-bottom: 4px solid transparent;
     border-radius: 5px 5px 0px 0px;
 
+    cursor: pointer;
+
     &:hover {
         background-color: $color-grey-x-light;
         
@@ -26,5 +28,9 @@
 
     & a {
         display: block;
+        
+        &:hover {
+            border-bottom: none;
+        }
     }
 }
