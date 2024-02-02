@@ -28,7 +28,7 @@
     {% if currentCategory %}
         <nav class="content-nav">   
             {% comment %} render category navigation {% endcomment %} 
-            {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = -1 selectedCategory = current %}
+            {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 0.5 selectedCategory = current %}
             <div class="external-nav">
                 <div class="nav-link code">
                     <a href="https://github.com/visualengineers/reflex/">Code</a>
