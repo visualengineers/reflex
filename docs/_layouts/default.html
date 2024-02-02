@@ -22,21 +22,26 @@
         {% include category.html nav = site.data.navigation.toc base = '/reflex' %}
         {% assign current=currentCategory %}
         
-    </nav>
+    </nav>    
 
     {% comment %} only render navigation if there are items to display {% endcomment %}
     {% if currentCategory %}
-        <nav class="content-nav">   
+        <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavigation()" title="Toggle Navigation">
+            <i class="fa fa-bars"></i> Navigation
+        </a>
+        <nav class="content-nav" id="navigation-panel">
             {% comment %} render category navigation {% endcomment %} 
-            {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 2 selectedCategory = current %}
-            <div class="nav-link code">
-                <a href="https://github.com/visualengineers/reflex/">Code</a>
-            </div>
-            <div class="nav-link report">
-                <a href="/reflex/test/library/report/index.html">Test Coverage: Library</a>
-            </div>
-            <div class="nav-link report">
-                <a href="/reflex/test/server/report/index.html">Test Coverage: Server</a>
+            {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 0.5 selectedCategory = current %}
+            <div class="external-nav">
+                <div class="nav-link code">
+                    <a href="https://github.com/visualengineers/reflex/">Code</a>
+                </div>
+                <div class="nav-link report">
+                    <a href="/reflex/test/library/report/index.html">Test Coverage: Library</a>
+                </div>
+                <div class="nav-link report">
+                    <a href="/reflex/test/server/report/index.html">Test Coverage: Server</a>
+                </div>
             </div>
         </nav>
     {% endif %}
@@ -56,4 +61,15 @@
     </footer>
     </body>
     {%- include mermaid.html -%}
+
+    <script>
+        function toggleNavigation() {
+            var x = document.getElementById("navigation-panel");
+            if (x.className === "content-nav") {
+                x.className += " expanded";
+            } else {
+                x.className = "content-nav";
+            }
+        }
+    </script>
 </html>

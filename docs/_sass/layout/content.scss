@@ -9,6 +9,17 @@
     font-weight: $font-weight-light;
 
     max-width: 120rem;
+    transition: all 0.5s ease-in-out;
+
+    @media only screen and (max-width: $bp-large) {
+        grid-column: 3 / 6;
+    }
+
+    @media only screen and (max-width: $bp-medium) {
+        grid-row: 5 / 5;
+        grid-column: 2 / 5;
+        padding: 2rem;
+    }
 
     & &__title-image {
         margin: 2rem 0;
@@ -140,16 +151,20 @@
 }
 
 #table-of-contents {
-    position: absolute;
-    right: 4rem;
-    top: 18rem;
 
-    width: 15vw;
+    @media only screen and (min-width: $bp-large) {
 
-    & + ol:first-of-type {
         position: absolute;
         right: 4rem;
+        top: 18rem;
+
         width: 15vw;
-        top: 24rem;
+
+        & + ol:first-of-type {
+            position: absolute;
+            right: 4rem;
+            width: 15vw;
+            top: 24rem;
+        }
     }
 }

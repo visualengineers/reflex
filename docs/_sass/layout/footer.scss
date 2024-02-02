@@ -7,4 +7,9 @@ footer {
     justify-content: flex-end;
     align-items: flex-end;
     display: flex;
+
+    @media only screen and (max-width: $bp-medium) {
+        grid-column: 0 / -1;
+        grid-row: 7 / 7;
+    }
 }

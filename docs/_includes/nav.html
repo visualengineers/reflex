@@ -15,7 +15,7 @@
                 </div>
             {% else %}
                 <div class="nav-category">
-                    <p style="padding-left: {{ pad }}rem;">{{ item.name }}</p>
+                    <p>{{ item.name }}</p>
                 </div>   
             {% endif %}
                 
@@ -26,7 +26,7 @@
   {% endfor %}  
 </ul>
 
- {% else %}
+{% else %}
     {% for item in include.nav %}
         {% if item.name == include.selectedCategory %}
             {% include nav.html nav=item.content base=include.base padding=include.padding category=item.name selectedCategory = include.selectedCategory %}

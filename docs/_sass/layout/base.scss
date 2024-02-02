@@ -12,6 +12,14 @@ body {
     background-blend-mode: normal;
 
     min-height: 100vh;
+
+    @media only screen and (max-width: $bp-medium) {
+      // adding new row for main navigation, last rows are implicitly created
+      grid-template-rows: 1rem 7rem 3rem minmax(3rem, max-content) 1fr 3rem 7rem 1rem;
+      // smaller margins on the side, remove toc column
+      grid-template-columns: 1rem 20rem 15rem 1fr 1rem;
+  }
+
 }
 
 table {
