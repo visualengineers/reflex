@@ -191,11 +191,10 @@
         cursor: pointer;
 
         @media only screen and (max-width: $bp-large) {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          margin-right: 0;
-          padding: 1.5rem 0 1.5rem 1.5rem;
+          grid-template-columns: 7rem 1fr;
+          grid-template-rows: 7rem 1fr;
+          align-items: center;
+          margin-right: 0;          
         }
   
         &:hover, &:focus {
@@ -209,6 +208,11 @@
         align-self:flex-start; 
   
         cursor: default;
+
+        @media only screen and (max-width: $bp-large) {
+          grid-row: 1/1;
+          grid-column: 1/1;
+        }
       }
       
       &--image-detail {
@@ -241,7 +245,7 @@
         display: flex;
       
         align-items: center;
-        justify-content: center;
+        justify-content: center;        
         
         &:hover + .timeline__publication--image-detail {
           display: block;
@@ -266,8 +270,10 @@
       &--description {
         margin: 0 2rem;
 
-        @media only screen and (max-width: $bp-large) {
-          margin: 2rem 0;
+        @media only screen and (max-width: $bp-large) {          
+          grid-row: 2/2;
+          grid-column: 1/4;
+          margin: 2rem 0 0 0;
         }
 
         & h3 {
@@ -349,6 +355,11 @@
         align-items: center;
   
         cursor: default;
+
+        @media only screen and (max-width: $bp-large) {
+          grid-row: 1/1;
+          grid-column: -1/-1;
+        }
       }
     }  
   }

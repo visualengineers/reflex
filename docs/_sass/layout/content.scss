@@ -10,6 +10,10 @@
 
     max-width: 120rem;
 
+    @media only screen and (max-width: $bp-large) {
+        grid-column: 3 / 6;
+    }
+
     @media only screen and (max-width: $bp-medium) {
         grid-row: 5 / 5;
         grid-column: 2 / 5;
@@ -147,7 +151,7 @@
 
 #table-of-contents {
 
-    @media only screen and (min-width: $bp-medium) {
+    @media only screen and (min-width: $bp-large) {
 
         position: absolute;
         right: 4rem;
