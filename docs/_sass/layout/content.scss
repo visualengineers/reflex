@@ -9,6 +9,7 @@
     font-weight: $font-weight-light;
 
     max-width: 120rem;
+    transition: all 0.5s ease-in-out;
 
     @media only screen and (max-width: $bp-large) {
         grid-column: 3 / 6;

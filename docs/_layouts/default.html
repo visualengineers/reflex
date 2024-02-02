@@ -24,9 +24,13 @@
         
     </nav>
 
+    <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavigation()" title="Toggle Navigation">
+        <i class="fa fa-bars"></i> Navigation
+    </a>
+
     {% comment %} only render navigation if there are items to display {% endcomment %}
     {% if currentCategory %}
-        <nav class="content-nav">   
+        <nav class="content-nav" id="navigation-panel">
             {% comment %} render category navigation {% endcomment %} 
             {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 0.5 selectedCategory = current %}
             <div class="external-nav">
@@ -58,4 +62,15 @@
     </footer>
     </body>
     {%- include mermaid.html -%}
+
+    <script>
+        function toggleNavigation() {
+            var x = document.getElementById("navigation-panel");
+            if (x.className === "content-nav") {
+                x.className += " expanded";
+            } else {
+                x.className = "content-nav";
+            }
+        }
+    </script>
 </html>
