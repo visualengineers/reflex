@@ -22,14 +22,13 @@
         {% include category.html nav = site.data.navigation.toc base = '/reflex' %}
         {% assign current=currentCategory %}
         
-    </nav>
-
-    <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavigation()" title="Toggle Navigation">
-        <i class="fa fa-bars"></i> Navigation
-    </a>
+    </nav>    
 
     {% comment %} only render navigation if there are items to display {% endcomment %}
     {% if currentCategory %}
+        <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavigation()" title="Toggle Navigation">
+            <i class="fa fa-bars"></i> Navigation
+        </a>
         <nav class="content-nav" id="navigation-panel">
             {% comment %} render category navigation {% endcomment %} 
             {% include nav.html nav = site.data.navigation.toc base = '/reflex' padding = 0.5 selectedCategory = current %}
