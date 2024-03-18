@@ -13,7 +13,7 @@ namespace TrackingServer.Data.Config
         
         public LimitationFilterType LimitationFilterType { get; set; }
         
-        public bool[][] FilterMask { get; set; }
+        public bool[][]? FilterMask { get; set; }
         
         public bool UseOptimizedBoxFilter { get; set; }
         
