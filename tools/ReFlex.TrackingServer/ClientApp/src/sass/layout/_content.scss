@@ -288,6 +288,40 @@ app-point-cloud {
         margin-top: $default-col-gap;
         line-height: $default-button-height;
     } 
+
+    &__displayJSON {
+        position: fixed;
+        width: 80vw;
+        height: 70vh;
+        top: 15vh;
+        left: 12rem;
+        z-index: 1000;
+
+        display: grid;
+        grid-template-rows: 1fr 5rem;
+        
+        align-items: end;
+        justify-items: end;
+        align-content: center;
+        justify-content: center;
+
+        background: $color-white;
+        border: 1px solid $color-primary;
+        border-radius: 5px;
+        padding: 3rem;
+
+        &--content {
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            height: 100%;
+            width: 100%;
+            display: block;
+
+            text-wrap: balance;
+            padding: 1rem;
+        }
+    }
 }
 
 .tuio-package {

@@ -670,6 +670,7 @@
     >
     <a class="button" (click)="resetSettings()">Reset</a>
     <a class="button" (click)="saveSettings(settings)">Save</a>
+    <a class="button" (click)="displaySettingsJSON(settings)">Display</a>
   </div>
   <div class="settings__button-group">
     <!-- <div class="settings__item--content"> -->
@@ -687,4 +688,11 @@
     </div>
     <!-- </div>             -->
   </div>
+</div>
+
+<div class="settings__displayJSON" *ngIf="showSettingsJSON">
+  <div class="settings__displayJSON--content">
+    {{ settingsJSON }}
+  </div>
+  <a class="button" (click)="hideSettingsJSON()">Close</a>
 </div>

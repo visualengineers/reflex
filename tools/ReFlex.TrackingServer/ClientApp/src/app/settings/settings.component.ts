@@ -52,6 +52,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public selectedExtremumCheckIdx = -1;
 
+  public showSettingsJSON = false;
+  public settingsJSON = '';
+
   private settingsSubscription?: Subscription;
   private trackingStatusSubscription?: Subscription;
   private performanceSubscription?: Subscription;
@@ -362,6 +365,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
     });
+  }
+
+  public displaySettingsJSON(settings: TrackingServerAppSettings): void {
+    this.showSettingsJSON = true;
+
+    this.settingsJSON = JSON.stringify(settings);
+  }
+
+  public hideSettingsJSON(): void {
+    this.showSettingsJSON = false;
+
+    this.settingsJSON = '';
   }
 
   public uploadConfig(e: Event): void {
