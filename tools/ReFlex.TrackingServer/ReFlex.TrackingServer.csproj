@@ -24,6 +24,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
+    <DefineAdditionalConstants>NO_EXTERNAL_SENSORS</DefineAdditionalConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
     <PlatformTarget>ARM64</PlatformTarget>
@@ -66,7 +67,7 @@
     <ProjectReference Include="..\..\library\src\Core\Util\Util.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' != 'CI' And '$(Platform)' != 'ARM64' And '$(Platform)' != 'AnyCPU'">
+  <ItemGroup Condition=" '$(Configuration)' != 'CI' And '$(Platform)' != 'ARM64' And '$(Platform)' != 'AnyCPU' And '$(DefineAdditionalConstants)' != 'NO_EXTERNAL_SENSORS'">
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\Kinect2Module\Kinect2Module.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
