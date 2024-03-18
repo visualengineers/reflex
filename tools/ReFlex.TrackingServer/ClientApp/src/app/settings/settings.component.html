@@ -692,7 +692,15 @@
 
 <div class="settings__displayJSON" *ngIf="showSettingsJSON">
   <div class="settings__displayJSON--content">
-    {{ settingsJSON }}
+    <div class="settings__displayJSON--wrapper">
+      <textarea #json>
+        {{ settingsJSON }}
+      </textarea>
+    </div>
+    
   </div>
-  <a class="button" (click)="hideSettingsJSON()">Close</a>
+  <div class="settings__button-group">
+    <a class="button" (click)="selectText()">Select</a>
+    <a class="button" (click)="hideSettingsJSON()">Close</a>
+  </div>
 </div>
