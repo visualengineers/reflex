@@ -78,14 +78,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.settingsSubscription = this.settingsService.getSettings().subscribe((result) => {
-      this.settings = result;
-      this.selectedFilterIdx = result.filterSettingValues.smoothingValues.type;
-      this.selectedExtremumCheckIdx = result.filterSettingValues.extremumSettings.checkMethod;
-      this.selectedLimitationFilterIdx = result.filterSettingValues.limitationFilterType;
-
-      if (!result.remoteProcessingServiceSettingsValues) {
-        result.remoteProcessingServiceSettingsValues = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
-      }
+      this.settings = this.validateSettings(result);
+      this.selectedFilterIdx = this.settings.filterSettingValues.smoothingValues.type;
+      this.selectedExtremumCheckIdx = this.settings.filterSettingValues.extremumSettings.checkMethod;
+      this.selectedLimitationFilterIdx = this.settings.filterSettingValues.limitationFilterType;
     }, (error) => {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
@@ -465,5 +461,40 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     this.performanceDataFilter.data = this.performanceDataFilter.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataProcess.data = this.performanceDataProcess.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
+  }
+
+  /**
+   * checks if parts of the config are null/undefined and replaces these parts with default values
+   */
+  private validateSettings(settings: TrackingServerAppSettings): TrackingServerAppSettings {
+    if (!settings.filterSettingValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.filterSettingValues;
+    }
+
+    if (!settings.calibrationValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.calibrationValues;
+    }
+
+    if (!settings.cameraConfigurationValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.cameraConfigurationValues;
+    }
+
+    if (!settings.networkSettingValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.networkSettingValues;
+    }
+
+    if (!settings.processingSettingValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.processingSettingValues;
+    }
+
+    if (!settings.remoteProcessingServiceSettingsValues) {
+      settings.remoteProcessingServiceSettingsValues = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
+    }
+
+    if (!settings.tuioSettingValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.tuioSettingValues;
+    }
+
+    return settings;
   }
 }
