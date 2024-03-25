@@ -472,19 +472,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
 
     if (!settings.calibrationValues) {
-      settings.filterSettingValues = DEFAULT_SETTINGS.calibrationValues;
+      settings.calibrationValues = DEFAULT_SETTINGS.calibrationValues;
     }
 
     if (!settings.cameraConfigurationValues) {
-      settings.filterSettingValues = DEFAULT_SETTINGS.cameraConfigurationValues;
+      settings.cameraConfigurationValues = DEFAULT_SETTINGS.cameraConfigurationValues;
     }
 
     if (!settings.networkSettingValues) {
-      settings.filterSettingValues = DEFAULT_SETTINGS.networkSettingValues;
+      settings.networkSettingValues = DEFAULT_SETTINGS.networkSettingValues;
     }
 
     if (!settings.processingSettingValues) {
-      settings.filterSettingValues = DEFAULT_SETTINGS.processingSettingValues;
+      settings.processingSettingValues = DEFAULT_SETTINGS.processingSettingValues;
     }
 
     if (!settings.remoteProcessingServiceSettingsValues) {
@@ -492,7 +492,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
 
     if (!settings.tuioSettingValues) {
-      settings.filterSettingValues = DEFAULT_SETTINGS.tuioSettingValues;
+      settings.tuioSettingValues = DEFAULT_SETTINGS.tuioSettingValues;
     }
 
     return settings;
