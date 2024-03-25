@@ -82,6 +82,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.selectedFilterIdx = result.filterSettingValues.smoothingValues.type;
       this.selectedExtremumCheckIdx = result.filterSettingValues.extremumSettings.checkMethod;
       this.selectedLimitationFilterIdx = result.filterSettingValues.limitationFilterType;
+
+      if (!result.remoteProcessingServiceSettingsValues) {
+        result.remoteProcessingServiceSettingsValues = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
+      }
     }, (error) => {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
