@@ -47,17 +47,17 @@ jobs:
         shell: bash
         run: mkdir -p docs/test/server/report          
       - name: Download library report        
-        uses: actions/download-artifact@v3        
+        uses: actions/download-artifact@main        
         with:
           name: ${{ needs.generate_test-report_library.outputs.artifact_name }}
           path: ${{ github.workspace }}/docs/test/library/report/
       - name: Download server report        
-        uses: actions/download-artifact@v3        
+        uses: actions/download-artifact@main        
         with:
           name: ${{ needs.generate_test-report_server.outputs.artifact_name }}
           path: ${{ github.workspace }}/docs/test/server/report/         
       - name: cache reports directory
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@main
         id: cache-reports
         with:
           path: ${{ github.workspace }}/docs/test

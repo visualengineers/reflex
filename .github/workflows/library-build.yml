@@ -24,9 +24,9 @@ jobs:
         cache_path: ${{ env.current_cache_path }}
     steps:
       - name: checkout repo with submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@main
       - name: install .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@main
         with:
           dotnet-version: '7.x'
       - name: Restore dependencies (Library)
@@ -38,7 +38,7 @@ jobs:
         run: dotnet build ReFlex.sln -c CI /p:Platform=x64
       - name: cache workspace with build output
         id: cache-library-build
-        uses: actions/cache@v3
+        uses: actions/cache@main
         with:
           path: ${{ env.current_cache_path }}
           key: ${{ env.current_cache_key }}

@@ -32,26 +32,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@main
       - name: Copy Existing Files
         working-directory: ./
         run: bash ${{ github.workspace }}/scripts/copy_docs.sh 
       - name: restore test reports cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@main
         id: cache-reports
         with:
           path: ${{ github.workspace }}/docs/test
           key: test-reports
           enableCrossOsArchive: true
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
+        uses: actions/jekyll-build-pages@main
         with:
           source: ./docs/
           destination: ./_site
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@main
 
   # Deployment job
   deploy-pages:
@@ -63,4 +63,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@main

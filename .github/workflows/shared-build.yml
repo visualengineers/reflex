@@ -17,16 +17,16 @@ jobs:
     name: build shared ts types
     steps:
       - name: checkout repo with submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@main
       - name: install node v18
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@main
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: ./package.json  
       - name: cache node-modules
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@main
         with:
           path: ${{ github.workspace }}/node_modules
           key: modules-${{ hashFiles('./package.json') }}

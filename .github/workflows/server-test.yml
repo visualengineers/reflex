@@ -20,16 +20,16 @@ jobs:
       artifact_name: ${{ env.artifact_name }}
     steps:
       - name: checkout repo with submodules
-        uses: actions/checkout@v3
+        uses: actions/checkout@main
       - name: install node v18
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@main
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: ./package.json  
       - name: cache node-modules
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@main
         with:
           path: ${{ github.workspace }}/node_modules
           key: modules-${{ hashFiles('./package.json') }}
@@ -43,12 +43,12 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: npm run test:server
       - name: Attach TestResults as Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@main
         with:
           name: ${{ env.artifact_name }}
           path: ${{ github.workspace }}/test/artifacts/coverage 
       - name: Publish JUnit Test Report
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@main
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: '${{ github.workspace }}/test/artifacts/tests/junit-test-results.xml'
