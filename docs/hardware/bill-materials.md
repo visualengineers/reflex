@@ -1,4 +1,4 @@
---
+---
 
 title: "DepthTouch: Bill of Materials"
 
@@ -7,14 +7,14 @@ title: "DepthTouch: Bill of Materials"
 # {{ page.title }}
 
 <!-- omit in toc -->
-
 ## Table of Contents
 
-[Overview](#overview)
+1. [Overview](#overview)
+2. [Detailed List](#detailed-list)
 
 ## Overview
 
-![Complete List of Materials]({{ site.baseurl }}/assets/construction/part-list.png)
+![Complete List of Materials]({{ site.baseurl }}/assets/construction/png/part-list.png)
 
 ## Detailed List
 
