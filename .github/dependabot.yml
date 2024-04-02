@@ -1,0 +1,143 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "npm" 
+    directory: "/" # Workspace updates
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/packages/reflex-shared-types" # Shared Types Lib
+    schedule:
+      interval: "weekly"
+ - package-ecosystem: "npm"
+    directory: "/examples/basic-angular" # Examples: Angular
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/examples/basic-react"  # Examples: React
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/examples/basic-vue"  # Examples: Vue
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/tools/emulator"  # Emulator
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/tools/logging"  # Logging
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/tools/ReFlex.TrackingServer/ClientApp"  # ReFlkex.TrackingServer (Angular Frrontend)
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Calibration" # Library: Core.Calibration
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Common" # Library: Core.Common
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Events" # Library: Core.Events
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Filtering" # Library: Core.Filtering
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Graphics" # Library: Core.Graphics
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Implementation" # Library: Core.Implementation
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Interactivity" # Library: Core.Interactivity
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Networking" # Library: Core.Networking
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Tracking" # Library: Core.Tracking
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Tuio" # Library: Core.Tuio
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Core/Util" # Library: Core.Util
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Sensor/AzureKinectModule" # Library: Sensor.AzureKinectModule
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Sensor/EmulatorModule" # Library: Sensor.AzureKinectModule
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Sensor/Kinect2Module" # Library: Sensor.AzureKinectModule
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Sensor/RealSenseL515Module" # Library: Sensor.AzureKinectModule
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Sensor/RealSenseR2Module" # Library: Sensor.AzureKinectModule
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/library/src/Sensor/RealSenseR435Module" # Library: Sensor.AzureKinectModule
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/Library/Common.Test" # Test: Common.Test
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/Library/Emulator.Benchmark" # Test: Emulator.Benchmark
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/Library/InteractionTests" # Test: InteractionTests
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/Library/Performnace/PointCloud.Benchmark" # Test: PointCloud.Benchmark
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/Library/PointCloud.Test" # Test: PointCloud.Test
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/Library/Tuio.Test" # Test: Tuio.Test
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/test/TuioTestClientConsole" # Test: TuioTestClientConsole
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directory: "/tools/ReFlex.TrackingServer" # ReFlex.TrackingServer
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget" 
+    directory: "/examples/ExampleWPF" # Examples: WPF
+    schedule:
+      interval: "weekly"
