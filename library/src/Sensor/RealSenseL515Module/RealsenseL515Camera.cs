@@ -85,11 +85,8 @@ namespace ReFlex.Sensor.RealSenseL515Module
         {
             var configs = new List<StreamParameter>
             {
-                //new StreamParameter(240, 640, 30),
-                //new StreamParameter(384, 1024, 30),
-                new StreamParameter(480, 640, 30),
+                new StreamParameter(320, 240, 30),
                 new StreamParameter(640, 480, 30),
-                new StreamParameter(768, 1024, 30),
                 new StreamParameter(1024, 768, 30)
             };
 

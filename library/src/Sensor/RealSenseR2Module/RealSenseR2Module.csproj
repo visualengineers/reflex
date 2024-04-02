@@ -27,6 +27,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Intel.RealSenseWithNativeDll" Version="2.51.1.1" />
+    <PackageReference Include="libpxcclr.cs" Version="10.0.26.400" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.8.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="NLog" Version="5.1.3" />
@@ -37,11 +39,6 @@
     <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="libpxcclr.cs">
-      <HintPath>..\..\..\..\external\libpxcclr.cs.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
