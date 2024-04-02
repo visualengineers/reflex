@@ -3,20 +3,22 @@
 Platform-independent server application using ASP.NET Core as backend and Angular as frontend. Replaces the legacy ServerWPF app.
 
 <!-- omit in toc -->
+
 ## Table of Contents
 
-1. [Installation and start](#installation-and-start)
-2. [.NET Testing](#net-testing)
-3. [Backend Logging](#backend-logging)
-4. [SignalR Hubs](#signalr-hubs)
-5. [Insomnia](#insomnia)
-6. [Development certificates](#development-certificates)
-7. [Developing Angular ClientApp](#developing-angular-clientapp)
-8. [Electron Desktop app](#electron-desktop-app)
-9. [Azure Kinect Build issues](#azure-kinect-build-issues)
-10. [Depth Camera issues](#depth-camera-issues)
-11. [Known Issues](#known-issues)
-
+1. [Table of Contents](#table-of-contents)
+2. [Installation and start](#installation-and-start)
+3. [Sensors](#sensors)
+4. [.NET Testing](#net-testing)
+5. [Backend Logging](#backend-logging)
+6. [SignalR Hubs](#signalr-hubs)
+7. [Insomnia](#insomnia)
+8. [Development certificates](#development-certificates)
+9. [Developing Angular ClientApp](#developing-angular-clientapp)
+10. [Electron Desktop app](#electron-desktop-app)
+11. [Azure Kinect Build issues](#azure-kinect-build-issues)
+12. [Depth Camera issues](#depth-camera-issues)
+13. [Known Issues](#known-issues)
 
 ## Installation and start
 
@@ -29,30 +31,57 @@ Platform-independent server application using ASP.NET Core as backend and Angula
     [Download](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
   - Depth Sensor Support:
     - Azure Kinect
-      - requires __Microsoft Visual C++ Redistributable für Visual Studio 2015__ [Download](https://click.linksynergy.com/deeplink?id=09*qMXuOFN0&mid=46131&murl=https%3A%2F%2Fwww.microsoft.com%2Fde-de%2Fdownload%2Fdetails.aspx%3Fid%3D48145)
+      - requires **Microsoft Visual C++ Redistributable für Visual Studio 2015** [Download](https://click.linksynergy.com/deeplink?id=09*qMXuOFN0&mid=46131&murl=https%3A%2F%2Fwww.microsoft.com%2Fde-de%2Fdownload%2Fdetails.aspx%3Fid%3D48145)
       - Azure Kinect SDK [Download](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/docs/usage.md)
       - github Documentation [github Repository](https://github.com/microsoft/Azure-Kinect-Sensor-SDK)
     - Kinect 2
       - Kinect for Windows SDK 2.0 [Download](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
     - Intel RealSense R2, D435, L515
-  
+      - Intel RealSense SDK 2.0 (v2.54.2) [Download](https://github.com/IntelRealSense/librealsense/releases/tag/v2.54.2)
 - navigate to `ClientApp/` subdirectory
 
 - `npm install` for fetching node packages (on first start)
 - `npm start` in Visual Studio Code / Terminal (for local Angular CLI)
 
 1. Option: (Debugging in Visual Studio)
+
    - Start "TrackingServer" in Visual Studio (for running backend)
    - launch `Chrome` launch config for Angular debugging
 
-2. Option (Debugging in Visual Studio __Code__):
+2. Option (Debugging in Visual Studio **Code**):
    - prerequisite: app must be build beforehand in Visual Studio
    - launch `Core & Chrome` launch config
 
 - app runs at `https://localhost:5001`
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---
+
+## Sensors
+
+By default, sensors and associated libraries are **NOT** included in the build configuration.
+
+To Build Sensors, use the following Constants in the `TrackingServer.csproj` Project file:
+
+| Constant          | included sensors / projects                       |
+| ----------------- | ------------------------------------------------- |
+| `MS_AZURE_KINECT` | Sensor\AzureKinectModule (Microsoft Azure Kinect) |
+| `MS_KINECT2`      | Sensor\Kinect2Module (Microsoft Kinect2)          |
+| `INTEL_REALSENSE` | Sensor\RealSenseL515Module (Intel RealSense L515) |
+|                   | Sensor\RealSenseR2Module (Intel RealSense R2)     |
+|                   | Sensor\RealSenseR435Module (Intel RealSense R435) |
+
+The constants should be added in the associated Config section, e.g.:
+
+``` XML
+    <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+      <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>
+  </PropertyGroup>
+```
+
+---
 
 ## .NET Testing
 
@@ -69,7 +98,7 @@ ___
     `dotnet test --collect:"XPlat Code Coverage" --results-directory: ./test/artifacts/coverage-net/cobertura/`  
     **REMARKS:** a folder named with a random guid containing the report is generated for each test assembly
   - generate report by collecting all cobertura files (when using globbing for specifying reports in subdirectories the argument for `reports` must be wrapped in `"`)
-    `reportgenerator -reports:"./test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"./test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`    
+    `reportgenerator -reports:"./test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"./test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`
 
 For more options, refer to [Online Configuration Tool for Report Generator](https://reportgenerator.io/usage)
 
@@ -80,33 +109,34 @@ Alternative, using tool dotnet-coverage (only on Windows)
 
 - Install **dotnet-coverage**
   `dotnet tool install --global dotnet-coverage`
-- execute tests and generate coverage report: 
+- execute tests and generate coverage report:
   `dotnet coverage collect dotnet test --output ./test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura`
 - generate report:
   `reportgenerator -reports:./test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:"./test/artifacts/coverage-net/report" -reporttypes:Html -assemblyfilters:"+ReFlex.*;-*.Test"`
 
 - further information:
+
   - [online configuration](https://reportgenerator.io/usage)
   - [github repo](https://github.com/danielpalme/ReportGenerator)
 
-- *REMARKS*: if specifying more than one argument for parameter `assemblyfilters`, the argument need to be wrapped in `"` 
+- _REMARKS_: if specifying more than one argument for parameter `assemblyfilters`, the argument need to be wrapped in `"`
   - use `-assemblyfilters:"+ReFlex.*;-*.Test"` instead of `-assemblyfilters:+ReFlex.*;-*.Test`
 
 ## Backend Logging
 
-- Backend uses `NLog` for logging. `NLog` can be configured in the `appsettings.json` (with additional rules in `appsettings.development.json` applied in development environments and `appsettings.production.json` for productive environments). The environment is set during __Runtime__ by providing the arguments `"ASPNETCORE_ENVIRONMENT": "production" | "development"` (see [`launch.json`](.vscode/launch.json)) on `dotnet run`
+- Backend uses `NLog` for logging. `NLog` can be configured in the `appsettings.json` (with additional rules in `appsettings.development.json` applied in development environments and `appsettings.production.json` for productive environments). The environment is set during **Runtime** by providing the arguments `"ASPNETCORE_ENVIRONMENT": "production" | "development"` (see [`launch.json`](.vscode/launch.json)) on `dotnet run`
 - ASP.NET provides very detailed logging for every request. For development, this is rendered to the console. However, if this is not desired, these logs can be filtered in the nlog configuration. This can eb done by changing the `maxLevel` Attribute in the nlog rules section for
 
-``` json
-  {
-    "logger": "Microsoft.*",
-    "maxLevel": "Debug",
-    "final": true
-  }
+```json
+{
+  "logger": "Microsoft.*",
+  "maxLevel": "Debug",
+  "final": true
+}
 ```
 
 - the mechanism above acts like a filter: it takes all messages with a level lower than `Debug` and send it to a target without a specified output (and therefore effectively removes all messages for the following loggers)
-- __Remarks:__ ASP.NET Logging levels can also be adjusted in the app settings, however, this only seems to affect the logging to file, as NLog still receives the logs even after disabling them
+- **Remarks:** ASP.NET Logging levels can also be adjusted in the app settings, however, this only seems to affect the logging to file, as NLog still receives the logs even after disabling them
 
 ## SignalR Hubs
 
@@ -129,31 +159,32 @@ For sending status information and updates as well as data like point cloud, the
 |                |                  | `startInteractionFrames`/`stopInteractionFrames`              | receive interaction frames                       |
 |                |                  | `startInteractionHistory`/`stopInteractionHistory`            | receive interaction history                      |
 
-- __REMARKS:__ Testing `SignalR` is a little bit more complex, as the SignalR-protocol follows a specific procedure:
-    1. *negotiate connection:* acquire a `connectionId` and `connectionToken` for identifying the sender:  
-      `https://localhost:5001/prochub/negotiate?negotiateVersion=1` (`POST` Request)
-    1. *connect with token:* connect using the provided connection token:  
-       `https://localhost:5001/prochub?id=xyA0WRiSp_f_UJ3bICalPQ` (`POST` Request, not necessary, can be done when connecting websocket)
-    1. *establish connection:* connect with the token and start communicating:  
-      `wss://localhost:5001/prochub?id=xyA0WRiSp_f_UJ3bICalPQ` (`WebSocket` communication)  
-      with body:
+- **REMARKS:** Testing `SignalR` is a little bit more complex, as the SignalR-protocol follows a specific procedure:
 
-    ``` json
-      {"protocol":"json","version":1}                          // always needs to be the first message
-      {"arguments":[],"target":"startState","type":1}          // call function
-      {"arguments":[],"target":"StartInteractions","type":1}   // call another
-    ```
+  1. _negotiate connection:_ acquire a `connectionId` and `connectionToken` for identifying the sender:  
+     `https://localhost:5001/prochub/negotiate?negotiateVersion=1` (`POST` Request)
+  1. _connect with token:_ connect using the provided connection token:  
+     `https://localhost:5001/prochub?id=xyA0WRiSp_f_UJ3bICalPQ` (`POST` Request, not necessary, can be done when connecting websocket)
+  1. _establish connection:_ connect with the token and start communicating:  
+     `wss://localhost:5001/prochub?id=xyA0WRiSp_f_UJ3bICalPQ` (`WebSocket` communication)  
+     with body:
 
-    1. *send messages:* send and receive data
-      Example: `wss://localhost:5001/prochub?id=xyA0WRiSp_f_UJ3bICalPQ` (`WebSocket` communication)
-      with body:
+  ```json
+    {"protocol":"json","version":1}                          // always needs to be the first message
+    {"arguments":[],"target":"startState","type":1}          // call function
+    {"arguments":[],"target":"StartInteractions","type":1}   // call another
+  ```
 
-    ``` json
-      {"arguments":[],"target":"startState","type":1}          // call function
-      {"arguments":[],"target":"StartInteractions","type":1}   // call another
-    ```
+  1. _send messages:_ send and receive data
+     Example: `wss://localhost:5001/prochub?id=xyA0WRiSp_f_UJ3bICalPQ` (`WebSocket` communication)
+     with body:
 
-- __IMPORTANT__:  
+  ```json
+    {"arguments":[],"target":"startState","type":1}          // call function
+    {"arguments":[],"target":"StartInteractions","type":1}   // call another
+  ```
+
+- **IMPORTANT**:
   - Message 1-3 must be sent within a certain time limit to prevent timeout/automatic disconnect
   - the json message must end with the  terminal character (can be retrieved by debugging the connection with chrome and copy message)
 
@@ -162,7 +193,7 @@ For sending status information and updates as well as data like point cloud, the
 HTTP-Requests, Websocket communication and gRPC communication can be tested using [`Insomnia`](https://insomnia.rest/).
 The request provided by the ASP.NET backend are exported as workspace and can be found in [Insomnia Workspace Export](/Test/Insomnia/Insomnia_Workspace.json).
 
-For testing SignalR, Insomnia offers the feature of *chained Requests* [Documentation](https://docs.insomnia.rest/insomnia/chaining-requests), therefore it is not necessary to copy the response values in the address bar. Just sending the requests in the correct order should be sufficient.
+For testing SignalR, Insomnia offers the feature of _chained Requests_ [Documentation](https://docs.insomnia.rest/insomnia/chaining-requests), therefore it is not necessary to copy the response values in the address bar. Just sending the requests in the correct order should be sufficient.
 The current Workspace provides three methods:
 
 - `negotiate`:  
@@ -171,7 +202,7 @@ The current Workspace provides three methods:
   connect with a HTTP POST request (can be omitted)
 - `establishConnection`:  
   opens the websocket connection with the provided token and sends messages (click on `send` afer connecting)  
-  __REMARK:__ there is one drawback of using websocket connections: there can be no second connection with the same token, therefore messages must be sent with this provided method by replacing the json body which is rather problematic, due to the terminal character
+  **REMARK:** there is one drawback of using websocket connections: there can be no second connection with the same token, therefore messages must be sent with this provided method by replacing the json body which is rather problematic, due to the terminal character
 
 ## Development certificates
 
@@ -179,40 +210,42 @@ The current Workspace provides three methods:
 
 To do this, run the following command in an elevated command prompt / powershell / etc...
 
-``` bash
-  dotnet dev-certs https --trust  
+```bash
+  dotnet dev-certs https --trust
 ```
 
 if there are other certificates already installed, these can be removed by the following commands:
 
-``` bash
+```bash
   dotnet dev-certs https --clean
 ```
 
-Subsequently, it should be possible to install the certificates with the commands stated above.  
+Subsequently, it should be possible to install the certificates with the commands stated above.
 
 However, if these commands don't work, it is also possible to globally install the dev certs:
 
-``` bash
-  dotnet tool uninstall --global dotnet-dev-certs 
+```bash
+  dotnet tool uninstall --global dotnet-dev-certs
   dotnet tool install --global dotnet-dev-certs
 ```
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---
 
 ## Developing Angular ClientApp
 
 - as the development folder contains nested Angular modules, it is necessary to specify the relevant module, when using angular CLI using `--module` parameter, eg:
 
-``` bash
+```bash
 
-  ng g c myComponent --module app # creates myComponent in open source mono repo for ReFlex.TrackingServer/ClientApp/src/app 
+  ng g c myComponent --module app # creates myComponent in open source mono repo for ReFlex.TrackingServer/ClientApp/src/app
 
 ```
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---
 
 ## Electron Desktop app
 
@@ -220,15 +253,15 @@ ___
 
 ### Prerequisites
 
-- globally installed tool `electronize` (matching current *Electron.NET* version). To install/update the tool, run:
+- globally installed tool `electronize` (matching current _Electron.NET_ version). To install/update the tool, run:
 
-  ``` bash
+  ```bash
     dotnet tool install ElectronNET.CLI -g
   ```
 
 - for updating electron cli:
 
-  ``` bash
+  ```bash
     dotnet tool update ElectronNET.CLI -g
   ```
 
@@ -236,7 +269,7 @@ ___
 
 - to start electron App, go to `ReFlex.TrackingServer` main folder and run the command:
 
-  ``` bash
+  ```bash
     electronize start
   ```
 
@@ -244,16 +277,16 @@ ___
 
 - for building an application package, the following command is used, depending on thr desired target platform:
 
-  ``` bash
+  ```bash
     electronize build /target win
     electronize build /target osx
     electronize build /target linux
   ```
 
-- __IMPORTANT:__ `ElectronNET` does not correctly execute the `dotnet publish` command if `.NET5.0` or higher is used (see [github issue](https://github.com/ElectronNET/Electron.NET/issues/532)).
+- **IMPORTANT:** `ElectronNET` does not correctly execute the `dotnet publish` command if `.NET5.0` or higher is used (see [github issue](https://github.com/ElectronNET/Electron.NET/issues/532)).
 
 - Therefore, use the following command instead:
-  
+
   ```bash
     electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target win
     electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target osx
@@ -270,13 +303,13 @@ ___
 
   ```bash
 
-  electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "linux-arm64;" /electron-arch arm64 
+  electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "linux-arm64;" /electron-arch arm64
 
   ```
 
   or use the prepared npm commands (from `ClientApp` directory):
 
-  ``` bash
+  ```bash
     npm run build:electron-win
     npm run build:electron-osx
     npm run build:electron-osx-arm64
@@ -284,11 +317,12 @@ ___
     npm run build:electron-linux-arm64
   ```
 
-if you want to exclude sensor support, you can add `/p:DefineAdditionalConstants=NO_EXTERNAL_SENSORS` as parameter
+By default, no sensors are included in the Build, you can add sensor Support by setting the appropriate flags with adding `/p:DefineAdditionalConstants=MS_AZURE_KINECT%2CMS_KINECT2%2CINTEL_REALSENSE` as parameter (use `%2C` as separator for specifying multiple flags)
+(see also [Sensors](#sensors))
 
 - App package can be found in `bin/Desktop` folder
 
-  __IMPORTANT:__ Building for mac does not work on Windows, because they require symlinks which are not supported on Windows.
+  **IMPORTANT:** Building for mac does not work on Windows, because they require symlinks which are not supported on Windows.
 
 ### Remarks
 
@@ -298,7 +332,7 @@ if you want to exclude sensor support, you can add `/p:DefineAdditionalConstants
 - File operations: the internal web server implementation used by Electron seems to be more strict than the development Server (Kestrel). Therefore, file operations on unknown file types result in redirects to an error page (happened, when trying to load `*.frag` / `*.vert`) for fragment/vertex shader code. Solution: use default file types (e.g. `txt`, `png`, `jpg`, ...)
 - Azure Kinect dlls are not copied by default. (App throws an error the AzureKinect libraries cannot be found on startup - see log) Therefore, an additional setting has been added to `electron.manifest.json` to force copy of external dlls to app directory:
 
-  ``` JSON
+  ```JSON
     "extraResources": [
       {
         "from": "../../../../library/export/Modules",
@@ -308,8 +342,9 @@ if you want to exclude sensor support, you can add `/p:DefineAdditionalConstants
     ]
   ```
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---
 
 ## Azure Kinect Build issues
 
@@ -319,10 +354,10 @@ AzureKinect nuget Package contains a platform check based on Visual Studio Envir
 
 If that's the case, open the file targets file of the package and remove the check:
 
-``` XML
+```XML
 
   <!-- remove the complete element -->
-  <Target Name="EnsureAzureKinectPlatform" BeforeTargets="PrepareForBuild">      
+  <Target Name="EnsureAzureKinectPlatform" BeforeTargets="PrepareForBuild">
     <Error Condition="'$(Platform)' != 'x64' AND '$(Platform)' != 'x86' AND '$(OutputType)'!='Library'" Text="Azure Kinect only supports the x86/x64 platform ('$(Platform)' not supported)" />
   </Target>
 
@@ -330,54 +365,56 @@ If that's the case, open the file targets file of the package and remove the che
 
 refer to [GitHub issue](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/issues/894)
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---
 
 ## Depth Camera issues
 
 - RealSense should work on Windows
 - Emulator should work everywhere
 - Kinect 2 currently doesn't load the correct DLL as it needs to be retrieved from GAC (console and desktop apps automatically access the GAC, ASP.NET Core does not)
-  this means that Kinect 2 is __not working__ on Linux/Mac Systems.
+  this means that Kinect 2 is **not working** on Linux/Mac Systems.
 - When compiling with VSCode, Azure Kinect DLLs are not copied to Output Directory. To use Azure Kinect, the files need to be copied manually (typically, DLLS are located at `C:\Users\...\.nuget\packages\microsoft.azure.kinect.sensor\1.4.1\lib\netstandard2.0` (on Windows));
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---
 
 ## Known Issues
 
 - Electron App crashes on startup - One possible issue relates to a missing certificate. error should be like this:
-  
-  ``` log
+
+  ```log
     System.InvalidOperationException: Unable to configure HTTPS endpoint. No server certificate was specified, and the default developer certificate could not be found or is out of date.
   To generate a developer certificate run 'dotnet dev-certs https'. To trust the certificate (Windows and macOS only) run 'dotnet dev-certs https --trust'.
   For more information on configuring HTTPS see https://go.microsoft.com/fwlink/?linkid=848054.
   ```
-  
-  __Solution:__ Install dev certificates on the machine using `'dotnet dev-certs https --trust'
+
+  **Solution:** Install dev certificates on the machine using `'dotnet dev-certs https --trust'
 
 - Path to `ReFlex.TrackingServer.dll` in `launch.json` is different when building with VS Code or Rider/Visual Studio. In case of building with VS Code: Change
 
-  ``` json
+  ```json
   "program": "${workspaceFolder}/TrackingServer/bin/Debug/net6.0/ReFlex.TrackingServer.dll",
   ```
 
   to
 
-  ``` json
+  ```json
   "program": "${workspaceFolder}/TrackingServer/bin/x64/Debug/net6.0/ReFlex.TrackingServer.dll",
   ```
 
   in `.NET Core` Configuration
 
 - when running `npm install`, rebuilding `node-gyp` may fail due to missing Python2. IN this case, update your global npm installation by using
-  
-  ``` bash
+
+  ```bash
   npm install - g npm
   ```
 
 - OmniSharp does not correctly load AzureKinectModule Project due to incorrectly using Platform 'AnyCPU' on project load. This results in Errors displayed in VS Code. Actually, building the project succeeds (as platform is enforced in build parameters so the build process uses the correct processor architecture). Therefore Errors related to missing AzureKinectModule types or namespaces can be ignored
-However, this behaviour can be stopped by editing the targets file of the nuget package (typically, DLLS are located at `C:\Users\...\.nuget\packages\microsoft.azure.kinect.sensor\1.4.1\lib\netstandard2.0` (on Windows)); by removeing / commenting the lines in `Microsoft.Azure.Kinect.Sensor.targets` file:
+  However, this behaviour can be stopped by editing the targets file of the nuget package (typically, DLLS are located at `C:\Users\...\.nuget\packages\microsoft.azure.kinect.sensor\1.4.1\lib\netstandard2.0` (on Windows)); by removeing / commenting the lines in `Microsoft.Azure.Kinect.Sensor.targets` file:
 
 ```XML
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -386,7 +423,8 @@ However, this behaviour can be stopped by editing the targets file of the nuget 
   </Target> -->
 ```
 
-- if __Microsoft Azure Kinect__ is not available as sensor and the error `k4a.dll cannot be found` is logged: make sure __Visual C++ Redistributable__ is installed on the machine (see [Prerequisites](#installation-and-start)).
+- if **Microsoft Azure Kinect** is not available as sensor and the error `k4a.dll cannot be found` is logged: make sure **Visual C++ Redistributable** is installed on the machine (see [Prerequisites](#installation-and-start)).
 
-__[⬆ back to top](#table-of-contents)__
-___
+**[⬆ back to top](#table-of-contents)**
+
+---

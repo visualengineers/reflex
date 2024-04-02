@@ -23,21 +23,15 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
+    <!--    <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
     <PlatformTarget>ARM64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Define additional preprocessor directives -->
     <DefineConstants Condition="'$(DefineAdditionalConstants)' != ''">$(DefineConstants);$(DefineAdditionalConstants)</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>    
     <PackageReference Include="ElectronNET.API" Version="23.6.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.52.0" />
