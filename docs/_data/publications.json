@@ -1,6 +1,24 @@
 {
   "years": [
     { 
+      "name": 2024,
+      "elements": [
+        {
+          "id": "2024_AVI",
+          "title": "Kickstarting Application Development for Elastic Displays with Do-it-yourself Hardware Assembly Instructions",
+          "authors": "Mathias Müller, Dietrich Kammer & Ingmar Franke",
+          "reference": "AVI - Advanced Visual Interfaces 2024, Genoa",
+          "image": "2024_AVI.jpg",
+          "preview": "2024_AVI_prev.jpg",
+          "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Haptics", "DIY hardware", "Open Science", "Frameworks"],
+          "doi": "",
+          "abstract": "2024_AVI.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    { 
       "name": 2023,
       "elements": [
         {
