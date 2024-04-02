@@ -291,6 +291,12 @@
                             "type": "page"
                         },
                         {
+                            "name": "Bill of Materials",
+                            "path": "/hardware/",
+                            "file": "bill-materials.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Construction Manual",
                             "path": "/hardware/",
                             "file": "construction_manual.html",
