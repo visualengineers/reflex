@@ -20,15 +20,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
     <PlatformTarget>ARM64</PlatformTarget>
-    <DefineAdditionalConstants>NO_EXTERNAL_SENSORS</DefineAdditionalConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
-    <DefineAdditionalConstants>NO_EXTERNAL_SENSORS</DefineAdditionalConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
     <PlatformTarget>ARM64</PlatformTarget>
-    <DefineAdditionalConstants>NO_EXTERNAL_SENSORS</DefineAdditionalConstants>    
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <!-- Define additional preprocessor directives -->
@@ -67,13 +70,17 @@
     <ProjectReference Include="..\..\library\src\Core\Util\Util.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' != 'CI' And '$(Platform)' != 'ARM64' And '$(Platform)' != 'AnyCPU' And '$(DefineAdditionalConstants)' != 'NO_EXTERNAL_SENSORS'">
+  <ItemGroup Condition="'$(DefineConstants.Contains(MS_AZURE_KINECT))' == true ">
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\Kinect2Module\Kinect2Module.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />
   </ItemGroup>
+  <ItemGroup Condition="'$(DefineConstants.Contains(MS_KINECT2))' == true">
+    <ProjectReference Include="..\..\library\src\Sensor\Kinect2Module\Kinect2Module.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DefineConstants.Contains(INTEL_REALSENSE))' == true">    
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />    
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />    
+  </ItemGroup>  
   <ItemGroup>
     <Content Update="wwwroot\Config\TrackingSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
