@@ -284,6 +284,7 @@ ___
     npm run build:electron-linux-arm64
   ```
 
+if you want to exclude sensor support, you can add `/p:DefineAdditionalConstants=NO_EXTERNAL_SENSORS` as parameter
 
 - App package can be found in `bin/Desktop` folder
 

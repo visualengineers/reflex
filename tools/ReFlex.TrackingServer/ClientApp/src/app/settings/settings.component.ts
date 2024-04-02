@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription, combineLatest, interval } from 'rxjs';
 import { LogService } from '../log/log.service';
@@ -14,6 +14,8 @@ import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
+  @ViewChild('json')
+  public jsonElement?: ElementRef;
 
   public settings: TrackingServerAppSettings = DEFAULT_SETTINGS;
 
@@ -52,6 +54,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public selectedExtremumCheckIdx = -1;
 
+  public showSettingsJSON = false;
+  public settingsJSON = '';
+
   private settingsSubscription?: Subscription;
   private trackingStatusSubscription?: Subscription;
   private performanceSubscription?: Subscription;
@@ -73,10 +78,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.settingsSubscription = this.settingsService.getSettings().subscribe((result) => {
-      this.settings = result;
-      this.selectedFilterIdx = result.filterSettingValues.smoothingValues.type;
-      this.selectedExtremumCheckIdx = result.filterSettingValues.extremumSettings.checkMethod;
-      this.selectedLimitationFilterIdx = result.filterSettingValues.limitationFilterType;
+      this.settings = this.validateSettings(result);
+      this.selectedFilterIdx = this.settings.filterSettingValues.smoothingValues.type;
+      this.selectedExtremumCheckIdx = this.settings.filterSettingValues.extremumSettings.checkMethod;
+      this.selectedLimitationFilterIdx = this.settings.filterSettingValues.limitationFilterType;
     }, (error) => {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
@@ -364,6 +369,24 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
+  public displaySettingsJSON(settings: TrackingServerAppSettings): void {
+    this.showSettingsJSON = true;
+
+    this.settingsJSON = JSON.stringify(settings);
+  }
+
+  public hideSettingsJSON(): void {
+    this.showSettingsJSON = false;
+
+    this.settingsJSON = '';
+  }
+
+  public selectText(): void {
+    if (this.jsonElement) {
+      this.jsonElement.nativeElement.select();
+    }
+  }
+
   public uploadConfig(e: Event): void {
 
     const input = e.target as HTMLInputElement;
@@ -438,5 +461,40 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     this.performanceDataFilter.data = this.performanceDataFilter.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataProcess.data = this.performanceDataProcess.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
+  }
+
+  /**
+   * checks if parts of the config are null/undefined and replaces these parts with default values
+   */
+  private validateSettings(settings: TrackingServerAppSettings): TrackingServerAppSettings {
+    if (!settings.filterSettingValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.filterSettingValues;
+    }
+
+    if (!settings.calibrationValues) {
+      settings.calibrationValues = DEFAULT_SETTINGS.calibrationValues;
+    }
+
+    if (!settings.cameraConfigurationValues) {
+      settings.cameraConfigurationValues = DEFAULT_SETTINGS.cameraConfigurationValues;
+    }
+
+    if (!settings.networkSettingValues) {
+      settings.networkSettingValues = DEFAULT_SETTINGS.networkSettingValues;
+    }
+
+    if (!settings.processingSettingValues) {
+      settings.processingSettingValues = DEFAULT_SETTINGS.processingSettingValues;
+    }
+
+    if (!settings.remoteProcessingServiceSettingsValues) {
+      settings.remoteProcessingServiceSettingsValues = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
+    }
+
+    if (!settings.tuioSettingValues) {
+      settings.tuioSettingValues = DEFAULT_SETTINGS.tuioSettingValues;
+    }
+
+    return settings;
   }
 }
