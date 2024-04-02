@@ -23,7 +23,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64' Or '$(Platform)' == 'AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
-    <!--    <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>-->
+    <!--        <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>-->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
     <PlatformTarget>ARM64</PlatformTarget>

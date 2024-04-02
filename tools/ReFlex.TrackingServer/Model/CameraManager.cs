@@ -1,12 +1,11 @@
 ﻿using NLog;
 using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Sensor.EmulatorModule;
-
-using System.Runtime.InteropServices;
 #if MS_AZURE_KINECT
 using ReFlex.Sensor.AzureKinectModule;
 #endif
 #if MS_KINECT2
+using System.Runtime.InteropServices;
 using ReFlex.Sensor.Kinect2Module;
 #endif
 #if INTEL_REALSENSE
