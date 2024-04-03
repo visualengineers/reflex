@@ -34,34 +34,34 @@ export class ValueSliderComponent implements OnInit, OnDestroy {
   @Output()
   public onChange = new EventEmitter();
 
-  private readonly _currentValue: BehaviorSubject<number> = new BehaviorSubject(0);
-  private readonly _debounce$: Observable<number>;
-  private _debounceUpdate?: Subscription;
-  private _unchanged = true;
+  private readonly currentValue: BehaviorSubject<number> = new BehaviorSubject(0);
+  private readonly debounce$: Observable<number>;
+  private debounceUpdate?: Subscription;
+  private unchanged = true;
 
   public constructor() {
-    this._debounce$ = this._currentValue.pipe(
+    this.debounce$ = this.currentValue.pipe(
       // wait until first change...
-      skipWhile(() => this._unchanged),
+      skipWhile(() => this.unchanged),
       debounceTime(100)
     );
   }
 
   public ngOnInit(): void {
-    this._debounceUpdate = this._debounce$.subscribe(
+    this.debounceUpdate = this.debounce$.subscribe(
       () => this.onChange.emit(),
       (error) => console.error(error)
     );
   }
 
   public ngOnDestroy(): void {
-    this._debounceUpdate?.unsubscribe();
-    this._unchanged = true;
+    this.debounceUpdate?.unsubscribe();
+    this.unchanged = true;
   }
 
   public update(): void {
-    this._unchanged = false;
-    this._currentValue.next(this.data);
+    this.unchanged = false;
+    this.currentValue.next(this.data);
     this.dataChange.emit(this.data);
   }
 }

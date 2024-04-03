@@ -11,17 +11,17 @@ export class InteractionsComponent {
   public interactions: CompleteInteractionData = { raw: [], absolute: [], normalized: [] };
   public calibratedInteractions: Array<Interaction> = [];
 
-  private _isProcessing = false;
-  private readonly _datePipe: DatePipe = new DatePipe('en-US', '+0000');
+  private pIsProcessing = false;
+  private readonly datePipe: DatePipe = new DatePipe('en-US', '+0000');
 
   public get isProcessing(): boolean {
-    return this._isProcessing;
+    return this.pIsProcessing;
   }
 
   @Input()
   public set isProcessing(value: boolean) {
-    this._isProcessing = value;
-    if (!this._isProcessing) {
+    this.pIsProcessing = value;
+    if (!this.pIsProcessing) {
       this.interactions = { raw: [], absolute: [], normalized: [] };
     }
   }
@@ -38,7 +38,7 @@ export class InteractionsComponent {
 
     const resultDate = new Date(tickDate);
 
-    return this._datePipe.transform(resultDate.getTime(), 'HH:mm:ss.SSS') as string;
+    return this.datePipe.transform(resultDate.getTime(), 'HH:mm:ss.SSS') as string;
   }
 
   public updateInteractions(interactions: CompleteInteractionData): void {

@@ -149,8 +149,8 @@ export class PerformanceVisualizationComponent implements OnChanges {
         .data([`${this.average.toFixed(2)} ms`])
         .append('tspan')
         .attr('x', 0)
-        .attr('y', (_, i) => `${i * 1.1}em`)
-        .attr('font-weight', (_, i) => i ? null : 'bold')
+        .attr('y', (n, i) => `${i * 1.1}em`)
+        .attr('font-weight', (n, i) => i ? null : 'bold')
         .text((d) => d));
 
     avgText.attr('transform', `translate(${x(0.9 * this.numSamples)},${yAvg - 12})`);
@@ -189,8 +189,8 @@ export class PerformanceVisualizationComponent implements OnChanges {
           .data(['Total: ', `${yValue.toFixed(2)} ms`])
           .join('tspan')
           .attr('x', 0)
-          .attr('y', (_, ttidx) => `${ttidx * 1.1}em`)
-          .attr('font-weight', (_, ttidx) => ttidx ? null : 'bold')
+          .attr('y', (n, ttidx) => `${ttidx * 1.1}em`)
+          .attr('font-weight', (n, ttidx) => ttidx ? null : 'bold')
           .text((d) => d));
 
       const ttWidth = 50;

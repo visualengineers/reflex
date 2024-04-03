@@ -14,13 +14,13 @@ export class MeasureSurfaceComponent implements OnInit {
   public fullScreen = false;
 
   private frameSizeSubscription?: Subscription;
-  private _frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
+  private frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
 
   public constructor(private readonly calibrationService: CalibrationService, private readonly logService: LogService) { }
 
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService.getFrameSize().subscribe((result) => {
-      this._frameSize = result;
+      this.frameSize = result;
     }, (error) => {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
@@ -35,10 +35,10 @@ export class MeasureSurfaceComponent implements OnInit {
     if (this.fullScreen) {
       return {
         position: 'absolute',
-        top: `${this._frameSize.top}px`,
-        left: `${this._frameSize.left}px`,
-        width: `${this._frameSize.width}px`,
-        height: `${this._frameSize.height}px`
+        top: `${this.frameSize.top}px`,
+        left: `${this.frameSize.left}px`,
+        width: `${this.frameSize.width}px`,
+        height: `${this.frameSize.height}px`
       };
     }
 
