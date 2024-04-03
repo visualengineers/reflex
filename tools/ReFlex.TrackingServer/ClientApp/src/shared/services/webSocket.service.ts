@@ -6,19 +6,19 @@ import { webSocket, WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSoc
   providedIn: 'root'
 })
 export class WebSocketService {
-  private _socket?: WebSocketSubject<MessageEvent>;
+  private socket?: WebSocketSubject<MessageEvent>;
 
   public createSocket(cfg: WebSocketSubjectConfig<MessageEvent>): Subject<MessageEvent> {
-    this._socket = webSocket(cfg);
+    this.socket = webSocket(cfg);
 
-    return this._socket;
+    return this.socket;
   }
 
   public getResponseStream(): Observable<MessageEvent> {
-    if (this._socket === undefined) {
+    if (this.socket === undefined) {
       return of();
     }
 
-    return this._socket.asObservable();
+    return this.socket.asObservable();
   }
 }
