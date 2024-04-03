@@ -13,7 +13,7 @@ updates:
     directory: "/packages/reflex-shared-types" # Shared Types Lib
     schedule:
       interval: "weekly"
- - package-ecosystem: "npm"
+  - package-ecosystem: "npm"
     directory: "/examples/basic-angular" # Examples: Angular
     schedule:
       interval: "weekly"
