@@ -23,8 +23,8 @@ public class PerformanceAggregatorTest
         aggregator.MeasurePerformance = true;
 
         // Assert
-        Assert.IsTrue(reporter1.MeasurePerformance);
-        Assert.IsTrue(reporter2.MeasurePerformance);
+        Assert.That(reporter1.MeasurePerformance, Is.True);
+        Assert.That(reporter2.MeasurePerformance, Is.True);
     }
 
     [Test]

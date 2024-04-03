@@ -18,7 +18,7 @@ public class InteractionFrameHistoryTest
 
         var id = rnd.Next(100);
         
-        for (var i = 0; i < rnd.Next(30); i++)
+        for (var i = 0; i < rnd.Next(30) + 1; i++)
         {
             var interaction = new Interaction();
             interaction.TouchId = i;
@@ -30,8 +30,11 @@ public class InteractionFrameHistoryTest
         var testFrame = new InteractionFrame(id, testData);
         
         Assert.That(testFrame, Is.Not.Null);
-        Assert.That(testFrame.FrameId, Is.EqualTo(id));
-        Assert.That(testFrame.Interactions, Is.Not.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(testFrame.FrameId, Is.EqualTo(id));
+            Assert.That(testFrame.Interactions, Is.Not.Empty);
+        });
         Assert.That(testFrame.Interactions, Has.Count.EqualTo(testData.Count));
         foreach (var interaction in testData)
         {
@@ -71,7 +74,7 @@ public class InteractionFrameHistoryTest
 
         var touchId = rnd.Next(100);
         
-        for (var i = 0; i < rnd.Next(30); i++)
+        for (var i = 0; i < rnd.Next(30) + 1; i++)
         {
             var interaction = new Interaction();
             interaction.TouchId = touchId;
@@ -83,8 +86,11 @@ public class InteractionFrameHistoryTest
         var testHistory = new InteractionHistory(touchId, testData);
         
         Assert.That(testHistory, Is.Not.Null);
-        Assert.That(testHistory.TouchId, Is.EqualTo(touchId));
-        Assert.That(testHistory.Items, Is.Not.Empty);
+        Assert.Multiple(() =>
+        {
+            Assert.That(testHistory.TouchId, Is.EqualTo(touchId));
+            Assert.That(testHistory.Items, Is.Not.Empty);
+        });
         Assert.That(testHistory.Items, Has.Count.EqualTo(testData.Count));
         foreach (var frame in testData)
         {

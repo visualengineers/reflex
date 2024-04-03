@@ -49,7 +49,6 @@
     <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
     <ProjectReference Include="..\..\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
     <ProjectReference Include="..\..\Sensor\EmulatorModule\EmulatorModule.csproj" />
-    <ProjectReference Include="..\..\Sensor\Kinect2Module\Kinect2Module.csproj" />
     <ProjectReference Include="..\..\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
     <ProjectReference Include="..\..\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
     <ProjectReference Include="..\..\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />
@@ -59,16 +58,16 @@
       <Version>2.5.2</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.6</Version>
+      <Version>2.0.7</Version>
     </PackageReference>
     <PackageReference Include="ControlzEx">
       <Version>5.0.2</Version>
     </PackageReference>
     <PackageReference Include="DynamicExpresso.Core">
-      <Version>2.13.0</Version>
+      <Version>2.16.1</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro">
-      <Version>2.4.9</Version>
+      <Version>2.4.10</Version>
     </PackageReference>
     <PackageReference Include="MathNet.Numerics">
       <Version>5.0.0</Version>

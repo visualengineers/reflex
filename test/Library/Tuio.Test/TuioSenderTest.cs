@@ -48,11 +48,11 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public void TestInitializeWithNull()
         {
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
 
             _instance.Initialize(It.IsAny<TuioConfiguration>());
 
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
 
             var valid = new TuioConfiguration
             {
@@ -63,12 +63,12 @@ namespace ReFlex.Core.Tuio.Test
             
             _instance.Initialize(valid);
 
-            Assert.IsTrue(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.True);
             
             _instance.Initialize(It.IsAny<TuioConfiguration>());
-            
+
             // invalid config should not change configuration
-            Assert.IsTrue(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.True);
         }
         
         /// <summary>
@@ -80,7 +80,7 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public void TestInitializationValidity()
         {
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
             
             var invalid = new TuioConfiguration
             {
@@ -90,28 +90,28 @@ namespace ReFlex.Core.Tuio.Test
 
             _instance.Initialize(invalid);
 
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
 
             invalid.ServerPort = 123;
             invalid.ServerAddress = "    ";
             
             _instance.Initialize(invalid);
 
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
             
             invalid.ServerPort = -1;
             invalid.ServerAddress = "127.0.0.1";
             
             _instance.Initialize(invalid);
 
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
 
             // default parameters should work
             var valid = new TuioConfiguration();
             
             _instance.Initialize(valid);
 
-            Assert.IsTrue(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.True);
         }
         
         /// <summary>
@@ -120,15 +120,15 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public void TestInitializeWithInvalidTransport()
         {
-            Assert.IsFalse(_instance.IsInitialized);
-            
-            Assert.IsFalse(Enum.IsDefined(typeof(TransportProtocol), Int32.MaxValue));
+            Assert.That(_instance.IsInitialized, Is.False);
+
+            Assert.That(Enum.IsDefined(typeof(TransportProtocol), Int32.MaxValue), Is.False);
 
             var invalid = new TuioConfiguration { Transport = (TransportProtocol)Int32.MaxValue };
             
             Assert.Throws<ArgumentException>(() =>_instance.Initialize(invalid));
 
-            Assert.IsFalse(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.False);
 
             var valid = new TuioConfiguration
             {
@@ -139,12 +139,12 @@ namespace ReFlex.Core.Tuio.Test
             
             _instance.Initialize(valid);
 
-            Assert.IsTrue(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.True);
             
             Assert.Throws<ArgumentException>(() =>_instance.Initialize(invalid));
-            
+
             // invalid config should not change configuration
-            Assert.IsTrue(_instance.IsInitialized);
+            Assert.That(_instance.IsInitialized, Is.True);
         }
         
         /// <summary>
@@ -158,22 +158,22 @@ namespace ReFlex.Core.Tuio.Test
             var wsMock = new Mock<IClientWebSocket>().Object;
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock, wsMock);
-            
-            Assert.IsFalse(mockInstance.IsInitialized);
+
+            Assert.That(mockInstance.IsInitialized, Is.False);
             
             mockInstance.Initialize(new TuioConfiguration());
-            
-            Assert.IsTrue(mockInstance.IsInitialized);
+
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             await mockInstance.SendUdp(_bundle);
 
             var msgList = _bundle.Messages.ToList();
-            Assert.AreEqual(msgList.Count, mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(msgList.Count));
 
             for (var index = 0; index < msgList.Count; index++)
             {
                 var msg = msgList[index];
-                Assert.AreEqual(msg, mockInstance.SentMessages[index]);
+                Assert.That(mockInstance.SentMessages[index], Is.EqualTo(msg));
             }
             
             // check, if exceptions are caught
@@ -196,16 +196,16 @@ namespace ReFlex.Core.Tuio.Test
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock.Object, wsMock);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.Tcp });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             await mockInstance.SendTcp(_bundle);
 
             tcpMock.Verify(m => m.ConnectAsync(It.IsAny<string>(), It.IsAny<int>()), Times.Once);
-            Assert.AreEqual(0, mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(0));
         }
 
         /// <summary>
@@ -225,21 +225,21 @@ namespace ReFlex.Core.Tuio.Test
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock.Object, wsMock);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.Tcp });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             await mockInstance.SendTcp(_bundle);
 
             tcpMock.Verify(m => m.ConnectAsync(It.IsAny<string>(), It.IsAny<int>()), Times.Never);
-            Assert.AreEqual(msgList.Count(), mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(msgList.Count()));
             
             for (var index = 0; index < msgList.Count; index++)
             {
                 var msg = msgList[index];
-                Assert.AreEqual(msg, mockInstance.SentMessages[index]);
+                Assert.That(mockInstance.SentMessages[index], Is.EqualTo(msg));
             }
         }
         
@@ -261,16 +261,16 @@ namespace ReFlex.Core.Tuio.Test
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock.Object, wsMock);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.Tcp });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             Assert.DoesNotThrowAsync(async () => await mockInstance.SendTcp(_bundle));
 
             tcpMock.Verify(m => m.ConnectAsync(It.IsAny<string>(), It.IsAny<int>()), Times.Never);
-            Assert.AreEqual(msgList.Count, mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(msgList.Count));
             
             return Task.CompletedTask;
         }
@@ -291,16 +291,16 @@ namespace ReFlex.Core.Tuio.Test
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock.Object, wsMock);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.Tcp });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             Assert.DoesNotThrowAsync(async () => await mockInstance.SendTcp(_bundle));
 
             tcpMock.Verify(m => m.ConnectAsync(It.IsAny<string>(), It.IsAny<int>()), Times.Once);
-            Assert.AreEqual(0, mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(0));
             
             return Task.CompletedTask;
         }
@@ -319,16 +319,16 @@ namespace ReFlex.Core.Tuio.Test
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock, wsMock.Object);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.WebSocket });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             await mockInstance.SendWebSocket(_bundle);
 
             wsMock.Verify(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Once);
-            Assert.AreEqual(0, mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(0));
         }
 
         /// <summary>
@@ -347,21 +347,21 @@ namespace ReFlex.Core.Tuio.Test
 
             var mockInstance = new TestTuioSender(udpMock, tcpMock, wsMock.Object);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.WebSocket });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             await mockInstance.SendWebSocket(_bundle);
 
             wsMock.Verify(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Never);
-            Assert.AreEqual(msgList.Count(), mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(msgList.Count()));
             
             for (var index = 0; index < msgList.Count; index++)
             {
                 var msg = msgList[index];
-                Assert.AreEqual(msg, mockInstance.SentMessages[index]);
+                Assert.That(mockInstance.SentMessages[index], Is.EqualTo(msg));
             }
         }
         
@@ -383,21 +383,21 @@ namespace ReFlex.Core.Tuio.Test
             
             var mockInstance = new TestTuioSender(udpMock, tcpMock, wsMock.Object);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.WebSocket });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             Assert.DoesNotThrowAsync(async () => await mockInstance.SendWebSocket(_bundle));
 
             wsMock.Verify(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Never);
-            Assert.AreEqual(msgList.Count(), mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(msgList.Count()));
             
             for (var index = 0; index < msgList.Count; index++)
             {
                 var msg = msgList[index];
-                Assert.AreEqual(msg, mockInstance.SentMessages[index]);
+                Assert.That(mockInstance.SentMessages[index], Is.EqualTo(msg));
             }
 
             return Task.CompletedTask;
@@ -418,16 +418,16 @@ namespace ReFlex.Core.Tuio.Test
             
             var mockInstance = new TestTuioSender(udpMock, tcpMock, wsMock.Object);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.WebSocket });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
 
             Assert.DoesNotThrowAsync(async () => await mockInstance.SendWebSocket(_bundle));
 
             wsMock.Verify(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.Once);
-            Assert.AreEqual(0, mockInstance.SentMessages.Count);
+            Assert.That(mockInstance.SentMessages.Count, Is.EqualTo(0));
             
             return Task.CompletedTask;
         }
@@ -444,11 +444,11 @@ namespace ReFlex.Core.Tuio.Test
             
             var mockInstance = new TestTuioSender(udpMock, tcpMock.Object, wsMock.Object);
 
-            Assert.IsFalse(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.False);
 
             mockInstance.Initialize(new TuioConfiguration() { Transport = TransportProtocol.WebSocket });
 
-            Assert.IsTrue(mockInstance.IsInitialized);
+            Assert.That(mockInstance.IsInitialized, Is.True);
             
             tcpMock.Verify(m => m.Close(), Times.Never);
             tcpMock.Verify(m => m.Dispose(), Times.Never);
@@ -461,8 +461,8 @@ namespace ReFlex.Core.Tuio.Test
             tcpMock.Verify(m => m.Dispose(), Times.Once);
             wsMock.Verify(m => m.CloseAsync(WebSocketCloseStatus.NormalClosure, It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
             wsMock.Verify(m => m.Dispose(), Times.Once);
-            
-            Assert.IsFalse(mockInstance.IsInitialized);
+
+            Assert.That(mockInstance.IsInitialized, Is.False);
         }
     }
 }
