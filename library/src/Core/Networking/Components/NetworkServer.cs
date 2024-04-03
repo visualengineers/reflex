@@ -123,7 +123,7 @@ namespace ReFlex.Core.Networking.Components
         {
             if (IsReady && IsStarted)
             {
-                _server.ListClients().ToList().ForEach(client => { _server.Send(client.Guid, data); });
+                _server.ListClients().ToList().ForEach(client => { _server.SendAsync(client.Guid, data); });
             }
                 
         }
@@ -131,7 +131,7 @@ namespace ReFlex.Core.Networking.Components
         public void Broadcast(string message)
         {
             if (IsReady && IsStarted)
-                _server.ListClients().ToList().ForEach(client => { _server.Send(client.Guid, message); });
+                _server.ListClients().ToList().ForEach(client => { _server.SendAsync(client.Guid, message); });
         }
 
         public static byte[] Decode(string message) => Encoding.UTF8.GetBytes(message);
