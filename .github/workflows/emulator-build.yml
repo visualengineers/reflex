@@ -27,9 +27,15 @@ jobs:
         with:
           path: ${{ github.workspace }}/node_modules
           key: modules-${{ hashFiles('./package.json') }}
+      - name: cache node-modules emulator
+        id: cache_emulator
+        uses: actions/cache@main
+        with:
+          path: ${{ github.workspace }}/tools/emulator/node_modules
+          key: modules-${{ hashFiles('./tools/emulator/package.json') }}
       - name: install packages        
         working-directory: ${{ github.workspace }}
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'
         run: npm ci --include=dev
       - name: build shared types
         run: npm run build:shared-types
