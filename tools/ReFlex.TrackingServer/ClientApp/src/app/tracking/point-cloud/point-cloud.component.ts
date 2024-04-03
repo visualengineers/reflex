@@ -71,11 +71,11 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private interactions: Array<THREE.Mesh> = [];
 
-  private _fullScreen = false;
+  private pfullScreen = false;
 
   private readonly livePreview$ = new BehaviorSubject<boolean>(false);
 
-  private _livePreviewEnabled = false;
+  private plivePreviewEnabled = false;
 
   private height = 600;
 
@@ -200,18 +200,18 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public get livePreviewEnabled(): boolean {
-    return this._livePreviewEnabled;
+    return this.plivePreviewEnabled;
   }
 
   @Input()
   public set livePreviewEnabled(value: boolean) {
-    this._livePreviewEnabled = value;
+    this.plivePreviewEnabled = value;
 
     if (!value) {
       this.numFramesReceived = 0;
     }
 
-    if (!this._livePreviewEnabled && this.livePreview) {
+    if (!this.plivePreviewEnabled && this.livePreview) {
       this.livePreview = false;
       this.livePreviewChanged();
     }
@@ -219,12 +219,12 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public get fullScreen(): boolean {
-    return this._fullScreen;
+    return this.pfullScreen;
   }
 
   public set fullScreen(fs: boolean) {
-    this._fullScreen = fs;
-    this.fullScreenChanged.emit(this._fullScreen);
+    this.pfullScreen = fs;
+    this.fullScreenChanged.emit(this.pfullScreen);
   }
 
   @HostListener('mousemove', ['$event'])

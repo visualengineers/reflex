@@ -62,9 +62,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private performanceSubscription?: Subscription;
   private limitationFilterStatePolling?: Subscription;
 
-  private _selectedFilterType: FilterType = FilterType.None;
-  private _selectedLimitationFilterType: LimitationFilterType = LimitationFilterType.LimitationFilter;
-  private _selectedCheckType: ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
+  private selectedFilterType: FilterType = FilterType.None;
+  private selectedLimitationFilterType: LimitationFilterType = LimitationFilterType.LimitationFilter;
+  private selectedCheckType: ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
 
   public constructor(
     // eslint-disable-next-line new-cap
@@ -268,12 +268,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public saveExtremumCheckType(): void {
 
     if (this.selectedExtremumCheckIdx <= 0 || this.selectedExtremumCheckIdx >= this.checks.length) {
-      this._selectedCheckType = ExtremumTypeCheckMethod.Global;
+      this.selectedCheckType = ExtremumTypeCheckMethod.Global;
     } else {
-      this._selectedCheckType = this.selectedExtremumCheckIdx as ExtremumTypeCheckMethod;
+      this.selectedCheckType = this.selectedExtremumCheckIdx as ExtremumTypeCheckMethod;
     }
 
-    this.settings.filterSettingValues.extremumSettings.checkMethod = this._selectedCheckType;
+    this.settings.filterSettingValues.extremumSettings.checkMethod = this.selectedCheckType;
 
     this.saveExtremumValues();
   }
@@ -340,12 +340,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterType(): void {
     if (this.selectedFilterIdx <= 0 || this.selectedFilterIdx >= this.filters.length) {
-      this._selectedFilterType = FilterType.None;
+      this.selectedFilterType = FilterType.None;
     } else {
-      this._selectedFilterType = this.selectedFilterIdx as FilterType;
+      this.selectedFilterType = this.selectedFilterIdx as FilterType;
     }
 
-    this.settings.filterSettingValues.smoothingValues.type = this._selectedFilterType;
+    this.settings.filterSettingValues.smoothingValues.type = this.selectedFilterType;
 
     this.saveSmoothingValues();
   }
@@ -353,12 +353,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public saveLimitationFilterType(): void {
 
     if (this.selectedLimitationFilterIdx <= 0 || this.selectedLimitationFilterIdx >= this.limitationFilters.length) {
-      this._selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
+      this.selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
     } else {
-      this._selectedLimitationFilterType = this.selectedLimitationFilterIdx as LimitationFilterType;
+      this.selectedLimitationFilterType = this.selectedLimitationFilterIdx as LimitationFilterType;
     }
 
-    this.settings.filterSettingValues.limitationFilterType = this._selectedLimitationFilterType;
+    this.settings.filterSettingValues.limitationFilterType = this.selectedLimitationFilterType;
 
     this.settingsService.setLimitationFilterType(this.settings.filterSettingValues).subscribe((result) => {
       console.log(`Successfully sent POST request: ${result.value}:${result.name}`);
