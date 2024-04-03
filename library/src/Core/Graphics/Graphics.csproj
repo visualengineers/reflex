@@ -21,7 +21,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.8.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.9.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.7" />
   </ItemGroup>
 
