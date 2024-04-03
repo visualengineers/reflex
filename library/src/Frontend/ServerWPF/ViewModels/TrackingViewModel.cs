@@ -13,8 +13,8 @@ using ReFlex.Core.Tracking.Util;
 using ReFlex.Frontend.ServerWPF.Events;
 using ReFlex.Frontend.ServerWPF.Properties;
 using ReFlex.Sensor.AzureKinectModule;
+// using ReFlex.Sensor.Kinect2Module;
 using ReFlex.Sensor.EmulatorModule;
-using ReFlex.Sensor.Kinect2Module;
 using ReFlex.Sensor.RealSenseD435Module;
 using ReFlex.Sensor.RealSenseL515Module;
 using ReFlex.Sensor.RealSenseR2Module;
@@ -116,11 +116,11 @@ namespace ReFlex.Frontend.ServerWPF.ViewModels
                 Logger.Error(exception);
             }
 
-            try {
-                DepthCameras.Add(new Kinect2Camera());
-            } catch (Exception exception) {
-                Logger.Error(exception);
-            }
+            // try {
+            //     DepthCameras.Add(new Kinect2Camera());
+            // } catch (Exception exception) {
+            //     Logger.Error(exception);
+            // }
 
             try {
                 DepthCameras.Add(new RealsenseD435Camera());

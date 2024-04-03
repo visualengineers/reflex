@@ -39,7 +39,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.17" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.9.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />

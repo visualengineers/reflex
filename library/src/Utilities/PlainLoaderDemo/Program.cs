@@ -8,7 +8,7 @@ using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Core.Tracking.Util;
 using ReFlex.Sensor.AzureKinectModule;
 using ReFlex.Sensor.EmulatorModule;
-using ReFlex.Sensor.Kinect2Module;
+// using ReFlex.Sensor.Kinect2Module;
 using ReFlex.Sensor.RealSenseD435Module;
 using ReFlex.Sensor.RealSenseL515Module;
 using ReFlex.Sensor.RealSenseR2Module;
@@ -32,7 +32,7 @@ namespace PlainLoaderDemo
             AddLibrary(GetAzureKinect, serviceProvider, CameraType.AzureKinect);
             
             // BadImageFormatException...
-            AddLibrary(GetKinect2, serviceProvider, CameraType.Kinect2);
+            // AddLibrary(GetKinect2, serviceProvider, CameraType.Kinect2);
 
             var services = serviceProvider.BuildServiceProvider();
 
@@ -112,21 +112,21 @@ namespace PlainLoaderDemo
             return new RealsenseR2Camera();
         }
 
-        private static IDepthCamera GetKinect2(IServiceProvider arg)
-        {
-            try
-            {
-                return new Kinect2Camera();
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine($"{exc.GetType().FullName} occurred when trying to load Kinect 2 library.");
-                Console.WriteLine($"Message: {exc.Message}");
-                Console.WriteLine($"Stacktrace: {exc.StackTrace}");
-            }
-
-            return null;
-        }
+        // private static IDepthCamera GetKinect2(IServiceProvider arg)
+        // {
+        //     try
+        //     {
+        //         return new Kinect2Camera();
+        //     }
+        //     catch (Exception exc)
+        //     {
+        //         Console.WriteLine($"{exc.GetType().FullName} occurred when trying to load Kinect 2 library.");
+        //         Console.WriteLine($"Message: {exc.Message}");
+        //         Console.WriteLine($"Stacktrace: {exc.StackTrace}");
+        //     }
+        //
+        //     return null;
+        // }
 
         private static IDepthCamera GetAzureKinect(IServiceProvider arg)
         {

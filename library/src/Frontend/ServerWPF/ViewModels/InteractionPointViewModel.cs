@@ -30,7 +30,7 @@ namespace ReFlex.Frontend.ServerWPF.ViewModels
             set => SetProperty(ref _displayPosition, value);
         }
 
-        public string PositionString => "X: " + Math.Round(Position.X / Width, 2) + " Y: " + Math.Round(Position.Y / Height, 2) + " Z: " + Math.Round(Position.Z, 2);
+        public string PositionString => "X: " + System.Math.Round(Position.X / Width, 2) + " Y: " + System.Math.Round(Position.Y / Height, 2) + " Z: " + System.Math.Round(Position.Z, 2);
 
         public int Width
         {
