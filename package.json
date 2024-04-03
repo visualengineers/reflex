@@ -52,7 +52,7 @@
     "@angular/router": "17.3.2",
     "@angular/ssr": "^17.3.3",
     "rxjs": "^6.6.7",
-    "zone.js": "^0.13.1"
+    "zone.js": "^0.14.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.3",
