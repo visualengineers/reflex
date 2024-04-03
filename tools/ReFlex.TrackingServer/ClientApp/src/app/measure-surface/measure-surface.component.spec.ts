@@ -66,7 +66,7 @@ describe('MeasureSurfaceComponent', () => {
     expect(component).toBeTruthy();
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
-    expect(component['_frameSize']).toEqual(customFrame);
+    expect(component['frameSize']).toEqual(customFrame);
     expect(component.fullScreen).toBeFalse();
   });
 

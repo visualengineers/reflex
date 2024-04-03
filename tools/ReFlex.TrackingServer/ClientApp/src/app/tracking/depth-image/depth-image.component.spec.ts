@@ -143,7 +143,7 @@ describe('DepthImageComponent', () => {
     expect(component.livePreview).toBeTrue();
     cbLivePreview.checked = true;
 
-    expect(component['_socket']).toBeTruthy(); 
+    expect(component['socket']).toBeTruthy(); 
        
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 1' }));
     
