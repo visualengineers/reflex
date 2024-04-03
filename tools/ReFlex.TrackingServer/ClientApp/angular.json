@@ -77,11 +77,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "TrackingServer:build:production"
+              "buildTarget": "TrackingServer:build:production"
             },
             "development": {
-              "browserTarget": "TrackingServer:build:development",
-              "proxyConfig": "proxy.conf.js"
+              "proxyConfig": "proxy.conf.js",
+              "buildTarget": "TrackingServer:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -89,7 +89,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "TrackingServer:build"
+            "buildTarget": "TrackingServer:build"
           }
         },
         "test": {
