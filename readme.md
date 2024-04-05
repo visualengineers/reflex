@@ -2,7 +2,7 @@
 
 Software Development SDK for __Elastic Displays__ as open source mono repo
 
-Complete Documentation as github pages available at [https://technische-visualistik.de/reflex](https://technische-visualistik.de/reflex)
+Complete Documentation as github pages available at [https://visual-engineers.org/reflex/](https://visual-engineers.org/reflex/)
 
 * .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
 * APS.NET Core / Angular server application as frontend for library
@@ -80,11 +80,9 @@ __[⬆ back to top](#table-of-contents)__
 ## External Dependencies
 
 * The following dlls need to be placed in the `external` directory for use with the associated depth cameras
-* __Intel RealSense R2/D435/L515__ `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense/releases)
+* ~~__Intel RealSense R2/D435/L515__ `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense/releases)~~ (Files are included as nuget package)
 * __Microsoft Kinect__ `Microsoft.Kinect.dll`, `Microsoft.Kinect.xml` from [Microsoft Kinect for Windows SDK 2.0](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
-* if the sensors listed above are not relevant; the .NET solution can be built using the preprocessor flag `NO_EXTERNAL_SENSORS` by using one of the following methods:
-  * `dotnet build ReFlex.sln -c CI` (use Solution Configuration `CI` which includes the definition of the mentioned Constant)
-  * edit `ReFlex.sln` and change the line `<DefineAdditionalConstants/>` to `<DefineAdditionalConstants>NO_EXTERNAL_SENSORS</DefineAdditionalConstants>`
+* for compatibility reasons, no sensors are included in the build process by default. To include specific sensors use the appropriate flags described in the Server documentation
 
 __[⬆ back to top](#table-of-contents)__
 
