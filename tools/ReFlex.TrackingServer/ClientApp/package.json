@@ -48,13 +48,10 @@
     "@microsoft/signalr": "^6.0.20",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",   
     "d3": "^7.8.5",
-    "three": "^0.163.0"
+    "three": "^0.164.1"
   },
   "devDependencies": {
-    "@types/three": "^0.146.0", 
+    "@types/three": "^0.164.0",
     "@types/d3": "^7.4.0"
-  },
-  "optionalDependencies": {
-    "ts-node": "~8.4.1"
   }
 }
