@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-option-checkbox',
+  standalone: true,
   templateUrl: './option-checkbox.component.html'
 })
 export class OptionCheckboxComponent {
