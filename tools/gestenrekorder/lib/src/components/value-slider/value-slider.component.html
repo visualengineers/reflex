@@ -1,0 +1,60 @@
+<!-- <div class="settings__item--content-range">
+    <label for="{{elementId}}-range" class="settings__item--label">{{elementTitle}}</label>
+    <div class="settings__item--valueMin">
+        <p>{{min}}</p>
+    </div>
+    <div class="settings__item--valueRange">
+        <input type="range" class="custom-range" min="{{min}}"
+            title="Slider for {{elementTitle}}" placeholder="{{elementTitle}}"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+            [(ngModel)]="data" name="{{elementId}}-range"
+            (input)="update()">
+    </div>
+    <div class="settings__item--valueMax">
+        <p>{{max}}</p>
+    </div>
+    <div class="settings__item--valueInput">
+        <input class="custom-input" type="text" 
+            title="Text input for {{elementTitle}}" placeholder="{{elementTitle}}"
+            [(ngModel)]="data" name="{{elementId}}-input"
+            (input)="update()">
+    </div>
+    <div class="settings__item--unit">
+        <p>{{unit}}</p>
+    </div>
+</div>
+<div class="settings__item--info">
+    <ng-content></ng-content>
+</div> -->
+<div class="settings__item--content-range">
+    <label for="{{elementId}}-range" class="settings__item--label">{{elementTitle}}</label>
+    <div class="settings__item--valueMin">
+        <p>{{min}}</p>
+    </div>
+    <div class="settings__item--valueRange">
+        <input type="range" class="custom-range" min="{{min}}"
+            title="Slider for {{elementTitle}}" placeholder="{{elementTitle}}"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+            name="{{elementId}}-range"
+            (input)="update()">
+    </div>
+    <div class="settings__item--valueMax">
+        <p>{{max}}</p>
+    </div>
+    <div class="settings__item--valueInput">
+        <input class="custom-input" type="text" 
+            title="Text input for {{elementTitle}}" placeholder="{{elementTitle}}"
+            name="{{elementId}}-input"
+            (input)="update()">
+    </div>
+    <div class="settings__item--unit">
+        <p>{{unit}}</p>
+    </div>
+</div>
+<div class="settings__item--info">
+    <ng-content></ng-content>
+</div>
