@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build-complete": "npm run lint --workspaces --if-present && npm run test-ci --workspaces --if-present && npm run build --workspaces --if-present",
+    "build-complete": "npm run build --workspaces --if-present && npm run lint --workspaces --if-present && npm run test-ci --workspaces --if-present",
     "build:shared-components": "npm run build -w packages/reflex-angular-components",
     "build:shared-types": "npm run build -w packages/reflex-shared-types",
     "build:server": "npm run build -w tools/ReFlex.TrackingServer/ClientApp",
@@ -33,14 +33,14 @@
     "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp"
   },
   "workspaces": [
-    "tools/ReFlex.TrackingServer/ClientApp",
     "packages/reflex-shared-types",
+    "packages/reflex-angular-components",
+    "tools/ReFlex.TrackingServer/ClientApp",
     "tools/emulator",
     "tools/logging",
     "examples/basic-angular",
     "examples/basic-react",
-    "examples/basic-vue",
-    "packages/reflex-angular-components"
+    "examples/basic-vue"
   ],
   "dependencies": {
     "@angular/animations": "17.3.2",
