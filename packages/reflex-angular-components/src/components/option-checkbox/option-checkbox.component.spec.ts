@@ -9,8 +9,7 @@ describe('OptionCheckboxComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OptionCheckboxComponent ],
-      imports: [FormsModule ]
+      imports: [FormsModule, OptionCheckboxComponent ]
     })
     .compileComponents();
   });

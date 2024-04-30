@@ -28,8 +28,8 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, '../../../../test/artifacts/coverage'),
-      subdir: 'reflex-tracking-server',
+      dir: require('path').join(__dirname, '../../test/artifacts/coverage'),
+      subdir: 'reflex-angular-components',
       reporters: [
         { type: 'html' },
         { type: 'text-summary' },
@@ -44,8 +44,8 @@ module.exports = function (config) {
       },
     },
     junitReporter: {
-      outputDir: '../../../../test/artifacts/tests',
-      outputFile: 'junit-test-results.xml',
+      outputDir: '../../test/artifacts/tests',
+      outputFile: 'junit-test-results-angular-components.xml',
       useBrowserName: false,
     },
     reporters: ['progress', 'kjhtml', 'junit', 'spec'],
@@ -54,24 +54,6 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    customLaunchers: {
-      ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
-        flags: [
-          '--no-sandbox',
-          '--use-angle=swiftshader',
-          '--use-gl=angle',
-          '--in-process-gpu',
-          '--enable-logging',
-          '--disable-gpu-sandbox',
-          '--use-cmd-decoder=passthrough',
-          '--swiftshader',
-          '--swiftshader-webgl',
-          '--v1',
-          '--disable-gpu'
-        ]
-      }
-    },
     singleRun: false,
     restartOnFileChange: true
   });
