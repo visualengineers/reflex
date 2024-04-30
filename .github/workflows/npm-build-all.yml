@@ -30,7 +30,7 @@ jobs:
           key: modules-${{ hashFiles('./package.json') }}
       - name: install packages
         working-directory: ${{ github.workspace }}
-        if: steps.cache.outputs.cache-hit != 'true'
+        # install even when cache hit - update npm packages in workspaces
         run: npm ci --include=dev
-      - name: build server
+      - name: build complete (build / lint / test-ci commands in each workspace)
         run: npm run build-complete
