@@ -6,19 +6,17 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { of } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { MockPanelHeaderComponent } from 'src/app/elements/panel-header/panel-header.component.mock';
-import { MockValueSelectionComponent } from 'src/app/elements/value-selection/value-selection.component.mock';
-import { MockValueTextComponent } from 'src/app/elements/value-text/value-text.component.mock';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { FormsModule } from '@angular/forms';
 import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
 import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-  const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+  const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
     'update'
@@ -44,14 +42,15 @@ describe('TuioComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ 
-        TuioComponent, 
-        MockPackageDetailsComponent,
-        MockPanelHeaderComponent, 
-        MockValueSelectionComponent, 
-        MockValueTextComponent
+      declarations: [
+        TuioComponent,
+        MockPackageDetailsComponent
       ],
-      imports: [ FormsModule ],
+      imports: [ FormsModule,
+        PanelHeaderComponent,
+        ValueSelectionComponent,
+        ValueTextComponent
+      ],
       providers: [
         {
           provide: SettingsService, useValue: settingsService
