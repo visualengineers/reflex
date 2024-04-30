@@ -28,6 +28,9 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
     <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>TRACE; MS_AZURE_KINECT</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup>
     <!-- Define additional preprocessor directives -->
     <DefineConstants Condition="'$(DefineAdditionalConstants)' != ''">$(DefineConstants);$(DefineAdditionalConstants)</DefineConstants>
