@@ -8,7 +8,7 @@ describe('ValueTextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ValueTextComponent ]
+      imports: [ ValueTextComponent ]
     })
     .compileComponents();
   });

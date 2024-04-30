@@ -9,8 +9,7 @@ describe('ValueSliderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ValueSliderComponent ],
-      imports: [FormsModule ]
+      imports: [FormsModule, ValueSliderComponent ]
     })
     .compileComponents();
   });

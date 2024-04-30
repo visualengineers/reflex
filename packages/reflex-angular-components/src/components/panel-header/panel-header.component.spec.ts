@@ -9,8 +9,7 @@ describe('PanelHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PanelHeaderComponent ],
-      imports: [FormsModule ]
+      imports: [FormsModule, PanelHeaderComponent ]
     })
     .compileComponents();
   });
