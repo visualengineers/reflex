@@ -51,7 +51,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly renderer?: THREE.WebGLRenderer;
   private readonly scene: THREE.Scene;
   private readonly camera: THREE.Camera;
-  private readonly shaderMaterial: THREE.RawShaderMaterial = new THREE.ShaderMaterial({
+  private readonly shaderMaterial: THREE.ShaderMaterial = new THREE.ShaderMaterial({
     blending: THREE.AdditiveBlending,
     depthTest: false,
     transparent: true,

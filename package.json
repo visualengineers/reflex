@@ -51,11 +51,11 @@
     "@angular/platform-server": "17.3.2",
     "@angular/router": "17.3.2",
     "@angular/ssr": "^17.3.3",
-    "rxjs": "^6.6.7",
+    "rxjs": "^7.8.1",
     "zone.js": "^0.14.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17.3.3",
+    "@angular-devkit/build-angular": "^17.3.6",
     "@angular/cli": "17.3.3",
     "@angular/compiler-cli": "17.3.2",
     "@angular/language-service": "17.3.2",
@@ -71,7 +71,7 @@
     "eslint-plugin-angular": "^4.1.0",
     "eslint-plugin-jsdoc": "^40.3.0",
     "jasmine-core": "~4.5.0",
-    "jasmine-marbles": "^0.8.4",
+    "jasmine-marbles": "^0.9.2",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.4.1",
     "karma-chrome-launcher": "~3.1.0",
@@ -83,8 +83,5 @@
     "karma-viewport": "^1.0.9",
     "puppeteer": "^19.11.1",
     "typescript": "^5.1.6"
-  },
-  "optionalDependencies": {
-    "ts-node": "~8.4.1"
   }
 }
