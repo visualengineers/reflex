@@ -1,6 +1,6 @@
 name: "ReFlex Server: Build"
 
-on: 
+on:
   push:
     branches:
       - main
@@ -8,9 +8,9 @@ on:
     types: [ opened, reopened, edited, synchronize ]
     branches:
       - main
-  
+
 jobs:
-  angular-lint: 
+  angular-lint:
     runs-on: windows-latest
     name: install and build
     steps:
@@ -21,19 +21,21 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: ./package.json  
+          cache-dependency-path: ./package.json
       - name: cache node-modules
         id: cache
         uses: actions/cache@main
         with:
           path: ${{ github.workspace }}/node_modules
           key: modules-${{ hashFiles('./package.json') }}
-      - name: install packages        
+      - name: install packages
         working-directory: ${{ github.workspace }}
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci --include=dev
       - name: build shared types
-        run: npm run build:shared-types 
+        run: npm run build:shared-types
+      - name: build angular components
+        run: npm run build:shared-components
       - name: build server
         working-directory: ${{ github.workspace }}
         run: npm run build:server

@@ -2,6 +2,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "build-complete": "npm run lint --workspaces --if-present && npm run test-ci --workspaces --if-present && npm run build --workspaces --if-present",
+    "build:shared-components": "npm run build -w packages/reflex-angular-components",
     "build:shared-types": "npm run build -w packages/reflex-shared-types",
     "build:server": "npm run build -w tools/ReFlex.TrackingServer/ClientApp",
     "build:electron-win": "npm run build:electron-win -w tools/ReFlex.TrackingServer/ClientApp",
