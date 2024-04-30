@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <Home></Home>
+    <Home data-test="HomeComponent"></Home>
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
         },
         updateData(points, address, frameNumber, isConnected) {
           const width = window.innerWidth;
-          const height = window.innerHeight;          
+          const height = window.innerHeight;
 
           const convertedPoints = points.map((p) => {
             return {
@@ -52,7 +52,7 @@ export default {
           if (this.history.length > 100) {
             this.history.splice(0, 1);
           }
-          
+
         }
     },
     provide() {

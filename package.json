@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build-complete": "npm run build --workspaces --if-present && npm run test && rm -rf dist && npm run lint && tsc -b",
+    "build-complete": "npm run lint --workspaces --if-present && npm run test-ci --workspaces --if-present && npm run build --workspaces --if-present",
     "build:shared-types": "npm run build -w packages/reflex-shared-types",
     "build:server": "npm run build -w tools/ReFlex.TrackingServer/ClientApp",
     "build:electron-win": "npm run build:electron-win -w tools/ReFlex.TrackingServer/ClientApp",
@@ -38,7 +38,7 @@
     "tools/logging",
     "examples/basic-angular",
     "examples/basic-react",
-    "examples/basic-vue"    
+    "examples/basic-vue"
   ],
   "dependencies": {
     "@angular/animations": "17.3.2",
@@ -51,8 +51,9 @@
     "@angular/platform-server": "17.3.2",
     "@angular/router": "17.3.2",
     "@angular/ssr": "^17.3.3",
+    "@vitejs/plugin-vue": "^5.0.4",
     "rxjs": "^7.8.1",
-    "zone.js": "^0.14.0"
+    "zone.js": "^0.14.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.6",
@@ -60,9 +61,9 @@
     "@angular/compiler-cli": "17.3.2",
     "@angular/language-service": "17.3.2",
     "@gtvmbh/eslint-config": "^1.0.8",
-    "@types/jasmine": "~3.6.0",
+    "@types/jasmine": "~5.1.0",
     "@types/jasminewd2": "~2.0.8",
-    "@types/node": "^12.20.55",
+    "@types/node": "^18.18.0",
     "@types/ws": "<8.5.5",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
@@ -70,7 +71,7 @@
     "eslint-config-angular": "^0.5.0",
     "eslint-plugin-angular": "^4.1.0",
     "eslint-plugin-jsdoc": "^40.3.0",
-    "jasmine-core": "~4.5.0",
+    "jasmine-core": "~5.1.0",
     "jasmine-marbles": "^0.9.2",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.4.1",
@@ -82,6 +83,6 @@
     "karma-spec-reporter": "^0.0.36",
     "karma-viewport": "^1.0.9",
     "puppeteer": "^19.11.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.2"
   }
 }

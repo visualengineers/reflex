@@ -13,7 +13,7 @@ export class AppComponent {
   cameras = CAMERAS;
   faTools = faTools;
   faQuestion = faQuestion;
-  title = 'reflex-emulator';
+  title = 'ReFlex | Emulator';
   valueEmittedFromChildComponent = '';
   msgFaq = 'faq';
   msgSettings = 'settings';

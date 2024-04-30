@@ -9,18 +9,43 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('karma-coverage'),
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-junit-reporter'),
+      require('karma-viewport'),
+      require('karma-spec-reporter')
     ],
     client: {
+      jasmine:  {
+
+      },
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, './coverage/reflex-emulator'),
-      reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+    jasmineHtmlReporter: {
+      suppressAll: true // removes the duplicated traces
     },
-    reporters: ['progress', 'kjhtml'],
+    coverageReporter: {
+      dir: require('path').join(__dirname, '../../test/artifacts/coverage'),
+      subdir: 'reflex-emulator',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' },
+        { type: 'lcovonly' },
+        { type: 'cobertura' }
+      ],
+      fixWebpackSourcePaths: true,
+      'report-config': {
+        'text-summary': {
+          file: 'text-summary.txt'
+        }
+      },
+    },
+    junitReporter: {
+      outputDir: '../../test/artifacts/tests/',
+      outputFile: 'junit-test-results-emulator.xml',
+      useBrowserName: false,
+    },
+    reporters: ['progress', 'kjhtml', 'junit', 'spec'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

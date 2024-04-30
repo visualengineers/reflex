@@ -25,13 +25,13 @@ export class AppComponent implements AfterViewInit, OnInit, OnDestroy {
 
   constructor(private _pointService : TouchPointService) {
     this.TouchPoints$ = this._pointService.getTouchPoints();
-  }  
+  }
 
   ngOnInit() {
     this.resizeObservable$ = fromEvent(window, 'resize')
     this.resizeSubscription$ = this.resizeObservable$.subscribe( evt => {
       this.updateSize();
-    })    
+    })
   }
 
   ngOnDestroy() {
