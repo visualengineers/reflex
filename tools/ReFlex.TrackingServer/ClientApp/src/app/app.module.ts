@@ -27,12 +27,7 @@ import { MeasureGridComponent } from './measure-surface/measure-grid/measure-gri
 import { MeasureControlsComponent } from './measure-surface/measure-controls/measure-controls.component';
 import { TuioComponent } from './network/tuio/tuio.component';
 import { PackageDetailsComponent } from './network/tuio/package-details/package-details.component';
-import { SettingsGroupComponent } from './elements/settings-group/settings-group.component';
-import { ValueSliderComponent } from './elements/value-slider/value-slider.component';
-import { ValueSelectionComponent } from './elements/value-selection/value-selection.component';
-import { OptionCheckboxComponent } from './elements/option-checkbox/option-checkbox.component';
-import { PanelHeaderComponent } from './elements/panel-header/panel-header.component';
-import { ValueTextComponent } from './elements/value-text/value-text.component';
+import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { PerformanceVisualizationComponent } from './performance-visualization/performance-visualization.component';
 // import { CanvasWidthDirective } from './tracking/point-cloud/canvas-width.directive';
 
@@ -59,19 +54,19 @@ import { PerformanceVisualizationComponent } from './performance-visualization/p
     MeasureControlsComponent,
     TuioComponent,
     PackageDetailsComponent,
-    SettingsGroupComponent,
-    ValueSliderComponent,
-    ValueSelectionComponent,
-    OptionCheckboxComponent,
-    PanelHeaderComponent,
-    ValueTextComponent,
     PerformanceVisualizationComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SettingsGroupComponent,
+    ValueSliderComponent,
+    ValueSelectionComponent,
+    OptionCheckboxComponent,
+    PanelHeaderComponent,
+    ValueTextComponent
   ],
   providers: [{ provide: ErrorHandler, useClass: CustomErrorHandler }],
   bootstrap: [AppComponent]

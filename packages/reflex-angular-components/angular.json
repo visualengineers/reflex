@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": ".",
       "sourceRoot": "./src",
-      "prefix": "lib",
+      "prefix": "reflex",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

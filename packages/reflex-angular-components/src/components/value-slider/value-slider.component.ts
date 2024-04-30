@@ -4,6 +4,7 @@ import { debounceTime, skipWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'app-value-slider',
+  standalone: true,
   templateUrl: './value-slider.component.html'
 })
 export class ValueSliderComponent implements OnInit, OnDestroy {

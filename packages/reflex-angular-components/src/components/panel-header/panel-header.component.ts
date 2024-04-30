@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-panel-header',
+  standalone: true,
   templateUrl: './panel-header.component.html'
 })
 export class PanelHeaderComponent {
