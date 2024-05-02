@@ -17,7 +17,8 @@ runs:
       with:
         path: ${{ github.workspace }}/node_modules
         key: modules-${{ hashFiles('./package.json') }}
-    - name: install packages        
+    - name: install packages  
+      shell: bash      
       working-directory: ${{ github.workspace }}
       if: steps.cache.outputs.cache-hit != 'true'
       run: npm ci --include=dev
