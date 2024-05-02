@@ -10,12 +10,12 @@ runs:
       with:
         dotnet-version: '7.x'
     - name: Restore dependencies (Library)
-      shell: bash
+      shell: pwsh
       run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
     - name: Restore dependencies (TrackingServer)
-      shell: bash
+      shell: pwsh
       run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
     - name: build ReFlex without external sensors
-      shell: bash
+      shell: pwsh
       working-directory: ${{ github.workspace }}
       run: dotnet build ReFlex.sln -c CI /p:Platform=x64
