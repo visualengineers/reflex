@@ -1,6 +1,8 @@
 name: "ReFlex Server: Lint"
 
 on: 
+  workflow_dispatch:
+  workflow_call:
   push:
     branches:
       - main

@@ -2,6 +2,7 @@ name: "ReFlex Server: Build"
 
 on: 
   workflow_dispatch:
+  workflow_call:
   push:
     branches:
       - main
