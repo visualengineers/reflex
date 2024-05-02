@@ -1,36 +1,27 @@
-name: "ReFlex Library: Test"
+name: "ReFlex Library: Build & Test"
 
 on: 
   # make this workflow reusable
+  workflow_dispatch: 
   workflow_call:
     outputs:
       artifact_name:
         description: "name of the artifact that has been uploaded"
         value: ${{ jobs.test-library.outputs.artifact_name }}
 
-jobs:
-  build-library:
-    uses: ./.github/workflows/library-build.yml   
+jobs: 
   test-library:
     runs-on: windows-latest
-    needs: build-library
-    name: library
+    name: build and test .NET library
     env:
       artifact_name: .NET Test Report (ReFlex Library)
     outputs:
       artifact_name: ${{ env.artifact_name }}
     steps:
-      - name: install .NET
-        uses: actions/setup-dotnet@main
-        with:
-          dotnet-version: '7.x'      
-      - name: restore build artifacts
-        uses: actions/cache/restore@main
-        id: cache-library-build
-        with:
-          path: ${{ needs.build-library.outputs.cache_path }}
-          key: ${{ needs.build-library.outputs.cache_key }} 
-      # needs to be dona AFTER restoring nuget packages due to changed manifest file
+      - name: checkout repo with submodules
+        uses: actions/checkout@main
+      - name: setup .NET and restore nuget packages
+        uses: ./.github/actions/net-install
       - name: Install Required Tools
         run: |
           dotnet new tool-manifest --force
