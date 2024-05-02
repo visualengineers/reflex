@@ -10,19 +10,19 @@ runs:
       with:
         node-version: 18
         cache: 'npm'
-        cache-dependency-path: ./package.json  
+        cache-dependency-path: ${{ github.workspace }}/package.json  
     - name: cache node-modules
       id: cache
       uses: actions/cache@main
       with:
         path: ${{ github.workspace }}/node_modules
-        key: modules-${{ hashFiles('./package.json') }}
+        key: modules-${{ hashFiles('${{ github.workspace }}/package.json') }}
     - name: cache node-modules emulator
       id: cache_emulator
       uses: actions/cache@main
       with:
         path: ${{ github.workspace }}/tools/emulator/node_modules
-        key: modules-${{ hashFiles('./tools/emulator/package.json') }}
+        key: modules-${{ hashFiles('${{ github.workspace }}/tools/emulator/package.json') }}
     - name: install packages  
       shell: bash      
       working-directory: ${{ github.workspace }}
