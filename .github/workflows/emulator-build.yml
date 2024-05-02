@@ -3,13 +3,7 @@ name: "ReFlex Emulator: Build"
 on: 
   workflow_dispatch:
   workflow_call:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [ opened, reopened, edited, synchronize ]
-    branches:
-      - main
+    
 jobs:
   build-emulator:
     runs-on: windows-latest
