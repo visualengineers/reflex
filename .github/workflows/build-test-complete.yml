@@ -1,22 +1,20 @@
 # Sample workflow for building and deploying a Jekyll site to GitHub Pages
 name: "ReFlex: Build & Test"
 
-on:
+on:  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # caches are scoped to branches and keys !
+  # however, cache for main branch can be accessed by other branches --> therefore, pushes on main should always trigger this workflow
+  push:
+    branches:
+    - main
   # run when main branch is updated and on pull requests
   # as result, child workflows are not triggered anymore on prs
   pull_request: 
     types: [ opened, reopened, edited, synchronize ]
     branches:
       - main
-  
-  # caches are scoped to branches and keys !
-  # however, cache for main branch can be accessed by other branches --> therefore, pushes on main should always trigger this workflow
-  push:
-    branches:
-    - main
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
