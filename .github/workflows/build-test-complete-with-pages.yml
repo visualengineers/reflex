@@ -19,16 +19,21 @@ concurrency:
 jobs:
   # build library, generate test report and upload as artifact
   generate_test-report_library:
+    name: build library
     uses: ./.github/workflows/library-test.yml  
   # build server, generate test report and upload as artifact
   build_server:
+    name: build server
     uses: ./.github/workflows/server-build.yml
   lint_server:
+    name: lint server
     uses: ./.github/workflows/server-lint.yml  
   # build server, generate test report and upload as artifact
   generate_test-report_server:
+    name: test server
     uses: ./.github/workflows/server-test.yml
   build_emulator:
+      name: build emulator
       uses: ./.github/workflows/emulator-build.yml
   # Build job
   collect-cache_data:
@@ -36,9 +41,7 @@ jobs:
     needs: [ build_server, lint_server, build_emulator, generate_test-report_library, generate_test-report_server ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/checkout@main
       - name: Create subfolder for library report
         shell: bash
         run: mkdir -p docs/test/library/report 
@@ -62,3 +65,7 @@ jobs:
           path: ${{ github.workspace }}/docs/test
           key: test-reports
           enableCrossOsArchive: true
+  update_pages:
+    name: update pages
+    uses: ./.github/workflows/pages-deploy.yml
+

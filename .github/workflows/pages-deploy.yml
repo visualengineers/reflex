@@ -8,8 +8,8 @@ on:
       - pages
       # this may be an issue, as it is not guaranteed that test reports are gernerated before this workflow runs 
       # Therefore, this can cause an outdated version of test reports to be restored.
-      # current workaround: manual dispatch of pages-default after merging a PR
-      - main
+      # merging a pr into main should alwas trigger a re-deployment of pages (see build-test-complete-with-pages.yml)
+      # - main
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
