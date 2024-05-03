@@ -29,12 +29,6 @@ runs:
       with:
         path: ${{ github.workspace }}/examples/basic-react/node_modules
         key: modules-${{ hashFiles('${{ github.workspace }}/examples/basic-react/package.json') }}
-    - name: cache node-modules basic-react
-      id: cache_basic_react
-      uses: actions/cache@main
-      with:
-        path: ${{ github.workspace }}/examples/basic-react/node_modules
-        key: modules-${{ hashFiles('${{ github.workspace }}/examples/basic-react/package.json') }}
     - name: cache node-modules basic-vue
       id: cache_basic_vue
       uses: actions/cache@main
@@ -44,5 +38,5 @@ runs:
     - name: install packages
       shell: bash
       working-directory: ${{ github.workspace }}
-      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'  || steps.cache_basic-react.outputs.cache-hit != 'true'  || steps.cache_basic-vue.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'  || steps.cache_basic_react.outputs.cache-hit != 'true'  || steps.cache_basic_vue.outputs.cache-hit != 'true'
       run: npm ci --include=dev
