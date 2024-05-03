@@ -10,21 +10,22 @@
 
 ## Workflows
 
-| File                                 | Name                               | Description                                                | PR  | Push | Release | call     | manual |
-| ------------------------------------ | ---------------------------------- | ---------------------------------------------------------- | --- | ---- | ------- | -------- | ------ |
-| `build-test-complete-with-pages.yml` | ReFlex: Build, Test & Deploy Pages | Build and test Library and Server, and generate reports    |     | X*   |         |          | X      |
-| `build-test-complete.yml`            | ReFlex: Build & Test               | Build and test Library and Server, and generate reports    | X   |      |         |          | X      |
-| `cache-cleanup.yml`                  | Cleanup PR Caches                  | Cleanup caches created for PR when PR is closed            | X** |      |         |          |        |
-| `emulator-build.yml`                 | ReFlex Emulator: Build             | Build Emulator App                                         |     |      |         | X        | X      |
-| `emulator-release.yml`               | ReFlex Emulator: Publish (Win)     | Create Emulator Electron App as release                    |     |      | X       |          |        |
-| `library-test.yml`                   | ReFlex Library: Test               | Build and Test Library (.NET) [`ReFlex.sln`]               |     |      |         | X        | X      |
-| `pages-deploy.yml`                   | Pages: Deploy                      | Deploy Documentation with test reports restored from Cache |     | X    |         |          | X      |
-| `server-build.yml`                   | ReFlex Server: Build               | Build Server (Angular)                                     |     |      |         | X        | X      |
-| `server-lint.yml`                    | ReFlex Server: Lint                | Run Linter for Server (Angular)                            |     |      |         | X        | X      |
-| `server-release.yml`                 | ReFlex Server: Publish (Win)       | Create Server Electron App as release                      |     |      | X       |          |        |
-| `server-test.yml`                    | ReFlex Server: Test                | Test Server (Angular)                                      |     |      |         | X        | X      |
-| `shared-build.yml`                   | ReFlex Shared Types: Build         | Build Shared Types Lib (Typescript)                        |     | X*   |         |          | X      |
-| `shared-components-build.yml`        | ReFlex Shared Types: Build         | Build Shared Types Lib (Typescript)                        |     | X*   |         |          | X      |
+| File                                 | Name                                     | Description                                                  | PR    | Push | Release | call | manual |
+| ------------------------------------ | ---------------------------------------- | ------------------------------------------------------------ | ----- | ---- | ------- | ---- | ------ |
+| `build-test-complete-with-pages.yml` | ReFlex: Build, Test & Deploy Pages       | Build and test Library and Server, and generate reports      |       | X`*` |         |      | X      |
+| `cache-cleanup.yml`                  | Cleanup PR Caches                        | Cleanup caches created for PR when PR is closed              | X`**` |      |         |      |        |
+| `emulator-build.yml`                 | ReFlex Emulator: Build                   | Build Emulator App                                           |       |      |         | X    | X      |
+| `emulator-release.yml`               | ReFlex Emulator: Publish (Win)           | Create Emulator Electron App as release                      |       |      | X       |      |        |
+| `library-test.yml`                   | ReFlex Library: Test                     | Build and Test Library (.NET) [`ReFlex.sln`] with reports    |       |      | X       | X    |        |
+| `net-build-all.yml`                  | ReFlex: Build, Test .NET Solution        | Build and Test Library (.NET) [`ReFlex.sln`] without reports | X     |      |         |      | X      |
+| `npm-build-all.yml`                  | ReFlex: Build/Lint/Test all npm projects | Build, lit, test all projects in npm workspace               | X     |      |         |      | X      |
+| `pages-deploy.yml`                   | Pages: Deploy                            | Deploy Documentation with test reports restored from Cache   |       | X    |         |      | X      |
+| `server-build.yml`                   | ReFlex Server: Build                     | Build Server (Angular)                                       |       |      |         | X    | X      |
+| `server-lint.yml`                    | ReFlex Server: Lint                      | Run Linter for Server (Angular)                              |       |      |         | X    | X      |
+| `server-release.yml`                 | ReFlex Server: Publish (Win)             | Create Server Electron App as release                        |       |      | X       |      |        |
+| `server-test.yml`                    | ReFlex Server: Test                      | Test Server (Angular)                                        |       |      |         | X    | X      |
+| `shared-build.yml`                   | ReFlex Shared Types: Build               | Build Shared Types Lib (Typescript)                          |       | X`*` |         |      | X      |
+| `shared-components-build.yml`        | ReFlex Shared Types: Build               | Build Shared Types Lib (Typescript)                          |       | X`*` |         |      | X      |
 
 `*` push to main branch
 `**` when PR is closed
