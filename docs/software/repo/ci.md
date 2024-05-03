@@ -50,31 +50,64 @@ Workflows to be run:
 Composite workflow that:
 
 - Builds and tests ReFlex Library
-- Builds and tests ReFlex Server
-- Collects Reports for Server ans Library
+- Builds, lints and tests ReFlex Server
+- Builds Emulator
+- Collects Reports for Server and Library (`generate_test-report_server` / `generate_test-report_library`)
 - Saves these reports in Cache `test-reports`
-
-Prerequisite step for `Pages: Deploy`
+- deploys github pages (`update_pages`)
 
 ```mermaid
 %%{ init: { "flowchart": {"htmlLabels": false}}}%%
 
 flowchart TD
-    A(["`ReFlex Library: Build *library-build.yml*`"])
-    -. build-library .->
-    B(["`ReFlex Library: Test *library-test.yml*`"])
+    A1(["`*npm-install*`"])
+    -. Action .-
+    C(["`ReFlex Emulator: Build *emulator-build.yml*`"])
+
+    A1(["`*npm-install*`"])
+    -. Action .-
+    D(["`ReFlex Server: Build *server-build.yml*`"])
+
+    A1(["`*npm-install*`"])
+    -. Action .-
+    E(["`ReFlex Server: Lint *server-lint.yml*`"])
+
+    A1(["`*npm-install*`"])
+    -. Action .-
+    F(["`ReFlex Server: Test *server-test.yml*`"])
+
+    A2(["`*net-install*`"])
+    -. Action .-
+    B(["`ReFlex: Build & Test *build-test-complete.yml*`"])
 
     B(["`ReFlex Library: Test *library-test.yml*`"])
     -. generate_test-report_library .->
-    D(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+    G(["`ReFlex: Build & Test *build-test-complete.yml*`"])
 
-    C(["`ReFlex Server: Test *server-test.yml*`"])
+    C(["`ReFlex Emulator: Build *emulator-build.yml*`"])
+    -- build_emulator ---
+    G(["`ReFlex: Build & Test *build-test-complete.yml*`"])    
+
+    D(["`ReFlex Server: Build *server-build.yml*`"])
+    -- build_server ---
+    E(["`ReFlex Server: Lint *server-lint.yml*`"])
+
+    E(["`ReFlex Server: Lint *server-lint.yml*`"])
+    -- lint_server ---
+    F(["`ReFlex Server: Test *server-test.yml*`"])
+
+    F(["`ReFlex Server: Test *server-test.yml*`"])
     -. generate_test-report_server .->
-    D(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+    G(["`ReFlex: Build & Test *build-test-complete.yml*`"])
 
-    D(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+    G(["`ReFlex: Build & Test *build-test-complete.yml*`"])
     -. collect-cache_data .->
-    E(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+    H(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+
+    H(["`ReFlex: Build & Test *build-test-complete.yml*`"])
+    -. update_pages .->
+    I(["`Pages: Deploy *pages-deploy.yml*`"])
+  
 ```
 
 ### Pages: Deploy (pages-deploy.yml)
