@@ -1,12 +1,10 @@
 # ReFlex: github CI
 
 <!-- omit in toc -->
-
 ## Table of Contents
 
-1. [Table of Contents](#table-of-contents)
-2. [Workflows](#workflows)
-3. [Pull Request (main)](#pull-request-main)
+1. [Workflows](#workflows)
+2. [Pull Request (main)](#pull-request-main)
 
 ## Workflows
 
