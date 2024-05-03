@@ -24,10 +24,11 @@ Complete Documentation as github pages available at [https://technische-visualis
 
 ## Build status
 
-[![Library:Build](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml)
 [![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
 
-[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml)
+[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/
+actions/workflows/shared-build.yml)
+[![Shared Components:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-components-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-cp,ponents-build.yml)
 
 [![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
 [![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
@@ -105,8 +106,9 @@ __[⬆ back to top](#table-of-contents)__
 | Command                                       | Description                                                                             | Remarks                                                                                             |
 | --------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `npm run build`                               | runs `build` command in all subrepos of workspace                                       |                                                                                                     |
-| `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test` and `lint` commands |                                                                                                     |
+| `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test-ci` and `lint` commands |                                                                                                     |
 | `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                         |                                                                                                     |
+| `npm run build:shared-components`             | builds Shared Angular Components(#use-shared-code)                                         |                                                                                                     |
 | `npm run build:electron-win`                  | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                     |                                                                                                     |
 | `npm run build:electron-osx`                  | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)             | needs to be run on macOS                                                                            |
 | `npm run build:electron-osx-arm64`            | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (ARM64)                 | needs to be run on macOS                                                                            |
