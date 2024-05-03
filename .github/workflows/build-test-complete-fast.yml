@@ -1,0 +1,36 @@
+# Build, lint, test .NET and npm workspace in two jobs
+name: "ReFlex: Build, Test Library and Tools"
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # run when main branch is updated and on pull requests
+  # as result, child workflows are not triggered anymore on prs
+  pull_request:
+    types: [ opened, reopened, edited, synchronize ]
+    branches:
+      - main
+
+jobs:
+  # build .NET solution
+  build_reflex:
+    name: build and test .NET Solution
+    runs-on: windows-latest
+    steps:
+      - name: checkout repo with submodules
+        uses: actions/checkout@main
+      - name: setup .NET and restore nuget packages
+        uses: ./.github/actions/net-install
+      - name: execute tests (no reports)
+        run: dotnet test
+  # build npm workspace
+  build_npm-workspace:
+    runs-on: windows-latest
+    name: build npm workspace
+    steps:
+      - name: checkout repo with submodules
+        uses: actions/checkout@main
+      - name: setup node and install packages
+        uses: ./.github/actions/npm-install
+      - name: build, test, lint complete npm workspace
+        run: npm run build-complete
