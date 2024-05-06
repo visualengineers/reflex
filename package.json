@@ -58,7 +58,7 @@
     "@angular-devkit/build-angular": "^17.3.6",
     "@angular/cli": "17.3.3",
     "@angular/compiler-cli": "17.3.2",
-    "@angular/language-service": "17.3.2",
+    "@angular/language-service": "17.3.7",
     "@gtvmbh/eslint-config": "^1.0.8",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.8",
