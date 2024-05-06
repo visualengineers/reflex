@@ -1,0 +1,9 @@
+<div class="timeline__container">
+    <div class="timeline__header float-right sticky-top">
+        <span
+            (click)="toggleTimeline()"
+            class="fas {{isCollapsed ? 'fa-angle-up' : 'fa-angle-down'}}"
+        ></span>
+    </div>
+    <app-timeline-canvas id="timeline-wrapper"></app-timeline-canvas>
+</div>
