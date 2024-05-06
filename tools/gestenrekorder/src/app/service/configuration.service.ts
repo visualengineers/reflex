@@ -81,7 +81,7 @@ export class ConfigurationService implements OnDestroy {
     ];
     this.viewPort = {
       width: 640,
-      height: 480,
+      heigth: 480,
     };
 
     this.setBackupTimestamp();
@@ -134,10 +134,10 @@ export class ConfigurationService implements OnDestroy {
 
   setBackupTimestamp(): void {
     let timestamp: Date | null = null;
-    const settings = localStorage.getItem('Gestenrecorder Settings')
+    const settings = localStorage.getItem("Gestenrecorder Settings");
 
     try {
-      if ( settings != null ){
+      if (settings != null) {
         timestamp = JSON.parse(settings)?.BACKUP_TIMESTAMP as Date;
       }
     } catch (e) {
@@ -214,8 +214,8 @@ export class ConfigurationService implements OnDestroy {
   }
 
   getLocalStorage(): void {
-    const storageSettings = localStorage.getItem('Gestenrecorder Settings');
-    if (storageSettings === null){
+    const storageSettings = localStorage.getItem("Gestenrecorder Settings");
+    if (storageSettings === null) {
       return;
     }
     const settings = JSON.parse(storageSettings);
@@ -240,8 +240,8 @@ export class ConfigurationService implements OnDestroy {
     const normalizedPoints = this.normalizedPoints$.getValue();
 
     const settings = {
-      BACKUP_TIMESTAMP: new Date().toLocaleString('de-DE'),
-      this.amountProjectionLayers: this.amountProjectionLayers,
+      BACKUP_TIMESTAMP: new Date().toLocaleString("de-DE"),
+      amountProjectionLayers: this.amountProjectionLayers,
       amountTouchPoints,
       backgroundImage: this.backgroundImage,
       backgroundSources: this.backgroundSources,
@@ -252,10 +252,10 @@ export class ConfigurationService implements OnDestroy {
       sendInterval: this.sendInterval,
       serverConnection: this.serverConnection,
       viewOptions: this.viewOptions,
-      viewPort: this.viewPort
+      viewPort: this.viewPort,
     };
 
-    localStorage.setItem('Gestenrecorder Settings', JSON.stringify(settings));
+    localStorage.setItem("Gestenrecorder Settings", JSON.stringify(settings));
     this.setBackupTimestamp();
   }
 
