@@ -1,9 +1,10 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable, OnDestroy, Inject } from "@angular/core";
 import { BACKGROUND_SOURCES } from "../data/backgroundSources";
 import { BackgroundSource } from "../model/BackgroundSource.model";
 import { CAMERAS } from "../data/cameras";
 import { NormalizedPoint } from "../model/NormalizedPoint.model";
 import { Observable, Subject, BehaviorSubject } from "rxjs";
+import { CommonModule, DOCUMENT } from "@angular/common";
 
 export interface Camera {
   model: string;
@@ -84,7 +85,7 @@ export class ConfigurationService implements OnDestroy {
       heigth: 480,
     };
 
-    this.setBackupTimestamp();
+    // this.setBackupTimestamp();
   }
 
   getActivePoint(): Observable<number> {
@@ -132,18 +133,18 @@ export class ConfigurationService implements OnDestroy {
     return this.backupTimestamp$.asObservable();
   }
 
-  setBackupTimestamp(): void {
-    let timestamp: Date | null = null;
-    const settings = localStorage.getItem("Gestenrecorder Settings");
+  // setBackupTimestamp(): void {
+  //   let timestamp: Date | null = null;
+  //   const settings = this.localStorage.getItem("Gestenrecorder Settings");
 
-    try {
-      if (settings != null) {
-        timestamp = JSON.parse(settings)?.BACKUP_TIMESTAMP as Date;
-      }
-    } catch (e) {
-      timestamp = null;
-    }
-  }
+  //   try {
+  //     if (settings != null) {
+  //       timestamp = JSON.parse(settings)?.BACKUP_TIMESTAMP as Date;
+  //     }
+  //   } catch (e) {
+  //     timestamp = null;
+  //   }
+  // }
 
   getCamera(): Camera {
     return this.camera;
@@ -213,55 +214,58 @@ export class ConfigurationService implements OnDestroy {
     this.viewPort = viewPort;
   }
 
-  getLocalStorage(): void {
-    const storageSettings = localStorage.getItem("Gestenrecorder Settings");
-    if (storageSettings === null) {
-      return;
-    }
-    const settings = JSON.parse(storageSettings);
+  // getLocalStorage(): void {
+  //   const storageSettings = localStorage.getItem("Gestenrecorder Settings");
+  //   if (storageSettings === null) {
+  //     return;
+  //   }
+  //   const settings = JSON.parse(storageSettings);
 
-    this.setAmountProjectionLayers(settings.amountProjectionLayers);
-    this.setAmoutTouchPoints(settings.amountTouchPoints);
-    this.setBackgroundImage(settings.backgroundImage);
-    this.setBackgroundSources(settings.backgroundSources);
-    this.setCamera(settings.camera);
-    this.setCircleSize(settings.circleSize);
-    this.setLayers(settings.layers);
-    this.setNormalizedPoints(settings.normalizedPoints);
-    this.setSendInterval(settings.sendInterval);
-    this.setServerConnection(settings.serverConnection);
-    this.setViewOptions(settings.viewOptions);
-    this.setViewPort(settings.viewPort);
-  }
+  //   this.setAmountProjectionLayers(settings.amountProjectionLayers);
+  //   this.setAmoutTouchPoints(settings.amountTouchPoints);
+  //   this.setBackgroundImage(settings.backgroundImage);
+  //   this.setBackgroundSources(settings.backgroundSources);
+  //   this.setCamera(settings.camera);
+  //   this.setCircleSize(settings.circleSize);
+  //   this.setLayers(settings.layers);
+  //   this.setNormalizedPoints(settings.normalizedPoints);
+  //   this.setSendInterval(settings.sendInterval);
+  //   this.setServerConnection(settings.serverConnection);
+  //   this.setViewOptions(settings.viewOptions);
+  //   this.setViewPort(settings.viewPort);
+  // }
 
-  setLocalStorage(): void {
-    const amountTouchPoints = this.amountTouchPoints$.getValue();
-    const layers = this.layers$.getValue();
-    const normalizedPoints = this.normalizedPoints$.getValue();
+  // setLocalStorage(): void {
+  //   const amountTouchPoints = this.amountTouchPoints$.getValue();
+  //   const layers = this.layers$.getValue();
+  //   const normalizedPoints = this.normalizedPoints$.getValue();
 
-    const settings = {
-      BACKUP_TIMESTAMP: new Date().toLocaleString("de-DE"),
-      amountProjectionLayers: this.amountProjectionLayers,
-      amountTouchPoints,
-      backgroundImage: this.backgroundImage,
-      backgroundSources: this.backgroundSources,
-      camera: this.camera,
-      circleSize: this.circleSize,
-      layers,
-      normalizedPoints,
-      sendInterval: this.sendInterval,
-      serverConnection: this.serverConnection,
-      viewOptions: this.viewOptions,
-      viewPort: this.viewPort,
-    };
+  //   const settings = {
+  //     BACKUP_TIMESTAMP: new Date().toLocaleString("de-DE"),
+  //     amountProjectionLayers: this.amountProjectionLayers,
+  //     amountTouchPoints,
+  //     backgroundImage: this.backgroundImage,
+  //     backgroundSources: this.backgroundSources,
+  //     camera: this.camera,
+  //     circleSize: this.circleSize,
+  //     layers,
+  //     normalizedPoints,
+  //     sendInterval: this.sendInterval,
+  //     serverConnection: this.serverConnection,
+  //     viewOptions: this.viewOptions,
+  //     viewPort: this.viewPort,
+  //   };
 
-    localStorage.setItem("Gestenrecorder Settings", JSON.stringify(settings));
-    this.setBackupTimestamp();
-  }
+  //   this.localStorage.setItem(
+  //     "Gestenrecorder Settings",
+  //     JSON.stringify(settings),
+  //   );
+  //   this.setBackupTimestamp();
+  // }
 
-  clearLocalStorage(): void {
-    localStorage.clear;
-  }
+  // clearLocalStorage(): void {
+  //   localStorage.clear;
+  // }
 
   ngOnDestroy() {
     this.amountTouchPoints$.unsubscribe();
