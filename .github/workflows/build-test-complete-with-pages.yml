@@ -1,0 +1,66 @@
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: "ReFlex: Build, Test & Deploy Pages"
+
+on:  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # caches are scoped to branches and keys !
+  # however, cache for main branch can be accessed by other branches --> therefore, pushes on main should always trigger this workflow
+  push:
+    branches:
+      - main
+      
+jobs:
+  # build library, generate test report and upload as artifact
+  generate_test-report_library:
+    name: build library
+    uses: ./.github/workflows/library-test.yml  
+  # build server, generate test report and upload as artifact
+  build_server:
+    name: build server
+    uses: ./.github/workflows/server-build.yml
+  lint_server:
+    name: lint server
+    uses: ./.github/workflows/server-lint.yml  
+  # build server, generate test report and upload as artifact
+  generate_test-report_server:
+    name: test server
+    uses: ./.github/workflows/server-test.yml
+  build_emulator:
+      name: build emulator
+      uses: ./.github/workflows/emulator-build.yml
+  # Build job
+  collect-cache_data:
+    runs-on: ubuntu-latest
+    needs: [ generate_test-report_library, generate_test-report_server ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+      - name: Create subfolder for library report
+        shell: bash
+        run: mkdir -p docs/test/library/report 
+      - name: Create subfolder for Server report
+        shell: bash
+        run: mkdir -p docs/test/server/report          
+      - name: Download library report        
+        uses: actions/download-artifact@main        
+        with:
+          name: ${{ needs.generate_test-report_library.outputs.artifact_name }}
+          path: ${{ github.workspace }}/docs/test/library/report/
+      - name: Download server report        
+        uses: actions/download-artifact@main        
+        with:
+          name: ${{ needs.generate_test-report_server.outputs.artifact_name }}
+          path: ${{ github.workspace }}/docs/test/server/report/         
+      - name: cache reports directory
+        uses: actions/cache/save@main
+        id: cache-reports
+        with:
+          path: ${{ github.workspace }}/docs/test
+          key: test-reports
+          enableCrossOsArchive: true
+  update_pages:
+    needs: [ collect-cache_data ]
+    name: update pages
+    uses: ./.github/workflows/pages-deploy.yml
+

@@ -1,0 +1,21 @@
+name: '.NET install'
+description: 'Install .NET and restore packages'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: install .NET
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: '7.x'
+    - name: Restore dependencies (Library)
+      shell: pwsh
+      run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
+    - name: Restore dependencies (TrackingServer)
+      shell: pwsh
+      run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
+    - name: build ReFlex without external sensors
+      shell: pwsh
+      working-directory: ${{ github.workspace }}
+      run: dotnet build ReFlex.sln -c CI /p:Platform=x64

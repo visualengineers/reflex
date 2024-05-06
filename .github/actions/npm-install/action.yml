@@ -1,0 +1,30 @@
+name: 'NPM install'
+description: 'Run npm install with cache enabled'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: install node v18
+      uses: actions/setup-node@main
+      with:
+        node-version: 18
+        cache: 'npm'
+        cache-dependency-path: ${{ github.workspace }}/package.json  
+    - name: cache node-modules
+      id: cache
+      uses: actions/cache@main
+      with:
+        path: ${{ github.workspace }}/node_modules
+        key: modules-${{ hashFiles('${{ github.workspace }}/package.json') }}
+    - name: cache node-modules emulator
+      id: cache_emulator
+      uses: actions/cache@main
+      with:
+        path: ${{ github.workspace }}/tools/emulator/node_modules
+        key: modules-${{ hashFiles('${{ github.workspace }}/tools/emulator/package.json') }}
+    - name: install packages  
+      shell: bash      
+      working-directory: ${{ github.workspace }}
+      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'
+      run: npm ci --include=dev
