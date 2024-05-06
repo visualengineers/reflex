@@ -87,67 +87,186 @@ export class ConfigurationService implements OnDestroy {
     this.setBackupTimestamp();
   }
 
-  getActivePoint(): Observable<number> {}
+  getActivePoint(): Observable<number> {
+    return this.activePoint$.asObservable();
+  }
 
-  setActivePoint(point: number): void {}
+  setActivePoint(point: number): void {
+    this.activePoint$.next(point);
+  }
 
-  getAmountProjectionLayers(): number {}
+  getAmountProjectionLayers(): number {
+    return this.amountProjectionLayers;
+  }
 
-  getAmountTouchPoints(): Observable<number> {}
+  setAmountProjectionLayers(amountProjectionLayers: number): void {
+    this.amountProjectionLayers = amountProjectionLayers;
+  }
 
-  setAmoutTouchPoints(amountTouchPoints: number): void {}
+  getAmountTouchPoints(): Observable<number> {
+    return this.amountTouchPoints$.asObservable();
+  }
 
-  getBackgroundImage(): string {}
+  setAmoutTouchPoints(amountTouchPoints: number): void {
+    this.amountTouchPoints$.next(amountTouchPoints);
+  }
 
-  setBackgroundImage(backgroundImage: string): void {}
+  getBackgroundImage(): string {
+    return this.backgroundImage;
+  }
 
-  getBackgroundSources(): BackgroundSource[] {}
+  setBackgroundImage(backgroundImage: string): void {
+    this.backgroundImage = backgroundImage;
+    this.background$.next(this.backgroundImage);
+  }
 
-  setBackgroundSources(paths: BackgroundSource[]): void {}
+  getBackgroundSources(): BackgroundSource[] {
+    return this.backgroundSources;
+  }
 
-  getBackupTimestamp(): Observable<Date | null> {}
+  setBackgroundSources(paths: BackgroundSource[]): void {
+    this.backgroundSources = paths;
+  }
 
-  setBackupTimestamp(): void {}
+  getBackupTimestamp(): Observable<Date | null> {
+    return this.backupTimestamp$.asObservable();
+  }
 
-  getCamera(): Camera {}
+  setBackupTimestamp(): void {
+    let timestamp: Date | null = null;
+    const settings = localStorage.getItem('Gestenrecorder Settings')
 
-  setCamera(camera: Camera): void {}
+    try {
+      if ( settings != null ){
+        timestamp = JSON.parse(settings)?.BACKUP_TIMESTAMP as Date;
+      }
+    } catch (e) {
+      timestamp = null;
+    }
+  }
 
-  getCameraOptions(): Camera[] {}
+  getCamera(): Camera {
+    return this.camera;
+  }
 
-  getCircleSize(): CircleSize {}
+  setCamera(camera: Camera): void {
+    this.camera = camera;
+  }
 
-  setCircleSize(circleSize: CircleSize): void {}
+  getCameraOptions(): Camera[] {
+    return CAMERAS;
+  }
 
-  getLayers(layers: Layers): void {}
+  getCircleSize(): CircleSize {
+    return this.circleSize;
+  }
 
-  setLayers(layers: Layers): void {}
+  setCircleSize(circleSize: CircleSize): void {
+    this.circleSize = circleSize;
+  }
 
-  getNormalizedPoints(): Observable<NormalizedPoint[]> {}
+  getLayers(): Observable<Layers> {
+    return this.layers$.asObservable();
+  }
 
-  setNormalizedPoints(normalizedPoints: NormalizedPoint[]): void {}
+  setLayers(layers: Layers): void {
+    this.layers$.next(layers);
+  }
 
-  getSendInterval(): number {}
+  getNormalizedPoints(): Observable<NormalizedPoint[]> {
+    return this.normalizedPoints$.asObservable();
+  }
 
-  setSendInterval(sendInterval: number): void {}
+  setNormalizedPoints(normalizedPoints: NormalizedPoint[]): void {
+    this.normalizedPoints$.next(normalizedPoints);
+  }
 
-  getServerConnection(): string {}
+  getSendInterval(): number {
+    return this.sendInterval;
+  }
 
-  setServerConnection(serverConnection: string): void {}
+  setSendInterval(sendInterval: number): void {
+    this.sendInterval = sendInterval;
+  }
 
-  getViewOptions(): ViewOption[] {}
+  getServerConnection(): string {
+    return this.serverConnection;
+  }
 
-  setViewOption(viewOptions: ViewOption[]): void {}
+  setServerConnection(serverConnection: string): void {
+    this.serverConnection = serverConnection;
+  }
 
-  getViewPort(): ViewPort {}
+  getViewOptions(): ViewOption[] {
+    return this.viewOptions;
+  }
 
-  setViewPort(viewPort: ViewPort): void {}
+  setViewOptions(viewOptions: ViewOption[]): void {
+    this.viewOptions = viewOptions;
+  }
 
-  getLocalStorage(): void {}
+  getViewPort(): ViewPort {
+    return this.viewPort;
+  }
 
-  setLocalStorage(): void {}
+  setViewPort(viewPort: ViewPort): void {
+    this.viewPort = viewPort;
+  }
 
-  clearLocalStorage(): void {}
+  getLocalStorage(): void {
+    const storageSettings = localStorage.getItem('Gestenrecorder Settings');
+    if (storageSettings === null){
+      return;
+    }
+    const settings = JSON.parse(storageSettings);
 
-  ngOnDestroy() {}
+    this.setAmountProjectionLayers(settings.amountProjectionLayers);
+    this.setAmoutTouchPoints(settings.amountTouchPoints);
+    this.setBackgroundImage(settings.backgroundImage);
+    this.setBackgroundSources(settings.backgroundSources);
+    this.setCamera(settings.camera);
+    this.setCircleSize(settings.circleSize);
+    this.setLayers(settings.layers);
+    this.setNormalizedPoints(settings.normalizedPoints);
+    this.setSendInterval(settings.sendInterval);
+    this.setServerConnection(settings.serverConnection);
+    this.setViewOptions(settings.viewOptions);
+    this.setViewPort(settings.viewPort);
+  }
+
+  setLocalStorage(): void {
+    const amountTouchPoints = this.amountTouchPoints$.getValue();
+    const layers = this.layers$.getValue();
+    const normalizedPoints = this.normalizedPoints$.getValue();
+
+    const settings = {
+      BACKUP_TIMESTAMP: new Date().toLocaleString('de-DE'),
+      this.amountProjectionLayers: this.amountProjectionLayers,
+      amountTouchPoints,
+      backgroundImage: this.backgroundImage,
+      backgroundSources: this.backgroundSources,
+      camera: this.camera,
+      circleSize: this.circleSize,
+      layers,
+      normalizedPoints,
+      sendInterval: this.sendInterval,
+      serverConnection: this.serverConnection,
+      viewOptions: this.viewOptions,
+      viewPort: this.viewPort
+    };
+
+    localStorage.setItem('Gestenrecorder Settings', JSON.stringify(settings));
+    this.setBackupTimestamp();
+  }
+
+  clearLocalStorage(): void {
+    localStorage.clear;
+  }
+
+  ngOnDestroy() {
+    this.amountTouchPoints$.unsubscribe();
+    this.backupTimestamp$.unsubscribe();
+    this.layers$.unsubscribe();
+    this.normalizedPoints$.unsubscribe();
+  }
 }
