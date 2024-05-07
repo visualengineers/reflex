@@ -21,6 +21,7 @@
             "development": {
               "tsConfig": "./tsconfig.lib.json"
             }
+
           },
           "defaultConfiguration": "production"
         },
