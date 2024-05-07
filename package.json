@@ -22,7 +22,7 @@
     "build:logging": "npm run build -w tools/logging",
     "start:emulator": "npm start -w tools/emulator",
     "start:example-angular": "npm start -w examples/basic-angular",
-    "start:example-react": "npm start -w examples/basic-react",
+    "start:example-react": "npm run dev -w examples/basic-react",
     "start:example-vue": "npm run serve -w examples/basic-vue",
     "start:logging": "npm run start -w tools/logging",
     "start:server": "npm run start -w tools/ReFlex.TrackingServer/ClientApp",
