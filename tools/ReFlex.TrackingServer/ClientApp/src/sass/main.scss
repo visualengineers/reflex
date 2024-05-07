@@ -1,17 +1,9 @@
+@import 'reflex';
+
 @import 'abstracts/mixins';
-@import 'abstracts/variables';
 
 @import 'base/base';
-@import 'base/icons';
-@import 'base/typography';
 @import 'base/utilities';
-
-@import 'components/button';
-@import 'components/input';
-@import 'components/list';
-@import 'components/table';
-@import 'components/toggle';
-
 
 @import 'layout/header';
 @import 'layout/navigation';
