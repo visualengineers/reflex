@@ -505,3 +505,4 @@ docs/software/apps/server.md
 ## re-include packages
 !packages/reflex-angular-components
 !packages/reflex-shared-types
+/.nx
