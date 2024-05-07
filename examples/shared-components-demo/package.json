@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "example showcasing how to use the shared components",
   "main": "main.ts",
-  "dependencies": {
-    "@reflex/shared-types": "file:../../packages/reflex-shared-types"
-  },
   "devDependencies": {},
   "scripts": {
     "ng": "ng",
