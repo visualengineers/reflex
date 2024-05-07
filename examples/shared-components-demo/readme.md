@@ -20,7 +20,7 @@
     "stylePreprocessorOptions": {
       // path to exported styes directory
       "includePaths": [
-        "../../../node_modules/@reflex/angular-components/src/scss"
+        "../../node_modules/@reflex/angular-components/src/scss"
       ]
     },
     // ...
@@ -28,3 +28,26 @@
 
 ```
 
+## add imports in component
+
+``` TypeScript
+
+  import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+
+  @Component({
+    selector: 'your-component-selector',
+    standalone: true,
+    imports: [
+      RouterOutlet,
+      SettingsGroupComponent,
+      ValueSliderComponent,
+      ValueSelectionComponent,
+      OptionCheckboxComponent,
+      PanelHeaderComponent,
+      ValueTextComponent
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
+  })
+
+```
