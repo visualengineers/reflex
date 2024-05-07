@@ -20,7 +20,7 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 4. [use shared code](#use-shared-code)
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
-7. [Known issues](#known-issues-1)
+7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
 
 ## Build status
 
@@ -154,7 +154,7 @@ __[⬆ back to top](#table-of-contents)__
 
 __[⬆ back to top](#table-of-contents)__
 
-## Known issues
+## Known issues / Troubleshooting
 
 * `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
 * if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
@@ -162,5 +162,10 @@ __[⬆ back to top](#table-of-contents)__
   * `~/.config` Folder (Linux)
   * `~/Library/Application Support/` (MacOS)  
 and delete the app folder there
+* to delete all temporary folders / cached packages / build artifacts, run the following command in the `scripts` folder:
+
+  ``` bash
+   ./cleanup_packages.sh package-directories.txt
+  ```
 
 __[⬆ back to top](#table-of-contents)__
