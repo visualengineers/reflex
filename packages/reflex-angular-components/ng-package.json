@@ -3,5 +3,9 @@
   "dest": "dist/reflex-angular-components",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": [
+    "src/assets/",
+    "src/scss/main.scss"
+  ]
 }
