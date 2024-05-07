@@ -24,7 +24,12 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "../../../node_modules/@reflex/angular-components/src/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "src/sass/main.scss"

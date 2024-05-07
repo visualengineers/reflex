@@ -27,7 +27,7 @@ import { MeasureGridComponent } from './measure-surface/measure-grid/measure-gri
 import { MeasureControlsComponent } from './measure-surface/measure-controls/measure-controls.component';
 import { TuioComponent } from './network/tuio/tuio.component';
 import { PackageDetailsComponent } from './network/tuio/package-details/package-details.component';
-import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from '@reflex/angular-components/dist/@reflex/angular-components';
+import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { PerformanceVisualizationComponent } from './performance-visualization/performance-visualization.component';
 // import { CanvasWidthDirective } from './tracking/point-cloud/canvas-width.directive';
 
