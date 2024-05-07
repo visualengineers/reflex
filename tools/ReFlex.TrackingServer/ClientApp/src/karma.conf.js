@@ -29,7 +29,7 @@ module.exports = function (config) {
     },
     coverageReporter: {
       dir: require('path').join(__dirname, '../../../../test/artifacts/coverage'),
-      subdir: '.',
+      subdir: 'reflex-tracking-server',
       reporters: [
         { type: 'html' },
         { type: 'text-summary' },
@@ -42,9 +42,9 @@ module.exports = function (config) {
           file: 'text-summary.txt'
         }
       },
-    },    
+    },
     junitReporter: {
-      outputDir: '../../../../Test/artifacts/tests',
+      outputDir: '../../../../test/artifacts/tests',
       outputFile: 'junit-test-results.xml',
       useBrowserName: false,
     },
@@ -58,14 +58,14 @@ module.exports = function (config) {
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
         flags: [
-          '--no-sandbox', 
-          '--use-angle=swiftshader', 
-          '--use-gl=angle', 
-          '--in-process-gpu', 
-          '--enable-logging', 
-          '--disable-gpu-sandbox', 
+          '--no-sandbox',
+          '--use-angle=swiftshader',
+          '--use-gl=angle',
+          '--in-process-gpu',
+          '--enable-logging',
+          '--disable-gpu-sandbox',
           '--use-cmd-decoder=passthrough',
-          '--swiftshader', 
+          '--swiftshader',
           '--swiftshader-webgl',
           '--v1',
           '--disable-gpu'

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {ConfigurationService, ViewOption, ViewPort} from '../service/configuration.service';
+import { Component } from '@angular/core';
+import {ConfigurationService} from '../service/configuration.service';
 import {ConnectionService} from '../service/connection.service';
 
 @Component({
@@ -7,7 +7,7 @@ import {ConnectionService} from '../service/connection.service';
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.sass']
 })
-export class TimelineComponent implements OnInit {
+export class TimelineComponent {
 
   public isCollapsed = false;
 
@@ -16,8 +16,6 @@ export class TimelineComponent implements OnInit {
     private connectionService: ConnectionService
   ) { }
 
-  ngOnInit(): void {
-  }
 
   toggleTimeline(): void {
     this.isCollapsed = !this.isCollapsed;

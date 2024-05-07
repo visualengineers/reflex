@@ -1,11 +1,11 @@
 <div  [ngClass]="{'col-md-auto, h-auto': isCollapsed, 'col-md-3': !isCollapsed }" class="sidebar__container">
-  
+
     <div class="sidebar__header float-right sticky-top">
         <span (click)="toggleSidebar()" class="fas {{isCollapsed ? 'fa-bars' : 'fa-times'}}"></span>
     </div>
-  
+
     <div *ngIf="!isCollapsed" class="sidebar__content">
-        
+
         <form>
 
             <!-- TOGGLE NAVIGATION -->
@@ -17,7 +17,7 @@
                     <a class="nav-link" href="#" [ngClass]="{'active': showProjection }" (click)="toggleSidebarContent()">Projection</a>
                 </li>
             </ul>
-        
+
             <hr>
 
             <!-- TRACKING -->
@@ -26,11 +26,11 @@
                 <h3 class="sidebar__heading">Server</h3>
 
                 <!-- server address -->
-                <div class="form-group">                    
+                <div class="form-group">
                     <label for="serverConnection">Address</label>
                     <input type="text" class="form-control" id="serverConnection" name="serverConnection" placeholder="enter server address" [(ngModel)]="serverConnection" (change)="saveConfiguration()">
                     <div class="connection-indicator" #indicator></div>
-                </div>            
+                </div>
 
                 <!-- send interval -->
                 <div class="row">
@@ -42,26 +42,26 @@
                             <input type="number" class="form-control" id="sendInterval" name="sendInterval" [(ngModel)]="sendInterval" (change)="saveConfiguration()">
                             <span class="input-unit">ms</span>
                         </span>
-                    </div>     
+                    </div>
                 </div>
                 <hr>
 
                 <h3 class="sidebar__heading">Camera</h3>
 
                  <!-- camera -->
-                <div class="form-group">                    
+                <div class="form-group">
                     <label for="camera">Model
                         <span class="fa fa-question-circle sidebar__tooltip" data-toggle="tooltip" data-placement="top" title="settings for tracking resolution / ratio"></span>
                     </label>
-                    <select class="custom-select custom-select-sm" name="trackingCamera" id="trackingCamera" [(ngModel)]="camera">  
+                    <select class="custom-select custom-select-sm" name="trackingCamera" id="trackingCamera" [(ngModel)]="camera">
                         <option *ngFor="let camera of cameraOptions; index as i; first as isFirst" (change)="saveConfiguration()">{{ camera.model }} - {{ camera.resolution }}
-                        <span *ngIf="isFirst"> (default)</span></option>  
-                    </select> 
-                </div>                            
+                        <span *ngIf="isFirst"> (default)</span></option>
+                    </select>
+                </div>
 
                 <!-- data stream -->
                 <div class="form-group">
-                    <label>Data
+                    <label for="viewOptions">Data
                         <span class="fa fa-question-circle sidebar__tooltip" data-toggle="tooltip" data-placement="top" title="data to include in tracking stream"></span>
                     </label><br>
                     <div class="custom-control custom-checkbox sidebar__column-2">
@@ -70,12 +70,12 @@
                             <label class="custom-control-label" for="checkbox__{{ i }}">{{ option.option }}</label>
                         </div>
                     </div>
-                </div> 
-                <hr>       
+                </div>
+                <hr>
 
                 <h3 class="sidebar__heading">Touch Points</h3>
 
-                <div class="row">                  
+                <div class="row">
                     <!-- amount -->
                     <div class="form-group col-sm-4">
                         <label for="amountTouchPoints">Max Amount
@@ -87,72 +87,72 @@
                     <div class="form-group col-sm-4">
                         <label for="circleSize">Min Size</label>
                         <input type="number" min="10" max="200" class="form-control" id="circleMinSize" name="circleMinSize" [(ngModel)]="circleSize.min" (change)="saveConfiguration()">
-                    </div>    
+                    </div>
                     <!-- max circle size -->
                     <div class="form-group col-sm-4">
                         <label for="circleSize">Max Size</label>
                         <input type="number" min="10" max="400" class="form-control" id="circleMaxSize" name="circleMaxSize" [(ngModel)]="circleSize.max" (change)="saveConfiguration()">
-                    </div>             
+                    </div>
                 </div>
                 <hr>
-        
+
             </div>
 
             <!-- PROJECTION -->
             <div *ngIf="showProjection">
-            
+
                 <!-- viewport dimensions-->
                 <h3 class="sidebar__heading">Viewport</h3>
-                <div class="row">      
+                <div class="row">
                     <div class="form-group col-sm-6">
                         <label for="viewPortWidth">Width</label>
                         <span class="input-unit-container">
                             <input type="number" class="form-control" id="viewPortWidth" name="viewPortWidth" [(ngModel)]="viewPort.width" (change)="saveConfiguration()">
                             <span class="input-unit">px</span>
                         </span>
-                    </div>     
+                    </div>
                     <div class="form-group col-sm-6">
                         <label for="viewPortHeight">Height</label>
                         <span class="input-unit-container">
                             <input type="number" class="form-control" id="viewPortHeight" name="viewPortHeight" [(ngModel)]="viewPort.height" (change)="saveConfiguration()">
                             <span class="input-unit">px</span>
                         </span>
-                    </div>     
+                    </div>
                 </div>
-        
+
                 <!-- layers -->
                 <div class="form-group clearfix">
                     <label for="projectionLayers">Layers
                         <span class="fa fa-question-circle sidebar__tooltip" data-toggle="tooltip" data-placement="top" title="number of depths layers, max. 20 each"></span>
                     </label>
 
-                    <div class="row">      
+                    <div class="row">
                         <div class="form-group col-sm-6">
                             <label for="viewPortWidth">Pull</label>&nbsp;
                             <span class="fas fa-arrow-up"></span>
                             <span class="input-unit-container">
                                 <input type="number" min="0" max="20" class="form-control" id="layersUp" name="layersUp" [(ngModel)]="layers.up" (change)="saveConfiguration()">
-                            </span>                                                       
-                        </div> 
+                            </span>
+                        </div>
                         <!-- color / NOTE: to pass changes on color inputs immediately use "(input)=..." -->
                         <div class="form-group col-sm-6">
                             <label for="colorUp">Color</label>
-                            <input type="color" class="form-control" id="colorUp" name="colorUp" value="#8ee6d0" [(ngModel)]="layers.colorUp" (input)="saveConfiguration()">      
+                            <input type="color" class="form-control" id="colorUp" name="colorUp" value="#8ee6d0" [(ngModel)]="layers.colorUp" (input)="saveConfiguration()">
                         </div>
                     </div>
-                    <div class="row">      
+                    <div class="row">
                         <div class="form-group col-sm-6">
                             <label for="viewPortHeight">Push</label>&nbsp;
                             <span class="fas fa-arrow-down"></span>
                             <span class="input-unit-container">
                                 <input type="number" min="0" max="20" class="form-control" id="layersDown" name="layersDown" [(ngModel)]="layers.down" (change)="saveConfiguration()">
                             </span>
-                        </div>     
+                        </div>
                         <!-- color / NOTE: to pass changes on color inputs immediately use "(input)=..." -->
                         <div class="form-group col-sm-6">
                             <label for="colorDown">Color</label>
-                            <input type="color" class="form-control" id="colorDown" name="colorDown" value="#00e6d0" [(ngModel)]="layers.colorDown" (input)="saveConfiguration()">      
-                        </div> 
+                            <input type="color" class="form-control" id="colorDown" name="colorDown" value="#00e6d0" [(ngModel)]="layers.colorDown" (input)="saveConfiguration()">
+                        </div>
                     </div>
 
                 </div>
@@ -164,35 +164,35 @@
                 <div class="form-group">
                     <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" id="backgroundType0" name="backgroundType" class="custom-control-input" [value]='0' [(ngModel)]='backgroundType' (change)="onBackgroundSelected()">
-                        <label class="custom-control-label" for="backgroundType0">none</label>             
+                        <label class="custom-control-label" for="backgroundType0">none</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" id="backgroundType1" name="backgroundType" class="custom-control-input" [value]='1' [(ngModel)]='backgroundType' (change)="onBackgroundSelected()">
-                        <label class="custom-control-label" for="backgroundType1">select Image</label>           
+                        <label class="custom-control-label" for="backgroundType1">select Image</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
                         <input type="radio" id="backgroundType2" name="backgroundType" class="custom-control-input" [value]='2' [(ngModel)]='backgroundType' (change)="onBackgroundSelected()">
-                        <label class="custom-control-label" for="backgroundType2">via URL</label>               
+                        <label class="custom-control-label" for="backgroundType2">via URL</label>
                     </div>
-            
+
                      <!-- (conditionally rendered) inputs for projection sources -->
-                    <select class="custom-select" name="backgroundImage" [(ngModel)]="backgroundImage" *ngIf="backgroundType==1" (change)="onBackgroundSelected()">
-                        <option *ngFor="let img of backgroundSources; let i = index" [value]="img.src">{{ img.name }}</option>  
+                    <select class="custom-select" name="backgroundImage" [(ngModel)]="backgroundImage" *ngIf="backgroundType===1" (change)="onBackgroundSelected()">
+                        <option *ngFor="let img of backgroundSources; let i = index" [value]="img.src">{{ img.name }}</option>
                     </select>
-                    <div *ngIf="backgroundType==2">
+                    <div *ngIf="backgroundType===2">
                         <input type="text" class="form-control" name="backgroundUrl" [(ngModel)]='backgroundUrl' accept="image/*" (change)="onBackgroundSelected()">
                     </div>
-                </div>  
-                <hr>              
-            
-            </div>           
-            
-        </form>    
-        
-        <!-- RESTORE / SAVE BUTTONS -->  
-        
+                </div>
+                <hr>
+
+            </div>
+
+        </form>
+
+        <!-- RESTORE / SAVE BUTTONS -->
+
         <div class="sidebar__absolute row">
-           
+
             <h3 class="sidebar__heading">Backup</h3>
             <div class="form-group col-sm-12 sidebar__infotext">
                 last backup: {{ backupTimestamp }}
@@ -201,17 +201,17 @@
             <div class="form-group col-sm-6">
                 <button class="btn btn-secondary btn-block sidebar__save-btn" *ngIf="!isCollapsed" (click)="restoreConfiguration()">
                     restore
-              </button>  
+              </button>
             </div>
             <div class="form-group col-sm-6">
                 <button class="btn btn-primary btn-block sidebar__save-btn" *ngIf="!isCollapsed" (click)="saveConfiguration()">
                     create
-              </button>    
+              </button>
             </div>
-        
-        </div> 
 
-    </div>      
-   
+        </div>
+
+    </div>
+
 </div>
 

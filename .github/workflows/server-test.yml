@@ -1,6 +1,6 @@
 name: "ReFlex Server: Test"
 
-on: 
+on:
   # make this workflow reusable
   workflow_call:
     outputs:
@@ -9,9 +9,9 @@ on:
         value: ${{ jobs.test-server.outputs.artifact_name }}
   # this workflow can be triggered manually
   workflow_dispatch:
-  
+
 jobs:
-  test-server: 
+  test-server:
     runs-on: windows-latest
     name: install and test
     env:
@@ -24,7 +24,9 @@ jobs:
       - name: setup node and install packages
         uses: ./.github/actions/npm-install
       - name: build shared types
-        run: npm run build:shared-types 
+        run: npm run build:shared-types
+      - name: build angular components
+        run: npm run build:shared-components
       - name: run test
         working-directory: ${{ github.workspace }}
         run: npm run test:server
@@ -32,11 +34,11 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: ${{ env.artifact_name }}
-          path: ${{ github.workspace }}/test/artifacts/coverage 
+          path: ${{ github.workspace }}/test/artifacts/coverage
       - name: Publish JUnit Test Report
         uses: mikepenz/action-junit-report@main
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: '${{ github.workspace }}/test/artifacts/tests/junit-test-results.xml'
-      
-        
+
+

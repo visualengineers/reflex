@@ -1,0 +1,25 @@
+# Build, test .NET
+name: "ReFlex: Build, Test .NET Solution"
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # run when main branch is updated and on pull requests
+  # as result, child workflows are not triggered anymore on prs
+  pull_request:
+    types: [ opened, reopened, edited, synchronize ]
+    branches:
+      - main
+
+jobs:
+  # build .NET solution
+  build_reflex:
+    name: build and test .NET Solution
+    runs-on: windows-latest
+    steps:
+      - name: checkout repo with submodules
+        uses: actions/checkout@main
+      - name: setup .NET and restore nuget packages
+        uses: ./.github/actions/net-install
+      - name: execute tests (no reports)
+        run: dotnet test

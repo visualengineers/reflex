@@ -1,9 +1,9 @@
 name: "ReFlex Emulator: Build"
 
-on: 
+on:
   workflow_dispatch:
   workflow_call:
-    
+
 jobs:
   build-emulator:
     runs-on: windows-latest
@@ -15,5 +15,7 @@ jobs:
         uses: ./.github/actions/npm-install
       - name: build shared types
         run: npm run build:shared-types
+      - name: build angular components
+        run: npm run build:shared-components
       - name: build emulator
-        run: npm run build:emulator 
+        run: npm run build:emulator

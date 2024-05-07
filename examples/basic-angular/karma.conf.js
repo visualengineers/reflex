@@ -25,8 +25,8 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/fasi-test'),
-      subdir: '.',
+      dir: require('path').join(__dirname, '../../test/artifacts/coverage'),
+      subdir: 'example-basic-angular',
       reporters: [
         { type: 'html' },
         { type: 'text-summary' }

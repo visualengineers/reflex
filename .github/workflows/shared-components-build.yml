@@ -1,0 +1,22 @@
+name: "ReFlex Shared Angular Components: Build"
+
+on:
+  # make this workflow reusable
+  workflow_call:
+  workflow_dispatch:
+  # explicitly build shared types when pushing to main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-shared-types:
+    runs-on: windows-latest
+    name: build shared ts types
+    steps:
+      - name: checkout repo with submodules
+        uses: actions/checkout@main
+      - name: setup node and install packages
+        uses: ./.github/actions/npm-install
+      - name: build shared angular components
+        run: npm run build:build:shared-components

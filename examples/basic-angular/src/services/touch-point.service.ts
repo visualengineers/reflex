@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { Interaction, InteractionFrame } from '@reflex/shared-types';
 import { Observable, Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +14,7 @@ export class TouchPointService {
     private _history: Subject<InteractionFrame[]> = new Subject<InteractionFrame[]>();
     private _isConnected = false;
     private _frameNumber: Subject<number> = new Subject<number>();
-    
+
     constructor(@Inject('WEBSOCKET_URL') private _address: string) {
         this._wss = new WebSocket(this._address);
         this.subscribeWebSocketEvents();
@@ -55,14 +54,14 @@ export class TouchPointService {
 
             service._numFrames++;
             service._frameNumber.next(service._numFrames);
-            
+
             // not the most elegant workaround: convert first letter of JSON property to lowercase
-            const lowerCaseStart = evt.data.replace(/"([^"]+)":/g, 
+            const lowerCaseStart = evt.data.replace(/"([^"]+)":/g,
               ($0:string, $1:string) => { return ('"' + $1.charAt(0).toLowerCase() + $1.slice(1) + '":'); });
 
             // parse data
             var points = JSON.parse(lowerCaseStart);
-            
+
             if (points.length <= 0) {
                 service._touchPoints.next([]);
                 service._historyRaw.push({ frameId: service._numFrames, interactions: []})
@@ -85,8 +84,8 @@ export class TouchPointService {
             service._history.next(service._historyRaw);
         }
 
-        this._wss.onclose = function() { 
-            
+        this._wss.onclose = function() {
+
             // websocket is closed.
             console.warn(`Connection to ${service._address} is closed...`);
             service._isConnected = false;

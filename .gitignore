@@ -1,4 +1,4 @@
-## don't add exported library dlls and external dlls to git 
+## don't add exported library dlls and external dlls to git
 library/export/Modules/*
 external/*
 
@@ -493,8 +493,7 @@ $RECYCLE.BIN/
 !**/*/shared/log
 !**/*/src/app/log
 !**/*/src/assets/icon
-!**/*/reflex-shared-types
-!**/*/reflex-shared-types/**/log
+!packages/reflex-shared-types/**/log
 docs/Gemfile
 docs/Gemfile.lock
 docs/software/repo/library.md
@@ -502,3 +501,7 @@ docs/software/repo/reflex.md
 docs/software/apps/emulator.md
 docs/software/apps/logging.md
 docs/software/apps/server.md
+
+## re-include packages
+!packages/reflex-angular-components
+!packages/reflex-shared-types

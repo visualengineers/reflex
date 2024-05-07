@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "test": "vitest",
+    "test-ci": "vitest run"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -12,10 +14,14 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@testing-library/vue": "^8.0.3",
+    "@vitejs/plugin-vue": "^5.0.4",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-router": "^5.0.8",
     "@vue/cli-service": "^5.0.8",
-    "@vue/compiler-sfc": "^3.0.0"
+    "@vue/compiler-sfc": "^3.0.0",
+    "happy-dom": "^14.7.1",
+    "vitest": "^1.5.3"
   },
   "description": "example app showcasing how to receive events from ReFlex with vue.js",
   "main": "src/main.js",

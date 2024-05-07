@@ -12,20 +12,20 @@ export class ConnectionService {
 
   private socket?: WebSocketSubject<Array<Interaction>>;
   private sendInterval$?: Observable<number>;
-  private touchPoints: Array<Interaction> = new Array<Interaction>();
+  private touchPoints: Array<Interaction> = [];
 
   private sendIntervalSubscription?: Subscription;
   private autoReconnectSubscription?: Subscription;
 
   public connectionSuccessful : Subject<boolean>;
 
-  public doReconnect: boolean = true;
+  public doReconnect = true;
 
   constructor(private configurationService: ConfigurationService) {
     this.connectionSuccessful = new Subject();
   }
 
-  init(): void {    
+  init(): void {
     this.autoReconnectSubscription = this.connectionState().pipe(
       tap(result => this.doReconnect = !result),
       // wait for 2 seconds to reconnect
@@ -37,24 +37,24 @@ export class ConnectionService {
           this.connect();
       }
     })).subscribe();
-    
+
     this.reconnect();
   }
 
   destroy(): void {
     this.autoReconnectSubscription?.unsubscribe();
-    this.disconnect(false);    
+    this.disconnect(false);
   }
 
-  reconnect(): void {    
-    this.disconnect(true);        
+  reconnect(): void {
+    this.disconnect(true);
   }
 
   disconnect(triggerReconnect : boolean = true): void {
-    
+
     this.socket?.complete();
-    this.socket?.unsubscribe();    
-    this.sendIntervalSubscription?.unsubscribe();    
+    this.socket?.unsubscribe();
+    this.sendIntervalSubscription?.unsubscribe();
     if (triggerReconnect)
       this.connectionSuccessful?.next(false);
   }
@@ -67,7 +67,7 @@ export class ConnectionService {
     return this.connectionSuccessful.asObservable();
   }
 
-  private connect(): void { 
+  private connect(): void {
     if (!this.socket || this.socket.closed) {
       this.socket = new WebSocketSubject(this.configurationService.getServerConnection());
     }
@@ -80,7 +80,7 @@ export class ConnectionService {
         },
         error => {
           this.disconnect();
-          console.error(error);        
+          console.error(error);
         },
         () => {
           this.disconnect();

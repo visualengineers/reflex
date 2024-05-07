@@ -8,25 +8,22 @@ import { PerformanceService } from 'src/shared/services/performance.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { MockValueSliderComponent } from '../elements/value-slider/value-slider.mock';
-import { MockOptionCheckboxComponent } from '../elements/option-checkbox/option-checkbox.component.mock';
-import { MockSettingsGroupComponent } from '../elements/settings-group/settings-group.component.mock';
-import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
+import { ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { DEFAULT_SETTINGS, DepthCameraState, PerformanceData, TrackingConfigState } from '@reflex/shared-types';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
     'getCanRestore',
     'update'
   ]);
 
-const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
+const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
   [
     'getStatus'
   ]);
@@ -37,9 +34,9 @@ const performanceService = jasmine.createSpyObj<PerformanceService>('fakePerform
   ]);
 
 const state: TrackingConfigState = {
-  isCameraSelected: true, 
-  selectedCameraName: 'TestCamera', 
-  selectedConfigurationName: 'TestConfig', 
+  isCameraSelected: true,
+  selectedCameraName: 'TestCamera',
+  selectedConfigurationName: 'TestConfig',
   depthCameraStateName: DepthCameraState[DepthCameraState.Streaming]
 };
 
@@ -53,16 +50,16 @@ describe('SettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        SettingsComponent,
-        MockValueSliderComponent,
-        MockOptionCheckboxComponent,
-        MockSettingsGroupComponent,
-        MockValueSelectionComponent 
+      declarations: [
+        SettingsComponent
       ],
       imports: [
         FormsModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        ValueSliderComponent,
+        OptionCheckboxComponent,
+        SettingsGroupComponent,
+        ValueSelectionComponent
       ],
       providers: [
         {
@@ -97,11 +94,11 @@ describe('SettingsComponent', () => {
 
     fixture = TestBed.createComponent(SettingsComponent);
     component = fixture.componentInstance;
-    
+
   });
 
   afterEach(() => {
-    logService.sendErrorLog.calls.reset(); 
+    logService.sendErrorLog.calls.reset();
 
     settingsService.getSettings.calls.reset();
     settingsService.getCanRestore.calls.reset();

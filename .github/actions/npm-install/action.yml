@@ -10,7 +10,7 @@ runs:
       with:
         node-version: 18
         cache: 'npm'
-        cache-dependency-path: ${{ github.workspace }}/package.json  
+        cache-dependency-path: ${{ github.workspace }}/package.json
     - name: cache node-modules
       id: cache
       uses: actions/cache@main
@@ -23,8 +23,20 @@ runs:
       with:
         path: ${{ github.workspace }}/tools/emulator/node_modules
         key: modules-${{ hashFiles('${{ github.workspace }}/tools/emulator/package.json') }}
-    - name: install packages  
-      shell: bash      
+    - name: cache node-modules basic-react
+      id: cache_basic_react
+      uses: actions/cache@main
+      with:
+        path: ${{ github.workspace }}/examples/basic-react/node_modules
+        key: modules-${{ hashFiles('${{ github.workspace }}/examples/basic-react/package.json') }}
+    - name: cache node-modules basic-vue
+      id: cache_basic_vue
+      uses: actions/cache@main
+      with:
+        path: ${{ github.workspace }}/examples/basic-vue/node_modules
+        key: modules-${{ hashFiles('${{ github.workspace }}/examples/basic-vue/package.json') }}
+    - name: install packages
+      shell: bash
       working-directory: ${{ github.workspace }}
-      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'  || steps.cache_basic_react.outputs.cache-hit != 'true'  || steps.cache_basic_vue.outputs.cache-hit != 'true'
       run: npm ci --include=dev
