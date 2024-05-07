@@ -1,4 +1,4 @@
-@import 'abstracts/variables';
+@import 'main';
 
 .interactions {
     &__visualization {
@@ -22,8 +22,8 @@
         left: -17.5px;
 
         width: 35px;
-        height: 35px; 
-      
+        height: 35px;
+
         border-radius: 100%;
 
         &--confidence {
@@ -48,7 +48,7 @@
             text-align: center;
             min-width: 30px;
             min-height: 30px;
-            
+
             margin-top: -3px;
             margin-left: -2px;
 
@@ -58,7 +58,7 @@
 
     &__description {
         position: absolute;
-        
+
         top: 40px;
         left: 20px;
 
@@ -71,13 +71,13 @@
             border:none;
             margin-bottom: 0;
 
-            tbody tr {               
+            tbody tr {
                 background-color: transparent;
 
-                &:hover {   
+                &:hover {
                     box-shadow: none;
                   }
-            }  
+            }
         }
     }
 }

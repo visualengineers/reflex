@@ -1,9 +1,9 @@
-@import 'abstracts/variables';
+@import 'main';
 
 :host {
-    position: absolute; 
-    top: 0rem; 
-    left: 0rem; 
+    position: absolute;
+    top: 0rem;
+    left: 0rem;
 
     width: 100%;
 
@@ -28,7 +28,7 @@
 
         width: 20rem;
 
-        & p, h4 {            
+        & p, h4 {
             margin-top: 0.2rem;
         }
 
