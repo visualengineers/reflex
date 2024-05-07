@@ -21,7 +21,7 @@
     "useDefineForClassFields": false,
     "paths": {
       ".": [
-        "./dist/reflex-angular-components"
+        "./dist/@reflex/angular-components"
       ]
     },
     "lib": [

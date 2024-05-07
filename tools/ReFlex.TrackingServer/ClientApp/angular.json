@@ -32,7 +32,7 @@
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/sass",
-                "../../../node_modules/reflex-angular-components/src/scss"
+                "../../../node_modules/@reflex/angular-components/src/scss"
               ]
             },
             "scripts": []
