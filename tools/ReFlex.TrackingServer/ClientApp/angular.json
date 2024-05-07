@@ -31,7 +31,8 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/sass"
+                "src/sass",
+                "../../../node_modules/reflex-angular-components/src/scss"
               ]
             },
             "scripts": []
@@ -129,7 +130,7 @@
             "dev": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,              
+              "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": true,
