@@ -1,6 +1,9 @@
 <div class="content__header margin-bottom-default">
   <h2 class="heading-primary">Controls: Panel</h2>
 </div>
+<p class="margin-bottom-default">
+  Heading with configurable label and optional toggle. Toggle data can be assigned using Two-Way DataBinding. Additional content can be placed in the center of the header.
+</p>
 <app-panel-header class="content__header" elementTitle="Section title with toggle" elementId="testId" ngDefaultControl
   [(data)]="toggleHeaderActive" (change)="toggleHeaderChanged()" [disabled]="!canToggleHeader">
   <div>{{toggleToast}}</div>
