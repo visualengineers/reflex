@@ -1,10 +1,6 @@
 @import 'reflex';
 
-@import 'abstracts/mixins';
-
-@import 'base/base';
-@import 'base/utilities';
-
+@import 'layout/base';
 @import 'layout/header';
 @import 'layout/navigation';
 @import 'layout/content';
