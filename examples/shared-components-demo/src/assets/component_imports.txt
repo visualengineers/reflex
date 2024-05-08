@@ -1,0 +1,24 @@
+import {
+  SettingsGroupComponent,
+  ValueSliderComponent,
+  ValueSelectionComponent,
+  OptionCheckboxComponent,
+  PanelHeaderComponent,
+  ValueTextComponent
+} from '@reflex/angular-components/dist';
+
+@Component({
+  selector: 'your-component-selector',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    SettingsGroupComponent,
+    ValueSliderComponent,
+    ValueSelectionComponent,
+    OptionCheckboxComponent,
+    PanelHeaderComponent,
+    ValueTextComponent
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss'
+})

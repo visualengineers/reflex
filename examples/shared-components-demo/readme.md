@@ -10,7 +10,7 @@
     // ... 
     "assets": [
     // keep local assets
-    // add copy from exteternal location  (path to node_modules folder of package)
+    // add copy from external location  (path to node_modules folder of package)
       {
         "glob": "**/*",
         "input": "../../node_modules/@reflex/angular-components/src/assets",
