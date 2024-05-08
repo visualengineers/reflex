@@ -1,0 +1,43 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Controls: Slider</h2>
+</div>
+<p class="margin-bottom-default">
+  Slider for range value input combined with text input and descriptive text on hover.
+</p>
+<app-value-slider
+    class="settings__item"
+    elementTitle="Border 1"
+    elementId="demo-slider-1"
+    [min]="0.5"
+    [max]="1"
+    [step]="0.01"
+    [(data)]="sliderData"
+    (change)="checkSlider2()"
+    unit="mm">
+    Short description of the values.
+  </app-value-slider>
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Border 2"
+    elementId="demo-slider-1"
+    [min]="sliderData"
+    [max]="2"
+    [step]="0.01"
+    [(data)]="sliderData2"
+    unit="mm">
+    Short description of the values of this slider. Minimum is bound to the value of the first slider.
+  </app-value-slider>
+<div class="content__body margin-bottom-default">
+  <app-settings-group elementTitle="Additional Info" toggleId="slider_info">
+    <ul>
+      <li><code>elementTitle</code> sets the label</li>
+      <li><code>elementId</code> sets id and name of the input element</li>
+      <li><code>unit</code> sets filed next to the text input</li>
+      <li>use <code>[(data)]</code> property for displaying a toggle and bind to its value (Two-way-binding)</li>
+      <li>use <code>(change)</code> for callbacks when the bound dat value changes</li>
+      <li><code>[min]</code>, <code>[max]</code> and <code>[step]</code> can be bound to specify value range and value change</li>
+      <li>content inside the element is displayed as description next to the slider</li>
+
+    </ul>
+  </app-settings-group>
+</div>

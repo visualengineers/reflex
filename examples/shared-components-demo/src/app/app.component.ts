@@ -7,8 +7,8 @@ import { IntroductionComponent } from './introduction/introduction.component';
 import { PanelComponent } from './controls/panel/panel.component';
 import { ToggleComponent } from './controls/toggle/toggle.component';
 import { TextBoxComponent } from './controls/text-box/text-box.component';
-import { ValueSelectComponent } from './controls/value-select/value-select.component';
-import { ValueSliderComponent } from './controls/value-slider/value-slider.component';
+import { SelectComponent } from './controls/select/select.component';
+import { SliderComponent } from './controls/slider/slider.component';
 import { TableComponent } from './controls/table/table.component';
 import { ButtonsComponent } from './controls/buttons/buttons.component';
 
@@ -20,8 +20,8 @@ import { ButtonsComponent } from './controls/buttons/buttons.component';
     PanelComponent,
     ToggleComponent,
     TextBoxComponent,
-    ValueSelectComponent,
-    ValueSliderComponent,
+    SelectComponent,
+    SliderComponent,
     TableComponent,
     ButtonsComponent,
     CommonModule,
