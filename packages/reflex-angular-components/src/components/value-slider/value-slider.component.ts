@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
@@ -7,7 +8,7 @@ import { debounceTime, skipWhile } from 'rxjs/operators';
   selector: 'app-value-slider',
   standalone: true,
   templateUrl: './value-slider.component.html',
-  imports: [ FormsModule ]
+  imports: [CommonModule, FormsModule]
 })
 export class ValueSliderComponent implements OnInit, OnDestroy {
   @Input()

@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-panel-header',
   standalone: true,
   templateUrl: './panel-header.component.html',
-  imports: [ CommonModule, FormsModule ]
+  imports: [CommonModule, FormsModule]
 })
 export class PanelHeaderComponent {
   @Input()
