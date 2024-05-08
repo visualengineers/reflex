@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
   imports: [ FormsModule ]
 })
 export class OptionCheckboxComponent {
+  @Input()
+  public disabled = false;
 
   @Input()
   public data = false;
