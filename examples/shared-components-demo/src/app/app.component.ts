@@ -1,101 +1,31 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { OptionCheckboxComponent, PanelHeaderComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { PanelHeaderComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { ColorComponent } from './color/color.component';
-import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
-import { DataService } from '../services/data.service';
-import { HttpClientModule } from '@angular/common/http';
-import { AsyncPipe} from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { CommonModule} from '@angular/common';
+import { IntroductionComponent } from './introduction/introduction.component';
+import { PanelComponent } from './controls/panel/panel.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    HttpClientModule,
-    FormsModule,
+    IntroductionComponent,
+    PanelComponent,
+    CommonModule,
     RouterOutlet,
     SettingsGroupComponent,
     PanelHeaderComponent,
-    OptionCheckboxComponent,
-    ValueSelectionComponent,
-    ValueSliderComponent,
-    ValueTextComponent,
-    ColorComponent,
-    AsyncPipe
-  ],
-  providers: [
-    DataService
+    ColorComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent {
 
   public title = 'ReFlex Shared Components Demo';
 
   public version = '1.0.0';
 
-  public angular_json: BehaviorSubject<string> = new BehaviorSubject('');
-  public component_imports: BehaviorSubject<string> = new BehaviorSubject('');
-
-  public toggleHeaderActive = true;
-  public canToggleHeader = true;
-  public toggleToast = '';
-
-  private remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
-  private notification$: Subscription = new Subscription();
-
-  private init = true;
-
-  public constructor(private dataService: DataService) {
-
-  }
-
-  public ngOnInit(): void {
-    this.dataService.loadAngularJson().subscribe({
-      next: (result) => {
-        this.angular_json.next(result)
-      },
-      error: (error) => console.error('could not load angular.json text', error)
-    });
-
-    this.dataService.loadComponentImports().subscribe({
-      next: (result) => {
-        this.component_imports.next(result)
-      },
-      error: (error) => console.error('could not load component imports text', error)
-    });
-
-    this.notification$.add(
-      this.remainingToast.pipe(
-        filter((value) => value === 0)
-      ).subscribe({
-        next: () => (this.toggleToast = '')
-      })
-    );
-  }
-
-  public ngOnDestroy(): void {
-      this.notification$?.unsubscribe();
-  }
-
-  public toggleHeaderChanged(): void {
-    this.remainingToast.next(this.remainingToast.getValue() + 1);
-    this.toggleToast = `changed (x${this.remainingToast.getValue()})`;
-
-
-
-    timer(2000).pipe(
-      filter(() => this.remainingToast.getValue() > 0)
-    ).subscribe({
-      complete:() => ( this.remainingToast.next(this.remainingToast.getValue() - 1))
-    })
-  }
-
-  public update(event: boolean): void {
-    this.toggleHeaderActive = event;
-    console.log(this.toggleHeaderActive);
-  }
 
 }

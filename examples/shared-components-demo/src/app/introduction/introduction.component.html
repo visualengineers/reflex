@@ -1,0 +1,43 @@
+<div class="content__body margin-bottom-default">
+  <h3 class="heading-tertiary">Introduction</h3>
+  <p>This Angular demo project showcases how to use the different styles and components provided by
+    <code>&#0064;reflex/angular-components</code> Component Library located in
+    <code>/packages/shared-angular-components</code>.
+  </p>
+  <p>This landing page should provide simple usage instructions (also documented in <code>readme.md</code>) and
+    examples for the provided components (including spec regarding the css layouting).</p>
+</div>
+<div class="content__body margin-bottom-default">
+  <app-settings-group elementTitle="Setup Instructions" toggleId="setup_instructions">
+    <ol class="custom-list">
+      <li class="list-item">
+        <p>run <code>npm install</code> from the workspace root.</p>
+        <p class="list-item__hint"><strong>HINT:</strong>to cleanup temporary files / stored packages / build
+          artifacts, run <code>./cleanup_packages ./package-directories.txt</code> from inside the
+          <code>scripts</code> folder (cf. <code>readme.md</code>)
+        </p>
+      </li>
+      <li class="list-item">
+        <p>
+          Modify the <code>projects/your_project/architect/build/options</code> section in your
+          <code>angular.json</code>:
+        </p>
+        <pre>{{ angular_json | async }}</pre>
+      </li>
+      <li class="list-item">
+        <p>
+          Add the necessary imports to your component (in case of standalone components) or
+          <code>app.module.ts</code>
+        </p>
+        <pre>{{ component_imports | async }}</pre>
+      </li>
+      <li class="list-item">
+        <p>build shared components by executing <code>npm run build:shared-components</code> from the workspace
+          root.</p>
+        <p class="list-item__hint"><strong>REMEMBER:</strong>every time you make a change to assets/ code in the
+          shared components library, it has to be rebuild before the changes are applied to the consuming
+          projects.</p>
+      </li>
+    </ol>
+  </app-settings-group>
+</div>
