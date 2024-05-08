@@ -19,6 +19,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class IntroductionComponent implements OnInit {
   public angular_json: BehaviorSubject<string> = new BehaviorSubject('');
+  public package_json: BehaviorSubject<string> = new BehaviorSubject('');
   public component_imports: BehaviorSubject<string> = new BehaviorSubject('');
 
   public constructor(private dataService: DataService) { }
@@ -27,6 +28,13 @@ export class IntroductionComponent implements OnInit {
     this.dataService.loadAngularJson().subscribe({
       next: (result) => {
         this.angular_json.next(result)
+      },
+      error: (error) => console.error('could not load angular.json text', error)
+    });
+
+    this.dataService.loadPackageJson().subscribe({
+      next: (result) => {
+        this.package_json.next(result)
       },
       error: (error) => console.error('could not load angular.json text', error)
     });

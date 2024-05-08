@@ -26,17 +26,28 @@
       </li>
       <li class="list-item">
         <p>
+          Add dependency to locally installed package node-module in <code>package.json</code>:
+        </p>
+        <pre>{{  package_json | async }}</pre>
+      </li>
+      <li class="list-item">
+        <p>
           Add the necessary imports to your component (in case of standalone components) or
           <code>app.module.ts</code>
+        </p>
+        <p>
+          In order to use Bindings, also import <code>CommonModule</code> and <code>FormsModule</code>
         </p>
         <pre>{{ component_imports | async }}</pre>
       </li>
       <li class="list-item">
         <p>build shared components by executing <code>npm run build:shared-components</code> from the workspace
           root.</p>
-        <p class="list-item__hint"><strong>REMEMBER:</strong>every time you make a change to assets/ code in the
+        <p class="list-item__hint"><strong>REMEMBER:</strong>every time you make a change to assets/code in the
           shared components library, it has to be rebuild before the changes are applied to the consuming
           projects.</p>
+          <p class="list-item__hint"><strong>HINT:</strong> if changes are not applied after rebuild, try
+            deleting the local Angular cache folder (<code>.angular</code>) </p>
       </li>
     </ol>
   </app-settings-group>

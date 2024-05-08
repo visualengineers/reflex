@@ -1,3 +1,5 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   SettingsGroupComponent,
   ValueSliderComponent,
@@ -11,7 +13,8 @@ import {
   selector: 'your-component-selector',
   standalone: true,
   imports: [
-    RouterOutlet,
+    CommonModule,
+    FormsModule,
     SettingsGroupComponent,
     ValueSliderComponent,
     ValueSelectionComponent,
