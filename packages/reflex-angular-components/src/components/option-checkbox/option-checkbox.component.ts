@@ -24,7 +24,8 @@ export class OptionCheckboxComponent {
   @Output()
   public onChange = new EventEmitter();
 
-  public onModelChange(): void {
+  public onModelChange(value: boolean): void {
+    this.data = value;
     this.dataChange.emit(this.data);
     this.onChange.emit();
   }

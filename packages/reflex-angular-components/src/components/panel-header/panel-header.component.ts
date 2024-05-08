@@ -27,7 +27,8 @@ export class PanelHeaderComponent {
   @Output()
   public onChange = new EventEmitter();
 
-  public update(): void {
+  public update(value: boolean): void {
+    this.data = value;
     this.dataChange.emit(this.data);
     this.onChange.emit();
   }

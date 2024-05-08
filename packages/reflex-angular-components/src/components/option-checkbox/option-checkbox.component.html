@@ -8,7 +8,7 @@
         class="checkbox-toggle"
         name="{{elementId}}checkbox"
         [(ngModel)]="data"
-        (ngModelChange)="onModelChange()"
+        (ngModelChange)="onModelChange($event)"
       />
       <label class="checkbox-toggle-label" for="{{elementId}}-checkbox"
         ><span class="on">ON</span><span class="off">OFF</span></label

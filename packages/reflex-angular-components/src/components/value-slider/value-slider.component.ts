@@ -62,8 +62,9 @@ export class ValueSliderComponent implements OnInit, OnDestroy {
     this.unchanged = true;
   }
 
-  public update(): void {
+  public update(value: number): void {
     this.unchanged = false;
+    this.data = value;
     this.currentValue.next(this.data);
     this.dataChange.emit(this.data);
   }

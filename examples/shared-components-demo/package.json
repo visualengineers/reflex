@@ -9,6 +9,9 @@
     "test": "ng test",
     "test-ci": "ng test  --no-watch"
   },
+  "dependencies": {
+    "@reflex/angular-components": "file:../../packages/reflex-angular-components"
+  },
   "private": true,
   "description": "A demo project showcasing how to use the shared angular components package",
   "main": "main.ts",

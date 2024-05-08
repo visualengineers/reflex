@@ -9,8 +9,9 @@
             [min]="min"
             [max]="max"
             [step]="step"
-            [(ngModel)]="data" name="{{elementId}}-range"
-            (input)="update()">
+            [(ngModel)]="data"
+            (ngModelChange)="update($event)"
+            name="{{elementId}}-range">
     </div>
     <div class="settings__item--valueMax">
         <p>{{max}}</p>
@@ -19,7 +20,7 @@
         <input class="custom-input" type="text"
             title="Text input for {{elementTitle}}" placeholder="{{elementTitle}}"
             [(ngModel)]="data" name="{{elementId}}-input"
-            (input)="update()">
+            (ngModelChange)="update($event)">
     </div>
     <div class="settings__item--unit">
         <p>{{unit}}</p>

@@ -2,12 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OptionCheckboxComponent, PanelHeaderComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { ColorComponent } from './color/color.component';
-import { BehaviorSubject, Subscription, filter, interval, timer } from 'rxjs';
+import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 import { DataService } from '../services/data.service';
 import { HttpClientModule } from '@angular/common/http';
-import { AsyncPipe
-
- } from '@angular/common';
+import { AsyncPipe} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -48,6 +46,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
   private notification$: Subscription = new Subscription();
 
+  private init = true;
+
   public constructor(private dataService: DataService) {
 
   }
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.remainingToast.next(this.remainingToast.getValue() + 1);
     this.toggleToast = `changed (x${this.remainingToast.getValue()})`;
 
-    console.log(this.toggleHeaderActive);
+
 
     timer(2000).pipe(
       filter(() => this.remainingToast.getValue() > 0)
@@ -92,4 +92,10 @@ export class AppComponent implements OnInit, OnDestroy {
       complete:() => ( this.remainingToast.next(this.remainingToast.getValue() - 1))
     })
   }
+
+  public update(event: boolean): void {
+    this.toggleHeaderActive = event;
+    console.log(this.toggleHeaderActive);
+  }
+
 }
