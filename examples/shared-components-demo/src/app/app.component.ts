@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { ColorComponent } from './color/color.component';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, 
     ValueSelectionComponent,
     OptionCheckboxComponent,
     PanelHeaderComponent,
-    ValueTextComponent
+    ValueTextComponent,
+    ColorComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

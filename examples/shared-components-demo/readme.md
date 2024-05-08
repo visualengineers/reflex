@@ -51,3 +51,7 @@
   })
 
 ```
+
+## build shared components
+
+* execute `npm run build:shared-components` in workspace to update components

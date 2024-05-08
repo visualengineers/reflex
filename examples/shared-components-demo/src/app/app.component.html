@@ -1,38 +1,29 @@
-<div class="content-panel">
-  <div class="content__element margin-top-large">
-    <div class="content__header margin-bottom-default">
-      <h2 class="heading-secondary">{{ title }}</h2>
-      <app-settings-group
-        elementTitle="Settings Group"
-        toggleId="1"
-      ></app-settings-group>
-      <app-panel-header elementTitle="Panel Header"></app-panel-header>
-      <app-option-checkbox elementTitle="checkbox">Toggle on/off</app-option-checkbox>
-      <app-value-selection elementTitle="value-select">
-        <select selection
-          class="custom-select"
-          data-enpassusermodified="yes"
-          name="select-types"
-          id="select-types-id"
-          title="select type">
-          <option>Filter 1</option>
-          <option>Filter 2</option>
-          <option>Filter 3</option>
-          <option>Another filter</option>
-          <option disabled>No filter</option>
-        </select>
-      </app-value-selection>
-      <app-value-slider
-        elementTitle="select value"
-        elementId="custom-slider"
-        [min]="0"
-        [max]="150"
-        Unit="g"
-      >
-        Specify the weight of the element</app-value-slider
-      >
-      <app-value-text elementTitle="Text"></app-value-text>
+<main>
+  <div class="content-panel">
+    <div class="content__element margin-top-large">
+      <div class="content__header margin-bottom-default">
+        <h2 class="heading-secondary">{{ title }}</h2>
+        <app-settings-group elementTitle="Settings Group" toggleId="1"></app-settings-group>
+        <app-panel-header elementTitle="Panel Header"></app-panel-header>
+        <app-option-checkbox elementTitle="checkbox">Toggle on/off</app-option-checkbox>
+        <app-value-selection elementTitle="value-select">
+          <select selection class="custom-select" data-enpassusermodified="yes" name="select-types" id="select-types-id"
+            title="select type">
+            <option>Filter 1</option>
+            <option>Filter 2</option>
+            <option>Filter 3</option>
+            <option>Another filter</option>
+            <option disabled>No filter</option>
+          </select>
+        </app-value-selection>
+        <app-value-slider elementTitle="select value" elementId="custom-slider" [min]="0" [max]="150" Unit="g">
+          Specify the weight of the element</app-value-slider>
+        <app-value-text elementTitle="Text"></app-value-text>
+      </div>
+      <a class="button">Select</a>
     </div>
-    <a class="button">Select</a>
   </div>
-</div>
+  <div class="content-panel">
+    <app-color></app-color>
+  </div>
+</main>

@@ -19,15 +19,33 @@ $color-success: #026331;
 $color-success-light: #008D45;
 
 $color-calibration-point: #FFAE18;
-$color-calibration-point-border: #FFFFFFCC;
+$color-calibration-point-border: #FFFFCC;
+
+$color-dark-1_100: #002338;
+$color-dark-1_75: #002338BF;
+
+$color-dark-2_100: #225473;
+$color-dark-2_75: #225473BF;
+
+$color-default_100: #005B94;
+$color-default_75: #005B94BF;
+
+$color-light-0_100: #79D2FA;
+$color-light-0_75: #79D2FABF;
+
+$color-light-1_100: #3F99D1;
+$color-light-1_75: #3F99D1BF;
+
+$color-light-2_100: #0071B7;
+$color-light-2_75: #0071B7BF;
 
 // FONT
 
 $default-font-size: 1.4rem;
-$font-size-small: 1.2rem;       
-$font-size-medium: 1.6rem;      
+$font-size-small: 1.2rem;
+$font-size-medium: 1.6rem;
 $font-size-large: 1.8rem;
-$font-size-huge: 2.4rem;      
+$font-size-huge: 2.4rem;
 
 $font-primary: 'Barlow', sans-serif;
 $font-secondary: 'Barlow Condensed Demi', sans-serif;
