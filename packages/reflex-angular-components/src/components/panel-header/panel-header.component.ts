@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -5,10 +6,9 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-panel-header',
   standalone: true,
   templateUrl: './panel-header.component.html',
-  imports: [ FormsModule ]
+  imports: [ CommonModule, FormsModule ]
 })
 export class PanelHeaderComponent {
-
   @Input()
   public disabled = false;
 

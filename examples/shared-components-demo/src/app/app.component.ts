@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OptionCheckboxComponent, PanelHeaderComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { ColorComponent } from './color/color.component';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject, Subscription, filter, interval, timer } from 'rxjs';
 import { DataService } from '../services/data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AsyncPipe
@@ -32,7 +32,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
   public title = 'ReFlex Shared Components Demo';
 
@@ -45,7 +45,8 @@ export class AppComponent implements OnInit {
   public canToggleHeader = true;
   public toggleToast = '';
 
-  private remainingToast = 0;
+  private remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
+  private notification$: Subscription = new Subscription();
 
   public constructor(private dataService: DataService) {
 
@@ -65,22 +66,30 @@ export class AppComponent implements OnInit {
       },
       error: (error) => console.error('could not load component imports text', error)
     });
+
+    this.notification$.add(
+      this.remainingToast.pipe(
+        filter((value) => value === 0)
+      ).subscribe({
+        next: () => (this.toggleToast = '')
+      })
+    );
   }
 
-  public toggleHeaderChanged() {
-    console.warn(this.toggleToast);
-    this.toggleToast = 'changed';
-    this.remainingToast++;
+  public ngOnDestroy(): void {
+      this.notification$?.unsubscribe();
+  }
 
-    interval(3000).subscribe({
-      next:() => {
-        if (this.remainingToast <= 1) {
-          this.toggleToast = '';
-        }
-        this.remainingToast--;
-      }
+  public toggleHeaderChanged(): void {
+    this.remainingToast.next(this.remainingToast.getValue() + 1);
+    this.toggleToast = `changed (x${this.remainingToast.getValue()})`;
+
+    console.log(this.toggleHeaderActive);
+
+    timer(2000).pipe(
+      filter(() => this.remainingToast.getValue() > 0)
+    ).subscribe({
+      complete:() => ( this.remainingToast.next(this.remainingToast.getValue() - 1))
     })
   }
-
-
 }
