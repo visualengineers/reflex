@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PanelHeaderComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { ColorComponent } from './color/color.component';
-import { CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { IntroductionComponent } from './introduction/introduction.component';
 import { PanelComponent } from './controls/panel/panel.component';
 import { ToggleComponent } from './controls/toggle/toggle.component';

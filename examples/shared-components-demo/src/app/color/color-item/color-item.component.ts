@@ -10,11 +10,11 @@ import { Component, Input } from '@angular/core';
 })
 export class ColorItemComponent {
   @Input()
-  public ColorName: string = 'defaultColor';
+  public colorName = 'defaultColor';
 
   @Input()
-  public ColorText: string = '#123456, Alpha 100%';
+  public colorText = '#123456, Alpha 100%';
 
   @Input()
-  public ColorClass: string = 'color-primary';
+  public colorClass = 'color-primary';
 }

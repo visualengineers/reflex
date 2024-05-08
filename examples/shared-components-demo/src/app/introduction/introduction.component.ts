@@ -18,30 +18,30 @@ import { AsyncPipe } from '@angular/common';
   styleUrl: './introduction.component.scss'
 })
 export class IntroductionComponent implements OnInit {
-  public angular_json: BehaviorSubject<string> = new BehaviorSubject('');
-  public package_json: BehaviorSubject<string> = new BehaviorSubject('');
-  public component_imports: BehaviorSubject<string> = new BehaviorSubject('');
+  public angularJson: BehaviorSubject<string> = new BehaviorSubject('');
+  public packageJson: BehaviorSubject<string> = new BehaviorSubject('');
+  public componentImports: BehaviorSubject<string> = new BehaviorSubject('');
 
-  public constructor(private dataService: DataService) { }
+  public constructor(private readonly dataService: DataService) { }
 
   public ngOnInit(): void {
     this.dataService.loadAngularJson().subscribe({
       next: (result) => {
-        this.angular_json.next(result)
+        this.angularJson.next(result);
       },
       error: (error) => console.error('could not load angular.json text', error)
     });
 
     this.dataService.loadPackageJson().subscribe({
       next: (result) => {
-        this.package_json.next(result)
+        this.packageJson.next(result);
       },
       error: (error) => console.error('could not load angular.json text', error)
     });
 
     this.dataService.loadComponentImports().subscribe({
       next: (result) => {
-        this.component_imports.next(result)
+        this.componentImports.next(result);
       },
       error: (error) => console.error('could not load component imports text', error)
     });

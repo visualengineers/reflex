@@ -6,7 +6,7 @@ import { SettingsGroupComponent, ValueTextComponent } from '@reflex/angular-comp
 @Component({
   selector: 'app-text-box',
   standalone: true,
-  imports: [ CommonModule, FormsModule, SettingsGroupComponent, ValueTextComponent ],
+  imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueTextComponent],
   templateUrl: './text-box.component.html',
   styleUrl: './text-box.component.scss'
 })
@@ -15,7 +15,7 @@ export class TextBoxComponent {
 
   public address = 'http://www.test-adresse.com/api';
 
-  public updateAddress() {
+  public updateAddress(): void {
     this.numChanges++;
   }
 }

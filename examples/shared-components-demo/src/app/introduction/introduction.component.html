@@ -22,13 +22,13 @@
           Modify the <code>projects/your_project/architect/build/options</code> section in your
           <code>angular.json</code>:
         </p>
-        <pre>{{ angular_json | async }}</pre>
+        <pre>{{ angularJson | async }}</pre>
       </li>
       <li class="list-item">
         <p>
           Add dependency to locally installed package node-module in <code>package.json</code>:
         </p>
-        <pre>{{  package_json | async }}</pre>
+        <pre>{{  packageJson | async }}</pre>
       </li>
       <li class="list-item">
         <p>
@@ -38,7 +38,7 @@
         <p>
           In order to use Bindings, also import <code>CommonModule</code> and <code>FormsModule</code>
         </p>
-        <pre>{{ component_imports | async }}</pre>
+        <pre>{{ componentImports | async }}</pre>
       </li>
       <li class="list-item">
         <p>build shared components by executing <code>npm run build:shared-components</code> from the workspace

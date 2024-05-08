@@ -14,6 +14,6 @@ import { SettingsGroupComponent } from '@reflex/angular-components/dist';
   templateUrl: './buttons.component.html',
   styleUrl: './buttons.component.scss'
 })
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ButtonsComponent {
-
 }

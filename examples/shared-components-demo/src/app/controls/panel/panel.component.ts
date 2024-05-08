@@ -29,10 +29,8 @@ export class PanelComponent implements OnInit, OnDestroy {
   public canToggleHeader = true;
   public toggleToast = '';
 
-  private remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
-  private notification$: Subscription = new Subscription();
-
-  public constructor() { }
+  private readonly remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
+  private readonly notification$: Subscription = new Subscription();
 
   public ngOnInit(): void {
     this.notification$.add(
@@ -45,7 +43,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-      this.notification$?.unsubscribe();
+    this.notification$?.unsubscribe();
   }
 
   public toggleHeaderChanged(): void {
@@ -55,8 +53,8 @@ export class PanelComponent implements OnInit, OnDestroy {
     timer(2000).pipe(
       filter(() => this.remainingToast.getValue() > 0)
     ).subscribe({
-      complete:() => ( this.remainingToast.next(this.remainingToast.getValue() - 1))
-    })
+      complete: () => this.remainingToast.next(this.remainingToast.getValue() - 1)
+    });
   }
 
   public update(event: boolean): void {
