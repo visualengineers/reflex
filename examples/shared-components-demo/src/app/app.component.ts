@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { OptionCheckboxComponent, PanelHeaderComponent, ReFlexSharedComponentsModule, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { OptionCheckboxComponent, PanelHeaderComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { ColorComponent } from './color/color.component';
 import { BehaviorSubject, interval } from 'rxjs';
 import { DataService } from '../services/data.service';
@@ -17,7 +17,6 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     FormsModule,
     RouterOutlet,
-    ReFlexSharedComponentsModule,
     SettingsGroupComponent,
     PanelHeaderComponent,
     OptionCheckboxComponent,

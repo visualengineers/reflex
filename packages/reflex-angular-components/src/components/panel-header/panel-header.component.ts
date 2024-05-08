@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-panel-header',
   standalone: true,
-  templateUrl: './panel-header.component.html'
+  templateUrl: './panel-header.component.html',
+  imports: [ FormsModule ]
 })
 export class PanelHeaderComponent {
 
