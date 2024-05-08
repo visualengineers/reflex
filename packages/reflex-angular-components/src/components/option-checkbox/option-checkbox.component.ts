@@ -1,9 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-option-checkbox',
   standalone: true,
-  templateUrl: './option-checkbox.component.html'
+  templateUrl: './option-checkbox.component.html',
+  imports: [CommonModule, FormsModule]
 })
 export class OptionCheckboxComponent {
 
