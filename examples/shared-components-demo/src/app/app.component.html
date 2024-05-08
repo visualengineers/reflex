@@ -19,38 +19,55 @@
           examples for the provided components (including spec regarding the css layouting).</p>
       </div>
       <div class="content__body">
-        <h3 class="heading-tertiary">Setup Instructions</h3>
-        <ol class="custom-list">
-          <li class="list-item">
-            <p>run <code>npm install</code> from the workspace root.</p>
-            <p class="list-item__hint"><strong>HINT:</strong>to cleanup temporary files / stored packages / build
-              artifacts, run <code>./cleanup_packages ./package-directories.txt</code> from inside the
-              <code>scripts</code> folder (cf. <code>readme.md</code>)</p>
-          </li>
-          <li class="list-item">
-            <p>
-              Modify the <code>projects/your_project/architect/build/options</code> section in your <code>angular.json</code>:
-            </p>
-            <pre>{{ angular_json | async }}</pre>
-          </li>
-          <li class="list-item">
-            <p>
-              Add the necessary imports to your component (in case of standalone components) or <code>app.module.ts</code>
-            </p>
-            <pre>{{ component_imports | async }}</pre>
-          </li>
-          <li class="list-item">
-            <p>build shared components by executing <code>npm run build:shared-components</code> from the workspace root.</p>
-            <p class="list-item__hint"><strong>REMEMBER:</strong>every time you make a change to assets/ code in the shared components library, it has to be rebuild before the changes are applied to the consuming projects.</p>
-          </li>
-        </ol>
+        <app-settings-group elementTitle="Setup Instructions" toggleId="setup_instructions">
+          <ol class="custom-list">
+            <li class="list-item">
+              <p>run <code>npm install</code> from the workspace root.</p>
+              <p class="list-item__hint"><strong>HINT:</strong>to cleanup temporary files / stored packages / build
+                artifacts, run <code>./cleanup_packages ./package-directories.txt</code> from inside the
+                <code>scripts</code> folder (cf. <code>readme.md</code>)</p>
+            </li>
+            <li class="list-item">
+              <p>
+                Modify the <code>projects/your_project/architect/build/options</code> section in your <code>angular.json</code>:
+              </p>
+              <pre>{{ angular_json | async }}</pre>
+            </li>
+            <li class="list-item">
+              <p>
+                Add the necessary imports to your component (in case of standalone components) or <code>app.module.ts</code>
+              </p>
+              <pre>{{ component_imports | async }}</pre>
+            </li>
+            <li class="list-item">
+              <p>build shared components by executing <code>npm run build:shared-components</code> from the workspace root.</p>
+              <p class="list-item__hint"><strong>REMEMBER:</strong>every time you make a change to assets/ code in the shared components library, it has to be rebuild before the changes are applied to the consuming projects.</p>
+            </li>
+          </ol>
+        </app-settings-group>
       </div>
       <div class="content__header margin-bottom-default">
-        Controls
+        <h2 class="heading-primary">Controls</h2>
       </div>
       <div class="content__body margin-bottom-default">
-        <app-settings-group elementTitle="Settings Group" toggleId="1"></app-settings-group>
-        <app-panel-header elementTitle="Panel Header"></app-panel-header>
+        <div class="control__group">
+          <h3 class="heading-secondary">Panel <Header></Header></h3>
+          <app-panel-header class="content__header"
+            elementTitle="Panel Header"
+            [(data)]="toggleHeaderActive"
+            (onChange)="toggleHeaderChanged()"
+            [disabled]="!canToggleHeader"
+          >
+          <div>{{toggleToast}}</div>
+          </app-panel-header>
+          <p class="settings__status-detail">the toggle in the header id {{ toggleHeaderActive ? 'active' : 'inactive' }}</p>
+          <app-settings-group elementTitle="Additional Info" toggleId="panel_header_info">
+            <ul>
+              <li>use with style <code>content__header</code></li>
+              <li>use <code>data</code> property for displaying a toggle</li>
+            </ul>
+          </app-settings-group>
+        </div>
         <app-option-checkbox elementTitle="checkbox">Toggle on/off</app-option-checkbox>
         <app-value-selection elementTitle="value-select">
           <select selection class="custom-select" data-enpassusermodified="yes" name="select-types" id="select-types-id"
