@@ -1,12 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-panel-header',
   standalone: true,
-  templateUrl: './panel-header.component.html'
+  templateUrl: './panel-header.component.html',
+  imports: [ CommonModule, FormsModule ]
 })
 export class PanelHeaderComponent {
-
   @Input()
   public disabled = false;
 
@@ -25,7 +27,8 @@ export class PanelHeaderComponent {
   @Output()
   public onChange = new EventEmitter();
 
-  public update(): void {
+  public update(value: boolean): void {
+    this.data = value;
     this.dataChange.emit(this.data);
     this.onChange.emit();
   }

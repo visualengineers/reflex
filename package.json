@@ -41,7 +41,8 @@
     "tools/logging",
     "examples/basic-angular",
     "examples/basic-react",
-    "examples/basic-vue"
+    "examples/basic-vue",
+    "examples/shared-components-demo"
   ],
   "dependencies": {
     "@angular/animations": "17.3.2",

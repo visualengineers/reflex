@@ -1,0 +1,6 @@
+...
+// path is relative to project root (package.json)
+"dependencies": {
+  "@reflex/angular-components": "file:../../packages/reflex-angular-components"
+}
+...

@@ -3,8 +3,8 @@ import { LogComponent } from './log.component';
 import { LogService } from './log.service';
 import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { ValueSelectionComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
+import { ValueSelectionComponent } from '@reflex/angular-components/dist';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [

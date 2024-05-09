@@ -7,12 +7,12 @@ import { LogService } from '../log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { of } from 'rxjs';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, OptionCheckboxComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { InteractionsComponent } from './interactions/interactions.component';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { MockHistoryVisualizationComponent } from './history-visualization/history-visualization.component.mock';
 import { MockHistoryComponent } from './history/history.component.mock';
 import { CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, RemoteProcessingAlgorithm, RemoteProcessingServiceSettings } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, OptionCheckboxComponent } from '@reflex/angular-components/dist';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [

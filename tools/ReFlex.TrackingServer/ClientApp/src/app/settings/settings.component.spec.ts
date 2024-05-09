@@ -8,8 +8,8 @@ import { PerformanceService } from 'src/shared/services/performance.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { DEFAULT_SETTINGS, DepthCameraState, PerformanceData, TrackingConfigState } from '@reflex/shared-types';
+import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [

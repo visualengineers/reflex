@@ -1,0 +1,21 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Controls: Toggle</h2>
+</div>
+<p class="margin-bottom-default">
+  Simple toggle with configurable label and enabled/disabled state. Toggle data can be assigned using Two-Way DataBinding.
+</p>
+<app-option-checkbox [(data)]="toggleBordersActive" elementId="first-toggle" elementTitle="Can change Border state"></app-option-checkbox>
+<app-option-checkbox [(data)]="bordersActive" elementId="second-toggle" elementTitle="Show Borders" [disabled]="!toggleBordersActive"></app-option-checkbox>
+<div class="content__body margin-bottom-default">
+
+  <app-settings-group elementTitle="Additional Info" toggleId="toggle_info">
+    <ul>
+      <li><code>elementTitle</code> sets the title</li>
+      <li><code>elementId</code> sets id and name of the input toggle</li>
+      <li>use <code>[(data)]</code> property for displaying a toggle and bind to its value (Two-way-binding)</li>
+      <li>use <code>(change)</code> for callbacks when the bound dat value changes</li>
+      <li><code>[disabled]</code> can be bound to set enabled state</li>
+      <li><strong>BUG: </strong>Disabled + Active State is not correctly visualized</li>
+    </ul>
+  </app-settings-group>
+</div>

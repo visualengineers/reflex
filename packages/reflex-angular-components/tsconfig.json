@@ -20,8 +20,8 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "paths": {
-      ".": [
-        "./dist/reflex-angular-components"
+      "@reflex/angular-components": [
+        "./dist"
       ]
     },
     "lib": [

@@ -1,0 +1,39 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Controls: Dropdown</h2>
+  <p>{{ statusMessage }}</p>
+</div>
+<p class="margin-bottom-default">
+  Dropdown to choose between different options including label and short descriptive text.
+</p>
+<app-value-selection elementTitle="Filter Type" elementId="settings-filter-select" class="settings__item">
+  <select selection  [(ngModel)]="selectedFilterIdx"
+    class="custom-select"
+    data-enpassusermodified="yes"
+    name="settings-filter-select"
+    id="settings-filter-select"
+    (change)="saveFilterType()"
+    title="select smoothing filter">
+    <option *ngFor="let filter of filters; let i = index" [value]="i">
+      {{ filter }}
+    </option>
+  </select>
+  <p description>
+    Select one of the available Filters from the list.
+    <br />
+    <strong>Moving Average:</strong> simple average over the last n frames
+    <strong>SavitzkyGolay:</strong> polynomial regression filter
+  </p>
+</app-value-selection>
+<div class="content__body margin-bottom-default">
+  <app-settings-group elementTitle="Additional Info" toggleId="dropdown_info">
+    <ul>
+      <li>use with class <code>settings_item</code></li>
+      <li><code>elementTitle</code> sets the label</li>
+      <li><code>elementId</code> sets id and name of the input element</li>
+      <li>use <code>[(data)]</code> property for displaying a toggle and bind to its value (Two-way-binding)</li>
+      <li>use <code>(change)</code> for callbacks when the bound dat value changes</li>
+      <li>the description next to the slider is wrapped in a separate paragraph element with <code>description</code> attribute</li>
+
+    </ul>
+  </app-settings-group>
+</div>
