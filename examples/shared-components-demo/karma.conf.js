@@ -4,13 +4,16 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    frameworks: ['jasmine', '@angular-devkit/build-angular', 'viewport'],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-junit-reporter'),
+      require('karma-viewport'),
+      require('karma-spec-reporter')
     ],
     client: {
       jasmine: {
@@ -26,11 +29,17 @@ module.exports = function (config) {
     },
     coverageReporter: {
       dir: require('path').join(__dirname, '../../test/artifacts/coverage'),
-      subdir: 'example-basic-angular',
+      subdir: 'example-shared-components-demo',
       reporters: [
         { type: 'html' },
         { type: 'text-summary' }
-      ]
+      ],
+      fixWebpackSourcePaths: true,
+      'report-config': {
+        'text-summary': {
+          file: 'text-summary.txt'
+        }
+      },
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

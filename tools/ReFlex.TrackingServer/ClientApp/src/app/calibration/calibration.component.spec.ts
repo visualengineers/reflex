@@ -9,9 +9,9 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { PanelHeaderComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { By } from '@angular/platform-browser';
 import { CalibrationPoint, CalibrationTransform, CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
+import { PanelHeaderComponent } from '@reflex/angular-components/dist';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [

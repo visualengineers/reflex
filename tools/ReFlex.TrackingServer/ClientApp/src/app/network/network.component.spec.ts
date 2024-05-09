@@ -7,10 +7,10 @@ import { NetworkingService } from 'src/shared/services/networking.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { MockTuioComponent } from './tuio/tuio.component.mock';
 import { HttpResponse } from '@angular/common/http';
 import { DEFAULT_SETTINGS, JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 
 const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [

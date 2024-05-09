@@ -6,10 +6,10 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { of } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { FormsModule } from '@angular/forms';
 import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
 import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
