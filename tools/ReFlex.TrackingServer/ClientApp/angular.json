@@ -110,7 +110,8 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/sass"
+                "src/sass",
+                "../../../node_modules/@reflex/angular-components/src/scss"
               ]
             },
             "scripts": [],
