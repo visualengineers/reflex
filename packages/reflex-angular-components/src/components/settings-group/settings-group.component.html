@@ -1,11 +1,11 @@
-<div class="settings__group">    
-    <input type="checkbox" class="settings__group--checkbox" 
-        id="{{toggleId}}" attr.aria-labelledby="{{toggleId}}-label" 
+<div class="settings__group">
+    <input type="checkbox" class="settings__group--checkbox"
+        id="{{toggleId}}" [attr.aria-labelledby]="toggleId + '-label'" [attr.name]="toggleId"
         title="toggle {{elementTitle}} visibility"/>
-    <label id="{{toggleId}}-label" for="{{toggleId}}" class="settings__group--button">
+    <label id="{{toggleId}}-label" [attr.name]="toggleId + '-label'" for="{{toggleId}}" class="settings__group--button">
         <span class="settings__group--toggle-icon">&nbsp;</span>
     </label>
-    
+
     <h3 class="heading-tertiary">{{elementTitle}}</h3>
     <div class="settings__group--body">
         <ng-content></ng-content>

@@ -1,5 +1,7 @@
 <div class="settings__item--content-range">
-    <label for="{{elementId}}-range" class="settings__item--label">{{elementTitle}}</label>
+    <label for="{{elementId}}-range" class="settings__item--label" [attr.name]="elementId + '-label'" [id]="elementId + '-label'">
+      {{elementTitle}}
+    </label>
     <div class="settings__item--valueMin">
         <p>{{min}}</p>
     </div>
@@ -11,7 +13,8 @@
             [step]="step"
             [(ngModel)]="data"
             (ngModelChange)="update($event)"
-            name="{{elementId}}-range">
+            [attr.name]="elementId + '-range'"
+            [attr.aria-labelledby]="elementId + '-label'">
     </div>
     <div class="settings__item--valueMax">
         <p>{{max}}</p>
