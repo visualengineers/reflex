@@ -1,1 +1,11 @@
-<p>menubar works!</p>
+<div class="menubar">
+    <div class="menu-item">
+      <button class="menu-button" (click)="toggleDropdown()">Gesture Options</button>
+      <div class="dropdown-content" [class.open]="isDropdownOpen">
+        <a href="#">Option 1</a>
+        <a href="#">Option 2</a>
+        <a href="#">Option 3</a>
+      </div>
+    </div>
+  </div>
+  
