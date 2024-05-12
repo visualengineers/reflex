@@ -5,7 +5,6 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { of, throwError } from 'rxjs';
-import { PanelHeaderComponent, ValueSelectionComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { FormsModule } from '@angular/forms';
 import { MockDepthImageComponent } from './depth-image/depth-image.component.mock';
 import { MockPointCloudComponent } from './point-cloud/point-cloud.component.mock';
@@ -13,6 +12,7 @@ import { MockRecordingComponent } from './recording/recording.component.mock';
 import { MockSettingsComponent } from '../settings/settings.component.mock';
 import { By } from '@angular/platform-browser';
 import { DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
     [

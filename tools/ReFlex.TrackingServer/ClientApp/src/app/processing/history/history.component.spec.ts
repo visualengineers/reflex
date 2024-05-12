@@ -4,8 +4,8 @@ import { HistoryComponent } from './history.component';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { LogService } from 'src/app/log/log.service';
 import { of, throwError } from 'rxjs';
-import { SettingsGroupComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { Interaction, InteractionFrame, InteractionHistory, InteractionHistoryElement } from '@reflex/shared-types';
+import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingCloudService',
   [

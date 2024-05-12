@@ -20,14 +20,15 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 4. [use shared code](#use-shared-code)
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
-7. [Known issues](#known-issues-1)
+7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
 
 ## Build status
 
-[![Library:Build](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-build.yml)
 [![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
 
-[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml)
+[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/
+actions/workflows/shared-build.yml)
+[![Shared Components:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-components-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-cp,ponents-build.yml)
 
 [![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
 [![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
@@ -103,8 +104,9 @@ __[⬆ back to top](#table-of-contents)__
 | Command                                       | Description                                                                             | Remarks                                                                                             |
 | --------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `npm run build`                               | runs `build` command in all subrepos of workspace                                       |                                                                                                     |
-| `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test` and `lint` commands |                                                                                                     |
+| `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test-ci` and `lint` commands |                                                                                                     |
 | `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                         |                                                                                                     |
+| `npm run build:shared-components`             | builds Shared Angular Components(#use-shared-code)                                         |                                                                                                     |
 | `npm run build:electron-win`                  | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                     |                                                                                                     |
 | `npm run build:electron-osx`                  | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)             | needs to be run on macOS                                                                            |
 | `npm run build:electron-osx-arm64`            | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (ARM64)                 | needs to be run on macOS                                                                            |
@@ -152,7 +154,7 @@ __[⬆ back to top](#table-of-contents)__
 
 __[⬆ back to top](#table-of-contents)__
 
-## Known issues
+## Known issues / Troubleshooting
 
 * `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
 * if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
@@ -160,5 +162,10 @@ __[⬆ back to top](#table-of-contents)__
   * `~/.config` Folder (Linux)
   * `~/Library/Application Support/` (MacOS)  
 and delete the app folder there
+* to delete all temporary folders / cached packages / build artifacts, run the following command in the `scripts` folder:
+
+  ``` bash
+   ./cleanup_packages.sh package-directories.txt
+  ```
 
 __[⬆ back to top](#table-of-contents)__

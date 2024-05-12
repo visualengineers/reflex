@@ -1,0 +1,90 @@
+// COLORS
+
+$color-white: #fff;
+$color-black: #000;
+
+$color-grey-dark: #4D4D4D;
+$color-grey-light: #949494;
+$color-grey-light-2: #C7C7C7;
+$color-grey-light-3: #E1E1E1;
+$color-grey-light-4: #EFEFEF;
+
+$color-primary: #0071B7;
+$color-primary-light: #29A6DD;
+$color-primary-light-2: #c0e0ee;
+
+$color-error: #6d090c;
+$color-error-light: #BC272D;
+$color-success: #026331;
+$color-success-light: #008D45;
+
+$color-calibration-point: #FFAE18;
+$color-calibration-point-border: #FFFFCC;
+
+$color-dark-1_100: #002338;
+$color-dark-1_75: #002338BF;
+
+$color-dark-2_100: #225473;
+$color-dark-2_75: #225473BF;
+
+$color-default_100: #005B94;
+$color-default_75: #005B94BF;
+
+$color-light-0_100: #79D2FA;
+$color-light-0_75: #79D2FABF;
+
+$color-light-1_100: #3F99D1;
+$color-light-1_75: #3F99D1BF;
+
+$color-light-2_100: #0071B7;
+$color-light-2_75: #0071B7BF;
+
+// FONT
+
+$default-font-size: 1.4rem;
+$font-size-small: 1.2rem;
+$font-size-medium: 1.6rem;
+$font-size-large: 1.8rem;
+$font-size-huge: 2.4rem;
+
+$font-primary: 'Barlow', sans-serif;
+$font-secondary: 'Barlow Condensed Demi', sans-serif;
+$font-tertiary: 'Barlow Condensed', sans-serif;
+$font-heading: 'Barlow Demi', sans-serif;
+
+// GRID
+
+$default-grid-columns: repeat(7, 1fr);
+$medium-grid-columns: repeat(5, 1fr);
+$small-grid-columns: repeat(3, 1fr);
+
+$default-grid-box: span 3;
+$narrow-grid-box: span 2;
+$wide-grid-box: span 5;
+
+// MISC
+
+$default-box-shadow: 0 .25rem .75rem rgba($color-black, .05);
+
+$side-colum-width-left: 11.6rem;
+$side-column-width-right: 3.6rem;
+
+$default-col-width: 21.6rem;
+$default-col-gap: 1.8rem;
+
+$default-margin: 0.9rem;
+
+$default-button-width: 9.3rem;
+$default-button-height: 2.7rem;
+
+$default-square-button-size: 4.4rem;
+
+$header-height: 17.6rem;
+$default-footer-height: 15.6rem;
+$small-footer-height: 7.2rem;
+
+$page-margin-top: 1rem;
+$default-logo-height: 3.6rem;
+$small-logo-height: 3rem;
+
+$margin-large: 4.4rem;

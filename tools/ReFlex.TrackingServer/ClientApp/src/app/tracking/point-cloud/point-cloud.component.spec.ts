@@ -3,7 +3,6 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ComponentFixture, TestBed, fakeAsync, flush, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { LogService } from 'src/app/log/log.service';
 import { PointCloudService } from 'src/shared/services/point-cloud.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
@@ -11,6 +10,7 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { PointCloudComponent } from './point-cloud.component';
 import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingConfigState } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
   [
