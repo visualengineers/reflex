@@ -3,7 +3,11 @@ name: "ReFlex Shared Types: Build"
 on: 
   # make this workflow reusable
   workflow_call:
-  workflow_dispatch: 
+  workflow_dispatch:
+  # explicitly build shared types when pushing to main
+  push: 
+    branches:
+      - main
 
 jobs:
   build-shared-types:

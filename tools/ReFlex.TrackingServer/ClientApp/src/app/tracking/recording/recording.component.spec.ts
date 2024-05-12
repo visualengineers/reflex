@@ -5,8 +5,8 @@ import { of, throwError } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { RecordingComponent } from './recording.component';
-import { ValueTextComponent } from 'reflex-angular-components/dist/reflex-angular-components';
 import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate } from '@reflex/shared-types';
+import { ValueTextComponent } from '@reflex/angular-components/dist';
 
 
 const recordingService = jasmine.createSpyObj<RecordingService>('fakeRecordingService',

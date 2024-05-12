@@ -3,11 +3,11 @@
       <div class="content__header margin-bottom-default">
         <h2 class="heading-secondary">Welcome to the ReFlex Server!</h2>
         <p>Version: {{(appVersion | async)?.version}}</p>
-      </div>  
+      </div>
       <div class="content__body margin-bottom-default">
         <h3 class="heading-tertiary">Introduction</h3>
         <p>With this web application you can configure, debug and start different types of depth sensors for use with Elastic Display Client applications.</p>
-        <p>The Backend Framework is analyzing the depth image and reconstructs touch points (<strong>Single Touch</strong> or <strong>Multi Touch</strong>). 
+        <p>The Backend Framework is analyzing the depth image and reconstructs touch points (<strong>Single Touch</strong> or <strong>Multi Touch</strong>).
           Also, the Backend can be configured for broadcasting these touch events via <strong>TCP</strong> or <strong>WebSockets</strong></p>
       </div>
       <div class="content__body">
@@ -17,7 +17,7 @@
             Select the appropriate <strong>Depth Sensor and Resolution</strong> from <a class="link" href="/tracking">Tracking Tab</a>.
           </li>
           <li class="list-item">
-            <p>Activate <strong>Live Preview</strong> to view <strong>Point Cloud</strong> received from depth sensor. 
+            <p>Activate <strong>Live Preview</strong> to view <strong>Point Cloud</strong> received from depth sensor.
             </p>
             <p>in <strong>Point Cloud Visualization</strong> you can check:</p>
             <ul class="custom-list">
@@ -42,7 +42,7 @@
               <li>Push into the surface - Usually, only one extremum is displayed,a nd auto-selected. Click <strong>Set point</strong> to map this depth value to the calibration point. Do this for all 3 Calibration Points.</li>
               <li>If more than one extremum is displayed, pause auto-update and select the extremum-value, you find most appropriate</li>
               <li>After Setting all3 Points, click on <strong>Apply</strong> to compute Calibration Matrix</li>
-              <li>To validate you calibration, activate the <strong>Calibrated</strong> toggle. the displayed touch points should now be displayed in the correct positions.</li>              
+              <li>To validate you calibration, activate the <strong>Calibrated</strong> toggle. the displayed touch points should now be displayed in the correct positions.</li>
             </ul>
           </li>
           <li class="list-item">For broadcasting touch points to other applications, go to the <a class="link" href="/network">Network Tab</a> and select the appropriate Network Interface and configuration.</li>
@@ -59,7 +59,7 @@
     <div class="content__header margin-bottom-default">
       <h3 class="heading-secondary">For Developers</h3>
     </div>
-    <div class="content__body">    
+    <div class="content__body">
       <h3 class="heading-tertiary">Technologies</h3>
       <ul class="custom-list">
         <li><a class="link" href='https://get.asp.net/'>ASP.NET Core</a> and <a class="link"
@@ -68,7 +68,7 @@
           client-side code</li>
       </ul>
     </div>
-    <div class="content__body">    
+    <div class="content__body">
       <h3 class="heading-tertiary">Features</h3>
       <ul class="custom-list">
         <li><strong>Client-side navigation</strong>.
@@ -79,18 +79,18 @@
         <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your
           <code>dotnet publish</code> configuration automatically invokes <code>ng build</code> to produce minified,
           ahead-of-time compiled JavaScript files.</li>
-      </ul>          
+      </ul>
       <p>The <code>ClientApp</code> subdirectory is a standard Angular CLI application. If you open a command prompt in that
         directory, you can run any <code>ng</code> command (e.g., <code>ng test</code>), or use <code>npm</code> to install
         extra packages into it.</p>
     </div>
-  </div> 
+  </div>
   <div class="content__element margin-top-large">
     <div class="content__header margin-bottom-default">
       <h3 class="heading-secondary">Software Version</h3>
     </div>
-    <div class="content__body">    
-      <h3 class="heading-tertiary">Server</h3>  
+    <div class="content__body">
+      <h3 class="heading-tertiary">Server</h3>
       <table class="justified">
         <thead>
             <tr>
@@ -105,11 +105,11 @@
                 <td class="text-column">{{versionInfo.name}}</td>
                 <td>{{versionInfo.version}}</td>
               </tr>
-        </tbody>  
-      </table> 
+        </tbody>
+      </table>
     </div>
-    <div class="content__body">    
-      <h3 class="heading-tertiary">Client</h3>  
+    <div class="content__body">
+      <h3 class="heading-tertiary">Client</h3>
       <table class="justified">
         <thead>
             <tr>
@@ -124,8 +124,8 @@
                 <td class="text-column">{{versionInfo.name}}</td>
                 <td>{{versionInfo.version}}</td>
               </tr>
-        </tbody>  
-      </table> 
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

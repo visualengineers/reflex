@@ -1,0 +1,19 @@
+@import 'reflex';
+
+main {
+  display: grid;
+  grid-template-columns: 3fr 4fr;
+  gap: 3rem;
+  margin: 15.6rem 3rem 3rem 12.6rem;
+
+  border-top: 1px solid $color-dark-2_100;
+}
+
+.header {
+  &__logo {
+    position: absolute;
+    width: 14rem;
+    top: 1rem;
+    left: 3.6rem;
+  }
+}
