@@ -11,14 +11,9 @@ import { ConnectionService } from "../service/connection.service";
   styleUrl: "./timeline.component.scss",
 })
 export class TimelineComponent {
-  public isCollapsed = false;
 
   constructor(
     private configurationService: ConfigurationService,
     private connectionService: ConnectionService,
   ) {}
-
-  toggleTimeline(): void {
-    this.isCollapsed = !this.isCollapsed;
-  }
 }
