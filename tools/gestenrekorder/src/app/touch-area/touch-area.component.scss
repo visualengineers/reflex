@@ -1,11 +1,11 @@
-@import '../../styles.scss';
+@import "../../styles.scss";
 
 .canvas {
-    background: grey;
+    background: #adadad;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-}    
+}
 
 .background__iframe {
     position: absolute;
