@@ -1,0 +1,28 @@
+.overlay {
+  position: fixed;
+  background-color: white;
+  border: 1px solid blue;
+  border-radius: 4px;
+  padding: 10px;
+  color: blue;
+  width: 50%;
+  z-index: 9999;
+}
+
+.overlay-button {
+  background-color: transparent;
+  color: blue;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 16px;
+  text-decoration: underline; /* Text unterstrichen */
+}
+
+.overlay-button:hover {
+  color: darkblue; /* Hover-Effekt für den Button-Text */
+}
+
+.overlay-content {
+  padding: 20px;
+}
