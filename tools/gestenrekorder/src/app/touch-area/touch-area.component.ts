@@ -137,8 +137,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         if (this.canvas?.nativeElement === undefined) {
           return;
         }
-        this.canvas.nativeElement.width = size.width;
-        this.canvas.nativeElement.height = size.height;
+        //this.canvas.nativeElement.width = size.width;
+        //this.canvas.nativeElement.height = size.height;
       });
 
     // normalized points modifications
@@ -306,8 +306,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     }
     // de-normalization
     // TODO use function this.circleDtoFromNormalizedPoint to handle this !
-    const xDiff = (point.x * this.ctx.canvas.width) - event.x;
-    const yDiff = (point.y * this.ctx.canvas.height) - event.y;
+    const xDiff = (point.x * this.ctx.canvas.width) + this.ctx.canvas.offsetLeft - event.x;
+    const yDiff = (point.y * this.ctx.canvas.height) + this.ctx.canvas.offsetTop - event.y;
     const radius = this.configurationService.getCircleSize().min + Math.abs(point.z);
 
     // calculate distance from point center to pointer position with Pythagoras (in px, because 'z' can hardly be normalized)
