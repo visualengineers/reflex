@@ -8,7 +8,6 @@ import { TrackComponentComponent } from "./track-component/track-component.compo
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet, TouchAreaComponent, TimelineComponent, MenubarComponent, TrackComponentComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
