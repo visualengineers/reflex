@@ -4,9 +4,20 @@ Redesign and reimplementation of emulator tool for recording and replaying compl
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
 
+
+## Project initialization
+
 * initialize / install packages in parent workspace
 * need `packages/reflex-angular-components`, so these should be build beforehand
-* use run scripts located in workspace
+* use run script ```npm run start:gestenrekorder```
+
+## main components
+
+* TouchArea
+* TimelineComponent
+* TrackComponent
+* ConfigurationService
+* ConnectionService
 
 ## Contributors
 
