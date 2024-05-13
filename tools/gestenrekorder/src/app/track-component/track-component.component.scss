@@ -1,0 +1,42 @@
+.track {
+    &__container {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        border-radius: 4px;
+        padding: 8px;
+        margin: 8px;
+        background-color: #555;
+        box-sizing: border-box;
+    }
+
+    &__title {
+        margin-top: 0;
+        font-size: 16px;
+        color: #fff;
+    }
+
+    &__table {
+        width: 100%; /* Vollständige Breite des Containers */
+        border-collapse: collapse;
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            color: #fff;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        td:last-child {
+            text-align: center;
+        }
+
+        span.fas {
+            cursor: pointer;
+            color: #fff;
+        }
+    }
+}
