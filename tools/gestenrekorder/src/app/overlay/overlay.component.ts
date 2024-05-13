@@ -1,10 +1,11 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-overlay',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,SettingsGroupComponent],
   templateUrl: './overlay.component.html',
   styleUrl: './overlay.component.scss'
 })

@@ -1,7 +1,8 @@
-<button (click)="isOverlayOpen = !isOverlayOpen" class="overlay-button">{{ isOverlayOpen ? 'Gestenoptionen' : 'Gestenoptionen' }}</button>
+<button (click)="isOverlayOpen = !isOverlayOpen" class="overlay-button"><h2>{{ isOverlayOpen ? 'Gestenoptionen' : 'Gestenoptionen' }}</h2></button>
 <div *ngIf="isOverlayOpen" class="overlay">
     <div class="overlay-content">
-        Placeholder <br>for <br>component
+        <app-settings-group></app-settings-group>
     </div>
 </div>
+
   

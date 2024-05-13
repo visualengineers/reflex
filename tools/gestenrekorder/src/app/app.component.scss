@@ -5,6 +5,32 @@
     height: 100vh;
     width: 100vw;
 }
+.header{
+    background-color: white;
+    display: flex;
+    border: 1px solid blue;
+    .tabs{
+        color: blue;
+        display: flex;
+        align-items: flex-end;
+        p{
+            padding: 5px;
+            border: 1px solid blue;
+            margin: 0px;
+        }
+    }
+    .gestureoptions{
+        margin-left: auto;
+    }
+}
+.body{
+    border: 1px solid blue;
+}
+.footer{
+    border: 1px solid blue;
+}
+
+  
 
 #settings {
     position: absolute;
