@@ -11,8 +11,9 @@
         width: calc(60% - 16px); /* Breite um 40 % reduzieren */
         max-height: calc(20% - 16px); /* Höhe um 40 % reduzieren */
         overflow-y: auto; /* Scrollen bei Bedarf aktivieren */
-        background: #555; /* Beispielhintergrundfarbe */
+        background: white; /* Beispielhintergrundfarbe */
         box-sizing: border-box;
+        border: 1px solid blue;
     }
 
     &__header {
@@ -24,7 +25,7 @@
         .timeline__title {
             margin: 0;
             font-size: 16px;
-            color: #fff;
+            color: blue;
         }
     }
 }
