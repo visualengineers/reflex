@@ -59,13 +59,13 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.ctx = this.canvas.nativeElement.getContext(
-      "2d",
-    ) as CanvasRenderingContext2D;
-    this.circleRenderer = new CircleRenderer(
-      this.ctx,
-      this.configurationService,
-    );
+    //this.ctx = this.canvas.nativeElement.getContext(
+    //  "2d",
+    //) as CanvasRenderingContext2D;
+    //this.circleRenderer = new CircleRenderer(
+    //  this.ctx,
+    //  this.configurationService,
+    //);
     this.timelineElement = document.getElementById("timeline-wrapper");
 
     if (this.timelineElement === null || this.timelineElement === undefined) {

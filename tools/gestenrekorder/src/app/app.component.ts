@@ -1,14 +1,13 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { TouchAreaComponent } from "./touch-area/touch-area.component";
-import { TimelineComponent } from "./timeline/timeline.component";
-import { TrackComponentComponent } from "./track-component/track-component.component";
 import { OverlayComponent } from "./overlay/overlay.component";
+import { PullupComponent } from "./pullup/pullup.component";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet,TouchAreaComponent,TimelineComponent,TrackComponentComponent,OverlayComponent],
+  imports: [RouterOutlet,TouchAreaComponent,OverlayComponent,PullupComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
