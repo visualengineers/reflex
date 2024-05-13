@@ -10,8 +10,8 @@ import { Component } from '@angular/core';
 })
 export class TrackComponentComponent {
   tracks = [
-    { name: "Track 1", id: 1, length: "10m", speed: "50km/h" },
-    { name: "Track 2", id: 2, length: "15m", speed: "60km/h" },
-    { name: "Track 3", id: 3, length: "20m", speed: "70km/h" }
+    { name: "Finger 1", id: 1, length: "30", speed: "0.25" },
+    { name: "Finger 2", id: 2, length: "15", speed: "1" },
+    { name: "Finger 3", id: 3, length: "45", speed: "2" }
   ];
 }
