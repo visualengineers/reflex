@@ -3,7 +3,6 @@
 Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren.
 
 ## 13.5.24
-
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -25,7 +24,8 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * jetzt geht es richtig los
 
-### Bearbeiter: Joel
+## 13.5.24
+### Bearbeiter: Jonas
 
 ### Fortschritt:
 * Implemtierung Dropdown
@@ -43,6 +43,24 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Zeitaufwand:
 * 4h
+
+### Notizen:
+* -
+
+## 14.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Pullup Prototyp eingebaut
+
+### Herausforderungen / Learnings:
+* -
+
+### Nächste Schritte:
+* Pullup schön machen
+
+### Zeitaufwand:
+* 1h
 
 ### Notizen:
 * -
