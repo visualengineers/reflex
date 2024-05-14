@@ -1,2 +1,8 @@
-<app-track-component></app-track-component>
-<app-timeline></app-timeline>
+<button (click)="isPullupOpen = !isPullupOpen" class="pullup-button">{{ isPullupOpen ? 'v' : '^' }}</button>
+<div *ngIf="isPullupOpen" class="pullup-area">
+    <div class="pullup-content">
+        <app-track-component></app-track-component>
+        <app-timeline></app-timeline>
+        <p>hi</p>
+    </div>
+</div>

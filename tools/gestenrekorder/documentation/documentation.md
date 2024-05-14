@@ -24,3 +24,25 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * jetzt geht es richtig los
+
+### Bearbeiter: Joel
+
+### Fortschritt:
+* Implemtierung Dropdown
+* IMplemntierung Pullup
+* Stylechanges an vielen Komponenten
+* Umbau des allgemeinen HTML Aufbaus
+
+### Herausforderungen / Learnings:
+* Dropdown mit Abhängigkeiten versehen (ngif)
+* Layoutprobleme bei TouchArea und Footer(pullup)
+
+### Nächste Schritte:
+* versuchen Layoutprobleme zu beheben
+* Pullup funktionsfähig machen
+
+### Zeitaufwand:
+* 4h
+
+### Notizen:
+* -
