@@ -1,3 +1,25 @@
-.pullup-area{
-    background-color: blue;
+.pullup-button-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+.pullup-button {
+    background-color: transparent;
+    color: blue;
+    cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+  }
+  
+  .pullup-area {
+    width: 100%;
+    background-color: white;
+    border-top: 1px solid blue;
+    height: 200px;
+  }
+  
+  .pullup-content {
+    padding: 20px;
+    color: blue;
+  }
+  
