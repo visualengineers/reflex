@@ -9,12 +9,10 @@ import { ConnectionService } from './connection.service';
 import { ConfigurationService } from './configuration.service';
 import { timer } from 'rxjs';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
-import * as exp from 'constants';
 
 describe('GestureReplayService', () => {
   let service: GestureReplayService;
 
-  let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
   let connectionService: ConnectionService;
   let configService: ConfigurationService;
@@ -47,7 +45,7 @@ const testTrack: GestureTrack = {
 
     service.loopGesture = false;
 
-    httpClient = TestBed.inject(HttpClient);
+    TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
     connectionService = TestBed.inject(ConnectionService);
     configService = TestBed.inject(ConfigurationService);
