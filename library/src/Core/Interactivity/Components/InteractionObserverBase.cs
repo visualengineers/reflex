@@ -246,7 +246,7 @@ namespace ReFlex.Core.Interactivity.Components
         protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
         {
             var result = _smoothingBehaviour.Update(rawInteractions);
-            // InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
+            InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
 
             return result;
         }

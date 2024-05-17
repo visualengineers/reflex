@@ -148,10 +148,27 @@ namespace ReFlex.Core.Interactivity.Components
 
             if (MeasurePerformance)
             {
+              _stopWatch.Start();
+            }
+
+            var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
+
+            var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
+
+            if (MeasurePerformance)
+            {
+              _stopWatch.Stop();
+              perfItem.ComputeExtremumType = _stopWatch.Elapsed;
+              _stopWatch.Reset();
+            }
+
+
+            if (MeasurePerformance)
+            {
                 _stopWatch.Start();
             }
 
-            var frame = ComputeSmoothingValue(interactions);
+            var frame = ComputeSmoothingValue(cleanedUpInteractions);
 
             if (MeasurePerformance)
             {
@@ -162,27 +179,9 @@ namespace ReFlex.Core.Interactivity.Components
 
             var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
 
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            var processedInteractions = ComputeExtremumType(confidentInteractions.ToList(), PointCloud.AsJaggedArray());
-
-            var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
-
-            UpdateInteractionFrames(cleanedUpInteractions, frame);
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.ComputeExtremumType = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
             UpdatePerformanceMetrics(perfItem);
 
-            OnNewInteractions(processedInteractions);
+            OnNewInteractions(confidentInteractions.ToList());
 
             return Task.FromResult(processResult);
         }
