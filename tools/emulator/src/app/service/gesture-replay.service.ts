@@ -18,7 +18,8 @@ export class GestureReplayService {
 
   public start(gesture: Gesture): void {
     this.gestureForReplay = gesture;
-    const i = this.configService.getSendInterval();
+    const speed = gesture.speed < 0 ? gesture.speed : 1;
+    const i = this.configService.getSendInterval() / speed;
 
     interval(i).subscribe({
       next: () => (this.update())
