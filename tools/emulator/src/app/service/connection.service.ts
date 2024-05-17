@@ -95,7 +95,7 @@ export class ConnectionService {
     if (this.socket && !this.socket.closed && !this.socket.hasError) {
       this.socket.next(touchPoints);
 
-      console.warn(touchPoints);
+      // console.warn(touchPoints);
     }
   }
 }

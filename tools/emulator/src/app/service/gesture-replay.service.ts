@@ -4,6 +4,7 @@ import { ConnectionService } from "./connection.service";
 import { ConfigurationService } from "./configuration.service";
 import { interval } from "rxjs";
 import { ExtremumType, Interaction, InteractionType } from "@reflex/shared-types";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({ providedIn: 'root'})
 export class GestureReplayService {
@@ -12,11 +13,22 @@ export class GestureReplayService {
   private gestureForReplay?: Gesture;
   private currentFrame: number = 0;
 
-  public constructor(private readonly connectionService: ConnectionService, private readonly configService: ConfigurationService) {
+  public constructor(private readonly connectionService: ConnectionService, private readonly configService: ConfigurationService, private readonly httpClient: HttpClient) {
 
   }
 
-  public start(gesture: Gesture): void {
+  public init(gestureFile: string): void {
+    this.httpClient.get(gestureFile, { responseType: 'json' }).subscribe({
+      next: (result) => {
+        const gesture = result as Gesture;
+        console.warn('successfully loaded gesture: ', gesture);
+        this.start(gesture);
+      },
+      error: (error) => console.error(error)
+    });
+  }
+
+  private start(gesture: Gesture): void {
     this.gestureForReplay = gesture;
     const speed = gesture.speed < 0 ? gesture.speed : 1;
     const i = this.configService.getSendInterval() / speed;
@@ -58,6 +70,10 @@ export class GestureReplayService {
       }
     });
 
-    this.currentFrame = (this.currentFrame++) % this.gestureForReplay.numFrames;
+    this.connectionService.sendMessage(touches);
+
+    console.info('send message: ', this.currentFrame, ' - ', touches);
+
+    this.currentFrame = (this.currentFrame+1) % this.gestureForReplay.numFrames;
   }
 }

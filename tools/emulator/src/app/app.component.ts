@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CAMERAS } from 'src/app/data/cameras';
 import { faTools, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { GestureReplayService } from './service/gesture-replay.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,12 @@ export class AppComponent {
   msgSettings = 'settings';
   showFaq = false;
   showSettings = false;
+
+
+  public constructor(private readonly replayService: GestureReplayService) {
+    replayService.init('assets/data/sampleGesture.json');
+
+  }
 
   clickHandler(clickMsg: string) {
 

@@ -11,6 +11,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { TimelineCanvasComponent } from './timeline/timeline-canvas/timeline-canvas.component';
 import { GestureReplayService } from './service/gesture-replay.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -24,10 +25,11 @@ import { GestureReplayService } from './service/gesture-replay.service';
     AppRoutingModule,
     BrowserModule,
     FontAwesomeModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [
-    GestureReplayService
+    GestureReplayService,
   ],
   bootstrap: [AppComponent]
 })
