@@ -10,6 +10,7 @@ import { CanvasComponent } from './canvas/canvas.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { TimelineCanvasComponent } from './timeline/timeline-canvas/timeline-canvas.component';
+import { GestureReplayService } from './service/gesture-replay.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,9 @@ import { TimelineCanvasComponent } from './timeline/timeline-canvas/timeline-can
     FontAwesomeModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    GestureReplayService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
