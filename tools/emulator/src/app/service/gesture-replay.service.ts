@@ -17,28 +17,48 @@ export class GestureReplayService {
 
   }
 
+  /**
+   * load gesture from json file and start replay when loading was successful
+   * @param gestureFile path to local json file with the stored gesture data
+   */
   public init(gestureFile: string): void {
     this.httpClient.get(gestureFile, { responseType: 'json' }).subscribe({
       next: (result) => {
         const gesture = result as Gesture;
-        console.warn('successfully loaded gesture: ', gesture);
+        console.info('successfully loaded gesture: ', gesture);
         this.start(gesture);
       },
       error: (error) => console.error(error)
     });
   }
 
+  /**
+   * computes interval for sending data based on @see Gesture.speed
+   * starts @see interval subscription with the computed interval.
+   * @param gesture gesture which will be replayed
+   */
   private start(gesture: Gesture): void {
+    if (gesture === undefined) {
+      return;
+    }
+
     this.gestureForReplay = gesture;
-    const speed = gesture.speed < 0 ? gesture.speed : 1;
+    const speed = gesture.speed > 0 ? gesture.speed : 1;
     const i = this.configService.getSendInterval() / speed;
+
+    console.info(`start replay with replay interval of ${i} ms.` );
 
     interval(i).subscribe({
       next: () => (this.update())
     })
   }
 
-  private update() {
+  /**
+   * retrieves @see GestureTrackFrame associated with @see currentFrame from @see gestureForReplay.
+   * constructs @see Interaction from frame data and sends this using @see connectionService.sendMessage
+   * increments @see currentFrame and resets is (using modulo) if @see loopGesture is true.
+   */
+  private update(): void {
     if (this.gestureForReplay === undefined) {
       return;
     }
@@ -72,8 +92,13 @@ export class GestureReplayService {
 
     this.connectionService.sendMessage(touches);
 
-    console.info('send message: ', this.currentFrame, ' - ', touches);
+    //advance to next frame
+    this.currentFrame = (this.currentFrame + 1);
 
-    this.currentFrame = (this.currentFrame+1) % this.gestureForReplay.numFrames;
+    if (this.loopGesture) {
+      this.currentFrame = this.currentFrame % this.gestureForReplay.numFrames;
+    } else if (this.currentFrame > this.gestureForReplay.numFrames) {
+      this.currentFrame = this.gestureForReplay.numFrames;
+    }
   }
 }
