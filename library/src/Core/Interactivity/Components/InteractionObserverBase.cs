@@ -58,7 +58,7 @@ namespace ReFlex.Core.Interactivity.Components
         public float MaxDistance { get; set; }
 
         /// <summary>
-        /// defines how many points should be checked to determine the type of the extremum 
+        /// defines how many points should be checked to determine the type of the extremum
         /// </summary>
         public int ExtremumTypeCheckNumSamples
         {
@@ -68,12 +68,12 @@ namespace ReFlex.Core.Interactivity.Components
                 if (_extremumTypeCheckNumSamples == value)
                     return;
                 _extremumTypeCheckNumSamples = value;
-                UpdateSamples(); 
+                UpdateSamples();
             }
         }
 
         /// <summary>
-        /// The pixel radius in which the points are sampled for deriving the type of the local extremum  
+        /// The pixel radius in which the points are sampled for deriving the type of the local extremum
         /// </summary>
         public int ExtremumTypeCheckRadius
         {
@@ -91,7 +91,7 @@ namespace ReFlex.Core.Interactivity.Components
         /// Which ratio of "correctly aligned" points should match to distinguish between Undefined or Minimum/Maximum ?
         /// </summary>
         public float ExtremumTypeCheckFittingPercentage { get; set; }
-        
+
         /// <summary>
         /// Defines how neighboring the points are sampled for determining the type of extremum.
         /// </summary>
@@ -125,7 +125,7 @@ namespace ReFlex.Core.Interactivity.Components
                         : value;
             }
         }
-        
+
         // TODO: write tests for negative (!) values and values larger than history
         public int MaxNumEmptyFramesBetween
         {
@@ -150,7 +150,7 @@ namespace ReFlex.Core.Interactivity.Components
                     _smoothingBehaviour.TouchMergeDistance2D = value;
             }
         }
-        
+
         public float DepthScale
         {
             get => _depthScale;
@@ -172,7 +172,7 @@ namespace ReFlex.Core.Interactivity.Components
                     _smoothingBehaviour.UpdateFilterType(_filterType);
             }
         }
-        
+
 
         /// <summary>
         /// Gets or sets the minimum angle.
@@ -208,7 +208,7 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         public bool MeasurePerformance { get; set; }
-        
+
         protected int FrameId { get; private set; }
 
         #region Abstract Members
@@ -216,11 +216,11 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract ObserverType Type { get; }
         public abstract PointCloud3 PointCloud { get; set; }
         public abstract VectorField2 VectorField { get; set; }
-        
+
         public abstract event EventHandler<IList<Interaction>> NewInteractions;
-        
+
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
-        
+
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
         public abstract Task<ProcessingResult> Update();
@@ -233,9 +233,9 @@ namespace ReFlex.Core.Interactivity.Components
         {
             _smoothingBehaviour = new InteractionSmoothingBehaviour(InteractionHistorySize);
         }
-        
+
         #endregion
-        
+
         public void UpdateFrameId(int frameId)
         {
             FrameId = frameId;
@@ -244,10 +244,10 @@ namespace ReFlex.Core.Interactivity.Components
         #endregion
 
         protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
-        {            
+        {
             var result = _smoothingBehaviour.Update(rawInteractions);
-            InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
-            
+            // InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
+
             return result;
         }
 
@@ -262,7 +262,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             // refZ is the absolute distance from sensor
             var refZ = Math.Abs(pointsArray[xPos][yPos].Z);
-                
+
             var numCloser = 0;
             var numFarther = 0;
 
@@ -291,7 +291,7 @@ namespace ReFlex.Core.Interactivity.Components
                 else
                     numCloser++;
             }
-            
+
 
             var ratioMax = ExtremumTypeCheckNumSamples > 0 ? (float)numCloser / ExtremumTypeCheckNumSamples : 0;
             var ratioMin = ExtremumTypeCheckNumSamples > 0 ? (float)numFarther / ExtremumTypeCheckNumSamples : 0;
@@ -328,12 +328,12 @@ namespace ReFlex.Core.Interactivity.Components
         protected List<Interaction> ConvertDepthValue(List<Interaction> interactions)
         {
             var result = new List<Interaction>();
-            
+
             foreach (var item in interactions)
             {
                 if (item == null)
                     continue;
-                
+
                 if (item.Position.Z < Distance)
                 {
                     var depth = (Distance - item.Position.Z - MinDistance) / (MinDistance - MaxDistance);
@@ -358,13 +358,13 @@ namespace ReFlex.Core.Interactivity.Components
 
                     item.Position.Z = depth;
                 }
-                
+
                 result.Add(item);
             }
 
             return result;
         }
-        
+
         protected IEnumerable<Interaction> ApplyConfidenceFilter(IEnumerable<Interaction> interactions)
         {
             return interactions.ToArray().Where(item => item.Confidence > MinConfidence);
@@ -378,6 +378,25 @@ namespace ReFlex.Core.Interactivity.Components
             return interactions;
         }
 
+        /// <summary>
+        /// generic approach: removes all maximums below the surface and all minimums above the surface. Removal is based on the ExtremumDescription.
+        /// Points witch <see cref="ExtremumType.Undefined"/> are also removed.
+        /// </summary>
+        /// <param name="interactions">the list of preprocessed interactions with valid ExtremumDescription</param>
+        /// <returns></returns>
+        protected List<Interaction> RemoveExtremumsBetweenTouches(List<Interaction> interactions)
+        {
+          return interactions.Where((touch) =>
+            // invalid or undefined ExtremumType
+            touch.ExtremumDescription != null && touch.ExtremumDescription.Type != ExtremumType.Undefined &&
+            // minimums below the surface
+            ((touch.Position.Z < 0 && touch.ExtremumDescription.Type == ExtremumType.Minimum) ||
+             // maximums above the surface
+             (touch.Position.Z > 0 && touch.ExtremumDescription.Type == ExtremumType.Maximum))
+
+          ).ToList();
+        }
+
         protected void UpdatePerformanceMetrics(ProcessPerformance perfItem)
         {
             var pData = new PerformanceDataItem
@@ -389,6 +408,23 @@ namespace ReFlex.Core.Interactivity.Components
             };
 
             PerformanceDataUpdated?.Invoke(this, pData);
+        }
+
+        protected void UpdateInteractionFrames(List<Interaction> cleanedUpInteractions, InteractionFrame currentFrame)
+        {
+          currentFrame.Interactions.ForEach((interaction) =>
+          {
+            if (cleanedUpInteractions.FirstOrDefault((i) => i.TouchId == interaction.TouchId) == null)
+            {
+              if (interaction.Confidence > 0)
+                interaction.Confidence--;
+            }
+          });
+
+          currentFrame.Interactions.RemoveAll((interaction) => interaction.Confidence <= 0);
+
+          _smoothingBehaviour.UpdateCachedFrame(currentFrame);
+          InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
         }
 
         /// <summary>
@@ -407,9 +443,9 @@ namespace ReFlex.Core.Interactivity.Components
 
             for (var i = 0; i < points.Length; ++i)
             {
-                if (!points[i].IsValid || points[i].IsFiltered) 
+                if (!points[i].IsValid || points[i].IsFiltered)
                     continue;
-                
+
                 numValidSamples++;
                 sum += points[i].Z;
             }
@@ -421,7 +457,7 @@ namespace ReFlex.Core.Interactivity.Components
         {
             var xIdx = xPos + samples[i].Item1;
             xIdx = Math.Min(Math.Max(xIdx, 0), xMax);
-                    
+
             var yIdx = yPos + samples[i].Item2;
             yIdx = Math.Min(Math.Max(yIdx, 0), yMax);
             var sample = pointsArray[xIdx][yIdx];
@@ -432,9 +468,9 @@ namespace ReFlex.Core.Interactivity.Components
         private Tuple<int, int>[] GenerateSamples()
         {
             var result = new List<Tuple<int, int>>();
-            
+
             var rnd = new Random();
-            
+
             var min = (int)Math.Floor(0.5f * ExtremumTypeCheckRadius);
             var max = ExtremumTypeCheckRadius;
 
@@ -442,7 +478,7 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 var xStochastic = rnd.Next(min, max);
                 var yStochastic = rnd.Next(min, max);
-                
+
                 result.Add(new Tuple<int, int>(xStochastic, yStochastic));
             }
 
@@ -458,11 +494,11 @@ namespace ReFlex.Core.Interactivity.Components
                 var p = (float)i / ExtremumTypeCheckRadius;
                 var xFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Cos(p * 2 * Math.PI));
                 var yFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Sin(p * 2 * Math.PI));
-                
+
                 samplesFixed.Add(new Tuple<int, int>(xFixed, yFixed));
             }
             _fixedSamples = samplesFixed.ToArray();
-            
+
             _stochasticSamples = GenerateSamples();
         }
     }
