@@ -12,36 +12,13 @@ import { TrackComponentComponent } from '../track-component/track-component.comp
 })
 export class PullupComponent {
   isPullupOpen: boolean = false;
-
-  constructor(private elementRef: ElementRef) {}
-
+  
   togglePullup() {
     this.isPullupOpen = !this.isPullupOpen;
-    if (this.isPullupOpen) {
-      this.addClickOutsideListener();
-    } else {
-      this.removeClickOutsideListener();
-    }
   }
 
   closePullup() {
     this.isPullupOpen = false;
-    this.removeClickOutsideListener();
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.closePullup();
-    }
-  }
-
-  addClickOutsideListener() {
-    document.addEventListener('click', this.onClickOutside.bind(this));
-  }
-
-  removeClickOutsideListener() {
-    document.removeEventListener('click', this.onClickOutside.bind(this));
   }
 }
 

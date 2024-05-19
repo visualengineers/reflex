@@ -11,7 +11,7 @@
     background-color: white;
     display: flex;
     border: 1px solid blue;
-    background-color: red;
+    background-color: #99a6f0;
     .tabs{
         color: blue;
         display: flex;
@@ -29,13 +29,12 @@
 .body{
     border: 1px solid blue;
     background-color: yellow;
+    overflow-y: scroll;
 }
 .footer{
     border: 1px solid blue;
     background-color: green;
 }
-
-  
 
 #settings {
     position: absolute;
