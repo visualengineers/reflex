@@ -1,5 +1,5 @@
 <div class="pullup-button-div">
-    <button (click)="isPullupOpen = !isPullupOpen" class="pullup-button">{{ isPullupOpen ? 'v' : '^' }}</button>
+    <button (click)="isPullupOpen = !isPullupOpen" class="pullup-button" [ngStyle]="{'top': isPullupOpen ? '72%' : '95%'}"><h1>{{ isPullupOpen ? 'v' : '^' }}</h1></button>
 </div>
 <div *ngIf="isPullupOpen" class="pullup-area">
     <div class="pullup-content">

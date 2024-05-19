@@ -1,4 +1,4 @@
-.overlay {
+.dropdown {
   position: fixed;
   background-color: white;
   border: 1px solid blue;
@@ -9,7 +9,7 @@
   z-index: 9999;
 }
 
-.overlay-button {
+.dropdown-button {
   background-color: transparent;
   color: blue;
   border: none;
@@ -17,10 +17,10 @@
   padding: 10px 20px;
 }
 
-.overlay-button:hover {
+.dropdown-button:hover {
   color: darkblue; /* Hover-Effekt für den Button-Text */
 }
 
-.overlay-content {
+.dropdown-content {
   padding: 20px;
 }

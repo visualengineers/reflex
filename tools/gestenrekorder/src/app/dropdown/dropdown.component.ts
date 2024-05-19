@@ -3,35 +3,35 @@ import { CommonModule } from '@angular/common';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
-  selector: 'app-overlay',
+  selector: 'app-dropdown',
   standalone: true,
   imports: [CommonModule,SettingsGroupComponent],
-  templateUrl: './overlay.component.html',
-  styleUrl: './overlay.component.scss'
+  templateUrl: './dropdown.component.html',
+  styleUrl: './dropdown.component.scss'
 })
-export class OverlayComponent {
-  isOverlayOpen: boolean = false;
+export class DropdownComponent {
+  isDropdownOpen: boolean = false;
 
   constructor(private elementRef: ElementRef) {}
 
-  toggleOverlay() {
-    this.isOverlayOpen = !this.isOverlayOpen;
-    if (this.isOverlayOpen) {
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+    if (this.isDropdownOpen) {
       this.addClickOutsideListener();
     } else {
       this.removeClickOutsideListener();
     }
   }
 
-  closeOverlay() {
-    this.isOverlayOpen = false;
+  closeDropdown() {
+    this.isDropdownOpen = false;
     this.removeClickOutsideListener();
   }
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.closeOverlay();
+      this.closeDropdown();
     }
   }
 

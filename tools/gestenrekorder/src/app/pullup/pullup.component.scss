@@ -1,15 +1,18 @@
 .pullup-button-div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 .pullup-button {
-    background-color: transparent;
-    color: blue;
-    cursor: pointer;
-    padding: 10px 20px;
-    border: none;
-  }
+  position: absolute;
+  background-color: transparent;
+  color: blue;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 16px;
+}
   
   .pullup-area {
     width: 100%;
