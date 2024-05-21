@@ -1,0 +1,13 @@
+<button (click)="isDropdownOpen = !isDropdownOpen" class="dropdown_button"><h2>{{ isDropdownOpen ? 'Gestenoptionen' : 'Gestenoptionen' }}</h2></button>
+<div *ngIf="isDropdownOpen" class="dropdown">
+    <div class="dropdown-content">
+        <app-settings-group>
+            Setting 1, Setting 2,, Setting 3, Setting 4 <br>
+            Setting 1, Setting 2,, Setting 3, Setting 4 <br>
+            Setting 1, Setting 2,, Setting 3, Setting 4 <br>
+            Setting 1, Setting 2,, Setting 3, Setting 4
+        </app-settings-group>
+    </div>
+</div>
+
+  

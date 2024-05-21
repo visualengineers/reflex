@@ -1,0 +1,48 @@
+.pullup-button-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9999;
+}
+
+.pullup-button {
+  position: absolute;
+  background-color: transparent;
+  color: blue;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.pullup-area {
+  width: 100%;
+  background-color: white;
+  border-top: 1px solid blue;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.pullup-content {
+  padding: 5px;
+  color: blue;
+}
+
+.pullup-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    border: 1px solid black;
+    max-height: 200px;
+    vertical-align: top;
+    &:first-child {
+      width: 66.67%;
+    }
+
+    &:last-child {
+      width: 33.33%;
+    }
+  }  
+
+}

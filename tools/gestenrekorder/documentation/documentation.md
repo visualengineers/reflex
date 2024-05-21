@@ -3,7 +3,6 @@
 Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren.
 
 ## 13.5.24
-
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -24,3 +23,66 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * jetzt geht es richtig los
+
+## 13.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Implemtierung Dropdown
+* IMplemntierung Pullup
+* Stylechanges an vielen Komponenten
+* Umbau des allgemeinen HTML Aufbaus
+
+### Herausforderungen / Learnings:
+* Dropdown mit Abhängigkeiten versehen (ngif)
+* Layoutprobleme bei TouchArea und Footer(pullup)
+
+### Nächste Schritte:
+* versuchen Layoutprobleme zu beheben
+* Pullup funktionsfähig machen
+
+### Zeitaufwand:
+* 4h
+
+### Notizen:
+* -
+
+## 14.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Pullup Prototyp eingebaut
+
+### Herausforderungen / Learnings:
+* -
+
+### Nächste Schritte:
+* Pullup schön machen
+
+### Zeitaufwand:
+* 1h
+
+### Notizen:
+* -
+
+## 19.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Reparieren Dropdown
+* Bearbeitung Pullup
+* Stylechanges an vielen Komponenten
+* Umbau des allgemeinen HTML Aufbaus
+
+### Herausforderungen / Learnings:
+* Dropdown hatte keine SCSS genommen, warum auch immer, nach einer Änderung an der HTML wurde die SCSS dann wieder erkannt, komisch
+* Layoutprobleme bei TouchArea und Footer(pullup), Touch area und Timeline und Track sollen sich dynamisch an deren Platz anpassen, klappt noch nicht so richtig
+
+### Nächste Schritte:
+* versuchen Layoutprobleme zu beheben
+
+### Zeitaufwand:
+* 2h
+
+### Notizen:
+* -

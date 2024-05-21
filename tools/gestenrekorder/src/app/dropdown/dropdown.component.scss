@@ -1,0 +1,25 @@
+.dropdown {
+  position: fixed;
+  background-color: white;
+  border: 1px solid blue;
+  border-radius: 4px;
+  padding: 10px;
+  color: blue;
+  z-index: 9999;
+}
+
+.dropdown_button {
+  background-color: transparent;
+  color: blue;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  width: 300px;
+}
+
+.dropdown-button:hover {
+  color: darkblue;
+}
+
+.dropdown-content {
+}
