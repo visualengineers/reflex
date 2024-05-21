@@ -92,7 +92,10 @@ export class ConnectionService {
   }
 
   private doSend(touchPoints: Interaction[]) {
-    if (this.socket && !this.socket?.isStopped && !this.socket.closed && !this.socket.hasError)
+    if (this.socket && !this.socket.closed && !this.socket.hasError) {
       this.socket.next(touchPoints);
+
+      // console.warn(touchPoints);
+    }
   }
 }
