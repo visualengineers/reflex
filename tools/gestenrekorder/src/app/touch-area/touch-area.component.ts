@@ -1,12 +1,9 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, fromEvent, Subscription, race } from 'rxjs';
 import { distinctUntilChanged, map, filter, publishBehavior, refCount, switchMap, takeUntil, debounceTime, withLatestFrom, startWith, pairwise } from 'rxjs/operators';
-import { NormalizedPoint } from '../model/NormalizedPoint.model';
 import { ConfigurationService, Layers } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
 import { CircleDto } from '../shapes/Circle';
-import { environment } from '../../environments/environment';
-import { ExtremumType, Interaction } from '@reflex/shared-types';
 import { EventService } from './service/event.service';
 import { TouchAreaService } from './service/touch-area.service';
 import { CircleRenderer } from '../shapes/Circle';

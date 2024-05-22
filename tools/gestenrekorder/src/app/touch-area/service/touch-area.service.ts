@@ -11,6 +11,7 @@ import { Interaction, ExtremumType } from '@reflex/shared-types';
 export class TouchAreaService {
   constructor(private configurationService: ConfigurationService) {}
 
+  // TODO: document all methods in this service
   addNormalizedPoint(point: NormalizedPoint, p: NormalizedPoint[], maxAmount: number): NormalizedPoint[] {
     p.push(point);
     return this.sliceToMax(maxAmount, p);
