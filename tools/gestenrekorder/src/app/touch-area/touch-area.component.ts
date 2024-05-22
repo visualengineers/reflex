@@ -7,8 +7,8 @@ import { ConnectionService } from '../service/connection.service';
 import { CircleDto } from '../shapes/Circle';
 import { environment } from '../../environments/environment';
 import { ExtremumType, Interaction } from '@reflex/shared-types';
-import { CircleRendererService } from '../service/circle-renderer.service';
-import { EventService } from '../service/event.service';
+import { CircleRendererService } from './service/circle-renderer.service';
+import { EventService } from './service/event.service';
 
 interface Size {
   width: number;

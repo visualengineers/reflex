@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CircleDto } from '../shapes/Circle';
-import { ConfigurationService } from './configuration.service';
+import { CircleDto } from '../../shapes/Circle';
+import { ConfigurationService } from '../../service/configuration.service';
 
 @Injectable({
   providedIn: 'root'
