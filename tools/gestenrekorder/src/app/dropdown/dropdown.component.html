@@ -2,10 +2,68 @@
 <div *ngIf="isDropdownOpen" class="dropdown">
     <div class="dropdown-content">
         <app-settings-group>
-            Setting 1, Setting 2,, Setting 3, Setting 4 <br>
-            Setting 1, Setting 2,, Setting 3, Setting 4 <br>
-            Setting 1, Setting 2,, Setting 3, Setting 4 <br>
-            Setting 1, Setting 2,, Setting 3, Setting 4
+            <form action="/submit" method="post">
+                <table>
+                    <tr>
+                        <th>Optionsname</th>
+                        <th>Einstellung</th>
+                    </tr>
+                    <tr>
+                        <td>Gestenname:</td>
+                        <td><input type="text" name="gesture_name" required></td>
+                    </tr>s
+                    <tr>
+                        <td>Sensor Resolution:</td>
+                        <td>
+                            <select name="sensor_resolution" required>
+                                <option value="Low">Niedrig</option>
+                                <option value="Medium">Mittel</option>
+                                <option value="High">Hoch</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Background:</td>
+                        <td>
+                            <select name="background" onchange="toggleConditionalInput(this)" required>
+                                <option value="None">Keine</option>
+                                <option value="Option1">Option 1</option>
+                                <option value="Option2">Option 2</option>
+                            </select>
+                            <div id="background-input" class="conditional-input">
+                                <label for="background_detail">Details:</label>
+                                <input type="text" id="background_detail" name="background_detail">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Number Layers:</td>
+                        <td>
+                            <label for="layers_pull">Pull:</label>
+                            <input type="number" id="layers_pull" name="layers_pull" required>
+                            <label for="layers_push">Push:</label>
+                            <input type="number" id="layers_push" name="layers_push" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Playback Duration:</td>
+                        <td>
+                            <input type="number" name="playback_duration" required> frames
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Start/End:</td>
+                        <td>
+                            <label for="start_frame">Start:</label>
+                            <input type="number" id="start_frame" name="start_frame" required> frames
+                            <label for="end_frame">End:</label>
+                            <input type="number" id="end_frame" name="end_frame" required> frames
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <input type="submit" value="Speichern">
+            </form>
         </app-settings-group>
     </div>
 </div>
