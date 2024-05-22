@@ -27,8 +27,18 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "../../node_modules/@reflex/angular-components/src/assets",
+                "output": "assets"
+              }
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "../../node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
             "styles": [
               "src/styles.scss"
             ],

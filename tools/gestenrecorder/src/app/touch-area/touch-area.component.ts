@@ -32,7 +32,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     private connectionService: ConnectionService,
     private configurationService: ConfigurationService,
     private eventService: EventService,
-    private touchAreaService: TouchAreaService
+    private touchAreaService: TouchAreaService,
+    private hostElement: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -96,8 +97,10 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
 
       windowSize$.subscribe(size => {
         if (this.canvas?.nativeElement !== undefined) {
-          this.canvas.nativeElement.width = size.width;
-          this.canvas.nativeElement.height = size.height;
+          const styles = getComputedStyle(this.hostElement.nativeElement);
+          this.canvas.nativeElement.width = Number(this.hostElement.nativeElement.offsetWidth);
+          this.canvas.nativeElement.height = Number(this.hostElement.nativeElement.offsetHeight);
+          console.log(this.hostElement.nativeElement)
         }
       }),
 

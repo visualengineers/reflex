@@ -1,8 +1,9 @@
 <button (click)="isDropdownOpen = !isDropdownOpen" class="dropdown_button"><h2>{{ isDropdownOpen ? 'Gestenoptionen' : 'Gestenoptionen' }}</h2></button>
 <div *ngIf="isDropdownOpen" class="dropdown">
     <div class="dropdown-content">
-        <app-settings-group>
-            <form action="/submit" method="post">
+        <app-settings-group toggleId="Platzhalter"></app-settings-group>
+        <!-- <app-value-text></app-value-text> -->
+            <!-- <form action="/submit" method="post">
                 <table>
                     <tr>
                         <th>Optionsname</th>
@@ -63,8 +64,8 @@
                 </table>
                 <br>
                 <input type="submit" value="Speichern">
-            </form>
-        </app-settings-group>
+            </form> -->
+
     </div>
 </div>
 
