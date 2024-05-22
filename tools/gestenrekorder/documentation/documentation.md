@@ -86,3 +86,41 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
+
+## 21.5.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* TouchArea bearbeitet
+* EventService um Eingabeevents zu handeln
+* TOuchAreaService um Funktionen und Methoden auszulagern
+
+### Herausforderungen / Learnings:
+* TouchArea verstehen, Code refactorn
+
+### Nächste Schritte:
+* mergen
+
+### Zeitaufwand:
+* 4h
+
+### Notizen:
+* -
+  
+## 22.5.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* TouchArea berarbeitung fortgesetzt
+
+### Herausforderungen / Learnings:
+* Code nochmal überarbeiten
+
+### Nächste Schritte:
+* mergen
+
+### Zeitaufwand:
+* 1,5h
+
+### Notizen:
+* -
