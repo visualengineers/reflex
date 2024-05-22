@@ -8,6 +8,7 @@ import { CircleDto } from '../shapes/Circle';
 import { environment } from '../../environments/environment';
 import { ExtremumType, Interaction } from '@reflex/shared-types';
 import { EventService } from './service/event.service';
+import { TouchAreaService } from './service/touch-area.service';
 import { CircleRenderer } from '../shapes/Circle';
 
 interface Size {
@@ -24,7 +25,6 @@ interface Size {
 export class TouchAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
 
-
   public backgroundPath = '';
   private ctx?: CanvasRenderingContext2D;
   private layers?: Layers;
@@ -34,7 +34,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
   constructor(
     private connectionService: ConnectionService,
     private configurationService: ConfigurationService,
-    private eventService: EventService
+    private eventService: EventService,
+    private touchAreaService: TouchAreaService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +65,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     const normalizedPoints$ = this.configurationService.getNormalizedPoints();
 
     const mouseHoversCircle$ = combineLatest([mouseMove$, normalizedPoints$]).pipe(
-      map(([event, points]) => this.checkIfMouseOnCircles(event, points)),
+      map(([event, points]) => this.touchAreaService.checkIfMouseOnCircles(event, points, this.ctx!)),
       startWith(false),
       distinctUntilChanged()
     );
@@ -75,7 +76,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
 
     const activePointIndex$ = mouseEventOnCircle$.pipe(
       withLatestFrom(normalizedPoints$),
-      switchMap(([event, points]) => this.getHoveredCircles(event, points)),
+      switchMap(([event, points]) => this.touchAreaService.getHoveredCircles(event, points, this.ctx!)),
       distinctUntilChanged()
     );
 
@@ -87,17 +88,13 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ))
     );
 
-    this.configurationService.background$.subscribe(() => {
-      this.backgroundPath = this.configurationService.getBackgroundImage();
-    });
-
     this.subscriptions.push(
       this.configurationService.background$.subscribe(() => {
         this.backgroundPath = this.configurationService.getBackgroundImage();
       }),
 
       combineLatest([normalizedPoints$, windowSize$, layers$]).pipe(
-        map(([points, size]) => points.map(p => this.circleDtoFromNormalizedPoint(p, size)))
+        map(([points, size]) => points.map(p => this.touchAreaService.circleDtoFromNormalizedPoint(p, size, this.layers)))
       ).subscribe(circleDtos => this.drawCircleDtos(circleDtos)),
 
       windowSize$.subscribe(size => {
@@ -110,62 +107,38 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       mouseDown$.pipe(
         withLatestFrom(mouseHoversCircle$),
         filter(([event, bool]) => event.button === 0 && !bool),
-        map(([event], index) => this.normalizedPointFromEvent(event, index)),
+        map(([event], index) => this.touchAreaService.normalizedPointFromEvent(event, index)),
         withLatestFrom(normalizedPoints$, amountTouchPoints$),
-        map(([point, points, amount]) => this.addNormalizedPoint(point, points, amount))
+        map(([point, points, amount]) => this.touchAreaService.addNormalizedPoint(point, points, amount))
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       mouseDown$.pipe(
         filter(event => event.button === 2),
         withLatestFrom(normalizedPoints$),
-        map(([event, points]) => this.deleteNormalizedPoints(event, points))
+        map(([event, points]) => this.touchAreaService.deleteNormalizedPoints(event, points, this.ctx!))
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       dragDropMoveLeft$.pipe(
         withLatestFrom(activePointIndex$, normalizedPoints$),
-        map(([[event1, event2], index, points]) => this.movePointFromEvent(event1, event2, index, points))
+        map(([[event1, event2], index, points]) => this.touchAreaService.movePointFromEvent(event1, event2, index, points, this.ctx!))
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       mouseWheel$.pipe(
         withLatestFrom(normalizedPoints$),
-        map(([event, points]) => this.resizeNormalizedPoints(event, points))
+        map(([event, points]) => this.touchAreaService.resizeNormalizedPoints(event, points, this.ctx!, this.layers))
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       normalizedPoints$.pipe(
-        map(points => points.map(p => this.touchPointFromNormalizedPoint(p)))
+        map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
       ).subscribe(touchPoints => this.connectionService.sendMessage(touchPoints)),
 
       amountTouchPoints$.pipe(
         withLatestFrom(normalizedPoints$),
-        map(([amount, points]) => this.sliceToMax(amount, points))
+        map(([amount, points]) => this.touchAreaService.sliceToMax(amount, points))
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       layers$.subscribe(layers => this.layers = layers)
     );
-  }
-
-  private addNormalizedPoint(point: NormalizedPoint, p: NormalizedPoint[], maxAmount: number): NormalizedPoint[] {
-    p.push(point);
-    return this.sliceToMax(maxAmount, p);
-  }
-
-  private circleDtoFromNormalizedPoint(p: NormalizedPoint, canvasSize: Size): CircleDto {
-    const circleSize = this.configurationService.getCircleSize();
-    return {
-      posX: p.x * canvasSize.width,
-      posY: p.y * canvasSize.height,
-      radius: Math.abs(p.z) * circleSize.max + circleSize.min,
-      color: (Math.sign(p.z) > 0) ? this.layers?.colorUp ?? '' : this.layers?.colorDown ?? ''
-    };
-  }
-
-  private checkIfMouseOnCircles(event: MouseEvent | PointerEvent | WheelEvent, p: NormalizedPoint[]): boolean {
-    return this.getHoveredCircles(event, p).length > 0;
-  }
-
-  private deleteNormalizedPoints(event: MouseEvent | PointerEvent, p: NormalizedPoint[]): NormalizedPoint[] {
-    const indices = this.getHoveredCircles(event, p);
-    return p.filter((item) => !indices.includes(item.index));
   }
 
   private drawCircleDtos(circleDtos: CircleDto[]): void {
@@ -175,89 +148,6 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.globalAlpha = 0.5;
     circleDtos.forEach(circleDto => this.circleRenderer?.draw(circleDto));
-  }
-
-  private getHoveredCircles(event: MouseEvent | PointerEvent | WheelEvent, p: NormalizedPoint[]): number[] {
-    const indices: number[] = [];
-    p.forEach((point) => {
-      if (this.isEventOnCircle(event, point)) {
-        indices.push(point.index);
-      }
-    });
-    return indices;
-  }
-
-  private isEventOnCircle(event: MouseEvent | PointerEvent | WheelEvent, point: NormalizedPoint): boolean {
-    if (this.ctx === undefined) {
-      return false;
-    }
-    const xDiff = (point.x * this.ctx.canvas.width) + this.ctx.canvas.offsetLeft - event.x;
-    const yDiff = (point.y * this.ctx.canvas.height) + this.ctx.canvas.offsetTop - event.y;
-    const radius = this.configurationService.getCircleSize().min + Math.abs(point.z);
-    const distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    return distance < radius;
-  }
-
-  private movePointFromEvent(event1: MouseEvent | PointerEvent, event2: MouseEvent | PointerEvent, index: number, p: NormalizedPoint[]): NormalizedPoint[] {
-    const xDiff = event2.x - event1.x;
-    const yDiff = event2.y - event1.y;
-    p.forEach((point) => {
-      if (index === point.index) {
-        point.x += xDiff / (this.ctx?.canvas?.width ?? 1);
-        point.y += yDiff / (this.ctx?.canvas?.height ?? 1);
-      }
-    });
-    return p;
-  }
-
-  private normalizedPointFromEvent({ target, offsetX, offsetY }: MouseEvent | PointerEvent, index: number): NormalizedPoint {
-    return {
-      x: offsetX / (target as HTMLElement).clientWidth,
-      y: offsetY / (target as HTMLElement).clientHeight,
-      time: Date.now(),
-      index,
-      z: 0
-    };
-  }
-
-  private resizeNormalizedPoints(event: WheelEvent, p: NormalizedPoint[]): NormalizedPoint[] {
-    const mouseDirection = (event.deltaY < 0) ? -1 : 1;
-    const maxAmountLayers = Math.max(this.layers?.up ?? 0, this.layers?.down ?? 0);
-    const normalizedPullLimit = ((this.layers?.up ?? 0) / maxAmountLayers);
-    const normalizedPushLimit = ((this.layers?.down ?? 0) / maxAmountLayers) * (-1);
-    let scaleStep = environment.scaleStep;
-    scaleStep *= mouseDirection;
-    p.forEach((point) => {
-      if (this.isEventOnCircle(event, point)) {
-        point.z = Math.min(Math.max(normalizedPushLimit, point.z + scaleStep), normalizedPullLimit);
-      }
-    });
-    return p;
-  }
-
-  private sliceToMax(maxAmount: number, p: NormalizedPoint[]): NormalizedPoint[] {
-    return p.slice(-maxAmount);
-  }
-
-  private touchPointFromNormalizedPoint(p: NormalizedPoint): Interaction {
-    return {
-      position: {
-        x: p.x * this.configurationService.getViewPort().width,
-        y: p.y * this.configurationService.getViewPort().heigth,
-        z: p.z,
-        isValid: true,
-        isFiltered: false
-      },
-      confidence: 1.0,
-      time: p.time,
-      type: 1,
-      touchId: -1,
-      extremumDescription: {
-        type: ExtremumType.Undefined,
-        numFittingPoints: 0,
-        percentageFittingPoints: 0
-      }
-    };
   }
 
   ngOnDestroy() {
