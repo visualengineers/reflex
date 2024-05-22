@@ -62,8 +62,8 @@
 ../tools/emulator/.angular
 ../tools/emulator/dist
 ../tools/emulator/node_modules
-../tools/gestenrekorder/.angular
-../tools/gestenrekorder/dist
+../tools/gestenrecorder/.angular
+../tools/gestenrecorder/dist
 ../tools/logging/data
 ../tools/logging/dist
 ../tools/ReFlex.TrackingServer/bin

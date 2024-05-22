@@ -12,5 +12,5 @@ import { PullupComponent } from "./pullup/pullup.component";
   styleUrl: "./app.component.scss",
 })
 export class AppComponent {
-  title = "gestenrekorder";
+  title = "gestenrecorder";
 }

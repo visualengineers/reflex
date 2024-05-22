@@ -1,4 +1,4 @@
-import { GestureTrack } from "../data/gesture-track";
+import { GestureTrack } from "./gesture-track";
 
 export interface Gesture {
     id: number,
