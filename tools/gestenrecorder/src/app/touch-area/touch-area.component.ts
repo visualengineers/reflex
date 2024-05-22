@@ -91,16 +91,18 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         this.backgroundPath = this.configurationService.getBackgroundImage();
       }),
 
+      //anpassen
       combineLatest([normalizedPoints$, windowSize$, layers$]).pipe(
-        map(([points, size]) => points.map(p => this.touchAreaService.circleDtoFromNormalizedPoint(p, size, this.layers)))
+        map(([points]) => {
+          const newSize = { width: Number(this.hostElement.nativeElement.offsetWidth), height:  Number(this.hostElement.nativeElement.offsetHeight)};
+          return points.map(p => this.touchAreaService.circleDtoFromNormalizedPoint(p, newSize, this.layers))
+         })
       ).subscribe(circleDtos => this.drawCircleDtos(circleDtos)),
 
       windowSize$.subscribe(size => {
         if (this.canvas?.nativeElement !== undefined) {
-          const styles = getComputedStyle(this.hostElement.nativeElement);
           this.canvas.nativeElement.width = Number(this.hostElement.nativeElement.offsetWidth);
           this.canvas.nativeElement.height = Number(this.hostElement.nativeElement.offsetHeight);
-          console.log(this.hostElement.nativeElement)
         }
       }),
 
