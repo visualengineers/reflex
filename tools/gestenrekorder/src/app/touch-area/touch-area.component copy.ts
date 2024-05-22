@@ -92,7 +92,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     const mouseUp$ = fromEvent<MouseEvent>(this.canvas.nativeElement, 'mouseup');
     const mouseWheel$ = fromEvent<WheelEvent>(this.canvas.nativeElement, 'wheel');
     const normalizedPoints$ = this.configurationService.getNormalizedPoints(); // point subject in configuration service (multicasting!)
-  
+
     // whether circles are currently hovered or not
     const mouseHoversCircle$ = combineLatest([( mouseMove$ || mouseDown$ ), normalizedPoints$ ])
     .pipe(
