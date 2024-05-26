@@ -14,9 +14,10 @@ export class OptionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private configurationService: ConfigurationService,
-    private connectionService: ConnectionService
+    private connectionService: ConnectionService,
   ) {}
 
+  // TODO: options for configurationService (create boxes and buttons just like the sidebar in the emulator)
   ngOnInit(): void {
       this.connectionService.init();
   }
