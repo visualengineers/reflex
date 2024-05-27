@@ -91,7 +91,6 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         this.backgroundPath = this.configurationService.getBackgroundImage();
       }),
 
-      //anpassen
       combineLatest([normalizedPoints$, windowSize$, layers$]).pipe(
         map(([points]) => {
           const newSize = { width: Number(this.hostElement.nativeElement.offsetWidth), height:  Number(this.hostElement.nativeElement.offsetHeight)};
