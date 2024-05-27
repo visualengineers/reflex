@@ -10,6 +10,7 @@ import { ViewChild, ElementRef } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { NgFor } from '@angular/common';
 
+
 @Component({
   selector: 'app-options',
   standalone: true,
@@ -87,7 +88,7 @@ export class OptionsComponent implements OnInit, OnDestroy {
 
   saveConfiguration(): void {
     this.configurationService.setAmountProjectionLayers(this.amountProjectionLayers);
-    this.configurationService.setAmountProjectionLayers(this.amountTouchPoints);
+    this.configurationService.setAmoutTouchPoints(this.amountTouchPoints);
     this.configurationService.setCircleSize(this.circleSize);
 
     if (this.layers !== undefined) {
@@ -110,7 +111,6 @@ export class OptionsComponent implements OnInit, OnDestroy {
     this.connectionService.reconnect();
   }
 
-  // TODO: load a background image (i think the the touch area is not loading the image)
   onBackgroundSelected(): void {
     switch (this.backgroundType) {
       case 1: {
