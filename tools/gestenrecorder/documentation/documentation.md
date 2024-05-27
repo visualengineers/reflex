@@ -149,6 +149,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Fortschritt:
 * Optionen erweitert + Meeting mit Jonas und Tim
 * Optionen filtern und localStorage einführen um die Optionen speichern zu können
+* Styling und functionality fixes in der options component
 
 ### Herausforderungen / Learnings:
 * 
@@ -157,7 +158,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * eventuell ein neues Dropdown
 
 ### Zeitaufwand:
-* 3,5h
+* 4,5
 
 ### Notizen:
 * -
