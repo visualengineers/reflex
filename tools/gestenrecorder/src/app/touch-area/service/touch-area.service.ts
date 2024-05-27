@@ -99,7 +99,7 @@ export class TouchAreaService {
     return {
       position: {
         x: p.x * this.configurationService.getViewPort().width,
-        y: p.y * this.configurationService.getViewPort().heigth,
+        y: p.y * this.configurationService.getViewPort().height,
         z: p.z,
         isValid: true,
         isFiltered: false

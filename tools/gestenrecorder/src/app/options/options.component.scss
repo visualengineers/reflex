@@ -1,0 +1,90 @@
+/* Globale Stile */
+.connection-indicator {
+  position: absolute;
+  bottom: 0.7rem;
+  right: -1rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  border: 1px solid #ccc; /* Ändere die Farbe je nach Bedarf */
+  background: #ccc; /* Ändere die Farbe je nach Bedarf */
+}
+
+.connection-indicator.success {
+  background: #00ff00; /* Grün */
+}
+
+.connection-indicator.error {
+  background: #ff0000; /* Rot */
+}
+
+.form-group {
+  label {
+    font-size: 10px;
+  }
+
+  span {
+    font-size: 10px;
+  }
+}
+
+/* options-Stile */
+.options__absolute {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.options__container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 5px; /* Verwende die gleiche Grenzradius-Einheit wie im Sass-Code */
+  margin: 10px; /* Verwende die gleiche Marge wie im Sass-Code */
+  padding: 10px; /* Verwende die gleiche Polsterung wie im Sass-Code */
+  background: #333; /* Ändere die Farbe je nach Bedarf */
+  color: #eee; /* Ändere die Farbe je nach Bedarf */
+  height: calc(75% - 20px); /* Verwende die gleiche Berechnung wie im Sass-Code */
+  overflow-y: scroll;
+}
+
+.options__container::-webkit-scrollbar {
+  display: none;
+}
+
+.options__heading {
+  padding-top: 5px;
+  font-size: 12px;
+}
+
+.options__content {
+  position: relative;
+  padding: 0 10px 0 0; /* Verwende die gleiche Polsterung wie im Sass-Code */
+  height: 100%;
+  font-size: 0.8rem;
+}
+
+.options__content .row {
+  margin: 0;
+}
+
+.options__content .form-group {
+  position: relative;
+  padding: 5px; /* Verwende die gleiche Polsterung wie im Sass-Code */
+  padding-bottom: 0;
+  margin: 0;
+}
+
+.options__content .form-group .custom-radio {
+  margin: 0 10px 5px 0; /* Verwende die gleiche Marge wie im Sass-Code */
+}
+
+.options__content .form-group .custom-radio::after {
+  font-size: 0.8rem;
+}
+
+.options__content input[type="color"] {
+  display: block;
+  padding: 0;
+}
+/* Füge weitere Stile hinzu, indem du die Struktur des .sass-Codes beibehältst */
