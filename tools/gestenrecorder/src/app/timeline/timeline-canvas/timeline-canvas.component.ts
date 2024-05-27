@@ -13,8 +13,8 @@ import {
 import {
   ConfigurationService,
   Layers,
-} from "../../service/configuration.service";
-import { ConnectionService } from "../../service/connection.service";
+} from "../../services/configuration.service";
+import { ConnectionService } from "../../services/connection.service";
 import { NormalizedPoint } from "../../model/NormalizedPoint.model";
 import { CircleDto, CircleRenderer } from "../../shapes/Circle";
 import { CommonModule, DOCUMENT } from "@angular/common";
@@ -136,16 +136,17 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     // alternative 'zoom fit' approach for timeline sizing:
     this.canvas.nativeElement.width = this.timelineElement.offsetWidth;
     this.canvas.nativeElement.height = this.timelineElement.offsetHeight;
-    const layerDepth = this.ctx.canvas.height / amountLayers; // height of a single layer in px
+    //const layerDepth = this.ctx.canvas.height / amountLayers; // height of a single layer in px#
+    const layerDepth =  162 / amountLayers; // height of a single layer in px
 
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
     // layers in alternating colors
     for (let i = 0; i < amountLayers; i++) {
       if (i % 2) {
-        this.ctx.fillStyle = "#363636";
+        this.ctx.fillStyle = "#cfcfcf";
       } else {
-        this.ctx.fillStyle = "#414141";
+        this.ctx.fillStyle = "#0071B7";
       }
       this.ctx.fillRect(
         0,

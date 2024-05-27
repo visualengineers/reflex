@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, fromEvent, Subscription, race } from 'rxjs';
 import { distinctUntilChanged, map, filter, publishBehavior, refCount, switchMap, takeUntil, debounceTime, withLatestFrom, startWith, pairwise } from 'rxjs/operators';
-import { ConfigurationService, Layers } from '../service/configuration.service';
-import { ConnectionService } from '../service/connection.service';
+import { ConfigurationService, Layers } from '../services/configuration.service';
+import { ConnectionService } from '../services/connection.service';
 import { CircleDto } from '../shapes/Circle';
 import { EventService } from './service/event.service';
 import { TouchAreaService } from './service/touch-area.service';

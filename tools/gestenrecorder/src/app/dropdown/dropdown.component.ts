@@ -1,11 +1,11 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SettingsGroupComponent } from '@reflex/angular-components/dist';
+import { SettingsGroupComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-dropdown',
   standalone: true,
-  imports: [CommonModule,SettingsGroupComponent],
+  imports: [CommonModule,SettingsGroupComponent,ValueTextComponent],
   templateUrl: './dropdown.component.html',
   styleUrl: './dropdown.component.scss'
 })

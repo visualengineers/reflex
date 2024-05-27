@@ -1,3 +1,5 @@
+//@import 'reflex';
+
 .pullup-button-div {
   display: flex;
   flex-direction: column;
@@ -8,7 +10,7 @@
 .pullup-button {
   position: absolute;
   background-color: transparent;
-  color: blue;
+  color: #0071B7 /*$color-primary*/;
   border: none;
   cursor: pointer;
   padding: 10px;
@@ -18,14 +20,13 @@
 .pullup-area {
   width: 100%;
   background-color: white;
-  border-top: 1px solid blue;
+  border-top: 1px solid #0071B7 /*$color-primary*/;
   max-height: 220px;
   overflow-y: auto;
 }
 
 .pullup-content {
-  padding: 5px;
-  color: blue;
+  color: #0071B7 /*$color-primary*/;
 }
 
 .pullup-table {
@@ -33,7 +34,7 @@
   border-collapse: collapse;
 
   td {
-    border: 1px solid black;
+    border: 1px solid lightgrey;
     max-height: 200px;
     vertical-align: top;
     &:first-child {
