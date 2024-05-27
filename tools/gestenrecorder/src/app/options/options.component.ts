@@ -3,7 +3,7 @@ import { ConfigurationService } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
 import { OnInit, OnDestroy } from '@angular/core';
 import { BackgroundSource } from '../model/BackgroundSource.model';
-import { Camera, CircleSize, Layers, ViewPort, ViewOption } from '../service/configuration.service';
+import { CircleSize, Layers, ViewPort, ViewOption } from '../service/configuration.service';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ViewChild, ElementRef } from '@angular/core';
@@ -19,9 +19,6 @@ import { NgFor } from '@angular/common';
   styleUrl: './options.component.scss'
 })
 export class OptionsComponent implements OnInit, OnDestroy {
-  public showTracking = true;
-  public showProjection = false;
-  public backupTimestamp: Date | null = new Date();
   public backgroundType = 0; // 0: none | 1: from 'assets/img' | 2: url
   public amountProjectionLayers: number = 0;
   public amountTouchPoints: number = 0;
@@ -136,7 +133,6 @@ export class OptionsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
       this.connectionService.disconnect();
       this.amountTouchPointsSubscription?.unsubscribe();
-      this.configurationService.backupTimestamp$.unsubscribe();
       this.layersSubscription?.unsubscribe();
       this.stateSubscription?.unsubscribe();
   }
