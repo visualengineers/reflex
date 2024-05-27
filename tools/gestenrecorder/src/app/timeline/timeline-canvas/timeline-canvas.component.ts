@@ -3,21 +3,11 @@ import { OnDestroy } from "@angular/core";
 import { ViewChild } from "@angular/core";
 import { Component, OnInit, Inject } from "@angular/core";
 import { combineLatest, fromEvent, Subscription } from "rxjs";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  publishBehavior,
-  refCount,
-} from "rxjs/operators";
-import {
-  ConfigurationService,
-  Layers,
-} from "../../services/configuration.service";
-import { ConnectionService } from "../../services/connection.service";
+import { debounceTime, distinctUntilChanged, map, publishBehavior, refCount } from "rxjs/operators";
+import { ConfigurationService, Layers } from "../../service/configuration.service";
+import { ConnectionService } from "../../service/connection.service";
 import { NormalizedPoint } from "../../model/NormalizedPoint.model";
 import { CircleDto, CircleRenderer } from "../../shapes/Circle";
-import { CommonModule, DOCUMENT } from "@angular/common";
 
 interface Size {
   width: number;
@@ -44,15 +34,11 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
   private layersSubscription?: Subscription;
   private pointsSubscription?: Subscription;
   private timelineSubscription?: Subscription;
-  private readonly localStorage;
 
   constructor(
     private connectionService: ConnectionService,
     private configurationService: ConfigurationService,
-    @Inject(DOCUMENT) private document: Document,
-  ) {
-    this.localStorage = document.defaultView?.localStorage;
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.canvas?.nativeElement === undefined) {
