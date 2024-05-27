@@ -1,7 +1,7 @@
 @import "../../../styles";
 
 :host {
-    height: calc(100% - #{$margin-default});
+    height: 100%;
     width: 100%;
     position: relative;
     display: inline-block;
@@ -12,3 +12,5 @@
         display: none;
     }
 }
+
+

@@ -1,16 +1,18 @@
+@import 'reflex';
+
 .dropdown {
   position: fixed;
   background-color: white;
-  border: 1px solid blue;
+  border: 1px solid $color-primary;
   border-radius: 4px;
   padding: 10px;
-  color: blue;
+  color: $color-primary;
   z-index: 9999;
 }
 
 .dropdown_button {
   background-color: transparent;
-  color: blue;
+  color: $color-primary;
   border: none;
   cursor: pointer;
   padding: 10px 20px;
@@ -22,4 +24,5 @@
 }
 
 .dropdown-content {
+
 }

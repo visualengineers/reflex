@@ -3,21 +3,11 @@ import { OnDestroy } from "@angular/core";
 import { ViewChild } from "@angular/core";
 import { Component, OnInit, Inject } from "@angular/core";
 import { combineLatest, fromEvent, Subscription } from "rxjs";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  publishBehavior,
-  refCount,
-} from "rxjs/operators";
-import {
-  ConfigurationService,
-  Layers,
-} from "../../service/configuration.service";
+import { debounceTime, distinctUntilChanged, map, publishBehavior, refCount } from "rxjs/operators";
+import { ConfigurationService, Layers } from "../../service/configuration.service";
 import { ConnectionService } from "../../service/connection.service";
 import { NormalizedPoint } from "../../model/NormalizedPoint.model";
 import { CircleDto, CircleRenderer } from "../../shapes/Circle";
-import { CommonModule, DOCUMENT } from "@angular/common";
 
 interface Size {
   width: number;
@@ -44,15 +34,11 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
   private layersSubscription?: Subscription;
   private pointsSubscription?: Subscription;
   private timelineSubscription?: Subscription;
-  private readonly localStorage;
 
   constructor(
     private connectionService: ConnectionService,
     private configurationService: ConfigurationService,
-    @Inject(DOCUMENT) private document: Document,
-  ) {
-    this.localStorage = document.defaultView?.localStorage;
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.canvas?.nativeElement === undefined) {
@@ -136,16 +122,17 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     // alternative 'zoom fit' approach for timeline sizing:
     this.canvas.nativeElement.width = this.timelineElement.offsetWidth;
     this.canvas.nativeElement.height = this.timelineElement.offsetHeight;
-    const layerDepth = this.ctx.canvas.height / amountLayers; // height of a single layer in px
+    //const layerDepth = this.ctx.canvas.height / amountLayers; // height of a single layer in px#
+    const layerDepth =  162 / amountLayers; // height of a single layer in px
 
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
     // layers in alternating colors
     for (let i = 0; i < amountLayers; i++) {
       if (i % 2) {
-        this.ctx.fillStyle = "#363636";
+        this.ctx.fillStyle = "#cfcfcf";
       } else {
-        this.ctx.fillStyle = "#414141";
+        this.ctx.fillStyle = "#0071B7";
       }
       this.ctx.fillRect(
         0,

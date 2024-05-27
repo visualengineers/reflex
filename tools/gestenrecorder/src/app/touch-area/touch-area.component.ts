@@ -32,7 +32,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     private connectionService: ConnectionService,
     private configurationService: ConfigurationService,
     private eventService: EventService,
-    private touchAreaService: TouchAreaService
+    private touchAreaService: TouchAreaService,
+    private hostElement: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -90,14 +91,18 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         this.backgroundPath = this.configurationService.getBackgroundImage();
       }),
 
+      //anpassen
       combineLatest([normalizedPoints$, windowSize$, layers$]).pipe(
-        map(([points, size]) => points.map(p => this.touchAreaService.circleDtoFromNormalizedPoint(p, size, this.layers)))
+        map(([points]) => {
+          const newSize = { width: Number(this.hostElement.nativeElement.offsetWidth), height:  Number(this.hostElement.nativeElement.offsetHeight)};
+          return points.map(p => this.touchAreaService.circleDtoFromNormalizedPoint(p, newSize, this.layers))
+         })
       ).subscribe(circleDtos => this.drawCircleDtos(circleDtos)),
 
       windowSize$.subscribe(size => {
         if (this.canvas?.nativeElement !== undefined) {
-          this.canvas.nativeElement.width = size.width;
-          this.canvas.nativeElement.height = size.height;
+          this.canvas.nativeElement.width = Number(this.hostElement.nativeElement.offsetWidth);
+          this.canvas.nativeElement.height = Number(this.hostElement.nativeElement.offsetHeight);
         }
       }),
 

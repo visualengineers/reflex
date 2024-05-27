@@ -1,18 +1,20 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
-
+import { OptionsComponent } from '../options/options.component';
 @Component({
   selector: 'app-dropdown',
   standalone: true,
-  imports: [CommonModule,SettingsGroupComponent],
+  imports: [CommonModule,SettingsGroupComponent, OptionsComponent],
   templateUrl: './dropdown.component.html',
   styleUrl: './dropdown.component.scss'
 })
 export class DropdownComponent {
   isDropdownOpen: boolean = false;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(
+    private elementRef: ElementRef,
+  ) {}
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;

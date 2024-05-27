@@ -12,7 +12,7 @@ import { TrackComponentComponent } from '../track-component/track-component.comp
 })
 export class PullupComponent {
   isPullupOpen: boolean = false;
-  
+
   togglePullup() {
     this.isPullupOpen = !this.isPullupOpen;
   }
