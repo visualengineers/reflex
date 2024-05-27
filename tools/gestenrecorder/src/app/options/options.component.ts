@@ -1,15 +1,11 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { ConfigurationService } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
-import { OnInit, OnDestroy } from '@angular/core';
 import { BackgroundSource } from '../model/BackgroundSource.model';
 import { CircleSize, Layers, ViewPort, ViewOption } from '../service/configuration.service';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { ViewChild, ElementRef } from '@angular/core';
-import { NgIf } from '@angular/common';
-import { NgFor } from '@angular/common';
-
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-options',
