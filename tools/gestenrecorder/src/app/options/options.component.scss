@@ -1,24 +1,26 @@
 /* Globale Stile */
 .connection-indicator {
   position: absolute;
-  bottom: 0.7rem;
-  right: -1rem;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
   width: 10px;
   height: 10px;
   border-radius: 100%;
-  border: 1px solid #ccc; /* Ändere die Farbe je nach Bedarf */
-  background: #ccc; /* Ändere die Farbe je nach Bedarf */
+  border: 1px solid #ccc;
+  background: #ccc;
 }
 
 .connection-indicator.success {
-  background: #00ff00; /* Grün */
+  background: #00cc00; /* Erfolgreicher Verbindungsindikator */
 }
 
 .connection-indicator.error {
-  background: #ff0000; /* Rot */
+  background: #cc0000; /* Fehlerhafter Verbindungsindikator */
 }
 
 .form-group {
+  position: relative;
   label {
     font-size: 10px;
   }
@@ -87,4 +89,17 @@
   display: block;
   padding: 0;
 }
-/* Füge weitere Stile hinzu, indem du die Struktur des .sass-Codes beibehältst */
+
+.options__save-btn {
+  margin-top: 10px; /* Platz zwischen den Buttons */
+}
+
+.options__save-btn.btn-secondary {
+  background-color: #6c757d; /* Hintergrundfarbe für den Button "restore" */
+  color: #fff; /* Textfarbe für den Button "restore" */
+}
+
+.options__save-btn.btn-primary {
+  background-color: #007bff; /* Hintergrundfarbe für den Button "save" */
+  color: #fff; /* Textfarbe für den Button "save" */
+}

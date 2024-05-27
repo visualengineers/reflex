@@ -114,9 +114,17 @@
           <input type="radio" id="backgroundType2" name="backgroundType" class="custom-control-input" [value]='2' [(ngModel)]='backgroundType' (change)="onBackgroundSelected()">
           <label class="custom-control-label" for="backgroundType2">via URL</label>
       </div>
+
+      <!-- (conditionally rendered) inputs for projection sources -->
+      <select class="custom-select" name="backgroundImage" [(ngModel)]="backgroundImage" *ngIf="backgroundType===1" (change)="onBackgroundSelected()">
+        <option *ngFor="let img of backgroundSources; let i = index" [value]="img.src">{{ img.name }}</option>
+      </select>
+      <div *ngIf="backgroundType===2">
+        <input type="text" class="form-control" name="backgroundUrl" [(ngModel)]='backgroundUrl' accept="image/*" (change)="onBackgroundSelected()">
+      </div>
   </div>
 
-  <div class="options__absolute row">
+  <!--div class="options__absolute row">
     <div class="form-group col-sm-6">
         <button class="btn btn-secondary btn-block options__save-btn" (click)="restoreConfiguration()">
             restore
@@ -127,4 +135,4 @@
             save
       </button>
     </div>
-</div>
+  </div-->

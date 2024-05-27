@@ -7,11 +7,13 @@ import { Camera, CircleSize, Layers, ViewPort, ViewOption } from '../service/con
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ViewChild, ElementRef } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-options',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf, NgFor],
   templateUrl: './options.component.html',
   styleUrl: './options.component.scss'
 })
@@ -53,7 +55,6 @@ export class OptionsComponent implements OnInit, OnDestroy {
     private renderer: Renderer2
   ) {}
 
-  // TODO: options for configurationService (create boxes and buttons just like the sidebar in the emulator)
   ngOnInit(): void {
       this.connectionService.init();
 
@@ -109,6 +110,7 @@ export class OptionsComponent implements OnInit, OnDestroy {
     this.connectionService.reconnect();
   }
 
+  // TODO: load a background image (i think the the touch area is not loading the image)
   onBackgroundSelected(): void {
     switch (this.backgroundType) {
       case 1: {
@@ -127,7 +129,6 @@ export class OptionsComponent implements OnInit, OnDestroy {
   }
 
   restoreConfiguration(): void {
-    // TODO: implementieren (dafür localstorage in configurationservice aktivieren)
     this.configurationService.getLocalStorage();
     this.ngOnInit();
   }
