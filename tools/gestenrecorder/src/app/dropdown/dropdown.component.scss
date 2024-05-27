@@ -3,10 +3,10 @@
 .dropdown {
   position: fixed;
   background-color: white;
-  border: 1px solid blue;
+  border: 1px solid $color-primary;
   border-radius: 4px;
   padding: 10px;
-  color: blue;
+  color: $color-primary;
   z-index: 9999;
 }
 
