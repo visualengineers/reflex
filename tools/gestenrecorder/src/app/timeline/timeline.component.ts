@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { TimelineCanvasComponent } from "./timeline-canvas/timeline-canvas.component";
-import { ConfigurationService } from "../services/configuration.service";
-import { ConnectionService } from "../services/connection.service";
+import { ConfigurationService } from "../service/configuration.service";
+import { ConnectionService } from "../service/connection.service";
 
 @Component({
   selector: "app-timeline",

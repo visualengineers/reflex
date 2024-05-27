@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NormalizedPoint } from '../../model/NormalizedPoint.model';
-import { ConfigurationService, Layers } from '../../services/configuration.service';
+import { ConfigurationService, Layers } from '../../service/configuration.service';
 import { CircleDto } from '../../shapes/Circle';
 import { environment } from '../../../environments/environment';
 import { Interaction, ExtremumType } from '@reflex/shared-types';
