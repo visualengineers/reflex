@@ -47,8 +47,12 @@ export class TouchAreaService {
   }
 
   isEventOnCircle(event: MouseEvent | PointerEvent | WheelEvent, point: NormalizedPoint, ctx: CanvasRenderingContext2D): boolean {
-    const xDiff = (point.x * ctx.canvas.width) + ctx.canvas.offsetLeft - event.x;
-    const yDiff = (point.y * ctx.canvas.height) + ctx.canvas.offsetTop - event.y;
+    const rect = ctx.canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+  
+    const xDiff = (point.x * ctx.canvas.width) - mouseX;
+    const yDiff = (point.y * ctx.canvas.height) - mouseY;
     const radius = this.configurationService.getCircleSize().min + Math.abs(point.z);
     const distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
     return distance < radius;
