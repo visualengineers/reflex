@@ -56,6 +56,8 @@
     "@angular/platform-server": "17.3.2",
     "@angular/router": "17.3.2",
     "@angular/ssr": "^17.3.3",
+    "angular-plotly.js": "^5.2.2",
+    "plotly.js-dist-min": "^2.33.0",
     "rxjs": "^7.8.1",
     "zone.js": "^0.14.3"
   },
@@ -68,6 +70,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/jasminewd2": "~2.0.8",
     "@types/node": "^18.18.0",
+    "@types/plotly.js-dist-min": "^2.3.4",
     "@types/ws": "<8.5.5",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
