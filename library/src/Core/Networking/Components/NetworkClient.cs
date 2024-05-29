@@ -88,7 +88,7 @@ namespace ReFlex.Core.Networking.Components
 
         public void Send(NetworkingDataMessage message)
         {
-            _networkClient.Send(message.Message);
+            _networkClient.SendAsync(message.Message);
         }
 
         public void OnNewDataReceived(object sender, MessageReceivedEventArgs evtData)
