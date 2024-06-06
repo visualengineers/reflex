@@ -215,10 +215,10 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * 
 
 ### Nächste Schritte:
-* eventuell ein neues Dropdown
+* aktueller-Frame_Strich auf KLick bewegen lassen
 
 ### Zeitaufwand:
-* 4h
+* 5h
 
 ### Notizen:
 * -
