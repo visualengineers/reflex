@@ -1,71 +1,23 @@
-<button (click)="isDropdownOpen = !isDropdownOpen" class="dropdown_button"><h2>{{ isDropdownOpen ? 'Gestenoptionen' : 'Gestenoptionen' }}</h2></button>
-<div *ngIf="isDropdownOpen" class="dropdown">
-    <div class="dropdown-content">
-      <app-options></app-options>
-        <app-settings-group toggleId="Platzhalter"></app-settings-group>
-            <!-- <form action="/submit" method="post">
-                <table>
-                    <tr>
-                        <th>Optionsname</th>
-                        <th>Einstellung</th>
-                    </tr>
-                    <tr>
-                        <td>Gestenname:</td>
-                        <td><input type="text" name="gesture_name" required></td>
-                    </tr>s
-                    <tr>
-                        <td>Sensor Resolution:</td>
-                        <td>
-                            <select name="sensor_resolution" required>
-                                <option value="Low">Niedrig</option>
-                                <option value="Medium">Mittel</option>
-                                <option value="High">Hoch</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Background:</td>
-                        <td>
-                            <select name="background" onchange="toggleConditionalInput(this)" required>
-                                <option value="None">Keine</option>
-                                <option value="Option1">Option 1</option>
-                                <option value="Option2">Option 2</option>
-                            </select>
-                            <div id="background-input" class="conditional-input">
-                                <label for="background_detail">Details:</label>
-                                <input type="text" id="background_detail" name="background_detail">
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Number Layers:</td>
-                        <td>
-                            <label for="layers_pull">Pull:</label>
-                            <input type="number" id="layers_pull" name="layers_pull" required>
-                            <label for="layers_push">Push:</label>
-                            <input type="number" id="layers_push" name="layers_push" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Playback Duration:</td>
-                        <td>
-                            <input type="number" name="playback_duration" required> frames
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Start/End:</td>
-                        <td>
-                            <label for="start_frame">Start:</label>
-                            <input type="number" id="start_frame" name="start_frame" required> frames
-                            <label for="end_frame">End:</label>
-                            <input type="number" id="end_frame" name="end_frame" required> frames
-                        </td>
-                    </tr>
-                </table>
-                <br>
-                <input type="submit" value="Speichern">
-            </form> -->
-
+<button (click)="isGestureDropdownOpen = !isGestureDropdownOpen" class="dropdown_button">
+    <h2>
+        Gestenoptionen
+        <img [src]="'./assets/img/dropdown-arrow.svg'" [class.rotated]="isGestureDropdownOpen">
+    </h2>
+</button>
+<div *ngIf="isGestureDropdownOpen" class="dropdown">
+    <div class="dropdown-gesture-options">
+        <h3>Gestenoptionen</h3>
     </div>
 </div>
 
+<button (click)="isRecorderDropdownOpen = !isRecorderDropdownOpen" class="dropdown_button">
+    <h2>
+        Recoderoptionen
+        <img [src]="'./assets/img/dropdown-arrow.svg'" [class.rotated]="isRecorderDropdownOpen">
+    </h2>
+</button>
+<div *ngIf="isRecorderDropdownOpen" class="dropdown">
+    <div class="dropdown-recoder-options">
+        <app-options></app-options>
+    </div>
+</div>

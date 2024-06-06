@@ -124,3 +124,41 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
+  
+## 26.5.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* OptionComponent erstellt um die Verbindungsoptionen mit dem TrackingServer zu handlen
+
+### Herausforderungen / Learnings:
+* verstehen, wie sich der TrackingServer mit dem Emulator verbindet, um dann den Gestenrecorder zu erweitern
+
+### Nächste Schritte:
+* Optionen erweitern und filtern
+
+### Zeitaufwand:
+* 3h
+
+### Notizen:
+* -
+
+## 27.5.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* Optionen erweitert + Meeting mit Jonas und Tim
+* Optionen filtern und localStorage einführen um die Optionen speichern zu können
+* Styling und functionality fixes in der options component
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* eventuell ein neues Dropdown
+
+### Zeitaufwand:
+* 4,5
+
+### Notizen:
+* -

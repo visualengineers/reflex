@@ -19,10 +19,17 @@
   width: 300px;
 }
 
-.dropdown-button:hover {
-  color: darkblue;
+.dropdown_button:hover {
+  color: $color-primary;
+  background-color: #b8d3ff;
 }
 
-.dropdown-content {
+.dropdown_button img {
+  transition: transform 0.3s;
+  width: 30px;
+  height: 30px;
+}
 
+.dropdown_button img.rotated {
+  transform: rotate(180deg);
 }
