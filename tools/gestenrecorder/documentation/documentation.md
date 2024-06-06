@@ -1,7 +1,7 @@
 # Projektdokumentation
 
 Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren.
-
+------------------------------------------------------------------------------------------------------------------------------
 ## 13.5.24
 ### Bearbeiter: Joel
 
@@ -23,7 +23,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * jetzt geht es richtig los
-
+------------------------------------------------------------------------------------------------------------------------------
 ## 13.5.24
 ### Bearbeiter: Jonas
 
@@ -46,7 +46,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
-
+------------------------------------------------------------------------------------------------------------------------------
 ## 14.5.24
 ### Bearbeiter: Jonas
 
@@ -64,7 +64,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
-
+------------------------------------------------------------------------------------------------------------------------------
 ## 19.5.24
 ### Bearbeiter: Jonas
 
@@ -82,11 +82,11 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * versuchen Layoutprobleme zu beheben
 
 ### Zeitaufwand:
-* 2h
+* 3h
 
 ### Notizen:
 * -
-
+------------------------------------------------------------------------------------------------------------------------------
 ## 21.5.24
 ### Bearbeiter: Joel
 
@@ -106,7 +106,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
-  
+------------------------------------------------------------------------------------------------------------------------------
 ## 22.5.24
 ### Bearbeiter: Joel
 
@@ -124,7 +124,26 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
-  
+------------------------------------------------------------------------------------------------------------------------------
+## 22.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Offset gefixt um Punkte zu vergrößern/verkleinern
+* Bug gefixt, dass PUnkte komisch verschwinden
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+*
+
+### Zeitaufwand:
+* 2h
+
+### Notizen:
+* -
+------------------------------------------------------------------------------------------------------------------------------
 ## 26.5.24
 ### Bearbeiter: Joel
 
@@ -142,7 +161,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
-
+------------------------------------------------------------------------------------------------------------------------------
 ## 27.5.24
 ### Bearbeiter: Joel
 
@@ -162,3 +181,45 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
+------------------------------------------------------------------------------------------------------------------------------
+## ???
+### Bearbeiter: Tim
+
+### Fortschritt:
+* Plotly Graph eingebaut
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* 
+
+### Zeitaufwand:
+* ?
+
+### Notizen:
+* -
+------------------------------------------------------------------------------------------------------------------------------
+## 27.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Animation/Symbol für Dropdown eingefügt
+* Dropdowns etwas angepasst
+* Timeline Punkte normalized
+* Timeline logisch angepasst
+* Timeline overlay geschaffen für aktueller-Frame-strich
+* Timeline Logik für Klickbereich implementiert
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* eventuell ein neues Dropdown
+
+### Zeitaufwand:
+* 4h
+
+### Notizen:
+* -
+------------------------------------------------------------------------------------------------------------------------------
