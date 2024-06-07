@@ -55,7 +55,6 @@ export class NewTimelineComponent implements OnInit {
         r: 0
       },
       yaxis: {
-        title: 'Tiefe  |  Höhe',
         range: [this.min_value_layer, this.max_value_layer],
         tick0: 0,
         dtick: 1,
@@ -65,6 +64,7 @@ export class NewTimelineComponent implements OnInit {
       },
       xaxis: {
         title: 'Frame',
+        range: [(0-0.5), (24-0.5)],
         tick0: 0,
         dtick: 1,
         showgrid: false,
@@ -142,19 +142,19 @@ export class NewTimelineComponent implements OnInit {
   }
 
   updateVerticalLinePosition() {
-    const container = document.getElementById('.graph-container');
+    const container = document.getElementById('graph-container');
     if (container) {
-      // TODO: wird noch nicht gefunden
-      console.log('container found')
       const plotlyGraph = container.querySelector('.overlay');
       const verticalLine = container.querySelector('.vertical-line');
   
       if (plotlyGraph instanceof HTMLElement && verticalLine instanceof HTMLElement) {
+        console.log("verticalLine.style.left", verticalLine.style.left)
         const plotlyGraphRect = plotlyGraph.getBoundingClientRect();
         const plotlyGraphLeft = plotlyGraphRect.left;
         const plotlyGraphWidth = plotlyGraphRect.width;
-        const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition / this.graph.layout.xaxis.dtick * plotlyGraphWidth;
+        const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition ;
         verticalLine.style.left = `${verticalLineLeft}px`;
+        console.log(plotlyGraphLeft,"+",this.horizontalPosition, "/", this.graph.layout.xaxis.dtick, "*", plotlyGraphWidth, "=", verticalLineLeft)
       }
     }
   }
