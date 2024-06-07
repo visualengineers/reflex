@@ -152,12 +152,10 @@ export class NewTimelineComponent implements OnInit {
         const plotlyGraphRect = plotlyGraph.getBoundingClientRect();
         const plotlyGraphLeft = plotlyGraphRect.left;
         const plotlyGraphWidth = plotlyGraphRect.width;
-        const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition ;
+        const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition-3; // TODO: Berrechnung der Position der roten Strichs optimieren
         verticalLine.style.left = `${verticalLineLeft}px`;
         console.log(plotlyGraphLeft,"+",this.horizontalPosition, "/", this.graph.layout.xaxis.dtick, "*", plotlyGraphWidth, "=", verticalLineLeft)
       }
     }
   }
-  
-  
 }
