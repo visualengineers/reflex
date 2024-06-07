@@ -212,13 +212,32 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * Timeline Logik für Klickbereich implementiert
 
 ### Herausforderungen / Learnings:
-* 
+* aktueller-Frame_Strich auf Klick bewegen lassen
 
 ### Nächste Schritte:
-* aktueller-Frame_Strich auf KLick bewegen lassen
+* aktueller-Frame_Strich auf Klick bewegen lassen
 
 ### Zeitaufwand:
 * 5h
+
+### Notizen:
+* -
+------------------------------------------------------------------------------------------------------------------------------
+## 28.5.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Timeline in Pullup integriert
+* Timeline interaktiv gemacht mit klicken
+
+### Herausforderungen / Learnings:
+* das ganz mit der Frame/Track/Gestenlogik verbinden
+
+### Nächste Schritte:
+* das ganz mit der Frame/Track/Gestenlogik verbinden
+
+### Zeitaufwand:
+* 1,5h
 
 ### Notizen:
 * -
