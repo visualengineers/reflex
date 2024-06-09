@@ -1,5 +1,12 @@
 //@import 'reflex';   
 
+.timeline-container{
+    display: flex;
+}
+.timeline-button1,.timeline-button2,.timeline-button3{
+    width: 100%;
+}
+
 .modebar-container {
     display: none !important;
 }

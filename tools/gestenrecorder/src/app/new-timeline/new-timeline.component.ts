@@ -158,4 +158,17 @@ export class NewTimelineComponent implements OnInit {
       }
     }
   }
+
+  isPlaying: boolean = false;
+  playGesture(){
+    this.isPlaying = true;
+    console.log('PLAY')
+  }
+  stopPlayingGesture(){
+    this.isPlaying = false;
+    console.log('STOP')
+  }
+  resetPlayback(){
+    console.log('RESET')
+  }
 }

@@ -1,16 +1,28 @@
-<div>
-    <!-- Bahn mit Segmenten -->
-    <div class="track-container">
-        <div class="track"></div>
-        <!-- Segmente -->
-        <div class="segments-container">
-            <div *ngFor="let segment of segments; let i = index" [style.width.px]="segmentWidth ? segmentWidth : null" class="segment" (click)="updateHorizontalPosition(i)"></div>
+<div class="timeline-container">
+    <div class="timeline-button">
+        <div>
+            <button class="timeline-button1" *ngIf="!isPlaying" (click)="playGesture()">PLAY</button>
+            <button class="timeline-button2" *ngIf="isPlaying" (click)="stopPlayingGesture()">PAUSE</button>
+        </div>
+        <div>
+            <button class="timeline-button2" (click)="resetPlayback()">RESET</button>
         </div>
     </div>
-    <!-- Plotly-Graph -->
-    <div class="graph-container" id="graph-container">
-        <div class="overlay"></div>
-        <div class="vertical-line"></div>
-        <plotly-plot [data]="graph.data" [layout]="graph.layout"></plotly-plot>
+    <div>
+        <!-- Bahn mit Segmenten -->
+        <div class="track-container">
+            <div class="track"></div>
+            <!-- Segmente -->
+            <div class="segments-container">
+                <div *ngFor="let segment of segments; let i = index" [style.width.px]="segmentWidth ? segmentWidth : null" class="segment" (click)="updateHorizontalPosition(i)"></div>
+            </div>
+        </div>
+        <!-- Plotly-Graph -->
+        <div class="graph-container" id="graph-container">
+            <div class="overlay"></div>
+            <div class="vertical-line"></div>
+            <plotly-plot [data]="graph.data" [layout]="graph.layout"></plotly-plot>
+        </div>
     </div>
+
 </div>
