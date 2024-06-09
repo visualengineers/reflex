@@ -1,0 +1,65 @@
+//@import 'reflex';   
+
+.timeline-container{
+    display: flex;
+}
+.timeline-button1,.timeline-button2,.timeline-button3{
+    width: 100%;
+}
+
+.modebar-container {
+    display: none !important;
+}
+
+.track-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.track {
+    flex: 1;
+    height: 20px;
+    background-color: red;
+}
+
+.segments-container {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+}
+
+.segment {
+    height: 20px;
+    background-color: white;
+    cursor: pointer;
+    border-left: 1px solid #0071B7 /*$color-primary*/;; 
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.graph-container {
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.01);
+    z-index: 10;
+}
+
+.vertical-line {
+    position: absolute;
+    top: 0;
+    left: 100px;
+    width: 2px;
+    height: 100%;
+    background-color: red;
+    z-index: 15;
+}
