@@ -2,7 +2,7 @@
 
 Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren.
 ------------------------------------------------------------------------------------------------------------------------------
-## 13.5.24
+## 13.05.24
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -24,7 +24,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * jetzt geht es richtig los
 ------------------------------------------------------------------------------------------------------------------------------
-## 13.5.24
+## 13.05.24
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
@@ -47,7 +47,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 14.5.24
+## 14.05.24
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
@@ -65,7 +65,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 19.5.24
+## 19.05.24
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
@@ -87,7 +87,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 21.5.24
+## 21.05.24
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -107,7 +107,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 22.5.24
+## 22.05.24
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -125,7 +125,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 22.5.24
+## 22.05.24
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
@@ -144,7 +144,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 26.5.24
+## 26.05.24
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -162,7 +162,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 27.5.24
+## 27.05.24
 ### Bearbeiter: Joel
 
 ### Fortschritt:
@@ -200,7 +200,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 27.5.24
+## 06.06.24
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
@@ -223,7 +223,7 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## 28.5.24
+## 07.06.24
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
@@ -238,6 +238,24 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Zeitaufwand:
 * 1,5h
+
+### Notizen:
+* -
+------------------------------------------------------------------------------------------------------------------------------
+## 09.06.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Timeline Buttons hinzugefügt, erstmal ohne große Funktion
+
+### Herausforderungen / Learnings:
+* -
+
+### Nächste Schritte:
+* -
+
+### Zeitaufwand:
+* 0,5h
 
 ### Notizen:
 * -
