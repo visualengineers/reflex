@@ -35,7 +35,15 @@ namespace TrackingServer.Model
             // initialize Settings with default values
             Settings = new TrackingServerAppSettings();
 
-            Load();
+            try
+            {
+              Load();
+            }
+            catch (Exception exc)
+            {
+              Logger.Error(exc, "Error when reading configuration file.");
+              RestoreBackup();
+            }
         }
 
         public void Load()
@@ -47,32 +55,32 @@ namespace TrackingServer.Model
         {
             Settings = settings;
             _evtAggregator.GetEvent<RequestConfigurationUpdateEvent>().Publish(settings.IsAutoStartEnabled);
-            
+
         }
 
         public void RestoreDefaults()
         {
             WriteSettings(_backupPath);
-            
+
             Logger.Info($"Restore Default Settings from File {RetrieveFullPath(_restorePath)}.");
-            
+
             ReadSettings(_restorePath);
         }
 
         public void RestoreBackup()
         {
             Logger.Info("Restore Settings from Backup ...");
-            
+
             if (!CanRestoreBackup)
             {
                 Logger.Error($"Cannot restore backup: File '{RetrieveFullPath(_backupPath)}' does not exist.");
                 return;
             }
-            
+
             ReadSettings(_backupPath);
             File.Delete(RetrieveFullPath(_backupPath));
         }
-        
+
         /// <summary>
         /// Creates a backup and saves new Settings
         /// </summary>
@@ -80,7 +88,7 @@ namespace TrackingServer.Model
         public void Update(TrackingServerAppSettings updatedSettings)
         {
             WriteSettings(_backupPath);
-            
+
             Settings = updatedSettings;
             WriteSettings(_path);
         }
@@ -104,7 +112,7 @@ namespace TrackingServer.Model
 
             Logger.Info($"Sucessfully loaded Config from file '{fullPath}'");
             Logger.Trace($"Current config values: {Environment.NewLine}{Settings.GetCompleteValues()}");
-            
+
             _evtAggregator.GetEvent<ServerSettingsUpdatedEvent>().Publish(Settings);
         }
 
@@ -121,7 +129,7 @@ namespace TrackingServer.Model
 
             Logger.Info($"Sucessfully wrote new config.");
             Logger.Trace($"Updated values: {Environment.NewLine}{Settings.GetCompleteValues()}.");
-            
+
             _evtAggregator.GetEvent<ServerSettingsUpdatedEvent>().Publish(Settings);
         }
 
