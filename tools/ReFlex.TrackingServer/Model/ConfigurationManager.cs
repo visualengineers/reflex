@@ -24,7 +24,7 @@ namespace TrackingServer.Model
 
         public bool CanRestoreBackup => File.Exists(RetrieveFullPath(_backupPath));
 
-        public ConfigurationManager(IWebHostEnvironment environment, IEventAggregator evtAggregator, string filePath, string filePathRestore, string  filePathBackup)
+        public ConfigurationManager(IWebHostEnvironment environment, IEventAggregator evtAggregator, string filePath, string filePathRestore, string filePathBackup)
         {
             _path = filePath;
             _restorePath = filePathRestore;
@@ -41,8 +41,10 @@ namespace TrackingServer.Model
             }
             catch (Exception exc)
             {
-              Logger.Error(exc, "Error when reading configuration file.");
-              RestoreBackup();
+              Logger.Error(exc, "Error when reading configuration file - restoring default values.");
+
+              ReadSettings(_restorePath);
+              WriteSettings(_path);
             }
         }
 
