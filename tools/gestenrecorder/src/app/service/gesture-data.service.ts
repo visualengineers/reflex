@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Gesture } from '../data/gesture';
 import { GestureTrack } from '../data/gesture-track';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
+import { BehaviorSubject } from 'rxjs';
 
-interface GesturePoint {
+export interface GesturePoint {
   x: number;
   y: number;
   z: number;
@@ -12,20 +13,14 @@ interface GesturePoint {
   providedIn: 'root'
 })
 export class GestureDataService {
-  private currentGestureFrames: GestureTrackFrame[] = [];
+  private gesturePointSubject = new BehaviorSubject<GesturePoint[]>([]);
+  gesturePoints$ = this.gesturePointSubject.asObservable();
 
   constructor() {}
 
   addPoint(x: number, y: number, z: number): void {
-    const newFrame: GestureTrackFrame = { x, y, z };
-    this.currentGestureFrames.push(newFrame);
-  }
-
-  getCurrentGestureFrames(): GestureTrackFrame[] {
-    return this.currentGestureFrames;
-  }
-
-  clearCurrectGestureFrames(): void {
-    this.currentGestureFrames = [];
+    const newPoint = { x, y, z };
+    const currentPoints = this.gesturePointSubject.value;
+    this.gesturePointSubject.next([...currentPoints, newPoint]);
   }
 }

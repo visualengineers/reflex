@@ -7,6 +7,8 @@ import { CircleDto } from '../shapes/Circle';
 import { EventService } from './service/event.service';
 import { TouchAreaService } from './service/touch-area.service';
 import { CircleRenderer } from '../shapes/Circle';
+import { GestureDataService } from '../service/gesture-data.service';
+import { lstatSync } from 'fs';
 
 interface Size {
   width: number;
@@ -33,7 +35,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     private configurationService: ConfigurationService,
     private eventService: EventService,
     private touchAreaService: TouchAreaService,
-    private hostElement: ElementRef
+    private hostElement: ElementRef,
+    private gestureService: GestureDataService,
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +114,11 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([event], index) => this.touchAreaService.normalizedPointFromEvent(event, index)),
         withLatestFrom(normalizedPoints$, amountTouchPoints$),
         map(([point, points, amount]) => this.touchAreaService.addNormalizedPoint(point, points, amount))
-      ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
+      ).subscribe(points => {
+        this.configurationService.setNormalizedPoints(points);
+        const lastPoint = points[points.length - 1];
+        this.gestureService.addPoint(lastPoint.x, lastPoint.y, lastPoint.z);
+      }),
 
       mouseDown$.pipe(
         filter(event => event.button === 2),
