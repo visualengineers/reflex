@@ -38,7 +38,7 @@ export interface ViewPort {
 })
 export class ConfigurationService implements OnDestroy {
   public activePoint$ = new Subject<number>();
-  public amountTouchPoints$ = new BehaviorSubject<number>(3);
+  public amountTouchPoints$ = new BehaviorSubject<number>(10);
   public background$ = new Subject();
   public backupTimestamp$ = new BehaviorSubject<Date | null>(null);
   public layers$ = new BehaviorSubject<Layers>({

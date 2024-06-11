@@ -134,7 +134,10 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       mouseWheel$.pipe(
         withLatestFrom(normalizedPoints$),
         map(([event, points]) => this.touchAreaService.resizeNormalizedPoints(event, points, this.ctx!, this.layers))
-      ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
+      ).subscribe(points => {
+        this.configurationService.setNormalizedPoints(points);
+        this.gestureService.setPoints(points);
+      }),
 
       normalizedPoints$.pipe(
         map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))

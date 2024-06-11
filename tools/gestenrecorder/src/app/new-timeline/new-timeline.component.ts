@@ -79,13 +79,14 @@ export class NewTimelineComponent implements OnInit {
   }
 
   updateGraph(points: GesturePoint[]) {
-    const frameIndices = points.map((_, i) => i);
+    const frameValues = points.map((_, i) => i);
 
-    const zValues = points.map(point => point.z);
+    const zValues = points.map(point => point.z * (this.max_value_layer + this.min_value_layer / 2));
 
+    console.log(points);
     this.graph.data = [
       {
-        x: frameIndices,
+        x: frameValues,
         y: zValues,
         type: 'scatter',
         mode: 'markers',
@@ -120,6 +121,14 @@ export class NewTimelineComponent implements OnInit {
         console.log(plotlyGraphLeft,"+",this.horizontalPosition, "/", this.graph.layout.xaxis.dtick, "*", plotlyGraphWidth, "=", verticalLineLeft)
       }
     }
+  }
+
+  saveGesture(): void {
+
+  }
+
+  loadGesture(): void {
+
   }
 
   isPlaying: boolean = false;

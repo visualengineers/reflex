@@ -3,6 +3,8 @@
         <div>
             <button class="timeline-button1" *ngIf="!isPlaying" (click)="playGesture()">PLAY</button>
             <button class="timeline-button2" *ngIf="isPlaying" (click)="stopPlayingGesture()">PAUSE</button>
+            <button class="timeline-button3" (click)="saveGesture()">SAVE</button>
+            <button class="timeline-button4" (click)="loadGesture()">LOAD</button>
         </div>
         <div>
             <button class="timeline-button2" (click)="resetPlayback()">RESET</button>
