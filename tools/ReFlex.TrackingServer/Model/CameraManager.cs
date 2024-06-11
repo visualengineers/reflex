@@ -38,7 +38,7 @@ namespace TrackingServer.Model
             {
                 Logger.Error(exception);
             }
-            
+
             try
             {
                 var realSenseD435 = new RealsenseD435Camera();
@@ -101,6 +101,12 @@ namespace TrackingServer.Model
                 // var emulator = new EmulatorCamera();
                 _depthCameras.Add(emulator);
                 Logger.Info($"Successfully loaded {emulator.ModelDescription} camera.");
+
+                var gestureRecorder = new EmulatorCamera("127.0.0.1", 30000, "/Recorder");
+                _depthCameras.Add(gestureRecorder);
+
+                Logger.Info($"Successfully loaded {gestureRecorder.ModelDescription} camera.");
+
             }
             catch (Exception exception)
             {

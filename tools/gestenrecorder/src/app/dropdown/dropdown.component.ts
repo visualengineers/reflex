@@ -10,23 +10,16 @@ import { OptionsComponent } from '../options/options.component';
   styleUrl: './dropdown.component.scss'
 })
 export class DropdownComponent {
-  isDropdownOpen: boolean = false;
+  isGestureDropdownOpen: boolean = false;
+  isRecorderDropdownOpen: boolean = false;
 
   constructor(
     private elementRef: ElementRef,
   ) {}
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-    if (this.isDropdownOpen) {
-      this.addClickOutsideListener();
-    } else {
-      this.removeClickOutsideListener();
-    }
-  }
-
   closeDropdown() {
-    this.isDropdownOpen = false;
+    this.isGestureDropdownOpen = false;
+    this.isRecorderDropdownOpen = false;
     this.removeClickOutsideListener();
   }
 
