@@ -37,7 +37,7 @@ describe('SettingsGroupComponent', () => {
   });
 
   it ('should set id correctly', () => {
-    const testId = 'OptionCheckBoxTestId';
+    const testId = 'SettingsGroupTestId';
     component.toggleId = testId;
 
     fixture.detectChanges();
@@ -59,7 +59,7 @@ describe('SettingsGroupComponent', () => {
   });
 
   it ('should set title correctly', () => {
-    const testTitle = 'OptionCheckBox - TestTitle';
+    const testTitle = 'SettingsGroup - TestTitle';
     component.elementTitle = testTitle;
 
     fixture.detectChanges();
