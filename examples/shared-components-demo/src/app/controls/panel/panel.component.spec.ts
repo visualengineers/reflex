@@ -38,8 +38,8 @@ describe('PanelComponent', () => {
     const type = toggle.nativeElement.getAttribute('type');
     expect(type).toEqual('checkbox');
 
-    const disabled = toggle.nativeElement.getAttribute('disabled');
-    expect(disabled).toEqual('false');
+    const disabled = toggle.nativeElement.disabled;
+    expect(disabled).toBeFalsy();
 
   })
 
@@ -74,8 +74,8 @@ describe('PanelComponent', () => {
     const classLabel = label.nativeElement.getAttribute('class');
     expect(classLabel).toContain('checkbox-toggle-label');
 
-    const disabled = toggle.nativeElement.getAttribute('disabled');
-    expect(disabled).toEqual('false');
+    const disabled = toggle.nativeElement.disabled;
+    expect(disabled).toBeFalsy();
   })
 
   it('should correctly set data binding for toggle data', () => {
@@ -128,8 +128,8 @@ describe('PanelComponent', () => {
     let toggle = settingsGroup.query(By.css(`#${id}`));
     expect(toggle).toBeTruthy();
 
-    let disabled = toggle.nativeElement.getAttribute('disabled');
-    expect(disabled).toEqual('false');
+    let disabled = toggle.nativeElement.disabled;
+    expect(disabled).toBeFalsy();
 
     component.canToggleHeader = false;
     fixture.detectChanges();
@@ -137,8 +137,8 @@ describe('PanelComponent', () => {
     toggle = settingsGroup.query(By.css(`#${id}`));
     expect(toggle).toBeTruthy();
 
-    disabled = toggle.nativeElement.getAttribute('disabled');
-    expect(disabled).toEqual('true');
+    disabled = toggle.nativeElement.disabled;
+    expect(disabled).toBeTruthy();
 
   });
 
