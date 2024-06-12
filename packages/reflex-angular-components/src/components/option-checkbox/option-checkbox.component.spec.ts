@@ -93,7 +93,7 @@ describe('OptionCheckboxComponent', () => {
     expect(inputElem.nativeElement.checked).toEqual(defaultState);
   });
 
-  it ('should correctly set checked state', fakeAsync(() => {
+  it ('should correctly set checked state', () => {
     const emitter = spyOn(component.dataChange, 'emit').and.callThrough();
     const onModelChange = spyOn(component, 'onModelChange').and.callThrough();
 
@@ -101,12 +101,11 @@ describe('OptionCheckboxComponent', () => {
     inputElem.nativeElement.click();
 
     fixture.detectChanges();
-    tick();
 
     expect(component.data).toEqual(true);
     expect(inputElem.nativeElement.checked).toBeTruthy();
 
     expect(onModelChange).toHaveBeenCalledOnceWith(true);
     expect(emitter).toHaveBeenCalledOnceWith(true);
-  }));
+  });
 });
