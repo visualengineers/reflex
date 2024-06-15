@@ -29,10 +29,10 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 | ReFlex Library (.NET) | [![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml) |
 | Shared Types (TypeScript) | [![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml) |
 | Shared Components (Angular) | [![Shared Components:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-components-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-cp,ponents-build.yml) |
-| Tools/TrackingServer | [![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml) |
+| Tools/TrackingServer (Angular) | [![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml) |
 |  | [![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml) |
 |  | [![Server:Test](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml) |
-| Tools/Emulator | [![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml) |
+| Tools/Emulator (Angular) | [![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml) |
 
 ## Repository structure
 
