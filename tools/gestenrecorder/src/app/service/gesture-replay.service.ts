@@ -24,7 +24,7 @@ export class GestureReplayService {
 
   }
 
-  public init(gestureFile: string): void {
+  public initFile(gestureFile: string): void {
     this.httpClient.get(gestureFile, { responseType: 'json'}).subscribe({
       next: (result) => {
         const gesture = result as Gesture;
@@ -33,6 +33,11 @@ export class GestureReplayService {
       },
       error: (error) => console.error(error)
     })
+  }
+
+  public initGestureObject(gesture: Gesture): void {
+    console.log("successfully loaded the gesture object:", gesture);
+    this.start(gesture);
   }
 
   private start(gesture: Gesture): void {
