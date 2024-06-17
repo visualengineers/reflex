@@ -34,7 +34,6 @@
   border-collapse: collapse;
 
   td {
-    border: 1px solid lightgrey;
     max-height: 200px;
     vertical-align: top;
     &:first-child {
@@ -44,6 +43,6 @@
     &:last-child {
       width: 33.33%;
     }
-  }  
+  }
 
 }
