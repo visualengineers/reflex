@@ -6,6 +6,9 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+// TODO: Gestenpunkt löschen muss noch implementiert werden
+// TODO: Interpolieren zwischen den gesetzen Gestenpunkten
+
 @Injectable({
   providedIn: 'root'
 })
