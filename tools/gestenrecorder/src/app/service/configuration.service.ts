@@ -72,7 +72,7 @@ export class ConfigurationService implements OnDestroy {
         max: 400,
       });
     this.sendInterval = 100;
-    this.serverConnection = "ws://127.0.0.1:40000/ReFlex";
+    this.serverConnection = "ws://127.0.0.1:30000/Recorder";
     this.viewOptions = [
       { option: "Contours", active: false },
       { option: "Depth Image", active: false },

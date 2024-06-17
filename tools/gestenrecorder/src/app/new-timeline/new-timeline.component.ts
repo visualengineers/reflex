@@ -4,6 +4,7 @@ import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
 import { CommonModule } from '@angular/common';
 import { GestureDataService, GesturePoint } from '../service/gesture-data.service';
+import { GestureReplayService } from '../service/gesture-replay.service';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -63,7 +64,8 @@ export class NewTimelineComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private gestureService: GestureDataService
+    private gestureService: GestureDataService,
+    private readonly gestureReplayService: GestureReplayService
   ) {}
 
   ngOnInit() {
@@ -134,6 +136,7 @@ export class NewTimelineComponent implements OnInit {
   isPlaying: boolean = false;
   playGesture(){
     this.isPlaying = true;
+    this.gestureReplayService.init("/assets/data/sampleGesture.json")
     console.log('PLAY')
   }
   stopPlayingGesture(){
