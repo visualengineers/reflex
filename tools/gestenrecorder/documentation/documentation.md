@@ -182,20 +182,21 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
-## ???
+## 28.05.24
 ### Bearbeiter: Tim
 
 ### Fortschritt:
 * Plotly Graph eingebaut
+* 
 
 ### Herausforderungen / Learnings:
-* 
+* Optionsmenü für Punkte in Plotly (was aber nicht funktioniert)
 
 ### Nächste Schritte:
 * 
 
 ### Zeitaufwand:
-* ?
+* 4h
 
 ### Notizen:
 * -
