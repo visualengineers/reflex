@@ -260,3 +260,21 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Notizen:
 * -
 ------------------------------------------------------------------------------------------------------------------------------
+## 11.06.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* gesture-data.servcice.ts implementiert
+
+### Herausforderungen / Learnings:
+* Welche Daten brauche ich? 
+
+### Nächste Schritte:
+* -
+
+### Zeitaufwand:
+* 5h
+
+### Notizen:
+* -
+* ------------------------------------------------------------------------------------------------------------------------------
