@@ -1,17 +1,52 @@
-import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
+import { SettingsGroupComponent } from '@reflex/angular-components/dist'
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+export interface GestureData {
+  id: number;
+  name: string;
+  numFrames: number;
+  speed: number;
+}
 
 @Component({
   selector: 'app-track-component',
   standalone: true,
-  imports: [NgFor],
+  imports: [
+    CommonModule,
+    SettingsGroupComponent,
+    FormsModule
+  ],
   templateUrl: './track-component.component.html',
   styleUrl: './track-component.component.scss'
 })
 export class TrackComponentComponent {
-  tracks = [
-    { name: "Finger 1", id: 1, length: "30", speed: "0.25" },
-    { name: "Finger 2", id: 2, length: "15", speed: "1" },
-    { name: "Finger 3", id: 3, length: "45", speed: "2" }
+  public tableData: Array<GestureData> = [
+    {
+      id: 1,
+      name: 'Finger 1',
+      numFrames: 30,
+      speed: 1
+    }
   ];
+  public selectedIndex: number = -1;
+
+  public addTrack(): void {
+    const newId = this.tableData.length + 1;
+    this.tableData.push({
+      id: newId,
+      name: `Finger ${newId}`,
+      numFrames: 30,
+      speed: 1
+    });
+  }
+
+  public deleteTrack(index: number): void {
+    if (this.selectedIndex !== index) {
+      return;
+    }
+    this.tableData.splice(index, 1);
+    this.selectedIndex = -1;
+  }
 }

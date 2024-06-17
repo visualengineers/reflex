@@ -1,27 +1,33 @@
-<div class="track__container">
-    <h2 class="track__title">Tracks</h2>
-    <table class="track__table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>ID</th>
-                <th>Length</th>
-                <th>Speed</th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let track of tracks">
-                <td>{{ track.name }}</td>
-                <td>{{ track.id }}</td>
-                <td>{{ track.length }} Frames</td>
-                <td>{{ track.speed }} x</td>
-                <td><span class="fas fa-lock"></span></td> <!-- Verschlussicon -->
-                <td><span class="fas fa-eye"></span></td> <!-- Viewicon -->
-                <td><span class="fas fa-trash-alt"></span></td> <!-- Müllkorbicon -->
-            </tr>
-        </tbody>
-    </table>
+<div class="content__header margin-bottom-default">
+ <h2 class="heading-primary">Tracks</h2>
+</div>
+<table class="points__table margin-top-default grid-full-width">
+  <thead class="points__table--head">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Frames</th>
+      <th scope="col">Speed</th>
+    </tr>
+  </thead>
+  <tbody class="points__table--body">
+    <tr *ngFor="let entry of tableData; let i = index;" [class.selected]="i === selectedIndex" (click)="selectedIndex = i">
+      <td scope="row">
+        <input type="text" [(ngModel)]="entry.id" />
+      </td>
+      <td scope="row">
+        <input type="text" [(ngModel)]="entry.name" />
+      </td>
+      <td scope="row" class="text-column">
+        <input type="number" [(ngModel)]="entry.numFrames" />
+      </td>
+      <td scope="row">
+        <input type="number" [(ngModel)]="entry.speed" step="0.1" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="settings__button-group">
+  <a class="button" (click)="addTrack()">Add Track</a>
+  <a class="button" (click)="deleteTrack(selectedIndex)">Delete Track</a>
 </div>
