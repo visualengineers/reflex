@@ -117,7 +117,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ).subscribe(points => {
         this.configurationService.setNormalizedPoints(points);
         const lastPoint = points[points.length - 1];
-        this.gestureService.addPoint(lastPoint.x, lastPoint.y, lastPoint.z);
+        this.gestureService.addGestureTrackFrame(lastPoint.x, lastPoint.y, lastPoint.z);
       }),
 
       mouseDown$.pipe(
@@ -136,7 +136,11 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([event, points]) => this.touchAreaService.resizeNormalizedPoints(event, points, this.ctx!, this.layers))
       ).subscribe(points => {
         this.configurationService.setNormalizedPoints(points);
-        this.gestureService.setPoints(points);
+
+        // Iteriere durch alle Punkte und aktualisiere die GestureTrackFrames
+        points.forEach(point => {
+          this.gestureService.updateGestureTrackFrame(point.x, point.y, point.z);
+        });
       }),
 
       normalizedPoints$.pipe(

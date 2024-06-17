@@ -3,8 +3,9 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
 import { CommonModule } from '@angular/common';
-import { GestureDataService, GesturePoint } from '../service/gesture-data.service';
+import { GestureDataService } from '../service/gesture-data.service';
 import { GestureReplayService } from '../service/gesture-replay.service';
+import { GestureTrackFrame } from '../data/gesture-track-frame';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -80,7 +81,7 @@ export class NewTimelineComponent implements OnInit {
     }
   }
 
-  updateGraph(points: GesturePoint[]) {
+  updateGraph(points: GestureTrackFrame[]) {
     const frameValues = points.map((_, i) => i);
 
     const zValues = points.map(point => point.z * (this.max_value_layer + this.min_value_layer / 2));
