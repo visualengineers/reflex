@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { TimelineComponent } from '../timeline/timeline.component';
 import { TrackComponentComponent } from '../track-component/track-component.component';
 import { NewTimelineComponent } from '../new-timeline/new-timeline.component';
-
 @Component({
   selector: 'app-pullup',
   standalone: true,

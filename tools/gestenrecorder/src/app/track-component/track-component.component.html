@@ -1,27 +1,32 @@
-<div class="track__container">
-    <h2 class="track__title">Tracks</h2>
-    <table class="track__table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>ID</th>
-                <th>Length</th>
-                <th>Speed</th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let track of tracks">
-                <td>{{ track.name }}</td>
-                <td>{{ track.id }}</td>
-                <td>{{ track.length }} Frames</td>
-                <td>{{ track.speed }} x</td>
-                <td><span class="fas fa-lock"></span></td> <!-- Verschlussicon -->
-                <td><span class="fas fa-eye"></span></td> <!-- Viewicon -->
-                <td><span class="fas fa-trash-alt"></span></td> <!-- Müllkorbicon -->
-            </tr>
-        </tbody>
-    </table>
+<div class="content__header margin-bottom-default">
+ <h2 class="heading-primary">Tracks</h2>
 </div>
+<p class="margin-bottom-default">
+  TrackControlPanel
+</p>
+<table class="points__table margin-top-default grid-full-width">
+  <thead class="points__table--head">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Frames</th>
+      <th scope="col">Speed</th>
+    </tr>
+  </thead>
+  <tbody class="points__table--body">
+    <tr *ngFor="let entry of tableData">
+      <td scope="row">{{ entry?.id }}</td>
+      <td scope="row">{{ entry?.name }}</td>
+      <td scope="row" class="text-column">{{ entry?.numFrames }}</td>
+      <td scope="row">{{ entry?.speed?.toFixed(2) ?? ' - '}} ms</td>
+    </tr>
+  </tbody>
+</table>
+<div class="content__body margin-bottom-default">
+  <app-settings-group elementTitle="Additional Info" toggleId="table_info">
+    <ul>
+      <li>use <code>class="text-column"</code> on cell to display text</li>
+    </ul>
+  </app-settings-group>
+</div>
+
