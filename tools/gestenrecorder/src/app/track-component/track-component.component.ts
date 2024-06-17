@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist'
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 export interface GestureData {
   id: number;
@@ -13,8 +13,8 @@ export interface GestureData {
   selector: 'app-track-component',
   standalone: true,
   imports: [
-    SettingsGroupComponent,
-    NgFor
+    CommonModule,
+    SettingsGroupComponent
   ],
   templateUrl: './track-component.component.html',
   styleUrl: './track-component.component.scss'
