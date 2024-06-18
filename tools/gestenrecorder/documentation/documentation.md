@@ -278,4 +278,27 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
+-------------------------------------------------------------------------------------------------------------------------------
+* ## 17.06.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* trackComponent implementiert
+* gestureDataService implementiert
+* TrackComponent arbeitet mit DataService zusammen
+* TouchArea arbeitet mit Service zusammen
+* es wird ein Gestenobjekt erstellt, welches dem gestureReplayService gegeben wird
+* Nutzung der SharedComponents für die TrackComponent
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* Timeline
+
+### Zeitaufwand:
+* 5h
+
+### Notizen:
+* -
 * ------------------------------------------------------------------------------------------------------------------------------
