@@ -28,6 +28,7 @@ export class GestureReplayService {
     this.httpClient.get(gestureFile, { responseType: 'json'}).subscribe({
       next: (result) => {
         const gesture = result as Gesture;
+        console.log("Gesture via file:",gesture);
         console.info('successfully loaded gesture: ', gesture);
         this.start(gesture);
       },
@@ -42,12 +43,14 @@ export class GestureReplayService {
 
   private start(gesture: Gesture): void {
     if (gesture === undefined) {
+      console.log("returned cause gesture undefined in replay-service.start(gesture)");
       return;
     }
 
     this.gestureForReplay = gesture;
     const speed = gesture.speed > 0 ? gesture.speed : 1;
     const i = this.configService.getSendInterval() / speed;
+    console.log("gestureForReplay:",this.gestureForReplay);
 
     console.info(`start replay with replay interval of ${i} ms.`);
 
@@ -58,6 +61,7 @@ export class GestureReplayService {
 
   private update(): void {
     if( this.gestureForReplay === undefined ) {
+      console.log("gestureForReplay undefined");
       return;
     }
 

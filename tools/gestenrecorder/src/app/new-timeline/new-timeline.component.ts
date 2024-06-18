@@ -138,6 +138,7 @@ export class NewTimelineComponent implements OnInit {
   playGesture(){
     this.isPlaying = true;
     this.gestureReplayService.initGestureObject(this.gestureService.getGesture());
+    //this.gestureReplayService.initFile("assets/data/sampleGesture.json");
     console.log('PLAY')
   }
   stopPlayingGesture(){
