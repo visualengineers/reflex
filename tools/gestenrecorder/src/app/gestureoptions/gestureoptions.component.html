@@ -1,0 +1,56 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">ViewPort</h2>
+</div>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="viewPortWidth" elementTitle="viewPortWidth">
+  <input inputField class="form-control form-control-sm" type="text"
+  placeholder="640" [(ngModel)]="viewPort.width"
+  name="viewPortWidth" id="viewPortWidth" (change)="saveConfiguration()">
+</app-value-text>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="viewPortHeight" elementTitle="viewPortHeight">
+  <input inputField class="form-control form-control-sm" type="text"
+  placeholder="480" [(ngModel)]="viewPort.height"
+  name="viewPortHeight" id="viewPortHeight" (change)="saveConfiguration()">
+</app-value-text>
+
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Background</h2>
+</div>
+
+<app-value-selection elementTitle="backgroundType" elementId="settings-filter-select" class="settings__item margin-bottom-default">
+  <select selection [(ngModel)]="backgroundSources"
+  class="custom-select"
+  data-enpassusermodified="yes"
+  name="backgroundType"
+  id="backgroundType">
+  <option *ngFor="let background of backgroundType; let i = index" [value]="i">
+    {{ background }}
+  </option>
+  </select>
+</app-value-selection>
+
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Layers</h2>
+</div>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="layersDown" elementTitle="layersDown">
+  <input inputField class="form-control form-control-sm" type="text"
+  placeholder="7" [(ngModel)]="layers.down"
+  name="layersDown" id="layersDown" (change)="saveConfiguration()">
+</app-value-text>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="layersUp" elementTitle="layersUp">
+  <input inputField class="form-control form-control-sm" type="text"
+  placeholder="2" [(ngModel)]="layers.up"
+  name="layersUp" id="layersUp" (change)="saveConfiguration()">
+</app-value-text>
+
+<div class="settings__button-container">
+  <a class="button" (click)="saveConfiguration()">save</a>
+  <a class="button" (click)="restoreConfiguration()">restore</a>
+</div>

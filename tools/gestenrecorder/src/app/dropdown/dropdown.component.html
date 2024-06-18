@@ -6,18 +6,18 @@
 </button>
 <div *ngIf="isGestureDropdownOpen" class="dropdown">
     <div class="dropdown-gesture-options">
-        <h3>Gestenoptionen</h3>
+        <app-gestureoptions></app-gestureoptions>
     </div>
 </div>
 
 <button (click)="isRecorderDropdownOpen = !isRecorderDropdownOpen" class="dropdown_button">
     <h2>
-        Recoderoptionen
+        Recorderoptionen
         <img [src]="'./assets/img/dropdown-arrow.svg'" [class.rotated]="isRecorderDropdownOpen">
     </h2>
 </button>
 <div *ngIf="isRecorderDropdownOpen" class="dropdown">
     <div class="dropdown-recoder-options">
-        <app-options></app-options>
+        <app-recorderoptions></app-recorderoptions>
     </div>
 </div>

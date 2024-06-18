@@ -1,11 +1,12 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
-import { OptionsComponent } from '../options/options.component';
+import { GestureoptionsComponent } from '../gestureoptions/gestureoptions.component';
+import { RecorderoptionsComponent } from '../recorderoptions/recorderoptions.component';
 @Component({
   selector: 'app-dropdown',
   standalone: true,
-  imports: [CommonModule,SettingsGroupComponent, OptionsComponent],
+  imports: [CommonModule,SettingsGroupComponent, RecorderoptionsComponent, GestureoptionsComponent],
   templateUrl: './dropdown.component.html',
   styleUrl: './dropdown.component.scss'
 })
