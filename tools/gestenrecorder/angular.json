@@ -34,14 +34,14 @@
                 "output": "assets"
               }
             ],
+            "styles": [
+              "src/styles.scss"
+            ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "../../node_modules/@reflex/angular-components/src/scss"
               ]
             },
-            "styles": [
-              "src/styles.scss"
-            ],
             "scripts": [],
             "server": "src/main.server.ts",
             "prerender": false,

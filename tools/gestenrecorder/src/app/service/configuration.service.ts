@@ -38,7 +38,7 @@ export interface ViewPort {
 })
 export class ConfigurationService implements OnDestroy {
   public activePoint$ = new Subject<number>();
-  public amountTouchPoints$ = new BehaviorSubject<number>(3);
+  public amountTouchPoints$ = new BehaviorSubject<number>(10);
   public background$ = new Subject();
   public backupTimestamp$ = new BehaviorSubject<Date | null>(null);
   public layers$ = new BehaviorSubject<Layers>({
@@ -72,7 +72,7 @@ export class ConfigurationService implements OnDestroy {
         max: 400,
       });
     this.sendInterval = 100;
-    this.serverConnection = "ws://127.0.0.1:40000/ReFlex";
+    this.serverConnection = "ws://127.0.0.1:30000/Recorder";
     this.viewOptions = [
       { option: "Contours", active: false },
       { option: "Depth Image", active: false },

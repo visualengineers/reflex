@@ -7,6 +7,8 @@ import { CircleDto } from '../shapes/Circle';
 import { EventService } from './service/event.service';
 import { TouchAreaService } from './service/touch-area.service';
 import { CircleRenderer } from '../shapes/Circle';
+import { GestureDataService } from '../service/gesture-data.service';
+import { lstatSync } from 'fs';
 
 interface Size {
   width: number;
@@ -33,7 +35,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     private configurationService: ConfigurationService,
     private eventService: EventService,
     private touchAreaService: TouchAreaService,
-    private hostElement: ElementRef
+    private hostElement: ElementRef,
+    private gestureService: GestureDataService,
   ) {}
 
   ngOnInit(): void {
@@ -111,12 +114,22 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([event], index) => this.touchAreaService.normalizedPointFromEvent(event, index)),
         withLatestFrom(normalizedPoints$, amountTouchPoints$),
         map(([point, points, amount]) => this.touchAreaService.addNormalizedPoint(point, points, amount))
-      ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
+      ).subscribe(points => {
+        this.configurationService.setNormalizedPoints(points);
+        const lastPoint = points[points.length - 1];
+        this.gestureService.addGestureTrackFrame(lastPoint.x, lastPoint.y, lastPoint.z);
+      }),
 
       mouseDown$.pipe(
         filter(event => event.button === 2),
         withLatestFrom(normalizedPoints$),
-        map(([event, points]) => this.touchAreaService.deleteNormalizedPoints(event, points, this.ctx!))
+        map(([event, points]) => {
+          const indices = this.touchAreaService.getHoveredCircles(event, points, this.ctx!);
+          if (indices.length > 0) {
+            this.gestureService.deleteGestureTrackFrame(indices[0]);
+          }
+          return points.filter((item) => !indices.includes(item.index));
+        })
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       dragDropMoveLeft$.pipe(
@@ -127,7 +140,14 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       mouseWheel$.pipe(
         withLatestFrom(normalizedPoints$),
         map(([event, points]) => this.touchAreaService.resizeNormalizedPoints(event, points, this.ctx!, this.layers))
-      ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
+      ).subscribe(points => {
+        this.configurationService.setNormalizedPoints(points);
+
+        // Iteriere durch alle Punkte und aktualisiere die GestureTrackFrames
+        points.forEach(point => {
+          this.gestureService.updateGestureTrackFrame(point.x, point.y, point.z);
+        });
+      }),
 
       normalizedPoints$.pipe(
         map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
