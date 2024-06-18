@@ -17,9 +17,9 @@ export class GestureReplayService {
   private currentFrame: number = 0;
 
   public constructor(
-    private readonly connectionService: ConnectionService, 
-    private readonly configService: ConfigurationService, 
-    private readonly httpClient: HttpClient) 
+    private readonly connectionService: ConnectionService,
+    private readonly configService: ConfigurationService,
+    private readonly httpClient: HttpClient)
   {
 
   }
