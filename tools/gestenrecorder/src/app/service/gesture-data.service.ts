@@ -6,7 +6,6 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// TODO: Gestenpunkt löschen muss noch implementiert werden
 // TODO: Interpolieren zwischen den gesetzen Gestenpunkten
 
 @Injectable({
@@ -50,6 +49,17 @@ export class GestureDataService {
     currentGesture.tracks[0].frames.push(newFrame);
     this.gestureSubject.next(currentGesture);
     console.log('Gesture nach addGestureTrackFrame:', currentGesture);
+  }
+
+  deleteGestureTrackFrame(index: number): void {
+    const currentGesture = this.gestureSubject.value;
+    const track = currentGesture.tracks[0];
+
+    if ( index >= 0 && index < track.frames.length ) {
+      track.frames.splice(index, 1);
+      this.gestureSubject.next(currentGesture);
+    }
+    console.log('Gesture nach deleteGestureTrackFrame:', currentGesture);
   }
 
   updateGestureTrackFrame(x: number, y: number, z: number): void {
