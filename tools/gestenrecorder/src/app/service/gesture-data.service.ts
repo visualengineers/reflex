@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// TODO: Interpolieren zwischen den gesetzen Gestenpunkten
+// TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer?
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +15,16 @@ export class GestureDataService {
   private gesturePointSubject = new BehaviorSubject<GestureTrackFrame[]>([]);
   public gesturePoints$: Observable<GestureTrackFrame[]> = this.gesturePointSubject.asObservable();
   private gestureSubject = new BehaviorSubject<Gesture>({
-    id: 0,
-    name: '',
-    numFrames: 0,
-    speed: 0,
-    tracks: []
+    id: 1,
+    name: 'FirstGesture',
+    numFrames: 30,
+    speed: 1,
+    tracks: [{ touchId: 1, frames: [] }]
   });
   public gesture$: Observable<Gesture> = this.gestureSubject.asObservable();
   private gestureURL = 'assets/data/sampleGesture.json';
+  // kann raus wenn nicht mehr über Timer interpoliert werden soll
+  private lastPointSetTime: number | null = null;
 
   constructor(
     private http: HttpClient
@@ -40,6 +42,9 @@ export class GestureDataService {
   addGestureTrackFrame(x: number, y: number, z: number): void {
     const newFrame = {x, y, z};
     const currentGesture = this.gestureSubject.value;
+    // kann raus wenn nicht mehr über Timer interpoliert werden soll
+    this.lastPointSetTime = Date.now();
+    this.startInterpolationTimer();
     if ( currentGesture.tracks.length === 0 ) {
       currentGesture.tracks.push({
         touchId: 1,
@@ -136,5 +141,62 @@ export class GestureDataService {
     const currentGesture = this.gestureSubject.value;
     currentGesture.tracks = tracks;
     this.gestureSubject.next(currentGesture);
+  }
+
+  // Interpolation
+
+  private interpolateGesture(): void {
+    const currentGesture = this.gestureSubject.value;
+    const track = currentGesture.tracks[0];
+    const numFrames = currentGesture.numFrames;
+
+    const numInterpolatedFrames = Math.ceil((track.frames.length - 1) * (numFrames - 1) / (track.frames.length - 1));
+    const stepSize = 1 / numInterpolatedFrames;
+    const interpolatedFrames: GestureTrackFrame[] = [];
+
+    for (let i = 0; i < track.frames.length - 1; i++) {
+      const startFrame = track.frames[i];
+      const endFrame = track.frames[i + 1];
+      const numSteps = Math.ceil(numInterpolatedFrames / (track.frames.length - 1));
+
+      for (let j = 1; j < numSteps; j++) {
+        const t = j / numSteps;
+        const interpolatedX = startFrame.x + (endFrame.x - startFrame.x) * t;
+        const interpolatedY = startFrame.y + (endFrame.y - startFrame.y) * t;
+        const interpolatedZ = startFrame.z + (endFrame.z - startFrame.z) * t;
+
+        interpolatedFrames.push({ x: interpolatedX, y: interpolatedY, z: interpolatedZ });
+      }
+    }
+
+    const newFrames = [];
+    let numNewFrames = 0;
+    for (let i = 0; i < track.frames.length; i++) {
+      if (i > 0) {
+        const numInterpolatedFramesToAdd = Math.min(Math.ceil(numInterpolatedFrames / (track.frames.length - 1)), numFrames - numNewFrames);
+        newFrames.push(...interpolatedFrames.splice(0, numInterpolatedFramesToAdd));
+        numNewFrames += numInterpolatedFramesToAdd;
+      }
+      newFrames.push(track.frames[i]);
+      numNewFrames++;
+      if (numNewFrames === numFrames) {
+        break;
+      }
+    }
+    track.frames = newFrames;
+
+    this.gestureSubject.next(currentGesture);
+    console.log("Interpolated Gesture:", currentGesture);
+  }
+
+  // kann raus wenn nicht mehr über Timer interpoliert werden soll
+  private startInterpolationTimer(): void {
+    if (this.lastPointSetTime !== null) {
+      setTimeout(() => {
+        if (this.lastPointSetTime !== null && Date.now() - this.lastPointSetTime >= 10000) {
+          this.interpolateGesture();
+        }
+      }, 10000);
+    }
   }
 }
