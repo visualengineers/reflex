@@ -123,7 +123,13 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       mouseDown$.pipe(
         filter(event => event.button === 2),
         withLatestFrom(normalizedPoints$),
-        map(([event, points]) => this.touchAreaService.deleteNormalizedPoints(event, points, this.ctx!))
+        map(([event, points]) => {
+          const indices = this.touchAreaService.getHoveredCircles(event, points, this.ctx!);
+          if (indices.length > 0) {
+            this.gestureService.deleteGestureTrackFrame(indices[0]);
+          }
+          return points.filter((item) => !indices.includes(item.index));
+        })
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       dragDropMoveLeft$.pipe(
