@@ -149,6 +149,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         });
       }),
 
+      // sending subscription
       // normalizedPoints$.pipe(
       //   map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
       // ).subscribe(touchPoints => this.connectionService.sendMessage(touchPoints)),
