@@ -24,20 +24,20 @@
 
 ## Interaction Processing
 
-<video poster="{{ site.baseurl }}/assets/video/processing-title.jpg" controls>
-  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/processing.mp4">
+<video poster="{{ site.baseurl }}/assets/video/process-interactions-title.jpg" controls>
+  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/process-interactions.mp4">
 </video>
 
 ## Calibration
 
-<video poster="{{ site.baseurl }}/assets/video/calibration-title.jpg" controls>
-  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/processing.mp4">
+<video poster="{{ site.baseurl }}/assets/video/calibration-procedure-title.jpg" controls>
+  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/calibration-procedure.mp4">
 </video>
 
 ## Interaction Broadcasting
 
-<video poster="{{ site.baseurl }}/assets/video/networking-title.jpg" controls>
-  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/networking.mp4">
+<video poster="{{ site.baseurl }}/assets/video/broadcast-interactions-title.jpg" controls>
+  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/broadcast-interactions.mp4">
 </video>
 
 ## Recording Sensor Data
