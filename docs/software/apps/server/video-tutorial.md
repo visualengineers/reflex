@@ -12,7 +12,9 @@
 
 ## Sensor Setup
 
-![Sensor setup]({{ site.baseurl }}/assets/video/sensor-setup.mp4){:.responsive-media}
+<video>
+  <source type="video/mp4" src="{{ site.baseurl }}/assets/video/sensor-setup.mp4">
+</video>
 
 ## Visualizing Sensor Data
 
