@@ -34,7 +34,7 @@ Lens Options include the size of the lens, an optional offset from the finger an
 
 Displays the layer mapped to the current maximum deformation.
 
-![Layer Navigation](/reflex/assets/img/layersLayerNavigation.png)
+![Layer Navigation](/reflex/assets/img/layers/LayerNavigation.png)
 
 ### Pixel Blending
 
