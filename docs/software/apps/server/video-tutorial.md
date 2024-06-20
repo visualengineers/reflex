@@ -12,36 +12,36 @@
 
 ## Sensor Setup
 
-<video poster="{{ site.baseurl }}/assets/video/sensor-setup.jpg" controls>
+<video poster="{{ site.baseurl }}/assets/video/sensor-setup-title.jpg" controls>
   <source type="video/mp4" src="{{ site.baseurl }}/assets/video/sensor-setup.mp4">
 </video>
 
 ## Visualizing Sensor Data
 
-<video poster="{{ site.baseurl }}/assets/video/sensor-data.jpg" controls>
+<video poster="{{ site.baseurl }}/assets/video/sensor-data-title.jpg" controls>
   <source type="video/mp4" src="{{ site.baseurl }}/assets/video/sensor-data.mp4">
 </video>
 
 ## Interaction Processing
 
-<video poster="{{ site.baseurl }}/assets/video/processing.jpg" controls>
+<video poster="{{ site.baseurl }}/assets/video/processing-title.jpg" controls>
   <source type="video/mp4" src="{{ site.baseurl }}/assets/video/processing.mp4">
 </video>
 
 ## Calibration
 
-<video poster="{{ site.baseurl }}/assets/video/calibration.jpg" controls>
+<video poster="{{ site.baseurl }}/assets/video/calibration-title.jpg" controls>
   <source type="video/mp4" src="{{ site.baseurl }}/assets/video/processing.mp4">
 </video>
 
 ## Interaction Broadcasting
 
-<video poster="{{ site.baseurl }}/assets/video/networking.jpg" controls>
+<video poster="{{ site.baseurl }}/assets/video/networking-title.jpg" controls>
   <source type="video/mp4" src="{{ site.baseurl }}/assets/video/networking.mp4">
 </video>
 
 ## Recording Sensor Data
 
-<video poster="{{ site.baseurl }}/assets/video/record-replay.jpg" controls>
+<video poster="{{ site.baseurl }}/assets/video/record-replay-title.jpg" controls>
   <source type="video/mp4" src="{{ site.baseurl }}/assets/video/record-replay.mp4">
 </video>
