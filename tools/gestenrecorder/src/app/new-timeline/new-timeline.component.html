@@ -1,13 +1,12 @@
 <div class="timeline-container">
     <div>
         <!-- Bahn mit Segmenten -->
-        <div class="track-container">
+        <!-- <div class="track-container">
             <div class="track"></div>
-            <!-- Segmente -->
             <div class="segments-container">
                 <div *ngFor="let segment of segments; let i = index" [style.width.px]="segmentWidth ? segmentWidth : null" class="segment" (click)="updateHorizontalPosition(i)"></div>
             </div>
-        </div>
+        </div> -->
         <!-- Plotly-Graph -->
         <div class="graph-container" id="graph-container">
             <div class="overlay"></div>
