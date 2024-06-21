@@ -66,6 +66,7 @@ export class GestureDataService {
 
     this.gestureSubject.next(currentGesture);
     console.log('Gesture nach addGestureTrackFrame:', currentGesture);
+    console.log("GestureTRackFrames",this.gestureSubject.value.tracks[0].frames);
   }
 
 
@@ -155,6 +156,17 @@ export class GestureDataService {
     const currentGesture = this.gestureSubject.value;
     currentGesture.tracks = tracks;
     this.gestureSubject.next(currentGesture);
+  }
+
+  setGestureTrackFrames(frames: GestureTrackFrame[]): void {
+    const currentGesture = this.gestureSubject.value;
+    currentGesture.tracks[0].frames = frames;
+    this.gestureSubject.next(currentGesture);
+    this.gesturePointSubject.next(frames);
+  }
+
+  getGestureTrackFrames(): GestureTrackFrame[] {
+    return this.gestureSubject.value.tracks[0].frames;
   }
 
   // Interpolation
