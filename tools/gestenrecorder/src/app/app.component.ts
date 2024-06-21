@@ -4,6 +4,8 @@ import { TouchAreaComponent } from "./touch-area/touch-area.component";
 import { DropdownComponent } from "./dropdown/dropdown.component";
 import { PullupComponent } from "./pullup/pullup.component";
 import { NewTimelineComponent } from "./new-timeline/new-timeline.component";
+import { GestureDataService } from "./service/gesture-data.service";
+import { GestureReplayService } from "./service/gesture-replay.service";
 
 @Component({
   selector: "app-root",
@@ -14,4 +16,26 @@ import { NewTimelineComponent } from "./new-timeline/new-timeline.component";
 })
 export class AppComponent {
   title = "gestenrecorder";
+
+  constructor(
+    private gestureService: GestureDataService,
+    private gestureReplayService: GestureReplayService,
+  ) {}
+
+  playGesture(): void {
+    const gesture = this.gestureService.getGesture();
+    this.gestureReplayService.initGestureObject(gesture);
+  }
+
+  createGesture(): void {
+    this.gestureService.interpolateGesture();
+  }
+
+  saveGesture(): void {
+
+  }
+
+  resetGesture(): void {
+
+  }
 }

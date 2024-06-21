@@ -1,6 +1,6 @@
 @import 'reflex';
 
-.main-content {
+.recorder__main__content {
     background-color: #212121;
     position: fixed;
     color: #f5f5f5;
@@ -9,32 +9,26 @@
     display: grid;
     grid-template-rows: 51px 1fr min-content;
 }
-.header{
+.recorder__header{
     background-color: white;
+    border: 1px solid $color-primary;
+    background-color: white;
+
     display: flex;
-    border: 1px solid #0071B7 /*$color-primary*/;
-    background-color: white;
-    .tabs{
-        color: #0071B7 /*$color-primary*/;
-        display: flex;
-        align-items: flex-end;
-        p{
-            padding: 5px;
-            border: 1px solid #0071B7 /*$color-primary*/;
-            margin: 0px;
-        }
-    }
-    .gestureoptions{
-        margin-left: auto;
+    justify-content: space-between;
+    align-items: center;
+
+    .recorder__gestureoptions{
+        
     }
 }
-.body{
-    border: 1px solid #0071B7 /*$color-primary*/;
+.recorder__body{
+    border: 1px solid $color-primary;
     background-color: transparent;
     position: relative;
 }
-.footer{
-    border: 1px solid #0071B7 /*$color-primary*/;
+.recorder__footer{
+    border: 1px solid #0071B7 $color-primary;
     background-color: green;
 }
 
@@ -74,4 +68,12 @@
             width: 5em;
             height: 5em;
             }
+}
+
+img.header__logo {
+    max-height: 51px;
+}
+
+.settings__button-group {
+    margin-top: 0px;
 }
