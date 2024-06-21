@@ -66,6 +66,10 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
   }
 
   public saveTrack(): void {
+    this.updateGesture();
+  }
+
+  public addTrack(): void {
     const newId = this.tableData.length + 1;
     const newGestureData: GestureData = {
       id: newId,
@@ -75,12 +79,7 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
     };
 
     this.tableData.push(newGestureData);
-    console.log("new table data:",this.tableData);
-    this.updateGesture();
-  }
-
-  public addTrack(): void {
-
+    console.log("new table data:", this.tableData);
   }
 
   public deleteTrack(index: number): void {
