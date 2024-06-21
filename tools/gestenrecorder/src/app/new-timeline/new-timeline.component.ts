@@ -18,8 +18,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
   styleUrls: ['./new-timeline.component.scss']
 })
 export class NewTimelineComponent implements OnInit {
-  public max_value_layer = 4;
-  public min_value_layer = -4;
+  public max_value_layer = 1;
+  public min_value_layer = -1.2;
   public horizontalPosition = 0;
 
   public segmentsCount = 0;
@@ -32,10 +32,10 @@ export class NewTimelineComponent implements OnInit {
       width: 800,
       height: 200,
       margin: {
-        t: 0,
-        b: 0,
-        l: 0,
-        r: 0
+        t: 20,
+        b: 40,
+        l: 60,
+        r: 20
       },
       yaxis: {
         range: [this.min_value_layer, this.max_value_layer],
@@ -43,19 +43,26 @@ export class NewTimelineComponent implements OnInit {
         dtick: 1,
         showgrid: true,
         gridcolor: '#bdbdbd',
-        gridwidth: 1
+        gridwidth: 1,
+        title: 'Tiefe | Höhe'
       },
       xaxis: {
         title: 'Frame',
-        range: [0, 0],
+        range: [0, this.gestureService.getGestureNumFrames],
         tick0: 0,
         dtick: 1,
         showgrid: false,
         gridcolor: '#bdbdbd',
-        gridwidth: 1
+        gridwidth: 1,
+        titlefont: {
+          size: 14,
+          color: '#333'
+        }
       },
-      shapes: [] as any,  // Add shapes for alternating color bands
+      shapes: [] as any,
       showlegend: false,
+      paper_bgcolor: '#f9f9f9',
+      plot_bgcolor: '#fff'
     },
     config: {
       displayModeBar: false,
@@ -74,51 +81,20 @@ export class NewTimelineComponent implements OnInit {
     this.segmentWidth = this.graph.layout.width / this.segmentsCount;
     this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
 
-    const frameValues = Array.from({ length: this.segmentsCount }, (_, i) => i); // Initialize frameValues array with the number of segments
-    const zValues = Array(this.segmentsCount).fill(0); // Initialize zValues array with the number of segments, all set to 0
-
-    this.graph.data = [
-      {
-        x: frameValues,
-        y: zValues,
-        type: 'scatter',
-        mode: 'markers',
-        name: 'Z-Werte',
-        marker: { color: 'blue', size: 10 },
-        customdata: [],
-        hovertemplate: 'Koordinaten: %{customdata}<extra></extra>'
-      }
-    ];
-
-    // Add alternating background color bands
-    for (let i = 0; i < this.segmentsCount; i++) {
-      (this.graph.layout.shapes as any).push({
-        type: 'rect',
-        xref: 'x',
-        yref: 'paper',
-        x0: i - 0.5,
-        y0: 0,
-        x1: i + 0.5,
-        y1: 1,
-        fillcolor: i % 2 === 0 ? '#e6e6e6' : '#ffffff',
-        opacity: 0.5,
-        line: {
-          width: 0
-        }
-      });
-    }
-
-    this.graph.layout.xaxis.range = [0, this.segmentsCount - 1]; // Set the xaxis.range property based on the number of segments
+    // Initialize the graph with empty data
+    this.updateGraph([]);
 
     this.gestureService.gesturePoints$.subscribe(points => {
       this.updateGraph(points);
     });
   }
 
-
   updateGraph(points: GestureTrackFrame[]) {
-    const frameValues = Array.from({ length: points.length }, (_, i) => i);
-    const zValues = points.map(point => point.z * (this.max_value_layer + this.min_value_layer / 2));
+    const frameValues = Array.from({ length: this.segmentsCount }, (_, i) => i);
+    const zValues = points.map(point => point.z);
+
+    // Set the xaxis.range property to start from 0
+    this.graph.layout.xaxis.range = [-0.5, this.segmentsCount];
 
     this.graph.data = [
       {
@@ -129,14 +105,10 @@ export class NewTimelineComponent implements OnInit {
         name: 'Z-Werte',
         marker: { color: 'blue', size: 10 },
         customdata: points.map(point => `(${point.x}, ${point.y}, ${point.z})`),
-        hovertemplate: 'Koordinaten: %{customdata}<extra></extra>'
+        hovertemplate: 'Koordinaten: %{customdata}<extra></extra>',
+        zindex: 2
       }
     ];
-
-    this.graph.layout.xaxis.range = [-0.5, points.length - 0.5]; // Adjust the xaxis.range property to align the coordinate origin to the left side of the timeline
-    this.segmentsCount = points.length;
-    this.segmentWidth = this.graph.layout.width / this.segmentsCount;
-    this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
 
     // Update the background color bands
     (this.graph.layout.shapes as any) = [];
@@ -149,17 +121,19 @@ export class NewTimelineComponent implements OnInit {
         y0: 0,
         x1: i + 0.5,
         y1: 1,
-        fillcolor: i % 2 === 0 ? '#e6e6e6' : '#ffffff',
+        fillcolor: i % 2 === 0 ? '#ffffff' : '#e6e6e6',
         opacity: 0.5,
         line: {
           width: 0
-        }
+        },
+        zindex: 1
       });
     }
   }
 
+
   updateHorizontalPosition(index: number) {
-    this.horizontalPosition = (index + 0.5) * this.segmentWidth;
+    this.horizontalPosition = (index) * this.segmentWidth;
     this.updateVerticalLinePosition();
   }
 

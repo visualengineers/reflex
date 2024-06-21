@@ -7,8 +7,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Interaction } from '@reflex/shared-types';
 
-// TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer?
+// TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer? (stand jetzt durch create-Button in TrackComponent)
 // TODO: löschen Methode und Drag&Drop funktioniert noch nicht richtig
+// TODO: wenn schon interpoliert und dann noch werte geändert werden, soll die geste nochmal neu interpoliert werden: Großes Problem bisher funkt noch nicht
 
 @Injectable({
   providedIn: 'root'

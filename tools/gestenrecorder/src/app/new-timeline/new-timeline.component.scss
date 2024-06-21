@@ -1,4 +1,4 @@
-//@import 'reflex';   
+@import 'reflex';
 
 .timeline-container{
     display: flex;
@@ -21,7 +21,8 @@
 .track {
     flex: 1;
     height: 20px;
-    background-color: red;
+    background-color: #fff;
+    border: 1px solid gray;
 }
 
 .segments-container {
@@ -35,7 +36,7 @@
     height: 20px;
     background-color: white;
     cursor: pointer;
-    border-left: 1px solid #0071B7 /*$color-primary*/;; 
+    border-left: 1px solid $color-primary;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
 }
@@ -60,6 +61,6 @@
     left: 100px;
     width: 2px;
     height: 100%;
-    background-color: red;
+    background-color: $color-primary;
     z-index: 15;
 }
