@@ -5,7 +5,7 @@
 
 .dropdown1 {
   position: fixed;
-  background-color: white;
+  background-color: $color-white;
   border: 1px solid $color-primary;
   border-radius: 4px;
   padding: 10px;
@@ -15,7 +15,7 @@
 }
 .dropdown2 {
   position: fixed;
-  background-color: white;
+  background-color: $color-white;
   border: 1px solid $color-primary;
   border-radius: 4px;
   padding: 10px;
@@ -35,7 +35,7 @@
 
 .dropdown_button:hover {
   color: $color-primary;
-  background-color: #b8d3ff;
+  background-color: $color-primary-light-2;
 }
 
 .dropdown_button img {

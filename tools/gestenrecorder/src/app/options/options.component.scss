@@ -1,3 +1,5 @@
+@import 'reflex';
+
 .connection-indicator {
   position: absolute;
   top: 50%;
@@ -6,16 +8,16 @@
   width: 10px;
   height: 10px;
   border-radius: 100%;
-  border: 1px solid #ccc;
-  background: #ccc;
+  border: 1px solid $color-grey-light-2;
+  background: $color-grey-light-2;
 }
 
 .connection-indicator.success {
-  background: #00cc00;
+  background: $color-success;
 }
 
 .connection-indicator.error {
-  background: #cc0000;
+  background: $color-error-light;
 }
 
 .form-group {
@@ -42,8 +44,8 @@
   border-radius: 5px;
   margin: 10px;
   padding: 10px;
-  background: #333;
-  color: #eee;
+  background: $color-black;
+  color: $color-grey-light-4;
   height: calc(75% - 20px);
   overflow-y: scroll;
 }
@@ -93,23 +95,23 @@
 }
 
 .options__save-btn.btn-secondary {
-  background-color: #6c757d;
-  color: #fff;
+  background-color: $color-grey-light;
+  color: $color-white;
 }
 
 .options__save-btn.btn-secondary:active {
-  background-color: #5a6268;
-  color: #fff;
+  background-color: $color-grey-light;
+  color: $color-white;
 }
 
 .options__save-btn.btn-primary {
-  background-color: #007bff;
-  color: #fff;
+  background-color: $color-light-2_100;
+  color: $color-white;
 }
 
 .options__save-btn.btn-primary:active {
-  background-color: #0056b3;
-  color: #fff;
+  background-color: $color-light-2_100;
+  color: $color-white;
 }
 
 .form-group.row {
