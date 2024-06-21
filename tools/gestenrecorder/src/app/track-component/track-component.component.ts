@@ -6,6 +6,7 @@ import { OnInit, OnDestroy } from '@angular/core';
 import { GestureDataService } from '../service/gesture-data.service';
 import { Subscription } from 'rxjs';
 import { Gesture } from '../data/gesture';
+import { GestureReplayService } from '../service/gesture-replay.service';
 
 export interface GestureData {
   id: number;
@@ -39,7 +40,10 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
     }
   ];
 
-  constructor(private gestureService: GestureDataService) {}
+  constructor(
+    private gestureService: GestureDataService,
+    private gestureReplayService: GestureReplayService,
+  ) {}
 
   ngOnInit() {
     this.gestureSubscription = this.gestureService.gesture$.subscribe(gesture => {
@@ -97,4 +101,22 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
     const selectedRow = this.tableData[this.selectedIndex];
     this.gestureService.updateGesture(selectedRow.id, selectedRow.name, selectedRow.numFrames, selectedRow.speed);
   }
+
+  playGesture(): void {
+    const gesture = this.gestureService.getGesture();
+    this.gestureReplayService.initGestureObject(gesture);
+  }
+
+  createGesture(): void {
+    this.gestureService.interpolateGesture();
+  }
+
+  saveGesture(): void {
+
+  }
+
+  resetGesture(): void {
+
+  }
+
 }

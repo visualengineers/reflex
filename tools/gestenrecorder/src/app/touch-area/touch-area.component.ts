@@ -116,8 +116,6 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([point, points, amount]) => this.touchAreaService.addNormalizedPoint(point, points, amount))
       ).subscribe(points => {
         this.configurationService.setNormalizedPoints(points);
-        const lastPoint = points[points.length - 1];
-        this.gestureService.addGestureTrackFrame(lastPoint.x, lastPoint.y, lastPoint.z);
       }),
 
       mouseDown$.pipe(
@@ -142,16 +140,17 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([event, points]) => this.touchAreaService.resizeNormalizedPoints(event, points, this.ctx!, this.layers))
       ).subscribe(points => {
         this.configurationService.setNormalizedPoints(points);
-
-        // Iteriere durch alle Punkte und aktualisiere die GestureTrackFrames
-        points.forEach(point => {
-          this.gestureService.updateGestureTrackFrame(point.x, point.y, point.z);
-        });
       }),
 
+      // sending subscription
       normalizedPoints$.pipe(
         map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
-      ).subscribe(touchPoints => this.connectionService.sendMessage(touchPoints)),
+      ).subscribe(touchPoints => {
+        console.log("TouchPoint an GestureDataService:",touchPoints);
+        touchPoints.forEach(point => {
+          this.gestureService.addGestureTrackFrame(point);
+        });
+      }),
 
       amountTouchPoints$.pipe(
         withLatestFrom(normalizedPoints$),
