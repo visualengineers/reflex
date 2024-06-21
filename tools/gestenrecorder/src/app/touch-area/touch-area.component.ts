@@ -49,15 +49,17 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     }
 
     this.gestureReplayService.playbackFrame$.subscribe((value) => {
-      const point: NormalizedPoint = {
-        index: 0,
-        x: value.x,
-        y: value.y,
-        z: value.z,
-        time: 0
+      if(value){
+        const point: NormalizedPoint = {
+          index: 0,
+          x: value.x,
+          y: value.y,
+          z: value.z,
+          time: 0
+        }
+        const dto = this.touchAreaService.circleDtoFromNormalizedPoint(point, { width: this.canvas?.nativeElement.width ?? 0, height: this.canvas?.nativeElement.height ?? 0 }, this.layers);
+        this.drawAnimation(dto);
       }
-      const dto = this.touchAreaService.circleDtoFromNormalizedPoint(point, { width: this.canvas?.nativeElement.width ?? 0, height: this.canvas?.nativeElement.height ?? 0 }, this.layers);
-      this.drawAnimation(dto);
     });
 
     this.circleRenderer = new CircleRenderer(this.ctx, this.configurationService);

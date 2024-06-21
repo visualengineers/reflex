@@ -15,7 +15,7 @@ export class GestureReplayService {
 
   private gestureForReplay?: Gesture;
   private currentFrame: number = 0;
-  private playbackFrameSubject = new BehaviorSubject<GestureTrackFrame>({ x: 0, y: 0, z: 0 });
+  private playbackFrameSubject = new BehaviorSubject<GestureTrackFrame | null>(null);
   playbackFrame$ = this.playbackFrameSubject.asObservable();
   private animationSubscription?: Subscription; // Subscription for animation interval
 
