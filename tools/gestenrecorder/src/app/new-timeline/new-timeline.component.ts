@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { GestureDataService } from '../service/gesture-data.service';
 import { GestureReplayService } from '../service/gesture-replay.service';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
+import { GestureTrack } from '../data/gesture-track';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -14,10 +15,9 @@ PlotlyModule.plotlyjs = PlotlyJS;
   standalone: true,
   imports: [PlotlyModule, HttpClientModule, CommonModule],
   templateUrl: './new-timeline.component.html',
-  styleUrl: './new-timeline.component.scss'
+  styleUrls: ['./new-timeline.component.scss']
 })
 export class NewTimelineComponent implements OnInit {
-
   public max_value_layer = 4;
   public min_value_layer = -4;
   public horizontalPosition = 0;
@@ -31,7 +31,6 @@ export class NewTimelineComponent implements OnInit {
     layout: {
       width: 800,
       height: 200,
-      //title: 'Zeitleiste',
       margin: {
         t: 0,
         b: 0,
@@ -48,13 +47,14 @@ export class NewTimelineComponent implements OnInit {
       },
       xaxis: {
         title: 'Frame',
-        range: [(0-0.5), (24-0.5)],
+        range: [0, 0],
         tick0: 0,
         dtick: 1,
         showgrid: false,
         gridcolor: '#bdbdbd',
         gridwidth: 1
       },
+      shapes: [] as any,  // Add shapes for alternating color bands
       showlegend: false,
     },
     config: {
@@ -70,23 +70,56 @@ export class NewTimelineComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.segmentsCount = this.gestureService.getGestureNumFrames(); // Get the number of segments from the GestureDataService
+    this.segmentWidth = this.graph.layout.width / this.segmentsCount;
+    this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
+
+    const frameValues = Array.from({ length: this.segmentsCount }, (_, i) => i); // Initialize frameValues array with the number of segments
+    const zValues = Array(this.segmentsCount).fill(0); // Initialize zValues array with the number of segments, all set to 0
+
+    this.graph.data = [
+      {
+        x: frameValues,
+        y: zValues,
+        type: 'scatter',
+        mode: 'markers',
+        name: 'Z-Werte',
+        marker: { color: 'blue', size: 10 },
+        customdata: [],
+        hovertemplate: 'Koordinaten: %{customdata}<extra></extra>'
+      }
+    ];
+
+    // Add alternating background color bands
+    for (let i = 0; i < this.segmentsCount; i++) {
+      (this.graph.layout.shapes as any).push({
+        type: 'rect',
+        xref: 'x',
+        yref: 'paper',
+        x0: i - 0.5,
+        y0: 0,
+        x1: i + 0.5,
+        y1: 1,
+        fillcolor: i % 2 === 0 ? '#e6e6e6' : '#ffffff',
+        opacity: 0.5,
+        line: {
+          width: 0
+        }
+      });
+    }
+
+    this.graph.layout.xaxis.range = [0, this.segmentsCount - 1]; // Set the xaxis.range property based on the number of segments
+
     this.gestureService.gesturePoints$.subscribe(points => {
       this.updateGraph(points);
     });
-
-    console.log('segmentsCount', this.segmentsCount);
-    this.segmentWidth = this.graph.layout.width / this.segmentsCount;
-    for (let i = 0; i < this.segmentsCount; i++) {
-      this.segments.push(i);
-    }
   }
 
-  updateGraph(points: GestureTrackFrame[]) {
-    const frameValues = points.map((_, i) => i);
 
+  updateGraph(points: GestureTrackFrame[]) {
+    const frameValues = Array.from({ length: points.length }, (_, i) => i);
     const zValues = points.map(point => point.z * (this.max_value_layer + this.min_value_layer / 2));
 
-    console.log(points);
     this.graph.data = [
       {
         x: frameValues,
@@ -99,12 +132,34 @@ export class NewTimelineComponent implements OnInit {
         hovertemplate: 'Koordinaten: %{customdata}<extra></extra>'
       }
     ];
-    this.segmentsCount = zValues.length;
+
+    this.graph.layout.xaxis.range = [-0.5, points.length - 0.5]; // Adjust the xaxis.range property to align the coordinate origin to the left side of the timeline
+    this.segmentsCount = points.length;
+    this.segmentWidth = this.graph.layout.width / this.segmentsCount;
+    this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
+
+    // Update the background color bands
+    (this.graph.layout.shapes as any) = [];
+    for (let i = 0; i < this.segmentsCount; i++) {
+      (this.graph.layout.shapes as any).push({
+        type: 'rect',
+        xref: 'x',
+        yref: 'paper',
+        x0: i - 0.5,
+        y0: 0,
+        x1: i + 0.5,
+        y1: 1,
+        fillcolor: i % 2 === 0 ? '#e6e6e6' : '#ffffff',
+        opacity: 0.5,
+        line: {
+          width: 0
+        }
+      });
+    }
   }
 
   updateHorizontalPosition(index: number) {
     this.horizontalPosition = (index + 0.5) * this.segmentWidth;
-    console.log('horizontalPosition', this.horizontalPosition)
     this.updateVerticalLinePosition();
   }
 
@@ -115,38 +170,11 @@ export class NewTimelineComponent implements OnInit {
       const verticalLine = container.querySelector('.vertical-line');
 
       if (plotlyGraph instanceof HTMLElement && verticalLine instanceof HTMLElement) {
-        console.log("verticalLine.style.left", verticalLine.style.left)
         const plotlyGraphRect = plotlyGraph.getBoundingClientRect();
         const plotlyGraphLeft = plotlyGraphRect.left;
-        const plotlyGraphWidth = plotlyGraphRect.width;
-        const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition-3; // TODO: Berrechnung der Position der roten Strichs optimieren
+        const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition - 3;
         verticalLine.style.left = `${verticalLineLeft}px`;
-        console.log(plotlyGraphLeft,"+",this.horizontalPosition, "/", this.graph.layout.xaxis.dtick, "*", plotlyGraphWidth, "=", verticalLineLeft)
       }
     }
-  }
-
-  saveGesture(): void {
-
-  }
-
-  loadGesture(): void {
-
-  }
-
-  isPlaying: boolean = false;
-  playGesture(){
-    const gesture = this.gestureService.getGesture();
-    this.isPlaying = true;
-    this.gestureReplayService.initGestureObject(gesture);
-    //this.gestureReplayService.initFile("assets/data/sampleGesture.json");
-    console.log('PLAY')
-  }
-  stopPlayingGesture(){
-    this.isPlaying = false;
-    console.log('STOP')
-  }
-  resetPlayback(){
-    console.log('RESET')
   }
 }
