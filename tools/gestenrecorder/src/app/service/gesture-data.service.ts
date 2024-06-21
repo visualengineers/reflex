@@ -5,6 +5,7 @@ import { GestureTrackFrame } from '../data/gesture-track-frame';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Interaction } from '@reflex/shared-types';
 
 // TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer?
 
@@ -39,22 +40,38 @@ export class GestureDataService {
     this.gestureSubject.next(currentGesture);
   }
 
-  addGestureTrackFrame(x: number, y: number, z: number): void {
-    const newFrame = {x, y, z};
+  addGestureTrackFrame(interaction: Interaction): void {
+    const newFrame = {
+      x: interaction.position.x,
+      y: interaction.position.y,
+      z: interaction.position.z
+    };
+
     const currentGesture = this.gestureSubject.value;
-    // kann raus wenn nicht mehr über Timer interpoliert werden soll
-    this.lastPointSetTime = Date.now();
-    this.startInterpolationTimer();
-    if ( currentGesture.tracks.length === 0 ) {
+
+    if (currentGesture.tracks.length === 0) {
       currentGesture.tracks.push({
-        touchId: 1,
+        touchId: interaction.touchId,
         frames: []
       });
     }
-    currentGesture.tracks[0].frames.push(newFrame);
+
+    const track = currentGesture.tracks[0];
+    const existingFrameIndex = track.frames.findIndex(frame => frame.x === newFrame.x && frame.y === newFrame.y);
+
+    if (existingFrameIndex !== -1) {
+      // Update the z-coordinate of the existing frame
+      track.frames[existingFrameIndex].z = newFrame.z;
+    } else {
+      // Add a new frame to the gesture track
+      track.frames.push(newFrame);
+    }
+
     this.gestureSubject.next(currentGesture);
     console.log('Gesture nach addGestureTrackFrame:', currentGesture);
   }
+
+
 
   deleteGestureTrackFrame(index: number): void {
     const currentGesture = this.gestureSubject.value;
@@ -145,7 +162,7 @@ export class GestureDataService {
 
   // Interpolation
 
-  private interpolateGesture(): void {
+  public interpolateGesture(): void {
     const currentGesture = this.gestureSubject.value;
     const track = currentGesture.tracks[0];
     const numFrames = currentGesture.numFrames;
