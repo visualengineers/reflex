@@ -1,20 +1,24 @@
-<!-- <div class="pullup-button-div" [ngStyle]="{'position': isPullupOpen ? 'sticky' : 'unset'}"> -->
-<div class="pullup-button-div">
-    <button (click)="isPullupOpen = !isPullupOpen" class="pullup-button" [ngStyle]="{'top': isPullupOpen ? '70%' : '95%'}">
-      <h1>{{ isPullupOpen ? 'v' : '^' }}</h1>
-    </button>
+<div class="pullup__button__div">
+  <button (click)="isPullupOpen = !isPullupOpen" class="pullup__button" [ngStyle]="{'top': isPullupOpen ? '70%' : '95%'}">
+
+      <h1><img [src]="'./assets/img/dropdown-arrow.svg'" [class.rotated]="!isPullupOpen"></h1>
+
+  </button>
+</div>
+
+
+
+<div *ngIf="isPullupOpen" class="pullup__area">
+  <div class="pullup__content">
+    <table class="pullup__table">
+      <tr>
+        <td>
+          <app-new-timeline></app-new-timeline>
+        </td>
+        <td>
+          <app-track-component></app-track-component>
+        </td>
+      </tr>
+    </table>
   </div>
-  <div *ngIf="isPullupOpen" class="pullup-area">
-    <div class="pullup-content">
-      <table class="pullup-table">
-        <tr>
-          <td>
-            <app-new-timeline></app-new-timeline>
-          </td>
-          <td>
-            <app-track-component></app-track-component>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
+</div>

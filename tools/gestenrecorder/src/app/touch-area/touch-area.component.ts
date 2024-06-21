@@ -167,7 +167,43 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     }
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.globalAlpha = 0.5;
-    circleDtos.forEach(circleDto => this.circleRenderer?.draw(circleDto));
+    
+    circleDtos.forEach((circleDto, index) => {
+      this.circleRenderer?.draw(circleDto);
+  
+      // Zeichne den Index in die Mitte des Kreises
+      if (this.ctx) {
+        this.ctx.globalAlpha = 1; // Text sollte vollständig sichtbar sein
+        this.ctx.font = '16px Arial'; // Schriftart und Größe
+        this.ctx.fillStyle = 'white'; // Textfarbe
+        this.ctx.textAlign = 'center'; // Text zentriert horizontal
+        this.ctx.textBaseline = 'middle'; // Text zentriert vertikal
+  
+        // Position des Textes (Mittelpunkt des Kreises)
+        const textX = circleDto.posX;
+        const textY = circleDto.posY;
+  
+        // Zeichne den Text
+        this.ctx.fillText(index.toString(), textX, textY);
+      }
+  
+      // Zeichne gestrichelte Linie zum nächsten Punkt
+      if (this.ctx) {
+        if (index < circleDtos.length - 1) {
+          const nextCircleDto = circleDtos[index + 1];
+          this.ctx.globalAlpha = 1; // Linie sollte vollständig sichtbar sein
+          this.ctx.strokeStyle = 'white'; // Linienfarbe
+          this.ctx.lineWidth = 2; // Linienbreite
+          this.ctx.setLineDash([5, 5]); // Strichmuster: [Strichlänge, Lückenlänge]
+    
+          this.ctx.beginPath();
+          this.ctx.moveTo(circleDto.posX, circleDto.posY);
+          this.ctx.lineTo(nextCircleDto.posX, nextCircleDto.posY);
+          this.ctx.stroke();
+          this.ctx.setLineDash([]); // Setzt das Strichmuster zurück
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
