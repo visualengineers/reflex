@@ -66,8 +66,6 @@ export class GestureDataService {
     this.gestureSubject.next(currentGesture);
     this.gesturePointSubject.next(track.frames); // Emit the updated gesture data through the gesturePoints$ observable
     console.log("Gesture nach addGestureTrackFrames:",currentGesture);
-    console.log('Gesture nach addGestureTrackFrame:', currentGesture);
-    console.log("GestureTRackFrames",this.gestureSubject.value.tracks[0].frames);
   }
 
   deleteGestureTrackFrame(index: number): void {
