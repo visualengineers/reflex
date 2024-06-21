@@ -32,7 +32,6 @@ export class RecorderoptionsComponent implements OnInit, OnDestroy{
       this.circleSize = this.configurationService.getCircleSize();
       this.sendInterval = this.configurationService.getSendInterval();
       this.serverConnection = this.configurationService.getServerConnection();
-      this.connectionService.init();
 
       this.amountTouchPointsSubscription = this.configurationService.getAmountTouchPoints()
         .subscribe(amount => this.amountTouchPoints = amount);
@@ -55,7 +54,7 @@ export class RecorderoptionsComponent implements OnInit, OnDestroy{
   }
 
   connectToServer(): void {
-    // this.connectionService.init();
+    this.connectionService.init();
   }
 
   ngOnDestroy(): void {

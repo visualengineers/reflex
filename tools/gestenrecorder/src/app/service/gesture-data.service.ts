@@ -23,9 +23,6 @@ export class GestureDataService {
     tracks: [{ touchId: 1, frames: [] }]
   });
   public gesture$: Observable<Gesture> = this.gestureSubject.asObservable();
-  private gestureURL = 'assets/data/sampleGesture.json';
-  // kann raus wenn nicht mehr über Timer interpoliert werden soll
-  private lastPointSetTime: number | null = null;
 
   constructor(
     private http: HttpClient
@@ -167,53 +164,27 @@ export class GestureDataService {
     const track = currentGesture.tracks[0];
     const numFrames = currentGesture.numFrames;
 
-    const numInterpolatedFrames = Math.ceil((track.frames.length - 1) * (numFrames - 1) / (track.frames.length - 1));
-    const stepSize = 1 / numInterpolatedFrames;
-    const interpolatedFrames: GestureTrackFrame[] = [];
+    const newFrames: GestureTrackFrame[] = [];
 
     for (let i = 0; i < track.frames.length - 1; i++) {
       const startFrame = track.frames[i];
       const endFrame = track.frames[i + 1];
-      const numSteps = Math.ceil(numInterpolatedFrames / (track.frames.length - 1));
 
-      for (let j = 1; j < numSteps; j++) {
-        const t = j / numSteps;
+      const numInterpolatedFrames = Math.ceil((numFrames - track.frames.length) / (track.frames.length - 1));
+
+      for (let j = 0; j <= numInterpolatedFrames; j++) {
+        const t = j / numInterpolatedFrames;
         const interpolatedX = startFrame.x + (endFrame.x - startFrame.x) * t;
         const interpolatedY = startFrame.y + (endFrame.y - startFrame.y) * t;
         const interpolatedZ = startFrame.z + (endFrame.z - startFrame.z) * t;
 
-        interpolatedFrames.push({ x: interpolatedX, y: interpolatedY, z: interpolatedZ });
+        newFrames.push({ x: interpolatedX, y: interpolatedY, z: interpolatedZ });
       }
     }
 
-    const newFrames = [];
-    let numNewFrames = 0;
-    for (let i = 0; i < track.frames.length; i++) {
-      if (i > 0) {
-        const numInterpolatedFramesToAdd = Math.min(Math.ceil(numInterpolatedFrames / (track.frames.length - 1)), numFrames - numNewFrames);
-        newFrames.push(...interpolatedFrames.splice(0, numInterpolatedFramesToAdd));
-        numNewFrames += numInterpolatedFramesToAdd;
-      }
-      newFrames.push(track.frames[i]);
-      numNewFrames++;
-      if (numNewFrames === numFrames) {
-        break;
-      }
-    }
-    track.frames = newFrames;
+    track.frames = newFrames.slice(0, numFrames); // Trim the array to the desired number of frames
 
     this.gestureSubject.next(currentGesture);
     console.log("Interpolated Gesture:", currentGesture);
-  }
-
-  // kann raus wenn nicht mehr über Timer interpoliert werden soll
-  private startInterpolationTimer(): void {
-    if (this.lastPointSetTime !== null) {
-      setTimeout(() => {
-        if (this.lastPointSetTime !== null && Date.now() - this.lastPointSetTime >= 10000) {
-          this.interpolateGesture();
-        }
-      }, 10000);
-    }
   }
 }
