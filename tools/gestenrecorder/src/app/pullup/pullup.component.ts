@@ -1,12 +1,11 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TimelineComponent } from '../timeline/timeline.component';
 import { TrackComponentComponent } from '../track-component/track-component.component';
-import { NewTimelineComponent } from '../new-timeline/new-timeline.component';
+import { TimelineComponent } from '../timeline/timeline.component';
 @Component({
   selector: 'app-pullup',
   standalone: true,
-  imports: [CommonModule,TimelineComponent,TrackComponentComponent, NewTimelineComponent],
+  imports: [CommonModule,TrackComponentComponent, TimelineComponent],
   templateUrl: './pullup.component.html',
   styleUrl: './pullup.component.scss'
 })
