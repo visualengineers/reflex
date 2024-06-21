@@ -8,7 +8,6 @@ import { EventService } from './service/event.service';
 import { TouchAreaService } from './service/touch-area.service';
 import { CircleRenderer } from '../shapes/Circle';
 import { GestureDataService } from '../service/gesture-data.service';
-import { lstatSync } from 'fs';
 import { GestureReplayService } from '../service/gesture-replay.service';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
 
@@ -31,6 +30,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
   private layers?: Layers;
   private subscriptions: Subscription[] = [];
   private circleRenderer?: CircleRenderer;
+  private drawnCircleDtos: CircleDto[] = []; // To keep track of drawn circles
+  private animatedCircleDto?: CircleDto; // To track the animated circle
 
   constructor(
     private connectionService: ConnectionService,
@@ -47,17 +48,19 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       this.ctx = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
     }
 
-    this.gestureReplayService.playbackFrame$.subscribe((value)=>{
-      const point: NormalizedPoint = {
-        index: 0,
-        x: value.x,
-        y: value.y,
-        z: value.z,
-        time: 0
+    this.gestureReplayService.playbackFrame$.subscribe((value) => {
+      if(value){
+        const point: NormalizedPoint = {
+          index: 0,
+          x: value.x,
+          y: value.y,
+          z: value.z,
+          time: 0
+        }
+        const dto = this.touchAreaService.circleDtoFromNormalizedPoint(point, { width: this.canvas?.nativeElement.width ?? 0, height: this.canvas?.nativeElement.height ?? 0 }, this.layers);
+        this.drawAnimation(dto);
       }
-      const dto = this.touchAreaService.circleDtoFromNormalizedPoint(point, { width: this.canvas?.nativeElement.width??0, height: this.canvas?.nativeElement.height??0 } , this.layers);
-      this.drawAnimation(dto);
-    })
+    });
 
     this.circleRenderer = new CircleRenderer(this.ctx, this.configurationService);
 
@@ -111,10 +114,13 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
 
       combineLatest([normalizedPoints$, windowSize$, layers$]).pipe(
         map(([points]) => {
-          const newSize = { width: Number(this.hostElement.nativeElement.offsetWidth), height:  Number(this.hostElement.nativeElement.offsetHeight)};
+          const newSize = { width: Number(this.hostElement.nativeElement.offsetWidth), height: Number(this.hostElement.nativeElement.offsetHeight) };
           return points.map(p => this.touchAreaService.circleDtoFromNormalizedPoint(p, newSize, this.layers))
-         })
-      ).subscribe(circleDtos => this.drawCircleDtos(circleDtos)),
+        })
+      ).subscribe(circleDtos => {
+        this.drawnCircleDtos = circleDtos; // Store drawn circles
+        this.drawCircleDtos();
+      }),
 
       windowSize$.subscribe(size => {
         if (this.canvas?.nativeElement !== undefined) {
@@ -175,7 +181,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       normalizedPoints$.pipe(
         map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
       ).subscribe(touchPoints => {
-        console.log("TouchPoint an GestureDataService:",touchPoints);
+        console.log("TouchPoint an GestureDataService:", touchPoints);
         touchPoints.forEach(point => {
           this.gestureService.addGestureTrackFrame(point);
         });
@@ -187,18 +193,18 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       layers$.subscribe(layers => this.layers = layers),
-
     );
   }
 
-  private drawCircleDtos(circleDtos: CircleDto[]): void {
+  private drawCircleDtos(): void {
     if (this.ctx === undefined) {
       return;
     }
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.globalAlpha = 0.5;
 
-    circleDtos.forEach((circleDto, index) => {
+    // Draw stored circles
+    this.drawnCircleDtos.forEach((circleDto, index) => {
       this.circleRenderer?.draw(circleDto);
 
       // Zeichne den Index in die Mitte des Kreises
@@ -219,8 +225,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
 
       // Zeichne gestrichelte Linie zum nächsten Punkt
       if (this.ctx) {
-        if (index < circleDtos.length - 1) {
-          const nextCircleDto = circleDtos[index + 1];
+        if (index < this.drawnCircleDtos.length - 1) {
+          const nextCircleDto = this.drawnCircleDtos[index + 1];
           this.ctx.globalAlpha = 1; // Linie sollte vollständig sichtbar sein
           this.ctx.strokeStyle = 'white'; // Linienfarbe
           this.ctx.lineWidth = 2; // Linienbreite
@@ -234,6 +240,11 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    // Draw the animated circle
+    if (this.animatedCircleDto) {
+      this.circleRenderer?.draw(this.animatedCircleDto);
+    }
   }
 
   ngOnDestroy() {
@@ -244,7 +255,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
   }
 
   private drawAnimation(dto: CircleDto): void {
-    this.drawCircleDtos([dto])
+    // Update the animated circle DTO
+    this.animatedCircleDto = dto;
+    this.drawCircleDtos();
   }
-  
 }
