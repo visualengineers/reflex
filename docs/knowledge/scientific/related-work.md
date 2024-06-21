@@ -6,7 +6,7 @@ title: "Related Work"
 
 ## Publications on Elastic Displays in the last years
 
-![Publications in Time]({{ site.baseurl }}/assets/img/kb/scientific/related-work.jpg)
+![Publications in Time]({{ site.baseurl }}/assets/img/kb/scientific/related-work.jpg){:.full-width-scheme}
 
 ## References
 

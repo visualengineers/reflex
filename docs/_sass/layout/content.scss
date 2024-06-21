@@ -3,8 +3,8 @@
     grid-row: 4 / 4;
 
     padding: 2rem 4rem;
-    
-    font-size: $font-size-small; 
+
+    font-size: $font-size-small;
     font-family: $font-primary;
     font-weight: $font-weight-light;
 
@@ -33,7 +33,7 @@
 
     & ul {
         color: $color-grey-dark;
-        margin-left: 3rem;   
+        margin-left: 3rem;
     }
 
     & a {
@@ -85,13 +85,19 @@
             height: 30vh;
         }
     }
+
+    & .full-width-scheme {
+      padding:0;
+      max-height: fit-content;
+      box-shadow: none;
+    }
 }
 
 .sections {
     display: grid;
     align-items: stretch;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-column-gap: 3rem; 
+    grid-column-gap: 3rem;
 
 
     &__title-image {
@@ -112,11 +118,11 @@
 
     & div {
         margin-right: 1rem;
-        
+
         &:last-child {
             margin-right: 0;
         }
-    }    
+    }
 
     & img {
         width: 100%;
