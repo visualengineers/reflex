@@ -1,23 +1,23 @@
-<div class="main-content" role="main">
-    <div class="header">
-        <div class="tabs">
-            <!-- <p>Tab1</p>
-            <p>Tab2</p>
-            <p>Tab3</p> -->
+<div class="recorder__main__content" role="main">
+    <div class="recorder__header">
+        <div>
+            <img src="./assets/img/reflex-logo2.png" class="header__logo">
         </div>
-        <div class="gestureoptions">
+        <div class="settings__button-group">
+            <a class="button" (click)="createGesture()">create</a>
+            <a class="button" (click)="saveGesture()">save</a>
+            <a class="button" (click)="playGesture()">play</a>
+            <a class="button" (click)="resetGesture()">reset</a>
+        </div>
+        <div class="recorder__gestureoptions">
             <app-dropdown></app-dropdown>
         </div>
     </div>
-    <div class="body">
+    <div class="recorder__body">
         <app-touch-area></app-touch-area>
     </div>
-    <div class="footer">
+    <div class="recorder__footer">
         <app-pullup></app-pullup>
     </div>
-  <!-- <div class="timeline">
-    <app-new-timeline></app-new-timeline>
-  </div> -->
 </div>
-
 <router-outlet></router-outlet>
