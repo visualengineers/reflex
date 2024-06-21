@@ -25,6 +25,8 @@ export class GestureDataService {
   });
   public gesture$: Observable<Gesture> = this.gestureSubject.asObservable();
 
+  private fixedFrameIndices = new Set<number>(); // Indices of fixed frames
+
   constructor(
     private http: HttpClient
   ) {}
@@ -40,49 +42,54 @@ export class GestureDataService {
 
   addGestureTrackFrame(interaction: Interaction): void {
     const newFrame = {
-      x: interaction.position.x,
-      y: interaction.position.y,
-      z: interaction.position.z
+        x: interaction.position.x,
+        y: interaction.position.y,
+        z: interaction.position.z
     };
 
     const currentGesture = this.gestureSubject.value;
 
     if (currentGesture.tracks.length === 0) {
-      currentGesture.tracks.push({
-        touchId: interaction.touchId,
-        frames: []
-      });
+        currentGesture.tracks.push({
+            touchId: interaction.touchId,
+            frames: []
+        });
     }
 
     const track = currentGesture.tracks[0];
     const existingFrameIndex = track.frames.findIndex(frame => frame.x === newFrame.x && frame.y === newFrame.y);
 
     if (existingFrameIndex !== -1) {
-      track.frames[existingFrameIndex].z = newFrame.z;
+        track.frames[existingFrameIndex].z = newFrame.z;
+        this.fixedFrameIndices.add(existingFrameIndex); // Mark the index as fixed
     } else {
-      track.frames.push(newFrame);
+        track.frames.push(newFrame);
+        this.fixedFrameIndices.add(track.frames.length - 1); // Mark the new index as fixed
     }
 
     this.gestureSubject.next(currentGesture);
     this.gesturePointSubject.next(track.frames); // Emit the updated gesture data through the gesturePoints$ observable
-    console.log("Gesture nach addGestureTrackFrames:",currentGesture);
+    console.log("Gesture nach addGestureTrackFrames:", currentGesture);
+    console.log("FixedFrames",this.fixedFrameIndices);
   }
 
+  // Delete the frame and update fixedFrameIndices
   deleteGestureTrackFrame(frame: GestureTrackFrame): void {
-    if (!frame) {
-      return;
-    }
+      if (!frame) {
+          return;
+      }
 
-    const currentGesture = this.gestureSubject.value;
-    const track = currentGesture.tracks[0];
+      const currentGesture = this.gestureSubject.value;
+      const track = currentGesture.tracks[0];
 
-    const index = track.frames.findIndex(f => f.x === frame.x && f.y === frame.y && f.z === frame.z);
+      const index = track.frames.findIndex(f => f.x === frame.x && f.y === frame.y && f.z === frame.z);
 
-    if (index !== -1) {
-      track.frames.splice(index, 1);
-      this.gestureSubject.next(currentGesture);
-    }
-    console.log('Gesture after deleteGestureTrackFrame:', currentGesture);
+      if (index !== -1) {
+          track.frames.splice(index, 1);
+          this.fixedFrameIndices.delete(index); // Remove from fixed frames
+          this.gestureSubject.next(currentGesture);
+      }
+      console.log('Gesture after deleteGestureTrackFrame:', currentGesture);
   }
 
   updateGestureTrackFrame(index: number, x: number, y: number, z: number): void {
@@ -93,6 +100,14 @@ export class GestureDataService {
       track.frames[index].x = x;
       track.frames[index].y = y;
       track.frames[index].z = z;
+
+      // Mark the updated frame as fixed
+      this.fixedFrameIndices.add(index);
+
+      // Remove any frames after the updated frame from fixedFrameIndices
+      for (let i = index + 1; i < track.frames.length; i++) {
+        this.fixedFrameIndices.delete(i);
+      }
 
       this.gestureSubject.next(currentGesture);
     }
@@ -177,27 +192,59 @@ export class GestureDataService {
     const track = currentGesture.tracks[0];
     const numFrames = currentGesture.numFrames;
 
-    const newFrames: GestureTrackFrame[] = [];
+    // Keep only the frames that were set in the TouchArea
+    const fixedFrames = track.frames.filter((_, index) => this.fixedFrameIndices.has(index));
 
-    for (let i = 0; i < track.frames.length - 1; i++) {
-      const startFrame = track.frames[i];
-      const endFrame = track.frames[i + 1];
-
-      const numInterpolatedFrames = Math.ceil((numFrames - track.frames.length) / (track.frames.length - 1));
-
-      for (let j = 0; j <= numInterpolatedFrames; j++) {
-        const t = j / numInterpolatedFrames;
-        const interpolatedX = startFrame.x + (endFrame.x - startFrame.x) * t;
-        const interpolatedY = startFrame.y + (endFrame.y - startFrame.y) * t;
-        const interpolatedZ = startFrame.z + (endFrame.z - startFrame.z) * t;
-
-        newFrames.push({ x: interpolatedX, y: interpolatedY, z: interpolatedZ });
-      }
+    // If there are less than 2 fixed frames, interpolation cannot be performed
+    if (fixedFrames.length < 2) {
+        console.warn('Not enough fixed frames to interpolate');
+        return;
     }
 
-    track.frames = newFrames.slice(0, numFrames); // Trim the array to the desired number of frames
+    const newFrames: GestureTrackFrame[] = [];
+    const totalFixedFrames = fixedFrames.length;
+
+    // Number of frames between the fixed points
+    const framesPerSegment = Math.floor((numFrames - 1) / (totalFixedFrames - 1));
+
+    let frameIndex = 0;
+    for (let i = 0; i < totalFixedFrames - 1; i++) {
+        const startFrame = fixedFrames[i];
+        const endFrame = fixedFrames[i + 1];
+
+        // Add the start frame of the segment
+        newFrames.push(startFrame);
+
+        // Interpolate the frames between the current fixed frame and the next fixed frame
+        for (let j = 1; j < framesPerSegment; j++) {
+            const t = j / framesPerSegment; // T-value for interpolation
+
+            const interpolatedX = startFrame.x + (endFrame.x - startFrame.x) * t;
+            const interpolatedY = startFrame.y + (endFrame.y - startFrame.y) * t;
+            const interpolatedZ = startFrame.z + (endFrame.z - startFrame.z) * t;
+
+            newFrames.push({ x: interpolatedX, y: interpolatedY, z: interpolatedZ });
+        }
+
+        // Insert the interpolated frames between the current fixed frame and the next fixed frame
+        const nextFixedFrameIndex = Array.from(this.fixedFrameIndices)[i + 1];
+        track.frames.splice(frameIndex + 1, nextFixedFrameIndex - frameIndex - 1, ...newFrames.slice(frameIndex + 1));
+        frameIndex += framesPerSegment;
+    }
+
+    // Ensure that the number of frames is exactly `numFrames`
+    const interpolatedFrames = track.frames.slice(0, numFrames);
+
+    track.frames = interpolatedFrames;
+
+    // Update the fixedFrameIndices set
+    this.fixedFrameIndices.clear();
+    for (let i = 0; i < totalFixedFrames; i++) {
+        this.fixedFrameIndices.add(i * framesPerSegment);
+    }
 
     this.gestureSubject.next(currentGesture);
+    this.gesturePointSubject.next(interpolatedFrames);
     console.log("Interpolated Gesture:", currentGesture);
   }
 }

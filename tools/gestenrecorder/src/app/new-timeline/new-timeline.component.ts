@@ -77,12 +77,17 @@ export class NewTimelineComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.segmentsCount = this.gestureService.getGestureNumFrames(); // Get the number of segments from the GestureDataService
-    this.segmentWidth = this.graph.layout.width / this.segmentsCount;
-    this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
+    this.gestureService.gesture$.subscribe(gesture => {
+      this.segmentsCount = gesture.numFrames;
+      this.segmentWidth = this.graph.layout.width / this.segmentsCount;
+      this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
 
-    // Initialize the graph with empty data
-    this.updateGraph([]);
+      // Update the xaxis.range property
+      this.graph.layout.xaxis.range = [0, this.segmentsCount];
+
+      // Update the graph with empty data
+      this.updateGraph([]);
+    });
 
     this.gestureService.gesturePoints$.subscribe(points => {
       this.updateGraph(points);
