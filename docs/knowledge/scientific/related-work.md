@@ -4,9 +4,13 @@ title: "Related Work"
 
 # {{ page.title }}
 
-## Publications on Elastic Displays in the last years
+## Publications focussing on Elastic Displays
+
+Starting with the **Khronos Projector** [3] in 2012, there has been quite a large number of publications exploring different use cases or technological approaches for *Elastic Displays*. In the following scheme we visualize these publications aligned on a time line and how our own research that has influenced the creation of the **ReFlex Framework** aligns in this time graph.
 
 ![Publications in Time]({{ site.baseurl }}/assets/img/kb/scientific/related-work.jpg){:.full-width-scheme}
+
+Publications labeled as *Prototypes* explore different use cases and application scenarios, *Models* strive for creating a scientific foundation by theory-building and *Methods* investigate design methods and approaches for creating applications for this type of technology.
 
 ## References
 
