@@ -33,10 +33,19 @@ export class GestureDataService {
 
   updateGesture(id: number, name: string, numFrames: number, speed: number): void {
     const currentGesture = this.gestureSubject.value;
-    currentGesture.id = id;
-    currentGesture.name = name;
-    currentGesture.numFrames = numFrames;
-    currentGesture.speed = speed;
+
+    if (id !== undefined) {
+      currentGesture.id = id;
+    }
+    if (name !== undefined) {
+      currentGesture.name = name;
+    }
+    if (numFrames !== undefined) {
+      currentGesture.numFrames = numFrames;
+    }
+    if (speed !== undefined) {
+      currentGesture.speed = speed;
+    }
     this.gestureSubject.next(currentGesture);
   }
 
