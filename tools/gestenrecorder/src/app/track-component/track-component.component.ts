@@ -101,22 +101,4 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
     const selectedRow = this.tableData[this.selectedIndex];
     this.gestureService.updateGesture(selectedRow.id, selectedRow.name, selectedRow.numFrames, selectedRow.speed);
   }
-
-  playGesture(): void {
-    const gesture = this.gestureService.getGesture();
-    this.gestureReplayService.initGestureObject(gesture);
-  }
-
-  createGesture(): void {
-    this.gestureService.interpolateGesture();
-  }
-
-  saveGesture(): void {
-
-  }
-
-  resetGesture(): void {
-
-  }
-
 }
