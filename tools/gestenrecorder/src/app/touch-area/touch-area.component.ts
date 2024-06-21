@@ -9,6 +9,8 @@ import { TouchAreaService } from './service/touch-area.service';
 import { CircleRenderer } from '../shapes/Circle';
 import { GestureDataService } from '../service/gesture-data.service';
 import { lstatSync } from 'fs';
+import { GestureReplayService } from '../service/gesture-replay.service';
+import { NormalizedPoint } from '../model/NormalizedPoint.model';
 
 interface Size {
   width: number;
@@ -37,12 +39,25 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     private touchAreaService: TouchAreaService,
     private hostElement: ElementRef,
     private gestureService: GestureDataService,
+    private gestureReplayService: GestureReplayService,
   ) {}
 
   ngOnInit(): void {
     if (this.canvas?.nativeElement !== undefined) {
       this.ctx = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
     }
+
+    this.gestureReplayService.playbackFrame$.subscribe((value)=>{
+      const point: NormalizedPoint = {
+        index: 0,
+        x: value.x,
+        y: value.y,
+        z: value.z,
+        time: 0
+      }
+      const dto = this.touchAreaService.circleDtoFromNormalizedPoint(point, { width: this.canvas?.nativeElement.width??0, height: this.canvas?.nativeElement.height??0 } , this.layers);
+      this.drawAnimation(dto);
+    })
 
     this.circleRenderer = new CircleRenderer(this.ctx, this.configurationService);
 
@@ -157,7 +172,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([amount, points]) => this.touchAreaService.sliceToMax(amount, points))
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
-      layers$.subscribe(layers => this.layers = layers)
+      layers$.subscribe(layers => this.layers = layers),
+
     );
   }
 
@@ -210,7 +226,11 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
     this.configurationService.amountTouchPoints$.unsubscribe();
     this.configurationService.background$.unsubscribe();
-
     this.connectionService.disconnect();
   }
+
+  private drawAnimation(dto: CircleDto): void {
+    this.drawCircleDtos([dto])
+  }
+  
 }
