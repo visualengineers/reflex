@@ -16,7 +16,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
-export class NewTimelineComponent implements OnInit {
+export class TimelineComponent implements OnInit {
   public max_value_layer = 1;
   public min_value_layer = -1.2;
   public horizontalPosition = 0;

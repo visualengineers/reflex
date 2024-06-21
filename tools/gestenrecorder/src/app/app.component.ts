@@ -3,14 +3,14 @@ import { RouterOutlet } from "@angular/router";
 import { TouchAreaComponent } from "./touch-area/touch-area.component";
 import { DropdownComponent } from "./dropdown/dropdown.component";
 import { PullupComponent } from "./pullup/pullup.component";
-import { NewTimelineComponent } from "./timeline/timeline.component";
+import { TimelineComponent } from "./timeline/timeline.component";
 import { GestureDataService } from "./service/gesture-data.service";
 import { GestureReplayService } from "./service/gesture-replay.service";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet,TouchAreaComponent,DropdownComponent,PullupComponent, NewTimelineComponent],
+  imports: [RouterOutlet,TouchAreaComponent,DropdownComponent,PullupComponent, TimelineComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
