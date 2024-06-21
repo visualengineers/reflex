@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Gesture } from "../data/gesture";
 import { ConnectionService } from './connection.service';
 import { ConfigurationService } from './configuration.service';
-import { interval } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { ExtremumType, Interaction, InteractionType } from '@reflex/shared-types';
 import { HttpClient } from '@angular/common/http';
 import { TouchAreaComponent } from '../touch-area/touch-area.component';
+import { GestureTrackFrame } from '../data/gesture-track-frame';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ export class GestureReplayService {
 
   private gestureForReplay?: Gesture;
   private currentFrame: number = 0;
+  private playbackFrameSubject = new BehaviorSubject<GestureTrackFrame>({ x: 0, y: 0, z: 0 });
+  playbackFrame$ = this.playbackFrameSubject.asObservable();
 
   public constructor(
     private readonly connectionService: ConnectionService,
@@ -88,6 +91,13 @@ export class GestureReplayService {
           confidence: 0,
           time: this.currentFrame
         }
+        this.playbackFrameSubject.next({ 
+          x: touch.position.x / this.configService.getViewPort().width, 
+          y: touch.position.y / this.configService.getViewPort().height, 
+          z: touch.position.z });
+          
+        console.log("PLAYBACKFRAME: ", this.playbackFrame$);
+
         touches.push(touch);
       }
     });
