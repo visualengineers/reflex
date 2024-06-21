@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Gesture } from "../data/gesture";
 import { ConnectionService } from './connection.service';
 import { ConfigurationService } from './configuration.service';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject, interval, Subscription } from 'rxjs';
 import { ExtremumType, Interaction, InteractionType } from '@reflex/shared-types';
 import { HttpClient } from '@angular/common/http';
-import { TouchAreaComponent } from '../touch-area/touch-area.component';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
 
 @Injectable({
@@ -18,14 +17,13 @@ export class GestureReplayService {
   private currentFrame: number = 0;
   private playbackFrameSubject = new BehaviorSubject<GestureTrackFrame>({ x: 0, y: 0, z: 0 });
   playbackFrame$ = this.playbackFrameSubject.asObservable();
+  private animationSubscription?: Subscription; // Subscription for animation interval
 
   public constructor(
     private readonly connectionService: ConnectionService,
     private readonly configService: ConfigurationService,
     private readonly httpClient: HttpClient)
-  {
-
-  }
+  { }
 
   public initFile(gestureFile: string): void {
     this.httpClient.get(gestureFile, { responseType: 'json'}).subscribe({
@@ -44,6 +42,15 @@ export class GestureReplayService {
     this.start(gesture);
   }
 
+  public resetAnimation(gesture: Gesture): void {
+    console.log("Resetting animation with the gesture object:", gesture);
+    this.currentFrame = 0; // Reset the current frame
+    if (this.animationSubscription) {
+      this.animationSubscription.unsubscribe(); // Unsubscribe from the previous interval
+    }
+    this.update()
+  }
+
   private start(gesture: Gesture): void {
     if (gesture === undefined) {
       console.log("returned cause gesture undefined in replay-service.start(gesture)");
@@ -57,13 +64,13 @@ export class GestureReplayService {
 
     console.info(`start replay with replay interval of ${i} ms.`);
 
-    interval(i).subscribe({
+    this.animationSubscription = interval(i).subscribe({
       next: () => (this.update())
-    })
+    });
   }
 
   private update(): void {
-    if( this.gestureForReplay === undefined ) {
+    if (this.gestureForReplay === undefined) {
       console.log("gestureForReplay undefined");
       return;
     }
@@ -71,7 +78,7 @@ export class GestureReplayService {
     const touches: Array<Interaction> = [];
 
     this.gestureForReplay.tracks.forEach((track) => {
-      if(track.frames.length > this.currentFrame) {
+      if (track.frames.length > this.currentFrame) {
         const item = track.frames[this.currentFrame];
         const touch: Interaction = {
           touchId: track.touchId,
@@ -90,12 +97,13 @@ export class GestureReplayService {
           },
           confidence: 0,
           time: this.currentFrame
-        }
-        this.playbackFrameSubject.next({ 
-          x: touch.position.x / this.configService.getViewPort().width, 
-          y: touch.position.y / this.configService.getViewPort().height, 
-          z: touch.position.z });
-          
+        };
+        this.playbackFrameSubject.next({
+          x: touch.position.x / this.configService.getViewPort().width,
+          y: touch.position.y / this.configService.getViewPort().height,
+          z: touch.position.z
+        });
+
         console.log("PLAYBACKFRAME: ", this.playbackFrame$);
 
         touches.push(touch);
@@ -107,9 +115,9 @@ export class GestureReplayService {
     this.currentFrame = (this.currentFrame + 1);
 
     if (this.loopGesture) {
-      this.currentFrame= this.currentFrame % this.gestureForReplay.numFrames;
-    } else if (this.currentFrame > this.gestureForReplay.numFrames) {
-      this.currentFrame = this.gestureForReplay.numFrames;
+      this.currentFrame = this.currentFrame % this.gestureForReplay.numFrames;
+    } else if (this.currentFrame >= this.gestureForReplay.numFrames) {
+      this.currentFrame = this.gestureForReplay.numFrames - 1;
     }
   }
 }

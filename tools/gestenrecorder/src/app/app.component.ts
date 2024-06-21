@@ -22,20 +22,17 @@ export class AppComponent {
     private gestureReplayService: GestureReplayService,
   ) {}
 
+  buildGesture(): void {
+    this.gestureService.interpolateGesture();
+  }
+
   playGesture(): void {
     const gesture = this.gestureService.getGesture();
     this.gestureReplayService.initGestureObject(gesture);
   }
 
-  createGesture(): void {
-    this.gestureService.interpolateGesture();
-  }
-
-  saveGesture(): void {
-
-  }
-
   resetGesture(): void {
-
+    const gesture = this.gestureService.getGesture();
+    this.gestureReplayService.resetAnimation(gesture);
   }
 }
