@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { Interaction } from '@reflex/shared-types';
 
 // TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer? (stand jetzt durch create-Button in TrackComponent)
-// TODO: löschen Methode und Drag&Drop funktioniert noch nicht richtig
 // TODO: wenn schon interpoliert und dann noch werte geändert werden, soll die geste nochmal neu interpoliert werden: Großes Problem bisher funkt noch nicht
 
 @Injectable({
@@ -69,32 +68,36 @@ export class GestureDataService {
     console.log("Gesture nach addGestureTrackFrames:",currentGesture);
   }
 
-  deleteGestureTrackFrame(index: number): void {
+  deleteGestureTrackFrame(frame: GestureTrackFrame): void {
+    if (!frame) {
+      return;
+    }
+
     const currentGesture = this.gestureSubject.value;
     const track = currentGesture.tracks[0];
 
-    if ( index >= 0 && index < track.frames.length ) {
+    const index = track.frames.findIndex(f => f.x === frame.x && f.y === frame.y && f.z === frame.z);
+
+    if (index !== -1) {
       track.frames.splice(index, 1);
       this.gestureSubject.next(currentGesture);
     }
-    console.log('Gesture nach deleteGestureTrackFrame:', currentGesture);
+    console.log('Gesture after deleteGestureTrackFrame:', currentGesture);
   }
 
-  // updateGestureTrackFrame(x: number, y: number, z: number): void {
-  //   const currentGesture = this.gestureSubject.value;
-  //   const track = currentGesture.tracks[0]; // Annahme, dass es nur eine GestureTrack gibt
+  updateGestureTrackFrame(index: number, x: number, y: number, z: number): void {
+    const currentGesture = this.gestureSubject.value;
+    const track = currentGesture.tracks[0];
 
-  //   const frameIndex = track.frames.findIndex(frame => frame.x === x && frame.y === y);
+    if (index >= 0 && index < track.frames.length) {
+      track.frames[index].x = x;
+      track.frames[index].y = y;
+      track.frames[index].z = z;
 
-  //   if (frameIndex !== -1) {
-  //     // Aktualisiere die z-Koordinate des vorhandenen GestureTrackFrame
-  //     track.frames[frameIndex].z = z;
-
-  //     // Speichere die aktualisierte Gesture
-  //     this.gestureSubject.next(currentGesture);
-  //   }
-  //   console.log('Gesture nach updateGestureTrackFrame:', currentGesture);
-  // }
+      this.gestureSubject.next(currentGesture);
+    }
+    console.log('Gesture after updateGestureTrackFrame:', currentGesture);
+  }
 
 // set- und get-Methoden
 

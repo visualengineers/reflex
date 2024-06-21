@@ -124,15 +124,29 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         map(([event, points]) => {
           const indices = this.touchAreaService.getHoveredCircles(event, points, this.ctx!);
           if (indices.length > 0) {
-            this.gestureService.deleteGestureTrackFrame(indices[0]);
+            const frame = this.gestureService.getGestureTrackFrames()[indices[0]];
+            this.gestureService.deleteGestureTrackFrame(frame);
+            points.splice(indices[0], 1);
           }
-          return points.filter((item) => !indices.includes(item.index));
+          return points;
         })
-      ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
+      ).subscribe(points => {
+        this.configurationService.setNormalizedPoints(points);
+        const gestureTrackFrames = points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p));
+        gestureTrackFrames.forEach(gestureTrackFrame => {
+          this.gestureService.addGestureTrackFrame(gestureTrackFrame);
+        });
+      }),
 
       dragDropMoveLeft$.pipe(
         withLatestFrom(activePointIndex$, normalizedPoints$),
-        map(([[event1, event2], index, points]) => this.touchAreaService.movePointFromEvent(event1, event2, index, points, this.ctx!))
+        map(([[event1, event2], index, points]) => {
+          const newPoint = this.touchAreaService.movePointFromEvent(event1, event2, index, points, this.ctx!)[index];
+          const gestureTrackFrame = this.touchAreaService.touchPointFromNormalizedPoint(newPoint);
+          this.gestureService.updateGestureTrackFrame(index, gestureTrackFrame.position.x, gestureTrackFrame.position.y, gestureTrackFrame.position.z);
+          points[index] = newPoint;
+          return points;
+        })
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       mouseWheel$.pipe(
