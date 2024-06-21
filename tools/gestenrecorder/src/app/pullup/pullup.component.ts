@@ -11,7 +11,7 @@ import { NewTimelineComponent } from '../new-timeline/new-timeline.component';
   styleUrl: './pullup.component.scss'
 })
 export class PullupComponent {
-  isPullupOpen: boolean = false;
+  isPullupOpen: boolean = true;
 
   togglePullup() {
     this.isPullupOpen = !this.isPullupOpen;

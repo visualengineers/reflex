@@ -7,7 +7,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Interaction } from '@reflex/shared-types';
 
-// TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer?
+// TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer? (stand jetzt durch create-Button in TrackComponent)
+// TODO: löschen Methode und Drag&Drop funktioniert noch nicht richtig
+// TODO: wenn schon interpoliert und dann noch werte geändert werden, soll die geste nochmal neu interpoliert werden: Großes Problem bisher funkt noch nicht
 
 @Injectable({
   providedIn: 'root'
@@ -57,19 +59,15 @@ export class GestureDataService {
     const existingFrameIndex = track.frames.findIndex(frame => frame.x === newFrame.x && frame.y === newFrame.y);
 
     if (existingFrameIndex !== -1) {
-      // Update the z-coordinate of the existing frame
       track.frames[existingFrameIndex].z = newFrame.z;
     } else {
-      // Add a new frame to the gesture track
       track.frames.push(newFrame);
     }
 
     this.gestureSubject.next(currentGesture);
-    console.log('Gesture nach addGestureTrackFrame:', currentGesture);
-    console.log("GestureTRackFrames",this.gestureSubject.value.tracks[0].frames);
+    this.gesturePointSubject.next(track.frames); // Emit the updated gesture data through the gesturePoints$ observable
+    console.log("Gesture nach addGestureTrackFrames:",currentGesture);
   }
-
-
 
   deleteGestureTrackFrame(index: number): void {
     const currentGesture = this.gestureSubject.value;
@@ -82,21 +80,21 @@ export class GestureDataService {
     console.log('Gesture nach deleteGestureTrackFrame:', currentGesture);
   }
 
-  updateGestureTrackFrame(x: number, y: number, z: number): void {
-    const currentGesture = this.gestureSubject.value;
-    const track = currentGesture.tracks[0]; // Annahme, dass es nur eine GestureTrack gibt
+  // updateGestureTrackFrame(x: number, y: number, z: number): void {
+  //   const currentGesture = this.gestureSubject.value;
+  //   const track = currentGesture.tracks[0]; // Annahme, dass es nur eine GestureTrack gibt
 
-    const frameIndex = track.frames.findIndex(frame => frame.x === x && frame.y === y);
+  //   const frameIndex = track.frames.findIndex(frame => frame.x === x && frame.y === y);
 
-    if (frameIndex !== -1) {
-      // Aktualisiere die z-Koordinate des vorhandenen GestureTrackFrame
-      track.frames[frameIndex].z = z;
+  //   if (frameIndex !== -1) {
+  //     // Aktualisiere die z-Koordinate des vorhandenen GestureTrackFrame
+  //     track.frames[frameIndex].z = z;
 
-      // Speichere die aktualisierte Gesture
-      this.gestureSubject.next(currentGesture);
-    }
-    console.log('Gesture nach updateGestureTrackFrame:', currentGesture);
-  }
+  //     // Speichere die aktualisierte Gesture
+  //     this.gestureSubject.next(currentGesture);
+  //   }
+  //   console.log('Gesture nach updateGestureTrackFrame:', currentGesture);
+  // }
 
 // set- und get-Methoden
 
