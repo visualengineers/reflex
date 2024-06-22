@@ -4,3 +4,8 @@
     src="http://localhost:4201"
 ></iframe>
 <canvas #canvas class="canvas"></canvas>
+<app-hover-menu
+  [hoveredPoint]="hoveredPoint"
+  [isFixed]="isHoverMenuFixed"
+  (pointUpdated)="onPointUpdated($event)">
+</app-hover-menu>

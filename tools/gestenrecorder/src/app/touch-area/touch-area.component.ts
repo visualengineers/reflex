@@ -10,6 +10,9 @@ import { CircleRenderer } from '../shapes/Circle';
 import { GestureDataService } from '../service/gesture-data.service';
 import { GestureReplayService } from '../service/gesture-replay.service';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
+import { HoverMenuComponent } from '../hover-menu/hover-menu.component';
+import { take } from 'rxjs';
+import { Gesture } from '../data/gesture';
 
 interface Size {
   width: number;
@@ -19,11 +22,13 @@ interface Size {
 @Component({
   selector: 'app-touch-area',
   standalone: true,
+  imports: [HoverMenuComponent],
   templateUrl: './touch-area.component.html',
-  styleUrls: ['./touch-area.component.scss']
+  styleUrls: ['./touch-area.component.scss'],
 })
 export class TouchAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild(HoverMenuComponent) hoverMenu?: HoverMenuComponent;
 
   public backgroundPath = '';
   private ctx?: CanvasRenderingContext2D;
@@ -32,6 +37,9 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
   private circleRenderer?: CircleRenderer;
   private drawnCircleDtos: CircleDto[] = []; // To keep track of drawn circles
   private animatedCircleDto?: CircleDto; // To track the animated circle
+  hoveredPoint: NormalizedPoint | null = null;
+  menuPosition = { x: 0, y: 0 };
+  isHoverMenuFixed: boolean = false;
 
   constructor(
     private connectionService: ConnectionService,
@@ -83,8 +91,25 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
 
     const normalizedPoints$ = this.configurationService.getNormalizedPoints();
 
-    const mouseHoversCircle$ = combineLatest([mouseMove$, normalizedPoints$]).pipe(
-      map(([event, points]) => this.touchAreaService.checkIfMouseOnCircles(event, points, this.ctx!)),
+    const mouseMiddleClick$ = fromEvent<MouseEvent>(this.canvas!.nativeElement, 'mousedown').pipe(
+      filter(event => event.button === 1)  // 1 steht für die mittlere Maustaste (Mausrad)
+    );
+
+    const mouseHoversCircle$ = combineLatest([mouseMove$, this.configurationService.getNormalizedPoints()]).pipe(
+      map(([event, points]) => {
+        if (this.hoverMenu?.isFixed) {
+          return true; // Wenn das Menü fixiert ist, bleiben wir im Hover-Zustand
+        }
+
+        const hoveredCircles = this.touchAreaService.getHoveredCircles(event, points, this.ctx!);
+        if (hoveredCircles.length > 0) {
+          this.hoveredPoint = points[hoveredCircles[0]];
+          this.updateMenuPosition(event);
+        } else {
+          this.hoveredPoint = null;
+        }
+        return hoveredCircles.length > 0;
+      }),
       startWith(false),
       distinctUntilChanged()
     );
@@ -177,7 +202,6 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         this.configurationService.setNormalizedPoints(points);
       }),
 
-      // sending subscription
       normalizedPoints$.pipe(
         map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
       ).subscribe(touchPoints => {
@@ -193,7 +217,74 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       layers$.subscribe(layers => this.layers = layers),
+
+      mouseHoversCircle$.subscribe(),
+
+      mouseMiddleClick$.pipe(
+        withLatestFrom(this.configurationService.getNormalizedPoints()),
+        filter(([event, points]) => {
+          const hoveredCircles = this.touchAreaService.getHoveredCircles(event, points, this.ctx!);
+          return hoveredCircles.length > 0;
+        })
+      ).subscribe(() => {
+        this.isHoverMenuFixed = !this.isHoverMenuFixed;
+      }),
+
+      // this.gestureService.gesture$.subscribe((gesture: Gesture) => {
+      //   if (gesture && gesture.tracks && gesture.tracks.length > 0) {
+      //     const frames = gesture.tracks[0].frames;
+      //     const points = frames.map((frame, index) => ({
+      //       x: frame.x,
+      //       y: frame.y,
+      //       z: frame.z,
+      //       index: index,
+      //       time: 0 // oder einen geeigneten Wert
+      //     }));
+      //     this.configurationService.setNormalizedPoints(points);
+      //     this.drawCircleDtos();
+      //   }
+      // })
     );
+  }
+
+  onPointUpdated(updatedPoint: NormalizedPoint): void {
+    this.configurationService.getNormalizedPoints().pipe(
+      take(1)
+    ).subscribe((currentPoints: NormalizedPoint[]) => {
+      const index = currentPoints.findIndex((p: NormalizedPoint) => p.index === updatedPoint.index);
+      if (index !== -1) {
+        currentPoints[index] = updatedPoint;
+        this.configurationService.setNormalizedPoints(currentPoints);
+
+        // Convert NormalizedPoint to TouchPoint
+        const touchPoint = this.touchAreaService.touchPointFromNormalizedPoint(updatedPoint);
+
+        // Update the point in the GestureService
+        this.gestureService.gesture$.pipe(
+          take(1)
+        ).subscribe((currentGesture: Gesture) => {
+          if (currentGesture && currentGesture.tracks && currentGesture.tracks.length > 0) {
+            const frame = currentGesture.tracks[0].frames[index];
+            if (frame) {
+              frame.x = touchPoint.position.x;
+              frame.y = touchPoint.position.y;
+              frame.z = touchPoint.position.z;
+              this.gestureService.updateGestureTrackFrame(index, frame.x, frame.y, frame.z);
+            }
+          }
+        });
+
+        // Redraw the points
+        this.drawCircleDtos();
+      }
+    });
+  }
+
+  private updateMenuPosition(event: MouseEvent): void {
+    this.menuPosition = {
+      x: event.clientX + 10,
+      y: event.clientY + 10
+    };
   }
 
   private drawCircleDtos(): void {
