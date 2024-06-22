@@ -301,4 +301,24 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 
 ### Notizen:
 * -
-* ------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------
+* ## 21.06.24-22.06.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* 
+
+### Herausforderungen / Learnings:
+* das Malen der kreise auf der Timeline (Mathias konnte helfen <3 >)
+
+### Nächste Schritte:
+* Overlaymenü verbessern
+* sämtliche Bugsfixen (interpolieren, play/pause )
+
+### Zeitaufwand:
+* 8,75h
+
+### Notizen:
+* -
+* 
+------------------------------------------------------------------------------------------------------------------------------
