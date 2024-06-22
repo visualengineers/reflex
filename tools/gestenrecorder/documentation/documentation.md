@@ -337,3 +337,28 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * -
 * 
 ------------------------------------------------------------------------------------------------------------------------------
+* ## 18.6.24 - 22.6.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* Interpolation der Geste
+* Menus umgebaut auf Shared-Components
+* Reworked the Timeline
+* Gesture an TrackingServer senden funktioniert
+* HoverMenu überarbeitet
+* GestureDataService überarbeitet
+* Ein ShitLoad of Bug Fixes
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* es soll einfach funktionieren bitte bitte ich dreh langsam durch
+
+### Zeitaufwand:
+* 10h
+
+### Notizen:
+* früher anfangen
+* 
+------------------------------------------------------------------------------------------------------------------------------
