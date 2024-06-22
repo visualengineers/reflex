@@ -306,10 +306,25 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 ### Bearbeiter: Jonas
 
 ### Fortschritt:
-* 
+* Hinzufügung von Buttons für die Touch Area im Header
+* Einfügung des Logos im Header
+* Umbau des Footermenüs in ein Overlay mit Animation
+* Einfügung von Nummern bei jedem Punkt
+* Hinzufügung von Interpolationslinien auf dem Canvas
+* Implementierung der Playanimation auf dem Canvas
+* Behebung des Bugs, bei dem immer ein Punkt bei 0/0 lag
+* Einbau der Logik für den Reset-Button
+* Ersetzung von Link-Buttons durch normale Buttons
+* Überarbeitung des Wording
+* Entfernung der Segmente aus der Timeline
+* Behebung des Header-Menü-Bugs
+* Aktualisierung aller Styles und Farben entsprechend den Komponenten-Farben
+* Entfernung der Options-Komponente
+* Umbenennung von new-timeline in timeline und Entfernung der Timeline-Komponente
+* Einbauen eines Hovermenüs mit Logik bei Hovern über die Punkte auf dem Canvas
 
 ### Herausforderungen / Learnings:
-* das Malen der kreise auf der Timeline (Mathias konnte helfen <3 >)
+* das Malen der kreise auf der Timeline für die Animation des Playback (Mathias konnte helfen <3 >)
 
 ### Nächste Schritte:
 * Overlaymenü verbessern
