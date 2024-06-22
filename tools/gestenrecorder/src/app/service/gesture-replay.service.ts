@@ -17,7 +17,7 @@ export class GestureReplayService {
   private currentFrame: number = 0;
   private playbackFrameSubject = new BehaviorSubject<GestureTrackFrame | null>(null);
   playbackFrame$ = this.playbackFrameSubject.asObservable();
-  private animationSubscription?: Subscription; // Subscription for animation interval
+  private animationSubscription?: Subscription;
 
   public constructor(
     private readonly connectionService: ConnectionService,
@@ -38,18 +38,33 @@ export class GestureReplayService {
   }
 
   public initGestureObject(gesture: Gesture): void {
-    console.log("successfully loaded the gesture object:", gesture);
     this.start(gesture);
   }
 
   public resetAnimation(gesture: Gesture): void {
-    console.log("Resetting animation with the gesture object:", gesture);
-    this.currentFrame = 0; // Reset the current frame
+    this.currentFrame = 0;
     if (this.animationSubscription) {
-      this.animationSubscription.unsubscribe(); // Unsubscribe from the previous interval
+      this.animationSubscription.unsubscribe();
     }
     this.update()
   }
+
+  public resetAnimationAfterOneLoop(gesture: Gesture): void {
+    if (this.gestureForReplay) {
+      const totalFrames = this.gestureForReplay.numFrames;
+
+      this.animationSubscription = interval(this.configService.getSendInterval()).subscribe({
+        next: () => {
+          if (this.currentFrame == totalFrames) {
+            this.resetAnimation(gesture);
+          } else {
+            this.update();
+          }
+        }
+      });
+    }
+  }
+
 
   private start(gesture: Gesture): void {
     if (gesture === undefined) {
@@ -103,9 +118,6 @@ export class GestureReplayService {
           y: touch.position.y / this.configService.getViewPort().height,
           z: touch.position.z
         });
-
-        console.log("PLAYBACKFRAME: ", this.playbackFrame$);
-
         touches.push(touch);
       }
     });
