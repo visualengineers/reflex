@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
 import { CommonModule } from '@angular/common';
 import { SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
+import { ConfigurationService } from '../service/configuration.service';
 
 @Component({
   selector: 'app-hover-menu',
@@ -13,6 +14,14 @@ import { FormsModule } from '@angular/forms';
 })
 export class HoverMenuComponent {
   @Input() hoveredPoint: NormalizedPoint | null = null;
+  @Output() pointUpdated = new EventEmitter<NormalizedPoint>();
+  @Input() isFixed: boolean = false;
+
+  constructor(private configurationService: ConfigurationService) {}
+
+  toggleFixed() {
+    this.isFixed = !this.isFixed;
+  }
 
   getX(): string {
     return this.hoveredPoint && typeof this.hoveredPoint.x === 'number'
@@ -42,5 +51,11 @@ export class HoverMenuComponent {
     return this.hoveredPoint && typeof this.hoveredPoint.index === 'number'
       ? this.hoveredPoint.index.toString()
       : 'N/A';
+  }
+
+  updatePoint() {
+    if (this.hoveredPoint) {
+      this.pointUpdated.emit(this.hoveredPoint);
+    }
   }
 }
