@@ -10,7 +10,7 @@ export interface CircleDto {
 export class CircleRenderer {
 
     public constructor(
-        private readonly _ctx: CanvasRenderingContext2D | undefined, 
+        private readonly _ctx: CanvasRenderingContext2D | undefined,
         private readonly _configurationService: ConfigurationService) {}
 
     public draw(circleDto: CircleDto): void {

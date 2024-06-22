@@ -44,7 +44,7 @@ export class ConfigurationService implements OnDestroy {
   public layers$ = new BehaviorSubject<Layers>({
     up: 2,
     down: 7,
-    colorUp: "#b9a14b",
+    colorUp: "#0071B7",
     colorDown: "#111722",
   });
   public normalizedPoints$ = new BehaviorSubject<NormalizedPoint[]>([]);
@@ -69,7 +69,7 @@ export class ConfigurationService implements OnDestroy {
     }),
       (this.circleSize = {
         min: 20,
-        max: 400,
+        max: 150,
       });
     this.sendInterval = 100;
     this.serverConnection = "ws://127.0.0.1:30000/Recorder";
