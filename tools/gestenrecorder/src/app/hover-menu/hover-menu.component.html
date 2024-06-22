@@ -1,8 +1,7 @@
-<div *ngIf="hoveredPoint" class="hover-menu">
-    <p>Index: {{ hoveredPoint.index }}</p>
-    <p>X: {{ hoveredPoint.x }}</p>
-    <p>Y: {{ hoveredPoint.y }}</p>
-    <p>Z: {{ hoveredPoint.z }}</p>
-    <p>Time: {{ hoveredPoint.time }}</p>
+<div class="hover-menu" *ngIf="hoveredPoint">
+    <p>X: {{ getX() }}</p>
+    <p>Y: {{ getY() }}</p>
+    <p>Z: {{ getZ() }}</p>
+    <p>Time: {{ getTime() }}</p>
+    <p>Index: {{ getIndex() }}</p>
 </div>
-  

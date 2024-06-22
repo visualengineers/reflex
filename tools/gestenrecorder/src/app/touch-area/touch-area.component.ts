@@ -10,6 +10,7 @@ import { CircleRenderer } from '../shapes/Circle';
 import { GestureDataService } from '../service/gesture-data.service';
 import { GestureReplayService } from '../service/gesture-replay.service';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
+import { HoverMenuComponent } from '../hover-menu/hover-menu.component';
 
 interface Size {
   width: number;
@@ -19,8 +20,9 @@ interface Size {
 @Component({
   selector: 'app-touch-area',
   standalone: true,
+  imports: [HoverMenuComponent],
   templateUrl: './touch-area.component.html',
-  styleUrls: ['./touch-area.component.scss']
+  styleUrls: ['./touch-area.component.scss'],
 })
 export class TouchAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
@@ -32,6 +34,8 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
   private circleRenderer?: CircleRenderer;
   private drawnCircleDtos: CircleDto[] = []; // To keep track of drawn circles
   private animatedCircleDto?: CircleDto; // To track the animated circle
+  hoveredPoint: NormalizedPoint | null = null;
+  menuPosition = { x: 0, y: 0 };
 
   constructor(
     private connectionService: ConnectionService,
@@ -84,7 +88,16 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     const normalizedPoints$ = this.configurationService.getNormalizedPoints();
 
     const mouseHoversCircle$ = combineLatest([mouseMove$, normalizedPoints$]).pipe(
-      map(([event, points]) => this.touchAreaService.checkIfMouseOnCircles(event, points, this.ctx!)),
+      map(([event, points]) => {
+        const hoveredCircles = this.touchAreaService.getHoveredCircles(event, points, this.ctx!);
+        if (hoveredCircles.length > 0) {
+          this.hoveredPoint = points[hoveredCircles[0]];
+          this.updateMenuPosition(event);
+        } else {
+          this.hoveredPoint = null;
+        }
+        return hoveredCircles.length > 0;
+      }),
       startWith(false),
       distinctUntilChanged()
     );
@@ -177,7 +190,6 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         this.configurationService.setNormalizedPoints(points);
       }),
 
-      // sending subscription
       normalizedPoints$.pipe(
         map(points => points.map(p => this.touchAreaService.touchPointFromNormalizedPoint(p)))
       ).subscribe(touchPoints => {
@@ -193,7 +205,16 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ).subscribe(points => this.configurationService.setNormalizedPoints(points)),
 
       layers$.subscribe(layers => this.layers = layers),
+
+      mouseHoversCircle$.subscribe() // Fügen Sie diese Subscription hinzu, um die Hover-Logik auszuführen
     );
+  }
+
+  private updateMenuPosition(event: MouseEvent): void {
+    this.menuPosition = {
+      x: event.clientX + 10, // 10px Offset vom Cursor
+      y: event.clientY + 10
+    };
   }
 
   private drawCircleDtos(): void {
