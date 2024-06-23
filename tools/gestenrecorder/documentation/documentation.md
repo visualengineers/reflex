@@ -382,3 +382,22 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * 
 * 
 ------------------------------------------------------------------------------------------------------------------------------
+* ## 23.6.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Schreiben der Repo-Dokumentation
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* Präsi
+
+### Zeitaufwand:
+* 2,5h
+
+### Notizen:
+* 
+* 
+------------------------------------------------------------------------------------------------------------------------------
