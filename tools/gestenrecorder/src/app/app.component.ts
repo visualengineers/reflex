@@ -18,7 +18,7 @@ import { OptionCheckboxComponent,SettingsGroupComponent } from "@reflex/angular-
 export class AppComponent {
   title = "gestenrecorder";
   public toggleLoopActive = true;
-  
+
   constructor(
     private gestureService: GestureDataService,
     private gestureReplayService: GestureReplayService,
@@ -44,5 +44,4 @@ export class AppComponent {
     const gesture = this.gestureService.getGesture();
     this.gestureReplayService.resetAnimation(gesture);
   }
-
 }

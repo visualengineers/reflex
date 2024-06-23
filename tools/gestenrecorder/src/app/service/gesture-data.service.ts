@@ -6,6 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Interaction } from '@reflex/shared-types';
+import { saveAs } from 'file-saver';
+import { map } from 'rxjs';
 
 // TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer? (stand jetzt durch create-Button in TrackComponent)
 // TODO: wenn schon interpoliert und dann noch werte geändert werden, soll die geste nochmal neu interpoliert werden: Großes Problem bisher funkt noch nicht
@@ -255,5 +257,55 @@ export class GestureDataService {
     this.gestureSubject.next(currentGesture);
     this.gesturePointSubject.next(interpolatedFrames);
     console.log("Interpolated Gesture:", currentGesture);
+    console.log("fixedFrames",fixedFrames);
+  }
+
+  public saveGestureToJson(): void {
+    const gesture = this.gestureSubject.value;
+    const jsonString = JSON.stringify(gesture, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const suggestedName = `${gesture.name}.json`;
+    saveAs(blob, suggestedName);
+  }
+
+  public loadGestureFromFile(gestureFile: string): void {
+    this.http.get(gestureFile, { responseType: 'json'}).subscribe({
+      next: (result) => {
+        const gesture = result as Gesture;
+        console.log("Loaded Gesture:",gesture);
+        if(this.isValidGesture(gesture)) {
+          this.gestureSubject.next(gesture);
+          console.info('Successfully loaded and set gesture:',gesture);
+        } else {
+          console.error('Invalid gesture format');
+        }
+      },
+      error: (error) => console.error('Error loading gesture:', error)
+    });
+  }
+
+  private isValidGesture(json: any): json is Gesture {
+    return (
+      json &&
+      typeof json.id === 'number' &&
+      typeof json.name === 'string' &&
+      typeof json.numFrames === 'number' &&
+      typeof json.speed === 'number' &&
+      Array.isArray(json.tracks) &&
+      json.tracks.every((track: any) =>
+        typeof track.touchId === 'number' &&
+        Array.isArray(track.frames) &&
+        track.frames.every((frame: any) =>
+          typeof frame.x === 'number' &&
+          typeof frame.y === 'number' &&
+          typeof frame.z === 'number'
+        )
+      )
+    );
+  }
+
+  public getGestureFileNames(): Observable<string[]> {
+    const url = 'assets/data/gestures.json';
+    return this.http.get<string[]>(url);
   }
 }

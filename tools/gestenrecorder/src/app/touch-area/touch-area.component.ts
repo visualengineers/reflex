@@ -70,6 +70,24 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       }
     });
 
+    // this.gestureService.gesture$.subscribe(gesture => {
+    //   if (gesture) {
+    //     const points: NormalizedPoint[] = [];
+    //     gesture.tracks.forEach(track => {
+    //       track.frames.map((frame, index) => {
+    //         points.push({
+    //           index: index,
+    //           x: frame.x / this.configurationService.getViewPort().width,
+    //           y: frame.y / this.configurationService.getViewPort().height,
+    //           z: frame.z,
+    //           time: 0
+    //         });
+    //       });
+    //     });
+    //     this.configurationService.setNormalizedPoints(points);
+    //   }
+    // });
+
     this.circleRenderer = new CircleRenderer(this.ctx, this.configurationService);
 
     const windowSize$ = fromEvent(window, 'resize').pipe(
@@ -228,22 +246,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         })
       ).subscribe(() => {
         this.isHoverMenuFixed = !this.isHoverMenuFixed;
-      }),
-
-      // this.gestureService.gesture$.subscribe((gesture: Gesture) => {
-      //   if (gesture && gesture.tracks && gesture.tracks.length > 0) {
-      //     const frames = gesture.tracks[0].frames;
-      //     const points = frames.map((frame, index) => ({
-      //       x: frame.x,
-      //       y: frame.y,
-      //       z: frame.z,
-      //       index: index,
-      //       time: 0 // oder einen geeigneten Wert
-      //     }));
-      //     this.configurationService.setNormalizedPoints(points);
-      //     this.drawCircleDtos();
-      //   }
-      // })
+      })
     );
   }
 
