@@ -2,12 +2,13 @@
   <h2 class="heading-primary">Saving Options</h2>
 </div>
 
-<app-value-selection elementTitle="GestureName" elemtId="settings-filter-select" class="settings__item margin-bottom-default">
+<app-value-selection elementTitle="Gesture" elemtId="settings-filter-select" class="settings__item margin-bottom-default">
   <select selection [(ngModel)]="selectedGestureFile"
   class="custom-select"
   data-enpassusermodified="yes"
   name="Gesture"
-  id="gestureFileNames">
+  id="gestureFileNames"
+  style="min-width: 12rem;">
   <option *ngFor="let name of gestureFileNames" [value]="name">
     {{ name }}
   </option>

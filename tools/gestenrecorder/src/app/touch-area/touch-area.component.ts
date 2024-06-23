@@ -13,6 +13,8 @@ import { NormalizedPoint } from '../model/NormalizedPoint.model';
 import { HoverMenuComponent } from '../hover-menu/hover-menu.component';
 import { take } from 'rxjs';
 import { Gesture } from '../data/gesture';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface Size {
   width: number;
@@ -22,7 +24,7 @@ interface Size {
 @Component({
   selector: 'app-touch-area',
   standalone: true,
-  imports: [HoverMenuComponent],
+  imports: [HoverMenuComponent, CommonModule, FormsModule],
   templateUrl: './touch-area.component.html',
   styleUrls: ['./touch-area.component.scss'],
 })
@@ -153,6 +155,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.configurationService.background$.subscribe(() => {
         this.backgroundPath = this.configurationService.getBackgroundImage();
+        console.log("backgroundPath TouchArea:",this.backgroundPath);
       }),
 
       combineLatest([normalizedPoints$, windowSize$, layers$]).pipe(

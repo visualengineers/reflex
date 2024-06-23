@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
 import { ConfigurationService } from '../service/configuration.service';
 import { SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 
-// TODO: Background
 @Component({
   selector: 'app-gestureoptions',
   standalone: true,
@@ -29,8 +28,9 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
     height: 0
   };
   public backgroundType: string[] = ["no background", "from assets/img", "from internet url"];
-  public backgroundImage: string = '';
   public backgroundSources: BackgroundSource[] = [];
+  public selectedBackgroundType: string = this.backgroundType[0];
+  public selectedBackgroundImage: string = '';
   public backgroundUrl: string = '';
   private layersSubscription?: Subscription;
 
@@ -39,18 +39,26 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.backgroundSources = this.configurationService.getBackgroundSources();
     this.viewPort = this.configurationService.getViewPort();
+    console.log("backgroundSources",this.backgroundSources);
 
     this.layersSubscription = this.configurationService.getLayers()
         .subscribe(layers => this.layers = layers );
   }
 
   saveConfiguration(): void {
-    if (this.layers !== undefined) {
+    if (this.layers) {
       this.configurationService.setLayers(this.layers);
     }
-    if (this.viewPort !== undefined) {
+    if (this.viewPort) {
       this.configurationService.setViewPort(this.viewPort);
     }
+
+    if (this.selectedBackgroundType === "from assets/img") {
+      this.configurationService.setBackgroundImage(this.selectedBackgroundImage);
+    } else if (this.selectedBackgroundType === "from internet url") {
+      this.configurationService.setBackgroundImage(this.backgroundUrl);
+    }
+
     this.configurationService.setLocalStorage();
   }
 
