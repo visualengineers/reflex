@@ -196,7 +196,10 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * hover-menu:
     * hover-menu.component.html:
-        * ...
+        * overlay hover info, for info about current point you hovered on
+        * uses 
+            * shared components:
+                * `<app-value-text>`
     * hover-menu.component.ts:
         * This file defines the `HoverMenuComponent`, which is a component responsible for displaying detailed information about a hovered point, allowing users to toggle its fixation status and update its properties.
         * exports `class HoverMenuComponent` with:
@@ -215,7 +218,10 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * pullup:
     * pullup.component.html:
-        * ...
+        * overlay menu in the buttom middel
+        * uses 
+            * `<app-timeline>`
+            * `<app-track-component>`
     * pullup.component.ts:
         * This file defines the `PullupComponent`, which manages the state of a pull-up component in an Angular application, allowing users to toggle its visibility and close it.
         * exports `class PullupComponent` with :
@@ -227,7 +233,10 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * recorderoptions:
     * recorderoptions.component.html:
-        * ...
+        * content of the recorder options
+        * uses 
+            * shared components:
+                * `<app-value-text>`
     * recorderoptions.component.ts:
         * This file implements the `RecorderoptionsComponent`, which provides user interface functionalities for configuring and managing settings related to touch points, circle size, send interval, and server connection.
         * provides `class RecorderoptionsComponent` with :
@@ -243,7 +252,10 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * savingoptions:
     * savingoptions.component.html:
-        * ...
+        * content of the saving options
+        * uses 
+            * shared components:
+                * `<app-value-selection>`
     * savingoptions.component.ts:
         * This file defines the `SavingoptionsComponent`, responsible for managing saving and loading gestures within an Angular application.
         * uses `GestureDataService` for gesture data operations
@@ -253,7 +265,9 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * timeline:
     * timeline.component.html:
-        * ...
+        * content of the timeline
+        * uses 
+            * `<plotly-plot>`
     * timeline.component.ts:
         * This file implements the `TimelineComponent`, which provides a graphical representation of gesture data over time using Plotly.js, including dynamic updates for frame points and horizontal position tracking.
         * exports `class TimelineComponent` with :
@@ -272,7 +286,11 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * touch-area:
     * touch-area.component.html:
-        * ...
+        * main draw area for the points, big canvas
+        * uses:
+            * `<iframe>`
+            * `<canvas>`
+            * `<app-hover-menu>`
     * touch-area.component.ts:
         * This file implements the `TouchAreaComponent`, which manages the drawing and interaction handling for touch points on a canvas, including dynamic resizing, gesture tracking, and menu interaction.
         * exports `class TouchAreaComponent` with:
@@ -311,7 +329,10 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 
 * track-component:
     * track-component.component.html:
-        * ...
+        * content of the track area
+        * uses:
+            * shared components:
+                * `<button>`
     * track-component.component.ts:
         * This component manages the display and interaction of gesture track data, including selection, addition, deletion, and updating of gestures.
         * exports `class TrackComponentComponent` with :
@@ -328,7 +349,15 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
                 * `updateGesture(): void`
 
 * app.component.html:
-    * ...
+    * content of the track area
+    * uses:
+        * shared components:
+            * `<button>`
+            * `<app-option-checkbox>`
+            * `<app-dropdown>`
+            * `<app-touch-area>`
+            * `<app-pullup>`
+            * `<router-outlet>`
 * app.component.ts:
     * This file defines the `AppComponent` which serves as the root component of the application, managing gestures and their playback functionality.
     * exports `class AppComponent` with :
