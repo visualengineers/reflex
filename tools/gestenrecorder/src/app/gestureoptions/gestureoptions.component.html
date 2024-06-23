@@ -46,7 +46,7 @@
 <div *ngIf="selectedBackgroundType === 'from internet url'">
   <app-value-text elementId="background-image" elementTitle="URL" class="settings__item margin-bottom-default">
     <input inputField class="form-control form-control-sm custom-input" type="text" placeholder="Enter URL"
-    [(ngModel)]="backgroundUrl" name="backgroundUrl" id="backgroundUrl" style="min-width: 12rem;"(change)="saveConfiguration()">
+    [(ngModel)]="selectedBackgroundImage" name="backgroundUrl" id="backgroundUrl" style="min-width: 12rem;"(change)="saveConfiguration()">
   </app-value-text>
 </div>
 

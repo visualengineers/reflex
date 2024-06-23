@@ -38,6 +38,7 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.backgroundSources = this.configurationService.getBackgroundSources();
+    this.selectedBackgroundImage = this.configurationService.getBackgroundImage();
     this.viewPort = this.configurationService.getViewPort();
     console.log("backgroundSources",this.backgroundSources);
 
@@ -52,13 +53,7 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
     if (this.viewPort) {
       this.configurationService.setViewPort(this.viewPort);
     }
-
-    if (this.selectedBackgroundType === "from assets/img") {
-      this.configurationService.setBackgroundImage(this.selectedBackgroundImage);
-    } else if (this.selectedBackgroundType === "from internet url") {
-      this.configurationService.setBackgroundImage(this.backgroundUrl);
-    }
-
+    this.configurationService.setBackgroundImage(this.selectedBackgroundImage);
     this.configurationService.setLocalStorage();
   }
 
