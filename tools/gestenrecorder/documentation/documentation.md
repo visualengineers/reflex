@@ -362,3 +362,23 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * früher anfangen
 * 
 ------------------------------------------------------------------------------------------------------------------------------
+* ## 23.6.24
+### Bearbeiter: Joel
+
+### Fortschritt:
+* Laden und Speichern von Gesten ist nun Möglich
+* beim Laden funktioniert im Backend alles soweit gut, das problem ist, dass die Punkte nicht im Canvas gemalt werden...
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* bug fixes
+
+### Zeitaufwand:
+* 2,5h
+
+### Notizen:
+* 
+* 
+------------------------------------------------------------------------------------------------------------------------------
