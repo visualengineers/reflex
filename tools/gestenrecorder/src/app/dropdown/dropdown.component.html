@@ -1,5 +1,19 @@
 <div class="dropdowns__container">
     <div>
+      <button (click)="isSavingDropdownOpen = !isSavingDropdownOpen" class="dropdown_button">
+          <h2>
+              Saving Options
+              <img [src]="'./assets/img/dropdown-arrow.svg'" [class.rotated]="isSavingDropdownOpen">
+          </h2>
+      </button>
+      <div *ngIf="isSavingDropdownOpen" class="dropdown3">
+          <div class="dropdown-saving-options">
+              <app-savingoptions></app-savingoptions>
+          </div>
+      </div>
+    </div>
+
+    <div>
         <button (click)="isGestureDropdownOpen = !isGestureDropdownOpen" class="dropdown_button">
             <h2>
                 Gesture Options
