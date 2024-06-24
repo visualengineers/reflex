@@ -117,7 +117,9 @@ export class ConfigurationService implements OnDestroy {
 
   setBackgroundImage(backgroundImage: string): void {
     this.backgroundImage = backgroundImage;
+    console.log("BackgroundImage:",this.backgroundImage);
     this.background$.next(this.backgroundImage);
+    console.log("Background:",this.background$);
   }
 
   getBackgroundSources(): BackgroundSource[] {

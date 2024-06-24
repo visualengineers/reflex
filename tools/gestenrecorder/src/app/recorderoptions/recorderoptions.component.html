@@ -3,13 +3,14 @@
 </div>
 <app-value-text class="settings__item margin-bottom-default"
     elementId="network-address-text" elementTitle="Address">
-    <input inputField class="form-control form-control-sm" type="text"
+    <input inputField class="form-control form-control-sm" type="text" style="border: none;
+        border-bottom: 1px solid black; min-width: 12.1rem;"
         placeholder="http://127.0.0.1" [(ngModel)]="serverConnection"
         name="network-address-text" id="network-address-text" (change)="saveConfiguration()">
 </app-value-text>
 <app-value-text class="settings__item margin-bottom-default"
-    elementId="sendInterval" elementTitle="sendInterval">
-    <input inputField class="form-control form-control-sm" type="text"
+    elementId="sendInterval" elementTitle="Interval">
+    <input inputField class="form-control form-control-sm custom-input" type="text"
         placeholder="http://127.0.0.1" [(ngModel)]="sendInterval"
         name="sendInterval" id="sendInterval" (change)="saveConfiguration()">
 </app-value-text>
@@ -17,20 +18,20 @@
   <h2 class="heading-primary">Touch Points</h2>
 </div>
 <app-value-text class="settings__item margin-bottom-default"
-    elementId="max-amountTouchPoints" elementTitle="max-amountTouchPoints">
-    <input inputField class="form-control form-control-sm" type="text"
+    elementId="max-amountTouchPoints" elementTitle="Amount TouchPoints">
+    <input inputField class="form-control form-control-sm custom-input" type="text"
         placeholder="3" [(ngModel)]="amountTouchPoints"
         name="max-amountTouchPoints" id="max-amountTouchPoints" (change)="saveConfiguration()">
 </app-value-text>
 <app-value-text class="settings__item margin-bottom-default"
-  elementId="circleMinSize" elementTitle="circleMinSize">
-  <input inputField class="form-control form-control-sm" type="text"
+  elementId="circleMinSize" elementTitle="CicleSizeMin">
+  <input inputField class="form-control form-control-sm custom-input" type="text"
     placeholder="20" [(ngModel)]="circleSize.min"
     name="circleMinSize" id="circleMinSize" (change)="saveConfiguration()">
 </app-value-text>
 <app-value-text class="settings__item margin-bottom-default"
-  elementId="circleMaxSize" elementTitle="circleMaxSize">
-  <input inputField class="form-control form-control-sm" type="text"
+  elementId="circleMaxSize" elementTitle="CircleSizeMax">
+  <input inputField class="form-control form-control-sm custom-input" type="text"
     placeholder="20" [(ngModel)]="circleSize.max"
     name="circleMaxSize" id="circleMaxSize" (change)="saveConfiguration()">
 </app-value-text>

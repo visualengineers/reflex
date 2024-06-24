@@ -1,15 +1,16 @@
 # Gestenrecorder
 
-Redesign and reimplementation of an emulator tool for recording and playing back complex gestures. The aim is to facilitate the development and testing of apps for Elastic Displays. Part of the lecture `Project Seminar Summer 2024` @ University of Applied Sciences, Dresden.
 
+Redesign and reimplementation of an emulator tool for recording and playing back complex gestures. The aim is to facilitate the development and testing of apps for Elastic Displays. Part of the lecture `Project Seminar Summer 2024` @ University of Applied Sciences, Dresden.
 This project was created with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.2.
 
 
 ## Project initialization
 
-* Initialize / install packages in the parent workspace
-* requires `packages/reflex-angular-components`, so these should be built beforehand
-* Use execution script `npm run start:gestenrecorder`
+* initialize / install packages in parent workspace
+* need `packages/reflex-angular-components` and `packages/reflex-shared-types`, so these should be build beforehand
+* use run script ```npm run start:gestenrecorder```
+
 
 ## Main components
 ### Data components
