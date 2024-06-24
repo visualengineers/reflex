@@ -361,7 +361,14 @@
                           "path": "/knowledge/scientific/",
                           "file": "related-work.html",
                           "type": "page"
-                        }
+                        },
+                        {
+                          "name": "Terminology",
+                          "path": "/knowledge/scientific/",
+                          "file": "terms.html",
+                          "type": "page"
+                        },
+
                     ]
                 },
                 {

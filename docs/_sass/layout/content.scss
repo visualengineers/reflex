@@ -156,6 +156,10 @@
     }
 }
 
+.transparent-background {
+  background-color: transparent;
+}
+
 #table-of-contents {
 
     @media only screen and (min-width: $bp-large) {
