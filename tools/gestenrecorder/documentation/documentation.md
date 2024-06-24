@@ -401,3 +401,22 @@ Projektdokumentationsnotizen um den Fortschritt der Entwicklung zu dokumentieren
 * 
 * 
 ------------------------------------------------------------------------------------------------------------------------------
+* ## 24.6.24
+### Bearbeiter: Jonas
+
+### Fortschritt:
+* Überarbeiten der Präsentation
+
+### Herausforderungen / Learnings:
+* 
+
+### Nächste Schritte:
+* 
+
+### Zeitaufwand:
+* 3h
+
+### Notizen:
+* 
+* 
+------------------------------------------------------------------------------------------------------------------------------
