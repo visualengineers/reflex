@@ -91,6 +91,11 @@
       max-height: fit-content;
       box-shadow: none;
     }
+
+    & .transparent-background {
+      background-color: transparent;
+    }
+
 }
 
 .sections {
@@ -154,10 +159,6 @@
         margin-left: -1rem;
         margin-right: .5rem;
     }
-}
-
-.transparent-background {
-  background-color: transparent;
 }
 
 #table-of-contents {
