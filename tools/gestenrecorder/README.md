@@ -11,6 +11,12 @@ This project was created with [Angular CLI](https://github.com/angular/angular-c
 * need `packages/reflex-angular-components` and `packages/reflex-shared-types`, so these should be build beforehand
 * use run script ```npm run start:gestenrecorder```
 
+## Known bugs
+
+* relocating points (x,y,z) and then build/interpolate and play gesture
+* deleting points and then build/interpolate and play gesture
+* tracks feature not ready yet
+
 
 ## Main components
 ### Data components
