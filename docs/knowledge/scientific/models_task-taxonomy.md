@@ -1,5 +1,5 @@
 ---
-title: "Models: Tas Taxonomy"
+title: "Models: Task Taxonomy"
 ---
 
 # {{ page.title }}
