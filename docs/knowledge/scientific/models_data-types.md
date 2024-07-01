@@ -4,8 +4,6 @@ title: "Models: Data Types"
 
 # {{ page.title }}
 
-![Different data types that can be used with Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/data.png){:.full-width-scheme}
-
 ## Introduction
 
 Spindler et al. investigated three dimensional data structures in their work with *PaperLenses* and distinguished between
@@ -20,6 +18,8 @@ information space [8]. We concentrate on a simplified data-driven point of view 
 * Planar Data (2D)
 * Volumetric Data (2.5D)
 * Spatial Data (3D)
+
+![Different data types that can be used with Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/data.png){:.full-width-scheme}
 
 ## Planar Data (2D)
 
