@@ -368,7 +368,33 @@
                           "file": "terms.html",
                           "type": "page"
                         },
-
+                        {
+                          "name": "Models",
+                          "path": "/knowledge/scientific/",
+                          "file": "models_introduction.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                                "name": "Data Types",
+                                "path": "/knowledge/scientific/",
+                                "file": "models_data-types.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Interactions",
+                              "path": "/knowledge/scientific/",
+                              "file": "models_interactions.html",
+                              "type": "page"
+                          },
+                          {
+                            "name": "Task Taxonomy",
+                            "path": "/knowledge/scientific/",
+                            "file": "models_task-taxonomy.html",
+                            "type": "page"
+                          }
+                        ]
+                      }
                     ]
                 },
                 {
