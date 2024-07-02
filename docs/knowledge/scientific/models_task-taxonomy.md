@@ -171,7 +171,7 @@ Finally, hybrid approaches combine more than one interaction style, possibly als
     <img 
       alt="FlexiWall Data Exploration"
       src="{{ site.baseurl }}/assets/img/kb/scientific/hybrid_deep.jpg"
-      class="image-gallery__concept-image"/>
+      class="image-gallery__image"/>
     <span class="image-gallery__caption">
       <em>FlexiWall</em> Data Exploration [9]
     </span>
@@ -194,7 +194,7 @@ Finally, hybrid approaches combine more than one interaction style, possibly als
     <img 
       alt="Concept for selecting items using physical interaction metaphors"
       src="{{ site.baseurl }}/assets/img/kb/scientific/concept_force-selection.png"
-      class="image-gallery__image"/>
+      class="image-gallery__concept-image"/>
     <span class="image-gallery__caption">
       Concept for selecting items using physical interaction metaphors
     </span>

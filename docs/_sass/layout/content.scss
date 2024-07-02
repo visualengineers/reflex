@@ -186,6 +186,7 @@
   justify-content: space-between;
   justify-items: stretch;
   gap: 1rem;
+  margin-bottom: 1rem;
 
   &.images-3 {
     grid-template-columns: repeat(3, 1fr);
