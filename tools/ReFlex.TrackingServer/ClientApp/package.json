@@ -52,7 +52,7 @@
     "three": "^0.164.1"
   },
   "devDependencies": {
-    "@types/three": "^0.164.0",
+    "@types/three": "^0.166.0",
     "@types/d3": "^7.4.0"
   }
 }
