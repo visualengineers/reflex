@@ -230,7 +230,7 @@
   &__image, &__concept-image {
     height: 100%;
 
-    &:hover + &__caption {
+    &:hover + .image-gallery__caption {
       opacity: 1.0;
     }
   }
