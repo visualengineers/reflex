@@ -4,6 +4,15 @@ title: "Models: Interactions"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table-of-contents
+
+1. [General Observations on Interactions on Elastic Displays](#general-observations-on-interactions-on-elastic-displays)
+2. [Fingers](#fingers)
+3. [Planar Shapes](#planar-shapes)
+4. [Tangibles / Arbirary Shapes](#tangibles--arbirary-shapes)
+5. [References](#references)
+
 ## General Observations on Interactions on Elastic Displays
 
 The deformable surface offers a wide variety of possible types of interactions. Besides the type of the deformation, there are basically some general aspects that influence the interaction with the surface:

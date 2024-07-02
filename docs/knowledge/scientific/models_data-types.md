@@ -4,6 +4,15 @@ title: "Models: Data Types"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table-of-contents
+
+1. [Introduction](#introduction)
+2. [Planar Data (2D)](#planar-data-2d)
+3. [Volumetric Data (2.5D)](#volumetric-data-25d)
+4. [Spatial Data (3D)](#spatial-data-3d)
+5. [References](#references)
+
 ## Introduction
 
 *Spindler et al.* investigated three dimensional data structures in their work with *PaperLenses* and distinguished between

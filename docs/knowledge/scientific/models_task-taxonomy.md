@@ -14,7 +14,6 @@ title: "Models: Task Taxonomy"
 5. [Tasks](#tasks)
 6. [References](#references)
 
-
 ## Introduction
 
 Describing applications for Elastic Displays by categorization based on [data types](models_data-types.html) has some limitations, as it allows no distinction between content and the metaphors that are used to interact with the content. For example, *DEEP - Data Exploration on Elastic Projections*, uses physical interaction metaphors based on spatial deformation to interact with a zoomable user interface. In the data-model, the content is pure planar 2D, whereas interaction is based on concepts that we associated with the spatial 3D domain.
@@ -24,7 +23,7 @@ Additionally, we found that the technological foundation also plays a certain ro
 Therefore, the model was extended to a task taxonomy [6], that contains a technology layer, data layer and interaction layer and additionally tries to describe the most common task types that are suitable for Elastic Displays. It is inspired by *Shneiderman’s* **Task by Data Type Taxonomy for Information Visualization** [15] and  is based on practical experiences with existing prototypes
 and reviews of literature.
 
-![Task Taxonomy for Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/task_taxonomy.png){:.full-width-scheme}
+![Task Taxonomy for Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/task_taxonomy.png)
 
 ## Data Layer
 
