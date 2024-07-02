@@ -36,7 +36,7 @@ The category contains two-dimensional data structures, which are variable in the
 
 **Examples for planar data sets:**
 
-<div class="image-gallery-2">
+<span class="image-gallery-2">
 
 ![2d Scatterplot as example for planar data set]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-1.jpg){:.image-gallery__image}
 
@@ -49,7 +49,8 @@ Zoomable UI from *Depth Touch*’s Product Browser [5]{:.image-gallery__caption}
 ![Map Visualization as an example for Planar Data]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg){:.image-gallery__image}
 
 Map Visualization on *FlexiWall*{:.image-gallery__caption}
-</div>
+
+</span>
 
 ## Volumetric Data (2.5D)
 
