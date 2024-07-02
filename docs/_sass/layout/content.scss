@@ -96,6 +96,12 @@
       background-color: transparent;
     }
 
+    & .borderless {
+      box-shadow: none;
+      margin: 2rem 0;
+
+    }
+
 }
 
 .sections {

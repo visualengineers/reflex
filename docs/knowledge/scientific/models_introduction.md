@@ -14,7 +14,7 @@ Related to extending the framework and exploring different use cases, as well as
 
 This serves a the theoretical foundation of thr *ReFlex framework* as it covers the technological dimension by providing access to all the features or data needed on this aspect of the taxonomy and also provides the tools for implementing the interaction metaphors proposed by the taxonomy.
 
-![Development of models based on lessons learned from prototypes]({{ site.baseurl }}/assets/img/kb/scientific/models_eng.png)
+![Development of models based on lessons learned from prototypes]({{ site.baseurl }}/assets/img/kb/scientific/models_eng.png){:.borderless}
 
 ## References
 
