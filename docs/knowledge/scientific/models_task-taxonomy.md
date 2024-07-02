@@ -24,7 +24,7 @@ Additionally, we found that the technological foundation also plays a certain ro
 Therefore, the model was extended to a task taxonomy [6], that contains a technology layer, data layer and interaction layer and additionally tries to describe the most common task types that are suitable for Elastic Displays. It is inspired by *Shneiderman’s* **Task by Data Type Taxonomy for Information Visualization** [15] and  is based on practical experiences with existing prototypes
 and reviews of literature.
 
-![Task Taxonomy for Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/task_taxonomy.png)
+![Task Taxonomy for Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/task_taxonomy.png){:.borderless .transparent-background}
 
 ## Data Layer
 
