@@ -53,7 +53,20 @@ The use of tangibles is not limited to planar shapes. Instead, any arbitrary sur
 
 This type on interaction uses tangibles positioned in 3d space and use the three-dimension surface structure for complex manipulations.
 
-This particular interaction technique is a specific feature of Elastic Displays as it is difficult to achieve similar results on rigid surfaces. Additionally, Tanngibles may be used to prevent the surface from restoring its initial state when changing the applied pressure. This relates to the concept of Gravibles, which could be used to save the current state [1].
+This particular interaction technique is a specific feature of Elastic Displays as it is difficult to achieve similar results on rigid surfaces. Additionally, Tangibles may be used to prevent the surface from restoring its initial state when changing the applied pressure. This relates to the concept of Gravibles, which could be used to save the current state [1].
+
+
+<div class="image-gallery">
+  <div>
+    <img 
+      alt="Example of using tangibles for exploring layered maps"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/tangibles.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Example of using tangibles for exploring layered maps.
+    </span>
+  </div>
+</div>
 
 ## References
 
