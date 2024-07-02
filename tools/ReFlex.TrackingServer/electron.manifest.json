@@ -2,7 +2,7 @@
   "executable": "ReFlex.TrackingServer",
   "splashscreen": {
     "imageFile": "/wwwroot/splashscreen.jpg"
-  },  
+  },
   "aspCoreBackendPort": 5000,
   "ignoreAllCertificateErrors": true,
   "name": "reflex.trackingserver",
@@ -11,14 +11,14 @@
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.reflex.trackingserver",    
+    "appId": "com.reflex.trackingserver",
     "productName": "ReFlex TrackingServer",
     "copyright": "Copyright © 2023",
-    "buildVersion": "0.9.8",
+    "buildVersion": "0.9.9",
     "compression": "maximum",
     "electronVersion": "23.2.0",
     "win": {
-      "icon": "bin/Assets/app_icon.ico"      
+      "icon": "bin/Assets/app_icon.ico"
     },
     "mac": {
       "icon": "bin/Assets/app_icon.png"
