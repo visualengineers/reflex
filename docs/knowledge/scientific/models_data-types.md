@@ -6,7 +6,7 @@ title: "Models: Data Types"
 
 ## Introduction
 
-Spindler et al. investigated three dimensional data structures in their work with *PaperLenses* and distinguished between
+*Spindler et al.* investigated three dimensional data structures in their work with *PaperLenses* and distinguished between
 
 * volumetric,
 * layered,
@@ -36,7 +36,7 @@ The opportunities and limitations of layer-based volumetric spaces used with Ela
 
 ## Spatial Data (3D)
 
-The category comprises real three dimensional scenes which are not structured in layers or slices. The main purpose is to model 3D space interactively to influence virtual entities in the scene or the scene parameters themselves. Examples include the reproduction of physical effects like gravity simulation, or 3D modeling of surfaces and volumes. By deforming the surface, true spatial data can be explored and manipulated continuously. The Deformable Workspace is a prime example for this content [9]. Similarly, impress [2] and eTable [4] use spatial content.
+The category comprises real three dimensional scenes which are not structured in layers or slices. The main purpose is to model 3D space interactively to influence virtual entities in the scene or the scene parameters themselves. Examples include the reproduction of physical effects like gravity simulation, or 3D modeling of surfaces and volumes. By deforming the surface, true spatial data can be explored and manipulated continuously. The *Deformable Workspace* is a prime example for this content [9]. Similarly, *impress* [2] and *eTable* [4] use spatial content.
 
 ## References
 
