@@ -20,7 +20,7 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 4. [use shared code](#use-shared-code)
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
-7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
+7. [Known issues / Troubleshooting](#known-issues--troubleshooting)
 
 ## Build status
 
@@ -107,11 +107,11 @@ __[⬆ back to top](#table-of-contents)__
 | `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test-ci` and `lint` commands |                                                                                                     |
 | `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                         |                                                                                                     |
 | `npm run build:shared-components`             | builds Shared Angular Components(#use-shared-code)                                         |                                                                                                     |
-| `npm run build:electron-win`                  | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                     |                                                                                                     |
-| `npm run build:electron-osx`                  | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)             | needs to be run on macOS                                                                            |
-| `npm run build:electron-osx-arm64`            | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (ARM64)                 | needs to be run on macOS                                                                            |
-| `npm run build:electron-linux`                | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (x64)                 |                                                                                                     |
-| `npm run build:electron-linux-arm64`          | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (ARM64)               |                                                                                                     |
+| `npm run build:server:electron-win`                  | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                     |                                                                                                     |
+| `npm run build:server:electron-osx`                  | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)             | needs to be run on macOS                                                                            |
+| `npm run build:server:electron-osx-arm64`            | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (ARM64)                 | needs to be run on macOS                                                                            |
+| `npm run build:server:electron-linux`                | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (x64)                 |                                                                                                     |
+| `npm run build:server:electron-linux-arm64`          | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (ARM64)               |                                                                                                     |
 | `npm run build:emulator`                      | builds Emulator Angular App                                                             |                                                                                                     |
 | `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies                           |
 | `npm run build:emulator:electron-osx`         | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
