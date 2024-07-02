@@ -54,7 +54,7 @@ As exhibited by the *DepthTouch* prototype [14], a force simulation is achieved 
       src="{{ site.baseurl }}/assets/img/kb/scientific/image-sequences.jpg"
       class="image-gallery__image"/>
     <span class="image-gallery__caption">
-      Image sequences used for data analysis in <em>FlexiWall<em> Big Data Layers application [5]
+      Image sequences used for data analysis in <em>FlexiWall</em> Big Data Layers application [5]
     </span>
   </div>
 
@@ -102,6 +102,28 @@ ith this interaction style, insights about different structural levels of an inf
 ### Zoom
 
 With this interaction style, overview and detail techniques can be realized. This includes geometric zoom using gigapixel images and rich semantic zooms for abstract data, e. g. with magic lenses. *FlexiWall* Big Data Zoom [5], and Zoomable UI  [13] use zoom as primary interaction style.
+
+<div class="image-gallery images-2">
+  <div>
+    <img 
+      alt="Example of a zoomable UI using maps and magic lenses"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/zoom_map.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Example of a zoomable UI using maps and magic lenses in <em>DepthTouch</em> Layered Map Exploration [12]
+    </span>
+  </div>
+
+  <div>
+    <img 
+      alt="Image sequences used for data analysis in FlexiWall Big Data Layers application"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/zoom_concept.png"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Concept for zoomable user interface in the context of mechanical engineering
+    </span>
+  </div>
+</div>
 
 ### Physics-based
 

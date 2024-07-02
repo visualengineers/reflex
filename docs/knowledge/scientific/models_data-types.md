@@ -34,8 +34,6 @@ information space [8]. We concentrate on a simplified data-driven point of view 
 
 The category contains two-dimensional data structures, which are variable in their level of detail or two-dimensional structures that are dynamically rearranged using different parameters. Typical use cases are graphs such as *ElaScreen*'s Graph Visualization [10] or zoomable data like *FlexiWall*’s Data Exploration [3] or *Depth Touch*’s Product Browser [5].
 
-**Examples for planar data sets:**
-
 <div class="image-gallery images-3">
   <div>
     <img 
@@ -76,8 +74,6 @@ layers is the *FlexiWall* Map Viewer [6], which is used to explore political or 
 To our understanding, this also includes content in form of slices of three-dimensional structures, e. g. MRT, CT, or range images. We discarded the distinction between “real” volumetric data and layered data as both types use the same structural foundation, differing only regarding the density of data layers used and the continuity of values throughout the data volume. Natural zooming by using the depth interaction is an intuitive interaction with volumetric data. *ElaScreen*'s 3D scene navigation [10] is an example for this type of volumetric data.
 
 The opportunities and limitations of layer-based volumetric spaces used with Elastic Displays have been evaluated in a user study recently [7].
-
-**Examples for planar data sets:**
 
 <div class="image-gallery images-2">
   <div>
