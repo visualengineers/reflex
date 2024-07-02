@@ -22,7 +22,9 @@ title: "Models: Data Types"
 * zoomable, and
 * temporal
 
-information space [8]. We concentrate on a simplified data-driven point of view and distinguish three fundamental data structures suitable for Elastic Displays:
+information space [8].
+
+We concentrate on a simplified data-driven point of view and distinguish three fundamental data structures suitable for Elastic Displays:
 
 * Planar Data (2D)
 * Volumetric Data (2.5D)

@@ -223,7 +223,7 @@ With the different types of content, also search tasks become relevant. Both exp
 
 Due to the ephemeral nature of the haptic interaction with Elastic Displays, the actual permanent manipulation of data items is a demanding task. However, this task is essential in domains such as product design that could benefit from the versatility of the surface deformation for complex data manipulations.
 
-### Make Decision
+### Make Decisions
 
 Data visualization on Elastic Displays can facilitate decision-making processes. In urban development and architectural visualization, numerous maps and views exist that depict aspects relevant for construction planning (plans, ground plots, profiles, supply units, waste management, escape routes, energy plans, wiring diagrams, etc.). Relating this information to maps often results in massive visual clutter. Using semi-transparent plans is a common solution to this problem. Elastic Displays can be used to control the transparency of such information layers in the desired areas of the map. Hence, conflicts of the different plans (e. g. building and civil engineering drawing) can be identified without losing the overall view of the plan. Another promising application is informing the public about construction projects (civic participation), which contains all relevant and important information resulting in specific architectural decisions that would otherwise be difficult to explain.
 
