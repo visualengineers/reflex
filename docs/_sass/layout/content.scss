@@ -226,12 +226,19 @@
     transition: opacity 0.5s ease-in-out;
   }
 
-  &__image {
+  &__image, &__concept-image {
     height: 100%;
+
+    &:hover + &__caption {
+      opacity: 1.0;
+    }
+  }
+
+  &__image {
     object-fit: cover;
   }
 
-  &__image:hover + &__caption {
-    opacity: 1.0;
+  &__concept-image {
+    object-fit: contain;
   }
 }

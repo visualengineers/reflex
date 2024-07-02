@@ -118,7 +118,7 @@ With this interaction style, overview and detail techniques can be realized. Thi
     <img 
       alt="Image sequences used for data analysis in FlexiWall Big Data Layers application"
       src="{{ site.baseurl }}/assets/img/kb/scientific/zoom_concept.png"
-      class="image-gallery__image"/>
+      class="image-gallery__concept-image"/>
     <span class="image-gallery__caption">
       Concept for zoomable user interface in the context of mechanical engineering
     </span>
@@ -161,7 +161,7 @@ Finally, hybrid approaches combine more than one interaction style, possibly als
     <img 
       alt="Concept for physics-based interaction an displaying information using zoomable UI techniques employed in DEEP"
       src="{{ site.baseurl }}/assets/img/kb/scientific/concept_deep.png"
-      class="image-gallery__image"/>
+      class="image-gallery__concept-image"/>
     <span class="image-gallery__caption">
       Concept for physics-based interaction an displaying information using zoomable UI techniques employed in DEEP [9]
     </span>
@@ -170,8 +170,8 @@ Finally, hybrid approaches combine more than one interaction style, possibly als
   <div>
     <img 
       alt="FlexiWall Data Exploration"
-      src="{{ site.baseurl }}/assets/img/kb/scientific/hybrid-deep.jpg"
-      class="image-gallery__image"/>
+      src="{{ site.baseurl }}/assets/img/kb/scientific/hybrid_deep.jpg"
+      class="image-gallery__concept-image"/>
     <span class="image-gallery__caption">
       <em>FlexiWall</em> Data Exploration [9]
     </span>
