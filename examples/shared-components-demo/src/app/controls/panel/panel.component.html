@@ -10,7 +10,7 @@
 </app-panel-header>
 <div class="content__body margin-bottom-default">
   <p></p>
-  <p [ngClass]="toggleHeaderActive ? 'bg-active' : 'bg-inactive'" class="settings__status-detail">
+  <p id="toggleMessage" [ngClass]="toggleHeaderActive ? 'bg-active' : 'bg-inactive'" class="settings__status-detail">
     the toggle in the header is {{ toggleHeaderActive ? 'active' : 'inactive' }}
   </p>
   <app-settings-group elementTitle="Additional Info" toggleId="panel_header_info">

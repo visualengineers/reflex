@@ -51,10 +51,10 @@ export class ValueSliderComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.debounceUpdate = this.debounce$.subscribe(
-      () => this.onChange.emit(),
-      (error) => console.error(error)
-    );
+    this.debounceUpdate = this.debounce$.subscribe({
+      next: () => this.onChange.emit(),
+      error: (error) => console.error(error)
+    });
   }
 
   public ngOnDestroy(): void {
@@ -67,5 +67,9 @@ export class ValueSliderComponent implements OnInit, OnDestroy {
     this.data = value;
     this.currentValue.next(this.data);
     this.dataChange.emit(this.data);
+  }
+
+  public updateInput(value: string): void {
+    this.update(parseFloat(value));
   }
 }
