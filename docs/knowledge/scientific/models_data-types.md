@@ -43,7 +43,7 @@ The category contains two-dimensional data structures, which are variable in the
       src="{{ site.baseurl }}/assets/img/kb/scientific/data_2d-1.jpg"
       class="image-gallery__image"/>
     <span class="image-gallery__caption">
-      2d scatterplot visualized in *FlexiWall*’s Data Exploration [3]
+      2d scatterplot visualized in <em>FlexiWall</em>’s Data Exploration [3]
     </span>
   </div>
 
@@ -53,7 +53,7 @@ The category contains two-dimensional data structures, which are variable in the
       src="{{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg"
       class="image-gallery__image"/>
     <span class="image-gallery__caption">
-      Zoomable UI from *Depth Touch*’s Product Browser [5]
+      Zoomable UI from <em>Depth Touch</em>’s Product Browser [5]
     </span>
   </div>
 
@@ -63,7 +63,7 @@ The category contains two-dimensional data structures, which are variable in the
       src="{{ site.baseurl }}/assets/img/kb/scientific/data_2d-3.jpg"
       class="image-gallery__image"/>
     <span class="image-gallery__caption">
-      Map Visualization on *FlexiWall*
+      Map Visualization on <em>FlexiWall</em>
     </span>
   </div>
 </div>
@@ -76,6 +76,31 @@ layers is the *FlexiWall* Map Viewer [6], which is used to explore political or 
 To our understanding, this also includes content in form of slices of three-dimensional structures, e. g. MRT, CT, or range images. We discarded the distinction between “real” volumetric data and layered data as both types use the same structural foundation, differing only regarding the density of data layers used and the continuity of values throughout the data volume. Natural zooming by using the depth interaction is an intuitive interaction with volumetric data. *ElaScreen*'s 3D scene navigation [10] is an example for this type of volumetric data.
 
 The opportunities and limitations of layer-based volumetric spaces used with Elastic Displays have been evaluated in a user study recently [7].
+
+**Examples for planar data sets:**
+
+<div class="image-gallery images-2">
+  <div>
+    <img 
+      alt="Interactively adjusting focal plane of a photography "
+      src="{{ site.baseurl }}/assets/img/kb/scientific/data_25d-1.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Interactively adjusting focal plane of a photography [6]
+    </span>
+  </div>
+
+  <div>
+    <img 
+      alt="Exploring different versions of a painting"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/data_25d-2.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Exploring different versions of a painting [6]
+    </span>
+  </div>
+
+</div>
 
 ## Spatial Data (3D)
 
