@@ -45,7 +45,7 @@ The category contains two-dimensional data structures, which are variable in the
     <span class="image-gallery__caption">
       2d scatterplot visualized in *FlexiWall*’s Data Exploration [3]
     </span>
-  <div>
+  </div>
 
   <div>
     <img 
