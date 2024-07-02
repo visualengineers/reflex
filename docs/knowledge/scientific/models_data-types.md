@@ -34,6 +34,23 @@ information space [8]. We concentrate on a simplified data-driven point of view 
 
 The category contains two-dimensional data structures, which are variable in their level of detail or two-dimensional structures that are dynamically rearranged using different parameters. Typical use cases are graphs such as *ElaScreen*'s Graph Visualization [10] or zoomable data like *FlexiWall*’s Data Exploration [3] or *Depth Touch*’s Product Browser [5].
 
+**Examples for planar data sets:**
+
+<div class="image-gallery-2">
+
+![2d Scatterplot as example for planar data set]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-1.jpg){:.image-gallery__image}
+
+2d scatterplot visualized in *FlexiWall*’s Data Exploration [3]{:.image-gallery__caption}
+
+![Zoomable UI as an example for Planar Data]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg){:.image-gallery__image}
+
+Zoomable UI from *Depth Touch*’s Product Browser [5]{:.image-gallery__caption}
+
+![Map Visualization as an example for Planar Data]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg){:.image-gallery__image}
+
+Map Visualization on *FlexiWall*{:.image-gallery__caption}
+</div>
+
 ## Volumetric Data (2.5D)
 
 With this category we refer to 2D images (slices) that come in different variations so that they can be stacked or layered, forming a semantic space regarding a specific domain, usually time or semantic layers. A concrete use case in the time domain is the haptic exploration of paintings, revealing the evolutionary history of the painting process (cp. [6]).
