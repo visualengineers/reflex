@@ -196,6 +196,10 @@
 
   &.images-3 {
     grid-template-columns: repeat(3, 1fr);
+
+    @media only screen and (max-width: $bp-medium) {
+      grid-template-columns: auto;
+    }
   }
 
   &.images-2 {
@@ -204,10 +208,18 @@
 
   &.images-2-1 {
     grid-template-columns: 2fr 1fr;
+
+    @media only screen and (max-width: $bp-medium) {
+      grid-template-columns: auto;
+    }
   }
 
   &.images-1-2 {
     grid-template-columns: 1fr 2fr;
+
+    @media only screen and (max-width: $bp-medium) {
+      grid-template-columns: auto;
+    }
   }
 
   & div {
@@ -232,6 +244,13 @@
     pointer-events: none;
 
     transition: opacity 0.5s ease-in-out;
+
+    overflow: hidden;
+
+    @media only screen and (max-width: $bp-medium) {
+      height: 100%;
+      font-size: $font-size-small;
+    }
   }
 
   &__image, &__concept-image {
