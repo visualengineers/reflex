@@ -36,21 +36,37 @@ The category contains two-dimensional data structures, which are variable in the
 
 **Examples for planar data sets:**
 
-<span class="image-gallery-2">
+<div class="image-gallery images-3">
+  <div>
+    <img 
+      alt="2d Scatterplot as example for planar data set"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/data_2d-1.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      2d scatterplot visualized in *FlexiWall*’s Data Exploration [3]
+    </span>
+  <div>
 
-![2d Scatterplot as example for planar data set]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-1.jpg){:.image-gallery__image}
+  <div>
+    <img 
+      alt="Zoomable UI as an example for Planar Data"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Zoomable UI from *Depth Touch*’s Product Browser [5]
+    </span>
+  </div>
 
-2d scatterplot visualized in *FlexiWall*’s Data Exploration [3]{:.image-gallery__caption}
-
-![Zoomable UI as an example for Planar Data]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg){:.image-gallery__image}
-
-Zoomable UI from *Depth Touch*’s Product Browser [5]{:.image-gallery__caption}
-
-![Map Visualization as an example for Planar Data]({{ site.baseurl }}/assets/img/kb/scientific/data_2d-2.jpg){:.image-gallery__image}
-
-Map Visualization on *FlexiWall*{:.image-gallery__caption}
-
-</span>
+  <div>
+    <img 
+      alt="Map Visualization as an example for Planar Data"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/data_2d-3.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Map Visualization on *FlexiWall*
+    </span>
+  </div>
+</div>
 
 ## Volumetric Data (2.5D)
 

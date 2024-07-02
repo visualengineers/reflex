@@ -179,3 +179,29 @@
         }
     }
 }
+
+.image-gallery {
+  display: grid;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: stretch;
+
+  & .images-3 {
+    grid-template-columns: repeat(3 1fr);
+  }
+
+  & div {
+    position: relative;
+  }
+
+  &__caption {
+    position: absolute;
+    width: 100%;
+    height: 2rem;
+    background-color: rgba($color: $color-white, $alpha: 0.75);
+    color: $color-primary-dark;
+    font-size: $font-size-medium;
+    font-weight: $font-weight-bold;
+    text-align: center;
+  }
+}
