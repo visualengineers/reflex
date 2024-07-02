@@ -47,6 +47,38 @@ frequently in the reviewed applications: *Khronos Movie Viewer* [1], *impress* 3
 
 As exhibited by the *DepthTouch* prototype [14], a force simulation is achieved based on per pixel derivatives. This allows true and natural flexible interaction metaphors. However, this approach suffers from an incomplete depth im age analysis and a user interface that is difficult to adapt to requirements that exceed the physical metaphors. Additionally, manipulation of content is achieved mostly by indirect interaction. The only productive application from our review using this technology is *ElaScreen*’s Graph Visualization [18].
 
+<div class="image-gallery images-3">
+  <div>
+    <img 
+      alt="Image sequences used for data analysis in FlexiWall Big Data Layers application"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/image-sequences.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Image sequences used for data analysis in <em>FlexiWall<em> Big Data Layers application [5]
+    </span>
+  </div>
+
+  <div>
+    <img 
+      alt="Example of blending different layers based on the depth value of each pixel"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/pixel-blending.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Example of blending different layers based on the depth value of each pixel
+    </span>
+  </div>
+
+  <div>
+    <img 
+      alt="Using vector field for physics simulation"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/vector-field.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Using vector field for physics simulation with the <em>DepthTouch</em> prototype [14]
+    </span>
+  </div>
+</div>
+
 ### Single-Touch 3D
 
 The basic interaction with a touch display – a single touch – can easily be translated to Elastic Displays: The finger specifies a point on the surface (touch) respectively in space (Elastic Display). Single-touch interaction is achieved by evaluating the global extremum of the surface. This approach allows more sophisticated user interfaces and even mouse emulation to make traditional user interfaces available. However, it only allows a single touch and hence, there is a low expressiveness of the interaction. The Big Data Zoom application using *FlexiWall* [5] is the only application in our review relying solely on Single-Touch.
