@@ -195,6 +195,14 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  &.images-2-1 {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  &.images-1-2 {
+    grid-template-columns: 1fr 2fr;
+  }
+
   & div {
     position: relative;
     height: 100%;

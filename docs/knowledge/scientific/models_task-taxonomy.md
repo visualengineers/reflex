@@ -130,9 +130,77 @@ With this interaction style, overview and detail techniques can be realized. Thi
 Exploration of physical phenomena such as gravity or magnetism are realized with particle simulations and yield an intuitive physics-based interaction. Usage of physic-based metaphors is possible such as attraction and repulsion forces, gravity, movement, collision, or mass
 of objects. (cp. [4]) Examples for physics-based interaction are *ElaScreen*’s Graph Visualization [18],  and the *DepthTouch* Prototype [14].
 
+<div class="image-gallery images-2">
+  <div>
+    <img 
+      alt="Physical gravity simulation based on the deformation of the elastic surface"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/physics-based-1.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Physical gravity simulation based on the deformation of the elastic surface
+    </span>
+  </div>
+
+  <div>
+    <img 
+      alt="Using physical metaphors for controlling objects in a gaming scenario"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/physics-based-2.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Using physical metaphors for controlling objects in a gaming scenario
+    </span>
+  </div>
+</div>
+
 ### Hybrid
 
 Finally, hybrid approaches combine more than one interaction style, possibly also different technologies. For example, the combination of zoom and physics-based interaction allows using forces to filter and semantic zoom to visualize details (*FlexiWall* Data Exploration [9] and *DepthTouch* Product Browser [10]). Layers and physics-based interaction can exploit force-touch for navigation and layers to control animations on specific items. Layers and Zoomable UI can also be combined, e.g. when using magic lenses (*DepthTouch* Layered Map Exploration [12]).
+
+<div class="image-gallery images-2-1">
+  <div>
+    <img 
+      alt="Concept for physics-based interaction an displaying information using zoomable UI techniques employed in DEEP"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/concept_deep.png"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Concept for physics-based interaction an displaying information using zoomable UI techniques employed in DEEP [9]
+    </span>
+  </div>
+  
+  <div>
+    <img 
+      alt="FlexiWall Data Exploration"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/hybrid-deep.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      <em>FlexiWall</em> Data Exploration [9]
+    </span>
+  </div>
+
+</div>
+
+<div class="image-gallery images-1-2">
+  <div>
+    <img 
+      alt="DepthTouch Product Browser"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/product-browser.jpg"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      <em>DepthTouch</em> Product Browser [10]
+    </span>
+  </div>
+  
+  <div>
+    <img 
+      alt="Concept for selecting items using physical interaction metaphors"
+      src="{{ site.baseurl }}/assets/img/kb/scientific/concept_force-selection.png"
+      class="image-gallery__image"/>
+    <span class="image-gallery__caption">
+      Concept for selecting items using physical interaction metaphors
+    </span>
+  </div>
+
+</div>
 
 ## Tasks
 
