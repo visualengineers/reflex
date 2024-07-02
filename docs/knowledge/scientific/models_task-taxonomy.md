@@ -12,7 +12,8 @@ title: "Models: Task Taxonomy"
 3. [Technology Layer](#technology-layer)
 4. [Interaction Layer](#interaction-layer)
 5. [Tasks](#tasks)
-6. [References](#references)
+6. [Prototypes classified by the Taxonomy](#prototypes-classified-by-the-taxonomy)
+7. [References](#references)
 
 ## Introduction
 
@@ -231,6 +232,12 @@ Data visualization on Elastic Displays can facilitate decision-making processes.
 
 Large Elastic Displays are suitable for teams to work on problems. This kind of collaborative work can encompass several of the previous tasks, which are carried out individually. For instance, in mechanical engineering, the visualization of schemata such as component diagrams, circuit diagrams, or flow diagrams can explain the setup of complex systems, which is often challenging. In particular, when highly detailed information about the system is necessary, users are often overwhelmed. Elastic Displays can provide zoomable user interfaces that allow natural adjustment of level of details. In the initial state, a clear
 and well-structured overview of the system and its component is provided. Further details of subsystems can be viewed using the deformation of the surface. The depth of the interaction determines the level of detail. In this way, system details can be explored without losing the context of the entire system. Since collaboration on specific problems is a very complex task, only few applications for Elastic Displays realize a collaborative approach to discuss clustering problems (so far).
+
+## Prototypes classified by the Taxonomy
+
+The following plot displays how different prototypes from related work can be classified by the different dimensions of the taxonomy.
+
+![Related prototypes classified by the different dimensions of the taxonomy]({{ site.baseurl }}/assets/img/kb/scientific/parallel_categories_eng.svg){:.full-width-scheme}
 
 ## References
 
