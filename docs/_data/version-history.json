@@ -6,7 +6,8 @@
             "library":
             [
                 "optimization, bugfixing and cleanup",
-                "Update to .NET 7",
+                "added tests for ReFlex.Core",
+                "update to .NET 7",
                 "fixing and optimization of interaction smoothing",
                 "cleanup and optimization of Intel RealSense support"
             ],
@@ -26,6 +27,7 @@
                 "added WPF example for .NET Core"
             ],
             "tools": [
+                "added logging server as separate tool",
                 "added shared Angular components for reusable ui components and style",
                 "added data format for storing interaction data",
                 "Emulator: added service for replaying stored interaction data",
@@ -36,12 +38,10 @@
                 "integrated dependabot in repository",
                 "CI optimizations (caching / reusable actions, different workflows for PRs / pushes on main)",
                 "cleanup script for cleaning build artifacts, cached dependencies and intermediate files",
-                "tests for library",
                 "test reports for .NET unit tests (Cobertura -> ReportGenerator Html output)",
                 "test reports for shared types and emulator",
                 "build configuration based on command-line parameters to control which sensors are available (resolving platform-pendent issues)",
-                "added github pages for documentation",
-                "added logging server as separate tool"
+                "added github pages for documentation"
             ]
         },
         {
