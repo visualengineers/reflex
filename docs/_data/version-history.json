@@ -2,7 +2,7 @@
     "versions": [
         {
             "version": "0.9.9",
-            "date": "xx.xx.2024",
+            "date": "xx.07.2024",
             "library":
             [
                 "optimization, bugfixing and cleanup",
