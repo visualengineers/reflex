@@ -30,6 +30,8 @@ The chosen approach can be illustrated very well using the "Grand Challenges for
 * [User Behaviour](challenges_user-behaviour.md)
 * [Societal Issues](challenges_societal.md)
 
+The following graphic shows the Grand Challenges, together with the aspects that are directly addressed by our research:
+
 ![Grand Challenges]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_overview.png){:.borderless .transparent-background}
 
 **[⬆ back to top](#table-of-contents)**
