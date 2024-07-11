@@ -26,9 +26,13 @@ and reviews of literature.
 
 ![Task Taxonomy for Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/task_taxonomy.png){:.borderless .transparent-background}
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Data Layer
 
 The data layer serves as the foundation of the model. The detailed description can be found in [Models: Data Types](models_data-types.html).
+
+**[⬆ back to top](#table-of-contents)**
 
 ## Technology Layer
 
@@ -91,6 +95,8 @@ Display and interprets them as »multi-touch with an additional dimension« (cp.
 
 However, this approach requires a complex calibration procedure and due to the involved depth sensors, it is commonly not very stable and positional accuracy is rather low. Current technology requires smoothing procedures, which in return introduce considerable latency. However, several productive applications rely on Multi-Touch on the Elastic Display such as *Deformable Workspace* [23], *eTable* 3D-viewer [12],
 *DepthTouch* Product Browser [14] and Layered Map Exploration [16], and *FlexiWall* Data Exploration [13].
+
+**[⬆ back to top](#table-of-contents)**
 
 ## Interaction Layer
 
@@ -203,6 +209,8 @@ Finally, hybrid approaches combine more than one interaction style, possibly als
 
 </div>
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Tasks
 
 The most important level in the taxonomy is the actual task level. Our list consists of common tasks in HCI that have been realized successfully on Elastic Displays. For each of the task types, we mention general application domains.
@@ -233,11 +241,15 @@ Data visualization on Elastic Displays can facilitate decision-making processes.
 Large Elastic Displays are suitable for teams to work on problems. This kind of collaborative work can encompass several of the previous tasks, which are carried out individually. For instance, in mechanical engineering, the visualization of schemata such as component diagrams, circuit diagrams, or flow diagrams can explain the setup of complex systems, which is often challenging. In particular, when highly detailed information about the system is necessary, users are often overwhelmed. Elastic Displays can provide zoomable user interfaces that allow natural adjustment of level of details. In the initial state, a clear
 and well-structured overview of the system and its component is provided. Further details of subsystems can be viewed using the deformation of the surface. The depth of the interaction determines the level of detail. In this way, system details can be explored without losing the context of the entire system. Since collaboration on specific problems is a very complex task, only few applications for Elastic Displays realize a collaborative approach to discuss clustering problems (so far).
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Prototypes classified by the Taxonomy
 
 The following plot displays how different prototypes from related work can be classified by the different dimensions of the taxonomy.
 
 ![Related prototypes classified by the different dimensions of the taxonomy]({{ site.baseurl }}/assets/img/kb/scientific/parallel_categories_eng.svg){:.full-width-scheme}
+
+**[⬆ back to top](#table-of-contents)**
 
 ## References
 
@@ -288,3 +300,5 @@ The following plot displays how different prototypes from related work can be cl
 [23] *Watanabe, Y., Cassinelli, A., Komuro, T., and Ishikawa, M.* (2008): **The Deformable Workspace: a Membrane between Real and Virtual Space.** In: 2008 3rd IEEE International Workshop on Horizontal Interactive Human Computer Systems. 2008 3rd IEEE International Workshop on Horizontal Interactive Human Computer Systems. Amsterdam, Netherlands, 01.10.2008 - 03.10.2008. Institute of Electrical and Electronics Engineers. Piscataway, NJ: IEEE, pp. 145–152. DOI=[10.1109/tabletop.2008.4660197](https://doi.org/10.1109/tabletop.2008.4660197)  
 
 [24] *Yun, K., Cho, S., Song, J., Bang, H. and Youn, K.* (2013): **ElaScreen: Exploring Multi-dimensional Data using Elastic Screen.** In: Wendy E. Mackay, Stephen Brewster and Susanne Bødker (Ed.): CHI '13 Extended Abstracts on Human Factors in Computing Systems. CHI '13: CHI Conference on Human Factors in Computing Systems. Paris, France, 27.04.2013 - 02.05.2013. New York, NY, USA: ACM, pp. 1311–1316. DOI: [10.1145/2468356.2468590](https://doi.org/10.1145/2468356.2468590)
+
+**[⬆ back to top](#table-of-contents)**

@@ -37,3 +37,5 @@ This serves a the theoretical foundation of thr *ReFlex framework* as it covers 
 [9] *Müller, M., Stoll, E., Krauss, A.-M., Hannß, F. and Kammer, D.* (2022): **Investigating Usability and User Experience of Layer-based Interaction with a Deformable Elastic Display.** In: Paolo Bottoni and Emanuele Panizzi (Ed.): AVI 2022: Proceedings of the 2022 International Conference on Advanced Visual Interfaces. AVI 2022: International Conference on Advanced Visual Interfaces. Frascati, Rome, Italy, 06.06.2022-10.06.2022. New York, NY, USA: ACM. DOI: [10.1145/3531073.3531101](htpps://doi.org/10.1145/3531073.3531101)
 
 [10] *Peschke, J., Göbel, F., Gründer, T., Keck, M., Kammer, D. and Groh, R.* (2012): **DepthTouch: An Elastic Surface for Tangible Computing.** In: Genny Tortora, Stefano Levialdi and Maurizio Tucci (Ed.): AVI '12: Proceedings of the International Working Conference on Advanced Visual Interfaces. AVI'12: International Working Conference on Advanced Visual Interfaces. Capri, Italy, 21.05.2012 - 25.05.2012. New York, NY, USA: ACM, pp. 770-771. DOI: [10.1145/2254556.2254706](https://doi.org/10.1145/2254556.2254706)
+
+**[⬆ back to top](#models-introduction)**

@@ -12,6 +12,8 @@ Starting with the **Khronos Projector** [3] in 2012, there has been quite a larg
 
 Publications labeled as *Prototypes* explore different use cases and application scenarios, *Models* strive for creating a scientific foundation by theory-building and *Methods* investigate design methods and approaches for creating applications for this type of technology.
 
+**[⬆ back to top](#related-work)**
+
 ## References
 
 [1] *Alexander, J., Roudaut, A., Steimle, J., Hornbæk, K., Bruns Alonso, M., Follmer, S. and Merritt, T.* (2018): **Grand Challenges in Shape-Changing Interface Research.** In: Regan Mandryk, Mark Hancock, Mark Perry and Anna Cox (Ed.): Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems. CHI '18: CHI Conference on Human Factors in Computing Systems. Montreal, QC, Canada, 21.04.2018 - 26.04.2018. New York, NY, USA: ACM. DOI: [10.1145/3173574.3173873](https://doi.org/10.1145/3173574.3173873)
@@ -89,3 +91,5 @@ Publications labeled as *Prototypes* explore different use cases and application
 [37] *Watanabe, Y., Cassinelli, A., Komuro, T., and Ishikawa, M.* (2008): **The Deformable Workspace: a Membrane between Real and Virtual Space.** In: 2008 3rd IEEE International Workshop on Horizontal Interactive Human Computer Systems. 2008 3rd IEEE International Workshop on Horizontal Interactive Human Computer Systems. Amsterdam, Netherlands, 01.10.2008 - 03.10.2008. Institute of Electrical and Electronics Engineers. Piscataway, NJ: IEEE, pp. 145–152. DOI=[10.1109/tabletop.2008.4660197](https://doi.org/10.1109/tabletop.2008.4660197)  
 
 [38] *Yun, K., Cho, S., Song, J., Bang, H. and Youn, K.* (2013): **ElaScreen: Exploring Multi-dimensional Data using Elastic Screen.** In: Wendy E. Mackay, Stephen Brewster and Susanne Bødker (Ed.): CHI '13 Extended Abstracts on Human Factors in Computing Systems. CHI '13: CHI Conference on Human Factors in Computing Systems. Paris, France, 27.04.2013 - 02.05.2013. New York, NY, USA: ACM, pp. 1311–1316. DOI: [10.1145/2468356.2468590](https://doi.org/10.1145/2468356.2468590)
+
+**[⬆ back to top](#related-work)**

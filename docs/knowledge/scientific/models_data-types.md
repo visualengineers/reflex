@@ -32,6 +32,8 @@ We concentrate on a simplified data-driven point of view and distinguish three f
 
 ![Different data types that can be used with Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/data.png){:.full-width-scheme}
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Planar Data (2D)
 
 The category contains two-dimensional data structures, which are variable in their level of detail or two-dimensional structures that are dynamically rearranged using different parameters. Typical use cases are graphs such as *ElaScreen*'s Graph Visualization [10] or zoomable data like *FlexiWall*’s Data Exploration [3] or *Depth Touch*’s Product Browser [5].
@@ -68,6 +70,8 @@ The category contains two-dimensional data structures, which are variable in the
   </div>
 </div>
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Volumetric Data (2.5D)
 
 With this category we refer to 2D images (slices) that come in different variations so that they can be stacked or layered, forming a semantic space regarding a specific domain, usually time or semantic layers. A concrete use case in the time domain is the haptic exploration of paintings, revealing the evolutionary history of the painting process (cp. [6]).
@@ -100,9 +104,13 @@ The opportunities and limitations of layer-based volumetric spaces used with Ela
 
 </div>
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Spatial Data (3D)
 
 The category comprises real three dimensional scenes which are not structured in layers or slices. The main purpose is to model 3D space interactively to influence virtual entities in the scene or the scene parameters themselves. Examples include the reproduction of physical effects like gravity simulation, or 3D modeling of surfaces and volumes. By deforming the surface, true spatial data can be explored and manipulated continuously. The *Deformable Workspace* is a prime example for this content [9]. Similarly, *impress* [2] and *eTable* [4] use spatial content.
+
+**[⬆ back to top](#table-of-contents)**
 
 ## References
 
@@ -125,3 +133,5 @@ The category comprises real three dimensional scenes which are not structured in
 [9] *Watanabe, Y., Cassinelli, A., Komuro, T., and Ishikawa, M.* (2008): **The Deformable Workspace: a Membrane between Real and Virtual Space.** In: 2008 3rd IEEE International Workshop on Horizontal Interactive Human Computer Systems. 2008 3rd IEEE International Workshop on Horizontal Interactive Human Computer Systems. Amsterdam, Netherlands, 01.10.2008 - 03.10.2008. Institute of Electrical and Electronics Engineers. Piscataway, NJ: IEEE, pp. 145–152. DOI=[10.1109/tabletop.2008.4660197](https://doi.org/10.1109/tabletop.2008.4660197)
 
 [10] *Yun, K., Cho, S., Song, J., Bang, H. and Youn, K.* (2013): **ElaScreen: Exploring Multi-dimensional Data using Elastic Screen.** In: Wendy E. Mackay, Stephen Brewster and Susanne Bødker (Ed.): CHI '13 Extended Abstracts on Human Factors in Computing Systems. CHI '13: CHI Conference on Human Factors in Computing Systems. Paris, France, 27.04.2013 - 02.05.2013. New York, NY, USA: ACM, pp. 1311–1316. DOI: [10.1145/2468356.2468590](https://doi.org/10.1145/2468356.2468590)
+
+**[⬆ back to top](#table-of-contents)**

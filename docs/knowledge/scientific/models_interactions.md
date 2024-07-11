@@ -10,7 +10,7 @@ title: "Models: Interactions"
 1. [General Observations on Interactions on Elastic Displays](#general-observations-on-interactions-on-elastic-displays)
 2. [Fingers](#fingers)
 3. [Planar Shapes](#planar-shapes)
-4. [Tangibles / Arbirary Shapes](#tangibles--arbirary-shapes)
+4. [Tangibles / Arbitrary Shapes](#tangibles--arbitrary-shapes)
 5. [References](#references)
 
 ## General Observations on Interactions on Elastic Displays
@@ -33,6 +33,8 @@ The deformable surface offers a wide variety of possible types of interactions. 
 
 ![Different types of interactions that can be used with Elastic Displays]({{ site.baseurl }}/assets/img/kb/scientific/interactions.png){:.full-width-scheme}
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Fingers
 
 Interacting with one or multiple fingers represents one of the basic interactions that resembles the familiarity with multi-touch interaction. A single finger can represent a specific point in 3d space. Two fingers from a line and can be used to describe a relationship or specify a distance. With 3 fingers, a plane is formed. Finally, 4 or more fingers can be used to define an arbitrary relief.
@@ -41,20 +43,23 @@ This type of interaction can be interpreted as touch interaction extended with a
 
 *It should be noted, that the physical effort to deform the fabric is far more demanding than moving fingers on a touch screen. Therefore, users tend to use the hole hand or their fists to control the deformation (this especially applies unexperienced users).*
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Planar Shapes
 
 Elastic Displays can also be deformed using tangibles allowing to span complex polygons inside the interaction space. In its most basic form, a planar shape can be used as lens looking into another data dimension or a frame for a different data set, when being interpreted as parallel to the image or zero plane.  Tilting the shape extends this concept and may be used to intrude a region to generate slanted or non-slanted intersecting planes.
 
 This type of interaction can be interpreted a using a planar tangible in a spatial context (including rotation).
 
-## Tangibles / Arbirary Shapes
+**[⬆ back to top](#table-of-contents)**
+
+## Tangibles / Arbitrary Shapes
 
 The use of tangibles is not limited to planar shapes. Instead, any arbitrary surface can be used to deform the surface. By doing so, a specific surface relief can be formed (or used for manipulation). Alternatively, this concept can be used as as complex 3d masking interaction.
 
 This type on interaction uses tangibles positioned in 3d space and use the three-dimension surface structure for complex manipulations.
 
 This particular interaction technique is a specific feature of Elastic Displays as it is difficult to achieve similar results on rigid surfaces. Additionally, Tangibles may be used to prevent the surface from restoring its initial state when changing the applied pressure. This relates to the concept of Gravibles, which could be used to save the current state [1].
-
 
 <div class="image-gallery">
   <div>
@@ -68,6 +73,10 @@ This particular interaction technique is a specific feature of Elastic Displays 
   </div>
 </div>
 
+**[⬆ back to top](#table-of-contents)**
+
 ## References
 
 [1] *Gründer, T., Kammer, D., Brade, M, and Groh, R.* (2013): **Towards a Design Space for Elastic Displays.** In: Jürgen Steimle, Hrvoje Benko, Alvaro Cassinelli, Hiroshi Ishii, Daniel Leithinger, Pattie Maes and Ivan Poupyrev (Ed.): Displays Take New Shape: An Agenda for Future Interactive Surfaces. CHI’13 Workshop. Paris, France, 28.04.2013. [https://displayworkshop.media.mit.edu/CHI2013/papers.html](https://displayworkshop.media.mit.edu/CHI2013/papers.html)
+
+**[⬆ back to top](#table-of-contents)**

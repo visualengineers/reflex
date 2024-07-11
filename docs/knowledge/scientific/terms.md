@@ -4,6 +4,13 @@ title: "Terminology"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table-of-contents
+
+1. [Taxonomy](#taxonomy)
+2. [Shape-Change Continuum](#shape-change-continuum)
+3. [References](#references)
+
 ![Terms: Word Cloud]({{ site.baseurl }}/assets/img/kb/scientific/terms_word-cloud.png){:.full-width-scheme .transparent-background}
 
 The terminology in the research field of Shape-Changing Interfaces is very heterogenous, reflecting the diversity and also fragmentation of the topic. Some of the terms are influenced by a technological point-of-view, some strive to express the characteristics of the interaction, some are influenced by philosophical concepts.
@@ -18,6 +25,8 @@ Our approach for a well-ordered conceptual apparatus places the term [**Tangible
 
 ![Terms: Taxonomy]({{ site.baseurl }}/assets/img/kb/scientific/terms_ordered.png){:.full-width-scheme .transparent-background}
 
+**[⬆ back to top](#table-of-contents)**
+
 ## Shape-Change Continuum
 
 In regard to the deformation, interactive displays can be sorted into a **Shape-Change-Continuum** (similar the *Reality-Virtuality-Continuum* by Milgram [1]), starting from traditional rigid (touch) screens, continuing with devices that utilize different modalities of shape change for input.
@@ -28,6 +37,8 @@ Finally, [*Actuated Displays*]({{ site.baseurl }}/knowledge/terms/actuated-displ
 
 ![Shape-Change Continuum]({{ site.baseurl }}/assets/img/kb/scientific/shape-change-continuum.png){:.full-width-scheme .transparent-background}
 
+**[⬆ back to top](#table-of-contents)**
+
 ## References
 
 [1] *Milgram, P., Takemura, H., Utsumi, A., and Kishino, F.* (1994): **Augmented Reality: A Class of Displays on the Reality-Virtuality Continuum.** Proc. SPIE 2351, pp. 282–292. DOI: [10.1117/12.197321](https://doi.org/10.1117/12.197321)
@@ -35,3 +46,5 @@ Finally, [*Actuated Displays*]({{ site.baseurl }}/knowledge/terms/actuated-displ
 [2] *Müller, M. and Kammer, D.* (2022): **Augmenting Elastic Displays with Active Vibrotactile Feedback.** In: Carola Marky, Uwe Grünefeld and Thomas Kosch (Ed.): Mensch und Computer 2022 - Workshopband. Mensch und Computer 2022, 15. Workshop Be-greifbare Interaktion (MCI-WS04). Darmstadt, Germany, 04.09.2022. Bonn, Germany: Gesellschaft für Informatik e. V. (GI). DOI: [10.18420/muc2022-mci-ws04-359](https://doi.org/10.18420/muc2022-mci-ws04-359)
 
 [3] *Müller, M., Ramian, A., Wittchen, D., Freitag, G. and Kammer, D.* (2023): **Exploring Dynamic Vibrotactile Feedback for Layer-based Interaction on Elastic Displays.** In: Markus Stolze, Frieder Loch, Matthias Baldauf, Florian Alt, Christina Schneegass, Thomas Kosch (Ed.): Proceedings of Mensch und Computer 2023. Mensch und Computer 2023: Building Bridges. Rapperswil, Switzerland, 03.09.2023 - 06.09.2023. New York, NY, USA: ACM (ACM Digital Library), pp. 406–411. DOI: [10.1145/3603555.3608534](https://doi.org/10.1145/3603555.3608534)
+
+**[⬆ back to top](#table-of-contents)**
