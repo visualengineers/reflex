@@ -1,10 +1,10 @@
 ---
-title: "Technological Aspects"
+title: "Societal Issues"
 ---
 
 # {{ page.title }}
 
-![Methods]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_Detail_Methods.png){:.borderless .transparent-background}
+![Challenges with procedure]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_with_procedure_steps.png){:.borderless .transparent-background}
 
-The findings from the conception and testing in various application contexts lead to a better understanding of the general design of Elastic Displays. This includes *best practices* for **designing applications for temporality** and making meaningful use of the **semantics** of shape change, as well as testing the **appropriateness** of concepts using *prototyping techniques*.
-*Design methods* allow **application and content** to be explored early in the design process and generate a wide range of different ideas.
+In the context of social challenges, the focus is on the area of **sustainability**, but on many different levels.
+The use of simple, standardized hardware conserves resources, as does the high degree of reparability due to the modularity of the system. The establishment of standards and technology is sustainable insofar as redundant new development is avoided and an increase in efficiency can be expected through further development. Documentation and models also contribute to sustainability.
