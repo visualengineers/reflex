@@ -32,7 +32,7 @@ The chosen approach can be illustrated very well using the "Grand Challenges for
 
 The following graphic shows the Grand Challenges, together with the aspects that are directly addressed by our research:
 
-![Grand Challenges]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_overview.png){:.borderless .transparent-background}
+![Grand Challenges]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_overview.png){:.full-width-scheme .transparent-background}
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -40,7 +40,7 @@ The following graphic shows the Grand Challenges, together with the aspects that
 
 Our research addresses technological aspects by developing and providing **tools** that simplify the process of creating applications for Elastic Displays. Research on the design is addressed by describing **methods**. The understanding of user behaviour is facilitated by different **models**. The societal issues are not directly part of our research. However, there are a number of facets that have a significant influence on this dimension.
 
-![Grand Challenges and our research]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_procedure_model.png){:.borderless .transparent-background}
+![Grand Challenges and our research]({{ site.baseurl }}/assets/img/kb/scientific/Challenges_procedure_model.png){:.full-width-scheme .transparent-background}
 
 The chosen methodology is based on application-oriented research. By creating various example scenarios and a variety of case studies, different facets can be examined and the the individual key areas are iteratively refined.
 
