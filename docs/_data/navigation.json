@@ -376,10 +376,10 @@
                           "content":
                           [
                             {
-                                "name": "Technological Aspects",
-                                "path": "/knowledge/scientific/",
-                                "file": "challenges_technological.html",
-                                "type": "page"
+                              "name": "User Behaviour",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_user-behaviour.html",
+                              "type": "page"
                             },
                             {
                               "name": "Design",
@@ -388,10 +388,10 @@
                               "type": "page"
                             },
                             {
-                              "name": "User Behaviour",
-                              "path": "/knowledge/scientific/",
-                              "file": "challenges_user-behaviour.html",
-                              "type": "page"
+                                "name": "Technological Aspects",
+                                "path": "/knowledge/scientific/",
+                                "file": "challenges_technological.html",
+                                "type": "page"
                             },
                             {
                               "name": "Societal Issues",
