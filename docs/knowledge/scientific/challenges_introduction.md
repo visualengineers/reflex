@@ -25,9 +25,9 @@ Our work addresses this problem by providing a common technological basis with t
 
 The chosen approach can be illustrated very well using the "Grand Challenges for Shape-Changing Interfaces" presented by Alexander et al. [1]: They mentioned 4 different key areas, that need to be addressed by research on Shape-Changing Displays:
 
-* [Technological aspects](challenges_technological.md)
-* [Design](challenges_design.md)
 * [User Behaviour](challenges_user-behaviour.md)
+* [Design](challenges_design.md)
+* [Technological aspects](challenges_technological.md)
 * [Societal Issues](challenges_societal.md)
 
 The following graphic shows the Grand Challenges, together with the aspects that are directly addressed by our research:
