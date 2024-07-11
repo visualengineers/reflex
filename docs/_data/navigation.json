@@ -369,6 +369,39 @@
                           "type": "page"
                         },
                         {
+                          "name": "Procedure: Grand Challenges",
+                          "path": "/knowledge/scientific/",
+                          "file": "challenges_introduction.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                                "name": "Technological Aspects",
+                                "path": "/knowledge/scientific/",
+                                "file": "challenges_technological.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Design",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_design.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "User Behaviour",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_user-behaviour.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "Societal Issues",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_societal.html",
+                              "type": "page"
+                            }
+                          ]
+                        },
+                        {
                           "name": "Models",
                           "path": "/knowledge/scientific/",
                           "file": "models_introduction.html",
