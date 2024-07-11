@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# Stelle sicher, dass ein Dateipfad als Argument übergeben wurde
+# Make sure that a file path has been passed as an argument
 if [ "$#" -ne 1 ]; then
-    echo "Bitte gib den Pfad zur Textdatei an."
+    echo "Please specify the path to the text file."
     exit 1
 fi
 
-# Lies die Textdatei zeilenweise
+# Read the text file line-by-line
 while IFS= read -r line; do
-    # Überprüfe, ob der Ordner existiert
+    # Check that the folder exists
     if [ -d "$line" ]; then
-        # Lösche den Ordner und seinen Inhalt
+        # Delete the directory and its contents
         rm -rf "$line"
-        echo "Ordner $line wurde gelöscht."
+        echo "Directory $line has been deleted."
     else
-        echo "Ordner $line existiert nicht."
+        echo "Directory $line not found."
     fi
 done < "$1"
