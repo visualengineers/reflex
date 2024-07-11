@@ -8,7 +8,7 @@ body {
     background-attachment: fixed;
     background-position: bottom right;
     background-size: contain;
-    background-repeat: no-repeat;    
+    background-repeat: no-repeat;
     background-blend-mode: normal;
 
     min-height: 100vh;
@@ -56,4 +56,9 @@ div.highlight {
   box-shadow: 0px -5px 10px 0px rgba(33, 33, 33, 0.15), 0px 5px 10px 0px rgba(33, 33, 33, 0.15);
 
   color: $color-primary-dark;
+}
+
+video {
+  width: 100%;
+  box-shadow: 0 0 15px 3px $color-shadow-default;
 }

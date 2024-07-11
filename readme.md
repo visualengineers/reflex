@@ -1,15 +1,15 @@
 # ReFlex
 
-Software Development SDK for __Elastic Displays__ as open source mono repo
+Software Development SDK for **Elastic Displays** as open source mono repo
 
 Complete Documentation as github pages available at [https://visual-engineers.org/reflex/](https://visual-engineers.org/reflex/)
 
-* .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
-* APS.NET Core / Angular server application as frontend for library
-* can be packaged as electron app for desktop
-* Example client applications for Plain HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Engine 5
-* Emulator as Development Tool
-* Example Applications
+- .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
+- APS.NET Core / Angular server application as frontend for library
+- can be packaged as electron app for desktop
+- Example client applications for Plain HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Engine 5
+- Emulator as Development Tool
+- Example Applications
 
 <!-- omit in toc -->
 ## Table of contents
@@ -21,20 +21,19 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
 7. [Known issues / Troubleshooting](#known-issues--troubleshooting)
+8. [Documentation (github pages)](#documentation-github-pages)
 
 ## Build status
 
-[![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)
-
-[![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/
-actions/workflows/shared-build.yml)
-[![Shared Components:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-components-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-cp,ponents-build.yml)
-
-[![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)
-[![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)
-[![Server:Test](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml)
-
-[![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml)
+|                                |                                                                                                                                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ReFlex Library (.NET)          | [![Library:Test](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/library-test.yml)                                  |
+| Shared Types (TypeScript)      | [![Shared Types:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-build.yml)                            |
+| Shared Components (Angular)    | [![Shared Components:Build](https://github.com/visualengineers/reflex/actions/workflows/shared-components-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/shared-cp,ponents-build.yml) |
+| Tools/TrackingServer (Angular) | [![Server:Build](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-build.yml)                                  |
+|                                | [![Server:Lint](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-lint.yml)                                     |
+|                                | [![Server:Test](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/server-test.yml)                                     |
+| Tools/Emulator (Angular)       | [![Emulator:Build](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml/badge.svg#build-status)](https://github.com/visualengineers/reflex/actions/workflows/emulator-build.yml)                            |
 
 ## Repository structure
 
@@ -52,7 +51,7 @@ actions/workflows/shared-build.yml)
 | `test`     | Test projects, test artifacts, `Insomnia` workspace                                           |
 | `tools`    | Developer Tools and Server application                                                        |
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ### NPM workspaces
 
@@ -60,52 +59,52 @@ The repository uses NPM workspaces for better management of dependencies
 
 Therefore, the repository should be initialized in the root folder by running the command `npm install` and not in the sub directories (although there are package.json files, but these files are just handling the local dependencies)
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ### Repository initialization
 
-* copy [ExternalDependencies](#external-dependencies) into `external`
-* run `npm run build:shared-types` to build shared types library
-* run `npm install` in root directory
-* if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
+- copy [ExternalDependencies](#external-dependencies) into `external`
+- run `npm run build:shared-types` to build shared types library
+- run `npm install` in root directory
+- if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ### Development
 
-* Adding a new workspace: `npm init -w ./path/to/workspace/directory`
-* Adding packages to workspace: `npm install -w ./path/to/workspace/directory package --save` (in workspace root directory)
+- Adding a new workspace: `npm init -w ./path/to/workspace/directory`
+- Adding packages to workspace: `npm install -w ./path/to/workspace/directory package --save` (in workspace root directory)
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ## External Dependencies
 
-* The following dlls need to be placed in the `external` directory for use with the associated depth cameras
-* ~~__Intel RealSense R2/D435/L515__ `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense/releases)~~ (Files are included as nuget package)
-* __Microsoft Kinect__ `Microsoft.Kinect.dll`, `Microsoft.Kinect.xml` from [Microsoft Kinect for Windows SDK 2.0](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
-* for compatibility reasons, no sensors are included in the build process by default. To include specific sensors use the appropriate flags described in the Server documentation
+- The following dlls need to be placed in the `external` directory for use with the associated depth cameras
+- ~~**Intel RealSense R2/D435/L515** `Intel.Realsense.dll`, `libpxcclr.cs.dll`, `libpxccpp2c.dll`, `realsense2.dll` from [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense/releases)~~ (Files are included as nuget package)
+- **Microsoft Kinect** `Microsoft.Kinect.dll`, `Microsoft.Kinect.xml` from [Microsoft Kinect for Windows SDK 2.0](https://www.microsoft.com/en-us/download/details.aspx?id=44561)
+- for compatibility reasons, no sensors are included in the build process by default. To include specific sensors use the appropriate flags described in the Server documentation
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ## use shared code
 
-* for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project with
-  
-  ``` bash
+- for using `reflex-shared-types` in another project, just install it as workspace dependency in the current project with
+
+  ```bash
     npm install ./packages/reflex-shared-types -w ./tools/ReFlex.TrackingServer/ClientApp --save
   ```
 
-* types are available by importing `@reflex/shared-types`
+- types are available by importing `@reflex/shared-types`
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ## NPM commands
 
-| Command                                       | Description                                                                             | Remarks                                                                                             |
-| --------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `npm run build`                               | runs `build` command in all subrepos of workspace                                       |                                                                                                     |
+| Command                                       | Description                                                                                | Remarks                                                                                             |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `npm run build`                               | runs `build` command in all subrepos of workspace                                          |                                                                                                     |
 | `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test-ci` and `lint` commands |                                                                                                     |
-| `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                         |                                                                                                     |
+| `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                            |                                                                                                     |
 | `npm run build:shared-components`             | builds Shared Angular Components(#use-shared-code)                                         |                                                                                                     |
 | `npm run build:server:electron-win`                  | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                     |                                                                                                     |
 | `npm run build:server:electron-osx`                  | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)             | needs to be run on macOS                                                                            |
@@ -138,34 +137,60 @@ __[⬆ back to top](#table-of-contents)__
 
 ### Known issues
 
-* Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
+- Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
   Therefore, `electron-builder` needs to be installed globally before executing a `build:emulator:electron-xxx` script
-* Additionally, `npm install` is executed after packaging to restore the dev dependencies
-* if a command `build:emulator:electron-xxx` is executed from within the emulator project, `npm install` has to be executed manually afterwards
+- Additionally, `npm install` is executed after packaging to restore the dev dependencies
+- if a command `build:emulator:electron-xxx` is executed from within the emulator project, `npm install` has to be executed manually afterwards
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ## Python gRPC Processing service
 
-* as an example for integrating external services, a python gRPC service for extracting interactions from the camera depth image is provided in `services/python-backend`
-* service is consumed when setting Interaction Processor to `Remote`
-* in the `ReFlex.TrackingServer`, the service is configured in `Services/RemoteInteractionProcessingService.cs`
-* Documentation: [Python gRPC service](services/python-backend/README.md)
+- as an example for integrating external services, a python gRPC service for extracting interactions from the camera depth image is provided in `services/python-backend`
+- service is consumed when setting Interaction Processor to `Remote`
+- in the `ReFlex.TrackingServer`, the service is configured in `Services/RemoteInteractionProcessingService.cs`
+- Documentation: [Python gRPC service](services/python-backend/README.md)
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
 
 ## Known issues / Troubleshooting
 
-* `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
-* if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
-  * `%AppData%` Folder (Windows)
-  * `~/.config` Folder (Linux)
-  * `~/Library/Application Support/` (MacOS)  
-and delete the app folder there
-* to delete all temporary folders / cached packages / build artifacts, run the following command in the `scripts` folder:
+- `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
+- if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
+  - `%AppData%` Folder (Windows)
+  - `~/.config` Folder (Linux)
+  - `~/Library/Application Support/` (MacOS)  
+    and delete the app folder there
+- to delete all temporary folders / cached packages / build artifacts, run the following command in the `scripts` folder:
 
-  ``` bash
+  ```bash
    ./cleanup_packages.sh package-directories.txt
   ```
 
-__[⬆ back to top](#table-of-contents)__
+**[⬆ back to top](#table-of-contents)**
+
+## Documentation (github pages)
+
+Documentation is hosted as github page at [https://visual-engineers.org/reflex](https://visual-engineers.org/reflex).
+
+The documentation content for the github pages can be found in the `docs` folder.
+
+### repository readme files
+
+readme files in the repository (including this file) are copied into the `docs` directory as part of the deployment CI step by executing the `scripts\copy_docs.sh` shell script.
+
+The related readme files are:
+
+| repo readme                           | target directory               | section in pages                                                                                                |
+| ------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| readme.md                             | docs/software/repo/reflex.md   | [Software > Repository > ReFlex Framework](https://visual-engineers.org/reflex/software/repo/reflex.html)       |
+| library/README.md                     | docs/software/repo/library.md  | [Software > Repository > ReFlex Library (.NET)](https://visual-engineers.org/reflex/software/repo/library.html) |
+| tools/ReFlex.TrackingServer/readme.md | docs/software/apps/server.md   | [Software > Applications > Server](https://visual-engineers.org/reflex/software/apps/server.html)               |
+| tools/logging/README.md               | docs/software/apps/logging.md  | [Software > Applications > Logging](https://visual-engineers.org/reflex/software/apps/logging.html)             |
+| tools/emulator/README.md              | docs/software/apps/emulator.md | [Software > Repository > Emulator](https://visual-engineers.org/reflex/software/apps/emulator.html)             |
+
+### Testing github pages locally
+
+testing the github pages can be done by following the instruction at [Github Docs: Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll)
+
+**[⬆ back to top](#table-of-contents)**

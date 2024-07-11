@@ -60,7 +60,7 @@
                             "path": "/software/repo/",
                             "file": "ci.html",
                             "type": "page"
-                        },                        
+                        },
                         {
                             "name": "Development Documentation",
                             "path": "/software/repo/",
@@ -85,7 +85,7 @@
                             "path": "/software/apps/",
                             "file": "server.html",
                             "type": "page",
-                            "content": 
+                            "content":
                             [
                                 {
                                     "name": "Tracking view",
@@ -149,7 +149,7 @@
                 {
                     "name": "Templates",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Plain HTML",
@@ -211,25 +211,25 @@
                             "path": "/software/recipes/",
                             "file": "extend-calibration.html",
                             "type": "page"
-                        }, 
+                        },
                         {
                             "name": "Client: Stream depth image",
                             "path": "/software/recipes/",
                             "file": "icons.html",
                             "type": "page"
-                        },                        
+                        },
                         {
                             "name": "Client: Configure Server using REST API",
                             "path": "/software/design/",
                             "file": "icons.html",
                             "type": "page"
-                        }, 
+                        },
                         {
                             "name": "Server: Create gRPC micro service",
                             "path": "/software/recipes/",
                             "file": "grpc-service.html",
                             "type": "page"
-                        }                      
+                        }
                     ]
                 },
                 {
@@ -277,12 +277,12 @@
                 "img": "/assets/img/overview/hardware.jpg",
                 "alt": "Title Image: Hardware"
             },
-            "content": 
+            "content":
             [
                 {
                     "name": "Tabletop (DepthTouch)",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Overview",
@@ -313,7 +313,7 @@
                 {
                     "name": "Display Wall (FlexiWall)",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Overview",
@@ -348,20 +348,92 @@
                 {
                     "name": "Research",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Publications",
                             "path": "/knowledge/",
                             "file": "publications.html",
                             "type": "page"
-                        }
+                        },
+                        {
+                          "name": "Related Work",
+                          "path": "/knowledge/scientific/",
+                          "file": "related-work.html",
+                          "type": "page"
+                        },
+                        {
+                          "name": "Terminology",
+                          "path": "/knowledge/scientific/",
+                          "file": "terms.html",
+                          "type": "page"
+                        },
+                        {
+                          "name": "Procedure: Grand Challenges",
+                          "path": "/knowledge/scientific/",
+                          "file": "challenges_introduction.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                              "name": "User Behaviour",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_user-behaviour.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "Design",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_design.html",
+                              "type": "page"
+                            },
+                            {
+                                "name": "Technological Aspects",
+                                "path": "/knowledge/scientific/",
+                                "file": "challenges_technological.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Societal Issues",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_societal.html",
+                              "type": "page"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Models",
+                          "path": "/knowledge/scientific/",
+                          "file": "models_introduction.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                                "name": "Data Types",
+                                "path": "/knowledge/scientific/",
+                                "file": "models_data-types.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Interactions",
+                              "path": "/knowledge/scientific/",
+                              "file": "models_interactions.html",
+                              "type": "page"
+                          },
+                          {
+                            "name": "Task Taxonomy",
+                            "path": "/knowledge/scientific/",
+                            "file": "models_task-taxonomy.html",
+                            "type": "page"
+                          }
+                        ]
+                      }
                     ]
                 },
                 {
                     "name": "Best Practices",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Designing Application and Content",
@@ -392,7 +464,7 @@
                 {
                     "name": "Interviews",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Display Construction",
@@ -423,7 +495,7 @@
                 {
                     "name": "Terms",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Actuated Display",

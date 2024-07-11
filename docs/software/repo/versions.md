@@ -47,6 +47,16 @@ title: ReFlex Version history
                         {% endfor %}
                     </ul>
                     {% endif %}
+                    {% if v.tools and v.tools != nil and v.tools.size != 0 %}
+                    <div class="timeline__element--title">Tools</div>
+                    <ul class="timeline__version--list">
+                        {% for elem in v.tools %}
+                            <li> 
+                                <div>{{ elem }} </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                     {% if v.misc and v.misc != nil and v.misc.size != 0 %}
                     <div class="timeline__element--title">Misc</div>
                     <ul class="timeline__version--list">
