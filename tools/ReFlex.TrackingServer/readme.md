@@ -400,13 +400,13 @@ refer to [GitHub issue](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/iss
 - Path to `ReFlex.TrackingServer.dll` in `launch.json` is different when building with VS Code or Rider/Visual Studio. In case of building with VS Code: Change
 
   ```json
-  "program": "${workspaceFolder}/TrackingServer/bin/Debug/net6.0/ReFlex.TrackingServer.dll",
+  "program": "${workspaceFolder}/TrackingServer/bin/Debug/net8.0/ReFlex.TrackingServer.dll",
   ```
 
   to
 
   ```json
-  "program": "${workspaceFolder}/TrackingServer/bin/x64/Debug/net6.0/ReFlex.TrackingServer.dll",
+  "program": "${workspaceFolder}/TrackingServer/bin/x64/Debug/net8.0/ReFlex.TrackingServer.dll",
   ```
 
   in `.NET Core` Configuration
