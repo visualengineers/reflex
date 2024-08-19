@@ -12,7 +12,7 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>x64;ARM64</Platforms>
-    <DefineAdditionalConstants/>
+    <DefineAdditionalConstants />
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <LangVersion>10</LangVersion>
@@ -48,6 +48,7 @@
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="ServiceStack.Text" Version="8.2.2" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
