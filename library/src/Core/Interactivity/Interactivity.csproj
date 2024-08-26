@@ -18,7 +18,7 @@
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.11.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NLog" Version="5.3.2" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
