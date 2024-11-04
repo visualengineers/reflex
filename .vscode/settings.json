@@ -27,5 +27,13 @@
       "editor.insertSpaces": true,
       "files.trimFinalNewlines": true,
       "files.trimTrailingWhitespace": true
+    },
+    "[typescript]": {
+      "files.trimTrailingWhitespace": true,
+      "files.trimFinalNewlines": true,
+      "prettier.singleQuote": true,
+      "javascript.preferences.quoteStyle": "single",
+      "typescript.preferences.quoteStyle": "single",
+      "files.insertFinalNewline": true
     }
 }
