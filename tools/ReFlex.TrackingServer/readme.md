@@ -326,6 +326,13 @@ By default, no sensors are included in the Build, you can add sensor Support by 
 
 ### Remarks
 
+- Electron Packaging may fail under Windows with the following error:
+  
+  ```bash
+    Cannot create symbolic link : Dem Client fehlt ein erforderliches Recht.
+  ```
+
+  try to run the command with elevated privileges
 - internally, the ports are different, when using the web app (default: `8000` instead of `5000`/`5001`in the development setup).
 - HTTPS is not supported (therefore, angular websockets also only use `ws` instead of `wss`)
 - Settings for electron build can be modified in the `electron.manifest.json` located in the `ReFlex.TrackingServer` directory
