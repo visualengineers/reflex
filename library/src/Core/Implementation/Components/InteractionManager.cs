@@ -16,6 +16,7 @@ namespace Implementation.Components
     {
         private IInteractionObserver _interactionObserver;
         private IList<Interaction> _interactions;
+        private IList<InteractionVelocity> _velocities;
         private readonly IDepthImageManager _depthImageManager;
         private readonly IPerformanceAggregator _performanceAggregator;
 
@@ -34,6 +35,8 @@ namespace Implementation.Components
         private float _depthScale = 100.0f;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
+
+        public IList<InteractionVelocity> Velocities => _velocities ?? new List<InteractionVelocity>();
 
         public ObserverType Type
         {
@@ -78,7 +81,7 @@ namespace Implementation.Components
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
                 _performanceAggregator.UnregisterReporter(observer as IPerformanceReporter);
             }
-            
+
             if (observer == null)
                 return;
 
@@ -178,7 +181,7 @@ namespace Implementation.Components
                 _maxConfidence = value;
             }
         }
-        
+
         public int InteractionHistorySize
         {
             get => _interactionObserver?.InteractionHistorySize ?? 0;
@@ -198,11 +201,11 @@ namespace Implementation.Components
             {
                 if (_interactionObserver != null)
                     _interactionObserver.NumSmoothingFrames = value;
-            
+
                 _numSmoothFrames = value;
             }
         }
-        
+
         public int MaxNumEmptyFramesBetween
         {
             get => _interactionObserver?.MaxNumEmptyFramesBetween ?? 0;
@@ -210,11 +213,11 @@ namespace Implementation.Components
             {
                 if (_interactionObserver != null)
                     _interactionObserver.MaxNumEmptyFramesBetween = value;
-            
+
                 _maxNumEmptyFramesBetween = value;
             }
         }
-        
+
         public float TouchMergeDistance2D
         {
             get => _interactionObserver?.TouchMergeDistance2D ?? 0f;
@@ -226,7 +229,7 @@ namespace Implementation.Components
                 _smoothingDistanceSquared = value;
             }
         }
-        
+
         public float DepthScale
         {
             get => _interactionObserver?.DepthScale ?? 0f;
@@ -239,7 +242,7 @@ namespace Implementation.Components
             }
         }
 
-        public FilterType FilterType { 
+        public FilterType FilterType {
             get => _interactionObserver?.FilterType ?? FilterType.None;
             set
             {
@@ -321,12 +324,14 @@ namespace Implementation.Components
         {
             if (_interactionObserver == null)
                 return ProcessServiceStatus.Error;
-            
+
             return (await _interactionObserver.Update())?.ServiceStatus ?? ProcessServiceStatus.Error;
         }
 
         public event EventHandler<IList<Interaction>> InteractionsUpdated;
-        
+
+        public event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
+
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
         public void Dispose()
@@ -358,28 +363,30 @@ namespace Implementation.Components
                 _interactionObserver.VectorField = source;
         }
 
-        private void OnNewInteractions(object sender, IList<Interaction> interactions)
+        private void OnNewInteractions(object sender, InteractionData interactions)
         {
             lock (interactions)
             {
-                var copy = interactions.Select(interaction => new Interaction(interaction)).ToList();
+                var copy = interactions.Interactions.Select(interaction => new Interaction(interaction)).ToList();
                 _interactions = RemoveClusteredInteractions(copy);
+                _velocities = interactions.Velocities.ToList();
             }
 
-            InteractionsUpdated?.Invoke(this, _interactions); 
+            InteractionsUpdated?.Invoke(this, _interactions);
+            VelocitiesUpdated?.Invoke(this, _velocities);
         }
 
         private IList<Interaction> RemoveClusteredInteractions(IList<Interaction> rawInteractions)
         {
             var filteredCopy = new List<Interaction>();
-            
+
             for (var i = 0; i < rawInteractions.Count; i++)
             {
                 var currPt = rawInteractions[i];
                 var distances = filteredCopy.Select(inter => Point3.Squared2DDistance(inter.Position, currPt.Position)).ToList();
 
                 var addPoint = true;
-                
+
                 for (var j = 0; j < distances.Count; j++)
                 {
                     var distance = distances[j];

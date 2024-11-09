@@ -47,6 +47,8 @@ namespace ReFlex.Core.Interactivity.Components
             set => _depthScale = value;
         }
 
+        public bool UseVelocityForMapping = true;
+
         public InteractionFrame[] InteractionsFramesCache => _interactionFrames.ToArray();
 
         #endregion
@@ -137,14 +139,14 @@ namespace ReFlex.Core.Interactivity.Components
 
                 // remove touch ids that are "too old" --> prevent touch from being still displayed after the finger left the table
                 // if touch id "returns" after a while, do not filter it out
-                if (_frameId - lastFrameId > MaxNumEmptyFramesBetween && newFrame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id)) == null)
+                if (_frameId - lastFrameId > MaxNumEmptyFramesBetween &&
+                    newFrame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id)) == null)
                     return;
 
                 var smoothed = SmoothInteraction(id);
                 if (smoothed != null)
                     result.Interactions.Add(smoothed);
             });
-
 
             return result;
         }

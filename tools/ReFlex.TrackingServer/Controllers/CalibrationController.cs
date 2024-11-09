@@ -10,14 +10,14 @@ using TrackingServer.Model;
 
 namespace TrackingServer.Controllers
 {
-    
-    
+
+
     [Route("api/[controller]")]
     [ApiController]
     public class CalibrationController : Controller
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
         private readonly CalibrationService _calibrationService;
 
         public CalibrationController(CalibrationService calibrationService)
@@ -32,7 +32,7 @@ namespace TrackingServer.Controllers
         {
             return _calibrationService.Frame;
         }
-        
+
         // GET: api/Calibration/SourceValues
         [Route("SourceValues")]
         [HttpGet]
@@ -40,7 +40,7 @@ namespace TrackingServer.Controllers
         {
             return _calibrationService.SourceValues;
         }
-        
+
         // GET: api/Calibration/TargetValues
         [Route("TargetValues")]
         [HttpGet]
@@ -48,7 +48,7 @@ namespace TrackingServer.Controllers
         {
             return _calibrationService.TargetValues;
         }
-        
+
         // GET: api/Calibration/GetCalibrationMatrix
         [Route("GetCalibrationMatrix")]
         [HttpGet]
@@ -60,7 +60,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<CalibrationTransform>(new CalibrationTransform { Transformation = CleanupTransformationMatrix(result) });
         }
-        
+
         // GET: api/Calibration/ApplyCalibration
         [Route("ApplyCalibration")]
         [HttpGet]
@@ -73,7 +73,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<CalibrationTransform>(new CalibrationTransform { Transformation = CleanupTransformationMatrix(result) });
         }
-        
+
         // GET: api/Calibration/Restart
         [Route("Restart")]
         [HttpGet]
@@ -109,7 +109,7 @@ namespace TrackingServer.Controllers
             if (size == null)
                 return BadRequest(
                     $"Invalid {nameof(FrameSizeDefinition)} for Calibration provided in {GetType().Name}.{nameof(UpdateFrameSize)}().");
-                    
+
             var result = _calibrationService.SetWindowFrame(size);
             return new ActionResult<FrameSizeDefinition>(result);
         }
@@ -131,7 +131,7 @@ namespace TrackingServer.Controllers
             }
 
             isValid = ValidateCalibrationPoint(targetValue, out var error) && isValid;
-            
+
             if (!isValid)
             {
                 Logger.Error(msg + error);
@@ -144,7 +144,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<CalibrationTransform>(new CalibrationTransform { Transformation = CleanupTransformationMatrix(result) });
         }
-        
+
         // POST: api/Calibration/AddCalibrationPoint
         [HttpPost("AddCalibrationPoint")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -166,7 +166,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<CalibrationTransform>(new CalibrationTransform { Transformation = CleanupTransformationMatrix(result) });
         }
-        
+
         // POST: api/Calibration/CalibratedInteractions
         [HttpPost("CalibratedInteractions")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -177,18 +177,34 @@ namespace TrackingServer.Controllers
             if (interactions?.Length == null)
                 return BadRequest(
                     $"Invalid {nameof(interactions)} for Calibration provided in {GetType().Name}.{nameof(GetCalibratedInteractions)}().");
-            
-            
+
+
             var result = _calibrationService.GetCalibratedInteractions(interactions);
             return new ActionResult<Interaction[]>(result);
         }
 
+        // // POST: api/Calibration/CalibratedInteractions
+        // [HttpPost("CalibratedInteractions")]
+        // [Consumes(MediaTypeNames.Application.Json)]
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // public ActionResult<Interaction[]> GetCalibratedInteractions([FromBody] LegacyInteraction[] interactions)
+        // {
+        //     if (interactions?.Length == null)
+        //         return BadRequest(
+        //             $"Invalid {nameof(interactions)} for Calibration provided in {GetType().Name}.{nameof(GetCalibratedInteractions)}().");
+        //
+        //
+        //     var result = _calibrationService.GetCalibratedInteractions(interactions.Select((legacyInteraction) => new Interaction(legacyInteraction)));
+        //     return new ActionResult<Interaction[]>(result);
+        // }
+
         private bool ValidateCalibrationPoint(CalibrationPoint targetValue, out string msg)
         {
             msg = "";
-            
+
             var isValid = true;
-            
+
             if (targetValue == null)
             {
                 msg =

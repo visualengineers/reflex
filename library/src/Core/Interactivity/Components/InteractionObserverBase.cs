@@ -217,7 +217,7 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract PointCloud3 PointCloud { get; set; }
         public abstract VectorField2 VectorField { get; set; }
 
-        public abstract event EventHandler<IList<Interaction>> NewInteractions;
+        public abstract event EventHandler<InteractionData> NewInteractions;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -408,6 +408,30 @@ namespace ReFlex.Core.Interactivity.Components
             };
 
             PerformanceDataUpdated?.Invoke(this, pData);
+        }
+
+        protected new List<InteractionVelocity> ComputeVelocities(InteractionFrame frame)
+        {
+            var result = new List<InteractionVelocity>();
+
+            var interactionFrames = _smoothingBehaviour.InteractionsFramesCache;
+
+            foreach (var interaction in frame.Interactions)
+            {
+                var interactionsBefore = interactionFrames.OrderByDescending((f) => f.FrameId).SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) ).ToList();
+                if (interactionsBefore.Count == 0)
+                {
+                    result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position));
+                    break;
+                }
+
+                var firstDerivation = interaction.Position - interactionsBefore[0].Position;
+                var secondDerivation = interactionsBefore.Count < 2 ? firstDerivation : firstDerivation - interactionsBefore[1].Position - interactionsBefore[0].Position;
+
+                result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation));
+            }
+
+            return result;
         }
 
         protected void UpdateInteractionFrames(List<Interaction> cleanedUpInteractions, InteractionFrame currentFrame)
