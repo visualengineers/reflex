@@ -20,6 +20,7 @@
     "build:example-react": "npm run build -w examples/basic-react",
     "build:example-vue": "npm run build -w examples/basic-vue",
     "build:logging": "npm run build -w tools/logging",
+    "build:gestenrecorder": "npm run build -w tools/gestenrecorder",
     "start:emulator": "npm start -w tools/emulator",
     "start:gestenrecorder": "npm start -w tools/gestenrecorder",
     "start:example-angular": "npm start -w examples/basic-angular",
