@@ -20,7 +20,7 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 4. [use shared code](#use-shared-code)
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
-7. [Known issues / Troubleshooting](#known-issues--troubleshooting)
+7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
 8. [Documentation (github pages)](#documentation-github-pages)
 
 ## Build status
@@ -63,7 +63,6 @@ Therefore, the repository should be initialized in the root folder by running th
 
 ### Repository initialization
 
-- copy [ExternalDependencies](#external-dependencies) into `external`
 - run `npm run build:shared-types` to build shared types library
 - run `npm install` in root directory
 - if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
@@ -133,14 +132,13 @@ Therefore, the repository should be initialized in the root folder by running th
 | `npm run test:net-with-report`                       | executes .NET tests on .NET Solution *ReFlex.sln* and generates report for tests  | Currently only compatible with Windows  |
 | `npm run test:server`                       | executes tests on *ReFlex.TrackingServer* project |  |
 
-__[⬆ back to top](#table-of-contents)__
-
 ### Known issues
 
 - Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
   Therefore, `electron-builder` needs to be installed globally before executing a `build:emulator:electron-xxx` script
 - Additionally, `npm install` is executed after packaging to restore the dev dependencies
 - if a command `build:emulator:electron-xxx` is executed from within the emulator project, `npm install` has to be executed manually afterwards
+- test and `build-complete` commands start a headless Chrome instance and therefore require Chrome to be installed and path to Chrome binary to be set in PATH.
 
 **[⬆ back to top](#table-of-contents)**
 

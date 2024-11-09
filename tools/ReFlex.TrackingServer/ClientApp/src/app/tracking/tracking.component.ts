@@ -44,48 +44,48 @@ export class TrackingComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.trackingService.getCameras().subscribe(
-      (result) => {
+    this.trackingService.getCameras().subscribe({
+      next: (result) => {
         this.cameras = result;
       },
-      (error) => {
+      error: (error) => {
         this.logService.sendErrorLog(`${error}`);
         console.error(error);
       }
-    );
+    });
 
-    this.autostartSubscription = this.trackingService.queryAutostartEnabled().subscribe(
-      (result) => {
+    this.autostartSubscription = this.trackingService.queryAutostartEnabled().subscribe({
+      next: (result) => {
         this.autostart = result === 'true';
       },
-      (error) => {
+      error: (error) => {
         this.logService.sendErrorLog(`${error}`);
         console.error(error);
       }
-    );
+    });
 
     this.statusSubscription = this.trackingService.getStatus()
-      .subscribe(
-        (result) => {
+      .subscribe({
+        next: (result) => {
           this.updateStatusText(result);
           this.updateState();
         },
-        (error) => {
+        error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
         }
-      );
+      });
 
     this.selectedCamSubscription = this.trackingService.getSelectedCamera()
-      .subscribe(
-        (result) => {
+      .subscribe({
+        next: (result) => {
           this.updateSelectedCamera(result);
         },
-        (error) => {
+        error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
         }
-      );
+      });
 
     this.settingsService.update();
 
