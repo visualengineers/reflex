@@ -393,6 +393,10 @@ refer to [GitHub issue](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/iss
 
   **Solution:** Install dev certificates on the machine using `'dotnet dev-certs https --trust'
 
+- Electron App crashes on startup:
+  - built from the wrong directory: if the errro message states that some node module could not be found (e.g. `Cannot find module '@socket.io/component-emitter'`), than the electron app likely was build from another than the `tools/ReFlex.TrackingServer` directory
+  - if the configuration/settings file is corrupted, the app also crashes on startup. Try replacing the `TrackingSettings.json` in the  app directory under `resources/bin/wwwroot/Config` with the contents of `TrackingSettings_default.json`
+
 - Path to `ReFlex.TrackingServer.dll` in `launch.json` is different when building with VS Code or Rider/Visual Studio. In case of building with VS Code: Change
 
   ```json

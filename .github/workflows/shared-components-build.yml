@@ -19,4 +19,4 @@ jobs:
       - name: setup node and install packages
         uses: ./.github/actions/npm-install
       - name: build shared angular components
-        run: npm run build:build:shared-components
+        run: npm run build:shared-components
