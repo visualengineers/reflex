@@ -102,7 +102,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   public updateConfigurations(): void {
-    this.selectedConfigurationIdx = 0;
+    this.selectedConfigurationIdx = -1;
     this.updateState();
 
     if (this.selectedCameraIdx === undefined || this.selectedCameraIdx < 0) {
