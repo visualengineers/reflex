@@ -1,6 +1,6 @@
 {
   "name": "@reflex/trackingserver",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "Platform-independent server application using ASP.NET Core as backend and Angular as frontend.",
   "main": "app.js",
   "scripts": {

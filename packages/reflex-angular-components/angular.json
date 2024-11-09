@@ -33,6 +33,9 @@
             "polyfills": [
               "zone.js",
               "zone.js/testing"
+            ],
+            "styles": [
+              "./src/scss/reflex.scss"
             ]
           }
         }

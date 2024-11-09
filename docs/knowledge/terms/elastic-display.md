@@ -4,7 +4,7 @@ title: Elastic Display
 
 # {{ page.title}}
 
-Elastic displays are [shape-changing interfaces]({{ site.baseurl }}/knowledge/terms/shape-changing-interface) that are only temporally deformable, more precisely, they automatically return into their initial flat state after the deformation. The display allows users to give input by force-touch (e.g. pinching, pushing, folding, and twisting the display), providing them with rich haptic feedback.
+Elastic Displays are [shape-changing interfaces]({{ site.baseurl }}/knowledge/terms/shape-changing-interface) that are only temporally deformable, more precisely, they automatically return into their initial flat state after the deformation. The display allows users to give input by force-touch (e.g. pinching, pushing, folding, and twisting the display), providing them with rich haptic feedback.
 
 Most applications use rear-projection to display graphical content on the malleable surface, as it prevents users from covering the projection with their hand’s shadow while interacting. Nearly all feature the use of non-slippery, elastic fabric like for example latex, lycra and spandex. Detecting and tracking complex deformations and multi-touch on the deformable display are a remaining challenge. Recent prototypes often take advantage of the *Intel RealSense* or the *Microsoft Kinect* depth sensor to rapidly detect multi-touch input in three dimensions, offsetting the high cost and unreliability of other approaches like infrared camera-based tracking.
 

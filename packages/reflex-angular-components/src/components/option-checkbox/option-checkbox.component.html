@@ -6,12 +6,16 @@
         value="None"
         id="{{elementId}}-checkbox"
         class="checkbox-toggle"
-        name="{{elementId}}-checkbox"
+        [attr.name]="elementId + '-checkbox'"
+        [attr.aria-labelledby]="elementId + '-label'"
         [(ngModel)]="data"
         (ngModelChange)="onModelChange($event)"
-        [disabled]="disabled"
+        [attr.disabled]="disabled ? true : null"
       />
-      <label class="checkbox-toggle-label" for="{{elementId}}-checkbox"
+      <label class="checkbox-toggle-label"
+        for="{{elementId}}-checkbox"
+        [attr.name]="elementId + '-label'"
+        [id]="elementId + '-label'"
         ><span class="on">ON</span><span class="off">OFF</span></label
       >
     </div>

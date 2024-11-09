@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Sensor.RealSenseD435Module</PackageId>
     <Authors />
     <Copyright>Copyright ©  2021</Copyright>

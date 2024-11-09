@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <PackageId>ReFlex.Core.Filtering</PackageId>
     <Authors>Mathias Müller</Authors>
@@ -25,7 +25,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
     <PackageReference Include="NLog" Version="5.3.2" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />    
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
