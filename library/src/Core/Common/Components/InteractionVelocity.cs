@@ -68,11 +68,12 @@ public class InteractionVelocity
         return new Point3(position.X + firstDerivation.X, position.Y + firstDerivation.Y, position.Z + firstDerivation.Z);
     }
 
-    private Point3 ComputePredictedPositionAdvanced(Point3 position, Point3 firstDerivation, Point3 secondDerivation, float secondDerivationMagnitude = 0.5f)
+    private Point3 ComputePredictedPositionAdvanced(Point3 position, Point3 firstDerivation, Point3 secondDerivation, float secondDerivationMagnitude = 1f)
     {
-        return new Point3(position.X + firstDerivation.X + secondDerivation.X * secondDerivationMagnitude,
-            position.Y + firstDerivation.Y + secondDerivation.Y * secondDerivationMagnitude,
-            position.Z + firstDerivation.Z + secondDerivation.Z * secondDerivationMagnitude);
+        var sum = 1f + secondDerivationMagnitude;
+        return new Point3(position.X + (firstDerivation.X + secondDerivation.X * secondDerivationMagnitude) / sum,
+            position.Y + (firstDerivation.Y + secondDerivation.Y * secondDerivationMagnitude) / sum,
+            position.Z + (firstDerivation.Z + secondDerivation.Z * secondDerivationMagnitude) / sum);
     }
 
 }

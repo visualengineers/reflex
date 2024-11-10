@@ -25,6 +25,7 @@ namespace ReFlex.Core.Interactivity.Components
         private float _maxConfidence;
         private int _extremumTypeCheckRadius;
         private int _extremumTypeCheckNumSamples;
+        private int _predictionSkipSize = 2;
 
         private Tuple<int, int>[] _fixedSamples = Array.Empty<Tuple<int, int>>();
         private Tuple<int, int>[] _stochasticSamples = Array.Empty<Tuple<int, int>>();
@@ -421,7 +422,7 @@ namespace ReFlex.Core.Interactivity.Components
                 var interactionsBefore = interactionFrames
                     .OrderByDescending((f) => f.FrameId)
                     .SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) )
-                    .Skip(1)
+                    .Skip(_predictionSkipSize)
                     .ToList();
                 if (interactionsBefore.Count == 0)
                 {
@@ -430,12 +431,12 @@ namespace ReFlex.Core.Interactivity.Components
                 }
 
                 var firstDerivation = new Point3(interaction.Position.X - interactionsBefore[0].Position.X, interaction.Position.Y - interactionsBefore[0].Position.Y,interaction.Position.Z - interactionsBefore[0].Position.Z);
-                var secondDerivation = interactionsBefore.Count < 2
+                var secondDerivation = interactionsBefore.Count < _predictionSkipSize + 1
                     ? firstDerivation
                     : new Point3(
-                        firstDerivation.X - interactionsBefore[1].Position.X - interactionsBefore[0].Position.X,
-                        firstDerivation.Y - interactionsBefore[1].Position.Y - interactionsBefore[0].Position.Y,
-                        firstDerivation.Z - interactionsBefore[1].Position.Z - interactionsBefore[0].Position.Z);
+                        firstDerivation.X - (interactionsBefore[0].Position.X - interactionsBefore[_predictionSkipSize].Position.X),
+                        firstDerivation.Y - (interactionsBefore[0].Position.Y - interactionsBefore[_predictionSkipSize].Position.Y),
+                        firstDerivation.Z - (interactionsBefore[0].Position.Z - interactionsBefore[_predictionSkipSize].Position.Z));
 
                 result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation));
             }
