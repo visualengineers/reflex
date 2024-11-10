@@ -4,7 +4,7 @@ import { fromEventPattern, Observable, using } from 'rxjs';
 import { SignalRBaseService } from './signalR.base.service';
 import { concatMap, map } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, Point3 } from '@reflex/shared-types';
+import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, InteractionVelocity, Point3 } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,7 @@ export class CalibrationService extends SignalRBaseService<string> {
   private readonly restartCalibrationRoute = `${this.calibrationRoute}Restart`;
   private readonly saveCalibrationRoute = `${this.calibrationRoute}SaveCalibration`;
   private readonly calibrateInteractionsRoute = `${this.calibrationRoute}CalibratedInteractions`;
+  private readonly calibrateInteractionVelocitiesRoute = `${this.calibrationRoute}CalibratedVelocities`;
 
   private readonly updateFrameSizeRoute = `${this.calibrationRoute}UpdateFrameSize`;
   private readonly updateCalibrationPointRoute = `${this.calibrationRoute}UpdateCalibrationPoint/`;
@@ -67,6 +68,10 @@ export class CalibrationService extends SignalRBaseService<string> {
 
   public computeCalibratedPosition(rawInteractions: Array<Interaction>): Observable<HttpResponse<Array<Interaction>>> {
     return this.http.post<Array<Interaction>>(`${this.baseUrl}${this.calibrateInteractionsRoute}`, rawInteractions, { observe: 'response' });
+  }
+
+  public computeCalibratedVelocity(rawVelocities: Array<InteractionVelocity>): Observable<HttpResponse<Array<InteractionVelocity>>> {
+    return this.http.post<Array<InteractionVelocity>>(`${this.baseUrl}${this.calibrateInteractionVelocitiesRoute}`, rawVelocities, { observe: 'response' });
   }
 
   public computeCalibratedAbsolutePosition(rawInteractions: Array<Interaction>): Observable<CompleteInteractionData> {

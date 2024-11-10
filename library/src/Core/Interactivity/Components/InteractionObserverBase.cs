@@ -418,15 +418,24 @@ namespace ReFlex.Core.Interactivity.Components
 
             foreach (var interaction in frame.Interactions)
             {
-                var interactionsBefore = interactionFrames.OrderByDescending((f) => f.FrameId).SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) ).ToList();
+                var interactionsBefore = interactionFrames
+                    .OrderByDescending((f) => f.FrameId)
+                    .SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) )
+                    .Skip(1)
+                    .ToList();
                 if (interactionsBefore.Count == 0)
                 {
                     result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position));
                     break;
                 }
 
-                var firstDerivation = interaction.Position - interactionsBefore[0].Position;
-                var secondDerivation = interactionsBefore.Count < 2 ? firstDerivation : firstDerivation - interactionsBefore[1].Position - interactionsBefore[0].Position;
+                var firstDerivation = new Point3(interaction.Position.X - interactionsBefore[0].Position.X, interaction.Position.Y - interactionsBefore[0].Position.Y,interaction.Position.Z - interactionsBefore[0].Position.Z);
+                var secondDerivation = interactionsBefore.Count < 2
+                    ? firstDerivation
+                    : new Point3(
+                        firstDerivation.X - interactionsBefore[1].Position.X - interactionsBefore[0].Position.X,
+                        firstDerivation.Y - interactionsBefore[1].Position.Y - interactionsBefore[0].Position.Y,
+                        firstDerivation.Z - interactionsBefore[1].Position.Z - interactionsBefore[0].Position.Z);
 
                 result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation));
             }

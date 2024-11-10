@@ -183,7 +183,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             UpdatePerformanceMetrics(perfItem);
 
-            OnNewInteractions(new InteractionData(confidentInteractions.ToList(), velocities));
+            OnNewInteractions(new InteractionData(confidentInteractions.ToList(), velocities.ToList()));
 
             return Task.FromResult(processResult);
         }

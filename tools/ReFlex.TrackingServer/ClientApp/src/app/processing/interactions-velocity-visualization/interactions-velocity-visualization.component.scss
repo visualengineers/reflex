@@ -1,0 +1,54 @@
+@import 'main';
+
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+}
+
+.velocity {
+
+  &__panel {
+    width: 100%;
+    height: 100%;
+
+    &--canvas {
+        width: 100%;
+        height: 100%;
+    }
+  }
+}
+
+.derivation {
+  &__line {
+    &--first,
+    &--second {
+        stroke-width: 1;
+        stroke-dasharray: 1 3;
+    }
+
+    &--first {
+      stroke: $color-success;
+    }
+
+    &--second {
+      stroke: $color-calibration-point;
+    }
+  }
+
+}
+
+.predicted {
+  &__point {
+    &--basic {
+      fill: $color-success;
+    }
+
+    &--advanced {
+      fill: $color-calibration-point;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
+import { CompleteInteractionData, Interaction, InteractionVelocity } from '@reflex/shared-types';
 @Component({
   selector: 'app-interactions',
   templateUrl: './interactions.component.html',
@@ -10,6 +10,8 @@ export class InteractionsComponent {
 
   public interactions: CompleteInteractionData = { raw: [], absolute: [], normalized: [] };
   public calibratedInteractions: Array<Interaction> = [];
+
+  public velocities: Array<InteractionVelocity> = [];
 
   private pIsProcessing = false;
   private readonly datePipe: DatePipe = new DatePipe('en-US', '+0000');
@@ -47,5 +49,11 @@ export class InteractionsComponent {
     this.interactions.raw = interactions.raw.slice(0, maxItems);
     this.interactions.normalized = interactions.normalized.slice(0, maxItems);
     this.interactions.absolute = interactions.absolute.slice(0, maxItems);
+  }
+
+  public updateVelocities(velocities: Array<InteractionVelocity>): void {
+    const maxItems = Math.min(velocities.length, 10);
+
+    this.velocities = velocities.slice(0, maxItems);
   }
 }

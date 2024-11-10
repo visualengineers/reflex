@@ -11,8 +11,9 @@ namespace TrackingServer.Hubs
         private readonly ProcessingService _processingService;
 
         public static readonly string ProcessingStateGroup = "ProcessingState";
-        
+
         public static readonly string InteractionsGroup = "Interactions";
+        public static readonly string InteractionVelocitiesGroup = "InteractionVelocities";
         public static readonly string InteractionFramesGroup = "InteractionFrames";
         public static readonly string InteractionHistoryGroup = "InteractionHistory";
 
@@ -20,7 +21,7 @@ namespace TrackingServer.Hubs
 
         #region Constructor
 
-        public ProcessingHub(ProcessingService processingService) 
+        public ProcessingHub(ProcessingService processingService)
             : base(processingService, ProcessingStateGroup)
         {
             _processingService = processingService;
@@ -30,37 +31,49 @@ namespace TrackingServer.Hubs
 
         #region public Methods
 
-        public async Task StartInteractions() 
+        public async Task StartInteractions()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, InteractionsGroup);
             _processingService.InteractionSubscriptionManager.Subscribe(Context.ConnectionId);
         }
 
-        public async Task StopInteractions() 
+        public async Task StopInteractions()
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, InteractionsGroup);
             _processingService.InteractionSubscriptionManager.Unsubscribe(Context.ConnectionId);
         }
-        
-        public async Task StartInteractionFrames() 
+
+        public async Task StartVelocities()
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, InteractionVelocitiesGroup);
+            _processingService.InteractionVelocitySubscriptionManager.Subscribe(Context.ConnectionId);
+        }
+
+        public async Task StopVelocities()
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, InteractionVelocitiesGroup);
+            _processingService.InteractionVelocitySubscriptionManager.Unsubscribe(Context.ConnectionId);
+        }
+
+        public async Task StartInteractionFrames()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, InteractionFramesGroup);
             _processingService.InteractionFrameSubscriptionManager.Subscribe(Context.ConnectionId);
         }
 
-        public async Task StopInteractionFrames() 
+        public async Task StopInteractionFrames()
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, InteractionFramesGroup);
             _processingService.InteractionFrameSubscriptionManager.Unsubscribe(Context.ConnectionId);
         }
-        
-        public async Task StartInteractionHistory() 
+
+        public async Task StartInteractionHistory()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, InteractionHistoryGroup);
             _processingService.InteractionHistorySubscriptionManager.Subscribe(Context.ConnectionId);
         }
 
-        public async Task StopInteractionHistory() 
+        public async Task StopInteractionHistory()
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, InteractionHistoryGroup);
             _processingService.InteractionHistorySubscriptionManager.Unsubscribe(Context.ConnectionId);

@@ -19,7 +19,7 @@ namespace Implementation.Components
         };
 
         public event EventHandler<Calibration> CalibrationUpdated;
-        public Matrix<float> CalibrationMatrix { get; set; }     
+        public Matrix<float> CalibrationMatrix { get; set; }
 
         public Matrix<float> UnitMatrix4X4 => Matrix<float>.Build.DenseOfArray(_unitMat4X4);
 
@@ -33,7 +33,7 @@ namespace Implementation.Components
 
             _calibrator.CalibrationFinished += OnCalibratrionFinished;
         }
-        
+
         public void Initialize(Calibrator calibratorInstance, Calibration defaultCalibration)
         {
             CalibrationMatrix = Matrix<float>.Build.DenseOfArray(_unitMat4X4);
@@ -54,34 +54,71 @@ namespace Implementation.Components
             if (source == null || CalibrationMatrix == null)
                 return default(Interaction);
 
-            var p3 = new Point3();
-            p3.Set(source.Position);
+            // var p3 = new Point3();
+            // p3.Set(source.Position);
 
-            var inter = new Interaction(p3,source); 
+            var p3 = Calibrate(source.Position);
 
-            inter.Position.X = (inter.Position.X * CalibrationMatrix.AsColumnMajorArray()[0] +
-                                inter.Position.Y * CalibrationMatrix.AsColumnMajorArray()[4] +
-                                1.0f * CalibrationMatrix.AsColumnMajorArray()[8] - _calibrator.StartX) / _calibrator.Width;
+            var inter = new Interaction(p3, source);
 
-            if (inter.Position.X < 0)
-                inter.Position.X = 0;
-
-            if (inter.Position.X > 1)
-                inter.Position.X = 1;
-
-            inter.Position.Y = (inter.Position.X * CalibrationMatrix.AsColumnMajorArray()[1] +
-                                inter.Position.Y * CalibrationMatrix.AsColumnMajorArray()[5] +
-                                1.0f * CalibrationMatrix.AsColumnMajorArray()[9] - _calibrator.StartY) / _calibrator.Height;
-
-            if (inter.Position.Y < 0)
-                inter.Position.Y = 0;
-
-            if (inter.Position.Y > 1)
-                inter.Position.Y = 1;
-
-            inter.Position.Z = inter.Position.Z * CalibrationMatrix.AsColumnMajorArray()[10];
+            // var inter = new Interaction(p3,source);
+            //
+            // inter.Position.X = (inter.Position.X * CalibrationMatrix.AsColumnMajorArray()[0] +
+            //                     inter.Position.Y * CalibrationMatrix.AsColumnMajorArray()[4] +
+            //                     1.0f * CalibrationMatrix.AsColumnMajorArray()[8] - _calibrator.StartX) / _calibrator.Width;
+            //
+            // if (inter.Position.X < 0)
+            //     inter.Position.X = 0;
+            //
+            // if (inter.Position.X > 1)
+            //     inter.Position.X = 1;
+            //
+            // inter.Position.Y = (inter.Position.X * CalibrationMatrix.AsColumnMajorArray()[1] +
+            //                     inter.Position.Y * CalibrationMatrix.AsColumnMajorArray()[5] +
+            //                     1.0f * CalibrationMatrix.AsColumnMajorArray()[9] - _calibrator.StartY) / _calibrator.Height;
+            //
+            // if (inter.Position.Y < 0)
+            //     inter.Position.Y = 0;
+            //
+            // if (inter.Position.Y > 1)
+            //     inter.Position.Y = 1;
+            //
+            // inter.Position.Z = inter.Position.Z * CalibrationMatrix.AsColumnMajorArray()[10];
 
             return inter;
+        }
+
+        public Point3 Calibrate(Point3 source)
+        {
+            if (source == null || CalibrationMatrix == null)
+                return default(Point3);
+
+            var p3 = new Point3();
+            p3.Set(source);
+
+            p3.X = (p3.X * CalibrationMatrix.AsColumnMajorArray()[0] +
+                p3.Y * CalibrationMatrix.AsColumnMajorArray()[4] +
+                1.0f * CalibrationMatrix.AsColumnMajorArray()[8] - _calibrator.StartX) / _calibrator.Width;
+
+            if (p3.X < 0)
+                p3.X = 0;
+
+            if (p3.X > 1)
+                p3.X = 1;
+
+            p3.Y = (p3.X * CalibrationMatrix.AsColumnMajorArray()[1] +
+                p3.Y * CalibrationMatrix.AsColumnMajorArray()[5] +
+                1.0f * CalibrationMatrix.AsColumnMajorArray()[9] - _calibrator.StartY) / _calibrator.Height;
+
+            if (p3.Y < 0)
+                p3.Y = 0;
+
+            if (p3.Y > 1)
+                p3.Y = 1;
+
+            p3.Z *= CalibrationMatrix.AsColumnMajorArray()[10];
+
+            return p3;
         }
 
         [Obsolete]
@@ -91,7 +128,7 @@ namespace Implementation.Components
             if (string.IsNullOrWhiteSpace(calib))
                 return;
             _calibrator.Load(calib);
-            
+
             OnCalibrationUpdated();
         }
 
@@ -100,7 +137,7 @@ namespace Implementation.Components
             CalibrationMatrix = UnitMatrix4X4;
             _calibrator.Reset();
             _calibrator.UpdateSource();
-            
+
             OnCalibrationUpdated();
         }
 

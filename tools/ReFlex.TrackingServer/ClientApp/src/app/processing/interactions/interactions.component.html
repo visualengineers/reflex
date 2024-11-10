@@ -1,6 +1,6 @@
 <div class="content" [ngStyle]="{'visibility': (interactions.raw.length > 0 ? 'visible':'collapse')}">
     <div class="content__header">
-        <h2 class="heading-secondary">List of Interactions</h2>        
+        <h2 class="heading-secondary">List of Interactions</h2>
     </div>
     <div class="interactions__list">
         <table class="interactions__table">
@@ -42,7 +42,7 @@
                 <th scope="col">Time</th>
                 <th scope="col" class="narrowCell">Type</th>
                 <th scope="col" class="narrowCell">%</th>
-            </tr>            
+            </tr>
         </thead>
         <tbody class="interactions__table--body">
             <tr *ngFor="let interaction of this.interactions.normalized">
@@ -57,7 +57,7 @@
             </tr>
             </tbody>
         </table>
-    </div>    
+    </div>
     <div class="interactions__list">
         <table class="interactions__table">
         <thead class="interactions__table--head">
@@ -85,5 +85,30 @@
             </tr>
             </tbody>
         </table>
-    </div>    
+    </div>
+    <div class="content__header">
+      <h2 class="heading-secondary">List of Velocities</h2>
+  </div>
+  <div class="interactions__list">
+      <table class="interactions__table">
+      <thead class="interactions__table--head">
+          <tr>
+              <th scope="col" class="narrowCell">Id</th>
+              <th scope="col" class="wideCell">First Derivation</th>
+              <th scope="col" class="wideCell">Second Derivation</th>
+              <th scope="col" class="wideCell">Predicted (Basic)</th>
+              <th scope="col" class="wideCell">Predicted (Advanced)</th>
+          </tr>
+      </thead>
+      <tbody class="interactions__table--body">
+          <tr *ngFor="let velocity of this.velocities">
+              <td>{{velocity.touchId}}</td>
+              <td>[ {{velocity.firstDerivation.x.toFixed(2)}} | {{velocity.firstDerivation.y.toFixed(2)}} | {{velocity.firstDerivation.z.toFixed(2)}} ]</td>
+              <td>[ {{velocity.secondDerivation.x.toFixed(2)}} | {{velocity.secondDerivation.y.toFixed(2)}} | {{velocity.secondDerivation.z.toFixed(2)}} ]</td>
+              <td>[ {{velocity.predictedPositionBasic.x.toFixed(2)}} | {{velocity.predictedPositionBasic.y.toFixed(2)}} | {{velocity.predictedPositionBasic.z.toFixed(2)}} ]</td>
+              <td>[ {{velocity.predictedPositionAdvanced.x.toFixed(2)}} | {{velocity.predictedPositionAdvanced.y.toFixed(2)}} | {{velocity.predictedPositionAdvanced.z.toFixed(2)}} ]</td>
+          </tr>
+          </tbody>
+      </table>
+  </div>
 </div>

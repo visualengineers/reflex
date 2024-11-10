@@ -4,15 +4,16 @@
     <p>Num Events received: {{eventId}}</p>
 </div>
 <div class="content__body">
-    <div 
+    <div
         class="interactions__visualization"
         [ngStyle]="getInteractionsViewStyle()"
         #interactionVis >
         <input type="checkbox" class="fullscreen__checkbox" id="visualization-toggle" [(ngModel)]="fullScreen" title="toggle fullscreen"/>
         <label for="visualization-toggle" class="fullscreen__button">
             <span class="fullscreen__icon">&nbsp;</span>
-        </label>    
+        </label>
         <app-history-visualization></app-history-visualization>
+        <app-interactions-velocity-visualization #velocityVis></app-interactions-velocity-visualization>
         <div *ngFor="let interaction of this.calibratedInteractions, index as idx">
             <div
                 class="interactions__point--confidence"
@@ -36,19 +37,19 @@
                             <th scope="col">R</th>
                             <td scope="row">{{interactions.raw[idx].position.x.toFixed(0)}}</td>
                             <td scope="row">{{interactions.raw[idx].position.y.toFixed(0)}}</td>
-                            <td scope="row">{{interactions.raw[idx].position.z.toFixed(2)}}</td>                            
+                            <td scope="row">{{interactions.raw[idx].position.z.toFixed(2)}}</td>
                         </tr>
                         <tr>
                             <th scope="col">N</th>
                             <td scope="row">{{interactions.normalized[idx].position.x.toFixed(0)}}</td>
                             <td scope="row">{{interactions.normalized[idx].position.y.toFixed(0)}}</td>
-                            <td scope="row">{{interactions.normalized[idx].position.z.toFixed(2)}}</td>                            
+                            <td scope="row">{{interactions.normalized[idx].position.z.toFixed(2)}}</td>
                         </tr>
                         <tr>
                             <th scope="col">A</th>
                             <td scope="row">{{interactions.absolute[idx].position.x.toFixed(0)}}</td>
                             <td scope="row">{{interactions.absolute[idx].position.y.toFixed(0)}}</td>
-                            <td scope="row">{{interactions.absolute[idx].position.z.toFixed(2)}}</td>                            
+                            <td scope="row">{{interactions.absolute[idx].position.z.toFixed(2)}}</td>
                         </tr>
                     </tbody>
                 </table>

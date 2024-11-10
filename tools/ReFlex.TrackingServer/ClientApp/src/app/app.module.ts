@@ -29,6 +29,7 @@ import { TuioComponent } from './network/tuio/tuio.component';
 import { PackageDetailsComponent } from './network/tuio/package-details/package-details.component';
 import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { PerformanceVisualizationComponent } from './performance-visualization/performance-visualization.component';
+import { InteractionsVelocityVisualizationComponent } from "./processing/interactions-velocity-visualization/interactions-velocity-visualization.component";
 // import { CanvasWidthDirective } from './tracking/point-cloud/canvas-width.directive';
 
 @NgModule({
@@ -66,8 +67,9 @@ import { PerformanceVisualizationComponent } from './performance-visualization/p
     ValueSelectionComponent,
     OptionCheckboxComponent,
     PanelHeaderComponent,
-    ValueTextComponent
-  ],
+    ValueTextComponent,
+    InteractionsVelocityVisualizationComponent
+],
   providers: [{ provide: ErrorHandler, useClass: CustomErrorHandler }],
   bootstrap: [AppComponent]
 })

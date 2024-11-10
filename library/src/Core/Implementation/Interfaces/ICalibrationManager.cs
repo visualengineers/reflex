@@ -14,9 +14,11 @@ namespace Implementation.Interfaces
 
         Interaction Calibrate(Interaction source);
 
+        Point3 Calibrate(Point3 source);
+
         [Obsolete]
         void Initialize(Calibrator calibratorInstance, string defaultCalibration);
-        
+
         void Initialize(Calibrator calibratorInstance, Calibration defaultCalibration);
 
         void LoadCalibration(string calibration);

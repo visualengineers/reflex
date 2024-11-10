@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NEVER, Observable, Subscription } from 'rxjs';
+import { combineLatest, NEVER, Observable, Subscription } from 'rxjs';
 import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
@@ -7,7 +7,7 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { InteractionsComponent } from './interactions/interactions.component';
-import { CompleteInteractionData, DEFAULT_SETTINGS, Interaction, ObserverType, ProcessingSettings, RemoteProcessingServiceSettings, TrackingServerAppSettings } from '@reflex/shared-types';
+import { CompleteInteractionData, DEFAULT_SETTINGS, Interaction, InteractionVelocity, ObserverType, ProcessingSettings, RemoteProcessingServiceSettings, TrackingServerAppSettings } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-processing',
@@ -41,15 +41,17 @@ export class ProcessingComponent implements OnInit, OnDestroy {
     intervalDuration: 0
   };
 
-  private selectedProcessorSubscription?: Subscription;
-  private intervalSubscription?: Subscription;
-  private interactionsSubscription?: Subscription;
-  private observerSubscription?: Subscription;
-  private remoteSettingsSubscription?: Subscription;
-  private saveSettingsSubscription?: Subscription;
+  private readonly subscriptions = new Subscription();
+
+  // private selectedProcessorSubscription?: Subscription;
+  // private intervalSubscription?: Subscription;
+  // private interactionsSubscription?: Subscription;
+  // private observerSubscription?: Subscription;
+  // private remoteSettingsSubscription?: Subscription;
+  // private saveSettingsSubscription?: Subscription;
 
   // private readonly settingsSubscription?: Subscription;
-  private statusSubscription?: Subscription;
+  // private statusSubscription?: Subscription;
 
   private readonly saveSettings$: Observable<TrackingServerAppSettings>;
 
@@ -77,7 +79,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
 
-    this.statusSubscription = this.processingService.getStatus().subscribe(
+    this.subscriptions.add(this.processingService.getStatus().subscribe(
       (result) => {
         this.statusText = result;
       },
@@ -85,9 +87,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         console.error(error);
         this.logService.sendErrorLog(`${error}`);
       }
-    );
+    ));
 
-    this.observerSubscription = this.processingService.getObserverTypes()
+    this.subscriptions.add(this.processingService.getObserverTypes()
       .subscribe(
         (result) => {
           this.processors = result;
@@ -96,9 +98,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
           console.error(error);
           this.logService.sendErrorLog(`${error}`);
         }
-      );
+      ));
 
-    this.selectedProcessorSubscription = this.processingService.getSelectedObserverType()
+    this.subscriptions.add(this.processingService.getSelectedObserverType()
       .subscribe(
         (result) => {
           this.updateProcessor(result);
@@ -107,10 +109,10 @@ export class ProcessingComponent implements OnInit, OnDestroy {
           console.error(error);
           this.logService.sendErrorLog(`${error}`);
         }
-      );
+      ));
 
     const interactions$ = this.processingService.getInteractions();
-    this.interactionsSubscription = this.processingService.getStatus()
+    const calibratedInteractions$ = this.processingService.getStatus()
       .pipe(
         tap((processing) => {
           this.isInteractionProcessingActive = processing === 'Active';
@@ -118,16 +120,29 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         }),
         switchMap((processing) => processing ? interactions$ : NEVER.pipe<Array<Interaction>>(startWith([]))),
         concatMap((raw) => this.calibrationService.computeCalibratedAbsolutePosition(raw))
-      )
-      .subscribe(
-        (result) => this.updateInteractions(result),
-        (error) => {
-          console.error(error);
-          this.logService.sendErrorLog(`${error}`);
-        }
       );
 
-    this.intervalSubscription = this.processingService.getInterval()
+    const velocities$ = this.processingService.getVelocities();
+    const calibratedVelocities$ = this.processingService.getStatus()
+      .pipe(
+        switchMap((processing) => processing ? velocities$ : NEVER.pipe<Array<InteractionVelocity>>(startWith([]))),
+        concatMap((raw) => this.calibrationService.computeCalibratedVelocity(raw).pipe(
+          map((response) => response.body)
+        ))
+      );
+
+    this.subscriptions.add(combineLatest([calibratedInteractions$, calibratedVelocities$]).subscribe({
+      next: (result) => {
+        this.updateInteractions(result[0]);
+        this.updateVelocities(result[0].normalized, result[1] ?? []);
+      },
+      error: (error) => {
+        console.error(error);
+        this.logService.sendErrorLog(`${error}`);
+      }
+    }));
+
+    this.subscriptions.add(this.processingService.getInterval()
       .subscribe(
         (result) => {
           this.updateInterval(result);
@@ -136,9 +151,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
           console.error(error);
           this.logService.sendErrorLog(`${error}`);
         }
-      );
+      ));
 
-    this.remoteSettingsSubscription = this.processingService.getRemoteProcessorSettings()
+    this.subscriptions.add(this.processingService.getRemoteProcessorSettings()
       .subscribe(
         (result) => {
           this.updateRemoteSettings(result);
@@ -147,17 +162,11 @@ export class ProcessingComponent implements OnInit, OnDestroy {
           console.error(error);
           this.logService.sendErrorLog(`${error}`);
         }
-      );
+      ));
   }
 
   public ngOnDestroy(): void {
-    this.statusSubscription?.unsubscribe();
-    this.selectedProcessorSubscription?.unsubscribe();
-    this.intervalSubscription?.unsubscribe();
-    this.interactionsSubscription?.unsubscribe();
-    this.observerSubscription?.unsubscribe();
-    this.remoteSettingsSubscription?.unsubscribe();
-    this.saveSettingsSubscription?.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   public isInteractionProcessingActiveChanged(): void {
@@ -221,7 +230,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public saveRemoteProcessingSettings(): void {
-    this.saveSettingsSubscription = this.saveSettings$.subscribe(
+    this.subscriptions.add(this.saveSettings$.subscribe(
       (result) => {
         console.log(`saved settings:  ${JSON.stringify(result)}`);
       },
@@ -229,7 +238,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         console.error(error);
         this.logService.sendErrorLog(`${error}`);
       }
-    );
+    ));
   }
 
   private updateStatusText(): void {
@@ -255,6 +264,14 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
     this.interactionsList?.updateInteractions(interactions);
     this.visualization?.updateCalibratedInteractions(interactions);
+  }
+
+  private updateVelocities(interactions: Array<Interaction>, velocities: Array<InteractionVelocity>): void {
+    this.interactionsList?.updateVelocities(velocities);
+    if (this.visualization?.velocity) {
+      const data = this.visualization.velocity.mapVelocities(interactions, velocities);
+      this.visualization.velocity.updateVelocities(data);
+    }
   }
 
   private updateRemoteSettings(settings: RemoteProcessingServiceSettings): void {

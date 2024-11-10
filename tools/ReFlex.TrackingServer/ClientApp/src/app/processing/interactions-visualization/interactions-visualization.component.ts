@@ -3,6 +3,7 @@ import { CompleteInteractionData, ElementPosition, ExtremumDescription, Extremum
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
+import { InteractionsVelocityVisualizationComponent } from '../interactions-velocity-visualization/interactions-velocity-visualization.component';
 
 @Component({
   selector: 'app-interactions-visualization',
@@ -13,6 +14,9 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
   @ViewChild('interactionVis')
   public container?: ElementRef;
+
+  @ViewChild('velocityVis')
+  public velocity?: InteractionsVelocityVisualizationComponent;
 
   public interactions: CompleteInteractionData = { raw: [], absolute: [], normalized: [] };
   public calibratedInteractions: Array<Interaction> = [];
@@ -77,11 +81,15 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.calibratedInteractions.forEach((int) => {
+    const copy = JSON.parse(JSON.stringify(this.calibratedInteractions)) as Array<Interaction>;
+
+    copy.forEach((int) => {
       int.position.x = this.fullScreen ? int.position.x - this.frameSize.left : int.position.x * this.container?.nativeElement.clientWidth ?? 0;
       int.position.y = this.fullScreen ? int.position.y - this.frameSize.top : int.position.y * this.container?.nativeElement.clientHeight ?? 0;
       int.position.z = Math.abs(int.position.z) * 2;
     });
+
+    this.calibratedInteractions = copy;
   }
 
   public getClass(extremum: ExtremumDescription): string {
