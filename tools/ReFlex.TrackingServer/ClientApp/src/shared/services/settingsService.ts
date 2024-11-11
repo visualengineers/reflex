@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Border, ConfidenceParameter, Distance, ExtremumDescriptionSettings, FilterSettings, JsonSimpleValue, SmoothingParameter, TrackingServerAppSettings } from '@reflex/shared-types';
+import { PredictionSettings } from '@reflex/shared-types/dist/config/prediction-settings';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -19,6 +20,7 @@ export class SettingsService {
   private readonly setMinAngleRoute = `${this.settingsRoute}/minAngle`;
   private readonly setConfidenceRoute = `${this.settingsRoute}/Confidence`;
   private readonly setSmoothingValuesRoute = `${this.settingsRoute}/Smoothing`;
+  private readonly setPredictionValuesRoute = `${this.settingsRoute}/Prediction`;
   private readonly setExtremumSettingsRoute = `${this.settingsRoute}/ExtremumsCheck`;
   private readonly setDistanceRoute = `${this.settingsRoute}/Distance`;
   private readonly setOptimizedBoxFilterRoute = `${this.settingsRoute}/UseOptimizedBoxFilter`;
@@ -69,6 +71,10 @@ export class SettingsService {
 
   public setConfidence(confidence: ConfidenceParameter): Observable<ConfidenceParameter> {
     return this.http.post<ConfidenceParameter>(this.setConfidenceRoute, confidence);
+  }
+
+  public setPredictionValues(prediction: PredictionSettings): Observable<PredictionSettings> {
+    return this.http.post<PredictionSettings>(this.setPredictionValuesRoute, prediction);
   }
 
   public setSmoothingValues(smoothing: SmoothingParameter): Observable<SmoothingParameter> {

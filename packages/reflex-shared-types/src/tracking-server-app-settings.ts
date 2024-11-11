@@ -5,6 +5,7 @@ import { NetworkSettings } from './config/network-settings';
 import { ProcessingSettings } from './config/processing-settings';
 import { TuioConfiguration } from './config/tuio-configuration';
 import { RemoteProcessingServiceSettings } from './config/remote-processing-service-settings';
+import { PredictionSettings } from './config/prediction-settings';
 
 export interface TrackingServerAppSettings {
 
@@ -13,6 +14,7 @@ export interface TrackingServerAppSettings {
   cameraConfigurationValues: CameraConfiguration;
   networkSettingValues: NetworkSettings;
   processingSettingValues: ProcessingSettings;
+  predictionSettings: PredictionSettings;
   remoteProcessingServiceSettingsValues: RemoteProcessingServiceSettings;
   tuioSettingValues: TuioConfiguration;
   isAutoStartEnabled: boolean;

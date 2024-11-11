@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using ReFlex.Core.Tuio.Util;
 using TrackingServer.Data.Config;
 
@@ -6,25 +7,27 @@ namespace TrackingServer.Data
 {
     public class TrackingServerAppSettings
     {
-        public FilterSettings FilterSettingValues { get; set; }
+        public FilterSettings FilterSettingValues { get; set; } = new();
 
         public ReFlex.Core.Calibration.Util.Calibration CalibrationValues { get; set; }
 
-        public FrameSizeDefinition FrameSize { get; set; }
+        public FrameSizeDefinition FrameSize { get; set; } = new();
 
         public bool IsAutoStartEnabled { get; set; }
 
-        public string DefaultCamera { get; set; }
+        public string DefaultCamera { get; set; } = "";
 
-        public CameraConfiguration CameraConfigurationValues { get; set; }
+        public CameraConfiguration CameraConfigurationValues { get; set; } = new();
 
-        public NetworkSettings NetworkSettingValues { get; set; }
+        public NetworkSettings NetworkSettingValues { get; set; } = new();
 
-        public ProcessingSettings ProcessingSettingValues { get; set; }
-        
-        public RemoteProcessingServiceSettings RemoteProcessingServiceSettingsValues { get; set; }
-        
-        public TuioConfiguration TuioSettingValues { get; set; }
+        public PredictionSettings PredictionSettings { get; set; } = new();
+
+        public ProcessingSettings ProcessingSettingValues { get; set; } = new();
+
+        public RemoteProcessingServiceSettings RemoteProcessingServiceSettingsValues { get; set; } = new();
+
+        public TuioConfiguration TuioSettingValues { get; set; } = new();
 
         public string GetCompleteValues()
         {

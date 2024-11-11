@@ -15,6 +15,7 @@ import { TransportProtocol } from './config/transport-protocol';
 import { TuioConfiguration } from './config/tuio-configuration';
 import { TuioInterpretation } from './config/tuio-interpretation';
 import { TrackingServerAppSettings } from './tracking-server-app-settings';
+import { PredictionSettings } from './config/prediction-settings';
 
 const _defaultFilter: FilterSettings = {
   threshold: 0,
@@ -67,6 +68,15 @@ const _defaultProcessingSettings: ProcessingSettings = {
   intervalDuration: 0
 };
 
+const _defaultPredictionSettings: PredictionSettings = {
+  useVelocityPrediction: true,
+  numFramesForPrediction: 2,
+  secondDerivationMagnitude: 0.5,
+  useSecondDerivation: false,
+  filterPointsByVelocity: true,
+  velocityFilterThreshold: 5
+}
+
 const _defaultTuioSettings: TuioConfiguration = {
   sensorWidth: 0,
   sensorHeight: 0,
@@ -94,6 +104,7 @@ const _values: TrackingServerAppSettings = {
   cameraConfigurationValues: _defaultCameraConfig,
   networkSettingValues: _defaultNetworkSettings,
   processingSettingValues: _defaultProcessingSettings,
+  predictionSettings: _defaultPredictionSettings,
   remoteProcessingServiceSettingsValues: _defaultRemoteProcessingSettings,
   tuioSettingValues: _defaultTuioSettings,
   isAutoStartEnabled: false,

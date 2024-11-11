@@ -245,6 +245,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
+  public savePredictionValues(): void {
+    this.settingsService.setPredictionValues(this.settings.predictionSettings).subscribe((result) => {
+      console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);
+      this.settingsService.update();
+    }, (error) => {
+      console.error(error);
+      this.logService.sendErrorLog(`${error}`);
+    });
+  }
+
   public saveSmoothingValues(): void {
     this.settingsService.setSmoothingValues(this.settings.filterSettingValues.smoothingValues).subscribe((result) => {
       console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);
