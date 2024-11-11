@@ -13,7 +13,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && electron .",
-    "build:electron-win": "ng build --base-href ./ && electron-builder build --win"
+    "build:electron-win": "ng build --base-href ./ && electron-builder build --win",
+    "build:electron-osx": "ng build --base-href ./ && electron-builder build --mac --arm64"
   },
   "build": {
     "appId": "reflex.emulator",
