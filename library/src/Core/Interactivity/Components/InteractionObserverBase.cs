@@ -455,6 +455,7 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 var interactionsBefore = interactionFrames
                     .OrderByDescending((f) => f.FrameId)
+                    .Take(NumFramesForPrediction * 2)
                     .SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) )
                     .Skip(NumFramesForPrediction)
                     .ToList();
@@ -464,13 +465,13 @@ namespace ReFlex.Core.Interactivity.Components
                     break;
                 }
 
-                var firstDerivation = new Point3(interaction.Position.X - interactionsBefore[0].Position.X, interaction.Position.Y - interactionsBefore[0].Position.Y,interaction.Position.Z - interactionsBefore[0].Position.Z);
+                var firstDerivation = new Point3(interactionsBefore[0].Position.X -interaction.Position.X, interactionsBefore[0].Position.Y - interaction.Position.Y, interactionsBefore[0].Position.Z - interaction.Position.Z);
                 var secondDerivation = interactionsBefore.Count < NumFramesForPrediction + 1
                     ? firstDerivation
                     : new Point3(
-                        firstDerivation.X - (interactionsBefore[0].Position.X - interactionsBefore[NumFramesForPrediction].Position.X),
-                        firstDerivation.Y - (interactionsBefore[0].Position.Y - interactionsBefore[NumFramesForPrediction].Position.Y),
-                        firstDerivation.Z - (interactionsBefore[0].Position.Z - interactionsBefore[NumFramesForPrediction].Position.Z));
+                        (interactionsBefore[0].Position.X - interactionsBefore[NumFramesForPrediction].Position.X) - firstDerivation.X,
+                        (interactionsBefore[0].Position.Y - interactionsBefore[NumFramesForPrediction].Position.Y) - firstDerivation.Y,
+                        (interactionsBefore[0].Position.Z - interactionsBefore[NumFramesForPrediction].Position.Z) - firstDerivation.Z);
 
                 result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation, SecondDerivationMagnitude));
             }

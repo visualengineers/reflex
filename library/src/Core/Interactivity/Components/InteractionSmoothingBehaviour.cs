@@ -50,6 +50,8 @@ namespace ReFlex.Core.Interactivity.Components
         public bool UseVelocityForMapping { get; set; } = true;
         public bool UseSecondDerivation { get; set; } = true;
 
+        public int MaxVelocityChange { get; set; } = 5;
+
 
         private List<InteractionVelocity> _velocities = [];
 
@@ -157,6 +159,36 @@ namespace ReFlex.Core.Interactivity.Components
 
         public void UpdateVelocities(List<InteractionVelocity> rawVelocities)
         {
+            // filter out velocities that have changed too much
+            var existingVelocities = _velocities
+                .Where(v => rawVelocities
+                    .Exists(newVelocity => newVelocity.TouchId == v.TouchId)).ToList();
+
+            var updatedVelocities = new List<InteractionVelocity>();
+            existingVelocities.ForEach(newVelocity =>
+            {
+               var existing = _velocities.FirstOrDefault(v => v.TouchId == newVelocity.TouchId);
+
+               if (existing == null)
+               {
+                   updatedVelocities.Add(newVelocity);
+               }
+               else
+               {
+                   var checkedValue =
+                       newVelocity.FirstDerivation.X < MaxVelocityChange * existing.FirstDerivation.X &&
+                       newVelocity.FirstDerivation.Y < MaxVelocityChange * existing.FirstDerivation.Y;
+
+                   updatedVelocities.Add(checkedValue
+                       ? newVelocity
+                       : new InteractionVelocity(
+                        existing.TouchId,
+                        new Point3(0f,0f,0f),
+                        new Point3(0f,0f,0f)));
+               }
+            });
+
+
             _velocities = rawVelocities;
         }
 
@@ -167,6 +199,128 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         private void UpdateInteractionFramesList()
         {
+            var allInteractions = _interactionFrames
+                .SelectMany(f => f.Interactions).ToList();
+
+            // select list with all touch ids in history
+            var allInteractionIds = allInteractions.Select(interaction => interaction.TouchId).Distinct().ToList();
+
+            // create a dictionary taht contains all ids as key and an (empty) list of ids for the merged touch ids
+            var dict = allInteractionIds.ToDictionary<int, int, List<int>>(id => id, id => []);
+
+            // iterate over all interactions and compute the distances to any other point in every frame.
+            // Add the id of the other point to the dictionary if the distance ios below the given threshold for merging
+            allInteractions.ForEach(i =>
+            {
+                allInteractions
+                    .ForEach(other =>
+                    {
+                        if (other.TouchId != i.TouchId &&
+                            Point3.Squared2DDistance(i.Position, other.Position) < TouchMergeDistance2D)
+                        {
+                            dict[i.TouchId].Add(other.TouchId);
+                        }
+                    });
+            });
+
+            // select pairs (both touch ids, and the number of merges) by counting the occurrences in the dictionary value
+            // (as a result there will be mirrored entries in the form: (1, 12, 15), (21, 1, 3)
+            // the entry with the lower number of collisions will be removed later
+            var pairs = new List<(int TouchId, int TouchId2, int Count)>();
+
+            foreach (var kvp in dict)
+            {
+                var counted = kvp.Value.GroupBy(item => item)
+                    .Select(item => new
+                    {
+                        TouchId = item.Key,
+                        TouchId2 = kvp.Key,
+                        Count = item.Count()
+                    })
+                    .OrderByDescending(item => item.Count)
+                    .ThenBy(item => item.TouchId)
+                    .ToList();
+
+                counted.ForEach(p =>
+                {
+                    pairs.Add((p.TouchId, p.TouchId2, p.Count));
+                });
+            }
+
+            var idsToRemoveFromHistory = new List<int>();
+
+            // now find the corresponding mirrored pairs and identify the id with the lower number of collicions
+            pairs.ForEach(p =>
+            {
+                var pair = pairs.FirstOrDefault(pair => pair.TouchId == p.TouchId2);
+
+                idsToRemoveFromHistory.Add(p.Count > pair.Count ? p.TouchId : p.TouchId2);
+            });
+
+            // remove the found ids
+            idsToRemoveFromHistory.ForEach(removeId =>
+            {
+                _interactionFrames.ForEach(f => f.Interactions.RemoveAll(i => i.TouchId == removeId));
+            });
+
+            if (UseVelocityToCleanupHistory)
+            {
+                // create History for each point
+                var flattened = allInteractionIds.SelectMany(id =>
+                    _interactionFrames
+                        .Select(f =>
+                        {
+                            var found = f.Interactions.FirstOrDefault(interaction => interaction.TouchId == id);
+                            return new
+                            {
+                                FrameId = f.FrameId,
+                                Interaction = found,
+                                InteractionVelocity = new InteractionVelocity(id,found?.Position ?? new Point3())
+                            };
+                        }))
+                    .Where(interaction => interaction.Interaction != null)
+                    .ToList();
+
+                var delete = new List<(int FrameId, int TouchId)>();
+
+                allInteractionIds.ForEach((id) =>
+                {
+                    var historyForId = flattened
+                        .Where((h) => h.FrameId == id)
+                        .OrderByDescending(h => h.FrameId).ToList();
+
+                    // compute differenceVectors
+                    for (var i = 1; i < historyForId.Count; i++)
+                    {
+                        var elem = historyForId[i];
+                        var pos = elem.Interaction.Position;
+                        var pos2 = historyForId[i-1].Interaction.Position;
+                        elem.InteractionVelocity.Update(pos, pos2 - pos, new Point3());
+                    }
+
+                    // compare differenceVectors
+                    for (var i = 1; i < historyForId.Count; i++)
+                    {
+                        var v1 = historyForId[i].InteractionVelocity.FirstDerivation;
+                        var v2 = historyForId[i-1].InteractionVelocity.FirstDerivation;
+
+                        var invalid = v1.X > VelocityThreshold * v2.X && v1.Y > VelocityThreshold * v2.Y;
+                        if (invalid)
+                            delete.Add((historyForId[i].FrameId, id));
+                    }
+                });
+
+                delete.ForEach((tpl) =>
+                {
+                    var frame = _interactionFrames.FirstOrDefault((f) => f.FrameId == tpl.FrameId);
+                    if (frame != null)
+                    {
+                        frame.Interactions.RemoveAll((interaction) => interaction.TouchId == tpl.TouchId);
+                    }
+                });
+
+            }
+
             if (_interactionFrames.Count > NumFramesHistory)
             {
                 try
@@ -182,21 +336,25 @@ namespace ReFlex.Core.Interactivity.Components
             }
         }
 
+        public bool UseVelocityToCleanupHistory { get; set; } = true;
+
+        public float VelocityThreshold { get; set; } = 5f;
+
         /// <summary>
         /// replaces the frame in the cache with the updated frame (if FrameId is existing, otherwise, nothing is changed)
         /// </summary>
         /// <param name="updatedFrame">Frame containing updated values</param>
         public void UpdateCachedFrame(InteractionFrame updatedFrame)
         {
-          var frameIdxToBeReplaced = _interactionFrames.FindIndex((f) => f.FrameId == updatedFrame.FrameId);
+          var frameIdxToBeReplaced = _interactionFrames.FindIndex(f => f.FrameId == updatedFrame.FrameId);
           if (frameIdxToBeReplaced < 0)
             return;
 
           // _interactionFrames[frameIdxToBeReplaced] = updatedFrame;
-          _interactionFrames[frameIdxToBeReplaced].Interactions.ForEach((interaction) =>
+          _interactionFrames[frameIdxToBeReplaced].Interactions.ForEach(interaction =>
           {
             var updatedInteraction =
-              updatedFrame.Interactions.FirstOrDefault((update) => update.TouchId == interaction.TouchId);
+              updatedFrame.Interactions.FirstOrDefault(update => update.TouchId == interaction.TouchId);
             if (updatedInteraction != null)
             {
               interaction.Confidence = updatedInteraction.Confidence;
@@ -278,24 +436,24 @@ namespace ReFlex.Core.Interactivity.Components
 
             if (UseVelocityForMapping && pastFrames.Length > 0)
             {
-                var nextFrameId = pastFrames.Select((frame) => _frameId).Max() + 1;
-                var predictedInteractions = _velocities.Select((v) =>
+                var nextFrameId = pastFrames.Select(frame => _frameId).Max() + 1;
+                var predictedInteractions = _velocities.Select(v =>
                 {
-                    var lastFrame = pastFrames.FirstOrDefault((f) =>
-                        f.Interactions.FirstOrDefault((i) => i.TouchId == v.TouchId) != null);
+                    var lastFrame = pastFrames.FirstOrDefault(f =>
+                        f.Interactions.FirstOrDefault(i => i.TouchId == v.TouchId) != null);
                     if (lastFrame == null)
                     {
                         return null;
                     }
 
-                    var associatedInteraction = lastFrame.Interactions.FirstOrDefault((i) => i.TouchId == v.TouchId);
+                    var associatedInteraction = lastFrame.Interactions.FirstOrDefault(i => i.TouchId == v.TouchId);
 
                     return new Interaction(UseSecondDerivation ? v.PredictedPositionAdvanced : v.PredictedPositionBasic, associatedInteraction);
-                }).Where((i) => i != null).ToList();
+                }).Where(i => i != null).ToList();
 
                 var updatedPastFrames = pastFrames.ToList();
                 updatedPastFrames.Insert(0, new InteractionFrame(nextFrameId, predictedInteractions));
-                pastFrames = updatedPastFrames.OrderByDescending((f) => f.FrameId).ToArray();
+                pastFrames = updatedPastFrames.OrderByDescending(f => f.FrameId).ToArray();
             }
 
             var i = pastFrames.Length - 1;
