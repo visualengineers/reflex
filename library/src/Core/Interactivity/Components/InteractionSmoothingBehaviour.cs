@@ -48,6 +48,7 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         public bool UseVelocityForMapping = true;
+        private List<InteractionVelocity> _velocities = [];
 
         public InteractionFrame[] InteractionsFramesCache => _interactionFrames.ToArray();
 
@@ -149,6 +150,11 @@ namespace ReFlex.Core.Interactivity.Components
             });
 
             return result;
+        }
+
+        public void UpdateVelocities(List<InteractionVelocity> rawVelocities)
+        {
+            _velocities = rawVelocities;
         }
 
         #endregion
@@ -265,6 +271,29 @@ namespace ReFlex.Core.Interactivity.Components
             var result = new List<Interaction>();
 
             var candidates = rawInteractions.ToArray();
+
+
+            if (UseVelocityForMapping && pastFrames.Length > 0)
+            {
+                var nextFrameId = pastFrames.Select((frame) => _frameId).Max() + 1;
+                var predictedInteractions = _velocities.Select((v) =>
+                {
+                    var lastFrame = pastFrames.FirstOrDefault((f) =>
+                        f.Interactions.FirstOrDefault((i) => i.TouchId == v.TouchId) != null);
+                    if (lastFrame == null)
+                    {
+                        return null;
+                    }
+
+                    var associatedInteraction = lastFrame.Interactions.FirstOrDefault((i) => i.TouchId == v.TouchId);
+
+                    return new Interaction(v.PredictedPositionBasic, associatedInteraction);
+                }).Where((i) => i != null).ToList();
+
+                var updatedPastFrames = pastFrames.ToList();
+                updatedPastFrames.Insert(0, new InteractionFrame(nextFrameId, predictedInteractions));
+                pastFrames = updatedPastFrames.OrderByDescending((f) => f.FrameId).ToArray();
+            }
 
             var i = pastFrames.Length - 1;
 

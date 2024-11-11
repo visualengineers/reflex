@@ -172,6 +172,8 @@ namespace ReFlex.Core.Interactivity.Components
 
             var velocities = ComputeVelocities(frame);
 
+
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();

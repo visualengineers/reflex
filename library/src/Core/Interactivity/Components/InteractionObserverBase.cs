@@ -441,6 +441,8 @@ namespace ReFlex.Core.Interactivity.Components
                 result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation));
             }
 
+            _smoothingBehaviour.UpdateVelocities(result);
+
             return result;
         }
 
