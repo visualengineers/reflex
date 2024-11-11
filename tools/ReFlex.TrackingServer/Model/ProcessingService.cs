@@ -182,6 +182,18 @@ namespace TrackingServer.Model
                     _configManager.Settings.FilterSettingValues.ExtremumSettings.FitPercentage;
             }
 
+            if (_configManager?.Settings?.PredictionSettings != null)
+            {
+                _interactionManager.UseVelocityPrediction =
+                    _configManager.Settings.PredictionSettings.UseVelocityPrediction;
+                _interactionManager.NumFramesForPrediction =
+                    _configManager.Settings.PredictionSettings.NumFramesForPrediction;
+                _interactionManager.UseSecondDerivation =
+                    _configManager.Settings.PredictionSettings.UseSecondDerivation;
+                _interactionManager.SecondDerivationMagnitude =
+                    _configManager.Settings.PredictionSettings.SecondDerivationMagnitude;
+            }
+
             Logger.Info($"Loaded Settings for {GetType().FullName}. Setting {nameof(Interval)} to {Interval} ms");
         }
 

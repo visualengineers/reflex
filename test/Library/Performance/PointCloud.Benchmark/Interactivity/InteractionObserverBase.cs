@@ -94,6 +94,11 @@ namespace PointCloud.Benchmark.Interactivity
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        public bool UseVelocityPrediction { get; set; }
+        public int NumFramesForPrediction { get; set; }
+        public bool UseSecondDerivation { get; set; }
+        public float SecondDerivationMagnitude { get; set; }
+
         public int InteractionHistorySize
         {
             get => _historySize;

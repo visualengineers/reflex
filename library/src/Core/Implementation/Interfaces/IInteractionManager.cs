@@ -45,6 +45,14 @@ namespace Implementation.Interfaces
 
         ExtremumTypeCheckMethod ExtremumTypeCheckMethod{ get; set; }
 
+        bool UseVelocityPrediction { get; set; }
+
+        int NumFramesForPrediction { get; set; }
+
+        bool UseSecondDerivation  { get; set; }
+
+        float SecondDerivationMagnitude { get; set; }
+
         FilterType FilterType { get; set; }
 
         void Init(ObserverType type);

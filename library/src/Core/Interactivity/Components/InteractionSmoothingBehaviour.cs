@@ -47,7 +47,10 @@ namespace ReFlex.Core.Interactivity.Components
             set => _depthScale = value;
         }
 
-        public bool UseVelocityForMapping = true;
+        public bool UseVelocityForMapping { get; set; } = true;
+        public bool UseSecondDerivation { get; set; } = true;
+
+
         private List<InteractionVelocity> _velocities = [];
 
         public InteractionFrame[] InteractionsFramesCache => _interactionFrames.ToArray();
@@ -287,7 +290,7 @@ namespace ReFlex.Core.Interactivity.Components
 
                     var associatedInteraction = lastFrame.Interactions.FirstOrDefault((i) => i.TouchId == v.TouchId);
 
-                    return new Interaction(v.PredictedPositionBasic, associatedInteraction);
+                    return new Interaction(UseSecondDerivation ? v.PredictedPositionAdvanced : v.PredictedPositionBasic, associatedInteraction);
                 }).Where((i) => i != null).ToList();
 
                 var updatedPastFrames = pastFrames.ToList();

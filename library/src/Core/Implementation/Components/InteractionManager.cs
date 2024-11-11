@@ -33,6 +33,10 @@ namespace Implementation.Components
         private int _maxNumEmptyFramesBetween;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
+        private bool _useVelocityPrediction = false;
+        private int _numFramesForPredicition ;
+        private bool _useSecondDerivation;
+        private float _secondDerivationMagnitude;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
 
@@ -98,6 +102,10 @@ namespace Implementation.Components
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
             observer.DepthScale = _depthScale;
+            observer.UseVelocityPrediction = _useVelocityPrediction;
+            observer.NumFramesForPrediction = _numFramesForPredicition;
+            observer.UseSecondDerivation = _useSecondDerivation;
+            observer.SecondDerivationMagnitude = _secondDerivationMagnitude;
             _interactionObserver = observer;
 
             _interactionObserver.NewInteractions += OnNewInteractions;
@@ -288,6 +296,50 @@ namespace Implementation.Components
             {
                 if (_interactionObserver != null)
                     _interactionObserver.ExtremumTypeCheckMethod = value;
+            }
+        }
+
+        public bool UseVelocityPrediction
+        {
+            get => _interactionObserver?.UseVelocityPrediction ?? false;
+            set
+            {
+                _useVelocityPrediction = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.UseVelocityPrediction = value;
+            }
+        }
+
+        public int NumFramesForPrediction
+        {
+            get => _interactionObserver?.NumFramesForPrediction ?? 0;
+            set
+            {
+                _numFramesForPredicition = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.NumFramesForPrediction = value;
+            }
+        }
+
+        public bool UseSecondDerivation
+        {
+            get => _interactionObserver?.UseSecondDerivation ?? false;
+            set
+            {
+                _useSecondDerivation = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.UseSecondDerivation = value;
+            }
+        }
+
+        public float SecondDerivationMagnitude
+        {
+            get => _interactionObserver?.SecondDerivationMagnitude ?? 0f;
+            set
+            {
+                _secondDerivationMagnitude = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.SecondDerivationMagnitude = value;
             }
         }
 

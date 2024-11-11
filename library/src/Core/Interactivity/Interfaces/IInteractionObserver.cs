@@ -135,6 +135,14 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// </summary>
         ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        bool UseVelocityPrediction { get; set; }
+
+        int NumFramesForPrediction { get; set; }
+
+        public bool UseSecondDerivation { get; set; }
+
+        public float SecondDerivationMagnitude { get; set; }
+
         /// <summary>
         /// Occurs when new interactions are detected.
         /// </summary>

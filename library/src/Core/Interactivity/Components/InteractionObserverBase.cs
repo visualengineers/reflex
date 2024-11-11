@@ -25,10 +25,11 @@ namespace ReFlex.Core.Interactivity.Components
         private float _maxConfidence;
         private int _extremumTypeCheckRadius;
         private int _extremumTypeCheckNumSamples;
-        private int _predictionSkipSize = 2;
 
         private Tuple<int, int>[] _fixedSamples = Array.Empty<Tuple<int, int>>();
         private Tuple<int, int>[] _stochasticSamples = Array.Empty<Tuple<int, int>>();
+        private bool _useVelocityPrediction = true;
+        private bool _useSecondDerivation = false;
 
         #endregion
 
@@ -97,6 +98,36 @@ namespace ReFlex.Core.Interactivity.Components
         /// Defines how neighboring the points are sampled for determining the type of extremum.
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
+
+        public bool UseVelocityPrediction
+        {
+            get => _useVelocityPrediction;
+            set
+            {
+                _useVelocityPrediction = value;
+                if (_smoothingBehaviour != null)
+                {
+                    _smoothingBehaviour.UseVelocityForMapping = value;
+                }
+            }
+        }
+
+        public int NumFramesForPrediction { get; set; } = 2;
+
+        public bool UseSecondDerivation
+        {
+            get => _useSecondDerivation;
+            set
+            {
+                _useSecondDerivation = value;
+                if (_smoothingBehaviour != null)
+                {
+                    _smoothingBehaviour.UseSecondDerivation = value;
+                }
+            }
+        }
+
+        public float SecondDerivationMagnitude { get; set; } = 0.5f;
 
         public int InteractionHistorySize
         {
@@ -415,6 +446,9 @@ namespace ReFlex.Core.Interactivity.Components
         {
             var result = new List<InteractionVelocity>();
 
+            if (!UseVelocityPrediction)
+                return result;
+
             var interactionFrames = _smoothingBehaviour.InteractionsFramesCache;
 
             foreach (var interaction in frame.Interactions)
@@ -422,7 +456,7 @@ namespace ReFlex.Core.Interactivity.Components
                 var interactionsBefore = interactionFrames
                     .OrderByDescending((f) => f.FrameId)
                     .SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) )
-                    .Skip(_predictionSkipSize)
+                    .Skip(NumFramesForPrediction)
                     .ToList();
                 if (interactionsBefore.Count == 0)
                 {
@@ -431,14 +465,14 @@ namespace ReFlex.Core.Interactivity.Components
                 }
 
                 var firstDerivation = new Point3(interaction.Position.X - interactionsBefore[0].Position.X, interaction.Position.Y - interactionsBefore[0].Position.Y,interaction.Position.Z - interactionsBefore[0].Position.Z);
-                var secondDerivation = interactionsBefore.Count < _predictionSkipSize + 1
+                var secondDerivation = interactionsBefore.Count < NumFramesForPrediction + 1
                     ? firstDerivation
                     : new Point3(
-                        firstDerivation.X - (interactionsBefore[0].Position.X - interactionsBefore[_predictionSkipSize].Position.X),
-                        firstDerivation.Y - (interactionsBefore[0].Position.Y - interactionsBefore[_predictionSkipSize].Position.Y),
-                        firstDerivation.Z - (interactionsBefore[0].Position.Z - interactionsBefore[_predictionSkipSize].Position.Z));
+                        firstDerivation.X - (interactionsBefore[0].Position.X - interactionsBefore[NumFramesForPrediction].Position.X),
+                        firstDerivation.Y - (interactionsBefore[0].Position.Y - interactionsBefore[NumFramesForPrediction].Position.Y),
+                        firstDerivation.Z - (interactionsBefore[0].Position.Z - interactionsBefore[NumFramesForPrediction].Position.Z));
 
-                result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation));
+                result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation, SecondDerivationMagnitude));
             }
 
             _smoothingBehaviour.UpdateVelocities(result);
