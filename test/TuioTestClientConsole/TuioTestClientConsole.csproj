@@ -14,7 +14,7 @@
 
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.9.1" />
-      <PackageReference Include="Microsoft.CodeCoverage" Version="17.11.1" />
+      <PackageReference Include="Microsoft.CodeCoverage" Version="17.12.0" />
     </ItemGroup>
 
 </Project>
