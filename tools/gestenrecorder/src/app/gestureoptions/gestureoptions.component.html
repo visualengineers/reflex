@@ -1,0 +1,74 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">ViewPort</h2>
+</div>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="viewPortWidth" elementTitle="ViewPortWidth">
+  <input inputField class="form-control form-control-sm custom-input" type="text"
+  placeholder="640" [(ngModel)]="viewPort.width"
+  name="viewPortWidth" id="viewPortWidth" (change)="saveConfiguration()">
+</app-value-text>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="viewPortHeight" elementTitle="ViewPortHeight">
+  <input inputField class="form-control form-control-sm custom-input" type="text"
+  placeholder="480" [(ngModel)]="viewPort.height"
+  name="viewPortHeight" id="viewPortHeight" (change)="saveConfiguration()">
+</app-value-text>
+
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Background</h2>
+</div>
+
+<app-value-selection elementTitle="Type" elementId="settings-filter-select" class="settings__item margin-bottom-default">
+  <select selection [(ngModel)]="selectedBackgroundType"
+  class="custom-select"
+  name="backgroundType"
+  id="backgroundType"
+  style="min-width: 12rem;">
+    <option *ngFor="let background of backgroundType" [value]="background">
+      {{ background }}
+    </option>
+  </select>
+</app-value-selection>
+
+<div *ngIf="selectedBackgroundType === 'from assets/img'">
+  <app-value-selection elementTitle="Image" elementId="background-image-select" class="settings__item margin-bottom-default">
+    <select selection [(ngModel)]="selectedBackgroundImage" class="custom-select"
+    name="backgroundImage" id="backgroundImage" style="min-width: 12rem;">
+      <option *ngFor="let source of backgroundSources" [value]="source.src">
+        {{ source.name }}
+      </option>
+    </select>
+  </app-value-selection>
+</div>
+
+<div *ngIf="selectedBackgroundType === 'from internet url'">
+  <app-value-text elementId="background-image" elementTitle="URL" class="settings__item margin-bottom-default">
+    <input inputField class="form-control form-control-sm custom-input" type="text" placeholder="Enter URL"
+    [(ngModel)]="selectedBackgroundImage" name="backgroundUrl" id="backgroundUrl" style="min-width: 12rem;"(change)="saveConfiguration()">
+  </app-value-text>
+</div>
+
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Layers</h2>
+</div>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="layersDown" elementTitle="LayersDown">
+  <input inputField class="form-control form-control-sm custom-input" type="text"
+  placeholder="7" [(ngModel)]="layers.down"
+  name="layersDown" id="layersDown" (change)="saveConfiguration()">
+</app-value-text>
+
+<app-value-text class="settings__item margin-bottom-default"
+  elementId="layersUp" elementTitle="LayersUp">
+  <input inputField class="form-control form-control-sm custom-input" type="text"
+  placeholder="2" [(ngModel)]="layers.up"
+  name="layersUp" id="layersUp" (change)="saveConfiguration()">
+</app-value-text>
+
+<div class="settings__button-container">
+  <button class="button" (click)="saveConfiguration()">Save</button>
+  <button class="button" (click)="restoreConfiguration()">Restore</button>
+</div>
