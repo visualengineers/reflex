@@ -2,7 +2,7 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",    
+    "version": "0.2.0",
     "compounds": [
         {
             "name": ".NET Core & Chrome (Debug)",
@@ -19,7 +19,7 @@
             ]
         }
     ],
-    "configurations": [    
+    "configurations": [
         {
             "name": "Launch Logging",
             "request": "launch",
@@ -47,7 +47,7 @@
         },
         {
             "type": "msedge",
-            "name": "Start Emulator", 
+            "name": "Start Emulator",
             "request": "launch",
             "webRoot": "${workspaceFolder}/tools/emulator",
             "url": "http://localhost:4300",
@@ -55,7 +55,7 @@
         },
         {
             "type": "msedge",
-            "name": "Start Angular Example", 
+            "name": "Start Angular Example",
             "request": "launch",
             "webRoot": "${workspaceFolder}/tools/basic-angular",
             "url": "http://localhost:4201",
@@ -63,7 +63,7 @@
         },
         {
             "type": "msedge",
-            "name": "Start React Example", 
+            "name": "Start React Example",
             "request": "launch",
             "webRoot": "${workspaceFolder}/tools/basic-react",
             "url": "http://localhost:3000",
@@ -71,7 +71,7 @@
         },
         {
             "type": "msedge",
-            "name": "Start Vue Example", 
+            "name": "Start Vue Example",
             "request": "launch",
             "webRoot": "${workspaceFolder}/tools/basic-vue/src",
             "sourceMapPathOverrides": {
@@ -85,28 +85,28 @@
             "preLaunchTask": "run vue example client app"
         },
         {
-            "name": "Start Emulator with Basic Angular Example", 
+            "name": "Start Emulator with Basic Angular Example",
             "request": "launch",
             "cwd": "${workspaceFolder}/examples/basic-angular",
             "runtimeArgs": [
                 "run-script",
                 "start"
-            ],            
+            ],
             "runtimeExecutable": "npm",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "node",           
+            "type": "node",
             "console": "integratedTerminal",
 
             "preLaunchTask": "run emulator"
-        },    
+        },
         {
             "name": "Server Backend - .NET Core (Debug)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build (Debug)",
-            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Debug/net7.0/ReFlex.TrackingServer.dll",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Debug/net8.0/ReFlex.TrackingServer.dll",
             "args": [],
             "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
             "stopAtEntry": false,
@@ -127,7 +127,7 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "development", 
+                "ASPNETCORE_ENVIRONMENT": "development",
                 "Platform": "x64"
             },
         },
@@ -136,7 +136,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build (Release)",
-            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Release/net7.0/ReFlex.TrackingServer.dll",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/x64/Release/net8.0/ReFlex.TrackingServer.dll",
             "args": [],
             "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
             "stopAtEntry": false,
@@ -157,7 +157,7 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "production", 
+                "ASPNETCORE_ENVIRONMENT": "production",
                 "Platform": "x64"
             },
         },
@@ -166,7 +166,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build (Debug ARM64)",
-            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/ARM64/Debug/net7.0/ReFlex.TrackingServer.dll",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/ARM64/Debug/net8.0/ReFlex.TrackingServer.dll",
             "args": [],
             "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
             "stopAtEntry": false,
@@ -187,7 +187,7 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "production", 
+                "ASPNETCORE_ENVIRONMENT": "production",
                 "Platform": "x64"
             },
         }

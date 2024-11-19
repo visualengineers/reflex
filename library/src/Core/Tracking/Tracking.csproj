@@ -13,7 +13,7 @@
     <AssemblyName>ReFlex.Core.Tracking</AssemblyName>
     <RootNamespace>ReFlex.Core.Tracking</RootNamespace>
     <Platforms>x64;ARM64;AnyCPU</Platforms>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>

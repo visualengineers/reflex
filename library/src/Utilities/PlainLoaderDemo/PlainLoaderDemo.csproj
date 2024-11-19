@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Utilities.PlainLoaderDemo</PackageId>
     <Authors>Mathias Müller</Authors>
     <Copyright>Copyright ©  2020-2023</Copyright>

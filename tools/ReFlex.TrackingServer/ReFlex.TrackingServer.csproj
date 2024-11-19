@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <Nullable>enable</Nullable>
@@ -35,7 +35,7 @@
     <!-- Define additional preprocessor directives -->
     <DefineConstants Condition="'$(DefineAdditionalConstants)' != ''">$(DefineConstants);$(DefineAdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>    
+  <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.20" />
@@ -73,11 +73,11 @@
   <ItemGroup Condition="'$(DefineConstants.Contains(MS_KINECT2))' == true">
     <ProjectReference Include="..\..\library\src\Sensor\Kinect2Module\Kinect2Module.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(DefineConstants.Contains(INTEL_REALSENSE))' == true">    
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />    
+  <ItemGroup Condition="'$(DefineConstants.Contains(INTEL_REALSENSE))' == true">
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />    
-  </ItemGroup>  
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Content Update="wwwroot\Config\TrackingSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -93,7 +93,7 @@
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
-  
+
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)..\..\" Command="npm install" />

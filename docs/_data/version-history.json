@@ -2,23 +2,25 @@
     "versions": [
         {
             "version": "0.9.9",
-            "date": "xx.07.2024",
+            "date": "09.11.2024",
             "library":
             [
                 "optimization, bugfixing and cleanup",
                 "added tests for ReFlex.Core",
-                "update to .NET 7",
+                "update to .NET 8",
                 "fixing and optimization of interaction smoothing",
-                "cleanup and optimization of Intel RealSense support"
+                "cleanup and optimization of Intel RealSense support",
+                "added replayService for replay of recorded sensor data",
+                "optimization of extremum filtering and classification"
             ],
             "server":
             [
-               "fix Mac OS (ARM x64) compatibility issues",
-               "fix startup crash when configuration file could not be loaded (restoring defaults)",
-               "settings validation on load and fallback to default values",
-               "fix for issues with raw shader material after three.js update",
-               "current settings can be displayed in a popup",
-               "updated Angular to Version 17"
+              "optimization of calibration procedure",
+              "fix Mac OS (ARM x64) compatibility issues",
+              "fix startup crash when configuration file could not be loaded (restoring defaults)",
+              "settings validation on load and fallback to default values",
+              "fix for issues with raw shader material after three.js update",
+              "current settings can be displayed in a popup"
             ],
             "templates": [
                 "added extended html example with logging",
@@ -27,6 +29,9 @@
                 "added WPF example for .NET Core"
             ],
             "tools": [
+                "updated Angular to Version 17",
+                "updated example applications",
+                "power save blocker for electron applications to prevent decreased app performance when app is minimized / has lost focus",
                 "added logging server as separate tool",
                 "added shared Angular components for reusable ui components and style",
                 "added data format for storing interaction data",
