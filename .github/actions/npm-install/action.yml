@@ -44,5 +44,5 @@ runs:
     - name: install packages
       shell: bash
       working-directory: ${{ github.workspace }}
-      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'  || steps.cache_basic_react.outputs.cache-hit != 'true'  || steps.cache_basic_vue.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true' || steps.cache_server.outputs.cache-hit != 'true' || steps.cache_basic_react.outputs.cache-hit != 'true'  || steps.cache_basic_vue.outputs.cache-hit != 'true'
       run: npm ci --include=dev
