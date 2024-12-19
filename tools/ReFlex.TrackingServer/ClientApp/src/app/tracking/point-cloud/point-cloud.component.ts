@@ -14,9 +14,10 @@ import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingServer
 
 
 @Component({
-  selector: 'app-point-cloud',
-  templateUrl: './point-cloud.component.html',
-  styleUrls: ['./point-cloud.component.scss']
+    selector: 'app-point-cloud',
+    templateUrl: './point-cloud.component.html',
+    styleUrls: ['./point-cloud.component.scss'],
+    standalone: false
 })
 
 export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {

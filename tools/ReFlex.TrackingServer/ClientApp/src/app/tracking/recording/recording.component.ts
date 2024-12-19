@@ -6,9 +6,10 @@ import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 
 @Component({
-  selector: 'app-recording',
-  templateUrl: './recording.component.html',
-  styleUrls: ['./recording.component.scss']
+    selector: 'app-recording',
+    templateUrl: './recording.component.html',
+    styleUrls: ['./recording.component.scss'],
+    standalone: false
 })
 export class RecordingComponent implements OnInit {
 

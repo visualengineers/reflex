@@ -6,9 +6,10 @@ import { LogService } from 'src/app/log/log.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 
 @Component({
-  selector: 'app-history-visualization',
-  templateUrl: './history-visualization.component.html',
-  styleUrls: ['./history-visualization.component.scss']
+    selector: 'app-history-visualization',
+    templateUrl: './history-visualization.component.html',
+    styleUrls: ['./history-visualization.component.scss'],
+    standalone: false
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
 

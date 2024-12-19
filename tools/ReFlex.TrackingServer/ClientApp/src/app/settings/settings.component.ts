@@ -9,8 +9,9 @@ import { switchMap } from 'rxjs/operators';
 import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html'
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    standalone: false
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 

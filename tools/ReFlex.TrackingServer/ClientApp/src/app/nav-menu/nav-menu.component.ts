@@ -2,8 +2,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html'
+    selector: 'app-nav-menu',
+    templateUrl: './nav-menu.component.html',
+    standalone: false
 })
 export class NavMenuComponent {
 }

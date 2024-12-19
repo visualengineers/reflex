@@ -10,9 +10,10 @@ import { InteractionsComponent } from './interactions/interactions.component';
 import { CompleteInteractionData, DEFAULT_SETTINGS, Interaction, ObserverType, ProcessingSettings, RemoteProcessingServiceSettings, TrackingServerAppSettings } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-processing',
-  templateUrl: './processing.component.html',
-  styleUrls: ['./processing.component.scss']
+    selector: 'app-processing',
+    templateUrl: './processing.component.html',
+    styleUrls: ['./processing.component.scss'],
+    standalone: false
 })
 export class ProcessingComponent implements OnInit, OnDestroy {
 

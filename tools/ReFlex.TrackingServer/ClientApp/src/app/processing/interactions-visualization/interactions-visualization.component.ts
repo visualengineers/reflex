@@ -5,9 +5,10 @@ import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 
 @Component({
-  selector: 'app-interactions-visualization',
-  templateUrl: './interactions-visualization.component.html',
-  styleUrls: ['./interactions-visualization.component.scss']
+    selector: 'app-interactions-visualization',
+    templateUrl: './interactions-visualization.component.html',
+    styleUrls: ['./interactions-visualization.component.scss'],
+    standalone: false
 })
 export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 

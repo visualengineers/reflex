@@ -5,9 +5,10 @@ import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
 
 @Component({
-  selector: 'app-package-details',
-  templateUrl: './package-details.component.html',
-  styleUrls: ['./package-details.component.scss']
+    selector: 'app-package-details',
+    templateUrl: './package-details.component.html',
+    styleUrls: ['./package-details.component.scss'],
+    standalone: false
 })
 export class PackageDetailsComponent implements OnInit, OnDestroy {
 

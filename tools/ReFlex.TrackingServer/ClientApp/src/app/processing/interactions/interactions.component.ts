@@ -2,9 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 @Component({
-  selector: 'app-interactions',
-  templateUrl: './interactions.component.html',
-  styleUrls: ['./interactions.component.scss']
+    selector: 'app-interactions',
+    templateUrl: './interactions.component.html',
+    styleUrls: ['./interactions.component.scss'],
+    standalone: false
 })
 export class InteractionsComponent {
 

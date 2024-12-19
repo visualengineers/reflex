@@ -6,8 +6,9 @@ import { LogService } from '../log/log.service';
 import { NetworkInterface, NetworkSettings } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-network',
-  templateUrl: './network.component.html'
+    selector: 'app-network',
+    templateUrl: './network.component.html',
+    standalone: false
 })
 export class NetworkComponent implements OnInit, OnDestroy {
 

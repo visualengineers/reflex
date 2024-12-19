@@ -7,9 +7,10 @@ import { mergeMap, tap } from 'rxjs/operators';
 import { CameraConfiguration, DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-tracking',
-  templateUrl: './tracking.component.html',
-  styleUrls: ['./tracking.component.scss']
+    selector: 'app-tracking',
+    templateUrl: './tracking.component.html',
+    styleUrls: ['./tracking.component.scss'],
+    standalone: false
 })
 export class TrackingComponent implements OnInit, OnDestroy {
 

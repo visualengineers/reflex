@@ -6,8 +6,9 @@ import { Subscription } from 'rxjs';
 import { DEFAULT_SETTINGS, ProtocolVersion, TransportProtocol, TuioConfiguration, TuioInterpretation } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-tuio',
-  templateUrl: './tuio.component.html'
+    selector: 'app-tuio',
+    templateUrl: './tuio.component.html',
+    standalone: false
 })
 export class TuioComponent implements OnInit, OnDestroy {
 

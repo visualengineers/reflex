@@ -21,9 +21,10 @@ export interface BorderString {
 }
 
 @Component({
-  selector: 'app-calibration',
-  templateUrl: './calibration.component.html',
-  styleUrls: ['./calibration.component.scss']
+    selector: 'app-calibration',
+    templateUrl: './calibration.component.html',
+    styleUrls: ['./calibration.component.scss'],
+    standalone: false
 })
 export class CalibrationComponent implements OnInit {
 

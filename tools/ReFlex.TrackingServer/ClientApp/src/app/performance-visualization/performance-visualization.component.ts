@@ -3,9 +3,10 @@ import { PerformanceDataItem } from '@reflex/shared-types';
 import * as d3 from 'd3';
 
 @Component({
-  selector: 'app-performance-visualization',
-  templateUrl: './performance-visualization.component.html',
-  styleUrls: ['./performance-visualization.component.scss']
+    selector: 'app-performance-visualization',
+    templateUrl: './performance-visualization.component.html',
+    styleUrls: ['./performance-visualization.component.scss'],
+    standalone: false
 })
 export class PerformanceVisualizationComponent implements OnChanges {
 

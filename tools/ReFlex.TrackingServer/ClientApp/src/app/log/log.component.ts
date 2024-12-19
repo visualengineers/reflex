@@ -5,8 +5,9 @@ import { LogService } from './log.service';
 import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-log',
-  templateUrl: './log.component.html'
+    selector: 'app-log',
+    templateUrl: './log.component.html',
+    standalone: false
 })
 export class LogComponent implements OnInit, OnDestroy {
 

@@ -6,9 +6,10 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { WebSocketService } from 'src/shared/services/webSocket.service';
 
 @Component({
-  selector: 'app-depth-image',
-  templateUrl: './depth-image.component.html',
-  styleUrls: ['./depth-image.component.scss']
+    selector: 'app-depth-image',
+    templateUrl: './depth-image.component.html',
+    styleUrls: ['./depth-image.component.scss'],
+    standalone: false
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
 

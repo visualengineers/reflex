@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 import { VersionInfoService } from 'src/shared/services/version.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html'
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    standalone: false
 })
 
 export class HomeComponent implements OnInit {

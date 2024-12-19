@@ -5,9 +5,10 @@ import { LogService } from '../log/log.service';
 import { ElementPosition, FrameSizeDefinition } from '@reflex/shared-types';
 
 @Component({
-  selector: 'app-measure-surface',
-  templateUrl: './measure-surface.component.html',
-  styleUrls: ['./measure-surface.component.scss']
+    selector: 'app-measure-surface',
+    templateUrl: './measure-surface.component.html',
+    styleUrls: ['./measure-surface.component.scss'],
+    standalone: false
 })
 export class MeasureSurfaceComponent implements OnInit {
 

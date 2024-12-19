@@ -2,9 +2,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-measure-grid',
-  templateUrl: './measure-grid.component.html',
-  styleUrls: ['./measure-grid.component.scss']
+    selector: 'app-measure-grid',
+    templateUrl: './measure-grid.component.html',
+    styleUrls: ['./measure-grid.component.scss'],
+    standalone: false
 })
 export class MeasureGridComponent {
 }

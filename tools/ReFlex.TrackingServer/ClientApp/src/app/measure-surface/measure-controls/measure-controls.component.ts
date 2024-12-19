@@ -5,9 +5,10 @@ import { LogService } from 'src/app/log/log.service';
 import { MeasureService } from 'src/shared/services/measure.service';
 
 @Component({
-  selector: 'app-measure-controls',
-  templateUrl: './measure-controls.component.html',
-  styleUrls: ['./measure-controls.component.scss']
+    selector: 'app-measure-controls',
+    templateUrl: './measure-controls.component.html',
+    styleUrls: ['./measure-controls.component.scss'],
+    standalone: false
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
 
