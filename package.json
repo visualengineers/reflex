@@ -57,7 +57,6 @@
     "@angular/platform-server": "17.3.2",
     "@angular/router": "17.3.2",
     "@angular/ssr": "^17.3.3",
-    "@vue/cli-service": "3.3.1",
     "angular-plotly.js": "^5.2.2",
     "file-saver": "^2.0.5",
     "happy-dom": "15.11.7",
