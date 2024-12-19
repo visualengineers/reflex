@@ -77,7 +77,7 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   public filter(): void {
-    this.filteredMessages = this.filterLevel >= 0 && this.filterLevel <= LogLevel.Off
+    this.filteredMessages = this.filterLevel as LogLevel >= LogLevel.Trace && this.filterLevel as LogLevel <= LogLevel.Off
       ? this.messages.filter((msg) => LogLevel[msg.level] === LogLevel[this.filterLevel])
       : this.messages;
   }

@@ -48,21 +48,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public performanceDataProcessingGroups = ['processingPreparation', 'processingUpdate', 'processingConvert', 'processingSmoothing', 'processingExtremum'];
 
   public filters: Array<JsonSimpleValue> = Object.values(FilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as FilterType)
     .map((x) => (
       { name: FilterType[Number(x)], value: x }));
 
   public selectedFilterIdx = -1;
 
   public limitationFilters: Array<JsonSimpleValue> = Object.values(LimitationFilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as LimitationFilterType)
     .map((x) => (
       { name: LimitationFilterType[Number(x)], value: x }));
 
   public selectedLimitationFilterIdx = -1;
 
   public checks: Array<JsonSimpleValue> = Object.values(ExtremumTypeCheckMethod)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as ExtremumTypeCheckMethod)
     .map((x) => (
       { name: ExtremumTypeCheckMethod[Number(x)], value: x }));
 

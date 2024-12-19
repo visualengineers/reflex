@@ -10,9 +10,7 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   selector: 'app-history-visualization',
   templateUrl: './history-visualization.component.html',
   styleUrls: ['./history-visualization.component.scss'],
-  imports: [
-    CommonModule
-  ]
+  imports: [CommonModule]
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
 
