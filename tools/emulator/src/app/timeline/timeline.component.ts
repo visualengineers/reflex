@@ -3,9 +3,10 @@ import {ConfigurationService} from '../service/configuration.service';
 import {ConnectionService} from '../service/connection.service';
 
 @Component({
-  selector: 'app-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.sass']
+    selector: 'app-timeline',
+    templateUrl: './timeline.component.html',
+    styleUrls: ['./timeline.component.sass'],
+    standalone: false
 })
 export class TimelineComponent {
 

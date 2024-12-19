@@ -4,9 +4,10 @@ import { faTools, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { GestureReplayService } from './service/gesture-replay.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.sass'],
+    standalone: false
 })
 export class AppComponent {
 

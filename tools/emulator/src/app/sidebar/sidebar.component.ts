@@ -5,9 +5,10 @@ import { BackgroundSource } from '../model/BackgroundSource.model';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.sass']
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.sass'],
+    standalone: false
 })
 export class SidebarComponent implements OnInit, OnDestroy {
 

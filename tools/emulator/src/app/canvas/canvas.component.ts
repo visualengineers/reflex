@@ -14,9 +14,10 @@ interface Size {
 }
 
 @Component({
-  selector: 'app-canvas',
-  templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.sass']
+    selector: 'app-canvas',
+    templateUrl: './canvas.component.html',
+    styleUrls: ['./canvas.component.sass'],
+    standalone: false
 })
 export class CanvasComponent implements OnInit, OnDestroy {
 
