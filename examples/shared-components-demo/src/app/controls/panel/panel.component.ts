@@ -7,22 +7,21 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 import { ColorComponent } from '../../color/color.component';
 
 @Component({
-  selector: 'app-panel',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterOutlet,
-    SettingsGroupComponent,
-    PanelHeaderComponent,
-    OptionCheckboxComponent,
-    ValueSelectionComponent,
-    ValueSliderComponent,
-    ValueTextComponent,
-    ColorComponent
-  ],
-  templateUrl: './panel.component.html',
-  styleUrl: './panel.component.scss'
+    selector: 'app-panel',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterOutlet,
+        SettingsGroupComponent,
+        PanelHeaderComponent,
+        OptionCheckboxComponent,
+        ValueSelectionComponent,
+        ValueSliderComponent,
+        ValueTextComponent,
+        ColorComponent
+    ],
+    templateUrl: './panel.component.html',
+    styleUrl: './panel.component.scss'
 })
 export class PanelComponent implements OnInit, OnDestroy {
   public toggleHeaderActive = true;

@@ -7,19 +7,17 @@ import { AsyncPipe } from '@angular/common';
 
 
 @Component({
-  selector: 'app-introduction',
-  standalone: true,
-  imports: [
-    
-// TODO: `HttpClientModule` should not be imported into a component directly.
-// Please refactor the code to add `provideHttpClient()` call to the provider list in the
-// application bootstrap logic and remove the `HttpClientModule` import from this component.
-HttpClientModule,
-    SettingsGroupComponent,
-    AsyncPipe
-  ],
-  templateUrl: './introduction.component.html',
-  styleUrl: './introduction.component.scss'
+    selector: 'app-introduction',
+    imports: [
+        // TODO: `HttpClientModule` should not be imported into a component directly.
+        // Please refactor the code to add `provideHttpClient()` call to the provider list in the
+        // application bootstrap logic and remove the `HttpClientModule` import from this component.
+        HttpClientModule,
+        SettingsGroupComponent,
+        AsyncPipe
+    ],
+    templateUrl: './introduction.component.html',
+    styleUrl: './introduction.component.scss'
 })
 export class IntroductionComponent implements OnInit {
   public angularJson: BehaviorSubject<string> = new BehaviorSubject('');
