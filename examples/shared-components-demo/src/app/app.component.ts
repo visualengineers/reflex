@@ -24,9 +24,6 @@ import { ButtonsComponent } from './controls/buttons/buttons.component';
         TableComponent,
         ButtonsComponent,
         CommonModule,
-        RouterOutlet,
-        SettingsGroupComponent,
-        PanelHeaderComponent,
         ColorComponent
     ],
     templateUrl: './app.component.html',

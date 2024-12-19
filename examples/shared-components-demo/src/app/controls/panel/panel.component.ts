@@ -11,14 +11,8 @@ import { ColorComponent } from '../../color/color.component';
     imports: [
         CommonModule,
         FormsModule,
-        RouterOutlet,
         SettingsGroupComponent,
-        PanelHeaderComponent,
-        OptionCheckboxComponent,
-        ValueSelectionComponent,
-        ValueSliderComponent,
-        ValueTextComponent,
-        ColorComponent
+        PanelHeaderComponent
     ],
     templateUrl: './panel.component.html',
     styleUrl: './panel.component.scss'
