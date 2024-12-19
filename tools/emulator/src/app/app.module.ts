@@ -11,26 +11,20 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { TimelineCanvasComponent } from './timeline/timeline-canvas/timeline-canvas.component';
 import { GestureReplayService } from './service/gesture-replay.service';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    CanvasComponent,
-    SidebarComponent,
-    TimelineComponent,
-    TimelineCanvasComponent
-  ],
-  imports: [
-    AppRoutingModule,
-    BrowserModule,
-    FontAwesomeModule,
-    FormsModule,
-    HttpClientModule
-  ],
-  providers: [
-    GestureReplayService,
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        CanvasComponent,
+        SidebarComponent,
+        TimelineComponent,
+        TimelineCanvasComponent
+    ],
+    bootstrap: [AppComponent], imports: [AppRoutingModule,
+        BrowserModule,
+        FontAwesomeModule,
+        FormsModule], providers: [
+        GestureReplayService,
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }
