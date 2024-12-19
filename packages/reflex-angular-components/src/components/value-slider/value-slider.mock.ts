@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ValueSliderComponent } from './value-slider.component';
 
-@Component({ selector: 'app-value-slider',  template: '' })
+@Component({
+    selector: 'app-value-slider', template: '',
+    standalone: false
+})
 export class MockValueSliderComponent implements Partial<ValueSliderComponent> {
   @Input()
   public data = 0;
