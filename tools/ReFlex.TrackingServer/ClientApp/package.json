@@ -99,7 +99,7 @@
     "karma-viewport": "^1.0.9",
     "ng-packagr": "^18.2.1",
     "puppeteer": "^23.11.1",
-    "typescript": "5.6.3",
+    "typescript": "5.4.5",
     "tslib": "^2.3.0",
     "@types/d3": "^7.4.3",
     "@types/three": "^0.170.0",
