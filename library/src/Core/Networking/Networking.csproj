@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NLog" Version="5.3.4" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="WatsonTcp" Version="5.1.7" />
+    <PackageReference Include="WatsonTcp" Version="6.0.6" />
     <PackageReference Include="websocketsharp.core">
       <Version>1.0.1</Version>
     </PackageReference>
