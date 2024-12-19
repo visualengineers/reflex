@@ -81,17 +81,17 @@ describe('HistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistoryComponent ],
-      imports: [ SettingsGroupComponent ],
-      providers: [
+    declarations: [HistoryComponent],
+    imports: [SettingsGroupComponent],
+    providers: [
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 

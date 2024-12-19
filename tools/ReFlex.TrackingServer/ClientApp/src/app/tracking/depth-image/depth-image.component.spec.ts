@@ -36,8 +36,7 @@ describe('DepthImageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [DepthImageComponent],
-    imports: [FormsModule],
+    imports: [FormsModule, DepthImageComponent],
     providers: [
         {
             provide: TrackingService, useValue: trackingService

@@ -42,27 +42,25 @@ describe('TuioComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        TuioComponent,
-        MockPackageDetailsComponent
-      ],
-      imports: [ FormsModule,
+    declarations: [TuioComponent,
+        MockPackageDetailsComponent],
+    imports: [FormsModule,
         PanelHeaderComponent,
         ValueSelectionComponent,
         ValueTextComponent
-      ],
-      providers: [
+    ],
+    providers: [
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: TuioService, useValue: tuioService
+            provide: TuioService, useValue: tuioService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 

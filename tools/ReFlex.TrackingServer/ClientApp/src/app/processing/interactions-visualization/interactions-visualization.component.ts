@@ -1,14 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CompleteInteractionData, ElementPosition, ExtremumDescription, ExtremumType, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
+import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-interactions-visualization',
-    templateUrl: './interactions-visualization.component.html',
-    styleUrls: ['./interactions-visualization.component.scss'],
-    standalone: false
+  selector: 'app-interactions-visualization',
+  templateUrl: './interactions-visualization.component.html',
+  styleUrls: ['./interactions-visualization.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HistoryVisualizationComponent
+  ]
 })
 export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
@@ -79,8 +86,8 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     }
 
     this.calibratedInteractions.forEach((int) => {
-      int.position.x = this.fullScreen ? int.position.x - this.frameSize.left : int.position.x * this.container?.nativeElement.clientWidth ?? 0;
-      int.position.y = this.fullScreen ? int.position.y - this.frameSize.top : int.position.y * this.container?.nativeElement.clientHeight ?? 0;
+      int.position.x = this.fullScreen ? int.position.x - this.frameSize.left : int.position.x * ((this.container?.nativeElement as HTMLElement | undefined)?.clientWidth ?? 0);
+      int.position.y = this.fullScreen ? int.position.y - this.frameSize.top : int.position.y * ((this.container?.nativeElement as HTMLElement | undefined)?.clientHeight ?? 0);
       int.position.z = Math.abs(int.position.z) * 2;
     });
   }

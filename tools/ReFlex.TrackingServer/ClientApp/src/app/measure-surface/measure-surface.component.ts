@@ -3,12 +3,21 @@ import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
 import { ElementPosition, FrameSizeDefinition } from '@reflex/shared-types';
+import { CommonModule } from '@angular/common';
+import { MeasureGridComponent } from './measure-grid/measure-grid.component';
+import { MeasureControlsComponent } from './measure-controls/measure-controls.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-measure-surface',
-    templateUrl: './measure-surface.component.html',
-    styleUrls: ['./measure-surface.component.scss'],
-    standalone: false
+  selector: 'app-measure-surface',
+  templateUrl: './measure-surface.component.html',
+  styleUrls: ['./measure-surface.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MeasureControlsComponent,
+    MeasureGridComponent
+  ]
 })
 export class MeasureSurfaceComponent implements OnInit {
 

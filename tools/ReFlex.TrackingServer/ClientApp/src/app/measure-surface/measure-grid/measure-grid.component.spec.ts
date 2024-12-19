@@ -8,8 +8,8 @@ describe('MeasureGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MeasureGridComponent ]
-    })
+    declarations: [MeasureGridComponent]
+})
     .compileComponents();
   });
 

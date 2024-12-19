@@ -7,11 +7,24 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { switchMap } from 'rxjs/operators';
 import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
+import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.component.html',
-    standalone: false
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    SettingsGroupComponent,
+    ValueSliderComponent,
+    ValueSelectionComponent,
+    OptionCheckboxComponent,
+    PerformanceVisualizationComponent
+  ],
+  standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 

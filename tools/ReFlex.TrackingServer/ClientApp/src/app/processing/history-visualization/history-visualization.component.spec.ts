@@ -56,16 +56,16 @@ describe('HistoryVisualizationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistoryVisualizationComponent ],
-      providers: [
+    declarations: [HistoryVisualizationComponent],
+    providers: [
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 

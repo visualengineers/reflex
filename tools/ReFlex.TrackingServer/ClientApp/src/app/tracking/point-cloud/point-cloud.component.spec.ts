@@ -73,12 +73,11 @@ describe('PointCloudComponent', () => {
   beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-    declarations: [PointCloudComponent],
     imports: [FormsModule,
         PanelHeaderComponent,
         ValueSliderComponent,
         OptionCheckboxComponent,
-        SettingsGroupComponent],
+        SettingsGroupComponent, PointCloudComponent],
     providers: [
         {
             provide: TrackingService, useValue: trackingService

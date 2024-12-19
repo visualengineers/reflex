@@ -5,12 +5,28 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { mergeMap, tap } from 'rxjs/operators';
 import { CameraConfiguration, DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RecordingComponent } from './recording/recording.component';
+import { SettingsComponent } from '../settings/settings.component';
+import { PointCloudComponent } from './point-cloud/point-cloud.component';
+import { DepthImageComponent } from './depth-image/depth-image.component';
 
 @Component({
   selector: 'app-tracking',
   templateUrl: './tracking.component.html',
   styleUrls: ['./tracking.component.scss'],
-  standalone: false
+  imports: [
+    CommonModule,
+    FormsModule,
+    PanelHeaderComponent,
+    ValueSelectionComponent,
+    RecordingComponent,
+    SettingsComponent,
+    PointCloudComponent,
+    DepthImageComponent
+  ]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
 

@@ -50,10 +50,8 @@ describe('NetworkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
-        NetworkComponent,
-        MockTuioComponent
-    ],
+    declarations: [NetworkComponent,
+        MockTuioComponent],
     imports: [FormsModule,
         PanelHeaderComponent,
         ValueSelectionComponent,

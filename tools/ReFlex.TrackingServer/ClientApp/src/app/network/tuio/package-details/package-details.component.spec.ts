@@ -30,16 +30,16 @@ describe('PackageDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PackageDetailsComponent ],
-      providers: [
+    declarations: [PackageDetailsComponent],
+    providers: [
         {
-          provide: TuioService, useValue: tuioService
+            provide: TuioService, useValue: tuioService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 

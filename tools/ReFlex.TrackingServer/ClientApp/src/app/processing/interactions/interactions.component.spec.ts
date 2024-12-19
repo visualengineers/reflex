@@ -50,8 +50,8 @@ describe('InteractionsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ InteractionsComponent ]
-    })
+    declarations: [InteractionsComponent]
+})
     .compileComponents();
   }));
 

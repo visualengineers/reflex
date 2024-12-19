@@ -51,14 +51,11 @@ describe('SettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
-        SettingsComponent
-    ],
     imports: [FormsModule,
         ValueSliderComponent,
         OptionCheckboxComponent,
         SettingsGroupComponent,
-        ValueSelectionComponent],
+        ValueSelectionComponent, SettingsComponent],
     providers: [
         {
             provide: TrackingService, useValue: trackingService

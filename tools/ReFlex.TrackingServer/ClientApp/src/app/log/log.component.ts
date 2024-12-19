@@ -3,11 +3,18 @@ import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from './log.service';
 import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
+import { ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-log',
-    templateUrl: './log.component.html',
-    standalone: false
+  selector: 'app-log',
+  templateUrl: './log.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ValueSelectionComponent
+  ]
 })
 export class LogComponent implements OnInit, OnDestroy {
 

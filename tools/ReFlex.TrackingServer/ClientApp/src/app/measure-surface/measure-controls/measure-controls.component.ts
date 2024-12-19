@@ -1,14 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Observable, Subscription, timer } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
 import { MeasureService } from 'src/shared/services/measure.service';
 
 @Component({
-    selector: 'app-measure-controls',
-    templateUrl: './measure-controls.component.html',
-    styleUrls: ['./measure-controls.component.scss'],
-    standalone: false
+  selector: 'app-measure-controls',
+  templateUrl: './measure-controls.component.html',
+  styleUrls: ['./measure-controls.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
 

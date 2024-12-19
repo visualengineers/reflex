@@ -153,9 +153,8 @@ describe('CalibrationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [CalibrationComponent],
     imports: [FormsModule,
-        PanelHeaderComponent],
+        PanelHeaderComponent, CalibrationComponent],
     providers: [
         {
             provide: CalibrationService, useValue: calibrationService

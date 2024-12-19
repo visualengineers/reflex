@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
 import { BehaviorSubject, NEVER, Observable, Subscription, combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
@@ -6,10 +8,13 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { WebSocketService } from 'src/shared/services/webSocket.service';
 
 @Component({
-    selector: 'app-depth-image',
-    templateUrl: './depth-image.component.html',
-    styleUrls: ['./depth-image.component.scss'],
-    standalone: false
+  selector: 'app-depth-image',
+  templateUrl: './depth-image.component.html',
+  styleUrls: ['./depth-image.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
 

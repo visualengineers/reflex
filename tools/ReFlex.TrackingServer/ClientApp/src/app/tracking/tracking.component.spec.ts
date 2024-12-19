@@ -144,16 +144,13 @@ describe('TrackingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
-        TrackingComponent,
-        MockRecordingComponent,
+    declarations: [MockRecordingComponent,
         MockSettingsComponent,
         MockPointCloudComponent,
-        MockDepthImageComponent
-    ],
+        MockDepthImageComponent],
     imports: [FormsModule,
         PanelHeaderComponent,
-        ValueSelectionComponent],
+        ValueSelectionComponent, TrackingComponent],
     providers: [
         {
             provide: TrackingService, useValue: trackingService
@@ -433,16 +430,13 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
-        TrackingComponent,
-        MockRecordingComponent,
+    declarations: [MockRecordingComponent,
         MockSettingsComponent,
         MockPointCloudComponent,
-        MockDepthImageComponent
-    ],
+        MockDepthImageComponent],
     imports: [FormsModule,
         PanelHeaderComponent,
-        ValueSelectionComponent],
+        ValueSelectionComponent, TrackingComponent],
     providers: [
         {
             provide: TrackingService, useValue: trackingService_error

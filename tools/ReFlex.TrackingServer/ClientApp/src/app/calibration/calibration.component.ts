@@ -8,6 +8,8 @@ import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, InteractionType, Point3 } from '@reflex/shared-types';
+import { CommonModule } from '@angular/common';
+import { PanelHeaderComponent } from '@reflex/angular-components/dist';
 
 export interface TransformString {
   transform: string;
@@ -21,10 +23,13 @@ export interface BorderString {
 }
 
 @Component({
-    selector: 'app-calibration',
-    templateUrl: './calibration.component.html',
-    styleUrls: ['./calibration.component.scss'],
-    standalone: false
+  selector: 'app-calibration',
+  templateUrl: './calibration.component.html',
+  styleUrls: ['./calibration.component.scss'],
+  imports: [
+    CommonModule,
+    PanelHeaderComponent
+  ]
 })
 export class CalibrationComponent implements OnInit {
 
