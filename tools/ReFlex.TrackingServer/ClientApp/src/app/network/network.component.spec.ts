@@ -5,10 +5,10 @@ import { LogService } from '../log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { NetworkingService } from 'src/shared/services/networking.service';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 import { MockTuioComponent } from './tuio/tuio.component.mock';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DEFAULT_SETTINGS, JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
 import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 
@@ -50,30 +50,29 @@ describe('NetworkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         NetworkComponent,
         MockTuioComponent
-       ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
+    ],
+    imports: [FormsModule,
         PanelHeaderComponent,
         ValueSelectionComponent,
         ValueTextComponent,
-        ValueSliderComponent
-      ],
-      providers: [
+        ValueSliderComponent],
+    providers: [
         {
-          provide: NetworkingService, useValue: networkService
+            provide: NetworkingService, useValue: networkService
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
-    })
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

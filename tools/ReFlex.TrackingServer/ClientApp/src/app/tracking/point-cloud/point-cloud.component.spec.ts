@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, of, throwError } from 'rxjs';
@@ -73,33 +73,32 @@ describe('PointCloudComponent', () => {
   beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ PointCloudComponent ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
+    declarations: [PointCloudComponent],
+    imports: [FormsModule,
         PanelHeaderComponent,
         ValueSliderComponent,
         OptionCheckboxComponent,
-        SettingsGroupComponent
-      ],
-      providers: [
+        SettingsGroupComponent],
+    providers: [
         {
-          provide: TrackingService, useValue: trackingService
+            provide: TrackingService, useValue: trackingService
         },
         {
-          provide: PointCloudService, useValue: pointCloudService
+            provide: PointCloudService, useValue: pointCloudService
         },
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
-    })
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
     })
   );

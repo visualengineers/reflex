@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { WebSocketServiceMock } from 'src/shared/services/webSocket.service.mock
 
 import { DepthImageComponent } from './depth-image.component';
 import { DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
   [
@@ -35,20 +36,22 @@ describe('DepthImageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DepthImageComponent ],
-      imports: [ FormsModule, HttpClientTestingModule ],
-        providers: [
+    declarations: [DepthImageComponent],
+    imports: [FormsModule],
+    providers: [
         {
-          provide: TrackingService, useValue: trackingService
+            provide: TrackingService, useValue: trackingService
         },
         {
-          provide: WebSocketService, useValue: wsMock
+            provide: WebSocketService, useValue: wsMock
         },
         {
-          provide: 'BASE_URL', useValue: 'http://localhost'
-        }
-      ]
-    })
+            provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

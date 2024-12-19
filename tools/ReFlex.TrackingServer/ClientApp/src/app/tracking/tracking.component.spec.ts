@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TrackingComponent } from './tracking.component';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -13,6 +13,7 @@ import { MockSettingsComponent } from '../settings/settings.component.mock';
 import { By } from '@angular/platform-browser';
 import { DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
 import { PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
     [
@@ -143,30 +144,30 @@ describe('TrackingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         TrackingComponent,
         MockRecordingComponent,
         MockSettingsComponent,
         MockPointCloudComponent,
         MockDepthImageComponent
-       ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
+    ],
+    imports: [FormsModule,
         PanelHeaderComponent,
-        ValueSelectionComponent,
-      ],
-      providers: [
+        ValueSelectionComponent],
+    providers: [
         {
-          provide: TrackingService, useValue: trackingService
+            provide: TrackingService, useValue: trackingService
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]})
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 
@@ -432,30 +433,30 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         TrackingComponent,
         MockRecordingComponent,
         MockSettingsComponent,
         MockPointCloudComponent,
         MockDepthImageComponent
-       ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
+    ],
+    imports: [FormsModule,
         PanelHeaderComponent,
-        ValueSelectionComponent
-      ],
-      providers: [
+        ValueSelectionComponent],
+    providers: [
         {
-          provide: TrackingService, useValue: trackingService_error
+            provide: TrackingService, useValue: trackingService_error
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]})
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

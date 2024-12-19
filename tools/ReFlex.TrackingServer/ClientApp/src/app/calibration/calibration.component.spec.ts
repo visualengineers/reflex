@@ -5,10 +5,10 @@ import { LogService } from '../log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { CalibrationPoint, CalibrationTransform, CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 import { PanelHeaderComponent } from '@reflex/angular-components/dist';
@@ -153,27 +153,26 @@ describe('CalibrationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CalibrationComponent ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
-        PanelHeaderComponent
-      ],
-      providers: [
+    declarations: [CalibrationComponent],
+    imports: [FormsModule,
+        PanelHeaderComponent],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
-    })
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   }));
 

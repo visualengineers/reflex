@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -31,44 +31,37 @@ import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, 
 import { PerformanceVisualizationComponent } from './performance-visualization/performance-visualization.component';
 // import { CanvasWidthDirective } from './tracking/point-cloud/canvas-width.directive';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavMenuComponent,
-    HomeComponent,
-    TrackingComponent,
-    NetworkComponent,
-    LogComponent,
-    ProcessingComponent,
-    SettingsComponent,
-    PointCloudComponent,
-    InteractionsComponent,
-    CalibrationComponent,
-    HistoryComponent,
-    HistoryVisualizationComponent,
-    InteractionsVisualizationComponent,
-    DepthImageComponent,
-    RecordingComponent,
-    MeasureSurfaceComponent,
-    MeasureGridComponent,
-    MeasureControlsComponent,
-    TuioComponent,
-    PackageDetailsComponent,
-    PerformanceVisualizationComponent
-  ],
-  imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    HttpClientModule,
-    FormsModule,
-    AppRoutingModule,
-    SettingsGroupComponent,
-    ValueSliderComponent,
-    ValueSelectionComponent,
-    OptionCheckboxComponent,
-    PanelHeaderComponent,
-    ValueTextComponent
-  ],
-  providers: [{ provide: ErrorHandler, useClass: CustomErrorHandler }],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NavMenuComponent,
+        HomeComponent,
+        TrackingComponent,
+        NetworkComponent,
+        LogComponent,
+        ProcessingComponent,
+        SettingsComponent,
+        PointCloudComponent,
+        InteractionsComponent,
+        CalibrationComponent,
+        HistoryComponent,
+        HistoryVisualizationComponent,
+        InteractionsVisualizationComponent,
+        DepthImageComponent,
+        RecordingComponent,
+        MeasureSurfaceComponent,
+        MeasureGridComponent,
+        MeasureControlsComponent,
+        TuioComponent,
+        PackageDetailsComponent,
+        PerformanceVisualizationComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+        FormsModule,
+        AppRoutingModule,
+        SettingsGroupComponent,
+        ValueSliderComponent,
+        ValueSelectionComponent,
+        OptionCheckboxComponent,
+        PanelHeaderComponent,
+        ValueTextComponent], providers: [{ provide: ErrorHandler, useClass: CustomErrorHandler }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
