@@ -17,8 +17,7 @@ interface Size {
 @Component({
     selector: 'app-timeline-canvas',
     templateUrl: './timeline-canvas.component.html',
-    styleUrls: ['./timeline-canvas.component.sass'],
-    standalone: false
+    styleUrls: ['./timeline-canvas.component.sass']
 })
 export class TimelineCanvasComponent implements OnInit, OnDestroy {
 

@@ -7,6 +7,7 @@ import { ConnectionService } from '../service/connection.service';
 import { CircleDto, CircleRenderer } from '../shapes/Circle';
 import { environment } from 'src/environments/environment';
 import { ExtremumType, Interaction } from '@reflex/shared-types';
+import { CommonModule } from '@angular/common';
 
 interface Size {
   width: number;
@@ -17,7 +18,7 @@ interface Size {
     selector: 'app-canvas',
     templateUrl: './canvas.component.html',
     styleUrls: ['./canvas.component.sass'],
-    standalone: false
+    imports: [CommonModule]
 })
 export class CanvasComponent implements OnInit, OnDestroy {
 
