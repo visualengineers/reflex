@@ -10,11 +10,10 @@ import { ConfigurationService } from '../service/configuration.service';
 import { SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 
 @Component({
-  selector: 'app-gestureoptions',
-  standalone: true,
-  imports: [FormsModule, CommonModule, SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent],
-  templateUrl: './gestureoptions.component.html',
-  styleUrl: './gestureoptions.component.scss'
+    selector: 'app-gestureoptions',
+    imports: [FormsModule, CommonModule, SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent],
+    templateUrl: './gestureoptions.component.html',
+    styleUrl: './gestureoptions.component.scss'
 })
 export class GestureoptionsComponent implements OnInit, OnDestroy {
   public layers: Layers = {
