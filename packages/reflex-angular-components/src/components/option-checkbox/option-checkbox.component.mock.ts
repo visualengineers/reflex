@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { OptionCheckboxComponent } from './option-checkbox.component';
 
 @Component({
-    selector: 'app-option-checkbox', template: '',
-    standalone: false
+    selector: 'app-option-checkbox', template: ''
 })
 export class MockOptionCheckboxComponent implements Partial<OptionCheckboxComponent>{
 

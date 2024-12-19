@@ -10,7 +10,7 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { PointCloudComponent } from './point-cloud.component';
 import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingConfigState } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
+import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, MockPanelHeaderComponent, MockOptionCheckboxComponent, MockSettingsGroupComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
   [
@@ -74,10 +74,7 @@ describe('PointCloudComponent', () => {
 
     TestBed.configureTestingModule({
     imports: [FormsModule,
-        PanelHeaderComponent,
-        ValueSliderComponent,
-        OptionCheckboxComponent,
-        SettingsGroupComponent, PointCloudComponent],
+        PointCloudComponent],
     providers: [
         {
             provide: TrackingService, useValue: trackingService
@@ -97,7 +94,22 @@ describe('PointCloudComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+    })
+    .overrideComponent(PointCloudComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        ValueSliderComponent,
+        OptionCheckboxComponent,
+        SettingsGroupComponent,
+      ] },
+      add: { imports: [
+        MockPanelHeaderComponent,
+        MockValueSliderComponent,
+        MockOptionCheckboxComponent,
+        MockSettingsGroupComponent,
+       ] }
+    })
+
     .compileComponents();
     })
   );

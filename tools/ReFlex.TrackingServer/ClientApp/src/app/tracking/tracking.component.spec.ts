@@ -11,9 +11,14 @@ import { MockPointCloudComponent } from './point-cloud/point-cloud.component.moc
 import { MockRecordingComponent } from './recording/recording.component.mock';
 import { MockSettingsComponent } from '../settings/settings.component.mock';
 import { By } from '@angular/platform-browser';
-import { DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { DEFAULT_SETTINGS, DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { MockPanelHeaderComponent, MockValueSelectionComponent, PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { SettingsComponent } from '../settings/settings.component';
+import { DepthImageComponent } from './depth-image/depth-image.component';
+import { PointCloudComponent } from './point-cloud/point-cloud.component';
+import { RecordingComponent } from './recording/recording.component';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
     [
@@ -93,6 +98,7 @@ trackingService.getCameras.and.returnValue(of([
   camera0, camera1, camera2
 ]));
 
+
 trackingService.queryAutostartEnabled.and.returnValue(of('true'));
 
 trackingService.getStatus.and.returnValue(of(state));
@@ -130,6 +136,8 @@ trackingService_error.setAutostartEnabled.and.returnValue(throwError(errorSaveAu
 
 const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
+    'getSettings',
+    'getCanRestore',
     'update'
   ]);
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
@@ -137,6 +145,8 @@ const logService = jasmine.createSpyObj<LogService>('fakeLogService',
     'sendErrorLog'
   ]);
 
+settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
+settingsService.getCanRestore.and.returnValue(of({ name: 'canRestore', value: true }));
 
 describe('TrackingComponent', () => {
   let component: TrackingComponent;
@@ -144,14 +154,13 @@ describe('TrackingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [MockRecordingComponent,
-        MockSettingsComponent,
-        MockPointCloudComponent,
-        MockDepthImageComponent],
-    imports: [FormsModule,
-        PanelHeaderComponent,
-        ValueSelectionComponent, TrackingComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        TrackingComponent
+      ],
     providers: [
+        { provide: 'BASE_URL', useValue: '', deps: [] },
         {
             provide: TrackingService, useValue: trackingService
         },
@@ -164,7 +173,24 @@ describe('TrackingComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+    })
+    .overrideComponent(TrackingComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        ValueSelectionComponent,
+        RecordingComponent,
+        SettingsComponent,
+        PointCloudComponent,
+        DepthImageComponent
+      ] },
+      add: { imports: [
+        MockPanelHeaderComponent,
+        MockValueSelectionComponent,
+        MockRecordingComponent,
+        MockSettingsComponent,
+        MockPointCloudComponent,
+        MockDepthImageComponent ] }
+    })
     .compileComponents();
   }));
 
@@ -430,13 +456,11 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [MockRecordingComponent,
-        MockSettingsComponent,
-        MockPointCloudComponent,
-        MockDepthImageComponent],
-    imports: [FormsModule,
-        PanelHeaderComponent,
-        ValueSelectionComponent, TrackingComponent],
+    imports: [
+        FormsModule,
+        CommonModule,
+        TrackingComponent
+      ],
     providers: [
         {
             provide: TrackingService, useValue: trackingService_error
@@ -447,10 +471,30 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
         {
             provide: LogService, useValue: logService
         },
+        {
+          provide: 'BASE_URL', useValue: 'http://localhost'
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+  })
+  .overrideComponent(TrackingComponent, {
+    remove: { imports: [
+      PanelHeaderComponent,
+      ValueSelectionComponent,
+      RecordingComponent,
+      SettingsComponent,
+      PointCloudComponent,
+      DepthImageComponent
+    ] },
+    add: { imports: [
+      MockPanelHeaderComponent,
+      MockValueSelectionComponent,
+      MockRecordingComponent,
+      MockSettingsComponent,
+      MockPointCloudComponent,
+      MockDepthImageComponent ] }
+  })
     .compileComponents();
   }));
 
@@ -528,5 +572,3 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
   });
 
 });
-
-

@@ -10,12 +10,14 @@ import { of, throwError } from 'rxjs';
 import { MockTuioComponent } from './tuio/tuio.component.mock';
 import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DEFAULT_SETTINGS, JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent, MockValueTextComponent } from '@reflex/angular-components/dist';
+import { TuioComponent } from './tuio/tuio.component';
 
 const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
-    'saveSettings'
+    'saveSettings',
+    'update'
   ]);
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
@@ -50,13 +52,9 @@ describe('NetworkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [NetworkComponent,
-        MockTuioComponent],
     imports: [FormsModule,
-        PanelHeaderComponent,
-        ValueSelectionComponent,
-        ValueTextComponent,
-        ValueSliderComponent],
+        NetworkComponent
+      ],
     providers: [
         {
             provide: NetworkingService, useValue: networkService
@@ -67,10 +65,29 @@ describe('NetworkComponent', () => {
         {
             provide: LogService, useValue: logService
         },
+        {
+            provide: 'BASE_URL', useValue: 'http://localhost'
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+    })
+    .overrideComponent(NetworkComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        ValueSelectionComponent,
+        ValueTextComponent,
+        ValueSliderComponent,
+        TuioComponent
+      ] },
+      add: { imports: [
+        MockPanelHeaderComponent,
+        MockValueSelectionComponent,
+        MockValueTextComponent,
+        MockValueSliderComponent,
+        MockTuioComponent
+       ] }
+    })
     .compileComponents();
   }));
 

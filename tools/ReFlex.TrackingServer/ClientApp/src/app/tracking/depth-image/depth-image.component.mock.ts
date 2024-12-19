@@ -2,8 +2,7 @@ import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, 
 import { DepthImageComponent } from './depth-image.component';
 
 @Component({
-    selector: 'app-depth-image', template: '',
-    standalone: false
+    selector: 'app-depth-image', template: ''
 })
 export class MockDepthImageComponent implements Partial<DepthImageComponent> {
   @Output()

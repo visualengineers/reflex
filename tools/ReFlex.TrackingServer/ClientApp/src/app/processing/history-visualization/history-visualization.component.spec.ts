@@ -13,7 +13,7 @@ const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessin
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]
@@ -22,13 +22,13 @@ const logService = jasmine.createSpyObj<LogService>('fakeLogService',
 let history = new Array<InteractionHistory>();
 
 for (var i = 0; i < 4; i++) {
-  
+
   let h : InteractionHistory = {
     touchId: i,
     items: []
   }
 
-  for (var j = 0; j < 20; j++) {   
+  for (var j = 0; j < 20; j++) {
 
     const x = Math.random();
     const y = Math.random();
@@ -36,17 +36,17 @@ for (var i = 0; i < 4; i++) {
 
     let base: Interaction =
       { time: 1234567, confidence: j, touchId: i, type: 1,
-        position: { x: x, y: y, z: z, isFiltered: false, isValid: true }, 
-        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 } 
+        position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
+        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 }
       }
 
     let e: InteractionHistoryElement = {
       frameId: 0,
       interaction: base
-    }    
+    }
     h.items.push(e);
   }
-  
+
   history.push(h);
 }
 
@@ -56,7 +56,7 @@ describe('HistoryVisualizationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [HistoryVisualizationComponent],
+    imports: [HistoryVisualizationComponent],
     providers: [
         {
             provide: ProcessingService, useValue: processingService
@@ -129,6 +129,6 @@ describe('HistoryVisualizationComponent', () => {
 
     expect(component.history).toEqual([]);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorHistory);    
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorHistory);
   });
 });

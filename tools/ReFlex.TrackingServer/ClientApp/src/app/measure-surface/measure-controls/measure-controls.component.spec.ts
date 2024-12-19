@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { interval, of, throwError, timer } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-const measureService = jasmine.createSpyObj<MeasureService>('fakeMeasureService', 
+const measureService = jasmine.createSpyObj<MeasureService>('fakeMeasureService',
   [
     'isCapturing',
     'getCurrentSampleIdx',
@@ -15,7 +15,7 @@ const measureService = jasmine.createSpyObj<MeasureService>('fakeMeasureService'
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
@@ -26,9 +26,9 @@ describe('MeasureControlsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [MeasureControlsComponent],
     imports: [
-        FormsModule
+        FormsModule,
+        MeasureControlsComponent
     ],
     providers: [
         {
@@ -49,7 +49,7 @@ describe('MeasureControlsComponent', () => {
     measureService.startCapture.and.returnValue(of('#1234'));
 
     component = fixture.componentInstance;
-    
+
   });
 
   afterEach(() => {
@@ -60,9 +60,9 @@ describe('MeasureControlsComponent', () => {
   });
 
   it('should create', () => {
-    
+
     fixture.detectChanges();
-    
+
     expect(component).toBeTruthy();
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
@@ -75,7 +75,7 @@ describe('MeasureControlsComponent', () => {
   it('should correctly subscribe to sample index', (done) => {
 
     const sub = interval(50).subscribe(
-      () => { 
+      () => {
         component.ngOnDestroy();
         expect(logService.sendErrorLog).not.toHaveBeenCalled();
         expect(component.isCapturing).toBe(true);
@@ -83,9 +83,9 @@ describe('MeasureControlsComponent', () => {
         sub.unsubscribe();
         done();
      },
-     (error: unknown) => fail(error)    
+     (error: unknown) => fail(error)
     )
-  
+
     fixture.detectChanges();
   });
 
@@ -105,16 +105,16 @@ describe('MeasureControlsComponent', () => {
     measureService.isCapturing.and.returnValue(throwError(errorCapturing));
 
     const sub = interval(50).subscribe(
-      () => { 
+      () => {
         component.ngOnDestroy();
         expect(component.numFramesCaptured).toBe(0);
         expect(logService.sendErrorLog).toHaveBeenCalledWith(errorCapturing);
         sub.unsubscribe();
         done();
      },
-     (error: unknown) => fail(error)    
+     (error: unknown) => fail(error)
     )
-  
+
     fixture.detectChanges();
   });
 
@@ -123,23 +123,23 @@ describe('MeasureControlsComponent', () => {
     measureService.getCurrentSampleIdx.and.returnValue(throwError(errorSampleIdx));
 
     const sub = interval(50).subscribe(
-      () => { 
+      () => {
         component.ngOnDestroy();
         expect(component.isCapturing).toBe(true);
         expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSampleIdx);
         sub.unsubscribe();
         done();
      },
-     (error: unknown) => fail(error)    
+     (error: unknown) => fail(error)
     )
-  
+
     fixture.detectChanges();
   });
 
   it('should handle errors correctly: StartCapture', () => {
     const errorStart = 'TestError: measureService.startCapture';
     measureService.startCapture.and.returnValue(throwError(errorStart));
-   
+
     fixture.detectChanges();
 
     component.captureId = 12345;
@@ -148,5 +148,5 @@ describe('MeasureControlsComponent', () => {
 
     expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorStart);
   });
-  
+
 });

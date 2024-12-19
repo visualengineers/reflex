@@ -4,7 +4,7 @@ import { LogService } from './log.service';
 import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
-import { ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { MockValueSelectionComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
@@ -40,14 +40,20 @@ describe('LogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [LogComponent],
-    imports: [FormsModule, ValueSelectionComponent],
+    imports: [
+      FormsModule,
+      LogComponent
+    ],
     providers: [
         {
             provide: LogService, useValue: logService
         }
     ]
-})
+    })
+    .overrideComponent(LogComponent, {
+      remove: { imports: [ ValueSelectionComponent] },
+      add: { imports: [ MockValueSelectionComponent ] }
+    })
     .compileComponents();
   }));
 

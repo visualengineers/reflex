@@ -21,8 +21,8 @@ describe('InteractionsComponent', () => {
 
     let base: Interaction =
       { time: 1234567, confidence: i%10, touchId: i, type: 1,
-        position: { x: x, y: y, z: z, isFiltered: false, isValid: true }, 
-        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 } 
+        position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
+        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 }
       }
     largeData.normalized.push(base);
     let raw = structuredClone(base);
@@ -50,7 +50,7 @@ describe('InteractionsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [InteractionsComponent]
+    imports: [InteractionsComponent]
 })
     .compileComponents();
   }));
@@ -93,7 +93,7 @@ describe('InteractionsComponent', () => {
 
     expect(component.interactions.raw).toHaveSize(4);
     expect(component.interactions.absolute).toHaveSize(4);
-    expect(component.interactions.normalized).toHaveSize(4);    
+    expect(component.interactions.normalized).toHaveSize(4);
 
     for(var i = 10; i < 4; i++) {
       expect(component.interactions.raw[i]).toEqual(smallData.raw[i]);
@@ -131,6 +131,6 @@ describe('InteractionsComponent', () => {
     expect(component.interactions.absolute).toHaveSize(0);
     expect(component.interactions.normalized).toHaveSize(0);
 
-  
+
   })
 });

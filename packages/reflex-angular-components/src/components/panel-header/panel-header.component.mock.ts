@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PanelHeaderComponent } from './panel-header.component';
 
 @Component({
-    selector: 'app-panel-header', template: '',
-    standalone: false
+    selector: 'app-panel-header', template: ''
 })
 export class MockPanelHeaderComponent implements Partial<PanelHeaderComponent> {
 
@@ -23,6 +22,5 @@ public elementId = 'custom-header';
 public elementTitle = 'Custom Title';
 
 @Output()
-public onChange = new EventEmitter();  
+public onChange = new EventEmitter();
 }
-  

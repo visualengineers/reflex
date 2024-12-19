@@ -11,7 +11,8 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { HttpClient, HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { CalibrationPoint, CalibrationTransform, CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
-import { PanelHeaderComponent } from '@reflex/angular-components/dist';
+import { MockPanelHeaderComponent, PanelHeaderComponent } from '@reflex/angular-components/dist';
+import { CommonModule } from '@angular/common';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [
@@ -153,8 +154,10 @@ describe('CalibrationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [FormsModule,
-        PanelHeaderComponent, CalibrationComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        CalibrationComponent],
     providers: [
         {
             provide: CalibrationService, useValue: calibrationService
@@ -171,7 +174,11 @@ describe('CalibrationComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+  })
+    .overrideComponent(CalibrationComponent, {
+      remove: { imports: [ PanelHeaderComponent] },
+      add: { imports: [ MockPanelHeaderComponent ] }
+    })
     .compileComponents();
   }));
 

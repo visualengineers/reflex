@@ -2,9 +2,8 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { PointCloudComponent } from "./point-cloud.component";
 
 @Component({
-    selector: 'app-point-cloud', template: '',
-    standalone: false
-})  
+    selector: 'app-point-cloud', template: ''
+})
 export class MockPointCloudComponent implements Partial<PointCloudComponent> {
 
 @Input()

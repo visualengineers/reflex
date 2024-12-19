@@ -9,19 +9,21 @@ import { MockMeasureControlsComponent } from './measure-controls/measure-control
 import { MeasureGridComponent } from './measure-grid/measure-grid.component';
 import { FrameSizeDefinition } from '@reflex/shared-types';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { MeasureControlsComponent } from './measure-controls/measure-controls.component';
+import { MockMeasureGridComponent } from './measure-grid/measure-grid.component.mock';
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
+const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [
     'getFrameSize'
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-const customFrame: FrameSizeDefinition = 
+const customFrame: FrameSizeDefinition =
   { width: 500, height: 400, left: 150, top: 75 };
 
 describe('MeasureSurfaceComponent', () => {
@@ -30,8 +32,12 @@ describe('MeasureSurfaceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [MeasureSurfaceComponent, MockMeasureControlsComponent, MeasureGridComponent],
-    imports: [FormsModule],
+    imports: [
+      FormsModule,
+      MeasureSurfaceComponent,
+      MockMeasureControlsComponent,
+      MeasureGridComponent
+    ],
     providers: [
         {
             provide: CalibrationService, useValue: calibrationService
@@ -39,10 +45,16 @@ describe('MeasureSurfaceComponent', () => {
         {
             provide: LogService, useValue: logService
         },
+        {
+        provide: 'BASE_URL', useValue: 'http://localhost'
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+}).overrideComponent(MeasureSurfaceComponent, {
+      remove: { imports: [ MeasureControlsComponent, MeasureGridComponent] },
+      add: { imports: [ MockMeasureControlsComponent, MockMeasureGridComponent ] }
+    })
     .compileComponents();
   });
 

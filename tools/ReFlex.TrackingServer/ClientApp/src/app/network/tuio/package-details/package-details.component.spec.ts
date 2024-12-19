@@ -7,7 +7,7 @@ import { of, throwError } from 'rxjs';
 import { TuioPackageDetails } from '@reflex/shared-types';
 
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
@@ -30,7 +30,9 @@ describe('PackageDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [PackageDetailsComponent],
+    imports: [
+      PackageDetailsComponent
+    ],
     providers: [
         {
             provide: TuioService, useValue: tuioService
@@ -52,14 +54,14 @@ describe('PackageDetailsComponent', () => {
   });
 
   afterEach(() => {
-    logService.sendErrorLog.calls.reset(); 
+    logService.sendErrorLog.calls.reset();
 
     tuioService.getPackages.calls.reset();
   });
 
   it('should create', () => {
     fixture.detectChanges();
-    
+
     expect(component).toBeTruthy();
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
@@ -70,14 +72,14 @@ describe('PackageDetailsComponent', () => {
   it('should handle errors correctly', () => {
     const errorPackages = 'TestError: tuioService.getPackages';
     tuioService.getPackages.and.returnValue(throwError(errorPackages));
-    
+
     fixture.detectChanges();
-    
+
     expect(component).toBeTruthy();
 
     const formattedMsg = `${errorPackages} - ${JSON.stringify(errorPackages, null, 3)}`
     expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(formattedMsg);
-    expect(tuioService.getPackages).toHaveBeenCalledTimes(1);    
+    expect(tuioService.getPackages).toHaveBeenCalledTimes(1);
   });
 
 

@@ -9,7 +9,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { DEFAULT_SETTINGS, DepthCameraState, PerformanceData, TrackingConfigState } from '@reflex/shared-types';
-import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { MockOptionCheckboxComponent, MockSettingsGroupComponent, MockValueSelectionComponent, MockValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
@@ -51,11 +51,10 @@ describe('SettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [FormsModule,
-        ValueSliderComponent,
-        OptionCheckboxComponent,
-        SettingsGroupComponent,
-        ValueSelectionComponent, SettingsComponent],
+    imports: [
+      FormsModule,
+      SettingsComponent
+    ],
     providers: [
         {
             provide: TrackingService, useValue: trackingService
@@ -75,7 +74,20 @@ describe('SettingsComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+    }).overrideComponent(SettingsComponent, {
+      remove: { imports: [
+        ValueSliderComponent,
+        OptionCheckboxComponent,
+        SettingsGroupComponent,
+        ValueSelectionComponent,
+      ] },
+      add: { imports: [
+        MockValueSliderComponent,
+        MockOptionCheckboxComponent,
+        MockSettingsGroupComponent,
+        MockValueSelectionComponent,
+       ] }
+    })
     .compileComponents();
   }));
 

@@ -6,7 +6,7 @@ import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { RecordingComponent } from './recording.component';
 import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate } from '@reflex/shared-types';
-import { ValueTextComponent } from '@reflex/angular-components/dist';
+import { ValueTextComponent, MockValueTextComponent } from '@reflex/angular-components/dist';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
@@ -113,9 +113,10 @@ describe('RecordingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [RecordingComponent],
-    imports: [FormsModule,
-        ValueTextComponent],
+    imports: [
+        FormsModule,
+        RecordingComponent
+    ],
     providers: [
         {
             provide: RecordingService, useValue: recordingService
@@ -126,7 +127,11 @@ describe('RecordingComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
     ]
-})
+    })
+    .overrideComponent(RecordingComponent, {
+      remove: { imports: [ ValueTextComponent] },
+      add: { imports: [ MockValueTextComponent ] }
+    })
     .compileComponents();
   });
 
@@ -323,9 +328,11 @@ describe('RecordingComponent: Error Handling', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [RecordingComponent],
-    imports: [FormsModule,
-        ValueTextComponent],
+    imports: [
+        FormsModule,
+        ValueTextComponent,
+        RecordingComponent
+      ],
     providers: [
         {
             provide: RecordingService, useValue: recordingService_error
