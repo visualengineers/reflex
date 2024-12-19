@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
 import { CommonModule } from '@angular/common';
@@ -12,7 +12,11 @@ PlotlyModule.plotlyjs = PlotlyJS;
 @Component({
   selector: 'app-timeline',
   standalone: true,
-  imports: [PlotlyModule, HttpClientModule, CommonModule],
+  imports: [PlotlyModule, 
+// TODO: `HttpClientModule` should not be imported into a component directly.
+// Please refactor the code to add `provideHttpClient()` call to the provider list in the
+// application bootstrap logic and remove the `HttpClientModule` import from this component.
+HttpClientModule, CommonModule],
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
