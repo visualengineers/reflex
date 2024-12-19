@@ -5,7 +5,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app/app-routing.module';
-import { SettingsGroupComponent, ValueSliderComponent, ValueSelectionComponent, OptionCheckboxComponent, PanelHeaderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { AppComponent } from './app/app.component';
 
 export function getBaseUrl(): string {
@@ -24,13 +23,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       BrowserModule,
       FormsModule,
-      AppRoutingModule,
-      SettingsGroupComponent,
-      ValueSliderComponent,
-      ValueSelectionComponent,
-      OptionCheckboxComponent,
-      PanelHeaderComponent,
-      ValueTextComponent
+      AppRoutingModule
     ),
     { provide: ErrorHandler, useClass: CustomErrorHandler },
     provideHttpClient(withInterceptorsFromDi())
