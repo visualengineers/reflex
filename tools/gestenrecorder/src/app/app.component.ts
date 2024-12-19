@@ -9,11 +9,10 @@ import { GestureReplayService } from "./service/gesture-replay.service";
 import { OptionCheckboxComponent,SettingsGroupComponent } from "@reflex/angular-components/dist";
 
 @Component({
-  selector: "app-root",
-  standalone: true,
-  imports: [RouterOutlet,TouchAreaComponent,DropdownComponent,PullupComponent, TimelineComponent, OptionCheckboxComponent, SettingsGroupComponent],
-  templateUrl: "./app.component.html",
-  styleUrl: "./app.component.scss",
+    selector: "app-root",
+    imports: [RouterOutlet, TouchAreaComponent, DropdownComponent, PullupComponent, TimelineComponent, OptionCheckboxComponent, SettingsGroupComponent],
+    templateUrl: "./app.component.html",
+    styleUrl: "./app.component.scss"
 })
 export class AppComponent {
   title = "gestenrecorder";

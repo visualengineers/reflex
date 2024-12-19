@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
 import { CommonModule } from '@angular/common';
@@ -10,11 +10,11 @@ import { GestureTrackFrame } from '../data/gesture-track-frame';
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @Component({
-  selector: 'app-timeline',
-  standalone: true,
-  imports: [PlotlyModule, HttpClientModule, CommonModule],
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss']
+    selector: 'app-timeline',
+    imports: [PlotlyModule,
+       CommonModule],
+    templateUrl: './timeline.component.html',
+    styleUrls: ['./timeline.component.scss']
 })
 export class TimelineComponent implements OnInit {
   public max_value_layer = 1;

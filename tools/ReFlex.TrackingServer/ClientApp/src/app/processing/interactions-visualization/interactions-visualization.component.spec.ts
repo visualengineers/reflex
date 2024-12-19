@@ -74,20 +74,18 @@ describe('InteractionsVisualizationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ 
-        InteractionsVisualizationComponent,
-        MockHistoryVisualizationComponent
-       ],
-      imports: [ FormsModule ],
-      providers: [
+    declarations: [InteractionsVisualizationComponent,
+        MockHistoryVisualizationComponent],
+    imports: [FormsModule],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 

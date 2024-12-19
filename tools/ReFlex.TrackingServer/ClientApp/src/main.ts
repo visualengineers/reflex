@@ -1,8 +1,11 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
+import { enableProdMode, ErrorHandler, importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
+import { CustomErrorHandler } from 'src/shared/util/custom-error-handler';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app/app-routing.module';
+import { AppComponent } from './app/app.component';
 
 export function getBaseUrl(): string {
   return document.getElementsByTagName('base')[0].href;
@@ -14,5 +17,16 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic(providers).bootstrapModule(AppModule)
+bootstrapApplication(AppComponent, {
+  providers: [
+    providers,
+    importProvidersFrom(
+      BrowserModule,
+      FormsModule,
+      AppRoutingModule
+    ),
+    { provide: ErrorHandler, useClass: CustomErrorHandler },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
+})
   .catch((err) => console.log(err));

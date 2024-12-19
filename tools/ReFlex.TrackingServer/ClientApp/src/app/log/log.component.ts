@@ -3,10 +3,18 @@ import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from './log.service';
 import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
+import { ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-log',
-  templateUrl: './log.component.html'
+  templateUrl: './log.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ValueSelectionComponent
+  ]
 })
 export class LogComponent implements OnInit, OnDestroy {
 
@@ -69,7 +77,7 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   public filter(): void {
-    this.filteredMessages = this.filterLevel >= 0 && this.filterLevel <= LogLevel.Off
+    this.filteredMessages = this.filterLevel as LogLevel >= LogLevel.Trace && this.filterLevel as LogLevel <= LogLevel.Off
       ? this.messages.filter((msg) => LogLevel[msg.level] === LogLevel[this.filterLevel])
       : this.messages;
   }

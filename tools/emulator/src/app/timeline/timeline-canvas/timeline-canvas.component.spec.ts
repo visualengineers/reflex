@@ -8,8 +8,8 @@ describe('TimelineCanvasComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimelineCanvasComponent ]
-    })
+    imports: [TimelineCanvasComponent]
+})
     .compileComponents();
   }));
 

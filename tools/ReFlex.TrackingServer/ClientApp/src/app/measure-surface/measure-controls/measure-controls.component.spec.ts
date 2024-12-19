@@ -26,19 +26,19 @@ describe('MeasureControlsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MeasureControlsComponent ],
-      imports: [
+    declarations: [MeasureControlsComponent],
+    imports: [
         FormsModule
-      ],
-      providers: [
+    ],
+    providers: [
         {
-          provide: MeasureService, useValue: measureService
+            provide: MeasureService, useValue: measureService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   });
 

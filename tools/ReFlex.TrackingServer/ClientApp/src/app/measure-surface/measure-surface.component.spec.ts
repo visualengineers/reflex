@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MeasureSurfaceComponent } from './measure-surface.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
@@ -8,6 +8,7 @@ import { of, throwError } from 'rxjs';
 import { MockMeasureControlsComponent } from './measure-controls/measure-control.component.mock';
 import { MeasureGridComponent } from './measure-grid/measure-grid.component';
 import { FrameSizeDefinition } from '@reflex/shared-types';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
   [
@@ -29,20 +30,19 @@ describe('MeasureSurfaceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MeasureSurfaceComponent, MockMeasureControlsComponent, MeasureGridComponent ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
+    declarations: [MeasureSurfaceComponent, MockMeasureControlsComponent, MeasureGridComponent],
+    imports: [FormsModule],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
-    })
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

@@ -3,8 +3,9 @@ import { MeasureControlsComponent } from "./measure-controls.component";
 
 @Component({
     selector: 'app-measure-controls',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   export class MockMeasureControlsComponent implements Partial<MeasureControlsComponent> {
     
   }

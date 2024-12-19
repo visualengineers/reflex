@@ -70,37 +70,35 @@ describe('ProcessingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ProcessingComponent,
+    declarations: [ProcessingComponent,
         InteractionsComponent,
         InteractionsVisualizationComponent,
         MockHistoryVisualizationComponent,
-        MockHistoryComponent
-       ],
-      imports: [FormsModule,
+        MockHistoryComponent],
+    imports: [FormsModule,
         PanelHeaderComponent,
         ValueSelectionComponent,
         ValueSliderComponent,
         OptionCheckboxComponent
-     ],
-      providers: [
+    ],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         },
         {
-          provide: 'BASE_URL', useValue: 'http://localhost'
+            provide: 'BASE_URL', useValue: 'http://localhost'
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   }));
 

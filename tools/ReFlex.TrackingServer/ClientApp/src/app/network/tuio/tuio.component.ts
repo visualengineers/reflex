@@ -4,10 +4,22 @@ import { TuioService } from 'src/shared/services/tuio.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription } from 'rxjs';
 import { DEFAULT_SETTINGS, ProtocolVersion, TransportProtocol, TuioConfiguration, TuioInterpretation } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { PackageDetailsComponent } from './package-details/package-details.component';
 
 @Component({
   selector: 'app-tuio',
-  templateUrl: './tuio.component.html'
+  templateUrl: './tuio.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    PanelHeaderComponent,
+    ValueSelectionComponent,
+    ValueTextComponent,
+    PackageDetailsComponent
+  ]
 })
 export class TuioComponent implements OnInit, OnDestroy {
 

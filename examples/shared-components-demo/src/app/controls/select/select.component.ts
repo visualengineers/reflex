@@ -6,7 +6,6 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
 @Component({
   selector: 'app-select',
-  standalone: true,
   imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueSelectionComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss'

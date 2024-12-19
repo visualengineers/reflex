@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { InteractionFrame, InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
@@ -8,7 +10,11 @@ import { ProcessingService } from 'src/shared/services/processing.service';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+  styleUrls: ['./history.component.scss'],
+  imports: [
+    CommonModule,
+    SettingsGroupComponent
+  ]
 })
 export class HistoryComponent implements OnInit, OnDestroy {
 

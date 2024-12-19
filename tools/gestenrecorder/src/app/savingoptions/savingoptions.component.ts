@@ -8,11 +8,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-savingoptions',
-  standalone: true,
-  imports: [ValueSelectionComponent, CommonModule, FormsModule],
-  templateUrl: './savingoptions.component.html',
-  styleUrl: './savingoptions.component.scss'
+    selector: 'app-savingoptions',
+    imports: [ValueSelectionComponent, CommonModule, FormsModule],
+    templateUrl: './savingoptions.component.html',
+    styleUrl: './savingoptions.component.scss'
 })
 export class SavingoptionsComponent implements OnInit {
   gestureFileNames: string[] = [];

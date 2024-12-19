@@ -4,9 +4,10 @@ import { fromEvent, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements AfterViewInit, OnInit, OnDestroy {
   title = 'Basic Angular App';

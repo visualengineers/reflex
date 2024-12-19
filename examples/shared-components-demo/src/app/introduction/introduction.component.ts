@@ -1,4 +1,3 @@
-import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { BehaviorSubject } from 'rxjs';
@@ -8,9 +7,7 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-introduction',
-  standalone: true,
   imports: [
-    HttpClientModule,
     SettingsGroupComponent,
     AsyncPipe
   ],

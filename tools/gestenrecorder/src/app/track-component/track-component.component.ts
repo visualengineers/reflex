@@ -16,15 +16,14 @@ export interface GestureData {
 }
 
 @Component({
-  selector: 'app-track-component',
-  standalone: true,
-  imports: [
-    CommonModule,
-    SettingsGroupComponent,
-    FormsModule
-  ],
-  templateUrl: './track-component.component.html',
-  styleUrl: './track-component.component.scss'
+    selector: 'app-track-component',
+    imports: [
+        CommonModule,
+        SettingsGroupComponent,
+        FormsModule
+    ],
+    templateUrl: './track-component.component.html',
+    styleUrl: './track-component.component.scss'
 })
 export class TrackComponentComponent implements OnInit, OnDestroy{
   public selectedIndex: number = -1;

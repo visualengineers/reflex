@@ -4,9 +4,10 @@ import { InteractionFrame } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-history',
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+    selector: 'app-history',
+    templateUrl: './history.component.html',
+    styleUrls: ['./history.component.scss'],
+    standalone: false
 })
 export class HistoryComponent  implements OnInit, OnDestroy {
   private _frames: Subscription | undefined;

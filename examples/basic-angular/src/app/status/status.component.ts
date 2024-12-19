@@ -4,9 +4,10 @@ import { interval, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
 
 @Component({
-  selector: 'app-status',
-  templateUrl: './status.component.html',
-  styleUrls: ['./status.component.scss']
+    selector: 'app-status',
+    templateUrl: './status.component.html',
+    styleUrls: ['./status.component.scss'],
+    standalone: false
 })
 export class StatusComponent implements OnInit, OnDestroy {
 

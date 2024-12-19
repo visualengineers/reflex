@@ -9,11 +9,10 @@ import { Subscription } from 'rxjs';
 import { OnInit, OnDestroy } from '@angular/core';
 
 @Component({
-  selector: 'app-recorderoptions',
-  standalone: true,
-  imports: [CommonModule, FormsModule, SettingsGroupComponent, OptionCheckboxComponent, ValueTextComponent],
-  templateUrl: './recorderoptions.component.html',
-  styleUrl: './recorderoptions.component.scss'
+    selector: 'app-recorderoptions',
+    imports: [CommonModule, FormsModule, SettingsGroupComponent, OptionCheckboxComponent, ValueTextComponent],
+    templateUrl: './recorderoptions.component.html',
+    styleUrl: './recorderoptions.component.scss'
 })
 export class RecorderoptionsComponent implements OnInit, OnDestroy{
   public amountTouchPoints: number = 0;

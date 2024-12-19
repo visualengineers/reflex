@@ -40,14 +40,14 @@ describe('LogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LogComponent ],
-      imports: [ FormsModule, ValueSelectionComponent ],
-      providers: [
+    declarations: [LogComponent],
+    imports: [FormsModule, ValueSelectionComponent],
+    providers: [
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
-    })
+    ]
+})
     .compileComponents();
   }));
 

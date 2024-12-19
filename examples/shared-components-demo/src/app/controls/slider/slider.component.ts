@@ -5,7 +5,6 @@ import { SettingsGroupComponent, ValueSliderComponent } from '@reflex/angular-co
 
 @Component({
   selector: 'app-slider',
-  standalone: true,
   imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueSliderComponent],
   templateUrl: './slider.component.html',
   styleUrl: './slider.component.scss'
