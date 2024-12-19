@@ -55,12 +55,15 @@
     "@angular/platform-server": "17.3.2",
     "@angular/router": "17.3.2",
     "@angular/ssr": "^17.3.3",
+
     "angular-plotly.js": "^5.2.2",
     "file-saver": "^2.0.5",
     "happy-dom": "15.11.7",
     "plotly.js-dist-min": "^2.33.0",
     "rxjs": "^7.8.1",
     "zone.js": "^0.14.3",
+
+
     "@microsoft/signalr": "6.0.1",
     "@reflex/angular-components": "file:../../../packages/reflex-angular-components",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
@@ -97,10 +100,9 @@
     "karma-junit-reporter": "^2.0.1",
     "karma-spec-reporter": "^0.0.36",
     "karma-viewport": "^1.0.9",
-    "ng-packagr": "^18.2.1",
+    "ng-packagr": "^17.3.0",
     "puppeteer": "^23.11.1",
-    "typescript": "5.4.5",
-    "tslib": "^2.3.0",
+    "typescript": "^5.4.5",
     "@types/d3": "^7.4.3",
     "@types/three": "^0.170.0",
     "@types/webxr": "^0.5.20"
