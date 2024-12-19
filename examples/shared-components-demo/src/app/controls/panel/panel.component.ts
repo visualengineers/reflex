@@ -1,21 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
-import { SettingsGroupComponent, PanelHeaderComponent, OptionCheckboxComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { SettingsGroupComponent, PanelHeaderComponent } from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
-import { ColorComponent } from '../../color/color.component';
 
 @Component({
-    selector: 'app-panel',
-    imports: [
-        CommonModule,
-        FormsModule,
-        SettingsGroupComponent,
-        PanelHeaderComponent
-    ],
-    templateUrl: './panel.component.html',
-    styleUrl: './panel.component.scss'
+  selector: 'app-panel',
+  imports: [
+    CommonModule,
+    FormsModule,
+    SettingsGroupComponent,
+    PanelHeaderComponent
+  ],
+  templateUrl: './panel.component.html',
+  styleUrl: './panel.component.scss'
 })
 export class PanelComponent implements OnInit, OnDestroy {
   public toggleHeaderActive = true;

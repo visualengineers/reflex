@@ -5,10 +5,10 @@ import { SettingsGroupComponent, ValueSelectionComponent } from '@reflex/angular
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
 @Component({
-    selector: 'app-select',
-    imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueSelectionComponent],
-    templateUrl: './select.component.html',
-    styleUrl: './select.component.scss'
+  selector: 'app-select',
+  imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueSelectionComponent],
+  templateUrl: './select.component.html',
+  styleUrl: './select.component.scss'
 })
 export class SelectComponent implements OnInit, OnDestroy {
   public filters = [

@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
-    selector: 'app-buttons',
-    imports: [
-        CommonModule,
-        FormsModule,
-        SettingsGroupComponent
-    ],
-    templateUrl: './buttons.component.html',
-    styleUrl: './buttons.component.scss'
+  selector: 'app-buttons',
+  imports: [
+    CommonModule,
+    FormsModule,
+    SettingsGroupComponent
+  ],
+  templateUrl: './buttons.component.html',
+  styleUrl: './buttons.component.scss'
 })
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ButtonsComponent {

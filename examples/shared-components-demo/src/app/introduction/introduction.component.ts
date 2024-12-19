@@ -6,13 +6,13 @@ import { AsyncPipe } from '@angular/common';
 
 
 @Component({
-    selector: 'app-introduction',
-    imports: [
-        SettingsGroupComponent,
-        AsyncPipe
-    ],
-    templateUrl: './introduction.component.html',
-    styleUrl: './introduction.component.scss',
+  selector: 'app-introduction',
+  imports: [
+    SettingsGroupComponent,
+    AsyncPipe
+  ],
+  templateUrl: './introduction.component.html',
+  styleUrl: './introduction.component.scss'
 })
 export class IntroductionComponent implements OnInit {
   public angularJson: BehaviorSubject<string> = new BehaviorSubject('');

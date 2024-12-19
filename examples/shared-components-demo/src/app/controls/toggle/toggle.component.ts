@@ -4,15 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
-    selector: 'app-toggle',
-    imports: [
-        CommonModule,
-        FormsModule,
-        OptionCheckboxComponent,
-        SettingsGroupComponent
-    ],
-    templateUrl: './toggle.component.html',
-    styleUrl: './toggle.component.scss'
+  selector: 'app-toggle',
+  imports: [
+    CommonModule,
+    FormsModule,
+    OptionCheckboxComponent,
+    SettingsGroupComponent
+  ],
+  templateUrl: './toggle.component.html',
+  styleUrl: './toggle.component.scss'
 })
 export class ToggleComponent {
 

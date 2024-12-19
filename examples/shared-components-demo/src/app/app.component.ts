@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { PanelHeaderComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { ColorComponent } from './color/color.component';
 import { CommonModule } from '@angular/common';
 import { IntroductionComponent } from './introduction/introduction.component';
@@ -13,21 +11,21 @@ import { TableComponent } from './controls/table/table.component';
 import { ButtonsComponent } from './controls/buttons/buttons.component';
 
 @Component({
-    selector: 'app-root',
-    imports: [
-        IntroductionComponent,
-        PanelComponent,
-        ToggleComponent,
-        TextBoxComponent,
-        SelectComponent,
-        SliderComponent,
-        TableComponent,
-        ButtonsComponent,
-        CommonModule,
-        ColorComponent
-    ],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+  selector: 'app-root',
+  imports: [
+    IntroductionComponent,
+    PanelComponent,
+    ToggleComponent,
+    TextBoxComponent,
+    SelectComponent,
+    SliderComponent,
+    TableComponent,
+    ButtonsComponent,
+    CommonModule,
+    ColorComponent
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
 
