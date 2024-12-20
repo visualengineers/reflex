@@ -11,12 +11,23 @@ import { TrackingService } from '../../../shared/services/tracking.service';
 import { PointCloudService } from '../../../shared/services/point-cloud.service';
 import { HttpClient } from '@angular/common/http';
 import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingServerAppSettings } from '@reflex/shared-types';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { OptionCheckboxComponent, PanelHeaderComponent, SettingsGroupComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 
 
 @Component({
   selector: 'app-point-cloud',
   templateUrl: './point-cloud.component.html',
-  styleUrls: ['./point-cloud.component.scss']
+  styleUrls: ['./point-cloud.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    PanelHeaderComponent,
+    SettingsGroupComponent,
+    OptionCheckboxComponent,
+    ValueSliderComponent
+  ]
 })
 
 export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -6,6 +6,7 @@ import { LogService } from 'src/app/log/log.service';
 import { of, throwError } from 'rxjs';
 import { Interaction, InteractionFrame, InteractionHistory, InteractionHistoryElement } from '@reflex/shared-types';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
+import { MockSettingsComponent } from 'src/app/settings/settings.component.mock';
 
 const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingCloudService',
   [
@@ -81,16 +82,21 @@ describe('HistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistoryComponent ],
-      imports: [ SettingsGroupComponent ],
-      providers: [
+    imports: [
+      HistoryComponent
+    ],
+    providers: [
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
+    ]
+    })
+    .overrideComponent(HistoryComponent, {
+      remove: { imports: [ SettingsGroupComponent] },
+      add: { imports: [ MockSettingsComponent ] }
     })
     .compileComponents();
   });

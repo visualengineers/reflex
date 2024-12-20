@@ -6,11 +6,10 @@ import { FormsModule } from '@angular/forms';
 import { ConfigurationService } from '../service/configuration.service';
 
 @Component({
-  selector: 'app-hover-menu',
-  standalone: true,
-  imports: [CommonModule, SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent, FormsModule],
-  templateUrl: './hover-menu.component.html',
-  styleUrls: ['./hover-menu.component.scss']
+    selector: 'app-hover-menu',
+    imports: [CommonModule, SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent, FormsModule],
+    templateUrl: './hover-menu.component.html',
+    styleUrls: ['./hover-menu.component.scss']
 })
 export class HoverMenuComponent {
   @Input() hoveredPoint: NormalizedPoint | null = null;

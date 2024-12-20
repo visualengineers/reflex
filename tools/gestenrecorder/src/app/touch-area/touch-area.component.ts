@@ -22,11 +22,10 @@ interface Size {
 }
 
 @Component({
-  selector: 'app-touch-area',
-  standalone: true,
-  imports: [HoverMenuComponent, CommonModule, FormsModule],
-  templateUrl: './touch-area.component.html',
-  styleUrls: ['./touch-area.component.scss'],
+    selector: 'app-touch-area',
+    imports: [HoverMenuComponent, CommonModule, FormsModule],
+    templateUrl: './touch-area.component.html',
+    styleUrls: ['./touch-area.component.scss']
 })
 export class TouchAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
