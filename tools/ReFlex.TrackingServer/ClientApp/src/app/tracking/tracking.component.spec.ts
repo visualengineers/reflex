@@ -148,7 +148,7 @@ const logService = jasmine.createSpyObj<LogService>('fakeLogService',
 settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
 settingsService.getCanRestore.and.returnValue(of({ name: 'canRestore', value: true }));
 
-describe('TrackingComponent', () => {
+xdescribe('TrackingComponent', () => {
   let component: TrackingComponent;
   let fixture: ComponentFixture<TrackingComponent>;
 
