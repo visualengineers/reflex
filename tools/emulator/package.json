@@ -13,7 +13,11 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && electron .",
-    "build:electron-win": "ng build --base-href ./ && electron-builder build --win"
+    "build:electron-win": "ng build --base-href ./ && electron-builder build --win",
+    "build:electron-osx": "ng build --base-href ./ && electron-builder build --mac --x64",
+    "build:electron-osx-arm64": "ng build --base-href ./ && electron-builder build --mac --arm64",
+    "build:electron-linux": "ng build --base-href ./ && electron-builder build --linux --x64",
+    "build:electron-linux-arm64": "ng build --base-href ./ && electron-builder build --linux --arm64"
   },
   "build": {
     "appId": "reflex.emulator",
@@ -22,7 +26,10 @@
     "buildVersion": "0.9.9",
     "electronVersion": "23.2.4",
     "win": {
-      "icon": "dist/assets/icon/app_icon_inverted.ico"
+      "icon": "dist/browser/assets/icon/app_icon_inverted.ico"
+    },
+    "mac": {
+      "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     },
     "files": [
       "node_modules/**/*",
