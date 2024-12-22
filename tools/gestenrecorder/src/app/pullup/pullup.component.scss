@@ -1,11 +1,11 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 
 // ##### pullup button #####
 .pullup__button {
   position: absolute;
   background-color: transparent;
-  color: $color-primary;
+  color: reflex.$color-primary;
   border: none;
   cursor: pointer;
   padding: 10px;
@@ -14,7 +14,7 @@
   transform: translateX(-50%)
 }
 .pullup__button:hover {
-  color: $color-primary;
+  color: reflex.$color-primary;
 }
 .pullup__button img {
   transition: transform 0.3s;
@@ -28,11 +28,11 @@
 // ##### pullup itself #####
 .pullup__area {
   position: fixed;
-  background-color: $color-white;
-  border: 1px solid $color-primary;
+  background-color: reflex.$color-white;
+  border: 1px solid reflex.$color-primary;
   border-radius: 4px;
   padding: 10px;
-  color: $color-primary;
+  color: reflex.$color-primary;
   z-index: 9999;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);

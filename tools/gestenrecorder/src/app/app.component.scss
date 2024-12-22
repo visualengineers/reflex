@@ -1,31 +1,31 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 .recorder__main__content {
-    background-color: $color-black;
+    background-color: reflex.$color-black;
     position: fixed;
-    color: $color-grey-light-3;
+    color: reflex.$color-grey-light-3;
     height: 100%;
     width: 100%;
     display: grid;
     grid-template-rows: 51px 1fr min-content;
 }
 .recorder__header{
-    background-color: $color-white;
-    border: 1px solid $color-primary;
-    background-color: $color-white;
+    background-color: reflex.$color-white;
+    border: 1px solid reflex.$color-primary;
+    background-color: reflex.$color-white;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .recorder__body{
-    border: 1px solid $color-primary;
+    border: 1px solid reflex.$color-primary;
     background-color: transparent;
     position: relative;
 }
 .recorder__footer{
-    border: 1px solid $color-primary;
-    background-color: $color-success;
+    border: 1px solid reflex.$color-primary;
+    background-color: reflex.$color-success;
 }
 
 #settings {
@@ -50,7 +50,7 @@
     width: 5em;
     float: right;
     height: 100%;
-    background-color: $color-grey-dark;
+    background-color: reflex.$color-grey-dark;
 
     ul{
         list-style: none;
@@ -88,6 +88,6 @@ img.header__logo {
     font-family: "Barlow Demi", sans-serif;
     font-size: inherit;
     line-height: inherit;
-    color: $color-primary;
+    color: reflex.$color-primary;
 }
 

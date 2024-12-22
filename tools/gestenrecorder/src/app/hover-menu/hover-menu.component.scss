@@ -1,11 +1,11 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 .hover-menu {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: $color-white;
-  border: 1px solid $color-primary;
+  background-color: reflex.$color-white;
+  border: 1px solid reflex.$color-primary;
   padding: 10px;
   z-index: 1000;
 
@@ -24,7 +24,7 @@
   }
 
   p {
-    color: $color-primary;
+    color: reflex.$color-primary;
   }
 
   .settings__item input {
