@@ -1,3 +1,5 @@
+@use 'reflex' as reflex;
+
 app-root {
     display: grid;
     min-height: 100vh;
@@ -7,34 +9,52 @@ app-root {
     background-position: right bottom;
     background-size: contain;
 
-    grid-template-rows: [page-start] $page-margin-top [top-start] $header-height [top-end main-start] 1fr [main-end bottom-start] $default-footer-height [bottom-end];
+    grid-template-rows:
+      [page-start]
+        reflex.$page-margin-top
+      [top-start]
+        reflex.$header-height
+      [top-end main-start]
+        1fr
+      [main-end bottom-start]
+        reflex.$default-footer-height
+      [bottom-end];
 
-    column-gap: $default-margin;
+    column-gap: reflex.$default-margin;
     justify-content: stretch;
     justify-self: stretch;
     align-self: stretch;
 
     grid-template-columns:
         [page-start]
-            $side-colum-width-left
+            reflex.$side-colum-width-left
         [content-panel-start]
             1fr
         [content-panel-end]                                                                             // 1 column + margin on the left side
-            $side-column-width-right
+            reflex.$side-column-width-right
         [bg-end page-end];
 
-    @include respond(tab-port) {
-        grid-template-rows: [page-start] $page-margin-top [top-start] $header-height [top-end main-start] 1fr [main-end bottom-start] $small-footer-height [bottom-end];
+    @include reflex.respond(tab-port) {
+        grid-template-rows:
+          [page-start]
+            reflex.$page-margin-top
+          [top-start]
+            reflex.$header-height
+          [top-end main-start]
+            1fr
+          [main-end bottom-start]
+            reflex.$small-footer-height
+          [bottom-end];
     }
 
-    @include respond(phone-large) {
+    @include reflex.respond(phone-large) {
         grid-template-columns:
         [page-start]
-            $default-margin
+          reflex.$default-margin
         [content-panel-start]
             1fr
         [content-panel-end]                                                                             // 1 column + margin on the left side
-            $default-margin
+          reflex.$default-margin
         [bg-end page-end];
     }
 
@@ -68,24 +88,24 @@ app-point-cloud {
 .content-panel {
     display: grid;
     grid-auto-rows: auto;
-    row-gap: $default-col-gap;
+    row-gap: reflex.$default-col-gap;
     grid-template-columns:
-        [content-start] $default-grid-columns      // 7 columns
+        [content-start] reflex.$default-grid-columns      // 7 columns
         [content-end];
 
-    @include respond(tab-land) {
+    @include reflex.respond(tab-land) {
         grid-template-columns:
-        [content-start] $medium-grid-columns      // 5 columns
+        [content-start] reflex.$medium-grid-columns      // 5 columns
         [content-end];
     }
 
-    @include respond(tab-port) {
+    @include reflex.respond(tab-port) {
         grid-template-columns:
-        [content-start] $small-grid-columns      // 3 columns
+        [content-start] reflex.$small-grid-columns      // 3 columns
         [content-end];
     }
 
-    column-gap: $default-col-gap;
+    column-gap: reflex.$default-col-gap;
 
     padding: 0;
 }
@@ -111,8 +131,8 @@ app-point-cloud {
         align-content: center;
         justify-content: center;
 
-        background: $color-white;
-        border: 1px solid $color-primary;
+        background: reflex.$color-white;
+        border: 1px solid reflex.$color-primary;
         border-radius: 5px;
         padding: 3rem;
 
@@ -150,9 +170,9 @@ app-point-cloud {
     &__visualization {
         & code {
             white-space: pre-wrap;
-            margin: calc(2* $default-col-gap) $default-col-gap;
+            margin: calc(2* reflex.$default-col-gap) reflex.$default-col-gap;
             display: block;
-            font-size: $font-size-small;
+            font-size: reflex.$font-size-small;
             font-weight: 400;
 
         }
@@ -168,13 +188,13 @@ app-point-cloud {
     grid-column: 4 / -1;
     height: max-content;
 
-    @include respond(tab-port) {
+    @include reflex.respond(tab-port) {
         grid-column: span 3;
     }
 }
 
 .depth-image {
-    margin-bottom: $default-col-gap;
+    margin-bottom: reflex.$default-col-gap;
 }
 
 .processing,
@@ -183,31 +203,31 @@ app-point-cloud {
 .measure,
 .tuio {
     display: grid;
-    grid-template-columns: $default-grid-columns;
-    column-gap: $default-col-gap;
+    grid-template-columns: reflex.$default-grid-columns;
+    column-gap: reflex.$default-col-gap;
 }
 
 .content__element {
-    grid-column: $default-grid-box;
+    grid-column: reflex.$default-grid-box;
 
-    @include respond(tab-port) {
+    @include reflex.respond(tab-port) {
         grid-column: 1 / -1;
     }
 }
 
 .content__element-narrow {
-    grid-column: $narrow-grid-box;
+    grid-column: reflex.$narrow-grid-box;
 
-    // @include respond(tab-port) {
+    // @include reflex.respond(tab-port) {
     //     grid-column: 1 / -1;
     //     grid-row: 1;
     // }
 }
 
 .content__element-wide {
-    grid-column: $wide-grid-box;
+    grid-column: reflex.$wide-grid-box;
 
-    // @include respond(tab-land) {
+    // @include reflex.respond(tab-land) {
     //     grid-column: $default-grid-box;
     // }
 

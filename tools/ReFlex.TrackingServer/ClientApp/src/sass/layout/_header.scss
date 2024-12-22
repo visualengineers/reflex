@@ -1,3 +1,5 @@
+@use 'reflex' as reflex;
+
 .header {
     grid-row: top-start / top-end;
     grid-column: content-panel-start / content-panel-end;
@@ -8,7 +10,7 @@
     &__logo {
         position: absolute;
         width: 14rem;
-        top: $page-margin-top;
+        top: reflex.$page-margin-top;
         left: 3.6rem;
 
         &:hover {
@@ -16,17 +18,17 @@
             opacity: 0.5;
             transition: all 0.3s;
         }
-    }    
+    }
 
     &__title {
         display: block;
-        border-top: 1px solid $color-black;
+        border-top: 1px solid reflex.$color-black;
 
-        font-family: $font-secondary;    
-        color: $color-primary;
+        font-family: reflex.$font-secondary;
+        color: reflex.$color-primary;
 
-        @include respond(phone-large) {
-            margin-left: calc(#{$side-colum-width-left} - #{$default-margin});
+        @include reflex.respond(phone-large) {
+            margin-left: calc(#{reflex.$side-colum-width-left} - #{reflex.$default-margin});
         }
     }
 }

@@ -1,4 +1,4 @@
-@import 'main';
+@use 'reflex' as reflex;
 
 .point-cloud {
     &__debug {
@@ -9,7 +9,7 @@
         min-width: 20rem;
         width: 15vw;
 
-        background-color: rgba($color-grey-light-2,.4);
+        background-color: rgba(reflex.$color-grey-light-2,.4);
 
         padding: 1rem;
 
@@ -41,9 +41,9 @@
 
 
     &__view {
-        margin-top: $default-col-gap;
-        margin-bottom: $default-col-gap;
-        border: 1px solid $color-grey-light-3;
+        margin-top: reflex.$default-col-gap;
+        margin-bottom: reflex.$default-col-gap;
+        border: 1px solid reflex.$color-grey-light-3;
     }
 
     &__render {
@@ -56,7 +56,7 @@
             height: 100vh;
 
             // z-index: 1500;
-            background-color: $color-white;
+            background-color: reflex.$color-white;
 
             ~.point-cloud {
                 &__debug,

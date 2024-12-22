@@ -1,4 +1,4 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 
 .colors-panel {
@@ -9,7 +9,7 @@
 .color {
   &__group {
     & .heading-secondary {
-      margin-bottom: $default-margin;
+      margin-bottom: reflex.$default-margin;
     }
   }
 }

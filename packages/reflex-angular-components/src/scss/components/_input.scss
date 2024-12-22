@@ -1,26 +1,28 @@
+@use "../abstracts/variables";
+
 .custom-select {
     position: relative;
     
     background-color: transparent;
-    min-width: $default-col-width;
-    height: $font-size-large;
+    min-width: variables.$default-col-width;
+    height: variables.$font-size-large;
     outline: none;
-    color: $color-grey-dark;
-    font-family: $font-heading;
+    color: variables.$color-grey-dark;
+    font-family: variables.$font-heading;
     cursor:pointer;
   
     padding: 0 0.5rem;
   
     & option {
-        color: $color-grey-dark;
-        font-family: $font-primary;
+        color: variables.$color-grey-dark;
+        font-family: variables.$font-primary;
     }
   
     &,
     &:hover,
     &:active {
         border: none;
-        border-bottom: 1px solid $color-grey-dark;
+        border-bottom: 1px solid variables.$color-grey-dark;
     }
   
     &:before {
@@ -40,7 +42,7 @@
     &:hover,
     &:focus {
         outline: none;
-        color: $color-primary;
+        color: variables.$color-primary;
         font-weight: bold;
     } 
   
@@ -48,14 +50,14 @@
   
     outline: none;
     border: none;
-    border-bottom: 1px solid $color-grey-dark;
+    border-bottom: 1px solid variables.$color-grey-dark;
   
     background-color: transparent;
-    font-family: $font-secondary;
+    font-family: variables.$font-secondary;
     text-align: right;
   
-    color: $color-grey-dark;
-    font-size: $default-font-size;
+    color: variables.$color-grey-dark;
+    font-size: variables.$default-font-size;
   }
   
   .custom-range {
@@ -164,10 +166,10 @@
 	z-index: -1;
     
   & + label {
-    font-size: $default-font-size;
+    font-size: variables.$default-font-size;
     
-    color: $color-white;
-    background-color: $color-primary;
+    color: variables.$color-white;
+    background-color: variables.$color-primary;
     display: inline-block;
 
     width: 9.3rem;
@@ -179,7 +181,7 @@
   }
 
   & + label:hover {
-    background-color: $color-primary-light;
+    background-color: variables.$color-primary-light;
   }
 
   & + label {
@@ -187,8 +189,8 @@
   }
 
   &:focus + label {
-    outline: 1px solid $color-primary;
-    background-color: $color-white; 
-    color: $color-primary;
+    outline: 1px solid variables.$color-primary;
+    background-color: variables.$color-white; 
+    color: variables.$color-primary;
   }
 }
