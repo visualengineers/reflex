@@ -82,7 +82,7 @@
     "@types/node": "^18.18.0",
     "@types/plotly.js-dist-min": "^2.3.4",
     "@types/ws": "<8.5.5",
-    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/eslint-plugin": "8.18.1",
     "@typescript-eslint/parser": "7.18.0",
     "electron-builder": "^24.13.3",
     "eslint": "^8.45.0",
