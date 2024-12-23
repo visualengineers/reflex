@@ -49,11 +49,11 @@
     "@reflex/angular-components": "file:../../../packages/reflex-angular-components",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
     "d3": "^7.9.0",
-    "three": "^0.170.0"
+    "three": "^0.171.0"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
-    "@types/three": "^0.170.0",
+    "@types/three": "^0.171.0",
     "@types/webxr": "^0.5.20"
   }
 }
