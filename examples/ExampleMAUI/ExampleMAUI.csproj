@@ -57,6 +57,19 @@
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1"/>
+        <PackageReference Include="Prism.Core" Version="9.0.537" />
+        <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.537" />
+        <PackageReference Include="Prism.Maui" Version="9.0.537" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\library\src\Core\Networking\Networking.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="App.config">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
