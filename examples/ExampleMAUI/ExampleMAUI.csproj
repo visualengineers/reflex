@@ -37,7 +37,7 @@
 
     <ItemGroup>
         <!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
+        <MauiIcon Include="Resources\AppIcon\app_icon.svg"/>
 
         <!-- Splash Screen -->
         <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128"/>
@@ -45,7 +45,7 @@
         <!-- Images -->
         <MauiImage Include="Resources\Images\*"/>
         <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185"/>
-
+      
         <!-- Custom Fonts -->
         <MauiFont Include="Resources\Fonts\*"/>
 
@@ -65,21 +65,5 @@
     <ItemGroup>
       <ProjectReference Include="..\..\library\src\Core\Networking\Networking.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Update="App.config">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="appsettings.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <MauiAsset Include="Resources\Raw\appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </MauiAsset>
-    </ItemGroup>
-
+  
 </Project>

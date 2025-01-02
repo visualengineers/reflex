@@ -25,6 +25,11 @@ public static class MauiProgram
         {
           fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
           fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+          fonts.AddFont("Barlow-Regular.ttf", "BarlowRegular");
+          fonts.AddFont("Barlow-Italic.ttf", "BarlowItalic");
+          fonts.AddFont("Barlow-SemiBold.ttf", "BarlowSemiBold");
+          fonts.AddFont("Barlow-Condensed-Regular.ttf", "BarlowCondensedRegular");
+          fonts.AddFont("Barlow-Condensed-SemiBold.ttf", "BarlowCondensedSemiBold");
         });
 
   #if DEBUG
