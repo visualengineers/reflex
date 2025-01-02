@@ -62,6 +62,7 @@ public static class PlatformInitializer
       builder.Services.AddTransient<MainViewModel>();
       builder.Services.AddTransient<ServerViewModel>();
       builder.Services.AddTransient<InteractionListViewModel>();
+      builder.Services.AddTransient<InteractionVisualizationViewModel>();
     }
     catch (Exception exc)
     {
