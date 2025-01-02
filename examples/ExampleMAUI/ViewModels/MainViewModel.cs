@@ -1,6 +1,6 @@
 ﻿namespace ExampleMAUI.ViewModels;
 
-public class MainViewModel
+public class MainViewModel: BindableBase
 {
     public MainViewModel()
     {

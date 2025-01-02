@@ -1,15 +1,16 @@
 ﻿using System.Configuration;
 using ExampleMAUI.Models;
+using ExampleMAUI.ViewModels;
 using NLog;
 
 namespace ExampleMAUI.Util;
 
 public static class PlatformInitializer
 {
-  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-  public static void RegisterTypes(IContainerRegistry containerRegistry)
+  public static void RegisterTypes(IContainerRegistry containerRegistry, Logger logger)
   {
+    logger.Info("RegisterTypes for Application");
+
     try
     {
       // Open current application configuration
@@ -26,14 +27,22 @@ public static class PlatformInitializer
           "Could not find correct configuration for server connection in app.config");
       }
 
+      logger.Info($"Successfully loaded config from App.config: {config}");
+
       var connection =
         new ServerConnection(section["ServerAddress"].Value, port, section["ServerEndPoint"].Value);
 
       containerRegistry.RegisterInstance(typeof(ServerConnection), connection);
+
+      logger.Info($"Using ServerConnection: {connection.ServerAddress}");
+
+      ViewModelLocationProvider.Register<MainPage, MainViewModel>();
+
+      // containerRegistry.RegisterForNavigation<MainPage, MainViewModel>();
     }
     catch (Exception exc)
     {
-      Logger.Log(LogLevel.Error, exc);
+      logger.Log(LogLevel.Error, exc);
     }
   }
 }
