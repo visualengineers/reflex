@@ -17,6 +17,8 @@ public static class MauiProgram
       builder
         .UseMauiApp<App>();
 
+      PlatformInitializer.RegisterTypes(builder, Logger);
+
       builder
         // .UsePrism(prism =>
         // {

@@ -1,44 +1,65 @@
 ﻿using System.Configuration;
+using System.Reflection;
+using ExampleMAUI.Model.Configuration;
 using ExampleMAUI.Models;
 using ExampleMAUI.ViewModels;
+using Microsoft.Extensions.Configuration;
 using NLog;
 
 namespace ExampleMAUI.Util;
 
 public static class PlatformInitializer
 {
-  public static void RegisterTypes(IContainerRegistry containerRegistry, Logger logger)
+  public static void RegisterTypes(MauiAppBuilder builder, Logger logger)
   {
     logger.Info("RegisterTypes for Application");
 
     try
     {
-      // Open current application configuration
-      var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-      var section = config.AppSettings.Settings;
+      logger.Info("Load configuration from appsettings.json");
 
-      var addressConfigured = section.AllKeys.Contains("ServerAddress");
-      var portConfigured = int.TryParse(section["ServerPort"].Value, out var port);
-      var endpointConfigured = section.AllKeys.Contains("ServerEndPoint");
+      var settingsResourceName = "ExampleMAUI.appsettings.json";
 
-      if (!(addressConfigured && portConfigured && endpointConfigured))
+      var a = Assembly.GetExecutingAssembly();
+      using var stream = a.GetManifestResourceStream(settingsResourceName);
+
+      if (stream == null)
       {
-        throw new ApplicationException(
-          "Could not find correct configuration for server connection in app.config");
+        throw new FileNotFoundException(
+          $"Could extract embedded resource {settingsResourceName}");
       }
 
-      logger.Info($"Successfully loaded config from App.config: {config}");
+      var config = new ConfigurationBuilder()
+        .AddJsonStream(stream)
+        .Build();
+
+      if (config == null)
+      {
+        throw new ApplicationException(
+          $"Could not find correct configuration for server connection in {settingsResourceName}");
+      }
+
+      logger.Info($"Successfully loaded config from {settingsResourceName}: {config}");
+
+      var cfgValues = config.GetRequiredSection(nameof(ServerConnectionConfig)).Get<ServerConnectionConfig>();
+
+      if (cfgValues == null)
+      {
+        throw new ConfigurationErrorsException("Missing ServerConnectionConfig");
+      }
 
       var connection =
-        new ServerConnection(section["ServerAddress"].Value, port, section["ServerEndPoint"].Value);
+        new ServerConnection(cfgValues.ServerAddress, cfgValues.ServerPort, cfgValues.ServerEndPoint);
 
-      containerRegistry.RegisterInstance(typeof(ServerConnection), connection);
+      builder.Services.AddSingleton(connection);
 
       logger.Info($"Using ServerConnection: {connection.ServerAddress}");
 
-      ViewModelLocationProvider.Register<MainPage, MainViewModel>();
+      builder.Services.AddTransient<MainPage>();
 
-      // containerRegistry.RegisterForNavigation<MainPage, MainViewModel>();
+      logger.Info("Registering ViewModels");
+
+      builder.Services.AddTransient<MainViewModel>();
     }
     catch (Exception exc)
     {
