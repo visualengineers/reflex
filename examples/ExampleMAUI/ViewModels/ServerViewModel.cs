@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using ExampleMAUI.Models;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Networking.Util;
@@ -19,9 +19,9 @@ public class ServerViewModel : BindableBase, IDisposable
     public ICommand ConnectCommand { get; private set; }
     public ICommand DisconnectCommand { get; private set; }
 
-    public ServerViewModel()
+    public ServerViewModel(IServiceProvider serviceProvider)
     {
-        _server = ContainerLocator.Current.Resolve<ServerConnection>();
+        _server = serviceProvider.GetService<ServerConnection>() ?? throw new NullReferenceException($"{nameof(ServerConnection)} not registered with {nameof(serviceProvider)}");
 
         ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected);
         (ConnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsDisconnected);

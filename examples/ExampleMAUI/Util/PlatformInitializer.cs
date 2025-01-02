@@ -60,6 +60,7 @@ public static class PlatformInitializer
       logger.Info("Registering ViewModels");
 
       builder.Services.AddTransient<MainViewModel>();
+      builder.Services.AddTransient<ServerViewModel>();
     }
     catch (Exception exc)
     {

@@ -1,7 +1,11 @@
-﻿namespace ExampleMAUI;
+﻿using ExampleMAUI.Util;
+
+namespace ExampleMAUI;
 
 public partial class App : Application
 {
+  public static IServiceProvider Services => AppServiceProvider.Current;
+
   /// <summary>
   /// Initialization of the app.
   ///
