@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 using ExampleMAUI.Model.Configuration;
 using ExampleMAUI.Models;
 using ExampleMAUI.ViewModels;
@@ -61,6 +61,7 @@ public static class PlatformInitializer
 
       builder.Services.AddTransient<MainViewModel>();
       builder.Services.AddTransient<ServerViewModel>();
+      builder.Services.AddTransient<InteractionListViewModel>();
     }
     catch (Exception exc)
     {

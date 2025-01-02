@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="using:ExampleMAUI.ViewModels"
+             x:Class="ExampleMAUI.Views.InteractionView"
+             x:DataType="viewModels:InteractionViewModel">
+  <Grid Width="75" Height="75"
+        TranslationX="{Binding OffsetX}" TranslationY="{Binding OffsetY}">
+    <Ellipse Fill="{StaticResource White}"
+             StrokeThickness="4"
+             ScaleX="{Binding Scale}"
+             ScaleY="{Binding Scale}">
+      <Ellipse.Style>
+        <Style x:Name="InteractionEllipse" TargetType="Ellipse">
+          <Setter Property="Stroke" Value="{StaticResource Primary}"/>
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Type}" Value="0" TargetType="Ellipse">
+              <Setter Property="Stroke" Value="{StaticResource BrushConnectionStatusConnected}"></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="1" TargetType="Ellipse">
+              <Setter Property="Stroke" Value="{StaticResource BrushConnectionStatusDisconnected}"></Setter>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Ellipse.Style>
+    </Ellipse>
+    <Label VerticalOptions="Center" HorizontalOptions="Center"
+               Text="{Binding AssociatedInteraction.TouchId}"
+               TextColor="{StaticResource Primary}"
+               FontSize="30"
+               FontFamily="BarlowCondensedRegular"/>
+  </Grid>
+</ContentView>

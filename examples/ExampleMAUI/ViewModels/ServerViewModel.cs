@@ -7,62 +7,70 @@ namespace ExampleMAUI.ViewModels;
 
 public class ServerViewModel : BindableBase, IDisposable
 {
-    private readonly ServerConnection _server;
+  private readonly ServerConnection _server;
 
-    public string ServerAddress => _server.ServerAddress;
-    public bool IsConnected => _server.IsConnected;
-    public bool IsDisconnected => !IsConnected;
+  public string ServerAddress => _server.ServerAddress;
+  public bool IsConnected => _server.IsConnected;
+  public bool IsDisconnected => !IsConnected;
+  public bool ConnectEnabled { get; private set; } = true;
 
-    public int FrameNumber{ get; private set; }
+  public int FrameNumber { get; private set; }
 
-    public int NumTouches { get; private set; }
-    public ICommand ConnectCommand { get; private set; }
-    public ICommand DisconnectCommand { get; private set; }
+  public int NumTouches { get; private set; }
+  public ICommand ConnectCommand { get; private set; }
+  public ICommand DisconnectCommand { get; private set; }
 
-    public ServerViewModel(IServiceProvider serviceProvider)
-    {
-        _server = serviceProvider.GetService<ServerConnection>() ?? throw new NullReferenceException($"{nameof(ServerConnection)} not registered with {nameof(serviceProvider)}");
+  public ServerViewModel(IServiceProvider serviceProvider)
+  {
+    _server = serviceProvider.GetService<ServerConnection>() ?? throw new NullReferenceException($"{nameof(ServerConnection)} not registered with {nameof(serviceProvider)}");
 
-        ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected);
-        (ConnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsDisconnected);
-        DisconnectCommand = new DelegateCommand(Disconnect, () => IsConnected);
-        (DisconnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsConnected);
-    }
+    ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected);
+    (ConnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsDisconnected);
+    DisconnectCommand = new DelegateCommand(Disconnect, () => IsConnected);
+    (DisconnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsConnected);
+  }
 
-    private void Connect()
-    {
-        _server.Connect();
-        RaisePropertyChanged(nameof(IsConnected));
-        RaisePropertyChanged(nameof(IsDisconnected));
+  private void Connect()
+  {
+    ConnectEnabled = false;
+    RaisePropertyChanged(nameof(ConnectEnabled));
 
-        _server.ClientInstance.NewDataReceived += UpdateServerInfo;
-    }
+    _server.Connect();
 
-    private void UpdateServerInfo(object? sender, NetworkingDataMessage e)
-    {
-        FrameNumber++;
-        NumTouches = SerializationUtils.DeserializeFromJson<List<Interaction>>(e.Message).Count;
-        RaisePropertyChanged(nameof(FrameNumber));
-        RaisePropertyChanged(nameof(NumTouches));
-    }
+    RaisePropertyChanged(nameof(IsConnected));
+    RaisePropertyChanged(nameof(IsDisconnected));
 
-    private void Disconnect()
-    {
-        _server.Disconnect();
-        RaisePropertyChanged(nameof(IsConnected));
-        RaisePropertyChanged(nameof(IsDisconnected));
+    _server.ClientInstance.NewDataReceived += UpdateServerInfo;
+  }
 
-        _server.ClientInstance.NewDataReceived -= UpdateServerInfo;
+  private void UpdateServerInfo(object? sender, NetworkingDataMessage e)
+  {
+    FrameNumber++;
+    NumTouches = SerializationUtils.DeserializeFromJson<List<Interaction>>(e.Message).Count;
+    RaisePropertyChanged(nameof(FrameNumber));
+    RaisePropertyChanged(nameof(NumTouches));
+  }
 
-        FrameNumber = 0;
-        NumTouches = 0;
+  private void Disconnect()
+  {
+    _server.Disconnect();
 
-        RaisePropertyChanged(nameof(FrameNumber));
-        RaisePropertyChanged(nameof(NumTouches));
-    }
+    ConnectEnabled = true;
+    RaisePropertyChanged(nameof(ConnectEnabled));
+    RaisePropertyChanged(nameof(IsConnected));
+    RaisePropertyChanged(nameof(IsDisconnected));
 
-    public void Dispose()
-    {
-        Disconnect();
-    }
+    _server.ClientInstance.NewDataReceived -= UpdateServerInfo;
+
+    FrameNumber = 0;
+    NumTouches = 0;
+
+    RaisePropertyChanged(nameof(FrameNumber));
+    RaisePropertyChanged(nameof(NumTouches));
+  }
+
+  public void Dispose()
+  {
+    Disconnect();
+  }
 }

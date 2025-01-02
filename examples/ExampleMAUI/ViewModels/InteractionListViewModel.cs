@@ -12,11 +12,11 @@ public class InteractionListViewModel : BindableBase, IDisposable
     private int _messageId;
     private const int NumMessages = 100;
 
-    public ObservableCollection<InteractionMessage> Messages { get; } = new ObservableCollection<InteractionMessage>();
+    public ObservableCollection<InteractionMessage> Messages { get; } = [];
 
-    public InteractionListViewModel()
+    public InteractionListViewModel(IServiceProvider serviceProvider)
     {
-        _server = ContainerLocator.Current.Resolve<ServerConnection>();
+        _server = serviceProvider.GetService<ServerConnection>();
         _server.ClientInstance.NewDataReceived += UpdateInteractions;
     }
 

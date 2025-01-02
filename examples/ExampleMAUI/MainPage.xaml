@@ -42,7 +42,7 @@
       Margin="89, 60,0 ,0">Basic .NET MAUI Application Template</Label>
 
     <views:ServerView Grid.Column="0" Grid.Row="1" Margin="0,100,0,0" Background="White" VerticalOptions="Fill"/>
-    <!-- <local:InteractionListView Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" Margin="0,50 ,50 ,50" MaxWidth="400"/> -->
+    <views:InteractionListView Grid.Row="1" Grid.Column="3" Grid.RowSpan="2" Margin="0,50 ,50 ,50" WidthRequest="400"/>
   </Grid>
 
     <!-- <ScrollView> -->
