@@ -8,7 +8,7 @@ public class InteractionsDrawable : IDrawable
 
   public List<InteractionViewModel> Interactions { get; set; } = new();
 
-  private Color TextColor { get; set; } = (Color)(Application.Current?.Resources["GrayLight"] ?? Colors.Black);
+  private Color TextColor { get; set; } = (Color)(Application.Current?.Resources["Primary"] ?? Colors.Gray);
   private Color InteractionsColorDefault { get; set; } = (Color) (Application.Current?.Resources["Primary"] ?? Colors.Blue);
   private Color InteractionsColorMin { get; set; } = (Color)(Application.Current?.Resources["Error"] ?? Colors.Red);
   private Color InteractionsColorMax { get; set; } = (Color)(Application.Current?.Resources["Success"] ?? Colors.Green);
