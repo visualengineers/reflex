@@ -20,9 +20,9 @@ public class ServerViewModel : BindableBase, IDisposable
   public ICommand ConnectCommand { get; private set; }
   public ICommand DisconnectCommand { get; private set; }
 
-  public ServerViewModel(IServiceProvider serviceProvider)
+  public ServerViewModel(ServerConnection connection)
   {
-    _server = serviceProvider.GetService<ServerConnection>() ?? throw new NullReferenceException($"{nameof(ServerConnection)} not registered with {nameof(serviceProvider)}");
+    _server = connection;
 
     ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected);
     (ConnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsDisconnected);

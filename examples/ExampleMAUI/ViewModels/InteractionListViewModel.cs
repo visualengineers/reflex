@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using ExampleMAUI.Models;
 using ReFlex.Core.Common.Components;
@@ -14,9 +14,9 @@ public class InteractionListViewModel : BindableBase, IDisposable
 
     public ObservableCollection<InteractionMessage> Messages { get; } = [];
 
-    public InteractionListViewModel(IServiceProvider serviceProvider)
+    public InteractionListViewModel(ServerConnection connection)
     {
-        _server = serviceProvider.GetService<ServerConnection>();
+        _server = connection;
         _server.ClientInstance.NewDataReceived += UpdateInteractions;
     }
 

@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using ExampleMAUI.Models;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Networking.Util;
@@ -9,30 +8,7 @@ public class InteractionVisualizationViewModel: BindableBase, IDisposable
 {
     private readonly ServerConnection _server;
 
-    private double _canvasWidth;
-    private double _canvasHeight;
-
     public List<InteractionViewModel> Interactions { get; private set; } = [];
-
-    public double CanvasWidth
-    {
-        get => _canvasWidth;
-        set
-        {
-            _canvasWidth = value;
-            RaisePropertyChanged();
-        }
-    }
-
-    public double CanvasHeight
-    {
-        get => _canvasHeight;
-        set
-        {
-            _canvasHeight = value;
-            RaisePropertyChanged();
-        }
-    }
 
     public InteractionVisualizationViewModel(ServerConnection connection)
     {
@@ -56,7 +32,7 @@ public class InteractionVisualizationViewModel: BindableBase, IDisposable
 
         dispatcher?.Dispatch(() =>
         {
-          Interactions = interactions.Select(i => new InteractionViewModel(i, _canvasWidth, _canvasHeight)).ToList();
+          Interactions = interactions.Select(i => new InteractionViewModel(i)).ToList();
           RaisePropertyChanged(nameof(Interactions));
         });
     }
