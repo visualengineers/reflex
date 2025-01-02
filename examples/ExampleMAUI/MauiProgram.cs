@@ -17,25 +17,10 @@ public static class MauiProgram
       builder
         .UseMauiApp<App>();
 
-      PlatformInitializer.RegisterTypes(builder, Logger);
+      // wait for loading app settings and other async initialization stuff
+      Task.Run(() => PlatformInitializer.RegisterTypes(builder, Logger)).GetAwaiter().GetResult();
 
       builder
-        // .UsePrism(prism =>
-        // {
-        //   prism.RegisterTypes(container =>
-        //   {
-        //     // PlatformInitializer.RegisterTypes(container, Logger);
-        //   });
-        //   prism.CreateWindow(
-        //     async (container, navigation) =>
-        //     {
-        //       var result = await navigation.NavigateAsync(new Uri("/MainBluppPage"));
-        //       if (!result.Success)
-        //       {
-        //         Logger.Error(result.Exception, "Unhandled exception when creating Window");
-        //       }
-        //     });
-        // })
         .ConfigureFonts(fonts =>
         {
           fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -49,7 +34,6 @@ public static class MauiProgram
     catch (Exception e)
     {
       Logger.Error(e);
-      Console.WriteLine(e);
     }
 
     return builder.Build();

@@ -1,5 +1,4 @@
 ﻿using System.Configuration;
-using System.Reflection;
 using ExampleMAUI.Model.Configuration;
 using ExampleMAUI.Models;
 using ExampleMAUI.ViewModels;
@@ -10,18 +9,19 @@ namespace ExampleMAUI.Util;
 
 public static class PlatformInitializer
 {
-  public static void RegisterTypes(MauiAppBuilder builder, Logger logger)
+  public static async Task<bool> RegisterTypes(MauiAppBuilder builder, Logger logger)
   {
     logger.Info("RegisterTypes for Application");
 
+    var success = true;
+
     try
     {
-      logger.Info("Load configuration from appsettings.json");
+      const string settingsResourceName = "appsettings.json";
 
-      var settingsResourceName = "ExampleMAUI.appsettings.json";
+      logger.Info($"Load configuration from {settingsResourceName}");
 
-      var a = Assembly.GetExecutingAssembly();
-      using var stream = a.GetManifestResourceStream(settingsResourceName);
+      await using var stream = await FileSystem.OpenAppPackageFileAsync(settingsResourceName);
 
       if (stream == null)
       {
@@ -64,6 +64,9 @@ public static class PlatformInitializer
     catch (Exception exc)
     {
       logger.Log(LogLevel.Error, exc);
+      success = false;
     }
+
+    return success;
   }
 }
