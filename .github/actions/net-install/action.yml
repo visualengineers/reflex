@@ -8,13 +8,13 @@ runs:
     - name: install .NET
       uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '7.x'
-    - name: Restore dependencies (Library)
+        dotnet-version: '8.x'
+    - name: Restore workloads
       shell: pwsh
-      run: dotnet restore "${{ github.workspace }}/library/src/ReFlex.Library.sln"
-    - name: Restore dependencies (TrackingServer)
+      run: dotnet workload restore
+    - name: Restore dependencies (ReFlex.sln)
       shell: pwsh
-      run: dotnet restore "${{ github.workspace }}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj"
+      run: dotnet restore
     - name: build ReFlex without external sensors
       shell: pwsh
       working-directory: ${{ github.workspace }}
