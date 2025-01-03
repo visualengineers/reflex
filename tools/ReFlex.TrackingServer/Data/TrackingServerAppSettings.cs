@@ -1,5 +1,4 @@
-﻿using System;
-using ReFlex.Core.Tuio.Util;
+﻿using ReFlex.Core.Tuio.Util;
 using TrackingServer.Data.Config;
 
 namespace TrackingServer.Data

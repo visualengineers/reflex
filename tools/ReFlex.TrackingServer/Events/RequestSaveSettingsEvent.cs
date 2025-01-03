@@ -1,6 +1,4 @@
-﻿using Prism.Events;
-
-namespace TrackingServer.Events
+﻿namespace TrackingServer.Events
 {
     public class RequestSaveSettingsEvent : PubSubEvent
     {

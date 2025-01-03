@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using NLog;
-using Prism.Events;
 using TrackingServer.Data;
 using TrackingServer.Events;
 

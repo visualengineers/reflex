@@ -71,13 +71,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\library\src\Core\Graphics\Graphics.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Util\Util.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
-  </ItemGroup>
   <ItemGroup Condition="'$(DefineConstants.Contains(MS_AZURE_KINECT))' == true ">
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
   </ItemGroup>
@@ -149,5 +142,10 @@
     <Protobuf Include="Protos\interactionTypes.proto">
       <Generator>MSBuild:Compile</Generator>
     </Protobuf>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\src\Core\Common\Common.csproj" />
+    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
+    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
 </Project>

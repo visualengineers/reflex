@@ -1,6 +1,4 @@
-﻿using System;
-using NLog.Filters;
-using ReFlex.Core.Interactivity.Util;
+﻿using ReFlex.Core.Interactivity.Util;
 
 namespace TrackingServer.Data.Config
 {

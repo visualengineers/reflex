@@ -1,5 +1,4 @@
-﻿using System;
-using ReFlex.Core.Calibration.Components;
+﻿using ReFlex.Core.Calibration.Components;
 
 namespace TrackingServer.Data.Config
 {

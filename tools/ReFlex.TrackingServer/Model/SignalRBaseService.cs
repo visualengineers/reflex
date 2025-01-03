@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Subjects;
+﻿using System.Reactive.Subjects;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using TrackingServer.Interfaces;

@@ -1,8 +1,6 @@
-﻿using System;
-using Implementation.Interfaces;
+﻿using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Events;
 using ReFlex.Core.Networking.Util;
 using TrackingServer.Events;

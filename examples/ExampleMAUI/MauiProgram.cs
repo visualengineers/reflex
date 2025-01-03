@@ -1,5 +1,4 @@
 using ExampleMAUI.Util;
-using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace ExampleMAUI;

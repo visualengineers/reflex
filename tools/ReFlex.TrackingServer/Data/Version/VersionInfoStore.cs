@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace TrackingServer.Data.Version
+﻿namespace TrackingServer.Data.Version
 {
     public class VersionInfoStore
     {

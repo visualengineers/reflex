@@ -4,7 +4,6 @@ using ReFlex.Core.Common.Components;
 using System.Net.WebSockets;
 using System.Reactive.Linq;
 using Graphics;
-using Prism.Events;
 using TrackingServer.Events;
 using LogLevel = NLog.LogLevel;
 using Math = System.Math;
@@ -12,23 +11,23 @@ using Math = System.Math;
 namespace TrackingServer.Services
 {
     public class DepthImageService
-    {    
+    {
         private readonly IDepthImageManager _depthImageManager;
 
         private readonly IEventAggregator _eventAggregator;
 
         private static IObservable<ImageByteArray> _encodedRawData;
-        
+
         private static IObservable<PointCloud3> _encodedPointCloud;
 
         private static bool streamDepthImage = false;
-        
+
         private static bool streamPointCloud = false;
 
         private static Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static float MinZ { get; set; } = 0.5f;
-        
+
         public static float RangeZ { get; set; } = 1f;
 
         public bool EnableRawDataStream() {
@@ -40,7 +39,7 @@ namespace TrackingServer.Services
             streamDepthImage = false;
             return streamDepthImage;
         }
-        
+
         public bool EnablePointCloudStream() {
             streamPointCloud = true;
             return streamPointCloud;
@@ -66,7 +65,7 @@ namespace TrackingServer.Services
             var depthImageObservable = Observable.FromEventPattern<ImageByteArray>(
                 (handler) => _depthImageManager.DepthImageChanged += handler,
                 (handler) => _depthImageManager.DepthImageChanged -= handler);
-            
+
             var filteredPointCloudObservable = Observable.FromEventPattern<PointCloud3>(
                 (handler) => _depthImageManager.PointcloudFiltered += handler,
                 (handler) => _depthImageManager.PointcloudFiltered -= handler);
@@ -77,7 +76,7 @@ namespace TrackingServer.Services
                 .Select(evt => evt.EventArgs)
                 .Publish()
                 .RefCount();
-            
+
             _encodedPointCloud = filteredPointCloudObservable
                 .Sample(TimeSpan.FromMilliseconds(100))
                 .SkipWhile(evt => !streamPointCloud)
@@ -88,7 +87,7 @@ namespace TrackingServer.Services
 
         /// <summary>
         /// Awaits next depth image event, converts byte array to image and encodes this to jpg
-        /// method waits for a response to send the next frame. 
+        /// method waits for a response to send the next frame.
         /// </summary>
         /// <param name="webSocket"></param>
         /// <returns></returns>
@@ -103,9 +102,9 @@ namespace TrackingServer.Services
                     var streamedImageData = await _encodedRawData.FirstAsync();
 
                     var sendImage = await StreamDataConverter.ConvertRawBytesToJpeg(streamedImageData);
-                    
+
                     var modifiedData = StreamDataConverter.EncodeImageData(sendImage, "data:image/jpeg;base64,");
-                    
+
                     await webSocket.SendAsync(new ArraySegment<byte>(modifiedData, 0, modifiedData.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
                 catch (Exception exc)
@@ -113,19 +112,19 @@ namespace TrackingServer.Services
                     Logger.Log(LogLevel.Error, exc, $"{exc.GetType().Name} when streaming depthImage in {GetType().Name}: {exc.Message}");
                     await webSocket.SendAsync(new ArraySegment<byte>(), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
-                finally 
-                { 
+                finally
+                {
                     var outputData = new ArraySegment<byte>(buffer);
                     result = await webSocket.ReceiveAsync(outputData, CancellationToken.None);
                 }
-                
+
             }
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
-        
+
         /// <summary>
         /// Awaits next point cloud filtered event, converts byte array to image and encodes this to jpg
-        /// method waits for a response to send the next frame. 
+        /// method waits for a response to send the next frame.
         /// </summary>
         /// <param name="webSocket"></param>
         /// <returns></returns>
@@ -159,9 +158,9 @@ namespace TrackingServer.Services
                     var imageData = new ImageByteArray(converted.ToArray(), pCloud.SizeX, pCloud.SizeY, 1, 3);
 
                     var sendImage = await StreamDataConverter.ConvertRawBytesToJpeg(imageData);
-                    
+
                     var modifiedData = StreamDataConverter.EncodeImageData(sendImage, "data:image/jpeg;base64,");
-                    
+
                     await webSocket.SendAsync(new ArraySegment<byte>(modifiedData, 0, modifiedData.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
                 catch (Exception exc)
@@ -169,12 +168,12 @@ namespace TrackingServer.Services
                     Logger.Log(LogLevel.Error, exc, $"{exc.GetType().Name} when streaming depthImage in {GetType().Name}: {exc.Message}");
                     await webSocket.SendAsync(new ArraySegment<byte>(), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
-                finally 
-                { 
+                finally
+                {
                     var outputData = new ArraySegment<byte>(buffer);
                     result = await webSocket.ReceiveAsync(outputData, CancellationToken.None);
                 }
-                
+
             }
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }

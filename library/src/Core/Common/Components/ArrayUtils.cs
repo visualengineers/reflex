@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using ReFlex.Core.Common.Exceptions;
 
 namespace ReFlex.Core.Common.Components
