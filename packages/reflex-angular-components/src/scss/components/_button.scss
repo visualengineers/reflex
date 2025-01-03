@@ -1,27 +1,29 @@
+@use "../abstracts/variables";
+
 .button,
 .button-disabled {
   display: block;
   border: none;
   text-align: center;
-  width: $default-button-width;
-  height: $default-button-height;
-  margin-left: $default-margin;
-  font-family: $font-heading;    
+  width: variables.$default-button-width;
+  height: variables.$default-button-height;
+  margin-left: variables.$default-margin;
+  font-family: variables.$font-heading;    
 }
 
 .button {    
-    color: $color-white;
-    background-color: $color-primary;    
+    color: variables.$color-white;
+    background-color: variables.$color-primary;    
 
     &:hover {
-      background-color: $color-primary-light;      
+      background-color: variables.$color-primary-light;      
     }
 
     &:active {
         text-decoration: none;
-        background-color: $color-white;
-        color: $color-primary;
-        border: 1px solid $color-primary;
+        background-color: variables.$color-white;
+        color: variables.$color-primary;
+        border: 1px solid variables.$color-primary;
     }
 
     &:focus {
@@ -35,13 +37,13 @@
 
     &-disabled,
     &:disabled {
-      color: $color-grey-light;
-      background-color: $color-grey-dark;
+      color: variables.$color-grey-light;
+      background-color: variables.$color-grey-dark;
     }
 }
 
 .btn-primary {
-    color: $color-white;
-    background-color: $color-grey-dark;
-    border-color: $color-grey-light;
+    color: variables.$color-white;
+    background-color: variables.$color-grey-dark;
+    border-color: variables.$color-grey-light;
   }

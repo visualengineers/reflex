@@ -5,11 +5,10 @@ import { GestureoptionsComponent } from '../gestureoptions/gestureoptions.compon
 import { RecorderoptionsComponent } from '../recorderoptions/recorderoptions.component';
 import { SavingoptionsComponent } from '../savingoptions/savingoptions.component';
 @Component({
-  selector: 'app-dropdown',
-  standalone: true,
-  imports: [CommonModule,SettingsGroupComponent, RecorderoptionsComponent, GestureoptionsComponent, SavingoptionsComponent],
-  templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.scss'
+    selector: 'app-dropdown',
+    imports: [CommonModule, SettingsGroupComponent, RecorderoptionsComponent, GestureoptionsComponent, SavingoptionsComponent],
+    templateUrl: './dropdown.component.html',
+    styleUrl: './dropdown.component.scss'
 })
 export class DropdownComponent {
   isGestureDropdownOpen: boolean = false;

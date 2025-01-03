@@ -1,142 +1,142 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 .color-item {
   display: grid;
-  grid-template-columns: $default-square-button-size 1fr;
-  gap: $default-col-gap;
-  margin-bottom: $default-margin;
+  grid-template-columns: reflex.$default-square-button-size 1fr;
+  gap: reflex.$default-col-gap;
+  margin-bottom: reflex.$default-margin;
 
   &__rectangle {
     display: block;
-    width: $default-square-button-size;
-    height: $default-square-button-size;
+    width: reflex.$default-square-button-size;
+    height: reflex.$default-square-button-size;
 
-    border: 1px solid $color-grey-dark;
+    border: 1px solid reflex.$color-grey-dark;
   }
 
   &__name {
-    font-family: $font-heading;
-    font-size: $default-font-size;
-    color: $color-primary;
+    font-family: reflex.$font-heading;
+    font-size: reflex.$default-font-size;
+    color: reflex.$color-primary;
   }
 
   &__description {
-    font-family: $font-primary;
+    font-family: reflex.$font-primary;
     font-weight: 200;
-    font-size: $font-size-small;
+    font-size: reflex.$font-size-small;
     line-height: 1.7;
-    color: $color-grey-light;
+    color: reflex.$color-grey-light;
   }
 }
 
 .color-primary {
-  background-color: $color-primary;
+  background-color: reflex.$color-primary;
 }
 
 .color-primary-light {
-  background-color: $color-primary-light;
+  background-color: reflex.$color-primary-light;
 }
 
 .color-primary-light2 {
-  background-color: $color-primary-light-2;
+  background-color: reflex.$color-primary-light-2;
 }
 
 .color-black {
-  background-color: $color-black;
+  background-color: reflex.$color-black;
 }
 
 .color-grey-dark {
-  background-color: $color-grey-dark;
+  background-color: reflex.$color-grey-dark;
 }
 
 .color-grey-light {
-  background-color: $color-grey-light;
+  background-color: reflex.$color-grey-light;
 }
 
 .color-grey-light2 {
-  background-color: $color-grey-light-2;
+  background-color: reflex.$color-grey-light-2;
 }
 
 .color-grey-light3 {
-  background-color: $color-grey-light-3;
+  background-color: reflex.$color-grey-light-3;
 }
 
 .color-grey-light4 {
-  background-color: $color-grey-light-4;
+  background-color: reflex.$color-grey-light-4;
 }
 
 .color-white {
-  background-color: $color-white;
+  background-color: reflex.$color-white;
 }
 
 .color-dark1_100 {
-  background-color: $color-dark-1_100;
+  background-color: reflex.$color-dark-1_100;
 }
 
 .color-dark1_75 {
-  background-color: $color-dark-1_75;
+  background-color: reflex.$color-dark-1_75;
 }
 
 .color-dark2_100 {
-  background-color: $color-dark-2_100;
+  background-color: reflex.$color-dark-2_100;
 }
 
 .color-dark2_75 {
-  background-color: $color-dark-2_75;
+  background-color: reflex.$color-dark-2_75;
 }
 
 .color-default_100 {
-  background-color: $color-default_100;
+  background-color: reflex.$color-default_100;
 }
 
 .color-default_75 {
-  background-color: $color-default_75;
+  background-color: reflex.$color-default_75;
 }
 
 .color-light0_100 {
-  background-color: $color-light-0_100;
+  background-color: reflex.$color-light-0_100;
 }
 
 .color-light0_75 {
-  background-color: $color-light-0_75;
+  background-color: reflex.$color-light-0_75;
 }
 
 .color-light1_100 {
-  background-color: $color-light-1_100;
+  background-color: reflex.$color-light-1_100;
 }
 
 .color-light1_75 {
-  background-color: $color-light-1_75;
+  background-color: reflex.$color-light-1_75;
 }
 
 .color-light2_100 {
-  background-color: $color-light-2_100;
+  background-color: reflex.$color-light-2_100;
 }
 
 .color-light2_75 {
-  background-color: $color-light-2_75;
+  background-color: reflex.$color-light-2_75;
 }
 
 .color-success {
-  background-color: $color-success;
+  background-color: reflex.$color-success;
 }
 
 .color-success-light {
-  background-color: $color-success-light;
+  background-color: reflex.$color-success-light;
 }
 
 .color-error {
-  background-color: $color-error;
+  background-color: reflex.$color-error;
 }
 
 .color-error-light {
-  background-color: $color-error-light;
+  background-color: reflex.$color-error-light;
 }
 
 .color-calibration {
-  background-color: $color-calibration-point;
+  background-color: reflex.$color-calibration-point;
 }
 
 .color-calibration-light {
-  background-color: $color-calibration-point-border;
+  background-color: reflex.$color-calibration-point-border;
 }

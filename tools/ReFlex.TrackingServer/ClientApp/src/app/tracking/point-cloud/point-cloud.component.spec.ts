@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, of, throwError } from 'rxjs';
@@ -10,7 +10,7 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { PointCloudComponent } from './point-cloud.component';
 import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingConfigState } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
+import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, MockPanelHeaderComponent, MockOptionCheckboxComponent, MockSettingsGroupComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
 
 const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
   [
@@ -73,33 +73,43 @@ describe('PointCloudComponent', () => {
   beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ PointCloudComponent ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
+    imports: [FormsModule,
+        PointCloudComponent],
+    providers: [
+        {
+            provide: TrackingService, useValue: trackingService
+        },
+        {
+            provide: PointCloudService, useValue: pointCloudService
+        },
+        {
+            provide: ProcessingService, useValue: processingService
+        },
+        {
+            provide: SettingsService, useValue: settingsService
+        },
+        {
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    })
+    .overrideComponent(PointCloudComponent, {
+      remove: { imports: [
         PanelHeaderComponent,
         ValueSliderComponent,
         OptionCheckboxComponent,
-        SettingsGroupComponent
-      ],
-      providers: [
-        {
-          provide: TrackingService, useValue: trackingService
-        },
-        {
-          provide: PointCloudService, useValue: pointCloudService
-        },
-        {
-          provide: ProcessingService, useValue: processingService
-        },
-        {
-          provide: SettingsService, useValue: settingsService
-        },
-        {
-          provide: LogService, useValue: logService
-        }
-      ]
+        SettingsGroupComponent,
+      ] },
+      add: { imports: [
+        MockPanelHeaderComponent,
+        MockValueSliderComponent,
+        MockOptionCheckboxComponent,
+        MockSettingsGroupComponent,
+       ] }
     })
+
     .compileComponents();
     })
   );

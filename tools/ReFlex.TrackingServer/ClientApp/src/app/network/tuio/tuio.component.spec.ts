@@ -9,7 +9,8 @@ import { HttpResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
 import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { MockPanelHeaderComponent, MockValueSelectionComponent, MockValueTextComponent, PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { PackageDetailsComponent } from './package-details/package-details.component';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
@@ -28,7 +29,8 @@ const tuioService = jasmine.createSpyObj<TuioService>('fakeTuioService',
     'getTransportProtocols',
     'getTuioProtocolVersions',
     'getTuioInterpretations',
-    'getStatus'
+    'getStatus',
+    'getPackages'
   ]);
 
 const broadcastingState: JsonSimpleValue = { name: 'IsBroadcasting', value: true };
@@ -42,26 +44,23 @@ describe('TuioComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        TuioComponent,
-        MockPackageDetailsComponent
-      ],
-      imports: [ FormsModule,
-        PanelHeaderComponent,
-        ValueSelectionComponent,
-        ValueTextComponent
-      ],
-      providers: [
+    imports: [FormsModule,
+        TuioComponent
+    ],
+    providers: [
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: TuioService, useValue: tuioService
+            provide: TuioService, useValue: tuioService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
+    ]
+    }).overrideComponent(TuioComponent, {
+      remove: { imports: [ PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, PackageDetailsComponent] },
+      add: { imports: [ MockPanelHeaderComponent, MockValueSelectionComponent, MockValueTextComponent, MockPackageDetailsComponent ] }
     })
     .compileComponents();
   });

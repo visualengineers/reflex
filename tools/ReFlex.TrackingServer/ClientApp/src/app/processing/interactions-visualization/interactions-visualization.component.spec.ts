@@ -7,6 +7,9 @@ import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { MockHistoryVisualizationComponent } from '../history-visualization/history-visualization.component.mock';
 import { CompleteInteractionData, FrameSizeDefinition } from '@reflex/shared-types';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 
 const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [
@@ -14,13 +17,13 @@ const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibra
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]
 );
 
-const customFrame: FrameSizeDefinition = 
+const customFrame: FrameSizeDefinition =
   { width: 500, height: 400, left: 150, top: 75 };
 
 const testInteractionData: CompleteInteractionData = {
@@ -74,19 +77,27 @@ describe('InteractionsVisualizationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ 
-        InteractionsVisualizationComponent,
-        MockHistoryVisualizationComponent
-       ],
-      imports: [ FormsModule ],
-      providers: [
+    imports: [
+      FormsModule,
+      InteractionsVisualizationComponent
+    ],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
+            provide: LogService, useValue: logService
+        },
+        {
+          provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    })
+    .overrideComponent(InteractionsVisualizationComponent, {
+      remove: { imports: [ HistoryVisualizationComponent] },
+      add: { imports: [ MockHistoryVisualizationComponent ] }
     })
     .compileComponents();
   });
@@ -95,23 +106,23 @@ describe('InteractionsVisualizationComponent', () => {
     fixture = TestBed.createComponent(InteractionsVisualizationComponent);
     component = fixture.componentInstance;
     logService.sendErrorLog.and.returnValue();
-    calibrationService.getFrameSize.and.returnValue(of(customFrame));    
+    calibrationService.getFrameSize.and.returnValue(of(customFrame));
   });
 
   afterEach(() => {
     calibrationService.getFrameSize.calls.reset()
     logService.sendErrorLog.calls.reset();
 
-  });    
+  });
 
   it('should create', () => {
-    
+
     fixture.detectChanges();
-    expect(component).toBeTruthy();    
+    expect(component).toBeTruthy();
   });
 
   it('should initialize correct values', () => {
-    
+
     fixture.detectChanges();
 
     expect(component.container).toBeDefined();

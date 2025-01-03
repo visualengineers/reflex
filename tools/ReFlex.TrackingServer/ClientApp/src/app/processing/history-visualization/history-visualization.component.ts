@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
@@ -8,7 +9,8 @@ import { ProcessingService } from 'src/shared/services/processing.service';
 @Component({
   selector: 'app-history-visualization',
   templateUrl: './history-visualization.component.html',
-  styleUrls: ['./history-visualization.component.scss']
+  styleUrls: ['./history-visualization.component.scss'],
+  imports: [CommonModule]
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
 

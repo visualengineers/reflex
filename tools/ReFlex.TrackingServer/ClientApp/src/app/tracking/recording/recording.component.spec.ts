@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
@@ -6,7 +6,8 @@ import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { RecordingComponent } from './recording.component';
 import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate } from '@reflex/shared-types';
-import { ValueTextComponent } from '@reflex/angular-components/dist';
+import { ValueTextComponent, MockValueTextComponent } from '@reflex/angular-components/dist';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 
 const recordingService = jasmine.createSpyObj<RecordingService>('fakeRecordingService',
@@ -112,20 +113,24 @@ describe('RecordingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecordingComponent ],
-      imports: [
+    imports: [
         FormsModule,
-        HttpClientTestingModule,
-        ValueTextComponent
-      ],
-      providers: [
+        RecordingComponent
+    ],
+    providers: [
         {
-          provide: RecordingService, useValue: recordingService
+            provide: RecordingService, useValue: recordingService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    })
+    .overrideComponent(RecordingComponent, {
+      remove: { imports: [ ValueTextComponent] },
+      add: { imports: [ MockValueTextComponent ] }
     })
     .compileComponents();
   });
@@ -323,21 +328,22 @@ describe('RecordingComponent: Error Handling', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecordingComponent ],
-      imports: [
+    imports: [
         FormsModule,
-        HttpClientTestingModule,
-        ValueTextComponent
+        ValueTextComponent,
+        RecordingComponent
       ],
-      providers: [
+    providers: [
         {
-          provide: RecordingService, useValue: recordingService_error
+            provide: RecordingService, useValue: recordingService_error
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
-    })
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 

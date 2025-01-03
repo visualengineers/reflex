@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, OnChanges, ViewChild } from '@angular/core';
 import { PerformanceDataItem } from '@reflex/shared-types';
 import * as d3 from 'd3';
 
@@ -12,23 +12,17 @@ export class PerformanceVisualizationComponent implements OnChanges {
   @ViewChild('panel')
   public d3Panel!: ElementRef;
 
-  @Input()
-  public data: Array<PerformanceDataItem> = [];
+  public readonly data = input<Array<PerformanceDataItem>>([]);
 
-  @Input()
-  public groups: Array<string> = [];
+  public readonly groups = input<Array<string>>([]);
 
-  @Input()
-  public visId = 'defaultVis';
+  public readonly visId = input('defaultVis');
 
-  @Input()
-  public refreshRate = 10;
+  public readonly refreshRate = input(10);
 
-  @Input()
-  public numSamples = 200;
+  public readonly numSamples = input(200);
 
-  @Input()
-  public isProcessingGraph = false;
+  public readonly isProcessingGraph = input(false);
 
   public width = 200;
   public height = 150;
@@ -44,38 +38,39 @@ export class PerformanceVisualizationComponent implements OnChanges {
 
     this.updateIdx++;
 
-    if (this.updateIdx % this.refreshRate !== 0) {
+    if (this.updateIdx % this.refreshRate() !== 0) {
       return;
     }
 
     // skip changes accroding to refresh rate
     this.updateIdx = 0;
 
-    const entries = this.data.length;
-    if (this.isProcessingGraph) {
+    const entries = this.data().length;
+    const isProcessingGraph = this.isProcessingGraph();
+    if (isProcessingGraph) {
       // const prep = this.data.map((item) => item.processingPreparation ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
       // const upd = this.data.map((item) => item.processingUpdate ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
       // const conv = this.data.map((item) => item.processingConvert ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
       // const smooth = this.data.map((item) => item.processingSmoothing ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
       // const extr = this.data.map((item) => item.processingExtremum ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
       this.average = entries > 0
-        ? this.data.map((item) => item.totalProcessing ?? 0).reduce((prev, curr) => prev + curr, 0) / entries
+        ? this.data().map((item) => item.totalProcessing ?? 0).reduce((prev, curr) => prev + curr, 0) / entries
         : 0;
     } else {
       this.average = entries > 0
-        ? this.data.map((item) => item.totalFilter ?? 0).reduce((prev, curr) => prev + curr, 0) / entries
+        ? this.data().map((item) => item.totalFilter ?? 0).reduce((prev, curr) => prev + curr, 0) / entries
         : 0;
     }
 
-    d3.selectAll(`#${this.visId} > *`).remove();
+    d3.selectAll(`#${this.visId()} > *`).remove();
 
     this.width = this.d3Panel.nativeElement.clientWidth;
     this.height = this.d3Panel.nativeElement.clientHeight;
 
-    const svg = d3.select(`#${this.visId}`)
+    const svg = d3.select(`#${this.visId()}`)
       .append('svg')
       .attr('viewBox', [0, 0, this.width, this.height])
-      .attr('id', `${this.visId}_svg`)
+      .attr('id', `${this.visId()}_svg`)
       .attr('width', this.width)
       .attr('height', this.height)
       .style('-webkit-tap-highlight-color', 'transparent')
@@ -86,16 +81,16 @@ export class PerformanceVisualizationComponent implements OnChanges {
 
     const colors = ['#002338', '#225473', '#005b94', '#0071B7', '#3f99d1'];
 
-    const stackedData = d3.stack<PerformanceDataItem>().keys(this.groups)(this.data);
+    const stackedData = d3.stack<PerformanceDataItem>().keys(this.groups())(this.data());
 
     // Add X axis --> scale to number of samples
     const x = d3.scaleLinear()
-      .domain([0, this.numSamples])
+      .domain([0, this.numSamples()])
       .range([0, this.width]);
 
     const y = d3.scaleLinear()
       .range([this.height, 0])
-      .domain([0, d3.max(this.data, (d) => this.isProcessingGraph ? d.totalProcessing : d.totalFilter) ?? 100]);
+      .domain([0, d3.max(this.data(), (d) => this.isProcessingGraph() ? d.totalProcessing : d.totalFilter) ?? 100]);
 
     svg.append('g')
       .call(d3.axisLeft(y).ticks(5))
@@ -130,14 +125,14 @@ export class PerformanceVisualizationComponent implements OnChanges {
       .attr('stroke-dasharray', '8 4')
       .attr('x1', x(0))
       .attr('y1', yAvg)
-      .attr('x2', x(this.numSamples))
+      .attr('x2', x(this.numSamples()))
       .attr('y2', yAvg);
 
     // darw background for average label
     const avgBg = svg.append('rect')
-      .attr('width', x(0.15 * this.numSamples))
+      .attr('width', x(0.15 * this.numSamples()))
       .attr('height', 20)
-      .attr('x', x(0.85 * this.numSamples))
+      .attr('x', x(0.85 * this.numSamples()))
       .attr('y', 0)
       .attr('fill', '#ffffff66');
 
@@ -153,7 +148,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
         .attr('font-weight', (n, i) => i ? null : 'bold')
         .text((d) => d));
 
-    avgText.attr('transform', `translate(${x(0.9 * this.numSamples)},${yAvg - 12})`);
+    avgText.attr('transform', `translate(${x(0.9 * this.numSamples())},${yAvg - 12})`);
 
     avgBg.attr('transform', `translate(${0},${yAvg - 25})`);
 
@@ -162,7 +157,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
       // const bisect = d3.bisector((d: PerformanceDataItem) => d.frameId).center;
       const i = Math.round(x.invert(this.mousePosition));
 
-      if (i >= this.data.length) {
+      if (i >= this.data().length) {
         return;
       }
       // const i = bisect(this.data, x.invert(this.mousePosition));
@@ -170,7 +165,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
       const tooltip = svg.append('g');
       tooltip.style('display', null);
 
-      const yValue = this.isProcessingGraph ? this.data[i].totalProcessing ?? 0 : this.data[i].totalFilter ?? 0;
+      const yValue = isProcessingGraph ? this.data()[i].totalProcessing ?? 0 : this.data()[i].totalFilter ?? 0;
 
       const posX = x(i);
       const posY = y(yValue);
