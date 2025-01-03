@@ -148,7 +148,7 @@ const logService = jasmine.createSpyObj<LogService>('fakeLogService',
 settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
 settingsService.getCanRestore.and.returnValue(of({ name: 'canRestore', value: true }));
 
-xdescribe('TrackingComponent', () => {
+describe('TrackingComponent', () => {
   let component: TrackingComponent;
   let fixture: ComponentFixture<TrackingComponent>;
 
@@ -177,7 +177,6 @@ xdescribe('TrackingComponent', () => {
     .overrideComponent(TrackingComponent, {
       remove: { imports: [
         PanelHeaderComponent,
-        ValueSelectionComponent,
         RecordingComponent,
         SettingsComponent,
         PointCloudComponent,
@@ -185,7 +184,6 @@ xdescribe('TrackingComponent', () => {
       ] },
       add: { imports: [
         MockPanelHeaderComponent,
-        MockValueSelectionComponent,
         MockRecordingComponent,
         MockSettingsComponent,
         MockPointCloudComponent,
