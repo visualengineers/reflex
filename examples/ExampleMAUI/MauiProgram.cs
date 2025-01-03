@@ -1,4 +1,7 @@
 using ExampleMAUI.Util;
+#if DEBUG
+using Microsoft.Extensions.Logging;
+#endif
 using NLog;
 
 namespace ExampleMAUI;
