@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using ReFlex.Sensor.EmulatorModule;
-using System;
-using System.Linq;
+﻿using ReFlex.Sensor.EmulatorModule;
 using System.Net.WebSockets;
-using System.Threading;
-using System.Threading.Tasks;
 using Graphics;
-using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using ReFlex.Core.Tracking.Util;
 using TrackingServer.Model;

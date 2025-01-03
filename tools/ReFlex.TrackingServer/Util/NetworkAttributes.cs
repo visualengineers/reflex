@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using ReFlex.Core.Networking.Util;
-
-namespace TrackingServer.Util
+﻿namespace TrackingServer.Util
 {
     public class NetworkAttributes
     {

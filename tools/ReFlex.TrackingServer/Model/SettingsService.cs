@@ -1,7 +1,5 @@
-﻿using System;
-using Implementation.Interfaces;
+﻿using Implementation.Interfaces;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Events;

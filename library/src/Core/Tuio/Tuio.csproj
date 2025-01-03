@@ -12,8 +12,8 @@
     <AssemblyName>ReFlex.Core.Tuio</AssemblyName>
     <RootNamespace>ReFlex.Core.Tuio</RootNamespace>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright @ 2022-2023</Copyright>
-    <Configurations>Release;Debug;CI</Configurations>
+    <Copyright>Copyright @ 2022-2025</Copyright>
+    <Configurations>Debug;Release;CI</Configurations>
     <Platforms>x64;ARM64;AnyCPU</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>

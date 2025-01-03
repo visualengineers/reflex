@@ -1,5 +1,4 @@
-﻿using Castle.Core;
-using Common.Test.Mock;
+﻿using Common.Test.Mock;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;

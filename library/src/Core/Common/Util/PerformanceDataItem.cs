@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ReFlex.Core.Common.Util
+﻿namespace ReFlex.Core.Common.Util
 {
     public class PerformanceDataItem
     {

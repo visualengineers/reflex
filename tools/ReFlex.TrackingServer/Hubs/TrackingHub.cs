@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using TrackingServer.Data.Tracking;
 using TrackingServer.Model;
 

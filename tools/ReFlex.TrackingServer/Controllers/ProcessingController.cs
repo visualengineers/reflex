@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Mime;
-using Microsoft.AspNetCore.Http;
+﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Common.Util;
 using TrackingServer.Data.Config;
 using TrackingServer.Events;

@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PackageId>ReFlex.TrackingServer</PackageId>
+    <Authors>Mathias Müller</Authors>
+    <Copyright>Copyright © 2021-2025</Copyright>
+    <Company>
+      GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+      Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+    </Company>
+    <Version>1.0.0</Version>
+    <Product>ReFlex.Utilities</Product>
+    <AssemblyName>ReFlex.TrackingServer</AssemblyName>
+    <RootNamespace>ReFlex.TrackingServer</RootNamespace>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <Nullable>enable</Nullable>
@@ -59,13 +70,6 @@
     <Content Update="wwwroot\Config\TrackingSettings_default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\library\src\Core\Graphics\Graphics.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Util\Util.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(DefineConstants.Contains(MS_AZURE_KINECT))' == true ">
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
@@ -138,5 +142,10 @@
     <Protobuf Include="Protos\interactionTypes.proto">
       <Generator>MSBuild:Compile</Generator>
     </Protobuf>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\src\Core\Common\Common.csproj" />
+    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
+    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
 </Project>

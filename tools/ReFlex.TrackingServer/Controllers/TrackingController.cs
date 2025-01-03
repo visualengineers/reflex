@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Tracking.Interfaces;
@@ -77,13 +73,13 @@ namespace TrackingServer.Controllers
         [HttpPut]
         public void SelectConfiguration(int id, [FromBody] string value)
         {
-           _trackingService.SelectConfigurationById(id); 
+           _trackingService.SelectConfigurationById(id);
         }
 
         // PUT: api/Tracking/ToggleTracking
         [Route("ToggleTracking/{id:int}")]
         [HttpPut]
-        public IActionResult ToggleTracking(int id, [FromBody] int configIdx) 
+        public IActionResult ToggleTracking(int id, [FromBody] int configIdx)
         {
             _trackingService.ToggleTracking(id, configIdx);
 
@@ -118,7 +114,7 @@ namespace TrackingServer.Controllers
 
             return new AcceptedResult();
         }
-        
+
         // PUT: api/Tracking/SetDepthImagePointCloudPreview/
         [Route("SetDepthImagePointCloudPreview")]
         [HttpPut]
@@ -182,7 +178,7 @@ namespace TrackingServer.Controllers
                     "Attempt to delete recording '{name}', but Recorder was still recording data. Recording was not deleted.");
                 return Forbid();
             }
-            
+
             var result = RecordingUtils.DeleteRecording(name);
 
             if (result)
@@ -214,25 +210,25 @@ namespace TrackingServer.Controllers
         // Get: api/Tracking/RecordingState/
         [HttpGet("RecordingState")]
         public ActionResult<bool> RecordingState() => _recorder?.IsRecording;
-       
-        
+
+
         // Get: api/Tracking/RecordingFrameCount/name
         [HttpGet("RecordingFrameCount/{name}")]
         public ActionResult<int> RecordingFrameCount(string name) => RecordingUtils.GetFrames(name).Length;
-        
+
         // Get: api/Tracking/GetAutostartEnabled/
         [HttpGet("GetAutostartEnabled")]
         public ActionResult<bool> GetAutostartEnabled() => _configManager?.Settings.IsAutoStartEnabled ?? false;
-        
+
         // Put: api/Tracking/SetAutostart/
         [HttpPut("SetAutostart")]
         public ActionResult<bool> SetAutostart([FromBody] bool autostartEnabled)
         {
             if (_configManager?.Settings == null)
                 return Ok(false);
-            
+
             _configManager.Settings.IsAutoStartEnabled = autostartEnabled;
-            
+
             return Ok(_configManager.Settings.IsAutoStartEnabled);
 
         }

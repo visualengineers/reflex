@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace TrackingServer.Util
+﻿namespace TrackingServer.Util
 {
     public class CustomHttpContext
     {

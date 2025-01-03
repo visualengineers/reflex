@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using TrackingServer.Data;
+﻿using TrackingServer.Data;
 
 namespace TrackingServer.Events;
 
