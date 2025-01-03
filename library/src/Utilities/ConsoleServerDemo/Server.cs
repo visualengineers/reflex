@@ -39,7 +39,7 @@ namespace ReFlex.Utilities.ConsoleServerDemo
                 return;
 
             _server?.Start();
-            _logger?.Log(LogLevel.Info, "Server started successfully on {_server.Address}.");
+            _logger?.Log(LogLevel.Info, $"Server started successfully on {_server.Address}.");
         }
 
         public void Broadcast(ICollection<Interaction> interactions)
