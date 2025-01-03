@@ -3,10 +3,21 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows</TargetFramework>
+        <PackageId>ReFlex.ExampleWPF</PackageId>
+        <Authors>Mathias Müller</Authors>
+        <Copyright>Copyright © 2022-2025</Copyright>
+        <Company>
+          GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+          Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+        </Company>
+        <Version>1.0.0</Version>
+        <Product>ReFlex.Utilities</Product>
+        <AssemblyName>ReFlex.ExampleWPF</AssemblyName>
+        <RootNamespace>ReFlex.ExampleWPF</RootNamespace>
         <Nullable>enable</Nullable>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
         <UseWPF>true</UseWPF>
-        <Configurations>Debug;Release</Configurations>
+        <Configurations>Debug;Release;CI</Configurations>
         <Platforms>AnyCPU;x64;ARM64</Platforms>
     </PropertyGroup>
 

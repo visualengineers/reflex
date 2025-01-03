@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Sensor.RealSenseD435Module</PackageId>
     <Authors />
-    <Copyright>Copyright ©  2021</Copyright>
+    <Copyright>Copyright © 2021-2025</Copyright>
     <Company>GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden</Company>
     <Version>0.7.0</Version>
     <Product>ReFlex.Sensor</Product>
