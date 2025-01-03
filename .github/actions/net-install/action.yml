@@ -15,7 +15,3 @@ runs:
     - name: Restore dependencies (ReFlex.sln)
       shell: pwsh
       run: dotnet restore
-    - name: build ReFlex without external sensors
-      shell: pwsh
-      working-directory: ${{ github.workspace }}
-      run: dotnet build ReFlex.sln -c CI /p:Platform=x64
