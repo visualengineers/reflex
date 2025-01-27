@@ -71,7 +71,7 @@
     "@angular-eslint/eslint-plugin-template": "^19.0.2",
     "@angular-eslint/schematics": "^19.0.2",
     "@angular-eslint/template-parser": "^19.0.2",
-    "@angular/cli": "19.0.7",
+    "@angular/cli": "19.1.4",
     "@angular/compiler-cli": "19.0.5",
     "@angular/language-service": "19.1.0",
     "@gtvmbh/eslint-config": "^1.1.7",
