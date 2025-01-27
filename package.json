@@ -59,7 +59,7 @@
     "@angular/ssr": "19.1.0",
     "angular-plotly.js": "^5.2.2",
     "file-saver": "^2.0.5",
-    "happy-dom": "16.5.3",
+    "happy-dom": "16.7.3",
     "plotly.js-dist-min": "^2.33.0",
     "rxjs": "^7.8.1",
     "zone.js": "^0.15.0"
