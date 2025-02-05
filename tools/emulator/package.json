@@ -69,12 +69,5 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@reflex/shared-types": "file:../../packages/reflex-shared-types",
     "bootstrap": "^5.3.3"
-  },
-  "devDependencies": {
-    "@angular-eslint/builder": "^19.0.2",
-    "@angular-eslint/eslint-plugin": "^19.0.2",
-    "@angular-eslint/eslint-plugin-template": "^19.0.2",
-    "@angular-eslint/schematics": "^19.0.2",
-    "@angular-eslint/template-parser": "^19.0.2"
   }
 }
