@@ -54,6 +54,6 @@
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@types/three": "^0.172.0",
-    "@types/webxr": "^0.5.20"
+    "@types/webxr": "^0.5.21"
   }
 }
