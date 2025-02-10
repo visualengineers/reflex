@@ -20,7 +20,7 @@
     "@vue/cli-plugin-router": "^5.0.8",
     "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.5.13",
-    "happy-dom": "^16.8.1",
+    "happy-dom": "^17.0.2",
     "vitest": "3.0.5"
   },
   "description": "example app showcasing how to receive events from ReFlex with vue.js",
