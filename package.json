@@ -75,7 +75,7 @@
     "@angular/compiler-cli": "19.1.4",
     "@angular/language-service": "19.1.4",
     "@gtvmbh/eslint-config": "^1.1.7",
-    "@stylistic/eslint-plugin-ts": "^2.13.0",
+    "@stylistic/eslint-plugin-ts": "^4.2.0",
     "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "@types/jasminewd2": "~2.0.8",
