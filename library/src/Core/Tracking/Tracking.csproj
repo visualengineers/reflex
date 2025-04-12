@@ -18,6 +18,11 @@
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
+    <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\lib&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec Command="mkdir -p &quot;../../../export/lib&quot; &amp;&amp; cp -r &quot;$(OutDir)&quot; &quot;../../../export/lib&quot;" Condition=" '$(OS)' != 'Windows_NT' " />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

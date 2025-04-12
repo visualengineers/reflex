@@ -36,7 +36,7 @@
     <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
     <ProjectReference Include="..\..\Core\Util\Util.csproj" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec Command="mkdir -p &quot;../../../export/Modules&quot; &amp;&amp; cp -r &quot;$(OutDir)&quot; &quot;../../../export/Modules&quot;" Condition=" '$(OS)' != 'Windows_NT' " />
   </Target>
