@@ -36,7 +36,7 @@
   </ItemGroup>
 
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec Command="mkdir -p ../../../export/Modules %26%26 cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
   </Target>
