@@ -1,6 +1,6 @@
 ﻿using ReFlex.Core.Calibration.Components;
 
-namespace TrackingServer.Data.Config
+namespace ReFlex.Server.Data.Config
 {
     public class FrameSizeDefinition
     {
@@ -14,7 +14,7 @@ namespace TrackingServer.Data.Config
 
         public FrameSizeDefinition()
         {
-            
+
         }
 
         public FrameSizeDefinition(int width, int height, int left, int top)
@@ -25,7 +25,7 @@ namespace TrackingServer.Data.Config
             Top = top;
         }
 
-        public FrameSizeDefinition(Calibrator calibrator) 
+        public FrameSizeDefinition(Calibrator calibrator)
             : this (calibrator.Width,calibrator.Height, calibrator.StartX, calibrator.StartY) {
         }
 
@@ -34,8 +34,8 @@ namespace TrackingServer.Data.Config
             var result =
                 $"{nameof(FrameSizeDefinition)} [{nameof(Top)} | {nameof(Left)} | {nameof(Width)} | {nameof(Height)}]: {Top} | {Left} | {Width} | {Height}";
             result += $"{Environment.NewLine}";
-            
+
             return result;
-        } 
+        }
     }
 }

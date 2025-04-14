@@ -6,8 +6,8 @@ using ReFlex.Core.Events;
 using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Core.Tracking.Util;
 using ReFlex.Sensor.EmulatorModule;
-using TrackingServer.Data.Config;
-using TrackingServer.Data.Tracking;
+using ReFlex.Server.Data.Config;
+using ReFlex.Server.Data.Tracking;
 using TrackingServer.Hubs;
 using TrackingServer.Util;
 
@@ -25,7 +25,7 @@ namespace TrackingServer.Model
 
         private readonly List<IDepthCamera> _depthCameras;
         private readonly List<StreamParameter> _cameraConfigurations;
-        
+
         private readonly HubGroupSubscriptionManager<RecordingStateUpdate> _recordingStateSubscriptions;
 
         private readonly IEventAggregator _eventAggregator;
@@ -119,7 +119,7 @@ namespace TrackingServer.Model
         {
             return new TrackingConfigState
             {
-                DepthCameraStateName = _trackingMgr?.ChosenCamera != null 
+                DepthCameraStateName = _trackingMgr?.ChosenCamera != null
                     ? Enum.GetName(typeof(DepthCameraState), _trackingMgr.ChosenCamera.State)
                     : Enum.GetName(typeof(DepthCameraState), DepthCameraState.Disconnected),
                 IsCameraSelected = _trackingMgr?.ChosenCamera != null,
@@ -134,7 +134,7 @@ namespace TrackingServer.Model
 
             SelectCameraById(id);
             SelectConfigurationById(configIdx);
-            
+
             if (trackingState == _trackingMgr.TrackingState)
                 _trackingMgr.ToggleTracking();
             UpdateState();
@@ -186,7 +186,7 @@ namespace TrackingServer.Model
 
             _cameraConfigurations?.Clear();
             _cameraConfigurations?.AddRange(camera.GetPossibleConfigurations());
-            
+
             var cfg= _cameraConfigurations?.FirstOrDefault();
 
             if (!string.IsNullOrWhiteSpace(param))
@@ -195,7 +195,7 @@ namespace TrackingServer.Model
                 if (saved != null)
                     cfg = saved;
             }
-            
+
             if (cfg != null)
                 SelectConfiguration(cfg);
 
@@ -232,7 +232,7 @@ namespace TrackingServer.Model
 
             SelectCamera(camera, _configMgr.Settings.CameraConfigurationValues.GetCameraDescription());
         }
-        
+
         private void OnSelectedCameraStateChanged(object sender, DepthCameraState e)
         {
             Logger.Info($"got {nameof(_trackingMgr.ChosenCamera.StateChanged)} event with updated state: {e.ToString()}");

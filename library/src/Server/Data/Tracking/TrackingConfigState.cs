@@ -1,4 +1,4 @@
-﻿namespace TrackingServer.Data.Tracking
+﻿namespace ReFlex.Server.Data.Tracking
 {
     public class TrackingConfigState
     {

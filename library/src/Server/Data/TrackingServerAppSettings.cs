@@ -1,7 +1,7 @@
 ﻿using ReFlex.Core.Tuio.Util;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Config;
 
-namespace TrackingServer.Data
+namespace ReFlex.Server.Data
 {
     public class TrackingServerAppSettings
     {
@@ -20,9 +20,9 @@ namespace TrackingServer.Data
         public NetworkSettings NetworkSettingValues { get; set; }
 
         public ProcessingSettings ProcessingSettingValues { get; set; }
-        
+
         public RemoteProcessingServiceSettings RemoteProcessingServiceSettingsValues { get; set; }
-        
+
         public TuioConfiguration TuioSettingValues { get; set; }
 
         public string GetCompleteValues()

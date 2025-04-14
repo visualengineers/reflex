@@ -6,7 +6,7 @@ using ReFlex.Core.Common.Components;
 using ReFlex.Core.Events;
 using ReFlex.Core.Tuio.Interfaces;
 using ReFlex.Core.Tuio.Util;
-using TrackingServer.Data.Tuio;
+using ReFlex.Server.Data.Tuio;
 using TrackingServer.Events;
 using TrackingServer.Hubs;
 using TrackingServer.Util;
@@ -25,7 +25,7 @@ namespace TrackingServer.Model
 
         private readonly BehaviorSubject<TuioPackageDetails> _currentPackage;
         private readonly IDisposable _currentPackageHubSubscription;
-        
+
         private readonly HubGroupSubscriptionManager<TuioPackageDetails>
             _packageDetailsSubscriptions;
 
@@ -62,7 +62,7 @@ namespace TrackingServer.Model
         public TuioPackageDetails CurrentPackage => _currentPackage.Value;
 
         public IHubGroupSubscriptionManager PackageDetailsSubscriptionManager => _packageDetailsSubscriptions;
-        
+
         public TuioService(
             ConfigurationManager settingsManager,
             IInteractionManager interactionManager,
@@ -88,7 +88,7 @@ namespace TrackingServer.Model
             {
                 PackageDetailsUpdated?.Invoke(this, package);
             });
-            
+
             _packageDetailsSubscriptions = new HubGroupSubscriptionManager<TuioPackageDetails>("currentPackage");
             _packageDetailsSubscriptions.Setup(
                 (handler) => PackageDetailsUpdated += handler,
@@ -96,7 +96,7 @@ namespace TrackingServer.Model
                 hubContext,
                 TuioHub.PackageDetailsGroup
             );
-            
+
             CurrentState.OnNext(GetState());
 
             _eventAggregator.GetEvent<RequestServiceRestart>().Subscribe(StartService);
@@ -107,7 +107,7 @@ namespace TrackingServer.Model
         public void StartService()
         {
             IsTuioBroadcastingEnabled = false;
-            
+
             LoadSettings();
 
             IsTuioBroadcastingEnabled = true;
@@ -178,7 +178,7 @@ namespace TrackingServer.Model
             var packageContent = await _tuioBroadcast.Broadcast(interactions.ToList());
             var frameId = _tuioBroadcast.FrameId;
             var sessionId = _tuioBroadcast.Configuration?.SessionId ?? 0;
-            
+
             _currentPackage.OnNext(new TuioPackageDetails
             {
                 PackageContent = packageContent,
@@ -209,7 +209,7 @@ namespace TrackingServer.Model
         public override void Dispose()
         {
             base.Dispose();
-            
+
             ((IDisposable)_tuioBroadcast)?.Dispose();
 
             _eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
@@ -220,9 +220,9 @@ namespace TrackingServer.Model
 
             _currentPackage?.Dispose();
             _currentPackageHubSubscription?.Dispose();
-            
+
             StopBroadcasting();
-            
+
             GC.SuppressFinalize(this);
         }
     }

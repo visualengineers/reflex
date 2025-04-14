@@ -1,19 +1,19 @@
 ﻿using ReFlex.Core.Interactivity.Util;
 
-namespace TrackingServer.Data.Config
+namespace ReFlex.Server.Data.Config
 {
     public struct SmoothingParameter
     {
         public int InteractionHistorySize { get; set; }
-        
+
         public int NumSmoothingSamples { get; set; }
-        
+
         public int MaxNumEmptyFramesBetween { get; set; }
 
         public float TouchMergeDistance2D { get; set; }
-        
+
         public float DepthScale { get; set; }
-        
+
         public FilterType Type { get; set; }
 
         public SmoothingParameter(int historySize = 0, int numSmoothing = 0, float distance2D = 64f, int maxFramesBetween = 3, FilterType type = FilterType.None, float depthScale = 100.0f)
@@ -25,7 +25,7 @@ namespace TrackingServer.Data.Config
             Type = type;
             DepthScale = depthScale;
         }
-        
+
         public string GetSmoothingSettingsString()
         {
             var result = $"=====  {nameof(SmoothingParameter)}  ====={Environment.NewLine}";

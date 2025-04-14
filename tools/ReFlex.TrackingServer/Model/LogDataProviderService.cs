@@ -1,5 +1,5 @@
 ﻿using NLog;
-using TrackingServer.Data.Log;
+using ReFlex.Server.Data.Log;
 using TrackingServer.Util;
 
 namespace TrackingServer.Model

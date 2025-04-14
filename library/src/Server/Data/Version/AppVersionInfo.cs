@@ -1,4 +1,4 @@
-﻿namespace TrackingServer.Data.Version
+﻿namespace ReFlex.Server.Data.Version
 {
     public struct AppVersionInfo
     {

@@ -1,4 +1,4 @@
-﻿namespace TrackingServer.Data.Config
+﻿namespace ReFlex.Server.Data.Config
 {
     public struct ConfidenceParameter
     {

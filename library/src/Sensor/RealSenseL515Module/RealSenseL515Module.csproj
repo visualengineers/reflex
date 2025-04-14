@@ -9,7 +9,9 @@
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
     </Company>
-    <Version>1.0.0</Version>
+    <Version>0.9.9</Version>
+    <AssemblyVersion>0.9.9</AssemblyVersion>
+    <FileVersion>0.9.9</FileVersion>
     <Product>ReFlex.Sensor</Product>
     <AssemblyName>ReFlex.Sensor.RealSenseL515Module</AssemblyName>
     <RootNamespace>ReFlex.Sensor.RealSenseL515Module</RootNamespace>

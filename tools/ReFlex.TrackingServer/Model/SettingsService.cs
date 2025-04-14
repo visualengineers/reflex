@@ -3,7 +3,7 @@ using NLog;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Events;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Events;
 
 namespace TrackingServer.Model;
@@ -15,13 +15,13 @@ public class SettingsService
     private readonly IInteractionManager _interactionManager;
     private readonly IPerformanceAggregator _performanceAggregator;
     private readonly IEventAggregator _eventAggregator;
-        
+
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    
-    public SettingsService(ConfigurationManager configManager, 
-        IFilterManager filterManager, 
+
+    public SettingsService(ConfigurationManager configManager,
+        IFilterManager filterManager,
         IInteractionManager interactionManager,
-        IPerformanceAggregator performanceAggregator, 
+        IPerformanceAggregator performanceAggregator,
         IEventAggregator eventAggregator)
     {
         _configManager = configManager;
@@ -55,11 +55,11 @@ public class SettingsService
             _filterManager.UpdateLimitationFilter(zeroPlane, threshold, samples);
 
             _filterManager.Init(savedMask, zeroPlane, threshold, samples);
-            
+
             _filterManager.FilterInitialized += SaveFilterMask;
         }
     }
-    
+
     private void SaveFilterMask(object sender, int e)
     {
         var mask = _filterManager.FilterMask;
@@ -72,9 +72,9 @@ public class SettingsService
 
     private void UpdateFromConfiguration(bool restartServices)
     {
-        if (_configManager?.Settings?.FilterSettingValues == null) 
+        if (_configManager?.Settings?.FilterSettingValues == null)
             return;
-        
+
         if (_filterManager != null)
         {
             _filterManager.DefaultDistance = _configManager.Settings.FilterSettingValues?.DistanceValue.Default ?? 0f;
@@ -91,7 +91,7 @@ public class SettingsService
             _performanceAggregator.MeasurePerformance =
                 _configManager.Settings.FilterSettingValues?.MeasurePerformance ?? false;
         }
-        
+
         if (_filterManager?.LimitationFilter != null)
         {
             var border = _configManager.Settings.FilterSettingValues?.BorderValue ?? new Border();
@@ -103,7 +103,7 @@ public class SettingsService
             _filterManager.LimitationFilter.MinDistanceFromSensor =
                 _configManager.Settings.FilterSettingValues?.MinDistanceFromSensor ?? 0;
         }
-        
+
         if (_filterManager?.ThresholdFilter != null)
             _filterManager.ThresholdFilter.Threshold = _configManager.Settings.FilterSettingValues?.Threshold ?? 0;
 
@@ -116,20 +116,20 @@ public class SettingsService
             _filterManager.UseOptimizedBoxFilter = _configManager.Settings.FilterSettingValues.UseOptimizedBoxFilter;
         }
 
-        if (_interactionManager == null) 
+        if (_interactionManager == null)
             return;
 
         var distance = _configManager.Settings.FilterSettingValues.DistanceValue;
         _interactionManager.Distance = distance.Default;
         if (_filterManager?.BoxFilter != null)
             _filterManager.BoxFilter.DefaultValue = distance.Default;
-                
+
         _interactionManager.MinDistance = distance.Min;
         _interactionManager.MaxDistance = distance.Max;
         _interactionManager.InputDistance = distance.InputDistance;
-                
+
         _interactionManager.MinAngle = _configManager.Settings.FilterSettingValues.MinAngle;
-                
+
         var confidence = _configManager.Settings.FilterSettingValues.Confidence;
         _interactionManager.MinConfidence = confidence.Min;
         _interactionManager.MaxConfidence = confidence.Max;
@@ -147,9 +147,9 @@ public class SettingsService
         _interactionManager.ExtremumTypeCheckRadius = extremums.CheckRadius;
         _interactionManager.ExtremumTypeCheckMethod = extremums.CheckMethod;
         _interactionManager.ExtremumTypeCheckFittingPercentage = extremums.FitPercentage;
-        
+
         _eventAggregator.GetEvent<ServerSettingsUpdatedEvent>().Publish(_configManager.Settings);
-        
+
         if (restartServices)
             _eventAggregator.GetEvent<RequestServiceRestart>().Publish();
     }

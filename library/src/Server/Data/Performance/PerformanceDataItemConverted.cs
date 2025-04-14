@@ -1,4 +1,4 @@
-﻿namespace TrackingServer.Data.Performance
+﻿namespace ReFlex.Server.Data.Performance
 {
     public struct PerformanceDataItemConverted
     {

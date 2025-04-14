@@ -1,4 +1,4 @@
-﻿namespace TrackingServer.Data.Calibration
+﻿namespace ReFlex.Server.Data.Calibration
 {
     public class CalibrationTransform
     {

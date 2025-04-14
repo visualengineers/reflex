@@ -1,6 +1,6 @@
 ﻿using ReFlex.Core.Common.Util;
 
-namespace TrackingServer.Data.Config
+namespace ReFlex.Server.Data.Config
 {
     public struct ExtremumDescriptionSettings
     {

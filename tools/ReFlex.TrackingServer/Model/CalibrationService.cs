@@ -5,8 +5,8 @@ using NLog;
 using ReFlex.Core.Calibration.Components;
 using ReFlex.Core.Calibration.Util;
 using ReFlex.Core.Common.Components;
-using TrackingServer.Data.Calibration;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Calibration;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Hubs;
 using TrackingServer.Util;
 
@@ -15,13 +15,13 @@ namespace TrackingServer.Model
     public class CalibrationService : SignalRBaseService<string, CalibrationHub>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
         private readonly ICalibrationManager _calibrationManager;
         private readonly Calibrator _calibrator;
         private readonly ConfigurationManager _configurationManager;
 
         private Matrix<float> _calibrationResult;
-        
+
         private readonly HubGroupSubscriptionManager<Calibration>_calibrationSubscriptions;
 
         private bool _isCalibrationFinished;
@@ -44,8 +44,8 @@ namespace TrackingServer.Model
         }
 
         public FrameSizeDefinition Frame =>
-            _calibrator == null 
-                ? new FrameSizeDefinition(0, 0, 0, 0) 
+            _calibrator == null
+                ? new FrameSizeDefinition(0, 0, 0, 0)
                 : new FrameSizeDefinition(_calibrator);
 
         public float[,] TransformationMatrix => _calibrator.CalibrationMatrix.ToArray();
@@ -72,14 +72,14 @@ namespace TrackingServer.Model
             _calibrator.CalibrationUpdated += OnCalibrationUpdated;
             _calibrator.CalibrationFinished += OnCalibrationFinished;
             _calibrator.CalibrationLoaded += OnCalibrationLoaded;
-            
+
             _calibrationSubscriptions = new HubGroupSubscriptionManager<Calibration>("calibration");
             _calibrationSubscriptions.Setup(
                 (handler) => _calibrationManager.CalibrationUpdated += handler,
                 (handler) => _calibrationManager.CalibrationUpdated -= handler,
                 hubContext,
                 CalibrationHub.CalibrationsGroup);
-            
+
             CurrentState.OnNext(GetState());
 
             Logger.Info($"Sucessfully initialized {GetType().FullName}." );
@@ -92,16 +92,16 @@ namespace TrackingServer.Model
                 sizeDef?.Height ?? 350,
                 sizeDef?.Top ?? 0,
                 sizeDef?.Left ?? 0);
-            
+
             _calibrationManager.Initialize(_calibrator, _configurationManager.Settings.CalibrationValues);
-            
+
             _configurationManager.Settings.FrameSize = sizeDef;
 
             return Frame;
         }
 
         public bool ValidateTargetPoint(int targetX, int targetY, out string errorMessage)
-        {   
+        {
             var result = true;
 
             var checkLeft = 0;
@@ -117,21 +117,21 @@ namespace TrackingServer.Model
                 errorMessage +=
                     $"Invalid X-Position: must be larger than {checkLeft}. Provided value is {targetX}";
             }
-            
+
             if (targetX > checkRight)
             {
                 result = false;
                 errorMessage +=
                     $"Invalid X-Position: must be smaller than {checkRight} (max horizontal resolution of camera). Provided value is {targetX}";
             }
-            
+
             if (targetY < checkTop)
             {
                 result = false;
                 errorMessage +=
                     $"Invalid Y-Position: must be larger than {checkTop}. Provided value is {targetY}";
             }
-            
+
             if (targetY > checkBottom)
             {
                 result = false;
@@ -146,17 +146,17 @@ namespace TrackingServer.Model
         {
             _calibrator.UpdateTargetValue(idx, targetX, targetY, id);
         }
-        
+
         public void ComputeTransformation()
         {
             _calibrator.ComputeTransformation();
         }
-        
+
         public void AddCalibrationPoint(int targetX, int targetY, int id)
         {
             _calibrator.AddTargetValue(targetX, targetY, id);
         }
-        
+
         public void RestartCalibration()
         {
             _calibrationManager.ResetCalibration();
@@ -177,7 +177,7 @@ namespace TrackingServer.Model
 
             _calibrationManager.CalibrationMatrix = _calibrationResult;
             SaveCalibration();
-            
+
             _calibrationManager.Initialize(_calibrator, _configurationManager.Settings.CalibrationValues);
 
             CurrentState.OnNext(GetState());
@@ -216,11 +216,11 @@ namespace TrackingServer.Model
         public override void Dispose()
         {
             base.Dispose();
-            
+
             _calibrator.CalibrationUpdated -= OnCalibrationUpdated;
             _calibrator.CalibrationFinished -= OnCalibrationFinished;
             _calibrator.CalibrationLoaded -= OnCalibrationLoaded;
-            
+
             GC.SuppressFinalize(this);
         }
     }

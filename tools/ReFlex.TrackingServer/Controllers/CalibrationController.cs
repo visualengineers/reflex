@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ReFlex.Core.Common.Components;
-using TrackingServer.Data.Calibration;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Calibration;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Model;
 
 namespace TrackingServer.Controllers

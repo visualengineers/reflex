@@ -1,4 +1,4 @@
-﻿namespace TrackingServer.Data.Tuio
+﻿namespace ReFlex.Server.Data.Tuio
 {
     public class TuioPackageDetails
     {

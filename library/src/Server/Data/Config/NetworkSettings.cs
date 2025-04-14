@@ -1,6 +1,6 @@
 ﻿using ReFlex.Core.Networking.Util;
 
-namespace TrackingServer.Data.Config
+namespace ReFlex.Server.Data.Config
 {
     public class NetworkSettings
     {

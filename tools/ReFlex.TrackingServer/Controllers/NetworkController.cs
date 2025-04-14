@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ReFlex.Core.Networking.Util;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Model;
 using TrackingServer.Util;
 using TrackingServer.Util.JsonFormats;
@@ -15,7 +15,7 @@ namespace TrackingServer.Controllers
     public class NetworkController : Controller
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
         private readonly NetworkingService _service;
         private readonly ConfigurationManager _configManager;
 
@@ -24,7 +24,7 @@ namespace TrackingServer.Controllers
             _service = service;
             _configManager = configMgr;
         }
-        
+
         // GET: api/Network/Status
         [Route("Status")]
         [HttpGet]
@@ -40,7 +40,7 @@ namespace TrackingServer.Controllers
                 SelectedInterface = GetNetworkType()
             };
         }
-        
+
         // GET: api/Network/IsActive
         [Route("IsActive")]
         [HttpGet]
@@ -50,12 +50,12 @@ namespace TrackingServer.Controllers
         [Route("GetAddress")]
         [HttpGet]
         public string GetAddress() => _service.Address;
-        
+
         // GET: api/Network/GetPort
         [Route("GetPort")]
         [HttpGet]
         public int GetPort() => _service.Port;
-        
+
         // GET: api/Network/GetEndpoint
         [Route("GetEndpoint")]
         [HttpGet]
@@ -83,12 +83,12 @@ namespace TrackingServer.Controllers
 
             if (!isValid)
                 return BadRequest(errorMsg);
-            
+
             _service.Port = port.Value;
 
             return new ActionResult<JsonSimpleValue<int>>(port);
         }
-        
+
         // POST: api/Network/SetAddress/
         [HttpPost("SetAddress")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -105,7 +105,7 @@ namespace TrackingServer.Controllers
             _service.Address = address.Value;
             return new ActionResult<JsonSimpleValue<string>>(address);
         }
-        
+
         // POST: api/Network/SetEndpoint/
         [HttpPost("SetEndpoint")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -136,9 +136,9 @@ namespace TrackingServer.Controllers
 
             if (!isValid)
                 return BadRequest(errorMsg);
-            
+
             var success = Enum.TryParse<NetworkInterface>(typeArgument.Value, out var type);
-            
+
             if (!success)
             {
                 var msg =
@@ -146,11 +146,11 @@ namespace TrackingServer.Controllers
                 Logger.Error(msg);
                 return StatusCode(StatusCodes.Status500InternalServerError, msg);
             }
-            
+
             _service.Type = type;
 
             var currentType = GetNetworkType();
-            
+
             if (currentType == (uint) type)
                 Logger.Info($"Successfully Switched {nameof(NetworkInterface)} to {type} by {typeof(NetworkController).FullName}.");
             else
@@ -158,7 +158,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<JsonSimpleValue<string>>(typeArgument);
         }
-        
+
         // POST: api/Network/SelectNetworkType
         [HttpPost("StartBroadcast")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -172,7 +172,7 @@ namespace TrackingServer.Controllers
             {
                 if (_service.IsServerBroadcasting)
                     _service.IsServerBroadcasting = false;
-                
+
                 _service.Endpoint = settings.Endpoint;
                 _service.Port = settings.Port;
                 _service.Type = settings.NetworkInterfaceType;
@@ -201,7 +201,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<JsonSimpleValue<bool>>(new JsonSimpleValue<bool>{ Name = "IsBroadcasting", Value = _service.IsServerBroadcasting});
         }
-        
+
         // PUT: api/Network/Save
         [HttpPut("Save")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -211,9 +211,9 @@ namespace TrackingServer.Controllers
             _configManager.Settings.NetworkSettingValues.Endpoint = _service.Endpoint;
             _configManager.Settings.NetworkSettingValues.Port = _service.Port;
             _configManager.Settings.NetworkSettingValues.NetworkInterfaceType = _service.Type;
-            
+
             _configManager.Update(_configManager.Settings);
-            
+
             Logger.Info($"Saved {typeof(NetworkSettings).FullName} - Updated Values: {Environment.NewLine}{_configManager.Settings.NetworkSettingValues}");
 
             return new ActionResult<JsonSimpleValue<bool>>(new JsonSimpleValue<bool>{ Name = "SaveSuccessful", Value = true});
