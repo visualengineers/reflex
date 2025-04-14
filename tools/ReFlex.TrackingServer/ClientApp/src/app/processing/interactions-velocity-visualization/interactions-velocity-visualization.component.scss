@@ -1,4 +1,4 @@
-@import 'main';
+@use 'reflex' as reflex;
 
 :host {
   position: absolute;
@@ -31,11 +31,11 @@
     }
 
     &--first {
-      stroke: $color-success;
+      stroke: reflex.$color-success;
     }
 
     &--second {
-      stroke: $color-calibration-point;
+      stroke: reflex.$color-calibration-point;
     }
   }
 
@@ -44,11 +44,11 @@
 .predicted {
   &__point {
     &--basic {
-      fill: $color-success-light;
+      fill: reflex.$color-success-light;
     }
 
     &--advanced {
-      fill: $color-calibration-point;
+      fill: reflex.$color-calibration-point;
     }
   }
 }
