@@ -525,18 +525,31 @@
 
 <app-settings-group toggleId="settings-point-cloud-settings" elementTitle="Point Cloud Streaming">
 
+  <!-- Toggle Full resolution of point cloud -->
+  <app-option-checkbox class="settings__item"
+    elementTitle="Full Resolution"
+    elementId="settings-point-cloud-full-resolution"
+    [(data)]="settings.pointCloudSettingValues.fullResolution"
+    (onChange)="savePointCloudValues()">
+    Specify if PointCloud should be streamed in full resolution (not recommended).
+    <em>Changes are applied after resubscribing to hub.</em>
+  </app-option-checkbox>
+
   <!-- Point Cloud Size -->
-  <app-value-slider
-    class="settings__item"
-    elementTitle="Size"
-    elementId="settings-point-cloud-size"
-    [min]="1000"
-    [max]="1000000"
-    [(data)]="settings.pointCloudSettingValues.pointCloudSize"
-    (onChange)="savePointCloudValues()"
-    unit="Points">
-    The number of points to which the point cloud is reduced for broadcasting.
-  </app-value-slider>
+  @if (!settings.pointCloudSettingValues.fullResolution) {
+    <app-value-slider
+      class="settings__item"
+      elementTitle="Size"
+      elementId="settings-point-cloud-size"
+      [min]="1000"
+      [max]="200000"
+      [(data)]="settings.pointCloudSettingValues.pointCloudSize"
+      (onChange)="savePointCloudValues()"
+      unit="Points">
+      The number of points to which the point cloud is reduced for broadcasting.
+      <em>Changes are applied after resubscribing to hub.</em>
+    </app-value-slider>
+  }
 
   <!-- Update Interval -->
   <app-value-slider
@@ -548,7 +561,8 @@
     [(data)]="settings.pointCloudSettingValues.updateInterval"
     (onChange)="savePointCloudValues()"
     unit="ms">
-    The time interval between updates of the point cloud in ms
+    The time interval between updates of the point cloud in ms.
+    <em>Changes are applied after resubscribing to hub.</em>
   </app-value-slider>
 </app-settings-group>
 

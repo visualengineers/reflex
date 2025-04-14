@@ -55,7 +55,12 @@ namespace TrackingServer.Model {
 
         private void SetupPointCloudObservable()
         {
-          var shrunkSize = _configurationManager.Settings?.PointCloudSettingValues?.PointCloudSize ?? 40000;
+          var scaleDown = !_configurationManager.Settings.PointCloudSettingValues?.FullResolution ?? false;
+
+          var shrunkSize = scaleDown
+            ? (_configurationManager.Settings?.CameraConfigurationValues?.Width ?? 0) * (_configurationManager.Settings?.CameraConfigurationValues?.Height ?? 0)
+            : _configurationManager.Settings?.PointCloudSettingValues?.PointCloudSize ?? 40000;
+
           var interval = _configurationManager.Settings?.PointCloudSettingValues?.UpdateInterval ?? 100;
 
           var pointCloudObservable = Observable.FromEventPattern<PointCloud3>(
@@ -69,10 +74,16 @@ namespace TrackingServer.Model {
             // .Select(points => points.Where(p => !(System.Math.Abs(p.X) < TOLERANCE && System.Math.Abs(p.Y) < TOLERANCE )).ToArray()) // && Math.Abs(p.Z) < TOLERANCE
             .Select(array =>
             {
-              if (array.Length <= shrunkSize) {
+              if (!scaleDown || shrunkSize <= 0 || array.Length <= shrunkSize) {
                 return array;
               }
               var step = array.Length / shrunkSize;
+
+              if (step >= 1)
+              {
+                return array;
+              }
+
               for(int i = 0; i < shrunkSize; ++i)
               {
                 shrunk[i] = array[i * step];

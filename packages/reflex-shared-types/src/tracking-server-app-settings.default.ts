@@ -91,7 +91,8 @@ const _defaultRemoteProcessingSettings: RemoteProcessingServiceSettings = {
 
 const _defaultPointCloudSettingValues: PointCloudSettings = {
   pointCloudSize: 40000,
-  updateInterval: 100
+  updateInterval: 100,
+  fullResolution: false
 }
 
 const _values: TrackingServerAppSettings = {
