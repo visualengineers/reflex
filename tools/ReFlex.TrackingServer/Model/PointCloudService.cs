@@ -55,7 +55,7 @@ namespace TrackingServer.Model {
 
         private void SetupPointCloudObservable()
         {
-          var scaleDown = !_configurationManager.Settings.PointCloudSettingValues?.FullResolution ?? false;
+          var scaleDown = !(_configurationManager.Settings.PointCloudSettingValues?.FullResolution ?? false);
 
           var shrunkSize = scaleDown
             ? (_configurationManager.Settings?.CameraConfigurationValues?.Width ?? 0) * (_configurationManager.Settings?.CameraConfigurationValues?.Height ?? 0)
