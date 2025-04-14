@@ -292,6 +292,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.saveExtremumValues();
   }
 
+  public savePointCloudValues(): void {
+    this.settingsService.setPointCloudSettings(this.settings.pointCloudSettingValues).subscribe({
+      next: (result) => {
+        console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);
+        this.settingsService.update();
+      },
+      error: (error) => {
+        console.error(error);
+        this.logService.sendErrorLog(`${error}`);
+      }
+    });
+  }
+
   public saveDistance(): void {
     this.settingsService.setDistance(this.settings.filterSettingValues.distanceValue).subscribe((result) => {
       console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);

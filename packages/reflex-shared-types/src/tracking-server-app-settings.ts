@@ -5,6 +5,7 @@ import { NetworkSettings } from './config/network-settings';
 import { ProcessingSettings } from './config/processing-settings';
 import { TuioConfiguration } from './config/tuio-configuration';
 import { RemoteProcessingServiceSettings } from './config/remote-processing-service-settings';
+import { PointCloudSettings } from './config/point-cloud-settings';
 
 export interface TrackingServerAppSettings {
 
@@ -12,6 +13,7 @@ export interface TrackingServerAppSettings {
   calibrationValues: Calibration;
   cameraConfigurationValues: CameraConfiguration;
   networkSettingValues: NetworkSettings;
+  pointCloudSettingValues: PointCloudSettings;
   processingSettingValues: ProcessingSettings;
   remoteProcessingServiceSettingsValues: RemoteProcessingServiceSettings;
   tuioSettingValues: TuioConfiguration;

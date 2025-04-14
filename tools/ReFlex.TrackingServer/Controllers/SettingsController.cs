@@ -371,6 +371,18 @@ namespace TrackingServer.Controllers
             return _configManager.Settings.FilterSettingValues.ExtremumSettings;
         }
 
+        // POST: api/Settings/PointCloudSettings
+        [HttpPost("PointCloudSettings")]
+        public PointCloudSettings Post([FromBody] PointCloudSettings value)
+        {
+          _configManager.Settings.PointCloudSettingValues = value;
+          UpdateConfig();
+
+          Logger.Info($"Updated {nameof(PointCloudSettings)}. Updated value: {value}.");
+
+          return _configManager.Settings.PointCloudSettingValues;
+        }
+
         //// PUT: api/Settings/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)

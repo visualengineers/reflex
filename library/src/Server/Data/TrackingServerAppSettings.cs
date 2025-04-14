@@ -19,6 +19,8 @@ namespace ReFlex.Server.Data
 
         public NetworkSettings NetworkSettingValues { get; set; }
 
+        public PointCloudSettings PointCloudSettingValues { get; set; } = new PointCloudSettings();
+
         public ProcessingSettings ProcessingSettingValues { get; set; }
 
         public RemoteProcessingServiceSettings RemoteProcessingServiceSettingsValues { get; set; }
@@ -34,6 +36,7 @@ namespace ReFlex.Server.Data
             result += FilterSettingValues?.GetFilterSettingsString() ?? $"{nameof(FilterSettingValues)} not set.";
             result += CalibrationValues.GetCalibrationValuesString();
             result += NetworkSettingValues?.GetNetworksSettingsString() ?? $"{nameof(NetworkSettingValues)} not set.";
+            result += PointCloudSettingValues?.GetPointCloudSettingsString() ?? $"{nameof(PointCloudSettingValues)} not set.";
             result += ProcessingSettingValues?.GetPorcessingSettingsString()  ?? $"{nameof(ProcessingSettingValues)} not set.";
             result += RemoteProcessingServiceSettingsValues?.GetRemoteProcessingServiceSettingsString()  ?? $"{nameof(RemoteProcessingServiceSettingsValues)} not set.";
             result += TuioSettingValues?.GetTuioConfigurationString()  ?? $"{nameof(TuioSettingValues)} not set.";

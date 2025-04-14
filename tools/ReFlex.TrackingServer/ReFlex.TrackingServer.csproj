@@ -149,7 +149,4 @@
     <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
     <ProjectReference Include="..\..\library\src\Server\Data\Data.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
 </Project>
