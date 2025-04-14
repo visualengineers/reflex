@@ -1,11 +1,13 @@
+@use "../abstracts/variables";
+
 table {
     border-collapse: collapse;
     border-style: hidden;
     border: none;
-    border-bottom: 2px solid $color-primary;
-    border-top: 2px solid $color-primary;
+    border-bottom: 2px solid variables.$color-primary;
+    border-top: 2px solid variables.$color-primary;
   
-    margin-bottom: $default-col-gap;
+    margin-bottom: variables.$default-col-gap;
   
     & td {
       border: none;
@@ -25,13 +27,13 @@ table {
   }
   
   thead {  
-    color: $color-primary;
+    color: variables.$color-primary;
     text-align: center;
-    font-family: $font-heading;
+    font-family: variables.$font-heading;
   
     & th {
       min-width: 5em; 
-      border-bottom: 1px solid $color-primary;
+      border-bottom: 1px solid variables.$color-primary;
     }  
   }
   
@@ -40,23 +42,23 @@ table {
     tr { 
   
       &:nth-child(even) {
-        background-color: $color-grey-light-3;
+        background-color: variables.$color-grey-light-3;
       }
     
       &.table-danger {
-        background-color: $color-error-light;
-        color: $color-white;
-        font-family: $font-heading;
+        background-color: variables.$color-error-light;
+        color: variables.$color-white;
+        font-family: variables.$font-heading;
       }
     
       &.table-danger:nth-child(even) {
-        background-color: $color-error;
-        color: $color-white;
-        font-family: $font-heading;
+        background-color: variables.$color-error;
+        color: variables.$color-white;
+        font-family: variables.$font-heading;
       }
       
       &:hover {   
-        box-shadow: inset 0px 0px 1px 1px $color-primary;
+        box-shadow: inset 0px 0px 1px 1px variables.$color-primary;
       }
     }
   }

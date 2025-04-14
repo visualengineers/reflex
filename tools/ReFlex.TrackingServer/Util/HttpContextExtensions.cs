@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace TrackingServer.Util
+﻿namespace TrackingServer.Util
 {
     public static class HttpContextExtensions
     {

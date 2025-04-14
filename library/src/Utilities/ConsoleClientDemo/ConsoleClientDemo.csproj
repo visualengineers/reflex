@@ -5,7 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Utilities.ConsoleClientDemo</PackageId>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright ©  2020-2023</Copyright>
+    <Copyright>Copyright © 2020-2025</Copyright>
     <Company>
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
@@ -15,16 +15,8 @@
     <AssemblyName>ReFlex.Utilities.ConsoleClientDemo</AssemblyName>
     <RootNamespace>ReFlex.Utilities.ConsoleClientDemo</RootNamespace>
     <Platforms>x64</Platforms>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Remove="app.config" />
     <None Remove="NLog.config" />
@@ -40,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>

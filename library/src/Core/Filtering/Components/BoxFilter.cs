@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
 
 namespace ReFlex.Core.Filtering.Components

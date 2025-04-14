@@ -3,7 +3,7 @@
     <OutputType>Library</OutputType>
     <PackageId>ReFlex.Core.Networking</PackageId>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright ©  2021-2023</Copyright>
+    <Copyright>Copyright © 2021-2025</Copyright>
     <Company>
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
@@ -18,14 +18,19 @@
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
+    <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\lib&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec Command="mkdir -p &quot;../../../export/lib&quot; &amp;&amp; cp -r &quot;$(OutDir)&quot; &quot;../../../export/lib&quot;" Condition=" '$(OS)' != 'Windows_NT' " />
+  </Target>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="NLog" Version="5.4.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="WatsonTcp" Version="5.1.7" />
+    <PackageReference Include="WatsonTcp" Version="6.0.9" />
     <PackageReference Include="websocketsharp.core">
-      <Version>1.0.0</Version>
+      <Version>1.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-@import 'main';
+@use 'reflex' as reflex;
 
 :host {
     position: absolute;
@@ -7,7 +7,7 @@
 
     width: 100%;
 
-    background-color: $color-grey-light-2;
+    background-color: reflex.$color-grey-light-2;
 }
 
 .measure-controls {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.NetworkInformation;
-using Microsoft.AspNetCore.Http;
-using ReFlex.Core.Common.Util;
+﻿using ReFlex.Core.Common.Util;
 
 namespace TrackingServer.Data.Config
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Implementation.Interfaces;
+﻿using Implementation.Interfaces;
 using MathNet.Numerics.LinearAlgebra;
 using Microsoft.AspNetCore.SignalR;
 using NLog;

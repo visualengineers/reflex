@@ -1,43 +1,43 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 .dropdowns__container{
   display: flex;
 }
 
 .dropdown1 {
   position: fixed;
-  background-color: $color-white;
-  border: 1px solid $color-primary;
+  background-color: reflex.$color-white;
+  border: 1px solid reflex.$color-primary;
   border-radius: 4px;
   padding: 10px;
-  color: $color-primary;
+  color: reflex.$color-primary;
   width: 300px;
   z-index: 9999;
 }
 .dropdown2 {
   position: fixed;
-  background-color: $color-white;
-  border: 1px solid $color-primary;
+  background-color: reflex.$color-white;
+  border: 1px solid reflex.$color-primary;
   border-radius: 4px;
   padding: 10px;
-  color: $color-primary;
+  color: reflex.$color-primary;
   width: 300px;
   z-index: 9999;
 }
 
 .dropdown3 {
   position: fixed;
-  background-color: $color-white;
-  border: 1px solid $color-primary;
+  background-color: reflex.$color-white;
+  border: 1px solid reflex.$color-primary;
   border-radius: 4px;
   padding: 10px;
-  color: $color-primary;
+  color: reflex.$color-primary;
   width: 300px;
   z-index: 9999;
 }
 
 .dropdown_button {
   background-color: transparent;
-  color: $color-primary;
+  color: reflex.$color-primary;
   border: none;
   cursor: pointer;
   padding: 10px 20px;
@@ -45,8 +45,8 @@
 }
 
 .dropdown_button:hover {
-  color: $color-primary;
-  background-color: $color-primary-light-2;
+  color: reflex.$color-primary;
+  background-color: reflex.$color-primary-light-2;
 }
 
 .dropdown_button img {

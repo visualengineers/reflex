@@ -74,13 +74,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Prism.Core">
-      <Version>8.1.97</Version>
+      <Version>9.0.537</Version>
     </PackageReference>
     <PackageReference Include="Prism.Unity">
-      <Version>8.1.97</Version>
+      <Version>9.0.537</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
-      <Version>8.1.97</Version>
+      <Version>9.0.537</Version>
     </PackageReference>
     <PackageReference Include="SharpGL">
       <Version>3.1.1</Version>

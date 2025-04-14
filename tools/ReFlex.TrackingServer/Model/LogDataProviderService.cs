@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NLog;
-using Prism.Events;
+﻿using NLog;
 using TrackingServer.Data.Log;
 using TrackingServer.Util;
 

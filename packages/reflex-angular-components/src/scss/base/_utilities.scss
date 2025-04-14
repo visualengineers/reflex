@@ -1,25 +1,27 @@
+@use "../abstracts/variables";
+
 .success {
-    color: $color-success-light;
+    color: variables.$color-success-light;
 }
 
 .error {
-    color: $color-error-light;
+    color: variables.$color-error-light;
 }
 
 .margin-bottom-default {
-    margin-bottom: $default-col-gap;
+    margin-bottom: variables.$default-col-gap;
 }
 
 .margin-bottom-large {
-  margin-bottom: $margin-large
+  margin-bottom: variables.$margin-large
 }
 
 .margin-top-default {
-    margin-top: $default-margin;
+    margin-top: variables.$default-margin;
 }
 
 .margin-top-large {
-    margin-top: $margin-large
+    margin-top: variables.$margin-large
 }
 
 .justified {
@@ -52,7 +54,7 @@
     width: 100vw;
     height: 100vh;
 
-    background-color: $color-grey-light-4;
+    background-color: variables.$color-grey-light-4;
 
     z-index: 100;
 
@@ -62,19 +64,19 @@
 
 
 .interaction-undefined {
-    background-color: $color-calibration-point;
+    background-color: variables.$color-calibration-point;
 }
 
 .interaction-minimum {
-    background-color: $color-primary;
+    background-color: variables.$color-primary;
 }
 
 .interaction-maximum {
-    background-color: $color-success-light;
+    background-color: variables.$color-success-light;
 }
 
 .interaction-invalid {
-    background-color: $color-error-light;
+    background-color: variables.$color-error-light;
 }
 
 .grid-full-width {

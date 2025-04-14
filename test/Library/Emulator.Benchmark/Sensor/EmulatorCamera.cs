@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using NLog;
+﻿using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Networking.Event;

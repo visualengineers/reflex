@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Sensor.RealSenseR2Module</PackageId>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright ©  2021-2023</Copyright>
+    <Copyright>Copyright © 2021-2025</Copyright>
     <Company>
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
@@ -29,9 +29,9 @@
   <ItemGroup>
     <PackageReference Include="Intel.RealSenseWithNativeDll" Version="2.51.1.1" />
     <PackageReference Include="libpxcclr.cs" Version="10.0.26.400" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageReference Include="NLog" Version="5.4.0" />
     <PackageReference Include="Prise.Plugin" Version="6.0.0" />
   </ItemGroup>
 
@@ -40,7 +40,7 @@
   </ItemGroup>
 
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec Command="mkdir -p ../../../export/Modules %26%26 cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
   </Target>

@@ -14,16 +14,22 @@
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && electron .",
     "build:electron-win": "ng build --base-href ./ && electron-builder build --win",
-    "build:electron-osx": "ng build --base-href ./ && electron-builder build --mac --arm64"
+    "build:electron-osx": "ng build --base-href ./ && electron-builder build --mac --x64",
+    "build:electron-osx-arm64": "ng build --base-href ./ && electron-builder build --mac --arm64",
+    "build:electron-linux": "ng build --base-href ./ && electron-builder build --linux --x64",
+    "build:electron-linux-arm64": "ng build --base-href ./ && electron-builder build --linux --arm64"
   },
   "build": {
     "appId": "reflex.emulator",
     "productName": "ReFlex Emulator",
     "copyright": "Copyright © 2023",
-    "buildVersion": "0.9.8",
+    "buildVersion": "0.9.9",
     "electronVersion": "23.2.4",
     "win": {
-      "icon": "dist/assets/icon/app_icon_inverted.ico"
+      "icon": "dist/browser/assets/icon/app_icon_inverted.ico"
+    },
+    "mac": {
+      "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     },
     "files": [
       "node_modules/**/*",
@@ -35,16 +41,6 @@
     }
   },
   "private": true,
-  "dependencies": {
-    "@fortawesome/angular-fontawesome": "^0.14.1",
-    "@fortawesome/fontawesome-free": "^6.5.2",
-    "@fortawesome/fontawesome-svg-core": "^6.5.2",
-    "@fortawesome/free-brands-svg-icons": "^6.5.2",
-    "@fortawesome/free-regular-svg-icons": "^6.5.2",
-    "@fortawesome/free-solid-svg-icons": "^6.5.2",
-    "@reflex/shared-types": "file:../../packages/reflex-shared-types",
-    "bootstrap": "^5.3.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/visualengineers/reflex.git"
@@ -64,14 +60,14 @@
   "browserslist": [
     "defaults"
   ],
-  "devDependencies": {
-    "@angular-eslint/builder": "17.5.1",
-    "@angular-eslint/eslint-plugin": "17.3.0",
-    "@angular-eslint/eslint-plugin-template": "17.5.1",
-    "@angular-eslint/schematics": "17.3.0",
-    "@angular-eslint/template-parser": "17.3.0",
-    "@typescript-eslint/eslint-plugin": "7.2.0",
-    "@typescript-eslint/parser": "7.2.0",
-    "eslint": "^8.57.0"
+  "dependencies": {
+    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@reflex/shared-types": "file:../../packages/reflex-shared-types",
+    "bootstrap": "^5.3.3"
   }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Mime;
-using Microsoft.AspNetCore.Http;
+﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ReFlex.Core.Common.Components;

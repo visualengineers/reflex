@@ -4,10 +4,9 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { debounceTime, skipWhile } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-value-slider',
-  standalone: true,
-  templateUrl: './value-slider.component.html',
-  imports: [ FormsModule ]
+    selector: 'app-value-slider',
+    templateUrl: './value-slider.component.html',
+    imports: [FormsModule]
 })
 export class ValueSliderComponent implements OnInit, OnDestroy {
   @Input()

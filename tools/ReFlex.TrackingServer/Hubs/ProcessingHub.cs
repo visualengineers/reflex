@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using TrackingServer.Model;
+﻿using TrackingServer.Model;
 
 namespace TrackingServer.Hubs
 {

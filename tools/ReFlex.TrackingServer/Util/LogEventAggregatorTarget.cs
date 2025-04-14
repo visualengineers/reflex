@@ -1,6 +1,5 @@
 ﻿using NLog;
 using NLog.Targets;
-using Prism.Events;
 
 namespace TrackingServer.Util
 {

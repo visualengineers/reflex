@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Subjects;
+﻿using System.Reactive.Subjects;
 using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Events;
 using ReFlex.Core.Tuio.Interfaces;

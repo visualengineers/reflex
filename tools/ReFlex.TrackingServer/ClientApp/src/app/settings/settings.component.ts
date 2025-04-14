@@ -7,10 +7,24 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { switchMap } from 'rxjs/operators';
 import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
+import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
-  templateUrl: './settings.component.html'
+  templateUrl: './settings.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    SettingsGroupComponent,
+    ValueSliderComponent,
+    ValueSelectionComponent,
+    OptionCheckboxComponent,
+    PerformanceVisualizationComponent
+  ],
+  standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
@@ -34,21 +48,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public performanceDataProcessingGroups = ['processingPreparation', 'processingUpdate', 'processingConvert', 'processingSmoothing', 'processingExtremum'];
 
   public filters: Array<JsonSimpleValue> = Object.values(FilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as FilterType)
     .map((x) => (
       { name: FilterType[Number(x)], value: x }));
 
   public selectedFilterIdx = -1;
 
   public limitationFilters: Array<JsonSimpleValue> = Object.values(LimitationFilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as LimitationFilterType)
     .map((x) => (
       { name: LimitationFilterType[Number(x)], value: x }));
 
   public selectedLimitationFilterIdx = -1;
 
   public checks: Array<JsonSimpleValue> = Object.values(ExtremumTypeCheckMethod)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as ExtremumTypeCheckMethod)
     .map((x) => (
       { name: ExtremumTypeCheckMethod[Number(x)], value: x }));
 

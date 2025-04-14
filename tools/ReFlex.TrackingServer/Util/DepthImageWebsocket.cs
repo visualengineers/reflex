@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Prism.Events;
-using TrackingServer.Services;
+﻿using TrackingServer.Services;
 
 namespace TrackingServer.Util
 {

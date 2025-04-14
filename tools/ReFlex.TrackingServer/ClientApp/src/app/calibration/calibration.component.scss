@@ -1,4 +1,4 @@
-@import 'main';
+@use 'reflex' as reflex;
 
 .fullScreen {
     position: fixed;
@@ -12,18 +12,18 @@
     z-index: 10;
     margin: 0;
 
-    background-color: $color-white;
+    background-color: reflex.$color-white;
 }
 
 .border__rectangle {
     &--fill {
         position: absolute;
-        background-color: $color-grey-light-3;
+        background-color: reflex.$color-grey-light-3;
     }
     &--horizontal,
     &--vertical {
         position: absolute;
-        background: #00000000;
+        background: reflex.$color-calibration-border-background-default;
     }
 
     &--horizontal {
@@ -42,13 +42,13 @@
 
     &--horizontal:hover,
     &--vertical:hover {
-        background: #00000033;
+        background: reflex.$color-calibration-border-background-hover;
     }
 
     &--horizontal::before,
     &--vertical::before {
         position: relative;
-        background: $color-grey-light;
+        background: reflex.$color-grey-light;
         content:"";
         display: block;
         pointer-events: none;
@@ -68,7 +68,7 @@
 
     &--horizontal:hover::before,
     &--vertical:hover::before {
-        background: $color-primary-light;
+        background: reflex.$color-primary-light;
     }
 
 }
@@ -81,7 +81,7 @@
     }
 
     &__body {
-        margin-bottom: $default-col-gap;
+        margin-bottom: reflex.$default-col-gap;
 
         &--values{
             display: flex;
@@ -98,8 +98,8 @@
         padding: 1.5rem;
         font-size: 80%;
 
-        border: 1px solid $color-grey-light;
-        background-color: $color-white;
+        border: 1px solid reflex.$color-grey-light;
+        background-color: reflex.$color-white;
     }
 
     &__point--target,
@@ -108,15 +108,15 @@
         position:absolute;
         border-radius: 100%;
 
-        color: $color-white;
+        color: reflex.$color-white;
 
-        font-family: $font-heading;
+        font-family: reflex.$font-heading;
     }
 
     &__point {
         &--source,
         &--target {
-            border: 1px solid $color-calibration-point-border;
+            border: 1px solid reflex.$color-calibration-point-border;
         }
 
         &--source {
@@ -128,7 +128,7 @@
 
             padding: 0.8rem 1.5rem;
 
-            background-color: $color-calibration-point;
+            background-color: reflex.$color-calibration-point;
         }
 
         &--target {
@@ -140,7 +140,7 @@
 
             padding: 0.3rem 1rem;
 
-            background-color: $color-success;
+            background-color: reflex.$color-success;
         }
     }
 
@@ -152,9 +152,9 @@
         width: 40px;
         height: 40px;
 
-        background-color:$color-primary;
+        background-color: reflex.$color-primary;
 
-        border: 3px solid $color-calibration-point-border;
+        border: 3px solid reflex.$color-calibration-point-border;
 
         padding: 0.6rem 1.3rem;
     }
@@ -178,7 +178,7 @@
     &__values {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        column-gap: $default-col-gap;
+        column-gap: reflex.$default-col-gap;
 
         &--container {
             grid-column: span 2;

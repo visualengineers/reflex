@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TrackingServer.Data.Config
+﻿namespace TrackingServer.Data.Config
 {
     public class CameraConfiguration
     {

@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -9,19 +9,20 @@ import { WebSocketServiceMock } from 'src/shared/services/webSocket.service.mock
 
 import { DepthImageComponent } from './depth-image.component';
 import { DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
+const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
   [
     'getStatus',
     'setDepthImagePreviewState'
   ]);
 
 const state: TrackingConfigState = {
-  isCameraSelected: true, 
-  selectedCameraName: 'TestCamera', 
-  selectedConfigurationName: 'TestConfig', 
+  isCameraSelected: true,
+  selectedCameraName: 'TestCamera',
+  selectedConfigurationName: 'TestConfig',
   depthCameraStateName: DepthCameraState[DepthCameraState.Streaming]
-}; 
+};
 
 trackingService.getStatus.and.returnValue(of(state));
 trackingService.setDepthImagePreviewState.and.returnValue(of(true));
@@ -31,24 +32,25 @@ const wsMock = new WebSocketServiceMock(subject, 'mockedMessage');
 
 describe('DepthImageComponent', () => {
   let component: DepthImageComponent;
-  let fixture: ComponentFixture<DepthImageComponent>;  
+  let fixture: ComponentFixture<DepthImageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DepthImageComponent ],
-      imports: [ FormsModule, HttpClientTestingModule ],
-        providers: [
+    imports: [FormsModule, DepthImageComponent],
+    providers: [
         {
-          provide: TrackingService, useValue: trackingService
+            provide: TrackingService, useValue: trackingService
         },
         {
-          provide: WebSocketService, useValue: wsMock
+            provide: WebSocketService, useValue: wsMock
         },
         {
-          provide: 'BASE_URL', useValue: 'http://localhost'
-        }
-      ]
-    })
+            provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+})
     .compileComponents();
   });
 
@@ -68,7 +70,7 @@ describe('DepthImageComponent', () => {
 
   it('should initialize correctly', async () => {
     expect(component).toBeTruthy();
-    
+
     expect(component.livePreview).toBeFalse();
     expect(component.livePreviewEnabled).toBeFalse();
     expect(component.numFramesReceived).toBe(0);
@@ -89,14 +91,14 @@ describe('DepthImageComponent', () => {
 
     expect(component.fullScreen).toBeTrue();
     expect(fullScreenChangedSpy).toHaveBeenCalledOnceWith(true);
-    
+
   });
 
   it('should update livePreview value', async () => {
     const livePreviewSpy = spyOn(component, 'livePreviewChanged').and.callThrough();
-    
+
     expect(component).toBeTruthy();
-    
+
     expect(component.livePreview).toBeFalse();
     expect(component.numFramesReceived).toBe(0);
 
@@ -114,7 +116,7 @@ describe('DepthImageComponent', () => {
     component.livePreviewEnabled = true;
 
     let cbLivePreview = fixture.debugElement.query(By.css('#checkbox-livePreviewDepthImage')).nativeElement as HTMLInputElement;
-    cbLivePreview.click();   
+    cbLivePreview.click();
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -129,9 +131,9 @@ describe('DepthImageComponent', () => {
 
   it('should correctly subscribe to websocket', async () => {
     const livePreviewSpy = spyOn(component, 'livePreviewChanged').and.callThrough();
-    
+
     component.livePreviewEnabled = true;
-    
+
     let cbLivePreview = fixture.debugElement.query(By.css('#checkbox-livePreviewDepthImage')).nativeElement as HTMLInputElement;
     cbLivePreview.click();
 
@@ -143,10 +145,10 @@ describe('DepthImageComponent', () => {
     expect(component.livePreview).toBeTrue();
     cbLivePreview.checked = true;
 
-    expect(component['socket']).toBeTruthy(); 
-       
+    expect(component['socket']).toBeTruthy();
+
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 1' }));
-    
+
     expect(component.imageData).toEqual('image 1');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 2' }));
@@ -154,11 +156,11 @@ describe('DepthImageComponent', () => {
     expect(component.imageData).toEqual('image 2');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 3' }));
-    
+
     expect(component.imageData).toEqual('image 3');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 4' }));
-    
+
     expect(component.imageData).toEqual('image 4');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 5' }));
@@ -178,11 +180,11 @@ describe('DepthImageComponent', () => {
     expect(component.numFramesReceived).toBe(6);
 
     cbLivePreview.click();
-    cbLivePreview.checked = false;  
+    cbLivePreview.checked = false;
 
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(livePreviewSpy).toHaveBeenCalledTimes(2);
     expect(component.livePreview).toBeFalse();
 
@@ -191,7 +193,7 @@ describe('DepthImageComponent', () => {
     expect(component.imageData).toEqual('image 6');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 8' }));
-    
+
     expect(component.imageData).toEqual('image 6');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 9' }));
@@ -204,11 +206,11 @@ describe('DepthImageComponent', () => {
     expect(component.imageData).toEqual('image 6');
 
     cbLivePreview.click();
-    cbLivePreview.checked = true;  
+    cbLivePreview.checked = true;
 
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(livePreviewSpy).toHaveBeenCalledTimes(3);
     expect(component.livePreview).toBeTrue();
 
@@ -217,7 +219,7 @@ describe('DepthImageComponent', () => {
     expect(component.imageData).toEqual('image 13');
 
     wsMock.requestSubject.next(new MessageEvent('mockedMessage', { data: 'image 14' }));
-    
+
     expect(component.imageData).toEqual('image 14');
 
     expect(component.numFramesReceived).toBe(8);
@@ -235,7 +237,7 @@ describe('DepthImageComponent', () => {
     // if livePreview is false, container should not be defined
     expect(component.container).toBeUndefined();
 
-    component.updateSize();    
+    component.updateSize();
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -275,4 +277,3 @@ describe('DepthImageComponent', () => {
   });
 
 });
-

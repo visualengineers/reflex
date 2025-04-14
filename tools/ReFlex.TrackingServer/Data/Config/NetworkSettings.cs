@@ -1,5 +1,4 @@
-﻿using System;
-using ReFlex.Core.Networking.Util;
+﻿using ReFlex.Core.Networking.Util;
 
 namespace TrackingServer.Data.Config
 {

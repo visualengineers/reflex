@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 

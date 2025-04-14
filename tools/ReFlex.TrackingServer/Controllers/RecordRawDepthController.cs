@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Implementation.Interfaces;
+﻿using Implementation.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using ReFlex.Core.Common.Components;
 using ServiceStack;
-using Microsoft.AspNetCore.Http;
 using NLog;
 using ReFlex.Core.Tracking.Util;
 using TrackingServer.Util.JsonFormats;

@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PackageId>ReFlex.TrackingServer</PackageId>
+    <Authors>Mathias Müller</Authors>
+    <Copyright>Copyright © 2021-2025</Copyright>
+    <Company>
+      GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+      Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+    </Company>
+    <Version>1.0.0</Version>
+    <Product>ReFlex.Utilities</Product>
+    <AssemblyName>ReFlex.TrackingServer</AssemblyName>
+    <RootNamespace>ReFlex.TrackingServer</RootNamespace>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <Nullable>enable</Nullable>
@@ -37,17 +48,17 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.20" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.20" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.20" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="ServiceStack.Text" Version="8.2.2" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.13" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0" />
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="ServiceStack.Text" Version="8.6.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
@@ -59,13 +70,6 @@
     <Content Update="wwwroot\Config\TrackingSettings_default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\library\src\Core\Graphics\Graphics.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Util\Util.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(DefineConstants.Contains(MS_AZURE_KINECT))' == true ">
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
@@ -138,5 +142,10 @@
     <Protobuf Include="Protos\interactionTypes.proto">
       <Generator>MSBuild:Compile</Generator>
     </Protobuf>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\src\Core\Common\Common.csproj" />
+    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
+    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
   </ItemGroup>
 </Project>

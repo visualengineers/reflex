@@ -1,4 +1,4 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 main {
   display: grid;
@@ -6,7 +6,7 @@ main {
   gap: 3rem;
   margin: 15.6rem 3rem 3rem 12.6rem;
 
-  border-top: 1px solid $color-dark-2_100;
+  border-top: 1px solid reflex.$color-dark-2_100;
 }
 
 .header {

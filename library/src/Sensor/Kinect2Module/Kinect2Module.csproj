@@ -3,7 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Sensor.Kinect2Module</PackageId>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright ©  2021-2023</Copyright>
+    <Copyright>Copyright © 2021-2025</Copyright>
     <Company>
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
@@ -28,11 +28,11 @@
     <None Remove="Util\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
     <PackageReference Include="Prise.Plugin" Version="6.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.2" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
@@ -47,7 +47,7 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec Command="mkdir -p ../../../export/Modules &amp;&amp; cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
    </Target>

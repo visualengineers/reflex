@@ -1,12 +1,10 @@
 ﻿using Implementation.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Common.Interfaces;
 using TrackingServer.Data;
 using TrackingServer.Data.Config;
 using TrackingServer.Events;
-using TrackingServer.Model;
 using TrackingServer.Util.JsonFormats;
 using ConfigurationManager = TrackingServer.Model.ConfigurationManager;
 
