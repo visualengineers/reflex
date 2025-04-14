@@ -6,33 +6,33 @@ namespace TrackingServer.Data.Config
     {
         public float Threshold { get; set; }
         public Border BorderValue { get; set; }
-        
+
         public float MinDistanceFromSensor { get; set; }
-        
+
         public LimitationFilterType LimitationFilterType { get; set; }
-        
+
         public bool[][]? FilterMask { get; set; }
-        
+
         public bool UseOptimizedBoxFilter { get; set; }
-        
+
         public float AdvancedLimitationFilterThreshold { get; set; }
-        
+
         public int AdvancedLimitationFilterSamples { get; set; }
-        
+
         public bool IsLimitationFilterEnabled { get; set; }
-        
+
         public bool IsValueFilterEnabled { get; set; }
-        
+
         public bool IsThresholdFilterEnabled { get; set; }
-        
+
         public bool IsBoxFilterEnabled { get; set; }
-        
+
         public bool MeasurePerformance { get; set; }
-        
+
         public int BoxFilterRadius { get; set; }
-        
+
         public int BoxFilterNumPasses { get; set; }
-        
+
         public int BoxFilterNumThreads { get; set; }
 
         public Distance DistanceValue { get; set; }
@@ -40,15 +40,15 @@ namespace TrackingServer.Data.Config
         public ConfidenceParameter Confidence { get; set; }
 
         public float MinAngle { get; set; }
-        
+
         public SmoothingParameter SmoothingValues { get; set; }
-        
+
         public ExtremumDescriptionSettings ExtremumSettings { get; set; }
 
         public string GetFilterSettingsString()
         {
             var result = $"=====  {nameof(FilterSettings)}  ====={Environment.NewLine}";
-            result += 
+            result +=
                 $"  {nameof(Confidence)} [{nameof(ConfidenceParameter.Min)} | {nameof(ConfidenceParameter.Max)}]: {Confidence.Min} | {Confidence.Max}";
             result += $"{Environment.NewLine}";
             result +=

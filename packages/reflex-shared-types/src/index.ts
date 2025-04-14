@@ -39,6 +39,7 @@ import { CompleteInteractionData } from './processing/complete-interaction.data'
 import { ExtremumDescription } from './processing/extremum-description';
 import { ExtremumType } from './processing/extremum-type';
 import { Interaction } from './processing/interaction';
+import { InteractionVelocity } from './processing/interaction-velocity';
 import { InteractionFrame } from './processing/interaction-frame';
 import { InteractionHistory } from './processing/interaction-history';
 import { InteractionHistoryElement } from './processing/interaction-history-element';
@@ -51,8 +52,9 @@ import { RecordingStateUpdate } from './tracking/recording-state-update';
 import { TrackingConfigState } from './tracking/tracking-config-state';
 import { Vector2 } from './tracking/vector2';
 import { ElementPosition } from './util/element-position';
+import { InteractionData } from './processing/interaction-data';
 
-export { 
+export {
     // Config
     Border,
     Calibration,
@@ -80,29 +82,31 @@ export {
     TuioInterpretation,
 
     // Data Formats
-    AppVersionInfo, 
-    ImageByteArray, 
-    JsonSimpleValue, 
-    NetworkAttributes, 
-    PerformanceDataItem, 
-    PerformanceData, 
-    ServerContent, 
+    AppVersionInfo,
+    ImageByteArray,
+    JsonSimpleValue,
+    NetworkAttributes,
+    PerformanceDataItem,
+    PerformanceData,
+    ServerContent,
     TuioPackageDetails,
-    
+
     // Log
-    LogLevel, 
+    LogLevel,
     LogMessageDetail,
-    
+
     // Processing
     CompleteInteractionData,
     ExtremumDescription,
     ExtremumType,
+    InteractionData,
     InteractionFrame,
     InteractionHistoryElement,
     InteractionHistory,
     InteractionType,
+    InteractionVelocity,
     Interaction,
-    
+
     //Tracking
     DepthCameraState,
     DepthCamera,

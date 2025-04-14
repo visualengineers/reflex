@@ -55,7 +55,7 @@ namespace PointCloud.Benchmark.Interactivity
         public float MaxDistance { get; set; }
 
         /// <summary>
-        /// defines how many points should be checked to determine the type of the extremum 
+        /// defines how many points should be checked to determine the type of the extremum
         /// </summary>
         public int ExtremumTypeCheckNumSamples
         {
@@ -65,12 +65,12 @@ namespace PointCloud.Benchmark.Interactivity
                 if (_extremumTypeCheckNumSamples == value)
                     return;
                 _extremumTypeCheckNumSamples = value;
-                UpdateSamples(); 
+                UpdateSamples();
             }
         }
 
         /// <summary>
-        /// The pixel radius in which the points are sampled for deriving the type of the local extremum  
+        /// The pixel radius in which the points are sampled for deriving the type of the local extremum
         /// </summary>
         public int ExtremumTypeCheckRadius
         {
@@ -88,11 +88,16 @@ namespace PointCloud.Benchmark.Interactivity
         /// Which ratio of "correctly aligned" points should match to distinguish between Undefined or Minimum/Maximum ?
         /// </summary>
         public float ExtremumTypeCheckFittingPercentage { get; set; }
-        
+
         /// <summary>
         /// Defines how neighboring the points are sampled for determining the type of extremum.
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
+
+        public bool UseVelocityPrediction { get; set; }
+        public int NumFramesForPrediction { get; set; }
+        public bool UseSecondDerivation { get; set; }
+        public float SecondDerivationMagnitude { get; set; }
 
         public int InteractionHistorySize
         {
@@ -122,7 +127,7 @@ namespace PointCloud.Benchmark.Interactivity
                         : value;
             }
         }
-        
+
         // TODO: write tests for negative (!) values and values larger than history
         public int MaxNumEmptyFramesBetween
         {
@@ -147,7 +152,7 @@ namespace PointCloud.Benchmark.Interactivity
                     _smoothingBehaviour.TouchMergeDistance2D = value;
             }
         }
-        
+
         public float DepthScale
         {
             get => _depthScale;
@@ -169,7 +174,7 @@ namespace PointCloud.Benchmark.Interactivity
                     _smoothingBehaviour.UpdateFilterType(_filterType);
             }
         }
-        
+
 
         /// <summary>
         /// Gets or sets the minimum angle.
@@ -205,7 +210,7 @@ namespace PointCloud.Benchmark.Interactivity
         }
 
         public bool MeasurePerformance { get; set; }
-        
+
         protected int FrameId { get; private set; }
 
         #region Abstract Members
@@ -213,11 +218,11 @@ namespace PointCloud.Benchmark.Interactivity
         public abstract ObserverType Type { get; }
         public abstract PointCloud3 PointCloud { get; set; }
         public abstract VectorField2 VectorField { get; set; }
-        
-        public abstract event EventHandler<IList<Interaction>> NewInteractions;
-        
+
+        public abstract event EventHandler<InteractionData> NewInteractions;
+
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
-        
+
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
         public abstract Task<ProcessingResult> Update();
@@ -230,9 +235,9 @@ namespace PointCloud.Benchmark.Interactivity
         {
             _smoothingBehaviour = new InteractionSmoothingBehaviour(InteractionHistorySize);
         }
-        
+
         #endregion
-        
+
         public void UpdateFrameId(int frameId)
         {
             FrameId = frameId;
@@ -244,7 +249,7 @@ namespace PointCloud.Benchmark.Interactivity
         {
             var result = _smoothingBehaviour.Update(rawInteractions);
             InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
-            
+
             return result;
         }
 
@@ -259,7 +264,7 @@ namespace PointCloud.Benchmark.Interactivity
 
             // refZ is the absolute distance from sensor
             var refZ = Math.Abs(pointsArray[xPos][yPos].Z);
-                
+
             var numCloser = 0;
             var numFarther = 0;
 
@@ -288,7 +293,7 @@ namespace PointCloud.Benchmark.Interactivity
                 else
                     numCloser++;
             }
-            
+
 
             var ratioMax = ExtremumTypeCheckNumSamples > 0 ? (float)numCloser / ExtremumTypeCheckNumSamples : 0;
             var ratioMin = ExtremumTypeCheckNumSamples > 0 ? (float)numFarther / ExtremumTypeCheckNumSamples : 0;
@@ -325,12 +330,12 @@ namespace PointCloud.Benchmark.Interactivity
         public List<Interaction> ConvertDepthValue(List<Interaction> interactions)
         {
             var result = new List<Interaction>();
-            
+
             foreach (var item in interactions)
             {
                 if (item == null)
                     continue;
-                
+
                 if (item.Position.Z < Distance)
                 {
                     var depth = (Distance - item.Position.Z - MinDistance) / (MinDistance - MaxDistance);
@@ -355,13 +360,13 @@ namespace PointCloud.Benchmark.Interactivity
 
                     item.Position.Z = depth;
                 }
-                
+
                 result.Add(item);
             }
 
             return result;
         }
-        
+
         protected virtual IEnumerable<Interaction> ApplyConfidenceFilter(IEnumerable<Interaction> interactions)
         {
             return interactions.Where(item => item.Confidence > MinConfidence);
@@ -404,9 +409,9 @@ namespace PointCloud.Benchmark.Interactivity
 
             for (var i = 0; i < points.Length; ++i)
             {
-                if (!points[i].IsValid || points[i].IsFiltered) 
+                if (!points[i].IsValid || points[i].IsFiltered)
                     continue;
-                
+
                 numValidSamples++;
                 sum += points[i].Z;
             }
@@ -418,7 +423,7 @@ namespace PointCloud.Benchmark.Interactivity
         {
             var xIdx = xPos + samples[i].Item1;
             xIdx = Math.Min(Math.Max(xIdx, 0), xMax);
-                    
+
             var yIdx = yPos + samples[i].Item2;
             yIdx = Math.Min(Math.Max(yIdx, 0), yMax);
             var sample = pointsArray[xIdx][yIdx];
@@ -429,9 +434,9 @@ namespace PointCloud.Benchmark.Interactivity
         private Tuple<int, int>[] GenerateSamples()
         {
             var result = new List<Tuple<int, int>>();
-            
+
             var rnd = new Random();
-            
+
             var min = (int)Math.Floor(0.5f * ExtremumTypeCheckRadius);
             var max = ExtremumTypeCheckRadius;
 
@@ -439,7 +444,7 @@ namespace PointCloud.Benchmark.Interactivity
             {
                 var xStochastic = rnd.Next(min, max);
                 var yStochastic = rnd.Next(min, max);
-                
+
                 result.Add(new Tuple<int, int>(xStochastic, yStochastic));
             }
 
@@ -455,11 +460,11 @@ namespace PointCloud.Benchmark.Interactivity
                 var p = (float)i / ExtremumTypeCheckRadius;
                 var xFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Cos(p * 2 * Math.PI));
                 var yFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Sin(p * 2 * Math.PI));
-                
+
                 samplesFixed.Add(new Tuple<int, int>(xFixed, yFixed));
             }
             _fixedSamples = samplesFixed.ToArray();
-            
+
             _stochasticSamples = GenerateSamples();
         }
     }

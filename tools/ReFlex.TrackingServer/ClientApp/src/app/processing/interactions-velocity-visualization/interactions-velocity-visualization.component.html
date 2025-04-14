@@ -1,0 +1,32 @@
+<div class="velocity__panel" #velocityVis>
+  <svg class="velocity__panel--canvas">
+      <g *ngFor="let elem of data">
+            <g>
+              <line class="derivation__line--first"
+                  [attr.x1]="elem.interaction.position.x"
+                  [attr.y1]="elem.interaction.position.y"
+                  [attr.x2]="elem.interaction.position.x + elem.velocity.firstDerivation.x"
+                  [attr.y2]="elem.interaction.position.y + elem.velocity.firstDerivation.y"
+                  >
+              </line>
+              <line class="derivation__line--second"
+                  [attr.x1]="elem.interaction.position.x"
+                  [attr.y1]="elem.interaction.position.y"
+                  [attr.x2]="elem.interaction.position.x + elem.velocity.secondDerivation.x"
+                  [attr.y2]="elem.interaction.position.y + elem.velocity.secondDerivation.y"
+                  >
+              </line>
+              <circle class="predicted__point--basic"
+                  [attr.cx]="elem.velocity.predictedPositionBasic.x"
+                  [attr.cy]="elem.velocity.predictedPositionBasic.y"
+                  [attr.r]="4">
+              </circle>
+              <circle class="predicted__point--advanced"
+                  [attr.cx]="elem.velocity.predictedPositionAdvanced.x"
+                  [attr.cy]="elem.velocity.predictedPositionAdvanced.y"
+                  [attr.r]="2">
+              </circle>
+           </g>
+      </g>
+  </svg>
+</div>

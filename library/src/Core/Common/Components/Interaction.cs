@@ -28,7 +28,7 @@ namespace ReFlex.Core.Common.Components
         /// <value>
         /// The type.
         /// </value>
-        public InteractionType Type { get; set; }
+        public InteractionType Type { get; set; } = 0;
 
         /// <summary>
         /// description of extremum to distinguish interactions from extremums between two interactions.
@@ -46,7 +46,7 @@ namespace ReFlex.Core.Common.Components
         /// <value>
         /// The confidence.
         /// </value>
-        public float Confidence { get; set; }
+        public float Confidence { get; set; } = 0;
 
         /// <summary>
         /// Gets the time.
@@ -54,7 +54,7 @@ namespace ReFlex.Core.Common.Components
         /// <value>
         /// The time.
         /// </value>
-        public long Time { get; set; }
+        public long Time { get; set; } = 0;
 
         /// <summary>
         /// Just for json serialization !
@@ -100,7 +100,7 @@ namespace ReFlex.Core.Common.Components
             TouchId = source.TouchId;
             Position = source.Position;
             Type = source.Type;
-            ExtremumDescription = source.ExtremumDescription;
+            ExtremumDescription = source?.ExtremumDescription ?? new ExtremumDescription();
             Confidence = source.Confidence;
             Time = source.Time;
         }
@@ -117,6 +117,6 @@ namespace ReFlex.Core.Common.Components
         /// <returns>
         /// A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public override string ToString() => $"TouchId: {TouchId}, Position: " + Position + ", Type: " + Type + " ,Confidence: " + Confidence;
+        public override string ToString() => $"TouchId: {TouchId}, Position: {Position}, Type: {Type}, Confidence: {Confidence}, Time: {Time}";
     }
 }

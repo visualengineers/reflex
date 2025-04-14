@@ -19,16 +19,16 @@ namespace TrackingServer.Controllers
         private readonly IInteractionManager _interactionManager;
         private readonly IPerformanceAggregator _performanceAggregator;
         private readonly IEventAggregator _eventAggregator;
-        
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
 
         public SettingsController(
-            ConfigurationManager configManager, 
-            IFilterManager filterManager, 
-            IInteractionManager interactionManager, 
-            IDepthImageManager depthImgManager, 
-            IPerformanceAggregator performanceAggregator, 
+            ConfigurationManager configManager,
+            IFilterManager filterManager,
+            IInteractionManager interactionManager,
+            IDepthImageManager depthImgManager,
+            IPerformanceAggregator performanceAggregator,
             IEventAggregator eventAggregator)
         {
             _configManager = configManager;
@@ -58,21 +58,21 @@ namespace TrackingServer.Controllers
         [HttpPost]
         public void Post([FromBody] TrackingServerAppSettings value)
         {
-            // retrieve current value of Filter Mask from Filter Manager 
+            // retrieve current value of Filter Mask from Filter Manager
             value.FilterSettingValues.FilterMask = _filterManager.FilterMask;
             _configManager.Update(value);
             UpdateConfig();
 
             Logger.Info($"Updated {nameof(TrackingServerAppSettings)}. Updated value: {value}.");
         }
-        
+
         // GET: api/Settings/CanRestore
         [HttpGet("CanRestore")]
         public ActionResult<JsonSimpleValue<bool>> CanRestore()
         {
             return new ActionResult<JsonSimpleValue<bool>>(new JsonSimpleValue<bool> { Name = nameof(ConfigurationManager.CanRestoreBackup), Value = _configManager.CanRestoreBackup });
         }
-        
+
         // GET: api/Settings/Restore
         [HttpGet("Restore")]
         public ActionResult<TrackingServerAppSettings> Restore()
@@ -81,7 +81,7 @@ namespace TrackingServer.Controllers
             RestoreFilterMask();
             return _configManager.Settings;
         }
-        
+
         // GET: api/Settings/Reset
         [HttpGet("Reset")]
         public ActionResult<TrackingServerAppSettings> Reset()
@@ -102,7 +102,7 @@ namespace TrackingServer.Controllers
 
             return _configManager.Settings.FilterSettingValues.BorderValue;
         }
-        
+
         // POST: api/Settings/MinDistanceFromSensor
         [HttpPost("MinDistanceFromSensor")]
         public ActionResult<float> SetMinDistanceFromSensor([FromBody] float value)
@@ -130,7 +130,7 @@ namespace TrackingServer.Controllers
                 Value = _configManager.Settings.FilterSettingValues.Threshold
             };
         }
-        
+
         // POST: api/Settings/MinAngle
         [HttpPost("MinAngle")]
         public ActionResult<JsonSimpleValue<float>> MinAngle([FromBody] float value)
@@ -153,22 +153,22 @@ namespace TrackingServer.Controllers
         {
             if (_interactionManager == null)
                 return _configManager.Settings.FilterSettingValues.DistanceValue;
-            
+
             var computedDistance = _interactionManager.ComputeZeroPlaneDistance();
 
-            if (!(computedDistance > 0)) 
+            if (!(computedDistance > 0))
                 return _configManager.Settings.FilterSettingValues.DistanceValue;
-            
+
             var distance = _configManager.Settings.FilterSettingValues.DistanceValue;
             distance.Default = computedDistance;
-            _configManager.Settings.FilterSettingValues.DistanceValue = distance;            
+            _configManager.Settings.FilterSettingValues.DistanceValue = distance;
             UpdateConfig();
-                
+
             Logger.Info($"Updated {nameof(FilterSettings.DistanceValue)}. Updated value: {distance}.");
 
             return distance;
         }
-        
+
         // GET: api/Settings/ResetAdvancedLimitationFilter
         [HttpGet("ResetAdvancedLimitationFilter")]
         public ActionResult<JsonSimpleValue<bool>> ResetAdvancedLimitationFilter()
@@ -178,7 +178,7 @@ namespace TrackingServer.Controllers
                 Name = "Success",
                 Value = false
             };
-            
+
             if (_interactionManager == null)
                 return new ActionResult<JsonSimpleValue<bool>>(result);
 
@@ -186,7 +186,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<JsonSimpleValue<bool>>(result);
         }
-        
+
         // GET: api/Settings/InitializeAdvancedLimitationFilter
         [HttpGet("InitializeAdvancedLimitationFilter")]
         public ActionResult<JsonSimpleValue<bool>> InitializeAdvancedLimitationFilter()
@@ -196,7 +196,7 @@ namespace TrackingServer.Controllers
                 Name = "Success",
                 Value = false
             };
-            
+
             if (_interactionManager == null)
                 return new ActionResult<JsonSimpleValue<bool>>(result);
 
@@ -212,7 +212,7 @@ namespace TrackingServer.Controllers
 
             return new ActionResult<JsonSimpleValue<bool>>(result);
         }
-        
+
         // GET: api/Settings/LimitationFilterInitializing
         [HttpGet("LimitationFilterInitializing")]
         public ActionResult<JsonSimpleValue<bool>> LimitationFilterInitializing()
@@ -222,10 +222,10 @@ namespace TrackingServer.Controllers
                 Name = "IsInitializing",
                 Value = _filterManager.LimitationFilter.IsInitializing
             };
-            
+
             return new ActionResult<JsonSimpleValue<bool>>(result);
         }
-        
+
         // GET: api/Settings/LimitationFilterInitState
         [HttpGet("LimitationFilterInitState")]
         public ActionResult<JsonSimpleValue<bool>> LimitationFilterInitState()
@@ -235,7 +235,7 @@ namespace TrackingServer.Controllers
                 Name = "IsInitialized",
                 Value = _filterManager.LimitationFilter.IsInitialized
             };
-            
+
             return new ActionResult<JsonSimpleValue<bool>>(result);
         }
 
@@ -254,7 +254,7 @@ namespace TrackingServer.Controllers
             UpdateConfig();
 
             Logger.Info($"Updated {nameof(FilterSettings.LimitationFilterType)}. Updated value: {settings.LimitationFilterType}.");
-            
+
             return new ActionResult<JsonSimpleValue<bool>>(
                 new JsonSimpleValue<bool> { Name = "success", Value = true });
         }
@@ -270,7 +270,7 @@ namespace TrackingServer.Controllers
 
             return _configManager.Settings.FilterSettingValues.DistanceValue;
         }
-        
+
         // POST: api/Settings/Confidence
         [HttpPost("Confidence")]
         public ActionResult<ConfidenceParameter> Post([FromBody] ConfidenceParameter value)
@@ -282,7 +282,7 @@ namespace TrackingServer.Controllers
 
             return _configManager.Settings.FilterSettingValues.Confidence;
         }
-        
+
         // PUT: api/Settings/FilterRadius
         [HttpPut("FilterRadius/{radius}")]
         public ActionResult<JsonSimpleValue<int>> PutRadius(int radius)
@@ -298,7 +298,7 @@ namespace TrackingServer.Controllers
                 Value = _configManager.Settings.FilterSettingValues.BoxFilterRadius
             };
         }
-        
+
         // PUT: api/Settings/FilterPasses
         [HttpPut("FilterPasses/{numPasses}")]
         public ActionResult<JsonSimpleValue<int>> NumPasses(int numPasses)
@@ -314,7 +314,7 @@ namespace TrackingServer.Controllers
                 Value = _configManager.Settings.FilterSettingValues.BoxFilterNumPasses
             };
         }
-        
+
         // PUT: api/Settings/FilterThreads
         [HttpPut("FilterThreads/{numThreads}")]
         public ActionResult<JsonSimpleValue<int>> NumThreads(int numThreads)
@@ -330,7 +330,7 @@ namespace TrackingServer.Controllers
                 Value = _configManager.Settings.FilterSettingValues.BoxFilterNumThreads
             };
         }
-        
+
         // POST: api/Settings/UseOptimizedBoxFilter
         [HttpPost("UseOptimizedBoxFilter")]
         public ActionResult<JsonSimpleValue<bool>> NumThreads([FromBody] JsonSimpleValue<bool> useOptimizedBoxFilter)
@@ -346,7 +346,19 @@ namespace TrackingServer.Controllers
                 Value = _configManager.Settings.FilterSettingValues.UseOptimizedBoxFilter
             };
         }
-        
+
+        // POST: api/Settings/Prediction
+        [HttpPost("Prediction")]
+        public PredictionSettings Post([FromBody] PredictionSettings value)
+        {
+            _configManager.Settings.PredictionSettings = value;
+            UpdateConfig();
+
+            Logger.Info($"Updated {nameof(PredictionSettings)}. Updated value: {value}.");
+
+            return _configManager.Settings.PredictionSettings;
+        }
+
         // POST: api/Settings/Smoothing
         [HttpPost("Smoothing")]
         public SmoothingParameter Post([FromBody] SmoothingParameter value)
@@ -358,7 +370,7 @@ namespace TrackingServer.Controllers
 
             return _configManager.Settings.FilterSettingValues.SmoothingValues;
         }
-        
+
         // POST: api/Settings/ExtremumsCheck
         [HttpPost("ExtremumsCheck")]
         public ExtremumDescriptionSettings Post([FromBody] ExtremumDescriptionSettings value)

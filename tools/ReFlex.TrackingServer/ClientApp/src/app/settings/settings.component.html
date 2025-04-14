@@ -45,7 +45,7 @@
     Specify how many depth points on the upper side are ignored. Maximum value
     corresponds with the border filter value on the lower side.
     <em>Live Preview:</em> red dots are filtered points.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- Bottom -->
   <app-value-slider
@@ -60,7 +60,7 @@
     Specify how many depth points on the lower side are ignored. Minimum value
     corresponds with the border filter value on the upper side.
     <em>Live Preview:</em> red dots are filtered points.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- min Distance From Sensor -->
   <app-value-slider
@@ -100,7 +100,7 @@
       <strong>AdvancedLimitationFilter:</strong> filter based on the depth mask
       (additional to the borders)
     </p>
-  </app-value-selection>  
+  </app-value-selection>
 
   <!-- Threshold -->
   <app-value-slider
@@ -114,7 +114,7 @@
     (onChange)="saveLimitationFilterType()"
     unit="m">
     Specify maximum distance from zero plane for the points to be filtered.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- Num Samples -->
   <app-value-slider
@@ -127,19 +127,19 @@
     (onChange)="saveLimitationFilterType()"
     unit="Samples">
     Specify how many samples from the depth image are captured for initializing the filter.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- Set Points for Advanced LimitationFilter -->
   <div class="settings__item" *ngIf="selectedLimitationFilterIdx === 1">
     <div class="settings__item--content-button">
       <a
         [ngClass]="isTrackingActive && !isCurrentlyInitializingLimitationFilter ? 'button' : 'button-disabled'"
-        (click)="initializeAdvancedLimitationFilter()"        
+        (click)="initializeAdvancedLimitationFilter()"
         >Initialize Filter</a
       >
     </div>
     <div class="settings__item--content-button">
-      <a class="button" 
+      <a class="button"
         [ngClass]="isCurrentlyInitializingLimitationFilter ? 'button-disabled' : 'button'"
         (click)="resetAdvancedLimitationFilter()">Reset</a>
     </div>
@@ -166,7 +166,7 @@
     <strong>Push and Pull</strong> relative to the <em>Zero Plane</em>. Depth
     values smaller than this threshold are ignored for interaction processing.
     <em>Live Preview:</em> red planes.
-  </app-value-slider> 
+  </app-value-slider>
 
   <!-- Max -->
   <app-value-slider
@@ -199,7 +199,7 @@
     Specifies distance of the elastic surface from the depth sensor. Used to
     distinguish Push and Pull and to compute depth values for interactions.
     <em>Live Preview:</em> grey plane.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- auto compute zero plane -->
   <div class="settings__item">
@@ -230,7 +230,7 @@
     Threshold for <strong>lateral distance</strong> between two extremums in
     the depth image (<em>squared pixel distance</em>). Used to filter
     redundant interactions which may occur due to noise.
-  </app-value-slider>  
+  </app-value-slider>
 
 </app-settings-group>
 
@@ -265,7 +265,76 @@
     depth image static elements in the depth image (e.g. at the borders).
     <strong>Note:</strong> current implementation does not correctly use this
     value.
-  </app-value-slider> 
+  </app-value-slider>
+</app-settings-group>
+
+<app-settings-group toggleId="settings-prediction" elementTitle="Prediction">
+  <!-- Toggle Velocity Prediction-->
+  <app-option-checkbox class="settings__item"
+    elementTitle="Use Velocity Prediction"
+    elementId="settings-toggleVelocityPrediction"
+    [(data)]="settings.predictionSettings.useVelocityPrediction"
+    (onChange)="savePredictionValues()">
+    Specify whether interactions should be mapped and filtered based on the
+    velocity (difference vector between current and former position(s)).
+  </app-option-checkbox>
+  <!-- NumFramesForPrediction -->
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Number of frames"
+    elementId="settings-numFramesForPrediction"
+    [min]="1"
+    [max]="10"
+    [(data)]="settings.predictionSettings.numFramesForPrediction"
+    (onChange)="savePredictionValues()"
+    unit="frames">
+    Number of frames that are looked into the frame history to compute the difference vector.
+  </app-value-slider>
+
+  <app-option-checkbox class="settings__item"
+    elementTitle="Use Second Derivation"
+    elementId="settings-toggleSecondDerivation"
+    [(data)]="settings.predictionSettings.useSecondDerivation"
+    (onChange)="savePredictionValues()">
+    Specify whether the second derivation should be computed and used for predicting the position of the current touch point.
+  </app-option-checkbox>
+
+  <app-value-slider
+    *ngIf="settings.predictionSettings.useSecondDerivation"
+    class="settings__item"
+    elementTitle="Influence Factor"
+    elementId="settings-secondDerivationMagnitude"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [(data)]="settings.predictionSettings.secondDerivationMagnitude"
+    (onChange)="savePredictionValues()"
+    unit="x">
+    Influence factor of second derivation on computation of position (if enabled).
+  </app-value-slider>
+
+  <app-option-checkbox class="settings__item"
+    elementTitle="Filter Points by Velocity"
+    elementId="settings-toggleFilterPointsByVelocity"
+    [(data)]="settings.predictionSettings.filterPointsByVelocity"
+    (onChange)="savePredictionValues()">
+    Specify whether points are also filtered if their velocity is higher tah the configured threshold.
+  </app-option-checkbox>
+
+  <app-value-slider
+    *ngIf="settings.predictionSettings.filterPointsByVelocity"
+    class="settings__item"
+    elementTitle="Velocity Threshold"
+    elementId="settings-velocityFilterThreshold"
+    [min]="0"
+    [max]="10"
+    [step]="0.01"
+    [(data)]="settings.predictionSettings.velocityFilterThreshold"
+    (onChange)="savePredictionValues()"
+    unit="x">
+    Specifies the increase / descrese factor for velocity between two frames which is acceptable before point is filtered.
+  </app-value-slider>
+
 </app-settings-group>
 
 <app-settings-group toggleId="settings-filter" elementTitle="Filter">
@@ -282,10 +351,10 @@
     Used to filter outliers from depth image. Specifies the maximum depth
     difference between two adjacent points in the Pointcloud. Points which do not
     satisfy this condition are filtered.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- Toggle Threshold Filter-->
-  <app-option-checkbox class="settings__item" 
+  <app-option-checkbox class="settings__item"
     elementTitle="Use Optimized Box Filter"
     elementId="settings-toggleOptimizedBoxFilter"
     [(data)]="settings.filterSettingValues.useOptimizedBoxFilter"
@@ -307,7 +376,7 @@
     radius for the filter. A very large radius results in a very smooth depth
     image, but only very sharp edges are detected. Additionally, the
     computational cost increases with radius size.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- BoxFilterNumPasses -->
   <app-value-slider
@@ -321,7 +390,7 @@
     unit="passes">
     Number of iterations the <em>box-blur</em> is applied. A larger number of iterations
     results in a better filter result, but with decreased performance. Default Value: 3
-  </app-value-slider> 
+  </app-value-slider>
 
   <!-- BoxFilterNumThreads -->
   <app-value-slider
@@ -333,10 +402,10 @@
     [(data)]="settings.filterSettingValues.boxFilterNumThreads"
     (onChange)="saveFilterThreads()"
     unit="threads">
-    Max Number of Threads to use for filtering. Best value is usually less or equal the number 
-    of logical processors. When providing '0', the system decides which is the best value, 
+    Max Number of Threads to use for filtering. Best value is usually less or equal the number
+    of logical processors. When providing '0', the system decides which is the best value,
     '1' means single core performance.
-  </app-value-slider> 
+  </app-value-slider>
 
   <!-- Min Angle -->
   <app-value-slider
@@ -376,7 +445,7 @@
       <strong>SavitzkyGolay:</strong> polynomial regression filter
     </p>
   </app-value-selection>
- 
+
   <!-- NumSamples -->
   <app-value-slider
     class="settings__item"
@@ -420,7 +489,7 @@
     from interactions list. Prevents flickering if measurements are unstable,
     however higher values add significant lag, so that touches remain active
     after the user has released the surface.
-  </app-value-slider>  
+  </app-value-slider>
 
   <!-- Merge Distance -->
   <app-value-slider
@@ -434,7 +503,7 @@
     unit="px">
     If the 2D distance between two values if smaller than this value, touch points are merged together.
   </app-value-slider>
-  
+
   <!-- Depth Scale Factor -->
   <app-value-slider
     class="settings__item"
@@ -526,7 +595,7 @@
 <app-settings-group toggleId="settings-additional-settings" elementTitle="Additional Settings"
 >
   <!-- Toggle LimitationFilter -->
-  <app-option-checkbox class="settings__item" 
+  <app-option-checkbox class="settings__item"
     elementTitle="Limitation Filter"
     elementId="settings-limitationFilter"
     [(data)]="settings.filterSettingValues.isLimitationFilterEnabled"
@@ -535,7 +604,7 @@
   </app-option-checkbox>
 
   <!-- Toggle Value Filter-->
-  <app-option-checkbox class="settings__item" 
+  <app-option-checkbox class="settings__item"
     elementTitle="Value Filter"
     elementId="settings-valueFilter"
     [(data)]="settings.filterSettingValues.isValueFilterEnabled"
@@ -544,7 +613,7 @@
   </app-option-checkbox>
 
   <!-- Toggle Threshold Filter-->
-  <app-option-checkbox class="settings__item" 
+  <app-option-checkbox class="settings__item"
     elementTitle="Threshold Filter"
     elementId="settings-thresholdFilter"
     [(data)]="settings.filterSettingValues.isThresholdFilterEnabled"
@@ -553,16 +622,16 @@
   </app-option-checkbox>
 
   <!-- Toggle Box Filter-->
-  <app-option-checkbox class="settings__item" 
+  <app-option-checkbox class="settings__item"
     elementTitle="Box Filter"
     elementId="settings-boxFilter"
     [(data)]="settings.filterSettingValues.isBoxFilterEnabled"
     (onChange)="saveLimitationFilterType()">
     Specify whether Box Filter should be applied to PointCloud.
-  </app-option-checkbox> 
+  </app-option-checkbox>
 
   <!-- Toggle Measure Performance -->
-  <app-option-checkbox class="settings__item" 
+  <app-option-checkbox class="settings__item"
     elementTitle="Measure Performance"
     elementId="settings-measurePerformance"
     [(data)]="settings.filterSettingValues.measurePerformance"
@@ -611,7 +680,7 @@
       [refreshRate]="5"
       [isProcessingGraph]="false"
       [numSamples]="99"
-    >      
+    >
     </app-performance-visualization>
   </div>
 
@@ -656,7 +725,7 @@
       [refreshRate]="5"
       [isProcessingGraph]="true"
       [numSamples]="199"
-    >      
+    >
     </app-performance-visualization>
   </div>
 </app-settings-group>
@@ -697,7 +766,7 @@
         {{ settingsJSON }}
       </textarea>
     </div>
-    
+
   </div>
   <div class="settings__button-group">
     <a class="button" (click)="selectText()">Select</a>

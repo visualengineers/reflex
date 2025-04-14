@@ -181,6 +181,37 @@ namespace TrackingServer.Controllers
             return new ActionResult<Interaction[]>(result);
         }
 
+        // POST: api/Calibration/CalibratedVelocities
+        [HttpPost("CalibratedVelocities")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<InteractionVelocity[]> GetCalibratedVelocities([FromBody] InteractionVelocity[] velocities)
+        {
+            if (velocities?.Length == null)
+                return new ActionResult<InteractionVelocity[]>(new List<InteractionVelocity>().ToArray());
+
+
+            var result = _calibrationService.GetCalibratedVelocities(velocities);
+            return new ActionResult<InteractionVelocity[]>(result);
+        }
+
+        // // POST: api/Calibration/CalibratedInteractions
+        // [HttpPost("CalibratedInteractions")]
+        // [Consumes(MediaTypeNames.Application.Json)]
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // public ActionResult<Interaction[]> GetCalibratedInteractions([FromBody] LegacyInteraction[] interactions)
+        // {
+        //     if (interactions?.Length == null)
+        //         return BadRequest(
+        //             $"Invalid {nameof(interactions)} for Calibration provided in {GetType().Name}.{nameof(GetCalibratedInteractions)}().");
+        //
+        //
+        //     var result = _calibrationService.GetCalibratedInteractions(interactions.Select((legacyInteraction) => new Interaction(legacyInteraction)));
+        //     return new ActionResult<Interaction[]>(result);
+        // }
+
         private bool ValidateCalibrationPoint(CalibrationPoint targetValue, out string msg)
         {
             msg = "";

@@ -12,7 +12,7 @@ namespace Implementation.Interfaces
         ObserverType Type { get; set; }
 
         IList<Interaction> Interactions { get; }
-        
+
         float Distance { get; set; }
 
         float MinDistance { get; set; }
@@ -26,24 +26,32 @@ namespace Implementation.Interfaces
         int MaxConfidence { get; set; }
 
         float InputDistance { get; set; } // @todo könnte int sein
-        
+
         int InteractionHistorySize { get; set; }
-        
+
         int NumSmoothingFrames { get; set; }
-        
+
         int MaxNumEmptyFramesBetween { get; set; }
-        
+
         float TouchMergeDistance2D { get; set; }
-        
+
         float DepthScale { get; set; }
-        
+
        int ExtremumTypeCheckNumSamples { get; set; }
-        
+
         int ExtremumTypeCheckRadius{ get; set; }
 
         float ExtremumTypeCheckFittingPercentage{ get; set; }
 
         ExtremumTypeCheckMethod ExtremumTypeCheckMethod{ get; set; }
+
+        bool UseVelocityPrediction { get; set; }
+
+        int NumFramesForPrediction { get; set; }
+
+        bool UseSecondDerivation  { get; set; }
+
+        float SecondDerivationMagnitude { get; set; }
 
         FilterType FilterType { get; set; }
 
@@ -54,6 +62,8 @@ namespace Implementation.Interfaces
         float ComputeZeroPlaneDistance();
 
         event EventHandler<IList<Interaction>> InteractionsUpdated;
+
+        event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
 
         event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
     }

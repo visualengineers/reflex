@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { SignalRBaseService } from './signalR.base.service';
 import { LogService } from 'src/app/log/log.service';
-import { Interaction, InteractionFrame, InteractionHistory, JsonSimpleValue, RemoteProcessingServiceSettings } from '@reflex/shared-types';
+import { Interaction, InteractionVelocity, InteractionFrame, InteractionHistory, JsonSimpleValue, RemoteProcessingServiceSettings } from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
@@ -88,6 +88,27 @@ export class ProcessingService extends SignalRBaseService<string> {
 
   }
 
+  public getVelocities(): Observable<Array<InteractionVelocity>> {
+    const velocities$ = fromEventPattern<Array<InteractionVelocity>>(
+      (handler) => this.connection.on('velocities', handler),
+      (handler) => this.connection.off('velocities', handler)
+    );
+
+    return using(() => {
+      this.connection.send('StartVelocities').catch((error) => {
+        console.error(error);
+        this.logService.sendErrorLog(`${error}`);
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      return { unsubscribe: async () => this.connection.send('StopVelocities').catch((error) => {
+        console.error(error);
+        this.logService.sendErrorLog(`${error}`);
+      }) };
+    }, () => velocities$);
+
+  }
+
   public getFrames(): Observable<Array<InteractionFrame>> {
     const frames$ = fromEventPattern<Array<InteractionFrame>>(
       (handler) => this.connection.on('frames', handler),
@@ -128,4 +149,3 @@ export class ProcessingService extends SignalRBaseService<string> {
     }, () => history$);
   }
 }
-

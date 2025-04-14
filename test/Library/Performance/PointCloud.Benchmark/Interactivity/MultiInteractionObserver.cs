@@ -12,15 +12,15 @@ namespace PointCloud.Benchmark.Interactivity
     public class MultiInteractionObserver : InteractionObserverBase
     {
         #region Fields
-        
+
         private PointCloud3 _pointCloud;
         private VectorField2 _vectorField;
         private int[][] _confidenceMat;
         private List<Interaction> _candidates;
-        
+
         private readonly Stopwatch _stopWatch = new();
 
-        
+
         #endregion
 
         #region Properties
@@ -70,12 +70,12 @@ namespace PointCloud.Benchmark.Interactivity
                 InitializeConfidenceMatrix();
             }
         }
-        
+
         #endregion
-        
-        #region Events 
-        public override event EventHandler<IList<Interaction>> NewInteractions;
-        
+
+        #region Events
+        public override event EventHandler<InteractionData> NewInteractions;
+
         #endregion
 
         /// <summary>
@@ -97,73 +97,73 @@ namespace PointCloud.Benchmark.Interactivity
                 return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Error));
 
             var processResult = new ProcessingResult(ProcessServiceStatus.Available);
-            
+
             var perfItem = new ProcessPerformance();
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
+
             UpdateVectorfield();
-            
+
             _candidates.Clear();
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.Preparation = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
 
-            
+
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.Update = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
+
             var interactions =  ConvertDepthValue(_candidates.ToList());
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.ConvertDepthValue = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
+
             var frame = ComputeSmoothingValue(interactions);
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.Smoothing = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
 
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
+
             var processedInteractions = ComputeExtremumType(confidentInteractions.ToList(), PointCloud.AsJaggedArray());
 
             if (MeasurePerformance)
@@ -172,11 +172,11 @@ namespace PointCloud.Benchmark.Interactivity
                 perfItem.ComputeExtremumType = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             UpdatePerformanceMetrics(perfItem);
-            
-            
-            OnNewInteractions(processedInteractions);
+
+
+            OnNewInteractions(new InteractionData(processedInteractions, new List<InteractionVelocity>()));
 
             return Task.FromResult(processResult);
         }
@@ -195,7 +195,7 @@ namespace PointCloud.Benchmark.Interactivity
             var stride = VectorField.Stride;
             var pointCloud = PointCloud.AsJaggedArray();
             var vectorField = VectorField.AsJaggedArray();
-            
+
             for (var x = stride; x < VectorField.SizeX - stride; x++)
                 // Parallel.ForEach(Iterate(stride, VectorField.SizeX - stride, stride), (x) =>
             {
@@ -223,20 +223,20 @@ namespace PointCloud.Benchmark.Interactivity
                     {
                         _candidates.Add(new Interaction(new Point3(x, y, pointCloud[x][y].Z), InteractionType.None,
                             confidence));
-                        
+
                         if (confidence < MaxConfidence)
                             _confidenceMat[x][y]++;
                     }
                 }
             }
         }
-        
+
         public void UpdateVectorfieldParallel()
         {
             var stride = VectorField.Stride;
             var pointCloud = PointCloud.AsJaggedArray();
             var vectorField = VectorField.AsJaggedArray();
-            
+
             // for (var x = stride; x < VectorField.SizeX - stride; x+= stride)
             Parallel.For(stride, VectorField.SizeX - stride, (x) =>
             {
@@ -271,22 +271,22 @@ namespace PointCloud.Benchmark.Interactivity
                 }
             });
         }
-        
+
         public void UpdateVectorfieldParallelStepped()
         {
             var stride = VectorField.Stride;
             var pointCloud = PointCloud.AsJaggedArray();
             var vectorField = VectorField.AsJaggedArray();
-            
+
             // for (var x = stride; x < VectorField.SizeX - stride; x+= stride)
             Parallel.For(1, VectorField.SizeX - stride, (i) =>
             {
                 var x = i * stride;
-                
+
                 for (var y = stride; y < VectorField.SizeY - stride; y += stride)
                 {
                     var vCenter = vectorField[x][y];
-                    
+
                     if (!vCenter.IsValid)
                         continue;
 
@@ -335,7 +335,7 @@ namespace PointCloud.Benchmark.Interactivity
                     if (!vectorField.Span[idx].IsValid)
                         continue;
 
-                    // idx = y * width + x + stride == idx + stride 
+                    // idx = y * width + x + stride == idx + stride
                     var vectorX = vectorField.Span[idx].Add(vectorField.Span[idx + stride]);
 
                     // idx = y * width + x + stride == idx + stride
@@ -390,7 +390,7 @@ namespace PointCloud.Benchmark.Interactivity
 
                     var vCenter = vectorField.Span[idx];
 
-                    // idx = y * width + x + stride == idx + stride 
+                    // idx = y * width + x + stride == idx + stride
                     var vectorX = vCenter.Add(vectorField.Span[idx + stride]);
 
                     // idx = y * width + x + stride == idx + stride
@@ -429,17 +429,17 @@ namespace PointCloud.Benchmark.Interactivity
         {
             return _candidates.Where(item => item.Confidence > MinConfidence);
         }
-        
+
         public IEnumerable<Interaction> ApplyConfidenceFilter2()
         {
             return _candidates.ToArray().Where(item => item.Confidence > MinConfidence);
         }
-        
+
         public IEnumerable<Interaction> ApplyConfidenceFilter3()
         {
             return _candidates.AsReadOnly().Where(item => item.Confidence > MinConfidence);
         }
-        
+
         public IEnumerable<Interaction> ApplyConfidenceFilter4()
         {
             var span = _candidates.ToArray().AsSpan();
@@ -458,15 +458,15 @@ namespace PointCloud.Benchmark.Interactivity
         /// Called when [new interactions].
         /// </summary>
         /// <param name="args">The arguments.</param>
-        protected virtual void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
-        
-        
+        protected virtual void OnNewInteractions(InteractionData args) => NewInteractions?.Invoke(this, args);
+
+
         protected override IEnumerable<Interaction> ApplyConfidenceFilter(IEnumerable<Interaction> interactions)
         {
             return interactions.Where(item => item.Confidence > MinConfidence);
         }
-        
-        
+
+
 
         protected override List<Interaction> ComputeExtremumType(List<Interaction> interactions, Point3[][] pointsArray)
         {
@@ -492,9 +492,9 @@ namespace PointCloud.Benchmark.Interactivity
 
             for (var i = 0; i < points.Length; ++i)
             {
-                if (!points[i].IsValid || points[i].IsFiltered) 
+                if (!points[i].IsValid || points[i].IsFiltered)
                     continue;
-                
+
                 numValidSamples++;
                 sum += points[i].Z;
             }
@@ -506,7 +506,7 @@ namespace PointCloud.Benchmark.Interactivity
         {
             var xIdx = xPos + samples[i].Item1;
             xIdx = Math.Min(Math.Max(xIdx, 0), xMax);
-                    
+
             var yIdx = yPos + samples[i].Item2;
             yIdx = Math.Min(Math.Max(yIdx, 0), yMax);
             var sample = pointsArray[xIdx][yIdx];
@@ -517,9 +517,9 @@ namespace PointCloud.Benchmark.Interactivity
         private Tuple<int, int>[] GenerateSamples()
         {
             var result = new List<Tuple<int, int>>();
-            
+
             var rnd = new Random();
-            
+
             var min = (int)Math.Floor(0.5f * ExtremumTypeCheckRadius);
             var max = ExtremumTypeCheckRadius;
 
@@ -527,7 +527,7 @@ namespace PointCloud.Benchmark.Interactivity
             {
                 var xStochastic = rnd.Next(min, max);
                 var yStochastic = rnd.Next(min, max);
-                
+
                 result.Add(new Tuple<int, int>(xStochastic, yStochastic));
             }
 
@@ -543,11 +543,11 @@ namespace PointCloud.Benchmark.Interactivity
                 var p = (float)i / ExtremumTypeCheckRadius;
                 var xFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Cos(p * 2 * Math.PI));
                 var yFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Sin(p * 2 * Math.PI));
-                
+
                 samplesFixed.Add(new Tuple<int, int>(xFixed, yFixed));
             }
             _fixedSamples = samplesFixed.ToArray();
-            
+
             _stochasticSamples = GenerateSamples();
         }
 

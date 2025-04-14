@@ -28,6 +28,8 @@ namespace ReFlex.Core.Interactivity.Components
 
         private Tuple<int, int>[] _fixedSamples = Array.Empty<Tuple<int, int>>();
         private Tuple<int, int>[] _stochasticSamples = Array.Empty<Tuple<int, int>>();
+        private bool _useVelocityPrediction = true;
+        private bool _useSecondDerivation = false;
 
         #endregion
 
@@ -96,6 +98,36 @@ namespace ReFlex.Core.Interactivity.Components
         /// Defines how neighboring the points are sampled for determining the type of extremum.
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
+
+        public bool UseVelocityPrediction
+        {
+            get => _useVelocityPrediction;
+            set
+            {
+                _useVelocityPrediction = value;
+                if (_smoothingBehaviour != null)
+                {
+                    _smoothingBehaviour.UseVelocityForMapping = value;
+                }
+            }
+        }
+
+        public int NumFramesForPrediction { get; set; } = 2;
+
+        public bool UseSecondDerivation
+        {
+            get => _useSecondDerivation;
+            set
+            {
+                _useSecondDerivation = value;
+                if (_smoothingBehaviour != null)
+                {
+                    _smoothingBehaviour.UseSecondDerivation = value;
+                }
+            }
+        }
+
+        public float SecondDerivationMagnitude { get; set; } = 0.5f;
 
         public int InteractionHistorySize
         {
@@ -217,7 +249,7 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract PointCloud3 PointCloud { get; set; }
         public abstract VectorField2 VectorField { get; set; }
 
-        public abstract event EventHandler<IList<Interaction>> NewInteractions;
+        public abstract event EventHandler<InteractionData> NewInteractions;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -408,6 +440,45 @@ namespace ReFlex.Core.Interactivity.Components
             };
 
             PerformanceDataUpdated?.Invoke(this, pData);
+        }
+
+        protected new List<InteractionVelocity> ComputeVelocities(InteractionFrame frame)
+        {
+            var result = new List<InteractionVelocity>();
+
+            if (!UseVelocityPrediction)
+                return result;
+
+            var interactionFrames = _smoothingBehaviour.InteractionsFramesCache;
+
+            foreach (var interaction in frame.Interactions)
+            {
+                var interactionsBefore = interactionFrames
+                    .OrderByDescending((f) => f.FrameId)
+                    .Take(NumFramesForPrediction * 2)
+                    .SelectMany((f) => f.Interactions.Where((i) => Equals(i.TouchId, interaction.TouchId) ) )
+                    .Skip(NumFramesForPrediction)
+                    .ToList();
+                if (interactionsBefore.Count == 0)
+                {
+                    result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position));
+                    break;
+                }
+
+                var firstDerivation = new Point3(interactionsBefore[0].Position.X -interaction.Position.X, interactionsBefore[0].Position.Y - interaction.Position.Y, interactionsBefore[0].Position.Z - interaction.Position.Z);
+                var secondDerivation = interactionsBefore.Count < NumFramesForPrediction + 1
+                    ? firstDerivation
+                    : new Point3(
+                        (interactionsBefore[0].Position.X - interactionsBefore[NumFramesForPrediction].Position.X) - firstDerivation.X,
+                        (interactionsBefore[0].Position.Y - interactionsBefore[NumFramesForPrediction].Position.Y) - firstDerivation.Y,
+                        (interactionsBefore[0].Position.Z - interactionsBefore[NumFramesForPrediction].Position.Z) - firstDerivation.Z);
+
+                result.Add(new InteractionVelocity(interaction.TouchId, interaction.Position, firstDerivation,secondDerivation, SecondDerivationMagnitude));
+            }
+
+            _smoothingBehaviour.UpdateVelocities(result);
+
+            return result;
         }
 
         protected void UpdateInteractionFrames(List<Interaction> cleanedUpInteractions, InteractionFrame currentFrame)

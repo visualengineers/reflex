@@ -16,6 +16,7 @@ namespace Implementation.Components
     {
         private IInteractionObserver _interactionObserver;
         private IList<Interaction> _interactions;
+        private IList<InteractionVelocity> _velocities;
         private readonly IDepthImageManager _depthImageManager;
         private readonly IPerformanceAggregator _performanceAggregator;
 
@@ -32,8 +33,14 @@ namespace Implementation.Components
         private int _maxNumEmptyFramesBetween;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
+        private bool _useVelocityPrediction = false;
+        private int _numFramesForPredicition ;
+        private bool _useSecondDerivation;
+        private float _secondDerivationMagnitude;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
+
+        public IList<InteractionVelocity> Velocities => _velocities ?? new List<InteractionVelocity>();
 
         public ObserverType Type
         {
@@ -78,7 +85,7 @@ namespace Implementation.Components
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
                 _performanceAggregator.UnregisterReporter(observer as IPerformanceReporter);
             }
-            
+
             if (observer == null)
                 return;
 
@@ -95,6 +102,10 @@ namespace Implementation.Components
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
             observer.DepthScale = _depthScale;
+            observer.UseVelocityPrediction = _useVelocityPrediction;
+            observer.NumFramesForPrediction = _numFramesForPredicition;
+            observer.UseSecondDerivation = _useSecondDerivation;
+            observer.SecondDerivationMagnitude = _secondDerivationMagnitude;
             _interactionObserver = observer;
 
             _interactionObserver.NewInteractions += OnNewInteractions;
@@ -178,7 +189,7 @@ namespace Implementation.Components
                 _maxConfidence = value;
             }
         }
-        
+
         public int InteractionHistorySize
         {
             get => _interactionObserver?.InteractionHistorySize ?? 0;
@@ -198,11 +209,11 @@ namespace Implementation.Components
             {
                 if (_interactionObserver != null)
                     _interactionObserver.NumSmoothingFrames = value;
-            
+
                 _numSmoothFrames = value;
             }
         }
-        
+
         public int MaxNumEmptyFramesBetween
         {
             get => _interactionObserver?.MaxNumEmptyFramesBetween ?? 0;
@@ -210,11 +221,11 @@ namespace Implementation.Components
             {
                 if (_interactionObserver != null)
                     _interactionObserver.MaxNumEmptyFramesBetween = value;
-            
+
                 _maxNumEmptyFramesBetween = value;
             }
         }
-        
+
         public float TouchMergeDistance2D
         {
             get => _interactionObserver?.TouchMergeDistance2D ?? 0f;
@@ -226,7 +237,7 @@ namespace Implementation.Components
                 _smoothingDistanceSquared = value;
             }
         }
-        
+
         public float DepthScale
         {
             get => _interactionObserver?.DepthScale ?? 0f;
@@ -239,7 +250,7 @@ namespace Implementation.Components
             }
         }
 
-        public FilterType FilterType { 
+        public FilterType FilterType {
             get => _interactionObserver?.FilterType ?? FilterType.None;
             set
             {
@@ -288,6 +299,50 @@ namespace Implementation.Components
             }
         }
 
+        public bool UseVelocityPrediction
+        {
+            get => _interactionObserver?.UseVelocityPrediction ?? false;
+            set
+            {
+                _useVelocityPrediction = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.UseVelocityPrediction = value;
+            }
+        }
+
+        public int NumFramesForPrediction
+        {
+            get => _interactionObserver?.NumFramesForPrediction ?? 0;
+            set
+            {
+                _numFramesForPredicition = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.NumFramesForPrediction = value;
+            }
+        }
+
+        public bool UseSecondDerivation
+        {
+            get => _interactionObserver?.UseSecondDerivation ?? false;
+            set
+            {
+                _useSecondDerivation = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.UseSecondDerivation = value;
+            }
+        }
+
+        public float SecondDerivationMagnitude
+        {
+            get => _interactionObserver?.SecondDerivationMagnitude ?? 0f;
+            set
+            {
+                _secondDerivationMagnitude = value;
+                if (_interactionObserver != null)
+                    _interactionObserver.SecondDerivationMagnitude = value;
+            }
+        }
+
         public PointCloud3 PointCloud
         {
             get => _interactionObserver?.PointCloud;
@@ -321,12 +376,14 @@ namespace Implementation.Components
         {
             if (_interactionObserver == null)
                 return ProcessServiceStatus.Error;
-            
+
             return (await _interactionObserver.Update())?.ServiceStatus ?? ProcessServiceStatus.Error;
         }
 
         public event EventHandler<IList<Interaction>> InteractionsUpdated;
-        
+
+        public event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
+
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
         public void Dispose()
@@ -358,28 +415,30 @@ namespace Implementation.Components
                 _interactionObserver.VectorField = source;
         }
 
-        private void OnNewInteractions(object sender, IList<Interaction> interactions)
+        private void OnNewInteractions(object sender, InteractionData interactions)
         {
             lock (interactions)
             {
-                var copy = interactions.Select(interaction => new Interaction(interaction)).ToList();
+                var copy = interactions.Interactions.Select(interaction => new Interaction(interaction)).ToList();
                 _interactions = RemoveClusteredInteractions(copy);
+                _velocities = interactions.Velocities.ToList();
             }
 
-            InteractionsUpdated?.Invoke(this, _interactions); 
+            InteractionsUpdated?.Invoke(this, _interactions);
+            VelocitiesUpdated?.Invoke(this, _velocities);
         }
 
         private IList<Interaction> RemoveClusteredInteractions(IList<Interaction> rawInteractions)
         {
             var filteredCopy = new List<Interaction>();
-            
+
             for (var i = 0; i < rawInteractions.Count; i++)
             {
                 var currPt = rawInteractions[i];
                 var distances = filteredCopy.Select(inter => Point3.Squared2DDistance(inter.Position, currPt.Position)).ToList();
 
                 var addPoint = true;
-                
+
                 for (var j = 0; j < distances.Count; j++)
                 {
                     var distance = distances[j];

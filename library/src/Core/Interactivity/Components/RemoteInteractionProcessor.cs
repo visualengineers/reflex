@@ -13,7 +13,7 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 {
     private readonly IRemoteInteractionProcessorService _service;
     private readonly Stopwatch _stopWatch = new();
-    
+
     public RemoteInteractionProcessor(IRemoteInteractionProcessorService service)
     {
         _service = service;
@@ -22,9 +22,9 @@ public class RemoteInteractionProcessor: InteractionObserverBase
     public override ObserverType Type { get; } = ObserverType.Remote;
     public override PointCloud3 PointCloud { get; set; }
     public override VectorField2 VectorField { get; set; }
-    
-    public override event EventHandler<IList<Interaction>> NewInteractions;
-    
+
+    public override event EventHandler<InteractionData> NewInteractions;
+
     public override async Task<ProcessingResult> Update()
     {
         if (!_service.IsConnected)
@@ -38,7 +38,7 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 
         if (_service.IsBusy)
             return new ProcessingResult();
-        
+
         var result = new ProcessingResult(ProcessServiceStatus.Available);
 
         var processed = await _service.Update(PointCloud, result.PerformanceMeasurement, MeasurePerformance);
@@ -49,21 +49,23 @@ public class RemoteInteractionProcessor: InteractionObserverBase
         {
             _stopWatch.Start();
         }
-        
+
         var interactions = ConvertDepthValue(candidates.ToList());
-        
+
         if (MeasurePerformance)
         {
             _stopWatch.Stop();
             perfItem.ConvertDepthValue = _stopWatch.Elapsed;
             _stopWatch.Reset();
         }
-        
+
         if (MeasurePerformance)
         {
             _stopWatch.Start();
         }
         var frame = ComputeSmoothingValue(interactions);
+        var velocities = ComputeVelocities(frame);
+
         if (MeasurePerformance)
         {
             _stopWatch.Stop();
@@ -85,7 +87,7 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 
         UpdatePerformanceMetrics(perfItem);
 
-        NewInteractions?.Invoke(this, processedInteractions);
+        NewInteractions?.Invoke(this, new InteractionData(processedInteractions, velocities));
 
         return result;
     }

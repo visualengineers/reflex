@@ -23,17 +23,19 @@ namespace TrackingServer.Model
 
         private readonly HubGroupSubscriptionManager<IList<Interaction>>
             _interactionSubscriptions;
+        private readonly HubGroupSubscriptionManager<IList<InteractionVelocity>>
+            _velocitySubscriptions;
         private readonly HubGroupSubscriptionManager<IList<InteractionFrame>>
             _interactionFrameSubscriptions;
-        private readonly HubGroupSubscriptionManager<InteractionHistory[]> 
+        private readonly HubGroupSubscriptionManager<InteractionHistory[]>
             _interactionHistorySubscriptions;
-        
+
         #endregion
 
         #region Properties
-        
+
         public string State { get => CurrentState?.Value; }
-        
+
         public bool IsLoopRunning
         {
             get => _timerLoop.IsLoopRunning;
@@ -46,7 +48,7 @@ namespace TrackingServer.Model
                 CurrentState?.OnNext(GetState());
             }
         }
-        
+
         public int Interval
         {
             get => _timerLoop.IntervalLength;
@@ -57,8 +59,10 @@ namespace TrackingServer.Model
             get => _interactionManager.Type;
             set => _interactionManager.Type = value;
         }
-        
+
         public IHubGroupSubscriptionManager InteractionSubscriptionManager => _interactionSubscriptions;
+
+        public IHubGroupSubscriptionManager InteractionVelocitySubscriptionManager => _velocitySubscriptions;
 
         public IHubGroupSubscriptionManager InteractionFrameSubscriptionManager => _interactionFrameSubscriptions;
 
@@ -69,7 +73,7 @@ namespace TrackingServer.Model
         #region Constrcutor
 
         public ProcessingService(ITimerLoop loop, IInteractionManager interactionManager,
-            ConfigurationManager configManager, CalibrationService calibrationService, 
+            ConfigurationManager configManager, CalibrationService calibrationService,
             IEventAggregator eventAggregator, IHubContext<ProcessingHub> hubContext)
             : base(ProcessingHub.ProcessingStateGroup, hubContext)
         {
@@ -83,7 +87,7 @@ namespace TrackingServer.Model
             eventAggregator.GetEvent<RequestServiceRestart>()?.Subscribe(StartService);
 
             _timerLoop.IsLoopRunningChanged += OnLoopRunningChanged;
-            
+
             CurrentState.OnNext(GetState());
 
             _interactionSubscriptions = new HubGroupSubscriptionManager<IList<Interaction>>("interactions");
@@ -93,6 +97,14 @@ namespace TrackingServer.Model
                 hubContext,
                 ProcessingHub.InteractionsGroup
                 );
+
+            _velocitySubscriptions = new HubGroupSubscriptionManager<IList<InteractionVelocity>>("velocities");
+            _velocitySubscriptions.Setup(
+                (handler) => _interactionManager.VelocitiesUpdated += handler,
+                (handler) => _interactionManager.VelocitiesUpdated -= handler,
+                hubContext,
+                ProcessingHub.InteractionVelocitiesGroup
+            );
 
             _interactionFrameSubscriptions = new HubGroupSubscriptionManager<IList<InteractionFrame>>("frames");
             _interactionFrameSubscriptions.Setup<ProcessingHub, IList<InteractionFrame>>(
@@ -114,16 +126,16 @@ namespace TrackingServer.Model
         }
 
         #endregion
-        
+
         #region public Methods
 
         public void Init()
         {
             LoadSettings();
         }
-        
+
         #endregion
-        
+
         public sealed override string GetState()
         {
             return IsLoopRunning ? "Active" : "Inactive";
@@ -134,21 +146,21 @@ namespace TrackingServer.Model
             base.Dispose();
             _timerLoop.IsLoopRunningChanged -= OnLoopRunningChanged;
         }
-        
+
         public void StartService()
         {
             if (IsLoopRunning)
             {
                 IsLoopRunning = false;
             }
-            
+
             Init();
-            
+
             IsLoopRunning = true;
         }
 
         #region private Methods
-        
+
         private void LoadSettings()
         {
             _timerLoop.IntervalLength = _configManager.Settings.ProcessingSettingValues.IntervalDuration;
@@ -164,6 +176,18 @@ namespace TrackingServer.Model
                     _configManager.Settings.FilterSettingValues.ExtremumSettings.NumSamples;
                 _interactionManager.ExtremumTypeCheckFittingPercentage =
                     _configManager.Settings.FilterSettingValues.ExtremumSettings.FitPercentage;
+            }
+
+            if (_configManager?.Settings?.PredictionSettings != null)
+            {
+                _interactionManager.UseVelocityPrediction =
+                    _configManager.Settings.PredictionSettings.UseVelocityPrediction;
+                _interactionManager.NumFramesForPrediction =
+                    _configManager.Settings.PredictionSettings.NumFramesForPrediction;
+                _interactionManager.UseSecondDerivation =
+                    _configManager.Settings.PredictionSettings.UseSecondDerivation;
+                _interactionManager.SecondDerivationMagnitude =
+                    _configManager.Settings.PredictionSettings.SecondDerivationMagnitude;
             }
 
             Logger.Info($"Loaded Settings for {GetType().FullName}. Setting {nameof(Interval)} to {Interval} ms");
@@ -185,13 +209,13 @@ namespace TrackingServer.Model
             return InteractionHistory.RetrieveHistoryFromInteractionFrames(calibratedFrames).ToArray();
 
         }
-        
+
         private void OnLoopRunningChanged(object sender, bool e)
         {
             IsLoopRunning = e;
             CurrentState?.OnNext(GetState());
         }
-        
+
         #endregion
     }
 }

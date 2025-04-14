@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   public clientLibs?: Observable<Array<AppVersionInfo>>;
 
   public appVersion?: Observable<AppVersionInfo>;
+  public appBuildNo = 20;
 
   public constructor(private readonly versionService: VersionInfoService) { }
 

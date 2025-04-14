@@ -77,7 +77,7 @@ namespace ReFlex.Core.Interactivity.Components
         #endregion
 
         #region Events
-        public override event EventHandler<IList<Interaction>> NewInteractions;
+        public override event EventHandler<InteractionData> NewInteractions;
 
         #endregion
 
@@ -168,6 +168,8 @@ namespace ReFlex.Core.Interactivity.Components
 
             var frame = ComputeSmoothingValue(cleanedUpInteractions);
 
+            var velocities = ComputeVelocities(frame);
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
@@ -179,7 +181,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             UpdatePerformanceMetrics(perfItem);
 
-            OnNewInteractions(confidentInteractions.ToList());
+            OnNewInteractions(new InteractionData(confidentInteractions.ToList(), velocities.ToList()));
 
             return Task.FromResult(processResult);
         }
@@ -252,7 +254,7 @@ namespace ReFlex.Core.Interactivity.Components
         /// Called when [new interactions].
         /// </summary>
         /// <param name="args">The arguments.</param>
-        protected virtual void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
+        protected virtual void OnNewInteractions(InteractionData args) => NewInteractions?.Invoke(this, args);
 
     }
 
