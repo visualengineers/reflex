@@ -58,8 +58,8 @@ namespace TrackingServer.Model {
           var scaleDown = !(_configurationManager.Settings.PointCloudSettingValues?.FullResolution ?? false);
 
           var shrunkSize = scaleDown
-            ? (_configurationManager.Settings?.CameraConfigurationValues?.Width ?? 0) * (_configurationManager.Settings?.CameraConfigurationValues?.Height ?? 0)
-            : _configurationManager.Settings?.PointCloudSettingValues?.PointCloudSize ?? 40000;
+            ? _configurationManager.Settings?.PointCloudSettingValues?.PointCloudSize ?? 40000
+            : (_configurationManager.Settings?.CameraConfigurationValues?.Width ?? 0) * (_configurationManager.Settings?.CameraConfigurationValues?.Height ?? 0);
 
           var interval = _configurationManager.Settings?.PointCloudSettingValues?.UpdateInterval ?? 100;
 
