@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Interaction, InteractionData, InteractionVelocity, Point3 } from '@reflex/shared-types';
-import { combineLatest, map, NEVER, Observable, startWith, Subscription, switchMap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 

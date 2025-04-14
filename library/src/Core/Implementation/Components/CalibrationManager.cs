@@ -61,30 +61,6 @@ namespace Implementation.Components
 
             var inter = new Interaction(p3, source);
 
-            // var inter = new Interaction(p3,source);
-            //
-            // inter.Position.X = (inter.Position.X * CalibrationMatrix.AsColumnMajorArray()[0] +
-            //                     inter.Position.Y * CalibrationMatrix.AsColumnMajorArray()[4] +
-            //                     1.0f * CalibrationMatrix.AsColumnMajorArray()[8] - _calibrator.StartX) / _calibrator.Width;
-            //
-            // if (inter.Position.X < 0)
-            //     inter.Position.X = 0;
-            //
-            // if (inter.Position.X > 1)
-            //     inter.Position.X = 1;
-            //
-            // inter.Position.Y = (inter.Position.X * CalibrationMatrix.AsColumnMajorArray()[1] +
-            //                     inter.Position.Y * CalibrationMatrix.AsColumnMajorArray()[5] +
-            //                     1.0f * CalibrationMatrix.AsColumnMajorArray()[9] - _calibrator.StartY) / _calibrator.Height;
-            //
-            // if (inter.Position.Y < 0)
-            //     inter.Position.Y = 0;
-            //
-            // if (inter.Position.Y > 1)
-            //     inter.Position.Y = 1;
-            //
-            // inter.Position.Z = inter.Position.Z * CalibrationMatrix.AsColumnMajorArray()[10];
-
             return inter;
         }
 
