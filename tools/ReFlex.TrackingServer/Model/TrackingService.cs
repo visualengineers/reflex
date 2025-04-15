@@ -102,12 +102,12 @@ namespace TrackingServer.Model
 
         public IDepthCamera GetSelectedCamera()
         {
-            return _trackingMgr?.ChosenCamera;
+            return _trackingMgr.ChosenCamera;
         }
 
         public StreamParameter GetSelectedCameraConfiguration()
         {
-            return _trackingMgr?.ChosenStreamConfiguration;
+            return _trackingMgr.ChosenStreamConfiguration;
         }
 
         public TrackingConfigState GetStatus()
@@ -119,12 +119,12 @@ namespace TrackingServer.Model
         {
             return new TrackingConfigState
             {
-                DepthCameraStateName = _trackingMgr?.ChosenCamera != null
-                    ? Enum.GetName(typeof(DepthCameraState), _trackingMgr.ChosenCamera.State)
-                    : Enum.GetName(typeof(DepthCameraState), DepthCameraState.Disconnected),
-                IsCameraSelected = _trackingMgr?.ChosenCamera != null,
-                SelectedCameraName = _trackingMgr?.ChosenCamera?.Id ?? "",
-                SelectedConfigurationName = _trackingMgr?.ChosenStreamConfiguration?.ToString() ?? ""
+                DepthCameraStateName =
+                  Enum.GetName(typeof(DepthCameraState), _trackingMgr.ChosenCamera?.State ?? DepthCameraState.Disconnected)
+                  ?? string.Empty,
+                IsCameraSelected = _trackingMgr.ChosenCamera != null,
+                SelectedCameraName = _trackingMgr.ChosenCamera?.Id ?? "",
+                SelectedConfigurationName = _trackingMgr.ChosenStreamConfiguration?.ToString() ?? ""
             };
         }
 
@@ -154,10 +154,10 @@ namespace TrackingServer.Model
 
         public void SelectConfigurationById(int id)
         {
-            if (_cameraConfigurations == null || id < 0 || id >= _cameraConfigurations.Count)
+            if (id < 0 || id >= _cameraConfigurations.Count)
             {
                 Logger.Error(
-                    $"Configuration with index {id} not available. Choose a configuration with an index < {_cameraConfigurations?.Count}.");
+                    $"Configuration with index {id} not available. Choose a configuration with an index < {_cameraConfigurations.Count}.");
                 return;
             }
 
@@ -177,21 +177,21 @@ namespace TrackingServer.Model
 
         #region private Methods
 
-        private void SelectCamera(IDepthCamera camera, string param = null)
+        private void SelectCamera(IDepthCamera camera, string? param = null)
         {
-            if (_trackingMgr?.ChosenCamera != null)
+            if (_trackingMgr.ChosenCamera != null)
                 _trackingMgr.ChosenCamera.StateChanged -= OnSelectedCameraStateChanged;
 
-            _trackingMgr?.ChooseCamera(camera);
+            _trackingMgr.ChooseCamera(camera);
 
-            _cameraConfigurations?.Clear();
-            _cameraConfigurations?.AddRange(camera.GetPossibleConfigurations());
+            _cameraConfigurations.Clear();
+            _cameraConfigurations.AddRange(camera.GetPossibleConfigurations());
 
-            var cfg= _cameraConfigurations?.FirstOrDefault();
+            var cfg= _cameraConfigurations.FirstOrDefault();
 
             if (!string.IsNullOrWhiteSpace(param))
             {
-                var saved = _cameraConfigurations?.FirstOrDefault(c => Equals(c.Description, param));
+                var saved = _cameraConfigurations.FirstOrDefault(c => Equals(c.Description, param));
                 if (saved != null)
                     cfg = saved;
             }
@@ -201,13 +201,13 @@ namespace TrackingServer.Model
 
             UpdateState();
 
-            if (_trackingMgr?.ChosenCamera != null)
+            if (_trackingMgr.ChosenCamera != null)
                 _trackingMgr.ChosenCamera.StateChanged += OnSelectedCameraStateChanged;
         }
 
         private void SelectConfiguration(StreamParameter configuration)
         {
-            _trackingMgr?.ChooseConfiguration(configuration);
+            _trackingMgr.ChooseConfiguration(configuration);
 
             UpdateState();
 
@@ -233,7 +233,7 @@ namespace TrackingServer.Model
             SelectCamera(camera, _configMgr.Settings.CameraConfigurationValues.GetCameraDescription());
         }
 
-        private void OnSelectedCameraStateChanged(object sender, DepthCameraState e)
+        private void OnSelectedCameraStateChanged(object? sender, DepthCameraState e)
         {
             Logger.Info($"got {nameof(_trackingMgr.ChosenCamera.StateChanged)} event with updated state: {e.ToString()}");
             UpdateState();

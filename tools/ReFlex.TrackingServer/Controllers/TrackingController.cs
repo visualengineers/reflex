@@ -84,8 +84,8 @@ namespace TrackingServer.Controllers
             _trackingService.ToggleTracking(id, configIdx);
 
             var cam = GetSelectedCamera().ModelDescription;
-            var configList = GetConfigurations(id)?.ToList();
-            if (configList != null && configList.Count > configIdx)
+            var configList = GetConfigurations(id).ToList();
+            if (configList.Count > configIdx)
             {
                 var config = configList[configIdx];
 
@@ -98,7 +98,7 @@ namespace TrackingServer.Controllers
                 };
             }
 
-            Logger.Info($"Updated TrackingState for {_trackingService?.GetSelectedCamera()?.ModelDescription} to {_trackingService.GetStatus()} with Resolution {_trackingService?.GetSelectedCameraConfiguration()}.");
+            Logger.Info($"Updated TrackingState for {_trackingService.GetSelectedCamera().ModelDescription} to {_trackingService.GetStatus()} with Resolution {_trackingService.GetSelectedCameraConfiguration()}.");
 
             return new AcceptedResult();
         }
@@ -132,7 +132,7 @@ namespace TrackingServer.Controllers
         [HttpGet("Recordings")]
         public async Task<ActionResult<List<StreamParameter>>> GetRecordingsList()
         {
-            return RecordingUtils.RetrieveConfigurations().ToList();
+            return await Task.Run(() => RecordingUtils.RetrieveConfigurations().ToList());
         }
 
         // Put: api/Tracking/StartRecording/
@@ -209,7 +209,7 @@ namespace TrackingServer.Controllers
 
         // Get: api/Tracking/RecordingState/
         [HttpGet("RecordingState")]
-        public ActionResult<bool> RecordingState() => _recorder?.IsRecording;
+        public ActionResult<bool> RecordingState() => _recorder.IsRecording;
 
 
         // Get: api/Tracking/RecordingFrameCount/name
@@ -218,15 +218,12 @@ namespace TrackingServer.Controllers
 
         // Get: api/Tracking/GetAutostartEnabled/
         [HttpGet("GetAutostartEnabled")]
-        public ActionResult<bool> GetAutostartEnabled() => _configManager?.Settings.IsAutoStartEnabled ?? false;
+        public ActionResult<bool> GetAutostartEnabled() => _configManager.Settings.IsAutoStartEnabled;
 
         // Put: api/Tracking/SetAutostart/
         [HttpPut("SetAutostart")]
         public ActionResult<bool> SetAutostart([FromBody] bool autostartEnabled)
         {
-            if (_configManager?.Settings == null)
-                return Ok(false);
-
             _configManager.Settings.IsAutoStartEnabled = autostartEnabled;
 
             return Ok(_configManager.Settings.IsAutoStartEnabled);

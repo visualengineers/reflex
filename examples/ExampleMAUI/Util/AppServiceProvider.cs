@@ -3,7 +3,7 @@
 public static class AppServiceProvider
 {
   public static TService GetService<TService>()
-    => Current.GetService<TService>();
+    => Current.GetService<TService>() ?? throw new InvalidOperationException($"Service of type {typeof(TService)} could not be found.");
 
   public static IServiceProvider Current
     =>

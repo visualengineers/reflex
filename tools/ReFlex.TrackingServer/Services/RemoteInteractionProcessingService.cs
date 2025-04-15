@@ -20,8 +20,8 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly Stopwatch _stopWatch = new();
 
-    private InteractionProcessing.InteractionProcessingClient _client;
-    private GrpcChannel _channel;
+    private InteractionProcessing.InteractionProcessingClient? _client;
+    private GrpcChannel? _channel;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
     private readonly IEventAggregator _eventAggregator;
@@ -47,11 +47,18 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
     public async void Dispose()
     {
+      try
+      {
         await Disconnect();
 
         _eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
         _eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
         _eventAggregator.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Unsubscribe(OnSettingsChanged);
+      }
+      catch (Exception e)
+      {
+        Logger.Error(e, $"Error while disconnect from {nameof(RemoteInteractionProcessingService)}");
+      }
     }
 
 
@@ -113,6 +120,12 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance performance, bool doMeasure)
     {
         var result = new List<Interaction>();
+
+        if (_client == null)
+        {
+          Logger.Warn($"{nameof(RemoteInteractionProcessingService)} not correctly initialized, {nameof(_client)} is null");
+          return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+        }
 
         if (IsBusy)
         {
@@ -176,7 +189,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
     }
 
-    public async void StartService()
+    public async Task StartService()
     {
         await Disconnect();
         await Connect();
@@ -225,11 +238,11 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     {
         var result = new PointCloud3d();
 
-        for (var x_i = 0; x_i < data.Length; x_i++)
+        for (var x = 0; x < data.Length; x++)
         {
-            for (var y_i = 0; y_i < data[x_i].Length; y_i++)
+            for (var y = 0; y < data[x].Length; y++)
             {
-                var p3 = data[x_i][y_i];
+                var p3 = data[x][y];
                 if (!SendCompleteDataset && (p3.IsFiltered || !p3.IsValid))
                     continue;
 
@@ -240,8 +253,8 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                     X = p3.X,
                     Y = p3.Y,
                     Z = p3.Z,
-                    IX = x_i,
-                    IY = y_i
+                    IX = x,
+                    IY = y
                 };
 
                 result.Points.Add(p3d);
@@ -291,7 +304,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
         if (_configMgr.Settings.IsAutoStartEnabled)
         {
-           StartService();
+           await Task.Run(StartService);
         }
 
         Logger.Info($"Loaded Settings for {GetType().FullName}. Connecting to '{_config.Address}'... ");
@@ -299,39 +312,42 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
     private async void OnSettingsChanged(RemoteProcessingServiceSettings cfg)
     {
-        if (cfg == null)
-            return;
-
-        if (!Equals(cfg?.Address, _config?.Address) && IsConnected)
+      try
+      {
+        if (!Equals(cfg.Address, _config.Address) && IsConnected)
         {
-            await Disconnect();
-            _config = cfg;
-            return;
+          await Disconnect();
+          _config = cfg;
+          return;
         }
 
-        if (IsConnected)
+        if (_client != null && IsConnected)
         {
-            var configRequest = new ConfigRequest
-            {
-                Cutoff = (float)cfg.CutOff,
-                Factor = (float)cfg.Factor
-                // Algorithm = cfg.Algorithm
-            };
+          var configRequest = new ConfigRequest
+          {
+            Cutoff = (float)cfg.CutOff,
+            Factor = (float)cfg.Factor
+            // Algorithm = cfg.Algorithm
+          };
 
-            var changesDetected =
-                _config != null &&
-                (Math.Abs(_config.CutOff - cfg.CutOff) > float.Epsilon ||
-                 Math.Abs(_config.Factor - cfg.CutOff) > float.Epsilon);
+          var changesDetected =
+            (Math.Abs(_config.CutOff - cfg.CutOff) > float.Epsilon ||
+             Math.Abs(_config.Factor - cfg.CutOff) > float.Epsilon);
 
-            if (changesDetected)
-            {
-                var response = await _client.ConfigureAsync(configRequest);
-                Logger.Info(
-                    $"Updated configruation of {nameof(RemoteInteractionProcessingService)} with values: {cfg.GetRemoteProcessingServiceSettingsString()}. response: {response}");
-            }
+          if (changesDetected)
+          {
+            var response = await _client.ConfigureAsync(configRequest);
+            Logger.Info(
+              $"Updated configruation of {nameof(RemoteInteractionProcessingService)} with values: {cfg.GetRemoteProcessingServiceSettingsString()}. response: {response}");
+          }
         }
 
         _config = cfg;
+      }
+      catch (Exception e)
+      {
+        Logger.Error(e);
+      }
     }
 
     private void SaveSettings()

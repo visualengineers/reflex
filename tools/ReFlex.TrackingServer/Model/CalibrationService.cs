@@ -88,10 +88,10 @@ namespace TrackingServer.Model
         public FrameSizeDefinition SetWindowFrame(FrameSizeDefinition sizeDef)
         {
             _calibrator.SetFrameSize(
-                sizeDef?.Width ?? 500,
-                sizeDef?.Height ?? 350,
-                sizeDef?.Top ?? 0,
-                sizeDef?.Left ?? 0);
+                sizeDef.Width,
+                sizeDef.Height,
+                sizeDef.Top,
+                sizeDef.Left);
 
             _calibrationManager.Initialize(_calibrator, _configurationManager.Settings.CalibrationValues);
 
@@ -183,19 +183,19 @@ namespace TrackingServer.Model
             CurrentState.OnNext(GetState());
         }
 
-        private void OnCalibrationUpdated(object sender, Matrix<float> calibrationMatrix)
+        private void OnCalibrationUpdated(object? sender, Matrix<float> calibrationMatrix)
         {
             _calibrationResult = calibrationMatrix;
             FinishCalibration();
         }
 
-        private void OnCalibrationFinished(object sender, Matrix<float> calibrationMatrix)
+        private void OnCalibrationFinished(object? sender, Matrix<float> calibrationMatrix)
         {
             _calibrationResult = calibrationMatrix;
             IsCalibrationFinished = true;
         }
 
-        private void OnCalibrationLoaded(object sender, Matrix<float> calibrationMatrix)
+        private void OnCalibrationLoaded(object? sender, Matrix<float> calibrationMatrix)
         {
             _calibrationResult = calibrationMatrix;
         }

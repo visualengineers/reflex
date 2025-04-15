@@ -44,7 +44,7 @@ namespace TrackingServer.Controllers
         // GET: api/Processing/GetRemoteProcessorSettings
         [Route("GetRemoteProcessorSettings")]
         [HttpGet]
-        public RemoteProcessingServiceSettings GetRemoteProcessorSettings() => _configManager?.Settings?.RemoteProcessingServiceSettingsValues ?? new RemoteProcessingServiceSettings();
+        public RemoteProcessingServiceSettings GetRemoteProcessorSettings() => _configManager.Settings.RemoteProcessingServiceSettingsValues ?? new RemoteProcessingServiceSettings();
 
         // GET: api/Processing/GetObserverType
         [Route("GetObserverType")]
@@ -82,11 +82,9 @@ namespace TrackingServer.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<RemoteProcessingServiceSettings> SetRemoteProcessorSettings([FromBody]RemoteProcessingServiceSettings settings)
+        public ActionResult<RemoteProcessingServiceSettings?> SetRemoteProcessorSettings([FromBody]RemoteProcessingServiceSettings? settings)
         {
-            var isValid = settings != null;
-
-            if (!isValid)
+            if (settings == null)
                 return BadRequest($"Invalid value for {typeof(RemoteProcessingServiceSettings).FullName} provided.");
 
             _eventAggregator.GetEvent<RemoteProcessingSettingsChangedEvent>().Publish(settings);
@@ -95,7 +93,7 @@ namespace TrackingServer.Controllers
 
             Logger.Info($"Updated settings for remote interaction prcoessing to {settings.GetRemoteProcessingServiceSettingsString()}ms by {typeof(ProcessingController).FullName}.");
 
-            return new ActionResult<RemoteProcessingServiceSettings>(settings);
+            return new ActionResult<RemoteProcessingServiceSettings?>(settings);
         }
 
         // PUT: api/Processing/SelectObserverType

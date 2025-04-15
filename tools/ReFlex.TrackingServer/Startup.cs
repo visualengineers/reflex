@@ -265,9 +265,9 @@ namespace TrackingServer
             var logService = new LogDataProviderService(_evtAggregator);
             _logger.Trace($"Created {typeof(LogDataProviderService).FullName} instance.");
 
-            var path = Configuration.GetSection("TrackingServerAppSettings").Value;
-            var defaultPath = Configuration.GetSection("TrackingServerAppSettings_Default").Value;
-            var backupPath = Configuration.GetSection("TrackingServerAppSettings_Backup").Value;
+            var path = Configuration.GetSection("TrackingServerAppSettings").Value ?? "";
+            var defaultPath = Configuration.GetSection("TrackingServerAppSettings_Default").Value ?? "";
+            var backupPath = Configuration.GetSection("TrackingServerAppSettings_Backup").Value ?? "";
             var configManager = new ConfigurationManager(_env, _evtAggregator, path, defaultPath, backupPath);
             _logger.Trace($"Created {typeof(ConfigurationManager).FullName} instance.");
 
