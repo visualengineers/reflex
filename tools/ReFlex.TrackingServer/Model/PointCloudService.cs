@@ -79,7 +79,7 @@ namespace TrackingServer.Model {
               }
               var step = array.Length / shrunkSize;
 
-              if (step >= 1)
+              if (step <= 1)
               {
                 return array;
               }
