@@ -83,20 +83,20 @@ namespace ReFlex.Sensor.EmulatorModule
                 Logger.Log(LogLevel.Error, $"Cannot {nameof(StopRecording)} for {GetType().Name}: No valid Camera set for recording.");
                 return "";
             }
-            
+
             _recordingCamera.DepthImageReady -= SaveImage;
             Logger.Log(LogLevel.Info, $"Successfully Recorded {FrameId + 1} frames from {_recordingCamera?.ModelDescription} with Config {_recordingCamera?.StreamParameter?.Description}");
 
             IsRecording = false;
-            
+
             RecordingStateUpdated?.Invoke(this, new RecordingStateUpdate(RecordingState.Stopped, (int) FrameId, SessionName));
 
             FrameId = 0;
 
-            return JsonConvert.SerializeObject(_sessionParams);
+            return await Task.Run(() => JsonConvert.SerializeObject(_sessionParams));
         }
 
-        
+
 
         private void SaveImage(object sender, ImageByteArray cameraData)
         {
@@ -106,24 +106,24 @@ namespace ReFlex.Sensor.EmulatorModule
 
             var fileName = $"{_sessionDir}/{id}.{_extension}";
 
-            
 
-            Task.Run(() => {
+
+            Task.Run(async () => {
 
                 switch (cameraData.Format)
                 {
                     case DepthImageFormat.Greyccale48bpp:
-                        SaveAsync<Rgb48>(fileName, cameraData);
+                        await SaveAsync<Rgb48>(fileName, cameraData);
                         break;
                     case DepthImageFormat.Greyscale8bpp:
-                        SaveAsync<L8>(fileName, cameraData);
+                        await SaveAsync<L8>(fileName, cameraData);
                         break;
-                    case DepthImageFormat.Rgb24bpp:                                           
+                    case DepthImageFormat.Rgb24bpp:
                     default:
-                        SaveAsync<Rgb24>(fileName, cameraData);
+                        await SaveAsync<Rgb24>(fileName, cameraData);
                         break;
                 }
-            });
+            }).Wait();
         }
 
         private async Task<bool> SaveAsync<T>(string fileName, ImageByteArray cameraData) where T: unmanaged, IPixel<T>

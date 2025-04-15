@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ReFlex.Core.Common.Components;
-using TrackingServer.Data.Calibration;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Calibration;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Model;
 
 namespace TrackingServer.Controllers
@@ -102,7 +102,7 @@ namespace TrackingServer.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<FrameSizeDefinition> UpdateFrameSize([FromBody] FrameSizeDefinition size)
+        public ActionResult<FrameSizeDefinition> UpdateFrameSize([FromBody] FrameSizeDefinition? size)
         {
             if (size == null)
                 return BadRequest(

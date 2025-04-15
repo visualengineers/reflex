@@ -10,26 +10,30 @@ namespace ReFlex.Core.Interactivity.Util;
 public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessorService
 {
     public bool IsConnected { get; private set; }
-    public bool IsBusy { get; } 
-    
+    public bool IsBusy { get; }
+
     public bool SendCompleteDataset { get; set; }
     public async Task<bool> Connect()
     {
-        IsConnected = true;
+        await Task.Run(() => IsConnected = true);
         return IsConnected;
     }
 
     public async Task<bool> Disconnect()
     {
-        IsConnected = false;
+        await Task.Run(() => IsConnected = false);
         return IsConnected;
     }
 
     public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance measurement, bool measurePerformance)
     {
+      var result = new List<Interaction>();
+
+      await Task.Run(() =>
+      {
         var rX = new Random().Next(pointCloud.SizeX) / pointCloud.SizeX;
         var rY = new Random().Next(pointCloud.SizeY) / pointCloud.SizeY;
-        
+
         measurement.Smoothing = TimeSpan.Zero;
         measurement.Preparation = TimeSpan.Zero;
         measurement.Update = TimeSpan.Zero;
@@ -37,6 +41,9 @@ public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessor
         measurement.ConvertDepthValue = TimeSpan.Zero;
 
         var interaction = new Interaction(new Point3(rX, rY, 0.1f), InteractionType.Push, 20);
-        return new Tuple<IList<Interaction>, ProcessPerformance>(new List<Interaction>() { interaction }, measurement);
+        result.Add(interaction);
+      });
+      
+      return new Tuple<IList<Interaction>, ProcessPerformance>(result, measurement);
     }
 }

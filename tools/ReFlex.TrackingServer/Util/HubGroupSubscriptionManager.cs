@@ -37,9 +37,9 @@ namespace TrackingServer.Util
 
     public class HubGroupSubscriptionManager<TResult> : HubGroupSubscriptionManager
     {
-        private IObservable<TResult> _observable;
+        private IObservable<TResult>? _observable;
 
-        public HubGroupSubscriptionManager(IObservable<TResult> observable, string name) : base(name)
+        public HubGroupSubscriptionManager(IObservable<TResult>? observable, string name) : base(name)
         {
             _observable = observable;
         }

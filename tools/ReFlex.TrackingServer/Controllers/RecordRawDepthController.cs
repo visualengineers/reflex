@@ -18,10 +18,10 @@ namespace TrackingServer.Controllers
 
         private const int NumSamples = 10;
         public const string SavePath = "wwwroot/measurements/";
-        
+
         private static int _recordId = 0;
         private static int _sampleIdx = 0;
-        
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public RecordRawDepthController(IDepthImageManager depthImgMgr, IFilterManager filterMgr)
@@ -36,7 +36,7 @@ namespace TrackingServer.Controllers
             }
         }
 
-        private async void StartSaveSample(object sender, DepthCameraFrame e)
+        private async void StartSaveSample(object? sender, DepthCameraFrame e)
         {
             await SaveSample(e);
         }
@@ -45,18 +45,18 @@ namespace TrackingServer.Controllers
         [Route("IsCapturing")]
         [HttpGet]
         public bool IsCapturing() => _isRecording;
-        
+
         // GET: api/RecordRawDepth/CurrentRecordId
         [Route("CurrentRecordId")]
         [HttpGet]
         public int CurrentRecordId() => _recordId;
-        
+
         // GET: api/RecordRawDepth/CurrentSampleIdx
         [Route("CurrentSampleIdx")]
         [HttpGet]
         public int CurrentSampleIdx() => _sampleIdx;
 
-        
+
         // PUT: api/RecordRawDepth/RecordSamples
         [HttpPut("RecordSamples")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -72,13 +72,13 @@ namespace TrackingServer.Controllers
                 }
 
                 Directory.CreateDirectory(dir);
-                
+
                 Logger.Info($"Started Recording with Id {_recordId} to directory {dir}");
             }
 
             return new ActionResult<JsonSimpleValue<int>>(new JsonSimpleValue<int>{ Name = "RecordId", Value = _recordId});
         }
-        
+
         private async Task SaveSample(DepthCameraFrame e)
         {
             if (!_isRecording)
@@ -94,10 +94,10 @@ namespace TrackingServer.Controllers
             var rawData = pCloud.AsJaggedArray();
 
             var saveData = new List<Point3Indexed>();
-            
+
             Logger.Debug($"Saving Depth image with {rawData.Length} cols.");
-            
-            for (var col = 0; col < rawData.Length; col++) 
+
+            for (var col = 0; col < rawData.Length; col++)
             {
                 var lineData = new List<Point3Indexed>();
                 var line = rawData[col];
@@ -106,7 +106,7 @@ namespace TrackingServer.Controllers
                 {
                     lineData.Add(new Point3Indexed(line[row], col, row));
                 }
-                
+
                 saveData.AddRange(lineData);
             }
 
@@ -114,7 +114,7 @@ namespace TrackingServer.Controllers
             if (_sampleIdx >= NumSamples) {
                  _sampleIdx = 0;
                  _isRecording = false;
-                 
+
                  Logger.Info($"Completed Recording with Id {_recordId} to directory {SavePath}{_recordId} containing {NumSamples} depth image samples.");
             }
         }

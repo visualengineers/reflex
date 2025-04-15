@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NLog;
-using TrackingServer.Data.Log;
+using ReFlex.Server.Data.Log;
 using TrackingServer.Model;
 using TrackingServer.Util.JsonFormats;
 using LogLevel = NLog.LogLevel;
 
 namespace TrackingServer.Controllers
 {
-    
+
 
     [Route("api/[controller]")]
     [ApiController]
@@ -16,7 +16,7 @@ namespace TrackingServer.Controllers
 
         private readonly LogDataProviderService _logService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
         public LogController(LogDataProviderService logService)
         {
             _logService = logService;
@@ -35,7 +35,7 @@ namespace TrackingServer.Controllers
         {
             return _logService.GetMessages(startIndex);
         }
-        
+
         // POST: api/Log/Add
         [HttpPost]
         [Route("Add")]

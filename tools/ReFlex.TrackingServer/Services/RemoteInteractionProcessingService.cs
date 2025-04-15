@@ -6,7 +6,7 @@ using ReFlex.Core.Common.Util;
 using ReFlex.Core.Interactivity.Interfaces;
 using ReFlex.gRpc;
 using ServiceStack;
-using TrackingServer.Data.Config;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Events;
 using static System.Enum;
 using ConfigurationManager = TrackingServer.Model.ConfigurationManager;
@@ -19,12 +19,12 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private readonly Stopwatch _stopWatch = new();
-    
-    private InteractionProcessing.InteractionProcessingClient _client;
-    private GrpcChannel _channel;
+
+    private InteractionProcessing.InteractionProcessingClient? _client;
+    private GrpcChannel? _channel;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
-    private readonly IEventAggregator _eventAggregator;
+    private readonly IEventAggregator? _eventAggregator;
 
     public bool IsConnected { get; private set; }
 
@@ -36,22 +36,29 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         set => _config.CompleteDataSet = value;
     }
 
-    public RemoteInteractionProcessingService(ConfigurationManager configManager, IEventAggregator eventAggregator)
+    public RemoteInteractionProcessingService(ConfigurationManager configManager, IEventAggregator? eventAggregator)
     {
         _configMgr = configManager;
         _eventAggregator = eventAggregator;
-        eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Subscribe(SaveSettings);
-        eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Subscribe(LoadSettings);
-        eventAggregator.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Subscribe(OnSettingsChanged);
+        eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Subscribe(SaveSettings);
+        eventAggregator?.GetEvent<RequestLoadSettingsEvent>()?.Subscribe(LoadSettings);
+        eventAggregator?.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Subscribe(OnSettingsChanged);
     }
 
     public async void Dispose()
     {
+      try
+      {
         await Disconnect();
-        
-        _eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
-        _eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
-        _eventAggregator.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Unsubscribe(OnSettingsChanged);
+
+        _eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
+        _eventAggregator?.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
+        _eventAggregator?.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Unsubscribe(OnSettingsChanged);
+      }
+      catch (Exception e)
+      {
+        Logger.Error(e, $"Error while disconnect from {nameof(RemoteInteractionProcessingService)}");
+      }
     }
 
 
@@ -61,11 +68,11 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         {
             return false;
         }
-        
+
         try
         {
             IsBusy = true;
-            
+
             // The port number must match the port of the gRPC server.
             _channel = GrpcChannel.ForAddress(_config.Address);
             _client = new InteractionProcessing.InteractionProcessingClient(_channel);
@@ -80,7 +87,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsConnected = false;
             ResetState();
         }
-        
+
         return IsConnected;
     }
 
@@ -106,7 +113,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             _client = null;
             _channel?.Dispose();
         }
-        
+
         return IsConnected;
     }
 
@@ -114,12 +121,18 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     {
         var result = new List<Interaction>();
 
+        if (_client == null)
+        {
+          Logger.Warn($"{nameof(RemoteInteractionProcessingService)} not correctly initialized, {nameof(_client)} is null");
+          return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+        }
+
         if (IsBusy)
         {
             Logger.Warn("Processor is busy: skipping request.");
             return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
         }
-        
+
         IsBusy = true;
 
         try
@@ -142,14 +155,14 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 performance.Preparation = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-        
+
             if (doMeasure)
             {
                 _stopWatch.Start();
             }
 
             var reply = await _client.ComputeInteractionsAsync(values);
-            
+
             if (doMeasure)
             {
                 _stopWatch.Stop();
@@ -160,7 +173,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             Logger.Info($"Received Interactions from gRPC client on address: {_config.Address}");
 
             result = reply.Interactions.ToList().ConvertAll(i => ConvertInteraction(points, i, mapping));
-            
+
             Logger.Info($"Interactions: {result}");
         }
         catch (Exception e)
@@ -172,11 +185,11 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         {
             IsBusy = false;
         }
-        
+
         return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
     }
 
-    public async void StartService()
+    public async Task StartService()
     {
         await Disconnect();
         await Connect();
@@ -210,9 +223,9 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         for (var i = 0; i < points.Length; i++)
         {
             var p = points[i];
-            if (p.IsFiltered || !p.IsValid) 
+            if (p.IsFiltered || !p.IsValid)
                 continue;
-            
+
             values[cleanedIdx] = i;
             depthValues.Z.Add(p.Z);
             cleanedIdx++;
@@ -224,12 +237,12 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     private PointCloud3d ConvertPointCloud(Point3[][] data)
     {
         var result = new PointCloud3d();
-            
-        for (var x_i = 0; x_i < data.Length; x_i++)
+
+        for (var x = 0; x < data.Length; x++)
         {
-            for (var y_i = 0; y_i < data[x_i].Length; y_i++)
+            for (var y = 0; y < data[x].Length; y++)
             {
-                var p3 = data[x_i][y_i];
+                var p3 = data[x][y];
                 if (!SendCompleteDataset && (p3.IsFiltered || !p3.IsValid))
                     continue;
 
@@ -240,15 +253,15 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                     X = p3.X,
                     Y = p3.Y,
                     Z = p3.Z,
-                    IX = x_i,
-                    IY = y_i
+                    IX = x,
+                    IY = y
                 };
-                
+
                 result.Points.Add(p3d);
             }
         }
         result.SizeZ = result.Points.Count;
-        
+
         return result;
     }
 
@@ -259,15 +272,15 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         {
             type = (ReFlex.Core.Common.Util.InteractionType) interaction.Type.ConvertTo<int>();
         }
-        
-        var reconstructedIndex = SendCompleteDataset || mapping.Length <= interaction.PointIdx 
-            ? interaction.PointIdx 
+
+        var reconstructedIndex = SendCompleteDataset || mapping.Length <= interaction.PointIdx
+            ? interaction.PointIdx
             // reconstruct former index from saved mapping
             : mapping[interaction.PointIdx];
 
         var point = points[reconstructedIndex];
         point.Z = interaction.Z;
-        
+
         return new Interaction
         {
             TouchId = interaction.TouchId,
@@ -284,54 +297,57 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         if (!IsConnected)
             IsBusy = false;
     }
-    
+
     private async void LoadSettings()
     {
         _config = _configMgr.Settings.RemoteProcessingServiceSettingsValues;
 
         if (_configMgr.Settings.IsAutoStartEnabled)
         {
-           StartService();
+           await Task.Run(StartService);
         }
 
         Logger.Info($"Loaded Settings for {GetType().FullName}. Connecting to '{_config.Address}'... ");
     }
-    
+
     private async void OnSettingsChanged(RemoteProcessingServiceSettings cfg)
     {
-        if (cfg == null)
-            return;
-        
-        if (!Equals(cfg?.Address, _config?.Address) && IsConnected)
+      try
+      {
+        if (!Equals(cfg.Address, _config.Address) && IsConnected)
         {
-            await Disconnect();
-            _config = cfg;
-            return;
+          await Disconnect();
+          _config = cfg;
+          return;
         }
 
-        if (IsConnected)
+        if (_client != null && IsConnected)
         {
-            var configRequest = new ConfigRequest
-            {
-                Cutoff = (float)cfg.CutOff,
-                Factor = (float)cfg.Factor
-                // Algorithm = cfg.Algorithm
-            };
+          var configRequest = new ConfigRequest
+          {
+            Cutoff = (float)cfg.CutOff,
+            Factor = (float)cfg.Factor
+            // Algorithm = cfg.Algorithm
+          };
 
-            var changesDetected =
-                _config != null &&
-                (Math.Abs(_config.CutOff - cfg.CutOff) > float.Epsilon ||
-                 Math.Abs(_config.Factor - cfg.CutOff) > float.Epsilon);
-            
-            if (changesDetected)
-            {
-                var response = await _client.ConfigureAsync(configRequest);
-                Logger.Info(
-                    $"Updated configruation of {nameof(RemoteInteractionProcessingService)} with values: {cfg.GetRemoteProcessingServiceSettingsString()}. response: {response}");
-            }
+          var changesDetected =
+            (Math.Abs(_config.CutOff - cfg.CutOff) > float.Epsilon ||
+             Math.Abs(_config.Factor - cfg.CutOff) > float.Epsilon);
+
+          if (changesDetected)
+          {
+            var response = await _client.ConfigureAsync(configRequest);
+            Logger.Info(
+              $"Updated configruation of {nameof(RemoteInteractionProcessingService)} with values: {cfg.GetRemoteProcessingServiceSettingsString()}. response: {response}");
+          }
         }
 
         _config = cfg;
+      }
+      catch (Exception e)
+      {
+        Logger.Error(e);
+      }
     }
 
     private void SaveSettings()

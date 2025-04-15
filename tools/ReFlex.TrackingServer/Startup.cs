@@ -13,7 +13,7 @@ using ReFlex.Core.Common.Util;
 using ReFlex.Core.Tuio;
 using ReFlex.Core.Tuio.Interfaces;
 using ReFlex.Sensor.EmulatorModule;
-using TrackingServer.Data.Version;
+using ReFlex.Server.Data.Version;
 using TrackingServer.Events;
 using TrackingServer.Hubs;
 using TrackingServer.Model;
@@ -34,11 +34,11 @@ namespace TrackingServer
         public Startup(IWebHostEnvironment env)
         {
             _logger.Trace($"Startup...");
-            
+
             _logger.Debug($"Current Environment: {env.EnvironmentName}: IsDevelopment={env.IsDevelopment()}");
 
             var settingsFile = $"appsettings.{env.EnvironmentName}.json";
-            
+
             _logger.Debug($"using settings file {settingsFile}.");
 
             var builder = new ConfigurationBuilder()
@@ -46,7 +46,7 @@ namespace TrackingServer
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-        
+
             Configuration = builder.AddCommandLine(Environment.GetCommandLineArgs()).Build();
 
             _logger.Info($"Current Configuration: {Configuration}");
@@ -59,15 +59,15 @@ namespace TrackingServer
                 type == typeof(LogEventAggregatorTarget)
                     ? new LogEventAggregatorTarget(_evtAggregator)
                     : Activator.CreateInstance(type);
-            
+
             _logger.Trace($"Configured NLog for DI");
 
             LogManager.Configuration = new NLogLoggingConfiguration(Configuration.GetSection("NLog"));
-        
+
             // Reload Configuration to make changes work
             LogManager.Configuration = LogManager.Configuration.Reload();
             _logger.Trace($"Reloaded NLog configuration");
-        
+
             _logger.Trace($"Request Load App Settings");
             _evtAggregator.GetEvent<RequestLoadSettingsEvent>().Publish();
         }
@@ -88,12 +88,12 @@ namespace TrackingServer
                         .AllowCredentials();
                 });
             });
-            
-            
+
+
             services.AddControllersWithViews().AddNewtonsoftJson(op =>
                 op.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             _logger.Trace($"Configured Json Serialization Properties...");
-            
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
 
@@ -114,7 +114,7 @@ namespace TrackingServer
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             _logger.Trace($"Configuring HTTP request pipeline for application...");
-            
+
             app.UseCors();
 
             if (env.IsDevelopment())
@@ -130,7 +130,7 @@ namespace TrackingServer
 
             app.UseHttpContext();
 
-            // we use insecure gRpc communication - therefore redirection is not possible (redirection is always site-wide 
+            // we use insecure gRpc communication - therefore redirection is not possible (redirection is always site-wide
             // app.UseHttpsRedirection();
             _logger.Trace($"Disabling HTTPS redirection for compatibility with gRPC services.");
 
@@ -157,13 +157,13 @@ namespace TrackingServer
 
             app.UseDepthImageReceiverSocket();
             _logger.Trace($"Configured DepthImageReceiverSocket");
-            
+
             _logger.Trace($"Configuring endpoints...");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<PointCloudHub>("/pointcloudhub");
                 _logger.Trace($"Registered endpoint '/pointcloudhub' for {typeof(PointCloudHub).FullName}.");
-                
+
                 endpoints.MapHub<TrackingHub>("/trkhub");
                 _logger.Trace($"Registered endpoint '/trkhub' for {typeof(TrackingHub).FullName}.");
 
@@ -186,7 +186,7 @@ namespace TrackingServer
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 _logger.Trace($"Registered defualt controller routes follwoing pattern: '{{controller}}/{{action=Index}}/{{id?}}'.");
-                
+
                 endpoints.MapGrpcService<GreeterService>();
                 _logger.Trace($"Registered gRPC Service for {typeof(GreeterService).FullName}.");
 
@@ -205,16 +205,16 @@ namespace TrackingServer
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
-            
+
             _logger.Trace($"Initialize services...");
-            
+
             var serviceProvider = app.ApplicationServices;
             serviceProvider.GetService<ProcessingService>()?.Init();
             _logger.Trace($"Initialized {typeof(ProcessingService).FullName}.");
 
             serviceProvider.GetService<NetworkingService>()?.Init();
             _logger.Trace($"Initialized {typeof(NetworkingService).FullName}.");
-            
+
             serviceProvider.GetService<TrackingService>()?.Init();
             _logger.Trace($"Initialized {typeof(TrackingService).FullName}.");
 
@@ -223,7 +223,7 @@ namespace TrackingServer
 
             serviceProvider.GetService<SettingsService>()?.Init();
             _logger.Trace($"Initialized {typeof(SettingsService).FullName}.");
-            
+
             // if development mode / when running as web app: disable electron (set as commandLineArg in launchSettings.json
             if (Configuration.GetValue<bool>("DisableElectron"))
             {
@@ -234,7 +234,7 @@ namespace TrackingServer
 
                 Electron.App.CommandLine.AppendSwitch("disable-http-cache");
                 Electron.App.CommandLine.AppendSwitch("ignore-certificate-errors", "true");
-            
+
                 _logger.Trace($"Configured Electron Options");
 
                 _logger.Trace($"Open Electron Window");
@@ -265,18 +265,13 @@ namespace TrackingServer
             var logService = new LogDataProviderService(_evtAggregator);
             _logger.Trace($"Created {typeof(LogDataProviderService).FullName} instance.");
 
-            var path = Configuration.GetSection("TrackingServerAppSettings").Value;
-            var defaultPath = Configuration.GetSection("TrackingServerAppSettings_Default").Value;
-            var backupPath = Configuration.GetSection("TrackingServerAppSettings_Backup").Value;
+            var path = Configuration.GetSection("TrackingServerAppSettings").Value ?? "";
+            var defaultPath = Configuration.GetSection("TrackingServerAppSettings_Default").Value ?? "";
+            var backupPath = Configuration.GetSection("TrackingServerAppSettings_Backup").Value ?? "";
             var configManager = new ConfigurationManager(_env, _evtAggregator, path, defaultPath, backupPath);
             _logger.Trace($"Created {typeof(ConfigurationManager).FullName} instance.");
 
             var settings = configManager.Settings;
-
-            if (settings == null)
-            {
-                _logger.Error($"Cannot retrieve settings in {nameof(Startup)}.{nameof(ConfigureTrackingServices)}. Using default values where possible.");
-            }
 
             services.AddSingleton(configManager);
             _logger.Trace($"Sucessfully registered {typeof(ConfigurationManager).FullName} [Singleton].");
@@ -291,39 +286,39 @@ namespace TrackingServer
 
             var filterManager = new FilterManager
             {
-                DefaultDistance = settings?.FilterSettingValues.DistanceValue.Default ?? 0f
+                DefaultDistance = settings.FilterSettingValues.DistanceValue.Default
             };
             performanceAggregator.RegisterReporter(filterManager);
             _logger.Trace($"Created {typeof(FilterManager).FullName} instance.");
-            
+
             // if (settings?.FilterSettingValues?.FilterMask != null)
             //     filterManager.Init(settings.FilterSettingValues.FilterMask);
-            
+
             var depthImageManager = new DepthImageManager(filterManager);
             _logger.Trace($"Created {typeof(DepthImageManager).FullName} instance.");
-            
+
             var networkManager = new NetworkManager(_evtAggregator);
             _logger.Trace($"Created {typeof(NetworkManager).FullName} instance.");
-            
+
             var interactionManager = new InteractionManager(depthImageManager, remoteProcessor, performanceAggregator);
             var type = settings?.ProcessingSettingValues.InteractionType ?? ObserverType.None;
             interactionManager.Init(type);
 
             _logger.Trace($"Created {typeof(InteractionManager).FullName} instance.");
-            
+
             var calibrator = new Calibrator();
             _logger.Trace($"Created {typeof(Calibrator).FullName} instance.");
-            
+
             var calibManager = new CalibrationManager();
             calibManager.Initialize(calibrator, settings?.CalibrationValues ?? new Calibration());
             _logger.Trace($"Created {typeof(CalibrationManager).FullName} instance.");
-            
+
             var timerLoop = new TimerLoop(networkManager, interactionManager, calibManager);
             _logger.Trace($"Created {typeof(TimerLoop).FullName} instance.");
-        
+
             services.AddSingleton<Calibrator>(calibrator);
             _logger.Trace($"Sucessfully registered {typeof(Calibrator).FullName} [Singleton].");
-            
+
             services.AddSingleton<IEventAggregator>(_evtAggregator);
             _logger.Trace($"Sucessfully registered {typeof(IEventAggregator).FullName} [Singleton].");
 
@@ -332,37 +327,37 @@ namespace TrackingServer
 
             services.AddSingleton<IFilterManager>(filterManager);
             _logger.Trace($"Sucessfully registered {typeof(IFilterManager).FullName} [Singleton].");
-            
+
             services.AddSingleton<INetworkManager>(networkManager);
             _logger.Trace($"Sucessfully registered {typeof(INetworkManager).FullName} [Singleton].");
-            
+
             services.AddSingleton<ICalibrationManager>(calibManager);
             _logger.Trace($"Sucessfully registered {typeof(ICalibrationManager).FullName} [Singleton].");
-            
+
             services.AddSingleton<IInteractionManager>(interactionManager);
             _logger.Trace($"Sucessfully registered {typeof(IInteractionManager).FullName} [Singleton].");
-            
+
             services.AddSingleton<ITimerLoop>(timerLoop);
             _logger.Trace($"Sucessfully registered {typeof(ITimerLoop).FullName} [Singleton].");
 
             services.AddSingleton<LogDataProviderService>(logService);
             _logger.Trace($"Sucessfully registered {typeof(LogDataProviderService).FullName} [Singleton].");
-            
+
             services.AddSingleton<PerformanceService>();
             _logger.Trace($"Sucessfully registered {typeof(PerformanceService).FullName} [Singleton].");
-            
+
             services.AddSingleton<PointCloudService>();
             _logger.Trace($"Sucessfully registered {typeof(PointCloudService).FullName} [Singleton].");
-            
+
             services.AddSingleton<TrackingService>();
             _logger.Trace($"Sucessfully registered {typeof(TrackingService).FullName} [Singleton].");
-            
+
             services.AddSingleton<ProcessingService>();
             _logger.Trace($"Sucessfully registered {typeof(ProcessingService).FullName} [Singleton].");
-            
+
             services.AddSingleton<NetworkingService>();
             _logger.Trace($"Sucessfully registered {typeof(NetworkingService).FullName} [Singleton].");
-            
+
             services.AddSingleton<CalibrationService>();
             _logger.Trace($"Sucessfully registered {typeof(CalibrationService).FullName} [Singleton].");
 
@@ -382,7 +377,7 @@ namespace TrackingServer
             _logger.Trace($"Sucessfully registered {typeof(DepthImageService).FullName} [Singleton].");
 
             services.AddSingleton<ITuioBroadcast>(new TuioBroadcast());
-            
+
             services.AddSingleton<TuioService>();
             _logger.Trace($"Sucessfully registered {typeof(TuioService).FullName} [Singleton].");
 
@@ -390,7 +385,7 @@ namespace TrackingServer
             _logger.Trace($"Sucessfully registered {typeof(SettingsService).FullName} [Singleton].");
 
             _logger.Info($"Sucessfully registered Types for server application.");
-            
+
             // if (configManager.Settings.IsAutoStartEnabled)
             //     _evtAggregator.GetEvent<RequestServiceRestart>().Publish();
         }

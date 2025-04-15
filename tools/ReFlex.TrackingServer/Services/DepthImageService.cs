@@ -14,48 +14,48 @@ namespace TrackingServer.Services
     {
         private readonly IDepthImageManager _depthImageManager;
 
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventAggregator? _eventAggregator;
 
-        private static IObservable<ImageByteArray> _encodedRawData;
+        private static IObservable<ImageByteArray>? _encodedRawData;
 
-        private static IObservable<PointCloud3> _encodedPointCloud;
+        private static IObservable<PointCloud3>? _encodedPointCloud;
 
-        private static bool streamDepthImage = false;
+        private static bool _streamDepthImage;
 
-        private static bool streamPointCloud = false;
+        private static bool _streamPointCloud;
 
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static float MinZ { get; set; } = 0.5f;
 
         public static float RangeZ { get; set; } = 1f;
 
         public bool EnableRawDataStream() {
-            streamDepthImage = true;
-            return streamDepthImage;
+            _streamDepthImage = true;
+            return _streamDepthImage;
         }
 
         public bool DisableRawDataStream() {
-            streamDepthImage = false;
-            return streamDepthImage;
+            _streamDepthImage = false;
+            return _streamDepthImage;
         }
 
         public bool EnablePointCloudStream() {
-            streamPointCloud = true;
-            return streamPointCloud;
+            _streamPointCloud = true;
+            return _streamPointCloud;
         }
 
         public bool DisablePointCloudStream() {
-            streamPointCloud = false;
-            return streamPointCloud;
+            _streamPointCloud = false;
+            return _streamPointCloud;
         }
 
-        public DepthImageService(IDepthImageManager depthImageManager, IEventAggregator eventAggregator)
+        public DepthImageService(IDepthImageManager depthImageManager, IEventAggregator? eventAggregator)
         {
             _eventAggregator = eventAggregator;
             _depthImageManager = depthImageManager;
 
-            _eventAggregator.GetEvent<ServerSettingsUpdatedEvent>().Subscribe(
+            _eventAggregator?.GetEvent<ServerSettingsUpdatedEvent>().Subscribe(
                 settings =>
                 {
                     MinZ = settings.FilterSettingValues.DistanceValue.Default - settings.FilterSettingValues.DistanceValue.Max;
@@ -72,14 +72,14 @@ namespace TrackingServer.Services
 
             _encodedRawData = depthImageObservable
                 .Sample(TimeSpan.FromMilliseconds(100))
-                .SkipWhile(evt => !streamDepthImage)
+                .SkipWhile(_ => !_streamDepthImage)
                 .Select(evt => evt.EventArgs)
                 .Publish()
                 .RefCount();
 
             _encodedPointCloud = filteredPointCloudObservable
                 .Sample(TimeSpan.FromMilliseconds(100))
-                .SkipWhile(evt => !streamPointCloud)
+                .SkipWhile(_ => !_streamPointCloud)
                 .Select(evt => evt.EventArgs)
                 .Publish()
                 .RefCount();
@@ -99,13 +99,15 @@ namespace TrackingServer.Services
             {
                 try
                 {
-                    var streamedImageData = await _encodedRawData.FirstAsync();
+                  if (_encodedRawData == null)
+                    continue;
+                  var streamedImageData = await _encodedRawData.FirstAsync();
 
-                    var sendImage = await StreamDataConverter.ConvertRawBytesToJpeg(streamedImageData);
+                  var sendImage = await StreamDataConverter.ConvertRawBytesToJpeg(streamedImageData);
 
-                    var modifiedData = StreamDataConverter.EncodeImageData(sendImage, "data:image/jpeg;base64,");
+                  var modifiedData = StreamDataConverter.EncodeImageData(sendImage, "data:image/jpeg;base64,");
 
-                    await webSocket.SendAsync(new ArraySegment<byte>(modifiedData, 0, modifiedData.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
+                  await webSocket.SendAsync(new ArraySegment<byte>(modifiedData, 0, modifiedData.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
                 catch (Exception exc)
                 {
@@ -136,32 +138,35 @@ namespace TrackingServer.Services
             {
                 try
                 {
-                    var pCloud = await _encodedPointCloud.FirstAsync();
-                    var span = pCloud.AsMemory();
+                  if (_encodedPointCloud == null)
+                    continue;
 
-                    var converted = new byte[pCloud.Size * 3].AsMemory();
+                  var pCloud = await _encodedPointCloud.FirstAsync();
+                  var span = pCloud.AsMemory();
 
-                    for (var i = 0; i < pCloud.Size; i++)
+                  var converted = new byte[pCloud.Size * 3].AsMemory();
+
+                  for (var i = 0; i < pCloud.Size; i++)
+                  {
+                    byte z = 127;
+                    var point = span.Span[i];
+                    if (point.IsValid && !point.IsFiltered)
                     {
-                        byte z = 127;
-                        var point = span.Span[i];
-                        if (point.IsValid && !point.IsFiltered)
-                        {
-                            z = Convert.ToByte(Math.Clamp((point.Z - MinZ) / RangeZ, 0.0, 1.0) * 255);
-                        }
-
-                        converted.Span[i * 3] = z;
-                        converted.Span[i * 3 + 1] = z;
-                        converted.Span[i * 3 + 2] = z; ;
+                      z = Convert.ToByte(Math.Clamp((point.Z - MinZ) / RangeZ, 0.0, 1.0) * 255);
                     }
 
-                    var imageData = new ImageByteArray(converted.ToArray(), pCloud.SizeX, pCloud.SizeY, 1, 3);
+                    converted.Span[i * 3] = z;
+                    converted.Span[i * 3 + 1] = z;
+                    converted.Span[i * 3 + 2] = z;
+                  }
 
-                    var sendImage = await StreamDataConverter.ConvertRawBytesToJpeg(imageData);
+                  var imageData = new ImageByteArray(converted.ToArray(), pCloud.SizeX, pCloud.SizeY, 1, 3);
 
-                    var modifiedData = StreamDataConverter.EncodeImageData(sendImage, "data:image/jpeg;base64,");
+                  var sendImage = await StreamDataConverter.ConvertRawBytesToJpeg(imageData);
 
-                    await webSocket.SendAsync(new ArraySegment<byte>(modifiedData, 0, modifiedData.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
+                  var modifiedData = StreamDataConverter.EncodeImageData(sendImage, "data:image/jpeg;base64,");
+
+                  await webSocket.SendAsync(new ArraySegment<byte>(modifiedData, 0, modifiedData.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
                 catch (Exception exc)
                 {

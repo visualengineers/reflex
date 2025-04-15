@@ -4,8 +4,8 @@ using ReFlex.Core.Common.Util;
 using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Core.Tracking.Util;
 using ReFlex.Sensor.EmulatorModule;
-using TrackingServer.Data.Config;
-using TrackingServer.Data.Tracking;
+using ReFlex.Server.Data.Config;
+using ReFlex.Server.Data.Tracking;
 using TrackingServer.Model;
 using TrackingServer.Services;
 using ConfigurationManager = TrackingServer.Model.ConfigurationManager;
@@ -54,12 +54,12 @@ namespace TrackingServer.Controllers
 
         // GET: api/Tracking/{id}
         [HttpGet("{id:int}", Name = "Get")]
-        public IDepthCamera Get(int id) => _trackingService.GetCamera(id);
+        public IDepthCamera? Get(int id) => _trackingService.GetCamera(id);
 
         // GET: api/Status
         [Route("Status")]
         [HttpGet]
-        public TrackingConfigState GetStatus() => _trackingService.GetStatus();
+        public TrackingConfigState? GetStatus() => _trackingService.GetStatus();
 
         // PUT: api/Tracking/{id}
         [HttpPut("{id:int}")]
@@ -84,8 +84,8 @@ namespace TrackingServer.Controllers
             _trackingService.ToggleTracking(id, configIdx);
 
             var cam = GetSelectedCamera().ModelDescription;
-            var configList = GetConfigurations(id)?.ToList();
-            if (configList != null && configList.Count > configIdx)
+            var configList = GetConfigurations(id).ToList();
+            if (configList.Count > configIdx)
             {
                 var config = configList[configIdx];
 
@@ -98,7 +98,7 @@ namespace TrackingServer.Controllers
                 };
             }
 
-            Logger.Info($"Updated TrackingState for {_trackingService?.GetSelectedCamera()?.ModelDescription} to {_trackingService.GetStatus()} with Resolution {_trackingService?.GetSelectedCameraConfiguration()}.");
+            Logger.Info($"Updated TrackingState for {_trackingService.GetSelectedCamera().ModelDescription} to {_trackingService.GetStatus()} with Resolution {_trackingService.GetSelectedCameraConfiguration()}.");
 
             return new AcceptedResult();
         }
@@ -132,14 +132,14 @@ namespace TrackingServer.Controllers
         [HttpGet("Recordings")]
         public async Task<ActionResult<List<StreamParameter>>> GetRecordingsList()
         {
-            return RecordingUtils.RetrieveConfigurations().ToList();
+            return await Task.Run(() => RecordingUtils.RetrieveConfigurations().ToList());
         }
 
         // Put: api/Tracking/StartRecording/
         [HttpPut("StartRecording")]
         public ActionResult<string> StartRecording([FromBody] string name)
         {
-            if (!_trackingService.GetStatus().IsCameraSelected)
+            if (!_trackingService.GetStatus()?.IsCameraSelected ?? false)
             {
                 Logger.Log(LogLevel.Error, $"Cannot start recording: No Camera selected.");
                 return Forbid("");
@@ -209,7 +209,7 @@ namespace TrackingServer.Controllers
 
         // Get: api/Tracking/RecordingState/
         [HttpGet("RecordingState")]
-        public ActionResult<bool> RecordingState() => _recorder?.IsRecording;
+        public ActionResult<bool> RecordingState() => _recorder.IsRecording;
 
 
         // Get: api/Tracking/RecordingFrameCount/name
@@ -218,15 +218,12 @@ namespace TrackingServer.Controllers
 
         // Get: api/Tracking/GetAutostartEnabled/
         [HttpGet("GetAutostartEnabled")]
-        public ActionResult<bool> GetAutostartEnabled() => _configManager?.Settings.IsAutoStartEnabled ?? false;
+        public ActionResult<bool> GetAutostartEnabled() => _configManager.Settings.IsAutoStartEnabled;
 
         // Put: api/Tracking/SetAutostart/
         [HttpPut("SetAutostart")]
         public ActionResult<bool> SetAutostart([FromBody] bool autostartEnabled)
         {
-            if (_configManager?.Settings == null)
-                return Ok(false);
-
             _configManager.Settings.IsAutoStartEnabled = autostartEnabled;
 
             return Ok(_configManager.Settings.IsAutoStartEnabled);

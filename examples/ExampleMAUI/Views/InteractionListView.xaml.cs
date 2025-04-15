@@ -6,7 +6,7 @@ public partial class InteractionListView : ContentView
 {
   public InteractionListView()
   {
-    BindingContext = App.Services.GetService<InteractionListViewModel>();
+    BindingContext = App.Services?.GetService<InteractionListViewModel>();
 
     InitializeComponent();
   }
