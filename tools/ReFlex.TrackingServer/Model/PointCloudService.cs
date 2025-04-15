@@ -71,7 +71,6 @@ namespace TrackingServer.Model {
           _pointCloudObservable = pointCloudObservable
             .Sample(TimeSpan.FromMilliseconds(interval))
             .Select(evt => evt.EventArgs.AsArray())
-            // .Select(points => points.Where(p => !(System.Math.Abs(p.X) < TOLERANCE && System.Math.Abs(p.Y) < TOLERANCE )).ToArray()) // && Math.Abs(p.Z) < TOLERANCE
             .Select(array =>
             {
               if (!scaleDown || shrunkSize <= 0 || array.Length <= shrunkSize) {
