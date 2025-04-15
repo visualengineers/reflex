@@ -6,7 +6,7 @@ public partial class InteractionVisualizationView : ContentView
 {
   public InteractionVisualizationView()
   {
-    BindingContext = App.Services.GetService<InteractionVisualizationViewModel>();
+    BindingContext = App.Services?.GetService<InteractionVisualizationViewModel>();
 
     InitializeComponent();
   }

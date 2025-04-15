@@ -70,6 +70,9 @@ namespace Emulator.Benchmark.Networking.Util
 
         public void Reset()
         {
+            if (Points == null)
+              return;
+
             var defaultValue = GetImageDefaultValue();
 
             for (int i = 0; i < Points.Length; ++i)
