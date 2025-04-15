@@ -4,10 +4,10 @@
     {
         public bool IsCameraSelected { get; set; }
 
-        public string SelectedCameraName { get; set; }
+        public string? SelectedCameraName { get; set; }
 
-        public string SelectedConfigurationName { get; set; }
+        public string? SelectedConfigurationName { get; set; }
 
-        public string DepthCameraStateName { get; set; }
+        public string? DepthCameraStateName { get; set; }
     }
 }

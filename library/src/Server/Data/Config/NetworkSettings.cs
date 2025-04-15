@@ -8,11 +8,11 @@ namespace ReFlex.Server.Data.Config
 
         public float Interval { get; set; }
 
-        public string Address { get; set; }
+        public string Address { get; set; } = "";
 
         public int Port { get; set; }
 
-        public string Endpoint { get; set; }
+        public string Endpoint { get; set; } = "";
 
         public string GetNetworksSettingsString()
         {

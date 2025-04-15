@@ -165,7 +165,7 @@ namespace TrackingServer.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<NetworkSettings> StartBroadcast([FromBody]NetworkSettings settings)
+        public ActionResult<NetworkSettings?> StartBroadcast([FromBody]NetworkSettings settings)
         {
             // if settings re provided: stop running server and update settings
             if (settings != null)
@@ -187,7 +187,7 @@ namespace TrackingServer.Controllers
 
             var currentSettings = _configManager.Settings.NetworkSettingValues;
             Logger.Info($"Networking started with Settings: {currentSettings.GetNetworksSettingsString()}. No changes made in {typeof(NetworkController).FullName}.{nameof(StartBroadcast)}.");
-            return new ActionResult<NetworkSettings>(currentSettings);
+            return new ActionResult<NetworkSettings?>(currentSettings);
         }
 
         // PUT: api/Network/ToggleNetworking

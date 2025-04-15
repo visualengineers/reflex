@@ -24,7 +24,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     private GrpcChannel? _channel;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
-    private readonly IEventAggregator _eventAggregator;
+    private readonly IEventAggregator? _eventAggregator;
 
     public bool IsConnected { get; private set; }
 
@@ -36,13 +36,13 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         set => _config.CompleteDataSet = value;
     }
 
-    public RemoteInteractionProcessingService(ConfigurationManager configManager, IEventAggregator eventAggregator)
+    public RemoteInteractionProcessingService(ConfigurationManager configManager, IEventAggregator? eventAggregator)
     {
         _configMgr = configManager;
         _eventAggregator = eventAggregator;
-        eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Subscribe(SaveSettings);
-        eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Subscribe(LoadSettings);
-        eventAggregator.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Subscribe(OnSettingsChanged);
+        eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Subscribe(SaveSettings);
+        eventAggregator?.GetEvent<RequestLoadSettingsEvent>()?.Subscribe(LoadSettings);
+        eventAggregator?.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Subscribe(OnSettingsChanged);
     }
 
     public async void Dispose()
@@ -51,9 +51,9 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
       {
         await Disconnect();
 
-        _eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
-        _eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
-        _eventAggregator.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Unsubscribe(OnSettingsChanged);
+        _eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
+        _eventAggregator?.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
+        _eventAggregator?.GetEvent<RemoteProcessingSettingsChangedEvent>()?.Unsubscribe(OnSettingsChanged);
       }
       catch (Exception e)
       {

@@ -11,7 +11,7 @@ namespace TrackingServer.Controllers
     public class WebsocketController : Controller
     {
         private readonly ILogger<WebsocketController> _logger;
-        private WebSocket _ws;
+        private WebSocket? _ws;
         private readonly ICalibrationManager _calib;
 
         public WebsocketController(ILogger<WebsocketController> logger, IInteractionManager interactionManager, ICalibrationManager calibrationManager)
@@ -49,8 +49,12 @@ namespace TrackingServer.Controllers
             }
         }
 
-        private async Task Echo(WebSocket webSocket)
+        private async Task Echo(WebSocket? webSocket)
         {
+            if (webSocket == null)
+              return;
+
+
             var buffer = new byte[1024 * 4];
             var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             _logger.Log(LogLevel.Information, "Message received from Client");

@@ -34,7 +34,7 @@ namespace TrackingServer.Model
 
         #region Properties
 
-        public IObservable<TrackingConfigState> State { get => CurrentState; }
+        public IObservable<TrackingConfigState?> State { get => CurrentState; }
 
         public IHubGroupSubscriptionManager RecordingStateManager => _recordingStateSubscriptions;
 
@@ -90,7 +90,7 @@ namespace TrackingServer.Model
             return new List<StreamParameter>();
         }
 
-        public IDepthCamera GetCamera(int id)
+        public IDepthCamera? GetCamera(int id)
         {
             if (id >= 0 && id < _depthCameras.Count)
                 return _depthCameras[id];
@@ -110,7 +110,7 @@ namespace TrackingServer.Model
             return _trackingMgr.ChosenStreamConfiguration;
         }
 
-        public TrackingConfigState GetStatus()
+        public TrackingConfigState? GetStatus()
         {
             return CurrentState.Value;
         }

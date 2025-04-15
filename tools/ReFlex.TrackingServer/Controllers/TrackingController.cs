@@ -54,12 +54,12 @@ namespace TrackingServer.Controllers
 
         // GET: api/Tracking/{id}
         [HttpGet("{id:int}", Name = "Get")]
-        public IDepthCamera Get(int id) => _trackingService.GetCamera(id);
+        public IDepthCamera? Get(int id) => _trackingService.GetCamera(id);
 
         // GET: api/Status
         [Route("Status")]
         [HttpGet]
-        public TrackingConfigState GetStatus() => _trackingService.GetStatus();
+        public TrackingConfigState? GetStatus() => _trackingService.GetStatus();
 
         // PUT: api/Tracking/{id}
         [HttpPut("{id:int}")]
@@ -139,7 +139,7 @@ namespace TrackingServer.Controllers
         [HttpPut("StartRecording")]
         public ActionResult<string> StartRecording([FromBody] string name)
         {
-            if (!_trackingService.GetStatus().IsCameraSelected)
+            if (!_trackingService.GetStatus()?.IsCameraSelected ?? false)
             {
                 Logger.Log(LogLevel.Error, $"Cannot start recording: No Camera selected.");
                 return Forbid("");

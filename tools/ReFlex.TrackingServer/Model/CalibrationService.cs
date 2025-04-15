@@ -40,7 +40,7 @@ namespace TrackingServer.Model
 
         public string State
         {
-            get => CurrentState.Value;
+            get => CurrentState.Value ?? "";
         }
 
         public FrameSizeDefinition Frame =>
@@ -85,8 +85,13 @@ namespace TrackingServer.Model
             Logger.Info($"Sucessfully initialized {GetType().FullName}." );
         }
 
-        public FrameSizeDefinition SetWindowFrame(FrameSizeDefinition sizeDef)
+        public FrameSizeDefinition SetWindowFrame(FrameSizeDefinition? sizeDef)
         {
+            sizeDef ??= new FrameSizeDefinition
+            {
+              Width = 500, Height = 300, Left = 0, Top = 0
+            };
+
             _calibrator.SetFrameSize(
                 sizeDef.Width,
                 sizeDef.Height,

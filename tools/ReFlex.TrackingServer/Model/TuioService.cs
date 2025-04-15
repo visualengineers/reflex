@@ -18,7 +18,7 @@ namespace TrackingServer.Model
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IEventAggregator _eventAggregator;
-        private readonly ITuioBroadcast _tuioBroadcast;
+        private readonly ITuioBroadcast? _tuioBroadcast;
         private readonly ConfigurationManager _settingsManager;
         private readonly IInteractionManager _interactionManager;
         private readonly ITrackingManager _trackingManager;
@@ -31,14 +31,14 @@ namespace TrackingServer.Model
 
         private bool _isServerBroadcasting;
 
-        public event EventHandler<TuioPackageDetails> PackageDetailsUpdated;
+        public event EventHandler<TuioPackageDetails>? PackageDetailsUpdated;
 
         public string State
         {
-            get => CurrentState.Value;
+            get => CurrentState.Value ?? "";
         }
 
-        public TuioConfiguration Configuration { get; private set; }
+        public TuioConfiguration Configuration { get; private set; } = new();
 
         public bool IsTuioBroadcastingEnabled
         {
@@ -117,7 +117,7 @@ namespace TrackingServer.Model
 
         }
 
-        private void UpdateConfig(object sender, TrackingStateChangedEventArgs e)
+        private void UpdateConfig(object? sender, TrackingStateChangedEventArgs e)
         {
             Configuration.SensorDescription = e.Camera.ModelDescription;
 
@@ -170,10 +170,12 @@ namespace TrackingServer.Model
             _interactionManager.InteractionsUpdated += BroadcastTuio;
         }
 
-        private async void BroadcastTuio(object sender, IList<Interaction> interactions)
+        private async void BroadcastTuio(object? sender, IList<Interaction>? interactions)
         {
+          try
+          {
             if (_tuioBroadcast == null || interactions == null)
-                return;
+              return;
 
             var packageContent = await _tuioBroadcast.Broadcast(interactions.ToList());
             var frameId = _tuioBroadcast.FrameId;
@@ -181,10 +183,15 @@ namespace TrackingServer.Model
 
             _currentPackage.OnNext(new TuioPackageDetails
             {
-                PackageContent = packageContent,
-                FrameId = frameId,
-                SessionId = sessionId
+              PackageContent = packageContent,
+              FrameId = frameId,
+              SessionId = sessionId
             });
+          }
+          catch (Exception e)
+          {
+            Logger.Error(e);
+          }
         }
 
         public sealed override string GetState()
@@ -210,11 +217,12 @@ namespace TrackingServer.Model
         {
             base.Dispose();
 
-            ((IDisposable)_tuioBroadcast)?.Dispose();
+            if (_tuioBroadcast != null)
+              ((IDisposable)_tuioBroadcast)?.Dispose();
 
-            _eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
-            _eventAggregator?.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
-            _eventAggregator?.GetEvent<RequestServiceRestart>()?.Unsubscribe(StartService);
+            _eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
+            _eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
+            _eventAggregator.GetEvent<RequestServiceRestart>()?.Unsubscribe(StartService);
 
             _trackingManager.TrackingStateChanged -= UpdateConfig;
 

@@ -7,33 +7,33 @@ namespace TrackingServer.Hubs
     {
         public static readonly string PerformanceGroup = "PerformanceData";
         private readonly PerformanceService _performanceService;
-        
-        
+
+
         public PerformanceHub(PerformanceService performanceService)
         {
             _performanceService = performanceService;
         }
-        
-        public override async Task OnConnectedAsync() 
+
+        public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
             await StartCollectingData();
 
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await base.OnDisconnectedAsync(exception);
             await StopCollectingData();
         }
 
-        public async Task StartCollectingData() 
+        public async Task StartCollectingData()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, PerformanceGroup);
             _performanceService.SubscribePerformanceData(Context.ConnectionId);
         }
 
-        public async Task StopCollectingData() 
+        public async Task StopCollectingData()
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, PerformanceGroup);
             _performanceService.UnsubscribePerformanceData(Context.ConnectionId);

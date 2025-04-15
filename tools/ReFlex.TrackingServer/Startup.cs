@@ -273,11 +273,6 @@ namespace TrackingServer
 
             var settings = configManager.Settings;
 
-            if (settings == null)
-            {
-                _logger.Error($"Cannot retrieve settings in {nameof(Startup)}.{nameof(ConfigureTrackingServices)}. Using default values where possible.");
-            }
-
             services.AddSingleton(configManager);
             _logger.Trace($"Sucessfully registered {typeof(ConfigurationManager).FullName} [Singleton].");
 
@@ -291,7 +286,7 @@ namespace TrackingServer
 
             var filterManager = new FilterManager
             {
-                DefaultDistance = settings?.FilterSettingValues.DistanceValue.Default ?? 0f
+                DefaultDistance = settings.FilterSettingValues.DistanceValue.Default
             };
             performanceAggregator.RegisterReporter(filterManager);
             _logger.Trace($"Created {typeof(FilterManager).FullName} instance.");

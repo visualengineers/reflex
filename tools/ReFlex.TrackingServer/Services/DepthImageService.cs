@@ -14,7 +14,7 @@ namespace TrackingServer.Services
     {
         private readonly IDepthImageManager _depthImageManager;
 
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IEventAggregator? _eventAggregator;
 
         private static IObservable<ImageByteArray>? _encodedRawData;
 
@@ -50,12 +50,12 @@ namespace TrackingServer.Services
             return _streamPointCloud;
         }
 
-        public DepthImageService(IDepthImageManager depthImageManager, IEventAggregator eventAggregator)
+        public DepthImageService(IDepthImageManager depthImageManager, IEventAggregator? eventAggregator)
         {
             _eventAggregator = eventAggregator;
             _depthImageManager = depthImageManager;
 
-            _eventAggregator.GetEvent<ServerSettingsUpdatedEvent>().Subscribe(
+            _eventAggregator?.GetEvent<ServerSettingsUpdatedEvent>().Subscribe(
                 settings =>
                 {
                     MinZ = settings.FilterSettingValues.DistanceValue.Default - settings.FilterSettingValues.DistanceValue.Max;
