@@ -149,7 +149,6 @@ namespace ReFlex.Core.Common.Components
                     }
 
                     item.Filter = data.Filter;
-                    item.FrameStart = data.FrameStart;
                     _performanceData.Data.Add(item);
 
                 }
@@ -174,7 +173,8 @@ namespace ReFlex.Core.Common.Components
                     }
 
                     item.Process = data.Process;
-                    item.FrameEnd = DateTime.Now.Ticks;
+                    item.FrameStart = data.FrameStart;
+                    item.FrameEnd = data.FrameEnd;
                     _performanceData.Data.Add(item);
                 }
 

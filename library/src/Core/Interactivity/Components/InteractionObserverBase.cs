@@ -403,11 +403,11 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 FrameId = Convert.ToInt32(FrameId),
                 FrameStart = startTime,
+                FrameEnd = DateTime.Now.Ticks,
                 Process = perfItem,
                 Stage = PerformanceDataStage.ProcessingData
             };
 
-            pData.FrameEnd = DateTime.Now.Ticks;
             PerformanceDataUpdated?.Invoke(this, pData);
         }
 
