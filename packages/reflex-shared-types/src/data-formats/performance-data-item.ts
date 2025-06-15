@@ -2,6 +2,7 @@ export interface PerformanceDataItem {
   frameId: number;
   frameStart: number;
   frameEnd: number;
+  totalFrameTime: number;
   limitationFilter?: number;
   valueFilter?: number;
   thresholdFilter?: number;

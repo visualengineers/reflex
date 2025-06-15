@@ -42,6 +42,8 @@ namespace TrackingServer.Model
                 Data = data.Data.Select(item => new PerformanceDataItemConverted
                 {
                     FrameId = item.FrameId,
+                    FrameStart = item.FrameStart,
+                    FrameEnd = item.FrameEnd,
                     LimitationFilter = item.Filter.LimitationFilter.TotalMilliseconds,
                     ValueFilter = item.Filter.ValueFilter.TotalMilliseconds,
                     ThresholdFilter = item.Filter.ThresholdFilter.TotalMilliseconds,

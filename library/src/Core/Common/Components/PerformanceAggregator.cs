@@ -174,7 +174,7 @@ namespace ReFlex.Core.Common.Components
                     }
 
                     item.Process = data.Process;
-                    item.FrameEnd = data.FrameEnd;
+                    item.FrameEnd = DateTime.Now.Ticks;
                     _performanceData.Data.Add(item);
                 }
 

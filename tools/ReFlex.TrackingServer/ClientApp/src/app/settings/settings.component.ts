@@ -40,9 +40,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public performanceDataFilter: PerformanceData = { data: [] };
   public performanceDataProcess: PerformanceData = { data: [] };
+  public performanceDataCompleteTimeFrame: PerformanceData = { data: [] };
 
   public performanceDataFilterVis: Array<PerformanceDataItem> = [];
   public performanceDataProcessingVis: Array<PerformanceDataItem> = [];
+  public performanceDataCompleteTimeFrameVis: Array<PerformanceDataItem> = [];
 
   public performanceDataFilterGroups = ['limitationFilter', 'valueFilter', 'thresholdFilter', 'boxFilter', 'updatePointCloud'];
   public performanceDataProcessingGroups = ['processingPreparation', 'processingUpdate', 'processingConvert', 'processingSmoothing', 'processingExtremum'];
@@ -484,8 +486,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.performanceDataProcessingVis = this.performanceDataProcessingVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
 
       }
+
+      if (filterValid && processValid) {
+        elem.totalFrameTime = (elem.frameEnd - elem.frameStart) / 1000.0;
+
+        elem.totalFrameTime = Math.abs(elem.totalFrameTime);
+
+        const existingIdxData = this.performanceDataCompleteTimeFrame.data.findIndex((item) => item.frameId === elem.frameId);
+        if (existingIdxData < 0) {
+          this.performanceDataCompleteTimeFrame.data.push(elem);
+        } else {
+          this.performanceDataCompleteTimeFrame.data[existingIdxData] = elem;
+        }
+
+        const existingIdx = this.performanceDataCompleteTimeFrameVis.findIndex((item) => item.frameId === elem.frameId);
+        if (existingIdx < 0) {
+          this.performanceDataCompleteTimeFrameVis.push(elem);
+        } else {
+          this.performanceDataCompleteTimeFrameVis[existingIdx] = elem;
+        }
+
+        this.performanceDataCompleteTimeFrameVis = this.performanceDataCompleteTimeFrameVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
+      }
     });
 
+    this.performanceDataCompleteTimeFrame.data = this.performanceDataCompleteTimeFrame.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataFilter.data = this.performanceDataFilter.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataProcess.data = this.performanceDataProcess.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
   }
