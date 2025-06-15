@@ -487,30 +487,34 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
       }
 
-      if (filterValid && processValid) {
-        elem.totalFrameTime = (elem.frameEnd - elem.frameStart) / 1000.0;
+      const existingIdxEnd = this.performanceDataCompleteTimeFrame.data.filter((item) => item.frameId === elem.frameId && item.frameEnd > elem.frameEnd);
+      if (existingIdxEnd.length > 0) {
+        elem.frameEnd = existingIdxEnd.sort((a, b) => a.frameEnd - b.frameEnd)[0].frameEnd;
+      }
 
-        elem.totalFrameTime = Math.abs(elem.totalFrameTime);
+      const existingIdxStart = this.performanceDataCompleteTimeFrame.data.filter((item) => item.frameId === elem.frameId && item.frameStart < elem.frameStart);
+      if (existingIdxStart.length > 0) {
+        elem.frameStart = existingIdxStart.sort((a, b) => b.frameStart - a.frameStart)[0].frameStart;
+      }
 
-        const existingIdxData = this.performanceDataCompleteTimeFrame.data.findIndex((item) => item.frameId === elem.frameId);
-        if (existingIdxData < 0) {
-          this.performanceDataCompleteTimeFrame.data.push(elem);
-        } else {
-          this.performanceDataCompleteTimeFrame.data[existingIdxData] = elem;
-        }
+      elem.totalFrameTime = Math.abs(elem.frameEnd - elem.frameStart) / 1000.0;
 
+      this.performanceDataCompleteTimeFrame.data.push(elem);
+
+      if (elem.totalFrameTime > 0 && elem.totalFrameTime < 100000) {
         const existingIdx = this.performanceDataCompleteTimeFrameVis.findIndex((item) => item.frameId === elem.frameId);
         if (existingIdx < 0) {
           this.performanceDataCompleteTimeFrameVis.push(elem);
         } else {
           this.performanceDataCompleteTimeFrameVis[existingIdx] = elem;
         }
-
-        this.performanceDataCompleteTimeFrameVis = this.performanceDataCompleteTimeFrameVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
       }
+
+      this.performanceDataCompleteTimeFrameVis = this.performanceDataCompleteTimeFrameVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
+
     });
 
-    this.performanceDataCompleteTimeFrame.data = this.performanceDataCompleteTimeFrame.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
+    this.performanceDataCompleteTimeFrame.data = this.performanceDataCompleteTimeFrame.data.sort((a, b) => a.frameId - b.frameId).slice(-1000);
     this.performanceDataFilter.data = this.performanceDataFilter.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataProcess.data = this.performanceDataProcess.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
   }

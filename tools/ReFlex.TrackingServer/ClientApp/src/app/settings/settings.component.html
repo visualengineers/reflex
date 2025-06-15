@@ -717,11 +717,11 @@
       </tr>
     </thead>
     <tbody class="points__table--body">
-      <tr *ngFor="let perfEntry of performanceDataCompleteTimeFrame?.data">
+      <tr *ngFor="let perfEntry of performanceDataCompleteTimeFrameVis">
         <td scope="row">{{ perfEntry?.frameId }}</td>
         <td scope="row">{{ perfEntry?.frameStart ?? ' - ' }}</td>
         <td scope="row">{{ perfEntry?.frameEnd ?? ' - '}}</td>
-        <td scope="row">{{ (perfEntry.totalFrameTime).toFixed(2) }} ms</td>
+        <td scope="row">{{ perfEntry?.totalFrameTime?.toFixed(2) ?? ' - ' }} ms</td>
       </tr>
     </tbody>
   </table>
