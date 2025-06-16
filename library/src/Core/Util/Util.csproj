@@ -32,8 +32,8 @@
     <None Remove="Exceptions\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
-    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.14.1" />
+    <PackageReference Include="NLog" Version="5.5.0" />
     <PackageReference Include="Prism.Core" Version="9.0.537" />
   </ItemGroup>
 </Project>
