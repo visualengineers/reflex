@@ -702,6 +702,45 @@
     >
     </app-performance-visualization>
   </div>
+
+   <div
+    class="settings__item"
+    *ngIf="settings.filterSettingValues.measurePerformance"
+  >
+  <table class="points__table margin-top-default grid-full-width">
+    <thead class="points__table--head">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Start</th>
+        <th scope="col">End</th>
+        <th scope="col">Duration</th>
+      </tr>
+    </thead>
+    <tbody class="points__table--body">
+      <tr *ngFor="let perfEntry of performanceDataCompleteTimeFrameVis">
+        <td scope="row">{{ perfEntry?.frameId }}</td>
+        <td scope="row">{{ perfEntry?.frameStart ?? ' - ' }}</td>
+        <td scope="row">{{ perfEntry?.frameEnd ?? ' - '}}</td>
+        <td scope="row">{{ perfEntry?.totalFrameTime?.toFixed(2) ?? ' - ' }} ms</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- <div
+    class="settings__item"
+    *ngIf="settings.filterSettingValues.measurePerformance"
+  >
+    <app-performance-visualization
+      [data]="performanceDataCompleteTimeFrameVis"
+      [groups]="['totalFrameTime']"
+      [visId]="'totalFrameTimeVis'"
+      [refreshRate]="5"
+      [isProcessingGraph]="true"
+      [numSamples]="199"
+    >
+    </app-performance-visualization>
+  </div> -->
 </app-settings-group>
 
 <div class="settings__button-container">

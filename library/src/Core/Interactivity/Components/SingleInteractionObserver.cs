@@ -62,6 +62,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             var processResult = new ProcessingResult(ProcessServiceStatus.Available);
             var perfItem = new ProcessPerformance();
+            var start = DateTime.Now.Ticks;
 
             if (MeasurePerformance)
             {
@@ -185,7 +186,7 @@ namespace ReFlex.Core.Interactivity.Components
                 _stopWatch.Reset();
             }
 
-            UpdatePerformanceMetrics(perfItem);
+            UpdatePerformanceMetrics(perfItem, start);
 
             NewInteractions?.Invoke(this, result);
 

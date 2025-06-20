@@ -13,11 +13,11 @@ namespace ReFlex.Core.Interactivity.Components
         public override PointCloud3 PointCloud { get; set; }
         public override VectorField2 VectorField { get; set; }
         public override event EventHandler<IList<Interaction>> NewInteractions;
-             
+
         public override Task<ProcessingResult> Update()
         {
-            UpdatePerformanceMetrics(new ProcessPerformance());
-            
+            UpdatePerformanceMetrics(new ProcessPerformance(), DateTime.Now.Ticks);
+
             return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Error));
         }
     }

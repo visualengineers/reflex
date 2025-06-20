@@ -13,7 +13,7 @@ namespace ReFlex.Core.Common.Components
         /// Maximum number of performance records to keep
         /// </summary>
         private const int MaxPerformanceRecords = 10;
-        
+
         [Obsolete]
         private const int MaxNumIncompleteRecords = 3;
 
@@ -67,7 +67,7 @@ namespace ReFlex.Core.Common.Components
         }
 
         /// <summary>
-        /// Constructor with a list of reporters to register during construction 
+        /// Constructor with a list of reporters to register during construction
         /// </summary>
         /// <param name="reporters">Reporters that are to be registered when constructor is executed</param>
         public PerformanceAggregator(List<IPerformanceReporter> reporters)
@@ -81,7 +81,7 @@ namespace ReFlex.Core.Common.Components
         /// <summary>
         /// Register a performance reporter with the aggregator.
         /// When registering, the Aggregator subscribes to the <see cref="PerformanceDataUpdated"/> event of the reporter
-        /// The frame id is initially synchronized between reporter and aggregator and the <see cref="MeasurePerformance"/> flag is also set to the corresponding value of the aggregator. 
+        /// The frame id is initially synchronized between reporter and aggregator and the <see cref="MeasurePerformance"/> flag is also set to the corresponding value of the aggregator.
         /// </summary>
         /// <param name="reporter">The Performance Reporter that wil be registered</param>
         public void RegisterReporter(IPerformanceReporter reporter)
@@ -93,7 +93,7 @@ namespace ReFlex.Core.Common.Components
             SyncFrameId();
             reporter.MeasurePerformance = MeasurePerformance;
         }
-        
+
         /// <summary>
         /// Unregister a performance reporter from the aggregator.
         /// Removes reporter from the internal list and unsubscribes from the <see cref="PerformanceDataUpdated"/> event of the reporter.
@@ -123,10 +123,10 @@ namespace ReFlex.Core.Common.Components
             {
                 var existingProcessData = _performanceData.Data.FirstOrDefault(elem =>
                                         (elem.Stage == PerformanceDataStage.ProcessingData || elem.Stage == PerformanceDataStage.Incomplete) && elem.FrameId == data.FrameId);
-                                 
+
                 var existingFilterData = _performanceData.Data.FirstOrDefault(elem =>
                     elem.Stage == PerformanceDataStage.FilterDataStored && elem.FrameId == data.FrameId);
-                
+
                 if (data.Stage == PerformanceDataStage.Start)
                 {
                     item.Stage = PerformanceDataStage.FilterDataStored;
@@ -137,7 +137,7 @@ namespace ReFlex.Core.Common.Components
                         _frameId++;
                         existingFilterData.Stage = PerformanceDataStage.Complete;
                         item.FrameId = _frameId;
-                    } 
+                    }
                     else if (existingProcessData != null)
                     {
                       item = existingProcessData;
@@ -147,10 +147,10 @@ namespace ReFlex.Core.Common.Components
                       // increment frame id: data complete (filter + process data)
                       _frameId++;
                     }
-                    
+
                     item.Filter = data.Filter;
                     _performanceData.Data.Add(item);
-                    
+
                 }
                 else if (data.Stage == PerformanceDataStage.ProcessingData)
                 {
@@ -160,7 +160,8 @@ namespace ReFlex.Core.Common.Components
                         _frameId++;
                         existingProcessData.Stage = PerformanceDataStage.Complete;
                         item.FrameId = _frameId;
-                    } 
+
+                    }
                     else if (existingFilterData != null)
                     {
                         item = existingFilterData;
@@ -172,9 +173,11 @@ namespace ReFlex.Core.Common.Components
                     }
 
                     item.Process = data.Process;
+                    item.FrameStart = data.FrameStart;
+                    item.FrameEnd = data.FrameEnd;
                     _performanceData.Data.Add(item);
                 }
-                
+
                 SyncFrameId();
 
                 CleanupRecords();
@@ -195,7 +198,7 @@ namespace ReFlex.Core.Common.Components
         {
             _reporters.ForEach(reporter => reporter.UpdateFrameId(_frameId));
         }
-        
+
         /// <summary>
         /// Create a new <see cref="PerformanceDataItem"/>  with the current frame Id, setting the <see cref="PerformanceDataItem.FrameStart"/> to the current time and the <see cref="PerformanceDataItem.Stage"/> to <see cref="PerformanceDataStage.Incomplete"/>
         /// </summary>
@@ -214,7 +217,7 @@ namespace ReFlex.Core.Common.Components
 
         /// <summary>
         /// Remove all records except the first <see cref="MaxNumIncompleteRecords"/> elements.
-        /// Set all items with the stage <see cref="PerformanceDataStage.Incomplete"/> to <see cref="PerformanceDataStage.Complete"/> 
+        /// Set all items with the stage <see cref="PerformanceDataStage.Incomplete"/> to <see cref="PerformanceDataStage.Complete"/>
         /// </summary>
         private void CleanupRecords()
         {

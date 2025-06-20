@@ -12,17 +12,17 @@ namespace Implementation.Components
     {
         private readonly LimitationFilter _defaultLimitationFilter;
         private readonly AdvancedLimitationFilter _savedAdvancedLimitationFilter;
-        
+
         private readonly Stopwatch _stopWatch = new();
 
         private long _frameId = 0;
-        
+
         private static int _initCount = 10;
         private static int _initFrameIdx = _initCount;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
         public event EventHandler<int> FilterInitialized;
-        
+
         public LimitationFilterType LimitationFilterType { get; set; }
 
         public LimitationFilter LimitationFilter => LimitationFilterType == LimitationFilterType.LimitationFilter
@@ -34,7 +34,7 @@ namespace Implementation.Components
             get => _savedAdvancedLimitationFilter.FilterMask;
             private set => _savedAdvancedLimitationFilter.FilterMask = value;
         }
-        
+
         public bool UseOptimizedBoxFilter { get; set; }
 
         public ValueFilter ValueFilter { get; }
@@ -43,12 +43,12 @@ namespace Implementation.Components
 
         public OptimizedBoxFilter BoxFilterOptimized { get; }
         public BoxFilter BoxFilter { get; }
-        
+
         public bool IsLimitationFilterEnabled { get; set; }
         public bool IsValueFilterEnabled { get; set; }
         public bool IsThresholdFilterEnabled { get; set; }
         public bool IsBoxFilterEnabled { get; set; }
-        
+
         public float DefaultDistance { get; set; }
         public bool MeasurePerformance { get; set; } = true;
         public void UpdateFrameId(int frameId)
@@ -56,7 +56,7 @@ namespace Implementation.Components
             _frameId = frameId;
         }
 
-        public FilterManager() 
+        public FilterManager()
         {
             _defaultLimitationFilter = new LimitationFilter(320, 240);
             _savedAdvancedLimitationFilter = new AdvancedLimitationFilter(320, 240);
@@ -65,14 +65,14 @@ namespace Implementation.Components
             BoxFilter = new BoxFilter(10);
             BoxFilterOptimized = new OptimizedBoxFilter(10);
         }
-        
+
         public void Init(bool[][] mask, float zeroPlane, float threshold, int samples)
         {
             _initCount = samples;
             _initFrameIdx = samples;
-            
+
             _savedAdvancedLimitationFilter.ClearMask(zeroPlane, threshold);
-            
+
             if (mask != null)
             {
                 FilterMask = mask;
@@ -92,7 +92,7 @@ namespace Implementation.Components
 
             _initCount = samples;
             _initFrameIdx = 0;
-            
+
             return _savedAdvancedLimitationFilter.ClearMask(zeroPlane, threshold);
         }
 
@@ -103,9 +103,9 @@ namespace Implementation.Components
                 var result = _savedAdvancedLimitationFilter.InitializeMask(pointCloud, _initFrameIdx, _initFrameIdx >= _initCount - 1);
                 if (result < 0)
                     _initFrameIdx = _initCount;
-                
+
                 _initFrameIdx++;
-                
+
                 if (_initFrameIdx == _initCount)
                     FilterInitialized?.Invoke(this, _initFrameIdx);
                 return;
@@ -120,7 +120,7 @@ namespace Implementation.Components
             };
 
             var filterData = new FilterPerformance();
-            
+
             if (MeasurePerformance) {
                 _stopWatch.Start();
             }
@@ -137,10 +137,10 @@ namespace Implementation.Components
             if (MeasurePerformance) {
                 _stopWatch.Start();
             }
-            
+
             if (IsValueFilterEnabled)
                 ValueFilter?.Filter(depthData, pointCloud);
-            
+
             if (MeasurePerformance) {
                 _stopWatch.Stop();
                 filterData.ValueFilter = _stopWatch.Elapsed;
@@ -150,10 +150,10 @@ namespace Implementation.Components
             if (MeasurePerformance) {
                 _stopWatch.Start();
             }
-            
+
             if (IsThresholdFilterEnabled)
                 ThresholdFilter?.Filter(depthData, pointCloud);
-            
+
             if (MeasurePerformance) {
                 _stopWatch.Stop();
                 filterData.ThresholdFilter = _stopWatch.Elapsed;
@@ -163,23 +163,23 @@ namespace Implementation.Components
             if (MeasurePerformance) {
                 _stopWatch.Start();
             }
-            
+
             if (IsBoxFilterEnabled)
-                if (UseOptimizedBoxFilter) 
+                if (UseOptimizedBoxFilter)
                     BoxFilterOptimized?.Filter(depthData, pointCloud.SizeX, pointCloud.SizeY, pointCloud.Size);
                 else
                     BoxFilter?.Filter(depthData, pointCloud);
-            
+
             if (MeasurePerformance) {
                 _stopWatch.Stop();
                 filterData.BoxFilter = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance) {
                 _stopWatch.Start();
             }
-            
+
             pointCloud.Update(depthData, DefaultDistance);
 
             if (MeasurePerformance)
@@ -189,10 +189,11 @@ namespace Implementation.Components
                 _stopWatch.Reset();
             }
 
-            if (!MeasurePerformance) 
+            if (!MeasurePerformance)
                 return;
-            
+
             pData.Filter = filterData;
+            pData.FrameEnd = DateTime.Now.Ticks;
             PerformanceDataUpdated?.Invoke(this, pData);
         }
     }

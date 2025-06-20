@@ -3,15 +3,15 @@
 namespace ReFlex.Core.Tracking.Util
 {
     /// <summary>
-    /// A entity that contains all information of an recorded frame.
+    /// A entity that contains all information of a recorded frame.
     /// </summary>
     public class DepthCameraFrame
     {
         /// <summary>
-        /// Gets or sets the depth informations of a frame.
+        /// Gets or sets the depth information of a frame.
         /// </summary>
         /// <value>
-        /// The depth informations.
+        /// The depth information.
         /// </value>
         public Point3[] Depth { get; set; }
     }

@@ -397,12 +397,13 @@ namespace ReFlex.Core.Interactivity.Components
           ).ToList();
         }
 
-        protected void UpdatePerformanceMetrics(ProcessPerformance perfItem)
+        protected void UpdatePerformanceMetrics(ProcessPerformance perfItem, long startTime)
         {
             var pData = new PerformanceDataItem
             {
                 FrameId = Convert.ToInt32(FrameId),
-                FrameStart = DateTime.Now.Ticks,
+                FrameStart = startTime,
+                FrameEnd = DateTime.Now.Ticks,
                 Process = perfItem,
                 Stage = PerformanceDataStage.ProcessingData
             };
