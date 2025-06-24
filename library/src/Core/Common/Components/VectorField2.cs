@@ -162,13 +162,19 @@ namespace ReFlex.Core.Common.Components
           var deltaX = x1.Z - x2.Z;
           var deltaY = y1.Z - y2.Z;
 
+          var dX = x2.X - x1.X;
+          var dY = y2.Y - y1.Y;
+
+          deltaX /= 2f * dX;
+          deltaY /= 2f * dY;
+
           if (!_hasProcessedValues)
           {
             _values2D[x][y].Set(deltaX, deltaY);
           }
           else
           {
-            var exisitingValue = _lastProcessedValues[x,y];
+            var exisitingValue = _lastProcessedValues[x, y];
             var interpolatedX = deltaX * _interpolationStrength + (1f - _interpolationStrength) * exisitingValue.X;
             var interpolatedY = deltaY * _interpolationStrength + (1f - _interpolationStrength) * exisitingValue.Y;
             _values2D[x][y].Set(interpolatedX, interpolatedY);
