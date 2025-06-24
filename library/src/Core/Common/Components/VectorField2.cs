@@ -165,8 +165,8 @@ namespace ReFlex.Core.Common.Components
           var dX = x2.X - x1.X;
           var dY = y2.Y - y1.Y;
 
-          deltaX /= 2f * dX;
-          deltaY /= 2f * dY;
+          deltaX /= dX;
+          deltaY /= dY;
 
           if (!_hasProcessedValues)
           {
