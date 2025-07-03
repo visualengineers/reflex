@@ -259,8 +259,31 @@ namespace TrackingServer.Controllers
                 new JsonSimpleValue<bool> { Name = "success", Value = true });
         }
 
+        // GET: api/Settings/MeasurePerformance
+        [HttpGet("MeasurePerformance")]
+        public ActionResult<JsonSimpleValue<bool>> MeasurePerformance()
+        {
+            var measurePerformanceActive = _configManager.Settings.FilterSettingValues.MeasurePerformance;
+
+            return new ActionResult<JsonSimpleValue<bool>>(
+                new JsonSimpleValue<bool> { Name = "MeasurePerformance", Value = measurePerformanceActive });
+        }
+
+        // POST: api/Settings/MeasurePerformance
+    [HttpPost("MeasurePerformance")]
+        public ActionResult<JsonSimpleValue<bool>> MeasurePerformance([FromBody] JsonSimpleValue<bool> measurePerformanceActive)
+        {
+            _configManager.Settings.FilterSettingValues.MeasurePerformance = measurePerformanceActive.Value;
+            UpdateConfig();
+
+            Logger.Info($"Updated {nameof(FilterSettings.MeasurePerformance)}. Updated value: {measurePerformanceActive.Value}.");
+
+            return new ActionResult<JsonSimpleValue<bool>>(
+                new JsonSimpleValue<bool> { Name = "success", Value = true });
+        }
+
         // POST: api/Settings/Distance
-        [HttpPost("Distance")]
+    [HttpPost("Distance")]
         public ActionResult<Distance> Post([FromBody] Distance value)
         {
             _configManager.Settings.FilterSettingValues.DistanceValue = value;
