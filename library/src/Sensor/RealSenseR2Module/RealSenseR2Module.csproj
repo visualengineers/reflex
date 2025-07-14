@@ -31,9 +31,9 @@
   <ItemGroup>
     <PackageReference Include="Intel.RealSenseWithNativeDll" Version="2.51.1.1" />
     <PackageReference Include="libpxcclr.cs" Version="10.0.26.400" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
-    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.14.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageReference Include="NLog" Version="6.0.1" />
     <PackageReference Include="Prise.Plugin" Version="6.0.0" />
   </ItemGroup>
 
