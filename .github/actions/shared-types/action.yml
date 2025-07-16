@@ -10,4 +10,5 @@ runs:
     - name: setup node and install packages
       uses: ./.github/actions/npm-install
     - name: build shared types
+      shell: pwsh
       run: npm run build:shared-types
