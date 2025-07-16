@@ -14,9 +14,9 @@ jobs:
       - name: setup node and install packages
         uses: ./.github/actions/npm-install
       - name: build shared types
-        run: npm run build:shared-types
+        uses: ./.github/actions/shared-types
       - name: build angular components
-        run: npm run build:shared-components
+        uses: ./.github/actions/shared-components
       - name: build server
         working-directory: ${{ github.workspace }}
         run: npm run build:server

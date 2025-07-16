@@ -1,0 +1,19 @@
+name: 'ReFlex Shared Types: Build'
+description: 'Install NPM packages and build shared types'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: checkout repo with submodules
+      uses: actions/checkout@main
+    - name: setup node and install packages
+      uses: ./.github/actions/npm-install
+    - name: build shared types
+      shell: pwsh
+      run: npm run build:shared-types
+    - name: Upload artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: shared-types
+        path: packages/reflex-shared-types/
