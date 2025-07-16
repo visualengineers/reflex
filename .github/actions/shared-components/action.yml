@@ -12,3 +12,8 @@ runs:
     - name: build shared angular components
       shell: pwsh
       run: npm run build:shared-components
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: shared-components
+        path: packages/reflex-shared-components/
