@@ -14,11 +14,19 @@ namespace ReFlex.Core.Interactivity.Components
         public override VectorField2 VectorField { get; set; }
         public override event EventHandler<IList<Interaction>> NewInteractions;
 
-        public override Task<ProcessingResult> Update()
+        protected override Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance)
         {
-            UpdatePerformanceMetrics(new ProcessPerformance(), DateTime.Now.Ticks);
+          throw new NotImplementedException($"{GetType().FullName} should NEVER try to {nameof(Analyze)} anything.");
+        }
 
-            return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Error));
+        protected override Task<ProcessingResult> CheckInitialState()
+        {
+          return Task.FromResult(new ProcessingResult());
+        }
+
+        protected override void OnNewInteractions(List<Interaction> args)
+        {
+          throw new NotImplementedException($"{GetType().FullName} should never broadcast Interactions");
         }
     }
 }

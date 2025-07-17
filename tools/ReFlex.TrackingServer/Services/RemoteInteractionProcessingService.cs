@@ -117,20 +117,20 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         return IsConnected;
     }
 
-    public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance performance, bool doMeasure)
+    public async Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance performance, bool doMeasure)
     {
         var result = new List<Interaction>();
 
         if (_client == null)
         {
           Logger.Warn($"{nameof(RemoteInteractionProcessingService)} not correctly initialized, {nameof(_client)} is null");
-          return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+          return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
         }
 
         if (IsBusy)
         {
             Logger.Warn("Processor is busy: skipping request.");
-            return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+            return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
         }
 
         IsBusy = true;
@@ -186,7 +186,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsBusy = false;
         }
 
-        return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+        return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
     }
 
     public async Task StartService()
