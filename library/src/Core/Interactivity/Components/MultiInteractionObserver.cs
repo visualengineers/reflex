@@ -76,11 +76,6 @@ namespace ReFlex.Core.Interactivity.Components
 
         #endregion
 
-        #region Events
-        public override event EventHandler<IList<Interaction>> NewInteractions;
-
-        #endregion
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiInteractionObserver"/> class.
         /// </summary>
@@ -88,101 +83,19 @@ namespace ReFlex.Core.Interactivity.Components
         {
         }
 
-        /// <summary>
-        /// Updates this instance.
-        /// </summary>
-        public override Task<ProcessingResult> Update()
+        protected override Task<ProcessingResult> CheckInitialState()
         {
-            if (PointCloud == null ||
-               VectorField == null ||
-               _confidenceMat == null)
-                return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Error));
+          if (PointCloud == null ||
+              VectorField == null ||
+              _confidenceMat == null)
+            return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Error));
 
-            var processResult = new ProcessingResult(ProcessServiceStatus.Available);
+          var processResult = new ProcessingResult(ProcessServiceStatus.Available);
 
-            if (_isProcessing)
-                return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Skipped));
-
-            var processingDateTime = DateTime.Now.Ticks;
-            var perfItem = new ProcessPerformance();
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.Preparation = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            var candidates = FindExtremaInVectorfield();
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.Update = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            var interactions =  ConvertDepthValue(candidates.ToList());
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.ConvertDepthValue = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            if (MeasurePerformance)
-            {
-              _stopWatch.Start();
-            }
-
-            var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
-
-            var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
-
-            if (MeasurePerformance)
-            {
-              _stopWatch.Stop();
-              perfItem.ComputeExtremumType = _stopWatch.Elapsed;
-              _stopWatch.Reset();
-            }
-
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            var frame = ComputeSmoothingValue(cleanedUpInteractions);
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.Smoothing = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
-
-            UpdatePerformanceMetrics(perfItem, processingDateTime);
-
-            OnNewInteractions(confidentInteractions.ToList());
-
-            return Task.FromResult(processResult);
+          return Task.FromResult(
+              _isProcessing
+                  ? new ProcessingResult(ProcessServiceStatus.Skipped)
+                  : processResult);
         }
 
         /// <summary>
@@ -194,8 +107,10 @@ namespace ReFlex.Core.Interactivity.Components
                 ArrayUtils.InitializeArray(out _confidenceMat, VectorField.SizeX, VectorField.SizeY);
         }
 
-        private IEnumerable<Interaction> FindExtremaInVectorfield()
+        protected override Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance)
         {
+            performance.Preparation = TimeSpan.Zero;
+
             var stride = VectorField.Stride;
             var pointCloud = PointCloud.AsJaggedArray();
             var vectorField = VectorField.AsJaggedArray();
@@ -246,14 +161,8 @@ namespace ReFlex.Core.Interactivity.Components
 
             _isProcessing = false;
 
-            return result.ToArray();
+            return Task.FromResult(new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result.ToArray(), performance));
         }
-
-        /// <summary>
-        /// Called when [new interactions].
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        protected virtual void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
 
     }
 
