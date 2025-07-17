@@ -20,8 +20,6 @@ public class RemoteInteractionProcessor: InteractionObserverBase
     public override PointCloud3 PointCloud { get; set; }
     public override VectorField2 VectorField { get; set; }
 
-    public override event EventHandler<IList<Interaction>> NewInteractions;
-
     protected override async Task<ProcessingResult> CheckInitialState()
     {
       if (!_service.IsConnected)
@@ -45,12 +43,5 @@ public class RemoteInteractionProcessor: InteractionObserverBase
     {
       return await _service.Update(PointCloud, performance, MeasurePerformance);
     }
-
-    /// <summary>
-    /// Called when interactions have been processed.
-    /// </summary>
-    /// <param name="args">The arguments.</param>
-    protected override void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
-
 
 }

@@ -220,7 +220,7 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract PointCloud3 PointCloud { get; set; }
         public abstract VectorField2 VectorField { get; set; }
 
-        public abstract event EventHandler<IList<Interaction>> NewInteractions;
+        public event EventHandler<IList<Interaction>> NewInteractions;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -246,9 +246,9 @@ namespace ReFlex.Core.Interactivity.Components
 
         protected abstract Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance);
 
-        protected virtual async Task<ProcessingResult> CheckInitialState()
+        protected virtual Task<ProcessingResult> CheckInitialState()
         {
-          return new ProcessingResult(ProcessServiceStatus.Available);
+          return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Available));
         }
 
         public virtual async Task<ProcessingResult> Update()
@@ -521,7 +521,7 @@ namespace ReFlex.Core.Interactivity.Components
           InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
         }
 
-        protected abstract void OnNewInteractions(List<Interaction> args);
+        protected void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
 
         /// <summary>
         /// Calculates the average distance for the currently stored PointCloud.

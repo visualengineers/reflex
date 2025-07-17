@@ -49,12 +49,6 @@ namespace ReFlex.Core.Interactivity.Components
 
         #endregion
 
-        #region Events
-
-        public override event EventHandler<IList<Interaction>> NewInteractions;
-
-        #endregion
-
         protected override Task<ProcessingResult> CheckInitialState()
         {
           return Task.FromResult(PointCloud == null
@@ -62,8 +56,6 @@ namespace ReFlex.Core.Interactivity.Components
             : new ProcessingResult(ProcessServiceStatus.Available)
           );
         }
-
-        protected override void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
 
 
         protected override Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(

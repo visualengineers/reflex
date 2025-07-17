@@ -12,7 +12,6 @@ namespace ReFlex.Core.Interactivity.Components
 
         public override PointCloud3 PointCloud { get; set; }
         public override VectorField2 VectorField { get; set; }
-        public override event EventHandler<IList<Interaction>> NewInteractions;
 
         protected override Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance)
         {
@@ -22,11 +21,6 @@ namespace ReFlex.Core.Interactivity.Components
         protected override Task<ProcessingResult> CheckInitialState()
         {
           return Task.FromResult(new ProcessingResult());
-        }
-
-        protected override void OnNewInteractions(List<Interaction> args)
-        {
-          throw new NotImplementedException($"{GetType().FullName} should never broadcast Interactions");
         }
     }
 }

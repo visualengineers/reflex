@@ -76,11 +76,6 @@ namespace ReFlex.Core.Interactivity.Components
 
         #endregion
 
-        #region Events
-        public override event EventHandler<IList<Interaction>> NewInteractions;
-
-        #endregion
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiInteractionObserver"/> class.
         /// </summary>
@@ -168,12 +163,6 @@ namespace ReFlex.Core.Interactivity.Components
 
             return Task.FromResult(new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result.ToArray(), performance));
         }
-
-        /// <summary>
-        /// Called when interactions have been processed.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
-        protected override void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
 
     }
 
