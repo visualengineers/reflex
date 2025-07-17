@@ -226,8 +226,6 @@ namespace ReFlex.Core.Interactivity.Components
 
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
-        // public abstract Task<ProcessingResult> Update();
-
         #endregion
 
         #region Constructor
