@@ -82,3 +82,11 @@ Scripts:
 - **REMARK:** instantiating game objects is only possible in main thread of Unity, that means within the `Start` or `Update` methods of a `MonoBehaviour`. Therefore, when listening to `onInteractionsUpdated` event, Instantiating game objects in the event handler causes an exception. Two possible solutions:
   1. regularly update game objects by checking `CurrentInteractions` of `InteractionProvider` (not recommended for "heavy work")
   2. just set a `needsUpdate` flag when receiving teh event and update game object in the next run of `update` (cf. `scripts/overlay/UpdateInteractionsVisualizationBehaviour`)
+
+## Basic Scene
+
+![Basic Unity Scene](/Documentation/Editor-withReFlexPreFab.jpg)
+
+- Basic Visualization: add Behaviour `scripts/overlay/UpdateInteractionsVisualizationBehaviour`
+- Specify prefab for `Visualization` of an interaction point (e.g. `Prefab/overlay/InteractionPoint`)
+- Specify Container (`Canvas`) this prefab is attached to (usually a normal Canvas in the scene, with `Render Mode` set to `Screen Space - Overlay`)
