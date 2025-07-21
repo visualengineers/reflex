@@ -73,8 +73,8 @@ ReFlex-SignalR/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Packages
 ReFlex-SignalR/[Aa]ssets/[Pp]ackages/
-ReFlex-SignalR/[Aa]ssets/[Tt]ext[Mm]esh [Pp]ro/
-ReFlex-SignalR/[Aa]ssets/[Tt]ext[Mm]esh [Pp]ro.meta
+# ReFlex-SignalR/[Aa]ssets/[Tt]ext[Mm]esh [Pp]ro/
+# ReFlex-SignalR/[Aa]ssets/[Tt]ext[Mm]esh [Pp]ro.meta
 
 !ReFlex-SignalR/[Aa]ssets/ReFlex.Core.Common.dll
 !ReFlex-SignalR/[Aa]ssets/ReFlex.Core.Common.pdb
