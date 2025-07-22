@@ -29,6 +29,7 @@ export class AppComponent {
 
   public constructor(private readonly replayService: GestureReplayService) {
     // replayService.init('assets/data/sampleGesture.json');
+    // replayService.init('assets/data/sampleForMemoryEvaluation.json')
 
   }
 
