@@ -11,5 +11,6 @@ public class UE4_WebSocketsEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("UE4_WebSockets");
 		WindowsPlatform.PCHMemoryAllocationFactor = 2000;
+    IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 	}
 }
