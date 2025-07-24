@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
@@ -14,6 +15,8 @@ namespace ReFlex.Core.Interactivity.Components
     public abstract class InteractionObserverBase : IInteractionObserver, IPerformanceReporter
     {
         #region Fields
+
+        private readonly Stopwatch _stopWatch = new();
 
         private readonly InteractionSmoothingBehaviour _smoothingBehaviour;
         private int _numSmoothingFrames = 5;
@@ -217,13 +220,11 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract PointCloud3 PointCloud { get; set; }
         public abstract VectorField2 VectorField { get; set; }
 
-        public abstract event EventHandler<IList<Interaction>> NewInteractions;
+        public event EventHandler<IList<Interaction>> NewInteractions;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
-
-        public abstract Task<ProcessingResult> Update();
 
         #endregion
 
@@ -242,6 +243,96 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         #endregion
+
+        protected abstract Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance);
+
+        protected virtual Task<ProcessingResult> CheckInitialState()
+        {
+          return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Available));
+        }
+
+        public virtual async Task<ProcessingResult> Update()
+        {
+            var processResult = await CheckInitialState();
+
+            if (processResult.ServiceStatus != ProcessServiceStatus.Available)
+            {
+              UpdatePerformanceMetrics(new ProcessPerformance(), DateTime.Now.Ticks);
+              return processResult;
+            }
+
+            var processingDateTime = DateTime.Now.Ticks;
+
+            if (MeasurePerformance)
+            {
+              _stopWatch.Start();
+            }
+
+            var processed = await Analyze(processResult.PerformanceMeasurement);
+
+            var candidates = processed.Item1;
+            var perfItem = new ProcessPerformance { Preparation = processed.Item2.Preparation };
+
+            if (MeasurePerformance)
+            {
+                _stopWatch.Stop();
+                perfItem.Update = _stopWatch.Elapsed - perfItem.Preparation;
+                _stopWatch.Reset();
+            }
+
+            if (MeasurePerformance)
+            {
+                _stopWatch.Start();
+            }
+
+            var interactions =  ConvertDepthValue(candidates.ToList());
+
+            if (MeasurePerformance)
+            {
+                _stopWatch.Stop();
+                perfItem.ConvertDepthValue = _stopWatch.Elapsed;
+                _stopWatch.Reset();
+            }
+
+            if (MeasurePerformance)
+            {
+              _stopWatch.Start();
+            }
+
+            var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
+
+            var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
+
+            if (MeasurePerformance)
+            {
+              _stopWatch.Stop();
+              perfItem.ComputeExtremumType = _stopWatch.Elapsed;
+              _stopWatch.Reset();
+            }
+
+
+            if (MeasurePerformance)
+            {
+                _stopWatch.Start();
+            }
+
+            var frame = ComputeSmoothingValue(cleanedUpInteractions);
+
+            if (MeasurePerformance)
+            {
+                _stopWatch.Stop();
+                perfItem.Smoothing = _stopWatch.Elapsed;
+                _stopWatch.Reset();
+            }
+
+            var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
+
+            UpdatePerformanceMetrics(perfItem, processingDateTime);
+
+            OnNewInteractions(confidentInteractions.ToList());
+
+            return processResult;
+        }
 
         protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
         {
@@ -336,6 +427,7 @@ namespace ReFlex.Core.Interactivity.Components
 
                 if (item.Position.Z < Distance)
                 {
+                    item.Type = InteractionType.Push;
                     var depth = (Distance - item.Position.Z - MinDistance) / (MinDistance - MaxDistance);
 
                     if (depth > 0)
@@ -348,6 +440,7 @@ namespace ReFlex.Core.Interactivity.Components
                 }
                 else
                 {
+                    item.Type = InteractionType.Pull;
                     var depth = (item.Position.Z - MinDistance - Distance) / (MaxDistance - MinDistance);
 
                     if (depth < 0)
@@ -428,6 +521,8 @@ namespace ReFlex.Core.Interactivity.Components
           InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
         }
 
+        protected void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
+
         /// <summary>
         /// Calculates the average distance for the currently stored PointCloud.
         /// </summary>
@@ -502,5 +597,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             _stochasticSamples = GenerateSamples();
         }
+
+
     }
 }
