@@ -23,7 +23,7 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>x64;ARM64</Platforms>
-    <DefineAdditionalConstants/>
+    <DefineAdditionalConstants />
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <LangVersion>10</LangVersion>
@@ -48,17 +48,17 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.15" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.15" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.18" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.14.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.4.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="6.0.2" />
     <PackageReference Include="Prism.Core" Version="9.0.537" />
-    <PackageReference Include="ServiceStack.Text" Version="8.7.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
+    <PackageReference Include="ServiceStack.Text" Version="8.8.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
 
@@ -108,7 +108,7 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <!-- Copy files to wwwroot - paths not workign anymore, need to be adjusted (where ?) -->
         <!-- <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath> -->
         <!-- workign solution: copy files to resources/bin/ClientApp/dist -->
