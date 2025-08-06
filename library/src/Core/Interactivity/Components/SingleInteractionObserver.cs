@@ -49,148 +49,24 @@ namespace ReFlex.Core.Interactivity.Components
 
         #endregion
 
-        #region Events
-
-        public override event EventHandler<IList<Interaction>> NewInteractions;
-
-        #endregion
-
-        public override Task<ProcessingResult> Update()
+        protected override Task<ProcessingResult> CheckInitialState()
         {
-            if (PointCloud == null)
-                return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Error));
-
-            var processResult = new ProcessingResult(ProcessServiceStatus.Available);
-            var perfItem = new ProcessPerformance();
-            var start = DateTime.Now.Ticks;
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-            var extreme = FindGlobalExtreme(PointCloud, Distance);
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.Update = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            float depth;
-            InteractionType type;
+          return Task.FromResult(PointCloud == null
+            ? new ProcessingResult(ProcessServiceStatus.Error)
+            : new ProcessingResult(ProcessServiceStatus.Available)
+          );
+        }
 
 
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
+        protected override Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(
+          ProcessPerformance performance)
+        {
+          var extreme = FindGlobalExtreme(PointCloud, Distance);
+          var result = new List<Interaction>() { new Interaction(extreme, InteractionType.None, 1) };
+          var perfItem = new ProcessPerformance();
+          perfItem.Preparation = TimeSpan.Zero;
 
-            var extremumType = ComputeExtremumType(PointCloud.AsJaggedArray(), (int) extreme.X, (int) extreme.Y);
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.ComputeExtremumType = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            if (extreme.Z < Distance + MinDistance && extreme.Z > Distance - MinDistance)
-            {
-                type = InteractionType.None;
-                depth = 0;
-            }
-            else if (extreme.Z < Distance)
-            {
-                type = InteractionType.Push;
-                depth = (Distance - extreme.Z - MinDistance) / (MinDistance - MaxDistance);
-
-                if (depth > 0)
-                    depth = 0;
-
-                if (depth < -1)
-                    depth = -1;
-            }
-            else
-            {
-                type = InteractionType.Pull;
-                depth = (extreme.Z - MinDistance - Distance) / (MaxDistance - MinDistance);
-
-                if (depth < 0)
-                    depth = 0;
-
-                if (depth > 1)
-                    depth = 1;
-            }
-
-            extreme.Z = depth;
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.ConvertDepthValue = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-
-            var TOLERANCE = 0.001;
-
-            var result = new List<Interaction>();
-
-            if (Math.Abs(depth) > TOLERANCE)
-            {
-                var interaction = new Interaction(extreme, type, 1);
-                interaction.ExtremumDescription = extremumType;
-
-                var frame = ComputeSmoothingValue(interaction.AsList());
-
-                var smoothed = frame.Interactions;
-
-                if (smoothed.Count > 0)
-                {
-                    result = smoothed.Take(1).ToList();
-
-                    var lastTime = smoothed.Max(item => item.Time);
-                    var id = smoothed.Max(item => item.TouchId);
-                    var last = smoothed.FirstOrDefault(
-                        it => Equals(it.Time, lastTime) && Equals(it.TouchId, id));
-
-                    if (last != null)
-                    {
-                        var smoothedItem = new Interaction(last)
-                        {
-                            TouchId = id
-                        };
-
-                        result = new List<Interaction> { smoothedItem };
-                    }
-                }
-                else
-                {
-                    result = smoothed;
-                }
-            }
-
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.Smoothing = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            UpdatePerformanceMetrics(perfItem, start);
-
-            NewInteractions?.Invoke(this, result);
-
-            return Task.FromResult(processResult);
+          return Task.FromResult(new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, perfItem));
         }
 
         /// <summary>
