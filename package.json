@@ -47,7 +47,7 @@
     "examples/shared-components-demo"
   ],
   "dependencies": {
-    "@angular/animations": "19.1.4",
+    "@angular/animations": "20.2.4",
     "@angular/common": "19.1.4",
     "@angular/compiler": "19.1.4",
     "@angular/core": "19.1.4",
