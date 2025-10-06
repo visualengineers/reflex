@@ -55,7 +55,7 @@
     "@angular/platform-browser": "19.1.4",
     "@angular/platform-browser-dynamic": "19.1.4",
     "@angular/platform-server": "19.1.4",
-    "@angular/router": "19.1.4",
+    "@angular/router": "20.3.3",
     "@angular/ssr": "19.2.7",
     "angular-plotly.js": "^5.2.2",
     "file-saver": "^2.0.5",
