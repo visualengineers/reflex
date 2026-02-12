@@ -54,7 +54,8 @@ namespace TrackingServer
             _env = env;
             _evtAggregator = new EventAggregator();
 
-            // // make NLog DI aware
+            // make NLog DI aware
+            // deprecated code: remove when everything is still working
             // ConfigurationItemFactory.Default.CreateInstance = type =>
             //     type == typeof(LogEventAggregatorTarget)
             //         ? new LogEventAggregatorTarget(_evtAggregator)
