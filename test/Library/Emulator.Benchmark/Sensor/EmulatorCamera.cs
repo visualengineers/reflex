@@ -128,8 +128,6 @@ namespace ReFlex.Sensor.EmulatorModule
 
     protected override void InitServices()
     {
-      _service = new EmulatorService();
-
       Server?.AddWebSocketService(Endpoint, () => _service);
 
       _service.InteractionsReceived += InteractionsReceivedFromEmulatorInstance;
