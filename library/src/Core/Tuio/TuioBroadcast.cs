@@ -10,7 +10,7 @@ using ReFlex.Core.Tuio.Components;
 using ReFlex.Core.Tuio.Interfaces;
 using ReFlex.Core.Tuio.Util;
 
-[assembly: InternalsVisibleTo("ReFlex.Core.Tuio.Test")]
+[assembly: InternalsVisibleTo("ReFlex.Tuio.Test")]
 namespace ReFlex.Core.Tuio
 {
     public class TuioBroadcast : ITuioBroadcast, IDisposable
@@ -18,23 +18,23 @@ namespace ReFlex.Core.Tuio
         #region Fields
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        
+
         private readonly ITuioMessageBuilder _builder;
         private readonly ITuioSender _sender;
-        
+
         private string _localAddress = "Localhost";
 
         #endregion
 
         #region Properties
-        
+
         /// <summary>
         /// Specify whether the instance has a valid configuration
         /// </summary>
         public bool IsConfigured { get; private set; }
 
         /// <summary>
-        /// Specifies whether the service is currently sending data. 
+        /// Specifies whether the service is currently sending data.
         /// </summary>
         public bool IsSending { get; private set; }
 
@@ -62,7 +62,7 @@ namespace ReFlex.Core.Tuio
             _builder = messageBuilder;
             _sender = sender;
         }
-        
+
         /// <summary>
         /// initializes the Broadcast service.
         /// Creates a <see cref="TuioMessageBuilder"/> for generating messages according to TUIO specification.
@@ -76,13 +76,13 @@ namespace ReFlex.Core.Tuio
         #endregion
 
         #region public Methods
-        
+
         /// <summary>
         /// Initializes the service with the provided configuration.
         /// First, all open connections are closed on <see cref="TuioSender"/>
         /// then current hostname is retrieved and stored as local Address for TUIO identification
         /// <see cref="Configuration"/> is set
-        /// <see cref="IsConfigured"/> is set to true, if <see cref="Configuration"/> is not null and <see cref="TuioSender.IsInitialized"/> 
+        /// <see cref="IsConfigured"/> is set to true, if <see cref="Configuration"/> is not null and <see cref="TuioSender.IsInitialized"/>
         /// </summary>
         /// <param name="config">Configuration containing (at least) server address, port and <see cref="TransportProtocol"/></param>
         /// <returns>completed Task</returns>
@@ -92,7 +92,7 @@ namespace ReFlex.Core.Tuio
 
             _sender.Initialize(config);
 
-            // Get the Name of HOST  
+            // Get the Name of HOST
             var hostName = Dns.GetHostName();
 
             // Get the IP from GetHostByName method of dns class.
@@ -112,7 +112,7 @@ namespace ReFlex.Core.Tuio
         /// If <see cref="Configuration"/> is null or  <see cref="IsConfigured"/> is false, nothing is sent.
         /// Also checks, if <see cref="IsSending"/> is true and only send if this is not the case.
         /// Constructs <see cref="TuioParameters"/> from <see cref="interactions"/>, current <see cref="Configuration"/>, frame id and local address.
-        /// Sends data based on specified <see cref="TransportProtocol"/> in <see cref="Configuration"/> and increases frame i afterwards. 
+        /// Sends data based on specified <see cref="TransportProtocol"/> in <see cref="Configuration"/> and increases frame i afterwards.
         /// </summary>
         /// <param name="interactions">interactions that are transformed into TUIO packages</param>
         /// <returns>completed Task</returns>
@@ -150,7 +150,7 @@ namespace ReFlex.Core.Tuio
                     IsSending = false;
                     throw new ArgumentOutOfRangeException();
             }
-            
+
             FrameId++;
 
             IsSending = false;
@@ -170,9 +170,9 @@ namespace ReFlex.Core.Tuio
             IsConfigured = false;
             await _sender.StopAllConnections();
         }
-        
+
         #endregion
-        
+
         #region private Methods
 
         private OscBundle CreateOscBundle(TuioParameters parameters)
@@ -186,7 +186,7 @@ namespace ReFlex.Core.Tuio
                 ? _builder.CreateTuio11Messages(parameters, Configuration.Interpretation)
                 : _builder.CreateTuio20Messages(parameters, Configuration.Interpretation);
         }
-        
+
         #endregion
     }
 }

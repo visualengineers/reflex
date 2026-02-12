@@ -1,13 +1,13 @@
-@import 'abstracts/variables';
+@use 'reflex' as reflex;
 
 :host {
-    position: absolute; 
-    top: 0rem; 
-    left: 0rem; 
+    position: absolute;
+    top: 0rem;
+    left: 0rem;
 
     width: 100%;
 
-    background-color: $color-grey-light-2;
+    background-color: reflex.$color-grey-light-2;
 }
 
 .measure-controls {
@@ -28,7 +28,7 @@
 
         width: 20rem;
 
-        & p, h4 {            
+        & p, h4 {
             margin-top: 0.2rem;
         }
 

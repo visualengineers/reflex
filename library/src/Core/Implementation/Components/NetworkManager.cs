@@ -8,7 +8,6 @@ using ReFlex.Core.Networking.Interfaces;
 using ReFlex.Core.Networking.Util;
 using NLog;
 using Prism.Events;
-using ReFlex.Core.Events;
 
 namespace Implementation.Components
 {

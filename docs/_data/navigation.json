@@ -5,6 +5,14 @@
             "path": "/software/repo/",
             "file": "reflex.html",
             "type": "category",
+            "description": {
+                "p": [
+                    "This section contains information about the ReFlex software framework. This includes the structure of the github repository, core components, and a short developer documentation.",
+                    "Furthermore, the development tools, application templates for several client technologies and example applications are described."
+                ],
+                "img": "/assets/img/overview/software.png",
+                "alt": "Title Image: Software"
+            },
             "content":
             [
                 {
@@ -18,11 +26,54 @@
                             "type": "page"
                         },
                         {
+                            "name": "Architecture",
+                            "path": "/software/repo/",
+                            "file": "architecture.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "ReFlex Library (.NET)",
+                            "path": "/software/repo/",
+                            "file": "library.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Processing Pipeline",
+                            "path": "/software/repo/",
+                            "file": "pipeline.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Interactions",
+                            "path": "/software/repo/",
+                            "file": "interactions.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Supported Sensors",
+                            "path": "/software/repo/",
+                            "file": "sensors.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "github CI",
+                            "path": "/software/repo/",
+                            "file": "ci.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Development Documentation",
                             "path": "/software/repo/",
                             "file": "dev.html",
                             "type": "page"
+                        },
+                        {
+                            "name": "Version History",
+                            "path": "/software/repo/",
+                            "file": "versions.html",
+                            "type": "page"
                         }
+
                     ]
                 },
                 {
@@ -34,7 +85,7 @@
                             "path": "/software/apps/",
                             "file": "server.html",
                             "type": "page",
-                            "content": 
+                            "content":
                             [
                                 {
                                     "name": "Tracking view",
@@ -65,7 +116,14 @@
                                     "path": "/software/apps/server/",
                                     "file": "networking-view.html",
                                     "type": "page"
+                                },
+                                {
+                                    "name": "Video tutorials",
+                                    "path": "/software/apps/server/",
+                                    "file": "video-tutorial.html",
+                                    "type": "page"
                                 }
+
                             ]
                         },
                         {
@@ -85,49 +143,123 @@
                             "path": "/software/apps/",
                             "file": "layers.html",
                             "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Templates",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Plain HTML",
+                            "path": "/software/templates/",
+                            "file": "plain_html.html",
+                            "type": "page"
                         },
                         {
-                            "name": "Templates",
-                            "type": "subcategory",
-                            "content": 
-                            [
-                                {
-                                    "name": "Plain HTML",
-                                    "path": "/software/templates/",
-                                    "file": "plain_html.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Angular",
-                                    "path": "/software/templates/",
-                                    "file": "angular.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "React",
-                                    "path": "/software/templates/",
-                                    "file": "react.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Vue.js",
-                                    "path": "/software/templates/",
-                                    "file": "vue.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Unity",
-                                    "path": "/software/templates/",
-                                    "file": "unity.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Unreal Engine 4/5",
-                                    "path": "/software/templates/",
-                                    "file": "ue.html",
-                                    "type": "page"
-                                }
-                            ]
+                            "name": "Angular",
+                            "path": "/software/templates/",
+                            "file": "angular.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "React",
+                            "path": "/software/templates/",
+                            "file": "react.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Vue.js",
+                            "path": "/software/templates/",
+                            "file": "vue.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Unity",
+                            "path": "/software/templates/",
+                            "file": "unity.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Unreal Engine 4/5",
+                            "path": "/software/templates/",
+                            "file": "ue.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Recipes",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Library: Implement a Depth Sensor",
+                            "path": "/software/recipes/",
+                            "file": "implement-sensor.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Library: Implement an Interaction Processor",
+                            "path": "/software/recipes/",
+                            "file": "interaction-processor.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Library: Implement alternative Calibration procedure",
+                            "path": "/software/recipes/",
+                            "file": "extend-calibration.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Client: Stream depth image",
+                            "path": "/software/recipes/",
+                            "file": "icons.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Client: Configure Server using REST API",
+                            "path": "/software/design/",
+                            "file": "icons.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Server: Create gRPC micro service",
+                            "path": "/software/recipes/",
+                            "file": "grpc-service.html",
+                            "type": "page"
+                        }
+                    ]
+                },
+                {
+                    "name": "Design",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Style Guide",
+                            "path": "/design/",
+                            "file": "style-guide.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Components",
+                            "path": "/design/",
+                            "file": "components.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Icons",
+                            "path": "/design/",
+                            "file": "icons.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Design Resources",
+                            "path": "/design/",
+                            "file": "resources.html",
+                            "type": "page"
                         }
                     ]
                 }
@@ -136,21 +268,66 @@
         {
             "name": "Hardware",
             "path": "/hardware/",
-            "file": "construction_manual.html",
+            "file": "depthtouch-overview.html",
             "type": "category",
+            "description": {
+                "p": [
+                    "This section contains information about a basic tabletop setup using consumer hardware. It consists of a construction manual for the frame and projector adjustment and the description of the hardware components as well as lessons learned from several iterations of prototypes."
+                ],
+                "img": "/assets/img/overview/hardware.jpg",
+                "alt": "Title Image: Hardware"
+            },
             "content":
             [
                 {
-                    "name": "Construction Manual",
-                    "path": "/hardware/",
-                    "file": "construction_manual.html",
-                    "type": "page"
+                    "name": "Tabletop (DepthTouch)",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Overview",
+                            "path": "/hardware/",
+                            "file": "depthtouch-overview.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Bill of Materials",
+                            "path": "/hardware/",
+                            "file": "bill-materials.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Construction Manual",
+                            "path": "/hardware/",
+                            "file": "construction_manual.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Technical Specifications",
+                            "path": "/hardware/",
+                            "file": "depthtouch-specs.html",
+                            "type": "page"
+                        }
+                    ]
                 },
                 {
-                    "name": "Technical Specifications",
-                    "path": "/hardware/",
-                    "file": "specs.html",
-                    "type": "page"
+                    "name": "Display Wall (FlexiWall)",
+                    "type": "subcategory",
+                    "content":
+                    [
+                        {
+                            "name": "Overview",
+                            "path": "/hardware/",
+                            "file": "flexiwall-overview.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Technical Specifications",
+                            "path": "/hardware/",
+                            "file": "flexiwall-specs.html",
+                            "type": "page"
+                        }
+                    ]
                 }
             ]
         },
@@ -159,25 +336,104 @@
             "path": "/knowledge/",
             "file": "publications.html",
             "type": "category",
+            "description": {
+                "p": [
+                    "This section contains the scientific foundation for the term Elastic Displays and related technologies. There are also descriptions of past prototypes and publications."
+                ],
+                "img": "/assets/img/overview/knowledge.png",
+                "alt": "Title Image: Knowledge Base"
+            },
             "content":
             [
                 {
                     "name": "Research",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Publications",
                             "path": "/knowledge/",
                             "file": "publications.html",
                             "type": "page"
-                        }
+                        },
+                        {
+                          "name": "Related Work",
+                          "path": "/knowledge/scientific/",
+                          "file": "related-work.html",
+                          "type": "page"
+                        },
+                        {
+                          "name": "Terminology",
+                          "path": "/knowledge/scientific/",
+                          "file": "terms.html",
+                          "type": "page"
+                        },
+                        {
+                          "name": "Procedure: Grand Challenges",
+                          "path": "/knowledge/scientific/",
+                          "file": "challenges_introduction.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                              "name": "User Behaviour",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_user-behaviour.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "Design",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_design.html",
+                              "type": "page"
+                            },
+                            {
+                                "name": "Technological Aspects",
+                                "path": "/knowledge/scientific/",
+                                "file": "challenges_technological.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Societal Issues",
+                              "path": "/knowledge/scientific/",
+                              "file": "challenges_societal.html",
+                              "type": "page"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Models",
+                          "path": "/knowledge/scientific/",
+                          "file": "models_introduction.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                                "name": "Data Types",
+                                "path": "/knowledge/scientific/",
+                                "file": "models_data-types.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Interactions",
+                              "path": "/knowledge/scientific/",
+                              "file": "models_interactions.html",
+                              "type": "page"
+                          },
+                          {
+                            "name": "Task Taxonomy",
+                            "path": "/knowledge/scientific/",
+                            "file": "models_task-taxonomy.html",
+                            "type": "page"
+                          }
+                        ]
+                      }
                     ]
                 },
                 {
                     "name": "Best Practices",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Designing Application and Content",
@@ -208,7 +464,7 @@
                 {
                     "name": "Interviews",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Display Construction",
@@ -239,7 +495,7 @@
                 {
                     "name": "Terms",
                     "type": "subcategory",
-                    "content": 
+                    "content":
                     [
                         {
                             "name": "Actuated Display",
@@ -278,7 +534,7 @@
                             "type": "page"
                         }
                     ]
-                },
+                }
             ]
         }
     ]

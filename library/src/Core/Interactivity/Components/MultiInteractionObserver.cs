@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,16 +14,16 @@ namespace ReFlex.Core.Interactivity.Components
     public class MultiInteractionObserver : InteractionObserverBase
     {
         #region Fields
-        
+
         private PointCloud3 _pointCloud;
         private VectorField2 _vectorField;
         private int[][] _confidenceMat;
-        
+
         private bool _isProcessing = false;
-        
+
         private readonly Stopwatch _stopWatch = new();
 
-        
+
         #endregion
 
         #region Properties
@@ -74,12 +73,12 @@ namespace ReFlex.Core.Interactivity.Components
                 InitializeConfidenceMatrix();
             }
         }
-        
+
         #endregion
-        
-        #region Events 
+
+        #region Events
         public override event EventHandler<IList<Interaction>> NewInteractions;
-        
+
         #endregion
 
         /// <summary>
@@ -104,6 +103,7 @@ namespace ReFlex.Core.Interactivity.Components
             if (_isProcessing)
                 return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Skipped));
 
+            var processingDateTime = DateTime.Now.Ticks;
             var perfItem = new ProcessPerformance();
             if (MeasurePerformance)
             {
@@ -116,69 +116,71 @@ namespace ReFlex.Core.Interactivity.Components
                 perfItem.Preparation = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
+
             var candidates = FindExtremaInVectorfield();
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.Update = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
 
             var interactions =  ConvertDepthValue(candidates.ToList());
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.ConvertDepthValue = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
+            if (MeasurePerformance)
+            {
+              _stopWatch.Start();
+            }
+
+            var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
+
+            var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
+
+            if (MeasurePerformance)
+            {
+              _stopWatch.Stop();
+              perfItem.ComputeExtremumType = _stopWatch.Elapsed;
+              _stopWatch.Reset();
+            }
+
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
-            
-            var frame = ComputeSmoothingValue(interactions);
-            
+
+            var frame = ComputeSmoothingValue(cleanedUpInteractions);
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.Smoothing = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
 
-            if (MeasurePerformance)
-            {
-                _stopWatch.Start();
-            }
-            
-            var processedInteractions = ComputeExtremumType(confidentInteractions.ToList(), PointCloud.AsJaggedArray());
+            UpdatePerformanceMetrics(perfItem, processingDateTime);
 
-            if (MeasurePerformance)
-            {
-                _stopWatch.Stop();
-                perfItem.ComputeExtremumType = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-            
-            UpdatePerformanceMetrics(perfItem);
-            
-            
-            OnNewInteractions(processedInteractions);
+            OnNewInteractions(confidentInteractions.ToList());
 
             return Task.FromResult(processResult);
         }
@@ -201,15 +203,15 @@ namespace ReFlex.Core.Interactivity.Components
             var result = new List<Interaction>();
 
             _isProcessing = true;
-            
+
             Parallel.For(1, (VectorField.SizeX - 1) / stride, (i) =>
             {
                 var x = i * stride;
-                
+
                 for (var y = stride; y < VectorField.SizeY - stride; y += stride)
                 {
                     var vCenter = vectorField[x][y];
-                    
+
                     if (!vCenter.IsValid)
                         continue;
 
@@ -221,7 +223,7 @@ namespace ReFlex.Core.Interactivity.Components
                     var angleX = vectorX.AngleBetween(vectorX2);
                     var angleY = vectorY.AngleBetween(vectorY2);
                     var angle = angleX + angleY / 2f;
-                    
+
                     var confidence = _confidenceMat[x][y];
                     if (float.IsNaN(angle) || angle > MinAngle)
                     {

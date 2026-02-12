@@ -19,9 +19,9 @@ namespace ReFlex.Core.Interactivity.Components
     public class SingleInteractionObserver : InteractionObserverBase
     {
         private readonly Stopwatch _stopWatch = new();
-        
+
         #region Properties
-        
+
         /// <summary>
         /// Gets the type.
         /// </summary>
@@ -29,15 +29,6 @@ namespace ReFlex.Core.Interactivity.Components
         /// The type.
         /// </value>
         public override ObserverType Type => ObserverType.SingleTouch;
-
-        [Obsolete("Not in use.")]
-        public override float MinAngle { get; set; }
-
-        [Obsolete("Not in use.")]
-        public override float MinConfidence { get; set; }
-
-        [Obsolete("Not in use.")]
-        public override float MaxConfidence { get; set; }
 
         /// <summary>
         /// Gets or sets the source.
@@ -55,13 +46,13 @@ namespace ReFlex.Core.Interactivity.Components
         /// The vector field.
         /// </value>
         public override VectorField2 VectorField { get; set; }
-        
+
         #endregion
-        
+
         #region Events
-        
+
         public override event EventHandler<IList<Interaction>> NewInteractions;
-        
+
         #endregion
 
         public override Task<ProcessingResult> Update()
@@ -71,7 +62,8 @@ namespace ReFlex.Core.Interactivity.Components
 
             var processResult = new ProcessingResult(ProcessServiceStatus.Available);
             var perfItem = new ProcessPerformance();
-            
+            var start = DateTime.Now.Ticks;
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
@@ -83,17 +75,17 @@ namespace ReFlex.Core.Interactivity.Components
                 perfItem.Update = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             float depth;
             InteractionType type;
-            
-            
+
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
             }
 
-            var extremumType = ComputeExtremumType(PointCloud.AsJaggedArray(), (int) extreme.X, (int) extreme.Y); 
+            var extremumType = ComputeExtremumType(PointCloud.AsJaggedArray(), (int) extreme.X, (int) extreme.Y);
 
             if (MeasurePerformance)
             {
@@ -101,7 +93,7 @@ namespace ReFlex.Core.Interactivity.Components
                 perfItem.ComputeExtremumType = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
@@ -136,14 +128,14 @@ namespace ReFlex.Core.Interactivity.Components
             }
 
             extreme.Z = depth;
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.ConvertDepthValue = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Start();
@@ -152,7 +144,7 @@ namespace ReFlex.Core.Interactivity.Components
             var TOLERANCE = 0.001;
 
             var result = new List<Interaction>();
-            
+
             if (Math.Abs(depth) > TOLERANCE)
             {
                 var interaction = new Interaction(extreme, type, 1);
@@ -161,7 +153,7 @@ namespace ReFlex.Core.Interactivity.Components
                 var frame = ComputeSmoothingValue(interaction.AsList());
 
                 var smoothed = frame.Interactions;
-                
+
                 if (smoothed.Count > 0)
                 {
                     result = smoothed.Take(1).ToList();
@@ -183,19 +175,19 @@ namespace ReFlex.Core.Interactivity.Components
                 }
                 else
                 {
-                    result = smoothed; 
+                    result = smoothed;
                 }
             }
-            
+
             if (MeasurePerformance)
             {
                 _stopWatch.Stop();
                 perfItem.Smoothing = _stopWatch.Elapsed;
                 _stopWatch.Reset();
             }
-            
-            UpdatePerformanceMetrics(perfItem);
-            
+
+            UpdatePerformanceMetrics(perfItem, start);
+
             NewInteractions?.Invoke(this, result);
 
             return Task.FromResult(processResult);
@@ -234,7 +226,7 @@ namespace ReFlex.Core.Interactivity.Components
                     candidate.Z = candidates[x][y].Z;
                 }
             }
-            
+
             return candidate;
         }
     }

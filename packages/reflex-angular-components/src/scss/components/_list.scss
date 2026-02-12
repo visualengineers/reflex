@@ -1,0 +1,60 @@
+@use "../abstracts/variables";
+
+.custom-list {
+    margin-left: variables.$side-column-width-right;
+    margin-bottom: variables.$default-col-gap;
+  }
+
+  ol.custom-list > li.list-item {
+    background: variables.$color-grey-light-4;
+    margin: 0.4rem 0;
+    padding: 1rem;
+    position: relative;
+    display: block;
+
+    &:before {
+      content: counter(custom-list);
+      font-size: 3rem;
+      color: variables.$color-primary-light;
+      position: absolute;
+      left: -3rem;
+      top: -0.5rem;
+    }
+
+    &:hover {
+      background: variables.$color-grey-dark;
+      color: variables.$color-white;
+    }
+  }
+
+  li.list-item {
+    counter-increment: custom-list;
+  }
+
+  ul.custom-list > li {
+    margin: 0.4rem 0;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    display: block;
+    border: 1px solid variables.$color-grey-light-3;
+
+    &:hover {
+      background: variables.$color-grey-dark;
+      color: variables.$color-white;
+    }
+  }
+
+  .list-item {
+    &__hint {
+      padding-left: variables.$default-col-gap;
+      margin-top: variables.$default-margin;
+      font-size: variables.$font-size-small;
+      font-style: italic;
+    }
+
+    & pre {
+      padding-left: variables.$default-col-gap;
+      color: variables.$color-default_100;
+      font-weight: 500;
+    }
+  }
+

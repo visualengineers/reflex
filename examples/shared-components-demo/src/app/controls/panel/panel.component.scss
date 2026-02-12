@@ -1,0 +1,9 @@
+@use 'reflex' as reflex;
+
+.bg-active {
+  color: reflex.$color-success;
+}
+
+.bg-inactive {
+  color: reflex.$color-error;
+}

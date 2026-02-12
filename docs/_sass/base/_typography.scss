@@ -44,9 +44,18 @@ p {
   font-size: $font-size-small;
 
   & strong {
-    color: $color-primary-dark;
     font-family: $font-primary;    
   }
+}
+
+strong {
+  color: $color-primary-dark;
+  font-weight: $font-weight-bold;
+}
+
+em {
+  color: $color-primary-light;
+  font-style: italic;
 }
 
 code {

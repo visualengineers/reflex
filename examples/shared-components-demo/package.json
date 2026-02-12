@@ -1,0 +1,38 @@
+{
+  "name": "shared-components-demo",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 4203",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "lint": "eslint .",
+    "test": "ng test --browsers Chrome",
+    "test-ci": "ng test --no-watch"
+  },
+  "dependencies": {
+    "@reflex/angular-components": "file:../../packages/reflex-angular-components"
+  },
+  "private": true,
+  "description": "A demo project showcasing how to use the shared angular components package",
+  "main": "main.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualengineers/reflex.git"
+  },
+  "keywords": [
+    "elastic-displays",
+    "shape-changing-interfaces",
+    "angular",
+    "example"
+  ],
+  "author": "Mathias Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visualengineers/reflex/issues"
+  },
+  "homepage": "https://github.com/visualengineers/reflex#readme",
+  "browserslist": [
+    "defaults"
+  ]
+}

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription, combineLatest, interval } from 'rxjs';
 import { LogService } from '../log/log.service';
@@ -7,13 +7,29 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { switchMap } from 'rxjs/operators';
 import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
+import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
-  templateUrl: './settings.component.html'
+  templateUrl: './settings.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    SettingsGroupComponent,
+    ValueSliderComponent,
+    ValueSelectionComponent,
+    OptionCheckboxComponent,
+    PerformanceVisualizationComponent
+  ],
+  standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
+  @ViewChild('json')
+  public jsonElement?: ElementRef;
 
   public settings: TrackingServerAppSettings = DEFAULT_SETTINGS;
 
@@ -24,42 +40,47 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public performanceDataFilter: PerformanceData = { data: [] };
   public performanceDataProcess: PerformanceData = { data: [] };
+  public performanceDataCompleteTimeFrame: PerformanceData = { data: [] };
 
   public performanceDataFilterVis: Array<PerformanceDataItem> = [];
   public performanceDataProcessingVis: Array<PerformanceDataItem> = [];
+  public performanceDataCompleteTimeFrameVis: Array<PerformanceDataItem> = [];
 
   public performanceDataFilterGroups = ['limitationFilter', 'valueFilter', 'thresholdFilter', 'boxFilter', 'updatePointCloud'];
   public performanceDataProcessingGroups = ['processingPreparation', 'processingUpdate', 'processingConvert', 'processingSmoothing', 'processingExtremum'];
 
   public filters: Array<JsonSimpleValue> = Object.values(FilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as FilterType)
     .map((x) => (
       { name: FilterType[Number(x)], value: x }));
 
   public selectedFilterIdx = -1;
 
   public limitationFilters: Array<JsonSimpleValue> = Object.values(LimitationFilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as LimitationFilterType)
     .map((x) => (
       { name: LimitationFilterType[Number(x)], value: x }));
 
   public selectedLimitationFilterIdx = -1;
 
   public checks: Array<JsonSimpleValue> = Object.values(ExtremumTypeCheckMethod)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as ExtremumTypeCheckMethod)
     .map((x) => (
       { name: ExtremumTypeCheckMethod[Number(x)], value: x }));
 
   public selectedExtremumCheckIdx = -1;
+
+  public showSettingsJSON = false;
+  public settingsJSON = '';
 
   private settingsSubscription?: Subscription;
   private trackingStatusSubscription?: Subscription;
   private performanceSubscription?: Subscription;
   private limitationFilterStatePolling?: Subscription;
 
-  private _selectedFilterType: FilterType = FilterType.None;
-  private _selectedLimitationFilterType: LimitationFilterType = LimitationFilterType.LimitationFilter;
-  private _selectedCheckType: ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
+  private selectedFilterType: FilterType = FilterType.None;
+  private selectedLimitationFilterType: LimitationFilterType = LimitationFilterType.LimitationFilter;
+  private selectedCheckType: ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
 
   public constructor(
     // eslint-disable-next-line new-cap
@@ -73,10 +94,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.settingsSubscription = this.settingsService.getSettings().subscribe((result) => {
-      this.settings = result;
-      this.selectedFilterIdx = result.filterSettingValues.smoothingValues.type;
-      this.selectedExtremumCheckIdx = result.filterSettingValues.extremumSettings.checkMethod;
-      this.selectedLimitationFilterIdx = result.filterSettingValues.limitationFilterType;
+      this.settings = this.validateSettings(result);
+      this.selectedFilterIdx = this.settings.filterSettingValues.smoothingValues.type;
+      this.selectedExtremumCheckIdx = this.settings.filterSettingValues.extremumSettings.checkMethod;
+      this.selectedLimitationFilterIdx = this.settings.filterSettingValues.limitationFilterType;
     }, (error) => {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
@@ -263,14 +284,27 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public saveExtremumCheckType(): void {
 
     if (this.selectedExtremumCheckIdx <= 0 || this.selectedExtremumCheckIdx >= this.checks.length) {
-      this._selectedCheckType = ExtremumTypeCheckMethod.Global;
+      this.selectedCheckType = ExtremumTypeCheckMethod.Global;
     } else {
-      this._selectedCheckType = this.selectedExtremumCheckIdx as ExtremumTypeCheckMethod;
+      this.selectedCheckType = this.selectedExtremumCheckIdx as ExtremumTypeCheckMethod;
     }
 
-    this.settings.filterSettingValues.extremumSettings.checkMethod = this._selectedCheckType;
+    this.settings.filterSettingValues.extremumSettings.checkMethod = this.selectedCheckType;
 
     this.saveExtremumValues();
+  }
+
+  public savePointCloudValues(): void {
+    this.settingsService.setPointCloudSettings(this.settings.pointCloudSettingValues).subscribe({
+      next: (result) => {
+        console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);
+        this.settingsService.update();
+      },
+      error: (error) => {
+        console.error(error);
+        this.logService.sendErrorLog(`${error}`);
+      }
+    });
   }
 
   public saveDistance(): void {
@@ -335,12 +369,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterType(): void {
     if (this.selectedFilterIdx <= 0 || this.selectedFilterIdx >= this.filters.length) {
-      this._selectedFilterType = FilterType.None;
+      this.selectedFilterType = FilterType.None;
     } else {
-      this._selectedFilterType = this.selectedFilterIdx as FilterType;
+      this.selectedFilterType = this.selectedFilterIdx as FilterType;
     }
 
-    this.settings.filterSettingValues.smoothingValues.type = this._selectedFilterType;
+    this.settings.filterSettingValues.smoothingValues.type = this.selectedFilterType;
 
     this.saveSmoothingValues();
   }
@@ -348,12 +382,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public saveLimitationFilterType(): void {
 
     if (this.selectedLimitationFilterIdx <= 0 || this.selectedLimitationFilterIdx >= this.limitationFilters.length) {
-      this._selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
+      this.selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
     } else {
-      this._selectedLimitationFilterType = this.selectedLimitationFilterIdx as LimitationFilterType;
+      this.selectedLimitationFilterType = this.selectedLimitationFilterIdx as LimitationFilterType;
     }
 
-    this.settings.filterSettingValues.limitationFilterType = this._selectedLimitationFilterType;
+    this.settings.filterSettingValues.limitationFilterType = this.selectedLimitationFilterType;
 
     this.settingsService.setLimitationFilterType(this.settings.filterSettingValues).subscribe((result) => {
       console.log(`Successfully sent POST request: ${result.value}:${result.name}`);
@@ -362,6 +396,24 @@ export class SettingsComponent implements OnInit, OnDestroy {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
     });
+  }
+
+  public displaySettingsJSON(settings: TrackingServerAppSettings): void {
+    this.showSettingsJSON = true;
+
+    this.settingsJSON = JSON.stringify(settings);
+  }
+
+  public hideSettingsJSON(): void {
+    this.showSettingsJSON = false;
+
+    this.settingsJSON = '';
+  }
+
+  public selectText(): void {
+    if (this.jsonElement) {
+      this.jsonElement.nativeElement.select();
+    }
   }
 
   public uploadConfig(e: Event): void {
@@ -434,9 +486,71 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.performanceDataProcessingVis = this.performanceDataProcessingVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
 
       }
+
+      const existingIdxEnd = this.performanceDataCompleteTimeFrame.data.filter((item) => item.frameId === elem.frameId && item.frameEnd > elem.frameEnd);
+      if (existingIdxEnd.length > 0) {
+        elem.frameEnd = existingIdxEnd.sort((a, b) => a.frameEnd - b.frameEnd)[0].frameEnd;
+      }
+
+      const existingIdxStart = this.performanceDataCompleteTimeFrame.data.filter((item) => item.frameId === elem.frameId && item.frameStart < elem.frameStart);
+      if (existingIdxStart.length > 0) {
+        elem.frameStart = existingIdxStart.sort((a, b) => b.frameStart - a.frameStart)[0].frameStart;
+      }
+
+      elem.totalFrameTime = Math.abs(elem.frameEnd - elem.frameStart) / 1000.0;
+
+      this.performanceDataCompleteTimeFrame.data.push(elem);
+
+      if (elem.totalFrameTime > 0 && elem.totalFrameTime < 100000) {
+        const existingIdx = this.performanceDataCompleteTimeFrameVis.findIndex((item) => item.frameId === elem.frameId);
+        if (existingIdx < 0) {
+          this.performanceDataCompleteTimeFrameVis.push(elem);
+        } else {
+          this.performanceDataCompleteTimeFrameVis[existingIdx] = elem;
+        }
+      }
+
+      this.performanceDataCompleteTimeFrameVis = this.performanceDataCompleteTimeFrameVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
+
     });
 
+    this.performanceDataCompleteTimeFrame.data = this.performanceDataCompleteTimeFrame.data.sort((a, b) => a.frameId - b.frameId).slice(-1000);
     this.performanceDataFilter.data = this.performanceDataFilter.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataProcess.data = this.performanceDataProcess.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
+  }
+
+  /**
+   * checks if parts of the config are null/undefined and replaces these parts with default values
+   */
+  private validateSettings(settings: TrackingServerAppSettings): TrackingServerAppSettings {
+    if (!settings.filterSettingValues) {
+      settings.filterSettingValues = DEFAULT_SETTINGS.filterSettingValues;
+    }
+
+    if (!settings.calibrationValues) {
+      settings.calibrationValues = DEFAULT_SETTINGS.calibrationValues;
+    }
+
+    if (!settings.cameraConfigurationValues) {
+      settings.cameraConfigurationValues = DEFAULT_SETTINGS.cameraConfigurationValues;
+    }
+
+    if (!settings.networkSettingValues) {
+      settings.networkSettingValues = DEFAULT_SETTINGS.networkSettingValues;
+    }
+
+    if (!settings.processingSettingValues) {
+      settings.processingSettingValues = DEFAULT_SETTINGS.processingSettingValues;
+    }
+
+    if (!settings.remoteProcessingServiceSettingsValues) {
+      settings.remoteProcessingServiceSettingsValues = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
+    }
+
+    if (!settings.tuioSettingValues) {
+      settings.tuioSettingValues = DEFAULT_SETTINGS.tuioSettingValues;
+    }
+
+    return settings;
   }
 }

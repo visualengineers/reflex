@@ -1,39 +1,44 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TrackingComponent } from './tracking.component';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { of, throwError } from 'rxjs';
-import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
 import { FormsModule } from '@angular/forms';
 import { MockDepthImageComponent } from './depth-image/depth-image.component.mock';
 import { MockPointCloudComponent } from './point-cloud/point-cloud.component.mock';
 import { MockRecordingComponent } from './recording/recording.component.mock';
 import { MockSettingsComponent } from '../settings/settings.component.mock';
 import { By } from '@angular/platform-browser';
-import { ValueSelectionComponent } from '../elements/value-selection/value-selection.component';
-import { DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { DEFAULT_SETTINGS, DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { MockPanelHeaderComponent, MockValueSelectionComponent, PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { SettingsComponent } from '../settings/settings.component';
+import { DepthImageComponent } from './depth-image/depth-image.component';
+import { PointCloudComponent } from './point-cloud/point-cloud.component';
+import { RecordingComponent } from './recording/recording.component';
 
-const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
+const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
     [
       'getStatus',
       'getCameras',
-      'queryAutostartEnabled', 
-      'getSelectedCamera', 
-      'getConfigurationsForCamera', 
+      'queryAutostartEnabled',
+      'getSelectedCamera',
+      'getConfigurationsForCamera',
       'getSelectedCameraConfig',
       'toggleCamera',
       'setAutostartEnabled'
     ]);
 
-const trackingService_error = jasmine.createSpyObj<TrackingService>('fakeTrackingServiceThrowsErrors', 
+const trackingService_error = jasmine.createSpyObj<TrackingService>('fakeTrackingServiceThrowsErrors',
   [
     'getStatus',
     'getCameras',
-    'queryAutostartEnabled', 
-    'getSelectedCamera', 
-    'getConfigurationsForCamera', 
+    'queryAutostartEnabled',
+    'getSelectedCamera',
+    'getConfigurationsForCamera',
     'getSelectedCameraConfig',
     'toggleCamera',
     'setAutostartEnabled'
@@ -76,22 +81,23 @@ const camera2: DepthCamera = {
 };
 
 const state: TrackingConfigState = {
-  isCameraSelected: true, 
-  selectedCameraName: 'TestCamera', 
-  selectedConfigurationName: 'TestConfig', 
+  isCameraSelected: true,
+  selectedCameraName: 'TestCamera',
+  selectedConfigurationName: 'TestConfig',
   depthCameraStateName: DepthCameraState[camera1.state]
 };
 
 const state2: TrackingConfigState = {
-  isCameraSelected: true, 
-  selectedCameraName: 'ZERO', 
-  selectedConfigurationName: '', 
+  isCameraSelected: true,
+  selectedCameraName: 'ZERO',
+  selectedConfigurationName: '',
   depthCameraStateName: DepthCameraState[camera0.state]
 }
 
 trackingService.getCameras.and.returnValue(of([
   camera0, camera1, camera2
 ]));
+
 
 trackingService.queryAutostartEnabled.and.returnValue(of('true'));
 
@@ -120,7 +126,7 @@ const errorConfigCam = 'TestError: getConfigurationsForCamera()';
 trackingService_error.getConfigurationsForCamera.and.returnValue(throwError(errorConfigCam));
 
 const errorSelectConfig = 'TestError: getSelectedCameraConfig()';
-trackingService_error.getSelectedCameraConfig.and.returnValue(throwError(errorSelectConfig));  
+trackingService_error.getSelectedCameraConfig.and.returnValue(throwError(errorSelectConfig));
 
 const errorToggle = 'TestError: toggleCamera()';
 trackingService_error.toggleCamera.and.returnValue(throwError(errorToggle));
@@ -128,52 +134,67 @@ trackingService_error.toggleCamera.and.returnValue(throwError(errorToggle));
 const errorSaveAutoStart = 'TestError: setAutostartEnabled()';
 trackingService_error.setAutostartEnabled.and.returnValue(throwError(errorSaveAutoStart));
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
+    'getSettings',
+    'getCanRestore',
     'update'
   ]);
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
+settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
+settingsService.getCanRestore.and.returnValue(of({ name: 'canRestore', value: true }));
 
 describe('TrackingComponent', () => {
   let component: TrackingComponent;
-  let fixture: ComponentFixture<TrackingComponent>;  
+  let fixture: ComponentFixture<TrackingComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [         
-        TrackingComponent, 
-        MockPanelHeaderComponent, 
-        ValueSelectionComponent, 
+    imports: [
+        CommonModule,
+        FormsModule,
+        TrackingComponent
+      ],
+    providers: [
+        { provide: 'BASE_URL', useValue: '', deps: [] },
+        {
+            provide: TrackingService, useValue: trackingService
+        },
+        {
+            provide: SettingsService, useValue: settingsService
+        },
+        {
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    })
+    .overrideComponent(TrackingComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        RecordingComponent,
+        SettingsComponent,
+        PointCloudComponent,
+        DepthImageComponent
+      ] },
+      add: { imports: [
+        MockPanelHeaderComponent,
         MockRecordingComponent,
         MockSettingsComponent,
         MockPointCloudComponent,
-        MockDepthImageComponent
-       ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
-        {
-          provide: TrackingService, useValue: trackingService
-        },
-        {
-          provide: SettingsService, useValue: settingsService
-        },
-        {
-          provide: LogService, useValue: logService
-        }
-      ]})
-    .compileComponents(); 
+        MockDepthImageComponent ] }
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TrackingComponent);
-    component = fixture.componentInstance;    
+    component = fixture.componentInstance;
   });
 
   afterEach(() => {
@@ -194,12 +215,12 @@ describe('TrackingComponent', () => {
     logService.sendErrorLog.calls.reset();
   });
 
-  afterAll(() => {  
-    fixture.destroy();    
+  afterAll(() => {
+    fixture.destroy();
     TestBed.resetTestingModule();
   })
 
-  it('should create', () => {    
+  it('should create', () => {
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -247,11 +268,11 @@ describe('TrackingComponent', () => {
     expect(component['selectedCamSubscription']).toBeDefined();
   });
 
-  it('should update selected camera and config correctly', async () => {   
+  it('should update selected camera and config correctly', async () => {
     // now execute OnInit()
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
     // query selection
@@ -267,7 +288,7 @@ describe('TrackingComponent', () => {
     expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(1);
 
     camSelectionElem.value = camSelectionElem.options[0].value;
-    camSelectionElem.dispatchEvent(new Event('change'));    
+    camSelectionElem.dispatchEvent(new Event('change'));
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -278,7 +299,7 @@ describe('TrackingComponent', () => {
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledTimes(2);
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledWith(0);
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledWith(1);
-    expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(2); 
+    expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(2);
 
     expect(component.canStart).toBeFalsy();
 
@@ -307,7 +328,7 @@ describe('TrackingComponent', () => {
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledTimes(2);
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledWith(0);
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledWith(1);
-    expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(2); 
+    expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(2);
 
     expect(component.canStart).toBeTruthy();
   });
@@ -320,18 +341,18 @@ describe('TrackingComponent', () => {
     // query selection
     const selectionDbg  = fixture.debugElement.query(By.css('#tracking-camera-select'));
     expect(selectionDbg).toBeTruthy();
- 
+
     const camSelectionElem = selectionDbg.nativeElement as HTMLSelectElement;
     expect(camSelectionElem).toBeTruthy();
     expect(camSelectionElem.selectedIndex).toEqual(1);
- 
+
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledTimes(1);
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledWith(1);
     expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(1);
 
     trackingService.getSelectedCameraConfig.calls.reset();
- 
-    component.selectedCameraIdx = -1;  
+
+    component.selectedCameraIdx = -1;
     component.updateConfigurations();
 
     expect(component.configurations).toEqual([]);
@@ -341,14 +362,14 @@ describe('TrackingComponent', () => {
 
     expect(component.selectedConfigurationIdx).toEqual(-1);
     expect(component.canStart).toBeFalsy();
-     
+
   });
 
   it('should correctly toggle camera with current config', async () => {
 
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
     expect(component.isActive).toBeTruthy();
@@ -356,7 +377,7 @@ describe('TrackingComponent', () => {
     expect(component.selectedConfigurationIdx).toBe(0);
 
     trackingService.toggleCamera.and.returnValue(of(true));
-    
+
     settingsService.update.calls.reset();
 
     component.start();
@@ -373,11 +394,11 @@ describe('TrackingComponent', () => {
 
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
     trackingService.setAutostartEnabled.and.returnValue(of(true));
-    
+
     settingsService.update.calls.reset();
 
     component.saveAutoStart();
@@ -394,7 +415,7 @@ describe('TrackingComponent', () => {
 
     fixture.detectChanges();
     await fixture.whenStable();
-    
+
     component.onDepthImageFullScreenChanged(true);
     expect(component.displayPointCloud).toBe(false);
 
@@ -411,7 +432,7 @@ describe('TrackingComponent', () => {
     expect(component.displayDepthImage).toBe(true);
   });
 
-  it ('should unsubscribe completely onDestroy', async () => {    
+  it ('should unsubscribe completely onDestroy', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -429,40 +450,55 @@ describe('TrackingComponent', () => {
 
 describe('TrackingComponent: Test Service throwing Errors', () => {
   let component: TrackingComponent;
-  let fixture: ComponentFixture<TrackingComponent>;  
+  let fixture: ComponentFixture<TrackingComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [         
-        TrackingComponent, 
-        MockPanelHeaderComponent, 
-        ValueSelectionComponent, 
-        MockRecordingComponent,
-        MockSettingsComponent,
-        MockPointCloudComponent,
-        MockDepthImageComponent
-       ],
-      imports: [
+    imports: [
         FormsModule,
-        HttpClientTestingModule
+        CommonModule,
+        TrackingComponent
       ],
-      providers: [
+    providers: [
         {
-          provide: TrackingService, useValue: trackingService_error
+            provide: TrackingService, useValue: trackingService_error
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]})
-    .compileComponents(); 
+            provide: LogService, useValue: logService
+        },
+        {
+          provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+  })
+  .overrideComponent(TrackingComponent, {
+    remove: { imports: [
+      PanelHeaderComponent,
+      ValueSelectionComponent,
+      RecordingComponent,
+      SettingsComponent,
+      PointCloudComponent,
+      DepthImageComponent
+    ] },
+    add: { imports: [
+      MockPanelHeaderComponent,
+      MockValueSelectionComponent,
+      MockRecordingComponent,
+      MockSettingsComponent,
+      MockPointCloudComponent,
+      MockDepthImageComponent ] }
+  })
+    .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TrackingComponent);
-    component = fixture.componentInstance;    
+    component = fixture.componentInstance;
   });
 
   afterEach(() => {
@@ -484,7 +520,7 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
   });
 
   afterAll(() => {
-    fixture.destroy();    
+    fixture.destroy();
     TestBed.resetTestingModule();
   })
 
@@ -512,11 +548,11 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
 
     component.selectedCameraIdx = 1;
     component.updateConfigurations();
-    
+
     expect(trackingService_error.getConfigurationsForCamera).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(5)
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorConfigCam);
-   
+
     component.start();
 
     expect(trackingService_error.toggleCamera).toHaveBeenCalledTimes(1);
@@ -530,9 +566,7 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSaveAutoStart);
 
     fixture.destroy();
-    TestBed.resetTestingModule();    
+    TestBed.resetTestingModule();
   });
 
 });
-
-

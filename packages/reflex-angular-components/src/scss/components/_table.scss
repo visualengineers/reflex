@@ -1,0 +1,88 @@
+@use "../abstracts/variables";
+
+table {
+    border-collapse: collapse;
+    border-style: hidden;
+    border: none;
+    border-bottom: 2px solid variables.$color-primary;
+    border-top: 2px solid variables.$color-primary;
+  
+    margin-bottom: variables.$default-col-gap;
+  
+    & td {
+      border: none;
+      text-align: center;
+      padding: 0 0.5rem;
+    }
+
+    &.fixed-height {
+      min-height: 20rem;
+      max-height: 20rem;
+
+      & tr:last-child {
+        height: 100%;
+        vertical-align: top;
+      }
+    }
+  }
+  
+  thead {  
+    color: variables.$color-primary;
+    text-align: center;
+    font-family: variables.$font-heading;
+  
+    & th {
+      min-width: 5em; 
+      border-bottom: 1px solid variables.$color-primary;
+    }  
+  }
+  
+  tbody {
+  
+    tr { 
+  
+      &:nth-child(even) {
+        background-color: variables.$color-grey-light-3;
+      }
+    
+      &.table-danger {
+        background-color: variables.$color-error-light;
+        color: variables.$color-white;
+        font-family: variables.$font-heading;
+      }
+    
+      &.table-danger:nth-child(even) {
+        background-color: variables.$color-error;
+        color: variables.$color-white;
+        font-family: variables.$font-heading;
+      }
+      
+      &:hover {   
+        box-shadow: inset 0px 0px 1px 1px variables.$color-primary;
+      }
+    }
+  }
+  
+  .text-column {
+    text-align: left;
+    white-space: pre-wrap;
+    word-break: break-word;
+  
+    & div {
+      max-height: 5rem;
+      overflow: hidden;
+  
+      &:hover {        
+        max-height: -moz-fit-content;
+        max-height: fit-content;
+      }
+    }
+  }
+
+  .wideCell {
+      min-width: 15rem;
+  }
+
+  .narrowCell {
+    min-width: 4.2rem;
+}

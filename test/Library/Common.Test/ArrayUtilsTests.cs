@@ -17,11 +17,11 @@ public class ArrayUtilsTests
     [Test]
     public void TestInitializationPlainArray()
     {
-        var size = new Random().Next(500);
+        var size = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<int>(out var intResult, size);
-        
-        Assert.IsNotNull(intResult);
+
+        Assert.That(intResult, Is.Not.Null);
         Assert.That(intResult.Length, Is.EqualTo(size));
         
         foreach (var i in intResult)
@@ -29,16 +29,16 @@ public class ArrayUtilsTests
             Assert.That(i, Is.EqualTo(0));
         }
 
-        size = new Random().Next(500);
+        size = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out var p3Result, size);
-        
-        Assert.IsNotNull(p3Result);
+
+        Assert.That(p3Result, Is.Not.Null);
         Assert.That(p3Result.Length, Is.EqualTo(size));
         
         foreach (var p3 in p3Result)
         {
-            Assert.IsNotNull(p3);
+            Assert.That(p3, Is.Not.Null);
             Assert.That(p3.X, Is.EqualTo(0));
             Assert.That(p3.Y, Is.EqualTo(0));
             Assert.That(p3.Z, Is.EqualTo(0));
@@ -53,12 +53,12 @@ public class ArrayUtilsTests
     [Test]
     public void TestInitialization2dArray()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray(out int[,] intResult, sizeX, sizeY);
-        
-        Assert.IsNotNull(intResult);
+
+        Assert.That(intResult, Is.Not.Null);
         Assert.That(intResult.Length, Is.EqualTo(sizeX * sizeY));
 
         for (var i = 0; i < sizeX; i++)
@@ -69,19 +69,19 @@ public class ArrayUtilsTests
             }
         }
         
-        sizeX = new Random().Next(500);
-        sizeY = new Random().Next(500);
+        sizeX = new Random().Next(500) + 1;
+        sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out Point3[,] p3Result, sizeX, sizeY);
-        
-        Assert.IsNotNull(p3Result);
+
+        Assert.That(p3Result, Is.Not.Null);
         Assert.That(p3Result.Length, Is.EqualTo(sizeX * sizeY));
         
         for (var i = 0; i < sizeX; i++)
         {
             for (var j = 0; j < sizeY; j++)
             {
-                Assert.IsNotNull(p3Result[i,j]);
+                Assert.That(p3Result[i,j], Is.Not.Null);
                 Assert.That(p3Result[i,j].X, Is.EqualTo(0));
                 Assert.That(p3Result[i,j].Y, Is.EqualTo(0));
                 Assert.That(p3Result[i,j].Z, Is.EqualTo(0));
@@ -97,12 +97,12 @@ public class ArrayUtilsTests
     [Test]
     public void TestInitializationJaggedArray()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray(out int[][] intResult, sizeX, sizeY);
-        
-        Assert.IsNotNull(intResult);
+
+        Assert.That(intResult, Is.Not.Null);
         Assert.That(intResult.Length, Is.EqualTo(sizeX));
 
         for (var i = 0; i < sizeX; i++)
@@ -116,12 +116,12 @@ public class ArrayUtilsTests
             }
         }
         
-        sizeX = new Random().Next(500);
-        sizeY = new Random().Next(500);
+        sizeX = new Random().Next(500) + 1;
+        sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out Point3[][] p3Result, sizeX, sizeY);
-        
-        Assert.IsNotNull(p3Result);
+
+        Assert.That(p3Result, Is.Not.Null);
         Assert.That(p3Result.Length, Is.EqualTo(sizeX));
         
         for (var i = 0; i < sizeX; i++)
@@ -131,7 +131,7 @@ public class ArrayUtilsTests
             
             for (var j = 0; j < sizeY; j++)
             {
-                Assert.IsNotNull(row[j]);
+                Assert.That(row[j], Is.Not.Null);
                 Assert.That(row[j].X, Is.EqualTo(0));
                 Assert.That(row[j].Y, Is.EqualTo(0));
                 Assert.That(row[j].Z, Is.EqualTo(0));
@@ -144,7 +144,7 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysPlainWithDifferentArrays()
     {
-        var size = new Random().Next(500);
+        var size = new Random().Next(500) + 1;
         ArrayUtils.InitializeArray<Point3>(out var src, size);
         ArrayUtils.InitializeArray<Point3>(out var target, size);
 
@@ -167,7 +167,7 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysPlainWithEmptyArrays()
     {
-        var size = new Random().Next(500);
+        var size = new Random().Next(500) + 1;
         ArrayUtils.InitializeArray<Point3>(out var src, size);
         ArrayUtils.InitializeArray<Point3>(out var target, size);
 
@@ -189,7 +189,7 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysPlainThrowsException()
     {
-        var size = new Random().Next(500);
+        var size = new Random().Next(500) + 1;
         ArrayUtils.InitializeArray<Point3>(out var src, size);
         ArrayUtils.InitializeArray<Point3>(out var target, size / 2);
 
@@ -199,8 +199,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArrays2dWithEmptyArrays()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out var src, sizeX * sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[,] target, sizeX, sizeY);
@@ -224,8 +224,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArrays2dThrowsException()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out var src, sizeX * sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[,] target, sizeX, sizeY -1);
@@ -241,8 +241,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArrays2dBothWithEmptyArrays()
     {
-        var sizeX = new Random().Next(50);
-        var sizeY = new Random().Next(50);
+        var sizeX = new Random().Next(50) + 1;
+        var sizeY = new Random().Next(50) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out Point3[,] src, sizeX,sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[,] target, sizeX, sizeY);
@@ -265,8 +265,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArrays2dBothThrowsException()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out Point3[,] src, sizeX, sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[,] target, sizeX, sizeY -1);
@@ -287,8 +287,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysJaggedWithEmptyArrays()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out var src, sizeX * sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[][] target, sizeX, sizeY);
@@ -312,8 +312,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysJaggedThrowsException()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out var src, sizeX * sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[][] target, sizeX, sizeY -1);
@@ -329,8 +329,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysJaggedBothWithEmptyArrays()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out Point3[][] src, sizeX, sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[][] target, sizeX, sizeY);
@@ -355,8 +355,8 @@ public class ArrayUtilsTests
     [Test]
     public void TestReferencingArraysJaggedBothThrowsException()
     {
-        var sizeX = new Random().Next(500);
-        var sizeY = new Random().Next(500);
+        var sizeX = new Random().Next(500) + 1;
+        var sizeY = sizeX + new Random().Next(500) + 1;
         
         ArrayUtils.InitializeArray<Point3>(out Point3[][] src, sizeX, sizeY);
         ArrayUtils.InitializeArray<Point3>(out Point3[][] target, sizeX, sizeY - 1);

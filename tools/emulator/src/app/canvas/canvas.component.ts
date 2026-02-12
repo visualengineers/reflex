@@ -7,6 +7,7 @@ import { ConnectionService } from '../service/connection.service';
 import { CircleDto, CircleRenderer } from '../shapes/Circle';
 import { environment } from 'src/environments/environment';
 import { ExtremumType, Interaction } from '@reflex/shared-types';
+import { CommonModule } from '@angular/common';
 
 interface Size {
   width: number;
@@ -14,9 +15,10 @@ interface Size {
 }
 
 @Component({
-  selector: 'app-canvas',
-  templateUrl: './canvas.component.html',
-  styleUrls: ['./canvas.component.sass']
+    selector: 'app-canvas',
+    templateUrl: './canvas.component.html',
+    styleUrls: ['./canvas.component.sass'],
+    imports: [CommonModule]
 })
 export class CanvasComponent implements OnInit, OnDestroy {
 
@@ -26,7 +28,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
   private amountTouchPointsSubscription?: Subscription;
 
-  public backgroundPath: string = '';
+  public backgroundPath = '';
 
   private circleRenderer?: CircleRenderer;
 
@@ -85,7 +87,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
 
     const contextMenu$ = fromEvent<MouseEvent>(this.canvas.nativeElement, 'contextmenu') ;  // default menu on right click/ menu key event
-    
+
     const mouseDown$ = fromEvent<MouseEvent>(this.canvas.nativeElement, 'mousedown');
     const mouseMove$ = fromEvent<MouseEvent>(this.canvas.nativeElement, 'mousemove');
     const mouseOut$ = fromEvent<MouseEvent>(this.canvas.nativeElement, 'mouseout');
@@ -128,11 +130,11 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
     // html canvas element
     this.configurationService.background$
-      .subscribe(x => {this.backgroundPath = this.configurationService.getBackgroundImage(); });
+      .subscribe(() => {this.backgroundPath = this.configurationService.getBackgroundImage(); });
 
     this.drawCirclesSubscription = combineLatest([normalizedPoints$, windowSize$, layers$])
       .pipe(
-        map(([points, size, layers]) => points.map(p => this.circleDtoFromNormalizedPoint(p, size)))
+        map(([points, size]) => points.map(p => this.circleDtoFromNormalizedPoint(p, size)))
       )
       .subscribe(circleDtos => this.drawCircleDtos(circleDtos));
 
@@ -186,7 +188,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
       )
       .subscribe();
 
-      
+
 
     // functionality and information sending
     this.sendTouchPointsSubscription = normalizedPoints$
@@ -287,7 +289,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     const indices: number[] = [];
 
     // don't mess up with the order: first remains first point; adding on top; deleting in-place
-    p.forEach((point, i) => {
+    p.forEach((point) => {
       if (this.isEventOnCircle(event, point)) {
         indices.push(point.index);
       }
@@ -334,7 +336,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     const xDiff = event2.x - event1.x;
     const yDiff = event2.y - event1.y;
 
-    p.forEach((point, i) => {
+    p.forEach((point) => {
       if (index === point.index) {
         point.x += xDiff / (this.ctx?.canvas?.width ?? 1);
         point.y += yDiff / (this.ctx?.canvas?.height ?? 1);
@@ -383,7 +385,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     scaleStep *= mouseDirection;
 
     // actual resizing
-    p.forEach((point, i) => {
+    p.forEach((point) => {
       if (this.isEventOnCircle(event, point)) {
         point.z = Math.min(Math.max(normalizedPushLimit, point.z + scaleStep), normalizedPullLimit);
       }

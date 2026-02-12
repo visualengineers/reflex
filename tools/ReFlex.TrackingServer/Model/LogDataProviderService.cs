@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NLog;
-using Prism.Events;
-using TrackingServer.Data.Log;
+﻿using NLog;
+using ReFlex.Server.Data.Log;
 using TrackingServer.Util;
 
 namespace TrackingServer.Model
 {
     public class LogDataProviderService
     {
-        private readonly IEventAggregator _evtAggregator;
+        private readonly IEventAggregator? _evtAggregator;
 
         private readonly IList<LogMessageDetail> _logMessages = new List<LogMessageDetail>();
 
-        public LogDataProviderService(IEventAggregator evtAggregator)
+        public LogDataProviderService(IEventAggregator? evtAggregator)
         {
             _evtAggregator = evtAggregator;
-            _evtAggregator.GetEvent<NLogCustomTargetMessageEvent>().Subscribe(OnLogUpdated);
+            _evtAggregator?.GetEvent<NLogCustomTargetMessageEvent>().Subscribe(OnLogUpdated);
         }
 
         private void OnLogUpdated(LogEventInfo message)

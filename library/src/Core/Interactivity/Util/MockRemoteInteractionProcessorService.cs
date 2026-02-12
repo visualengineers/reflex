@@ -10,8 +10,8 @@ namespace ReFlex.Core.Interactivity.Util;
 public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessorService
 {
     public bool IsConnected { get; private set; }
-    public bool IsBusy { get; } 
-    
+    public bool IsBusy { get; }
+
     public bool SendCompleteDataset { get; set; }
     public async Task<bool> Connect()
     {
@@ -27,23 +27,23 @@ public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessor
 
     public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance measurement, bool measurePerformance)
     {
-        var result = await Task.Run(() =>
-        {
-            var rX = new Random().Next(pointCloud.SizeX) / pointCloud.SizeX;
-            var rY = new Random().Next(pointCloud.SizeY) / pointCloud.SizeY;
+      var result = new List<Interaction>();
 
-            measurement.Smoothing = TimeSpan.Zero;
-            measurement.Preparation = TimeSpan.Zero;
-            measurement.Update = TimeSpan.Zero;
-            measurement.ComputeExtremumType = TimeSpan.Zero;
-            measurement.ConvertDepthValue = TimeSpan.Zero;
+      await Task.Run(() =>
+      {
+        var rX = new Random().Next(pointCloud.SizeX) / pointCloud.SizeX;
+        var rY = new Random().Next(pointCloud.SizeY) / pointCloud.SizeY;
 
-            var interaction = new Interaction(new Point3(rX, rY, 0.1f), InteractionType.Push, 20);
+        measurement.Smoothing = TimeSpan.Zero;
+        measurement.Preparation = TimeSpan.Zero;
+        measurement.Update = TimeSpan.Zero;
+        measurement.ComputeExtremumType = TimeSpan.Zero;
+        measurement.ConvertDepthValue = TimeSpan.Zero;
 
-            return new Tuple<IList<Interaction>, ProcessPerformance>(new List<Interaction>() { interaction },
-                measurement);
-        });
+        var interaction = new Interaction(new Point3(rX, rY, 0.1f), InteractionType.Push, 20);
+        result.Add(interaction);
+      });
 
-        return result;
+      return new Tuple<IList<Interaction>, ProcessPerformance>(result, measurement);
     }
 }

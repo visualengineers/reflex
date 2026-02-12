@@ -5,11 +5,28 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { mergeMap, tap } from 'rxjs/operators';
 import { CameraConfiguration, DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RecordingComponent } from './recording/recording.component';
+import { SettingsComponent } from '../settings/settings.component';
+import { PointCloudComponent } from './point-cloud/point-cloud.component';
+import { DepthImageComponent } from './depth-image/depth-image.component';
 
 @Component({
   selector: 'app-tracking',
   templateUrl: './tracking.component.html',
-  styleUrls: ['./tracking.component.scss']
+  styleUrls: ['./tracking.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    PanelHeaderComponent,
+    ValueSelectionComponent,
+    RecordingComponent,
+    SettingsComponent,
+    PointCloudComponent,
+    DepthImageComponent
+  ]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
 
@@ -44,48 +61,48 @@ export class TrackingComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.trackingService.getCameras().subscribe(
-      (result) => {
+    this.trackingService.getCameras().subscribe({
+      next: (result) => {
         this.cameras = result;
       },
-      (error) => {
+      error: (error) => {
         this.logService.sendErrorLog(`${error}`);
         console.error(error);
       }
-    );
+    });
 
-    this.autostartSubscription = this.trackingService.queryAutostartEnabled().subscribe(
-      (result) => {
+    this.autostartSubscription = this.trackingService.queryAutostartEnabled().subscribe({
+      next: (result) => {
         this.autostart = result === 'true';
       },
-      (error) => {
+      error: (error) => {
         this.logService.sendErrorLog(`${error}`);
         console.error(error);
       }
-    );
+    });
 
     this.statusSubscription = this.trackingService.getStatus()
-      .subscribe(
-        (result) => {
+      .subscribe({
+        next: (result) => {
           this.updateStatusText(result);
           this.updateState();
         },
-        (error) => {
+        error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
         }
-      );
+      });
 
     this.selectedCamSubscription = this.trackingService.getSelectedCamera()
-      .subscribe(
-        (result) => {
+      .subscribe({
+        next: (result) => {
           this.updateSelectedCamera(result);
         },
-        (error) => {
+        error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
         }
-      );
+      });
 
     this.settingsService.update();
 

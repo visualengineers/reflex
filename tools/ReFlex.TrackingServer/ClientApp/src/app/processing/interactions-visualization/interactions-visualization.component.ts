@@ -1,13 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CompleteInteractionData, ElementPosition, ExtremumDescription, ExtremumType, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
+import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-interactions-visualization',
   templateUrl: './interactions-visualization.component.html',
-  styleUrls: ['./interactions-visualization.component.scss']
+  styleUrls: ['./interactions-visualization.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HistoryVisualizationComponent
+  ]
 })
 export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
@@ -21,23 +29,23 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   public maxConfidence = 30;
 
   private frameSizeSubscription?: Subscription;
-  private _frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
-  private _eventId = 0;
+  private frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
+  private pEventId = 0;
 
   public constructor(private readonly calibrationService: CalibrationService, private readonly logService: LogService) { }
 
   public get eventId(): number {
-    return this._eventId;
+    return this.pEventId;
   }
 
   @Input()
   public set eventId(value: number) {
-    this._eventId = value;
+    this.pEventId = value;
   }
 
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService.getFrameSize().subscribe((result) => {
-      this._frameSize = result;
+      this.frameSize = result;
     }, (error) => {
       console.error(error);
       this.logService.sendErrorLog(`${error}`);
@@ -52,10 +60,10 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     if (this.fullScreen) {
       return {
         position: 'absolute',
-        top: `${this._frameSize.top}px`,
-        left: `${this._frameSize.left}px`,
-        width: `${this._frameSize.width}px`,
-        height: `${this._frameSize.height}px`
+        top: `${this.frameSize.top}px`,
+        left: `${this.frameSize.left}px`,
+        width: `${this.frameSize.width}px`,
+        height: `${this.frameSize.height}px`
       };
     }
 
@@ -78,8 +86,8 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     }
 
     this.calibratedInteractions.forEach((int) => {
-      int.position.x = this.fullScreen ? int.position.x - this._frameSize.left : int.position.x * this.container?.nativeElement.clientWidth ?? 0;
-      int.position.y = this.fullScreen ? int.position.y - this._frameSize.top : int.position.y * this.container?.nativeElement.clientHeight ?? 0;
+      int.position.x = this.fullScreen ? int.position.x - this.frameSize.left : int.position.x * ((this.container?.nativeElement as HTMLElement | undefined)?.clientWidth ?? 0);
+      int.position.y = this.fullScreen ? int.position.y - this.frameSize.top : int.position.y * ((this.container?.nativeElement as HTMLElement | undefined)?.clientHeight ?? 0);
       int.position.z = Math.abs(int.position.z) * 2;
     });
   }

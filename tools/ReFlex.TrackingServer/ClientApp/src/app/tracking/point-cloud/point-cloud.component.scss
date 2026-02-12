@@ -1,15 +1,15 @@
-@import 'abstracts/variables';
+@use 'reflex' as reflex;
 
 .point-cloud {
     &__debug {
-        position: absolute; 
-        bottom: 1rem; 
-        right: 1rem;    
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
 
         min-width: 20rem;
         width: 15vw;
-        
-        background-color: rgba($color-grey-light-2,.4);
+
+        background-color: rgba(reflex.$color-grey-light-2,.4);
 
         padding: 1rem;
 
@@ -17,9 +17,9 @@
     }
 
     &__settings {
-        position: absolute; 
-        top: 1rem; 
-        left: 1rem; 
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
 
         min-width: 35rem;
         width: 20vw;
@@ -38,12 +38,12 @@
 .visualization {
 
     // functionality: display toggle fullscreen
-    
-    
+
+
     &__view {
-        margin-top: $default-col-gap;
-        margin-bottom: $default-col-gap;
-        border: 1px solid $color-grey-light-3;      
+        margin-top: reflex.$default-col-gap;
+        margin-bottom: reflex.$default-col-gap;
+        border: 1px solid reflex.$color-grey-light-3;
     }
 
     &__render {
@@ -53,16 +53,16 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;  
-            
+            height: 100vh;
+
             // z-index: 1500;
-            background-color: $color-white;
+            background-color: reflex.$color-white;
 
             ~.point-cloud {
                 &__debug,
                 &__settings {
                     position: fixed;
-                    min-width: 55rem;                    
+                    min-width: 55rem;
                 }
             }
         }
@@ -70,5 +70,5 @@
         &:focus {
             outline: none;
         }
-    }    
+    }
 }

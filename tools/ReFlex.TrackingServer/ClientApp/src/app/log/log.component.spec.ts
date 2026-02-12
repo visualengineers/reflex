@@ -3,10 +3,10 @@ import { LogComponent } from './log.component';
 import { LogService } from './log.service';
 import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
 import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
+import { MockValueSelectionComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'getLogs',
     'sendErrorLog',
@@ -40,25 +40,31 @@ describe('LogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LogComponent, MockValueSelectionComponent ],
-      imports: [ FormsModule ],
-      providers: [
+    imports: [
+      FormsModule,
+      LogComponent
+    ],
+    providers: [
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
+    ]
+    })
+    .overrideComponent(LogComponent, {
+      remove: { imports: [ ValueSelectionComponent] },
+      add: { imports: [ MockValueSelectionComponent ] }
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LogComponent);
-    component = fixture.componentInstance; 
-    logService.getLogs.and.rejectWith();  
+    component = fixture.componentInstance;
+    logService.getLogs.and.rejectWith();
   });
 
   afterEach(() => {
-    logService.getLogs.calls.reset();    
+    logService.getLogs.calls.reset();
     logService.reset.calls.reset();
     logService.sendErrorLog.calls.reset();
 
@@ -118,7 +124,7 @@ describe('LogComponent', () => {
     expect(component.filteredMessages).toEqual(messages);
 
     // only TRACE messages
-    component.filterLevel = 0; 
+    component.filterLevel = 0;
 
     component.filter();
 
@@ -131,16 +137,16 @@ describe('LogComponent', () => {
 
     expect(component.filteredMessages).toHaveSize(2);
     expect(component.filteredMessages).toEqual([messages[0],messages[1]]);
-    
+
     // only INFO messages
     component.filterLevel = 2;
     component.filter();
 
     expect(component.filteredMessages).toHaveSize(0);
-    expect(component.filteredMessages).toEqual([]);    
+    expect(component.filteredMessages).toEqual([]);
 
     // only WARN messages
-    component.filterLevel = 3; 
+    component.filterLevel = 3;
     component.filter();
 
     expect(component.filteredMessages).toHaveSize(3);

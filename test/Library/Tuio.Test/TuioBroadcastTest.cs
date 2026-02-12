@@ -33,6 +33,12 @@ namespace ReFlex.Core.Tuio.Test
             _interactions.Add(new Interaction(new Point3(1f,0.5f, -0.5f), InteractionType.Push, 5f) { TouchId = 1});
             _interactions.Add(new Interaction(new Point3(0f,1f, 0.25f), InteractionType.Pull, 3f) { TouchId = 2});
         }
+
+        [TearDown]
+        public void Dispose()
+        {
+            _broadcastInstance?.Dispose();
+        }
         
         /// <summary>
         /// Tests, if public constructor correctly initializes <see cref="ITuioMessageBuilder"/> ans <see cref="ITuioSender"/>
@@ -41,12 +47,12 @@ namespace ReFlex.Core.Tuio.Test
         public async Task TestDefaultConstructor()
         {
             _broadcastInstance = new TuioBroadcast();
-            
-            Assert.IsNotNull(_broadcastInstance);
-            
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+
+            Assert.That(_broadcastInstance, Is.Not.Null);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
             
             _config = new TuioConfiguration
             {
@@ -62,10 +68,10 @@ namespace ReFlex.Core.Tuio.Test
             };
 
             await _broadcastInstance.Configure(_config);
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
         }
 
         /// <summary>
@@ -74,35 +80,35 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public void TestNotConfigured()
         {
-            Assert.IsNotNull(_broadcastInstance);
+            Assert.That(_broadcastInstance, Is.Not.Null);
 
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
         }
         
         [Test]
         public async Task TestConfigurationIsNull()
         {
-            Assert.IsNotNull(_broadcastInstance);
+            Assert.That(_broadcastInstance, Is.Not.Null);
 
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
             await _broadcastInstance.Configure(It.IsAny<TuioConfiguration>());
-            
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsNull(_broadcastInstance.Configuration);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
         }
 
         [Test]
         public async Task TestInitialization()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
             _config = new TuioConfiguration
             {
@@ -121,10 +127,10 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockSender.Verify(m => m.Initialize(_config), Times.Exactly(1));
             _mockSender.Verify(m => m.StopAllConnections(), Times.Exactly(1));
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             _mockSender.Reset();
         }
@@ -132,10 +138,10 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public async Task TestSendingWithMock11()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
             _config = new TuioConfiguration
             {
@@ -154,10 +160,10 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockSender.Verify(m => m.Initialize(_config), Times.Exactly(1));
             _mockSender.Verify(m => m.StopAllConnections(), Times.Exactly(1));
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             await _broadcastInstance.Broadcast(_interactions);
             
@@ -168,10 +174,10 @@ namespace ReFlex.Core.Tuio.Test
             _mockSender.Verify(m => m.SendWebSocket(It.IsAny<OscBundle>()), Times.Never);
             
             _mockBuilder.Verify(b => b.CreateTuio20Messages(It.IsAny<TuioParameters>(), It.IsAny<TuioInterpretation>()), Times.Never);
-           
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             _mockBuilder.Reset();
             _mockSender.Reset();
@@ -180,14 +186,14 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public async Task TestInvalidConfiguration()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsNull(_broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             await _broadcastInstance.Broadcast(_interactions);
             
@@ -205,12 +211,12 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public async Task TestInvalidTransport()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
-            
-            Assert.IsFalse(Enum.IsDefined(typeof(TransportProtocol), Int32.MaxValue));
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
+
+            Assert.That(Enum.IsDefined(typeof(TransportProtocol), Int32.MaxValue), Is.False);
 
             _config = new TuioConfiguration
             {
@@ -229,10 +235,10 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockSender.Verify(m => m.Initialize(_config), Times.Exactly(1));
             _mockSender.Verify(m => m.StopAllConnections(), Times.Exactly(1));
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
 
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await _broadcastInstance.Broadcast(_interactions));
             
@@ -243,10 +249,10 @@ namespace ReFlex.Core.Tuio.Test
             _mockSender.Verify(m => m.SendWebSocket(It.IsAny<OscBundle>()), Times.Never);
 
             _mockBuilder.Verify(b => b.CreateTuio11Messages(It.IsAny<TuioParameters>(), It.IsAny<TuioInterpretation>()), Times.Never);
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             _mockBuilder.Reset();
             _mockSender.Reset();
@@ -255,10 +261,10 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public async Task TestSendingWithMock20()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
             _config = new TuioConfiguration
             {
@@ -277,10 +283,10 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockSender.Verify(m => m.Initialize(_config), Times.Exactly(1));
             _mockSender.Verify(m => m.StopAllConnections(), Times.Exactly(1));
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             await _broadcastInstance.Broadcast(_interactions);
             
@@ -291,10 +297,10 @@ namespace ReFlex.Core.Tuio.Test
             _mockSender.Verify(m => m.SendWebSocket(It.IsAny<OscBundle>()), Times.Never);
             
             _mockBuilder.Verify(b => b.CreateTuio11Messages(It.IsAny<TuioParameters>(), It.IsAny<TuioInterpretation>()), Times.Never);
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             _mockBuilder.Reset();
             _mockSender.Reset();
@@ -303,10 +309,10 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public async Task TestSendingWithMocWebSocket()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
             _config = new TuioConfiguration
             {
@@ -325,10 +331,10 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockSender.Verify(m => m.Initialize(_config), Times.Exactly(1));
             _mockSender.Verify(m => m.StopAllConnections(), Times.Exactly(1));
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             await _broadcastInstance.Broadcast(_interactions);
             
@@ -340,9 +346,9 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockBuilder.Verify(b => b.CreateTuio11Messages(It.IsAny<TuioParameters>(), It.IsAny<TuioInterpretation>()), Times.Never);
 
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
             
             _mockBuilder.Reset();
             _mockSender.Reset();
@@ -351,10 +357,10 @@ namespace ReFlex.Core.Tuio.Test
         [Test]
         public async Task TestDispose()
         {
-            Assert.IsNotNull(_broadcastInstance);
-            Assert.IsFalse(_broadcastInstance.IsConfigured);
-            Assert.IsFalse(_broadcastInstance.IsSending);
-            Assert.IsNull(_broadcastInstance.Configuration);
+            Assert.That(_broadcastInstance, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
+            Assert.That(_broadcastInstance.Configuration, Is.Null);
 
             _config = new TuioConfiguration
             {
@@ -373,10 +379,10 @@ namespace ReFlex.Core.Tuio.Test
             
             _mockSender.Verify(m => m.Initialize(_config), Times.Exactly(1));
             _mockSender.Verify(m => m.StopAllConnections(), Times.Exactly(1));
-            
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
-            Assert.AreEqual(_config, _broadcastInstance.Configuration);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
+            Assert.That(_broadcastInstance.Configuration, Is.EqualTo(_config));
+            Assert.That(_broadcastInstance.IsSending, Is.False);
 
             _broadcastInstance.Dispose();
             

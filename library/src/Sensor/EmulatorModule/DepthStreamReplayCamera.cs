@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NLog;
 using ReFlex.Core.Common.Components;
@@ -12,7 +10,6 @@ using ReFlex.Core.Networking.Util;
 using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Core.Tracking.Util;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace ReFlex.Sensor.EmulatorModule

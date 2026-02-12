@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Border, ConfidenceParameter, Distance, ExtremumDescriptionSettings, FilterSettings, JsonSimpleValue, SmoothingParameter, TrackingServerAppSettings } from '@reflex/shared-types';
+import { PointCloudSettings } from '@reflex/shared-types/dist/config/point-cloud-settings';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -26,6 +27,7 @@ export class SettingsService {
   private readonly setFilterPassesRoute = `${this.settingsRoute}/FilterPasses`;
   private readonly setFilterThreadsRoute = `${this.settingsRoute}/FilterThreads`;
   private readonly setLimitationFilterTypeRoute = `${this.settingsRoute}/LimitationFilterType`;
+  private readonly setPointCloudSettingsRoute = `${this.settingsRoute}/PointCloudSettings`;
   private readonly saveSettingsRoute = `${this.settingsRoute}`;
   private readonly canRestoreRoute = `${this.settingsRoute}/CanRestore`;
   private readonly getZeroPlaneDistanceRoute = `${this.settingsRoute}/ComputeZeroPlaneDistance`;
@@ -77,6 +79,10 @@ export class SettingsService {
 
   public setExtremumSettings(extremumSettings: ExtremumDescriptionSettings): Observable<ExtremumDescriptionSettings> {
     return this.http.post<ExtremumDescriptionSettings>(this.setExtremumSettingsRoute, extremumSettings);
+  }
+
+  public setPointCloudSettings(pointCloudSettingValues: PointCloudSettings): Observable<PointCloudSettings> {
+    return this.http.post<PointCloudSettings>(this.setPointCloudSettingsRoute, pointCloudSettingValues);
   }
 
   public setDistance(distance: Distance): Observable<Distance> {

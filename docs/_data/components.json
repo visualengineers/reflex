@@ -1,0 +1,79 @@
+{
+    "components": [
+        {
+            "description": "Section title",
+            "items": [
+                { "image": "Title" }
+            ]
+        },
+        {
+            "description": "Section title with additional labels",
+            "items": [
+                { "image": "Title_with_labels" }
+            ]
+        },
+        {
+            "description": "Section title with toggle",
+            "items": [
+                { "image": "Title_with_toggle" }
+            ]
+        },
+        {
+            "description": "Toggle (active / inactive / disabled)",
+            "items": [
+                { "image": "Toggle_on" },
+                { "image": "Toggle_off" },
+                { "image": "Toggle_disabled" }
+            ]
+        },
+        {
+            "description": "Group (expanded / collapsed)",
+            "items": [
+                { "image": "Settings_Group_expanded" },
+                { "image": "Settings_Group_collapsed" }
+            ]
+        },
+        {
+            "description": "Button (default / disabled / hover / pressed)",
+            "items": [
+                { "image": "Button_enabled" },
+                { "image": "Button_disabled" },
+                { "image": "Button_hover" },
+                { "image": "Button_pressed" }
+            ]
+        },
+        {
+            "description": "Maximize Button (default / disabled / hover / minimize)",
+            "items": [
+                { "image": "Maximize_default" },
+                { "image": "Maximize_disabled" },
+                { "image": "Maximize_hover" },
+                { "image": "Maximize_active" }
+            ]
+        },
+        {
+            "description": "Table",
+            "items": [
+                { "image": "Table" }
+            ]
+        },
+        {
+            "description": "Forms: Slider",
+            "items": [
+                { "image": "Slider" }
+            ]
+        },
+        {
+            "description": "Forms: Dropdown",
+            "items": [
+                { "image": "DropDown" }
+            ]
+        },
+        {
+            "description": "Forms: Text Input",
+            "items": [
+                { "image": "Input" }
+            ]
+        }
+    ]
+}

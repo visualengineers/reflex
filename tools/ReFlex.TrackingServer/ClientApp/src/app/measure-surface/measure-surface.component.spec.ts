@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MeasureSurfaceComponent } from './measure-surface.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
@@ -8,19 +8,22 @@ import { of, throwError } from 'rxjs';
 import { MockMeasureControlsComponent } from './measure-controls/measure-control.component.mock';
 import { MeasureGridComponent } from './measure-grid/measure-grid.component';
 import { FrameSizeDefinition } from '@reflex/shared-types';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { MeasureControlsComponent } from './measure-controls/measure-controls.component';
+import { MockMeasureGridComponent } from './measure-grid/measure-grid.component.mock';
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
+const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [
     'getFrameSize'
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-const customFrame: FrameSizeDefinition = 
+const customFrame: FrameSizeDefinition =
   { width: 500, height: 400, left: 150, top: 75 };
 
 describe('MeasureSurfaceComponent', () => {
@@ -29,19 +32,28 @@ describe('MeasureSurfaceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MeasureSurfaceComponent, MockMeasureControlsComponent, MeasureGridComponent ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [
+      FormsModule,
+      MeasureSurfaceComponent,
+      MockMeasureControlsComponent,
+      MeasureGridComponent
+    ],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
+            provide: LogService, useValue: logService
+        },
+        {
+        provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).overrideComponent(MeasureSurfaceComponent, {
+      remove: { imports: [ MeasureControlsComponent, MeasureGridComponent] },
+      add: { imports: [ MockMeasureControlsComponent, MockMeasureGridComponent ] }
     })
     .compileComponents();
   });
@@ -66,7 +78,7 @@ describe('MeasureSurfaceComponent', () => {
     expect(component).toBeTruthy();
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
-    expect(component['_frameSize']).toEqual(customFrame);
+    expect(component['frameSize']).toEqual(customFrame);
     expect(component.fullScreen).toBeFalse();
   });
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using TrackingServer.Data.Version;
+﻿using Microsoft.AspNetCore.Mvc;
+using ReFlex.Server.Data.Version;
 
 namespace TrackingServer.Controllers
 {
@@ -10,12 +8,12 @@ namespace TrackingServer.Controllers
     public class VersionInfoController : Controller
     {
         private VersionInfoStore _store;
-        
+
         public VersionInfoController(VersionInfoStore store)
         {
             _store = store;
         }
-        
+
         // GET: api/Log
         [HttpGet]
         public IEnumerable<AppVersionInfo> Get()

@@ -24,14 +24,20 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "../../../node_modules/@reflex/angular-components/src/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "src/sass/main.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/sass"
+                "src/sass",
+                "../../../node_modules/@reflex/angular-components/src/scss"
               ]
             },
             "scripts": []
@@ -47,7 +53,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumError": "100kb"
                 }
               ],
               "fileReplacements": [
@@ -77,11 +83,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "TrackingServer:build:production"
+              "buildTarget": "TrackingServer:build:production"
             },
             "development": {
-              "browserTarget": "TrackingServer:build:development",
-              "proxyConfig": "proxy.conf.js"
+              "proxyConfig": "proxy.conf.js",
+              "buildTarget": "TrackingServer:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -89,7 +95,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "TrackingServer:build"
+            "buildTarget": "TrackingServer:build"
           }
         },
         "test": {
@@ -104,7 +110,8 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/sass"
+                "src/sass",
+                "../../../node_modules/@reflex/angular-components/src/scss"
               ]
             },
             "scripts": [],
@@ -129,7 +136,7 @@
             "dev": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,              
+              "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": true,

@@ -1,6 +1,24 @@
 {
   "years": [
-    { 
+    {
+      "name": 2024,
+      "elements": [
+        {
+          "id": "2024_AVI",
+          "title": "Kickstarting Application Development for Elastic Displays with Do-it-yourself Hardware Assembly Instructions",
+          "authors": "Mathias Müller, Dietrich Kammer & Ingmar Franke",
+          "reference": "AVI - Advanced Visual Interfaces 2024, Genoa",
+          "image": "2024_AVI.jpg",
+          "preview": "2024_AVI_prev.jpg",
+          "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Haptics", "DIY hardware", "Open Science", "Frameworks"],
+          "doi": "https://doi.org/10.1145/3656650.3656678",
+          "abstract": "2024_AVI.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    {
       "name": 2023,
       "elements": [
         {
@@ -18,7 +36,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2022,
       "elements": [
         {
@@ -42,7 +60,7 @@
           "image": "2022_MuC.jpg",
           "preview": "2022_MuC_prev.jpg",
           "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Interaction Design", "Interaction Metaphors", "Tactile Feedback"],
-          "doi": "",
+          "doi": "https://doi.org/10.18420/muc2022-mci-ws04-359",
           "abstract": "2022_MuC.html",
           "lang": "en",
           "type": "conference"
@@ -52,7 +70,7 @@
           "id": "2022_AVI-Poster",
           "title": "ReFlex Framework: Rapid Prototyping for Elastic Displays",
           "authors": "Mathias Müller, Dietrich Kammer, Lasse Grimm, Konrad Fabian & Diana Simon",
-          "reference": "AVI - Advanced Visual Interfaces 2022, Rom",
+          "reference": "AVI - Advanced Visual Interfaces 2022, Rome",
           "image": "2022_AVI_Poster.jpg",
           "preview": "2022_AVI_Poster_prev.jpg",
           "keywords": ["Shape-Changing Interfaces", "Elastic Displays", "Interaction Design", "Software Frameworks", "Development Tools", "Rapid Prototyping", "User Experience"],
@@ -65,7 +83,7 @@
           "id": "2022_AVI",
           "title": "Investigating Usability and User Experience of Layer-Based Interaction with a Deformable Elastic Display",
           "authors": "Mathias Müller, Elena Stoll, Anna-Magdalena Krauß, Franziska Hannß & Dietrich Kammer",
-          "reference": "AVI - Advanced Visual Interfaces 2022, Rom",
+          "reference": "AVI - Advanced Visual Interfaces 2022, Rome",
           "image": "2022_AVI.jpg",
           "preview": "2022_AVI_prev.jpg",
           "keywords": ["Usability", "User Experience", "Shape-Changing Interfaces", "Elastic Displays", "User Study", "Evaluation"],
@@ -76,7 +94,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2021,
       "elements": [
         {
@@ -94,7 +112,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2020,
       "elements": [
         {
@@ -112,7 +130,7 @@
         },
         {
           "id": "2020_EuroHaptics",
-          "title": "Research Agenda on Designing the Future of Eladtic Touch",
+          "title": "Research Agenda on Designing the Future of Elastic Touch",
           "authors": "Mathias Müller, Elena Stoll, Lukas Büschel, Stefan Gehrke, Franziska Hannß & Dietrich Kammer",
           "reference": "Designing Digital Touch: Social and Sensory Aspects and Challenges. Workshop at EuroHaptics 2020, Leiden",
           "image": "2020_EuroHaptics.jpg",
@@ -138,7 +156,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2018,
       "elements": [
         {
@@ -166,10 +184,10 @@
           "abstract": "2018_MuC.html",
           "lang": "de",
           "type": "conference"
-        }   
+        }
       ]
     },
-    { 
+    {
       "name": 2017,
       "elements": [
         {
@@ -197,7 +215,7 @@
           "abstract": "2017_MuC.html",
           "lang": "en",
           "type": "conference"
-        },        
+        },
         {
           "id": "2017_DGfGG",
           "title": "Interaktive Bilder auf Elastischen Displays",
@@ -213,7 +231,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2016,
       "elements": [
         {
@@ -231,7 +249,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2015,
       "elements": [
         {
@@ -240,7 +258,7 @@
           "authors": "Mathias Müller, Thomas Gründer & Rainer Groh",
           "reference": "Conference on Computation, Communication, Aesthetics and X (xCoAx 2015), Glasgow",
           "image": "2015_xCoAx.jpg",
-          "preview": "2015_xCoAx.jpg",
+          "preview": "2015_xCoAx_prev.jpg",
           "keywords": ["Elastic Displays", "Information Visualization", "Haptic Interaction"],
           "doi": "",
           "abstract": "2015_xCoAx.html",
@@ -262,7 +280,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2014,
       "elements": [
         {
@@ -306,7 +324,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2013,
       "elements": [
         {
@@ -337,7 +355,7 @@
         }
       ]
     },
-    { 
+    {
       "name": 2012,
       "elements": [
         {
@@ -354,6 +372,6 @@
           "type": "poster"
         }
       ]
-    }     
+    }
   ]
 }

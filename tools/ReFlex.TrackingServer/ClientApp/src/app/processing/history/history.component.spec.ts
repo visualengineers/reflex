@@ -4,8 +4,9 @@ import { HistoryComponent } from './history.component';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { LogService } from 'src/app/log/log.service';
 import { of, throwError } from 'rxjs';
-import { MockSettingsGroupComponent } from 'src/app/elements/settings-group/settings-group.component.mock';
 import { Interaction, InteractionFrame, InteractionHistory, InteractionHistoryElement } from '@reflex/shared-types';
+import { SettingsGroupComponent } from '@reflex/angular-components/dist';
+import { MockSettingsComponent } from 'src/app/settings/settings.component.mock';
 
 const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingCloudService',
   [
@@ -15,7 +16,7 @@ const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessin
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]
@@ -25,12 +26,12 @@ let frames = new Array<InteractionFrame>();
 let history = new Array<InteractionHistory>();
 
 for (var i = 0; i < 16; i++) {
-  
+
   let f: InteractionFrame = {
     frameId: 0,
     interactions: []
   }
- 
+
   for (var j = 0; j < 5; j++) {
     const x = Math.random();
     const y = Math.random();
@@ -38,22 +39,22 @@ for (var i = 0; i < 16; i++) {
 
     let base: Interaction =
       { time: 1234567, confidence: i, touchId: j, type: 1,
-        position: { x: x, y: y, z: z, isFiltered: false, isValid: true }, 
-        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 } 
-      }      
+        position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
+        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 }
+      }
     f.interactions.push(base);
   }
   frames.push(f);
 }
 
 for (var i = 0; i < 4; i++) {
-  
+
   let h : InteractionHistory = {
     touchId: i,
     items: []
   }
 
-  for (var j = 0; j < 20; j++) {   
+  for (var j = 0; j < 20; j++) {
 
     const x = Math.random();
     const y = Math.random();
@@ -61,17 +62,17 @@ for (var i = 0; i < 4; i++) {
 
     let base: Interaction =
       { time: 1234567, confidence: j, touchId: i, type: 1,
-        position: { x: x, y: y, z: z, isFiltered: false, isValid: true }, 
-        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 } 
+        position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
+        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 }
       }
 
     let e: InteractionHistoryElement = {
       frameId: 0,
       interaction: base
-    }    
+    }
     h.items.push(e);
   }
-  
+
   history.push(h);
 }
 
@@ -81,18 +82,21 @@ describe('HistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ 
-        HistoryComponent,
-        MockSettingsGroupComponent
-      ],
-      providers: [
+    imports: [
+      HistoryComponent
+    ],
+    providers: [
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
+    ]
+    })
+    .overrideComponent(HistoryComponent, {
+      remove: { imports: [ SettingsGroupComponent] },
+      add: { imports: [ MockSettingsComponent ] }
     })
     .compileComponents();
   });
@@ -108,7 +112,7 @@ describe('HistoryComponent', () => {
   });
 
   afterEach(() => {
-    processingService.getFrames.calls.reset(); 
+    processingService.getFrames.calls.reset();
     processingService.getHistory.calls.reset();
     logService.sendErrorLog.calls.reset();
 
@@ -116,7 +120,7 @@ describe('HistoryComponent', () => {
     component.history = [];
   });
 
-  it('should create', () => {    
+  it('should create', () => {
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -164,7 +168,7 @@ describe('HistoryComponent', () => {
     expect(component.frames).toEqual([]);
     expect(component.history).toEqual(history);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorFrames);    
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorFrames);
   });
 
   it('should handle errors correctly: history', () => {
@@ -176,6 +180,6 @@ describe('HistoryComponent', () => {
     expect(component.frames).toEqual(frames);
     expect(component.history).toEqual([]);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorHistory);    
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorHistory);
   });
 });

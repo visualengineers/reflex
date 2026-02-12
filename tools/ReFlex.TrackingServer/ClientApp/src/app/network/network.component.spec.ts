@@ -5,28 +5,27 @@ import { LogService } from '../log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { NetworkingService } from 'src/shared/services/networking.service';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
-import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
-import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
-import { MockValueTextComponent } from '../elements/value-text/value-text.component.mock';
-import { MockValueSliderComponent } from '../elements/value-slider/value-slider.mock';
 import { MockTuioComponent } from './tuio/tuio.component.mock';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { DEFAULT_SETTINGS, JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent, MockValueTextComponent } from '@reflex/angular-components/dist';
+import { TuioComponent } from './tuio/tuio.component';
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
-    'saveSettings'
+    'saveSettings',
+    'update'
   ]);
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-const networkService = jasmine.createSpyObj<NetworkingService>('fakeNetworkService', 
+const networkService = jasmine.createSpyObj<NetworkingService>('fakeNetworkService',
   [
     'getStatus',
     'getStatusValues',
@@ -36,7 +35,7 @@ const networkService = jasmine.createSpyObj<NetworkingService>('fakeNetworkServi
     'setPort',
     'setEndpoint',
     'saveSettings'
-  ]);  
+  ]);
 
 const networkSettings: NetworkAttributes = {
   isActive: true,
@@ -53,29 +52,41 @@ describe('NetworkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        NetworkComponent,
+    imports: [FormsModule,
+        NetworkComponent
+      ],
+    providers: [
+        {
+            provide: NetworkingService, useValue: networkService
+        },
+        {
+            provide: SettingsService, useValue: settingsService
+        },
+        {
+            provide: LogService, useValue: logService
+        },
+        {
+            provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    })
+    .overrideComponent(NetworkComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        ValueSelectionComponent,
+        ValueTextComponent,
+        ValueSliderComponent,
+        TuioComponent
+      ] },
+      add: { imports: [
         MockPanelHeaderComponent,
         MockValueSelectionComponent,
         MockValueTextComponent,
         MockValueSliderComponent,
         MockTuioComponent
-       ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
-        {
-          provide: NetworkingService, useValue: networkService
-        },
-        {
-          provide: SettingsService, useValue: settingsService
-        },
-        {
-          provide: LogService, useValue: logService
-        }
-      ]
+       ] }
     })
     .compileComponents();
   }));
@@ -87,7 +98,7 @@ describe('NetworkComponent', () => {
     settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
     settingsService.saveSettings.and.returnValue(of(DEFAULT_SETTINGS));
 
-    logService.sendErrorLog.and.returnValue();   
+    logService.sendErrorLog.and.returnValue();
 
     networkService.getStatusValues.and.returnValue(of(networkSettings));
     networkService.getStatus.and.returnValue(of('Connected to Testservice...'));
@@ -102,7 +113,7 @@ describe('NetworkComponent', () => {
     settingsService.getSettings.calls.reset();
     settingsService.saveSettings.calls.reset();
 
-    logService.sendErrorLog.calls.reset(); 
+    logService.sendErrorLog.calls.reset();
 
     networkService.getStatusValues.calls.reset();
     networkService.getStatus.calls.reset();
@@ -116,7 +127,7 @@ describe('NetworkComponent', () => {
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
-  it('should initialize correctly', async () => {   
+  it('should initialize correctly', async () => {
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -186,12 +197,12 @@ describe('NetworkComponent', () => {
     const tcp: JsonSimpleValue = { name: 'interface', value: 'Tcp' };
 
     const errorTcp = 'TestError: networkService.setNetworkInterface';
-    
+
     networkService.setNetworkInterface.withArgs('None').and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: off })));
     networkService.setNetworkInterface.withArgs('Websockets').and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: websocket })));
-    
+
     component.selectedInterfaceIdx = 0;
-    
+
     component.setNetworkInterface();
 
     expect(networkService.setNetworkInterface).toHaveBeenCalledOnceWith('None');
@@ -236,11 +247,11 @@ describe('NetworkComponent', () => {
     const update2: JsonSimpleValue = { name: 'address', value: newAddress2 };
 
     const errorAddress = 'TestError: networkService.setAddress';
-    
+
     networkService.setAddress.withArgs(newAddress1).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
-            
+
     component.networkSettings.address = newAddress1;
-    
+
     component.setAddress();
 
     expect(networkService.setAddress).toHaveBeenCalledOnceWith(newAddress1);
@@ -269,7 +280,7 @@ describe('NetworkComponent', () => {
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
-  
+
   it('should set port', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
@@ -281,11 +292,11 @@ describe('NetworkComponent', () => {
     const update2: JsonSimpleValue = { name: 'port', value: newPort2 };
 
     const errorPort = 'TestError: networkService.setPort';
-    
+
     networkService.setPort.withArgs(newPort1).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
-            
+
     component.networkSettings.port = newPort1;
-    
+
     component.setPort();
 
     expect(networkService.setPort).toHaveBeenCalledOnceWith(newPort1);
@@ -314,7 +325,7 @@ describe('NetworkComponent', () => {
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
-  
+
   it('should set endpoint', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
@@ -326,11 +337,11 @@ describe('NetworkComponent', () => {
     const update2: JsonSimpleValue = { name: 'endPoint', value: newEndpoint2 };
 
     const errorEndpoint = 'TestError: networkService.setEndpoint';
-    
+
     networkService.setEndpoint.withArgs(newEndpoint1).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
-            
+
     component.networkSettings.endpoint = newEndpoint1;
-    
+
     component.setEndpoint();
 
     expect(networkService.setEndpoint).toHaveBeenCalledOnceWith(newEndpoint1);
@@ -364,7 +375,7 @@ describe('NetworkComponent', () => {
     await fixture.whenStable();
 
     const errorSave = 'TestError: networkService.saveSettings';
-                    
+
     component.saveNetworkSettings();
 
     expect(networkService.saveSettings).toHaveBeenCalledTimes(1);
@@ -379,10 +390,10 @@ describe('NetworkComponent', () => {
 
     networkService.saveSettings.calls.reset();
 
-    
+
   });
 
-  it('should handle errors correctly: Settings cannot be retrieved', async () => {   
+  it('should handle errors correctly: Settings cannot be retrieved', async () => {
     const errorSettings = 'TesError: settingsService.getSettings';
     settingsService.getSettings.and.returnValue(throwError(errorSettings));
 
@@ -400,7 +411,7 @@ describe('NetworkComponent', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSettings);
   });
 
-  it('should handle errors correctly: Networking service not available', async () => {   
+  it('should handle errors correctly: Networking service not available', async () => {
     const errorValues = 'TesError: networkService.getStatusValues';
     networkService.getStatusValues.and.returnValue(throwError(errorValues));
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Kinect;
 using Prise.Plugin;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;

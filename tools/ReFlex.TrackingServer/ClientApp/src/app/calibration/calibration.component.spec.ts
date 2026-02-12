@@ -5,19 +5,20 @@ import { LogService } from '../log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
+import { HttpClient, HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { CalibrationPoint, CalibrationTransform, CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
+import { MockPanelHeaderComponent, PanelHeaderComponent } from '@reflex/angular-components/dist';
+import { CommonModule } from '@angular/common';
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
+const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [
     'getCalibrationMatrix',
-    'getCalibrationSourcePoints', 
-    'getCurrentCalibrationTargetPoints', 
+    'getCalibrationSourcePoints',
+    'getCurrentCalibrationTargetPoints',
     'getFrameSize',
     'computeCalibratedAbsolutePosition',
     'updateCalibrationPoint',
@@ -35,13 +36,13 @@ const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessin
   ]
 );
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
     'update'
   ]);
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
@@ -52,7 +53,7 @@ const defaultInteractionData: CompleteInteractionData = {
   absolute: []
 };
 
-const defaultSelectedInteraction : Interaction = { 
+const defaultSelectedInteraction : Interaction = {
   touchId: -1, confidence: 0, type: 0,
   position: { x: 0, y: 0, z: 0, isFiltered: true, isValid: false },
   extremumDescription: { numFittingPoints: 0, percentageFittingPoints: 0, type: 0 },
@@ -106,11 +107,11 @@ const testInteractionData: CompleteInteractionData = {
 
 const defaultFrame = [ 100, 100, 500, 500];
 
-const customFrame: FrameSizeDefinition = 
+const customFrame: FrameSizeDefinition =
   { width: 500, height: 400, left: 150, top: 75 };
 
 const defaultCalibrationMatrix: CalibrationTransform = {
-  transformation: 
+  transformation:
   [
     [2.0, 0.0, 0.0, 50.0],
     [0.0, 3.0, 0.0, 60.0],
@@ -120,7 +121,7 @@ const defaultCalibrationMatrix: CalibrationTransform = {
 };
 
 const identityCalibrationMatrix: CalibrationTransform = {
-  transformation: 
+  transformation:
   [
     [1.0, 0.0, 0.0, 0.0],
     [0.0, 1.0, 0.0, 0.0],
@@ -129,14 +130,14 @@ const identityCalibrationMatrix: CalibrationTransform = {
   ]
 };
 
-const sourcePoints: CalibrationPoint[] = 
+const sourcePoints: CalibrationPoint[] =
 [
   { positionX: 150, positionY: 100, touchId: -1 },
   { positionX: 350, positionY: 100, touchId: -1 },
   { positionX: 150, positionY: 200, touchId: -1 }
 ];
 
-const targetPoints: CalibrationPoint[] = 
+const targetPoints: CalibrationPoint[] =
 [
   { positionX: 150, positionY: 100, touchId: -1 },
   { positionX: 350, positionY: 100, touchId: -1 },
@@ -153,25 +154,30 @@ describe('CalibrationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CalibrationComponent, MockPanelHeaderComponent ],
-      imports: [
+    imports: [
+        CommonModule,
         FormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
+        CalibrationComponent],
+    providers: [
         {
-          provide: CalibrationService, useValue: calibrationService
+            provide: CalibrationService, useValue: calibrationService
         },
         {
-          provide: ProcessingService, useValue: processingService
+            provide: ProcessingService, useValue: processingService
         },
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: LogService, useValue: logService
-        }
-      ]
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+  })
+    .overrideComponent(CalibrationComponent, {
+      remove: { imports: [ PanelHeaderComponent] },
+      add: { imports: [ MockPanelHeaderComponent ] }
     })
     .compileComponents();
   }));
@@ -183,7 +189,7 @@ describe('CalibrationComponent', () => {
     calibrationService.getCalibrationSourcePoints.and.returnValue(of(sourcePoints));
     calibrationService.getCurrentCalibrationTargetPoints.and.returnValue(of(targetPoints));
     calibrationService.getFrameSize.and.returnValue(of(customFrame));
-    calibrationService.computeCalibratedAbsolutePosition.and.returnValue(of(defaultInteractionData));  
+    calibrationService.computeCalibratedAbsolutePosition.and.returnValue(of(defaultInteractionData));
     calibrationService.restartCalibration.and.returnValue(of(identityCalibrationMatrix));
 
     processingService.getInteractions.and.returnValue(of([]));
@@ -217,15 +223,15 @@ describe('CalibrationComponent', () => {
     settingsService.getSettings.calls.reset();
     settingsService.update.calls.reset();
 
-    logService.sendErrorLog.calls.reset(); 
+    logService.sendErrorLog.calls.reset();
 
     component.resetCalibration();
     component.calibrationMatrix = identityCalibrationMatrix.transformation;
-    
+
     submitSpy.calls.reset();
   });
 
-  it('should create', () => {  
+  it('should create', () => {
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -234,12 +240,12 @@ describe('CalibrationComponent', () => {
     expect(component.submit).not.toHaveBeenCalled();
   });
 
-  it('should initialize values correctly', () => {  
-    
+  it('should initialize values correctly', () => {
+
     calibrationService.getCalibrationMatrix.and.returnValue(of(defaultCalibrationMatrix));
 
-    fixture.detectChanges();    
-    
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
     expect(component.isInteractiveCalibrationVisible).toBeFalse();
 
@@ -252,7 +258,7 @@ describe('CalibrationComponent', () => {
     expect(component.interactions).toEqual([]);
 
     expect(component['view']).toBeTruthy();
-  
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
     expect(component.submit).not.toHaveBeenCalled();
 
@@ -269,7 +275,7 @@ describe('CalibrationComponent', () => {
     expect(calib).toBeTruthy();
     expect(calib.style.visibility).toEqual('collapse');
     expect(calib.classList).not.toContain('fullScreen');
-    
+
     component.toggleCalibrationMode();
 
     expect(component.isInteractiveCalibrationVisible).toBeTrue();
@@ -292,10 +298,10 @@ describe('CalibrationComponent', () => {
     expect(component.submit).not.toHaveBeenCalled();
   });
 
-  it('should reset borders correctly', () => {  
-    
-    fixture.detectChanges();    
-    
+  it('should reset borders correctly', () => {
+
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
 
     expect(component.borderOffset).toEqual([customFrame.top, customFrame.left, customFrame.top + customFrame.height, customFrame.left + customFrame.width]);
@@ -303,13 +309,13 @@ describe('CalibrationComponent', () => {
     component.resetBorders();
 
     expect(component.borderOffset).toEqual(defaultFrame);
-  
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
     expect(component.submit).not.toHaveBeenCalled();
   });
 
-  it('should toggle between raw and calibrated interactions', async () => {  
-    
+  it('should toggle between raw and calibrated interactions', async () => {
+
     let obs = new BehaviorSubject<Interaction[]>([]);
 
     processingService.getInteractions.and.returnValue(obs);
@@ -320,9 +326,9 @@ describe('CalibrationComponent', () => {
 
     expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledTimes(1);
     expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledWith([]);
-    
+
     obs.next(testInteractionData.normalized);
-    
+
     expect(component).toBeTruthy();
     expect(component.update).toBeFalse();
     expect(component.displayCalibratedInteractions).toBeFalse();
@@ -342,7 +348,7 @@ describe('CalibrationComponent', () => {
     expect(component.update).toBeTrue();
     expect(component.displayCalibratedInteractions).toBeFalse();
     expect(component.isProcessingActive).toBeTrue();
-    
+
     await fixture.whenStable();
 
     expect(component.interactions).toEqual(testInteractionData.raw);
@@ -355,7 +361,7 @@ describe('CalibrationComponent', () => {
     component.displayCalibratedInteractions = true;
 
     obs.next([]);
-    
+
     expect(component.interactions).toEqual([]);
     expect(component.calibratedInteractions).toEqual([]);
     expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledTimes(4);
@@ -367,7 +373,7 @@ describe('CalibrationComponent', () => {
     expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledTimes(5);
 
     component.update = false;
-    component.updateCalibrationToggle();    
+    component.updateCalibrationToggle();
 
     expect(component.displayCalibratedInteractions).toBeFalse();
     expect(component.interactions).toEqual([]);
@@ -379,7 +385,7 @@ describe('CalibrationComponent', () => {
     expect(component.calibratedInteractions).toEqual([]);
 
     expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledTimes(6);
-    
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
     expect(component.submit).not.toHaveBeenCalled();
   });
@@ -402,7 +408,7 @@ describe('CalibrationComponent', () => {
     let border0 = fixture.debugElement.query(By.css('#calibration-border-top')).nativeElement as HTMLElement;
     let border1 = fixture.debugElement.query(By.css('#calibration-border-left')).nativeElement as HTMLElement;
     let border2 = fixture.debugElement.query(By.css('#calibration-border-bottom')).nativeElement as HTMLElement;
-    let border3 = fixture.debugElement.query(By.css('#calibration-border-right')).nativeElement as HTMLElement;    
+    let border3 = fixture.debugElement.query(By.css('#calibration-border-right')).nativeElement as HTMLElement;
 
     expect(background).toBeTruthy();
     expect(border0).toBeTruthy();
@@ -552,7 +558,7 @@ describe('CalibrationComponent', () => {
     component.focusBorder(2);
     expect(component['selectedBorderIndex']).toBe(2);
 
-    // move beyond other border... 
+    // move beyond other border...
     component.onmouseMove(new MouseEvent('mousemove', { movementX: 200, movementY: -startValues[2] + startValues[0] - 75 }));
 
     expect(component.borderOffset[0]).toEqual(startValues[0]);
@@ -573,7 +579,7 @@ describe('CalibrationComponent', () => {
 
     expect(component['selectedBorderIndex']).toBe(0);
 
-    // move beyond in positive direction... 
+    // move beyond in positive direction...
     component.onmouseMove(new MouseEvent('mousemove', { movementX: 10, movementY: 200 }));
 
     expect(component.borderOffset[0]).not.toBeCloseTo(startValues[0] + 200, 4);
@@ -594,7 +600,7 @@ describe('CalibrationComponent', () => {
     const newTop = customFrame.top*0.5;
     const newLeft = customFrame.left*0.75;
 
-    const newHeight = 1.5*customFrame.height; 
+    const newHeight = 1.5*customFrame.height;
     const newWidth = 2*customFrame.width;
 
     let newValues = [newTop, newLeft, newTop + newHeight, newLeft + newWidth];
@@ -635,9 +641,9 @@ describe('CalibrationComponent', () => {
 
     component.updateFrameSize();
 
-    expect(calibrationService.updateFrameSize).toHaveBeenCalledOnceWith(customFrame);   
+    expect(calibrationService.updateFrameSize).toHaveBeenCalledOnceWith(customFrame);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorFrameUpdate);    
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorFrameUpdate);
   });
 
   it ('should correctly update selected interaction', () => {
@@ -647,17 +653,17 @@ describe('CalibrationComponent', () => {
     const reduced2 = [testInteractionData.normalized[0], testInteractionData.normalized[1]];
     const reduced3 = [testInteractionData.normalized[0]];
 
-    const reduced1conv = { 
+    const reduced1conv = {
       raw: [testInteractionData.raw[1], testInteractionData.raw[0]],
       normalized: [testInteractionData.normalized[1], testInteractionData.normalized[0]],
       absolute: [testInteractionData.absolute[1], testInteractionData.absolute[0]]
     };
-    const reduced2conv = { 
+    const reduced2conv = {
       raw: [testInteractionData.raw[0], testInteractionData.raw[1]],
       normalized: [testInteractionData.normalized[0], testInteractionData.normalized[1]],
       absolute: [testInteractionData.absolute[0], testInteractionData.absolute[1]]
     };
-    const reduced3conv = { 
+    const reduced3conv = {
       raw: [testInteractionData.raw[0]],
       normalized: [testInteractionData.normalized[0]],
       absolute: [testInteractionData.absolute[0]]
@@ -671,13 +677,13 @@ describe('CalibrationComponent', () => {
 
     component.update = true;
 
-    fixture.detectChanges();    
+    fixture.detectChanges();
 
     expect(component.update).toBeTrue();
     expect(component.displayCalibratedInteractions).toBeFalse();
     expect(component.isProcessingActive).toBeTrue();
-    
-    fixture.whenStable();   
+
+    fixture.whenStable();
 
     // expect array of selected values to be init / reset to default values
     expect(component.selectedIdx).toBe(-1);
@@ -685,15 +691,15 @@ describe('CalibrationComponent', () => {
     expect(component.selectedValue[0]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[1]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[2]).toEqual(defaultSelectedInteraction);
-    
+
     expect(component.interactions).toEqual([]);
     expect(component.calibratedInteractions).toEqual([]);
 
     // start calibration
     component.display(0);
-    
+
     obs.next(testInteractionData.normalized);
-    
+
     expect(component.interactions).toEqual(testInteractionData.raw);
     expect(component.calibratedInteractions).toEqual(testInteractionData.raw);
 
@@ -704,13 +710,13 @@ describe('CalibrationComponent', () => {
 
     // deselect
     component.select(0);
-    
+
     expect(component.selectedIdx).toBe(-1);
     expect(component.selectedValue).toHaveSize(3);
     expect(component.selectedValue[0]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[1]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[2]).toEqual(defaultSelectedInteraction);
-    
+
 
     component.select(2);
     expect(component.selectedIdx).toBe(2);
@@ -724,7 +730,7 @@ describe('CalibrationComponent', () => {
     expect(component.selectedValue[0]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[1]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[2]).toEqual(defaultSelectedInteraction);
-    
+
 
     component.select(1);
     expect(component.selectedIdx).toBe(1);
@@ -738,7 +744,7 @@ describe('CalibrationComponent', () => {
     expect(component.selectedValue[0]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[1]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[2]).toEqual(defaultSelectedInteraction);
-    
+
 
     obs.next(testInteractionData.normalized);
 
@@ -780,17 +786,17 @@ describe('CalibrationComponent', () => {
     const calib2 = [testInteractionData.normalized[1]];
     const calib3 = [testInteractionData.normalized[2]];
 
-    const calib1conv = { 
+    const calib1conv = {
       raw: [testInteractionData.raw[0]],
       normalized: [testInteractionData.normalized[0]],
       absolute: [testInteractionData.absolute[0]]
     };
-    const calib2conv = { 
+    const calib2conv = {
       raw: [testInteractionData.raw[1]],
       normalized: [testInteractionData.normalized[1]],
       absolute: [testInteractionData.absolute[1]]
     };
-    const calib3conv = { 
+    const calib3conv = {
       raw: [testInteractionData.raw[2]],
       normalized: [testInteractionData.normalized[2]],
       absolute: [testInteractionData.absolute[2]]
@@ -828,12 +834,12 @@ describe('CalibrationComponent', () => {
     calibrationService.updateCalibrationPoint.withArgs(1, calibPoint2).and.returnValue(of(resp2));
     calibrationService.updateCalibrationPoint.withArgs(2, calibPoint3).and.returnValue(of(resp3));
 
-    component.update = true;    
-    fixture.detectChanges();    
+    component.update = true;
+    fixture.detectChanges();
 
     expect(component.update).toBeTrue();
     expect(component.displayCalibratedInteractions).toBeFalse();
-    expect(component.isProcessingActive).toBeTrue(); 
+    expect(component.isProcessingActive).toBeTrue();
 
     expect(component.selectedIdx).toBe(-1);
     expect(component.selectedValue).toHaveSize(3);
@@ -844,7 +850,7 @@ describe('CalibrationComponent', () => {
     expect(component['currentlyActiveStage']).toBe(-1);
 
     component.display(0);
-    
+
     obs.next(calib1);
 
     expect(component['currentlyActiveStage']).toBe(0);
@@ -897,17 +903,17 @@ describe('CalibrationComponent', () => {
     const calib2 = [testInteractionData.normalized[1]];
     const calib3 = [testInteractionData.normalized[2]];
 
-    const calib1conv = { 
+    const calib1conv = {
       raw: [testInteractionData.raw[0]],
       normalized: [testInteractionData.normalized[0]],
       absolute: [testInteractionData.absolute[0]]
     };
-    const calib2conv = { 
+    const calib2conv = {
       raw: [testInteractionData.raw[1]],
       normalized: [testInteractionData.normalized[1]],
       absolute: [testInteractionData.absolute[1]]
     };
-    const calib3conv = { 
+    const calib3conv = {
       raw: [testInteractionData.raw[2]],
       normalized: [testInteractionData.normalized[2]],
       absolute: [testInteractionData.absolute[2]]
@@ -945,12 +951,12 @@ describe('CalibrationComponent', () => {
     calibrationService.updateCalibrationPoint.withArgs(1, calibPoint2).and.returnValue(of(resp2));
     calibrationService.updateCalibrationPoint.withArgs(2, calibPoint3).and.returnValue(of(resp3));
 
-    component.update = true;    
-    fixture.detectChanges();    
+    component.update = true;
+    fixture.detectChanges();
 
     expect(component.update).toBeTrue();
     expect(component.displayCalibratedInteractions).toBeFalse();
-    expect(component.isProcessingActive).toBeTrue(); 
+    expect(component.isProcessingActive).toBeTrue();
 
     expect(component.selectedIdx).toBe(-1);
     expect(component.selectedValue).toHaveSize(3);
@@ -974,7 +980,7 @@ describe('CalibrationComponent', () => {
       let updated = structuredClone(calib1);
       updated[0].confidence = i;
 
-      let updatedconv = { 
+      let updatedconv = {
         raw: [structuredClone(testInteractionData.raw[0])],
         normalized: [structuredClone(testInteractionData.normalized[0])],
         absolute: [structuredClone(testInteractionData.absolute[0])]
@@ -987,33 +993,33 @@ describe('CalibrationComponent', () => {
       calibrationService.computeCalibratedAbsolutePosition.withArgs(updated).and.returnValue(of(updatedconv));
 
       obs.next(updated);
-      
+
       fixture.detectChanges();
 
       if (i < 30) {
         expect(component['currentlyActiveStage']).toBe(0);
         expect(calibrationService.updateCalibrationPoint).not.toHaveBeenCalled();
-        
+
       }
       else {
         expect(component['currentlyActiveStage']).toBe(1);
         expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledOnceWith(0, calibPoint1);
       }
-    }    
+    }
   });
 
   it('not submit invalid values', () => {
     let obs = new BehaviorSubject<Interaction[]>([]);
 
     const calib1 = [testInteractionData.normalized[0]];
-    
-    const calib1conv = { 
+
+    const calib1conv = {
       raw: [testInteractionData.raw[0]],
       normalized: [testInteractionData.normalized[0]],
       absolute: [testInteractionData.absolute[0]]
-    };    
+    };
 
-    const calibPoint1 = { positionX: calib1conv.raw[0].position.x, positionY: calib1conv.raw[0].position.y, touchId: 0 };    
+    const calibPoint1 = { positionX: calib1conv.raw[0].position.x, positionY: calib1conv.raw[0].position.y, touchId: 0 };
 
     processingService.getInteractions.and.returnValue(obs);
     calibrationService.computeCalibratedAbsolutePosition.withArgs(calib1).and.returnValue(of(calib1conv));
@@ -1027,12 +1033,12 @@ describe('CalibrationComponent', () => {
 
     calibrationService.updateCalibrationPoint.withArgs(0, calibPoint1).and.returnValue(of(resp1));
 
-    component.update = true;    
-    fixture.detectChanges();    
+    component.update = true;
+    fixture.detectChanges();
 
     expect(component.update).toBeTrue();
     expect(component.displayCalibratedInteractions).toBeFalse();
-    expect(component.isProcessingActive).toBeTrue(); 
+    expect(component.isProcessingActive).toBeTrue();
 
     expect(component.selectedIdx).toBe(-1);
     expect(component.selectedValue).toHaveSize(3);
@@ -1043,8 +1049,8 @@ describe('CalibrationComponent', () => {
     expect(component['currentlyActiveStage']).toBe(-1);
 
     component.display(0);
-    
-    obs.next(calib1);    
+
+    obs.next(calib1);
 
     expect(component['currentlyActiveStage']).toBe(0);
 
@@ -1061,7 +1067,7 @@ describe('CalibrationComponent', () => {
 
     component.display(0);
 
-    expect(component['currentlyActiveStage']).toBe(0);    
+    expect(component['currentlyActiveStage']).toBe(0);
 
     obs.next(calib1);
 
@@ -1104,14 +1110,14 @@ describe('CalibrationComponent', () => {
     let obs = new BehaviorSubject<Interaction[]>([]);
 
     const calib1 = [testInteractionData.normalized[0]];
-    
-    const calib1conv = { 
+
+    const calib1conv = {
       raw: [testInteractionData.raw[0]],
       normalized: [testInteractionData.normalized[0]],
       absolute: [testInteractionData.absolute[0]]
-    };    
+    };
 
-    const calibPoint1 = { positionX: calib1conv.raw[0].position.x, positionY: calib1conv.raw[0].position.y, touchId: 0 };    
+    const calibPoint1 = { positionX: calib1conv.raw[0].position.x, positionY: calib1conv.raw[0].position.y, touchId: 0 };
 
     processingService.getInteractions.and.returnValue(obs);
     calibrationService.computeCalibratedAbsolutePosition.withArgs(calib1).and.returnValue(of(calib1conv));
@@ -1119,12 +1125,12 @@ describe('CalibrationComponent', () => {
     const calibrationError = 'Test Error: calibrationService.updateCalibrationPoint';
     calibrationService.updateCalibrationPoint.withArgs(0, calibPoint1).and.returnValue(throwError(calibrationError));
 
-    component.update = true;    
-    fixture.detectChanges();    
+    component.update = true;
+    fixture.detectChanges();
 
     expect(component.update).toBeTrue();
     expect(component.displayCalibratedInteractions).toBeFalse();
-    expect(component.isProcessingActive).toBeTrue(); 
+    expect(component.isProcessingActive).toBeTrue();
 
     expect(component.selectedIdx).toBe(-1);
     expect(component.selectedValue).toHaveSize(3);
@@ -1132,10 +1138,10 @@ describe('CalibrationComponent', () => {
     expect(component.selectedValue[1]).toEqual(defaultSelectedInteraction);
     expect(component.selectedValue[2]).toEqual(defaultSelectedInteraction);
 
-    expect(component['currentlyActiveStage']).toBe(-1);      
+    expect(component['currentlyActiveStage']).toBe(-1);
 
     component.display(0);
-    
+
     obs.next(calib1);
 
     expect(component['currentlyActiveStage']).toBe(0);
@@ -1146,7 +1152,7 @@ describe('CalibrationComponent', () => {
 
     expect(component['currentlyActiveStage']).toBe(0);
     expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledOnceWith(0, calibPoint1);
-    
+
     expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(calibrationError);
     expect(component.calibrationMatrix).toEqual(identityCalibrationMatrix.transformation);
 
@@ -1155,7 +1161,7 @@ describe('CalibrationComponent', () => {
   it ('should not activate an invalid state', () => {
     fixture.detectChanges();
 
-    component.display(0); 
+    component.display(0);
 
     expect(component['currentlyActiveStage']).toBe(0);
 
@@ -1166,10 +1172,10 @@ describe('CalibrationComponent', () => {
 
     component.display(2);
 
-    expect(component['currentlyActiveStage']).toBe(2);    
+    expect(component['currentlyActiveStage']).toBe(2);
 
     component.display(1);
-    
+
     expect(component['currentlyActiveStage']).toBe(1);
 
     component.display(4);
@@ -1203,7 +1209,7 @@ describe('CalibrationComponent', () => {
     component.display(1);
     expect(component['currentlyActiveStage']).toBe(1);
 
-    const errorApply = 'TestError: calibrationService.applyCalibration' 
+    const errorApply = 'TestError: calibrationService.applyCalibration'
     calibrationService.applyCalibration.and.returnValue(throwError(errorApply));
 
     component.applyCalibration();
@@ -1212,11 +1218,11 @@ describe('CalibrationComponent', () => {
     expect(component['currentlyActiveStage']).toBe(-1);
 
     expect(calibrationService.applyCalibration).toHaveBeenCalledTimes(2);
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorApply); 
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorApply);
 
   });
 
-  it ('should correctly save calibration without changing local values', () => {   
+  it ('should correctly save calibration without changing local values', () => {
     let result = structuredClone(identityCalibrationMatrix) as CalibrationTransform;
     for(let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
@@ -1236,7 +1242,7 @@ describe('CalibrationComponent', () => {
     expect(calibrationService.saveCalibration).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    const errorSave = 'TestError: calibrationService.saveCalibration' 
+    const errorSave = 'TestError: calibrationService.saveCalibration'
     calibrationService.saveCalibration.and.returnValue(throwError(errorSave));
 
     component.saveCalibration();
@@ -1245,15 +1251,15 @@ describe('CalibrationComponent', () => {
 
     expect(calibrationService.saveCalibration).toHaveBeenCalledTimes(2);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorSave); 
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorSave);
 
   });
 
-  it ('should handle errors appropriately and send logs: 1 - invalid status', async () => {    
-    const errorStatus = 'TestError: processingService.getStatus';    
+  it ('should handle errors appropriately and send logs: 1 - invalid status', async () => {
+    const errorStatus = 'TestError: processingService.getStatus';
     processingService.getStatus.and.returnValue(throwError(errorStatus));
-    
-    const errorInteractions = 'TestError: processingService.getInteractions';    
+
+    const errorInteractions = 'TestError: processingService.getInteractions';
     processingService.getInteractions.and.returnValue(throwError(errorInteractions));
 
     const errorSettings = 'TestError: settingsService.getSettings';
@@ -1264,7 +1270,7 @@ describe('CalibrationComponent', () => {
 
     const errorMatrix = 'TestError: calibrationService.getCalibrationMatrix';
     calibrationService.getCalibrationMatrix.and.returnValue(throwError(errorMatrix));
-    
+
     fixture.detectChanges();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(4);
@@ -1278,12 +1284,12 @@ describe('CalibrationComponent', () => {
 
     expect(component).toBeTruthy();
     expect(component['view']).toBeTruthy();
-    
+
     expect(component.submit).not.toHaveBeenCalled();
   });
 
-  it ('should handle errors appropriately and send logs: 2 - valid status', async () => {    
-    const errorInteractions = 'TestError: processingService.getInteractions';    
+  it ('should handle errors appropriately and send logs: 2 - valid status', async () => {
+    const errorInteractions = 'TestError: processingService.getInteractions';
     processingService.getInteractions.and.returnValue(throwError(errorInteractions));
 
     const errorSettings = 'TestError: settingsService.getSettings';
@@ -1300,7 +1306,7 @@ describe('CalibrationComponent', () => {
 
     const errorTarget = 'TestError: calibrationService.getCurrentCalibrationTargetPoints';
     calibrationService.getCurrentCalibrationTargetPoints.and.returnValue(throwError(errorTarget));
-    
+
     fixture.detectChanges();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(6);
@@ -1313,14 +1319,14 @@ describe('CalibrationComponent', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSource);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorTarget);
 
-    expect(component).toBeTruthy();  
+    expect(component).toBeTruthy();
     expect(component['view']).toBeTruthy();
-    
+
     expect(component.submit).not.toHaveBeenCalled();
   });
 
-  it ('should handle errors appropriately and initialize default values', async () => {        
-    const errorInteractions = 'TestError: processingService.getInteractions';    
+  it ('should handle errors appropriately and initialize default values', async () => {
+    const errorInteractions = 'TestError: processingService.getInteractions';
     processingService.getInteractions.and.returnValue(throwError(errorInteractions));
 
     const errorSettings = 'TestError: settingsService.getSettings';
@@ -1337,7 +1343,7 @@ describe('CalibrationComponent', () => {
 
     const errorTarget = 'TestError: calibrationService.getCurrentCalibrationTargetPoints';
     calibrationService.getCurrentCalibrationTargetPoints.and.returnValue(throwError(errorTarget));
-    
+
     fixture.detectChanges();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(6);
@@ -1365,7 +1371,7 @@ describe('CalibrationComponent', () => {
 
     expect(component.interactions).toEqual([]);
     expect(component.calibratedInteractions).toEqual([]);
-    
+
     expect(component.submit).not.toHaveBeenCalled();
   });
 });

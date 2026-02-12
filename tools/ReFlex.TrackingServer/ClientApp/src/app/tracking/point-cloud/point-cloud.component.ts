@@ -11,12 +11,23 @@ import { TrackingService } from '../../../shared/services/tracking.service';
 import { PointCloudService } from '../../../shared/services/point-cloud.service';
 import { HttpClient } from '@angular/common/http';
 import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingServerAppSettings } from '@reflex/shared-types';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { OptionCheckboxComponent, PanelHeaderComponent, SettingsGroupComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 
 
 @Component({
   selector: 'app-point-cloud',
   templateUrl: './point-cloud.component.html',
-  styleUrls: ['./point-cloud.component.scss']
+  styleUrls: ['./point-cloud.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    PanelHeaderComponent,
+    SettingsGroupComponent,
+    OptionCheckboxComponent,
+    ValueSliderComponent
+  ]
 })
 
 export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -51,7 +62,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly renderer?: THREE.WebGLRenderer;
   private readonly scene: THREE.Scene;
   private readonly camera: THREE.Camera;
-  private readonly shaderMaterial: THREE.RawShaderMaterial = new THREE.ShaderMaterial({
+  private readonly shaderMaterial: THREE.ShaderMaterial = new THREE.ShaderMaterial({
     blending: THREE.AdditiveBlending,
     depthTest: false,
     transparent: true,
@@ -71,11 +82,11 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private interactions: Array<THREE.Mesh> = [];
 
-  private _fullScreen = false;
+  private pfullScreen = false;
 
   private readonly livePreview$ = new BehaviorSubject<boolean>(false);
 
-  private _livePreviewEnabled = false;
+  private plivePreviewEnabled = false;
 
   private height = 600;
 
@@ -200,18 +211,18 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public get livePreviewEnabled(): boolean {
-    return this._livePreviewEnabled;
+    return this.plivePreviewEnabled;
   }
 
   @Input()
   public set livePreviewEnabled(value: boolean) {
-    this._livePreviewEnabled = value;
+    this.plivePreviewEnabled = value;
 
     if (!value) {
       this.numFramesReceived = 0;
     }
 
-    if (!this._livePreviewEnabled && this.livePreview) {
+    if (!this.plivePreviewEnabled && this.livePreview) {
       this.livePreview = false;
       this.livePreviewChanged();
     }
@@ -219,12 +230,12 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public get fullScreen(): boolean {
-    return this._fullScreen;
+    return this.pfullScreen;
   }
 
   public set fullScreen(fs: boolean) {
-    this._fullScreen = fs;
-    this.fullScreenChanged.emit(this._fullScreen);
+    this.pfullScreen = fs;
+    this.fullScreenChanged.emit(this.pfullScreen);
   }
 
   @HostListener('mousemove', ['$event'])

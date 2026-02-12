@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoreOSC;
 using NUnit.Framework;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -56,9 +57,10 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio20Messages(p, TuioInterpretation.Point3D);
 
-            Assert.IsNotNull(result);
+            var oscMessages = result as OscMessage[] ?? result.ToArray();
+            Assert.That(oscMessages, Is.Not.Null);
 
-            Assert.AreEqual(3, result.ToList().Count);
+            Assert.That(oscMessages.ToList().Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -70,9 +72,10 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio11Messages(p, TuioInterpretation.Point3D);
 
-            Assert.IsNotNull(result);
+            var oscMessages = result as OscMessage[] ?? result.ToArray();
+            Assert.That(oscMessages, Is.Not.Null);
 
-            Assert.AreEqual(4, result.ToList().Count);
+            Assert.That(oscMessages.ToList().Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -91,21 +94,21 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio20Messages(p, TuioInterpretation.TouchPoint2DwithPressure);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var msgList = result.ToList();
 
-            Assert.AreEqual(2 + num, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(2 + num));
 
             for (var i = 0; i < num + 2; i++)
             {
                 var start = msgList[i];
                 if (i == 0)
-                    Assert.AreEqual("/tuio2/frm", start.Address.Value);
+                    Assert.That(start.Address.Value, Is.EqualTo("/tuio2/frm"));
                 else if (i == num + 1)
-                    Assert.AreEqual("/tuio2/alv", start.Address.Value);
+                    Assert.That(start.Address.Value, Is.EqualTo("/tuio2/alv"));
                 else
-                    Assert.AreEqual("/tuio2/ptr", start.Address.Value);
+                    Assert.That(start.Address.Value, Is.EqualTo("/tuio2/ptr"));
             }
         }
 
@@ -125,25 +128,26 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio11Messages(p, TuioInterpretation.TouchPoint2DwithPressure);
 
-            Assert.IsNotNull(result);
+            var oscMessages = result as OscMessage[] ?? result.ToArray();
+            Assert.That(oscMessages, Is.Not.Null);
             
-            var msgList = result.ToList();
+            var msgList = oscMessages.ToList();
 
-            Assert.AreEqual(3 + num, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(3 + num));
             
             for (var i = 0; i < num + 3; i++)
             {
                 var start = msgList[i];
                 var args = start.Arguments.ToList();
-                Assert.AreEqual("/tuio/25Dobj", start.Address.Value);
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio/25Dobj"));
                 if (i == 0)
-                    Assert.AreEqual("source", args[0]);
+                    Assert.That(args[0], Is.EqualTo("source"));
                 else if (i == 1)
-                    Assert.AreEqual("alive", args[0]);
+                    Assert.That(args[0], Is.EqualTo("alive"));
                 else if (i == num + 2)
-                    Assert.AreEqual("fseq", args[0]);
+                    Assert.That(args[0], Is.EqualTo("fseq"));
                 else
-                    Assert.AreEqual("set", args[0]);
+                    Assert.That(args[0], Is.EqualTo("set"));
             }
         }
 
@@ -162,53 +166,72 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio11Messages(p, TuioInterpretation.TouchPoint2DwithPressure);
 
-            Assert.IsNotNull(result);
+            var oscMessages = result as OscMessage[] ?? result.ToArray();
+            Assert.That(oscMessages, Is.Not.Null);
 
-            var msgList = result.ToList();
-            Assert.AreEqual(4, msgList.Count);
+            var msgList = oscMessages.ToList();
+            Assert.That(msgList.Count, Is.EqualTo(4));
 
             var start = msgList[0];
             var startArgs = start.Arguments.ToList();
-            Assert.AreEqual("/tuio/25Dobj", start.Address.Value);
-            
-            Assert.AreEqual(2, startArgs.Count);
-            Assert.AreEqual("source", startArgs[0]);
-            Assert.AreEqual(p.Source, startArgs[1]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio/25Dobj"));
+
+                Assert.That(startArgs, Has.Count.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(startArgs[0], Is.EqualTo("source"));
+                Assert.That(startArgs[1], Is.EqualTo(p.Source));
+            });
 
             var alive = msgList[1];
             var aliveArgs = alive.Arguments.ToList();
-            Assert.AreEqual("/tuio/25Dobj", alive.Address.Value);
-            
-            Assert.AreEqual(2, aliveArgs.Count);
-            Assert.AreEqual("alive", aliveArgs[0]);
-            Assert.AreEqual(p.SessionId, aliveArgs[1]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(alive.Address.Value, Is.EqualTo("/tuio/25Dobj"));
+
+                Assert.That(aliveArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(aliveArgs[0], Is.EqualTo("alive"));
+                Assert.That(aliveArgs[1], Is.EqualTo(p.SessionId));
+            });
+
             var posMsg = msgList[2];
             var posMsgList = posMsg.Arguments.ToList();
-            Assert.AreEqual("/tuio/25Dobj", posMsg.Address.Value);
-            
-            Assert.AreEqual(13, posMsgList.Count);
-            Assert.AreEqual("set", posMsgList[0]);
-            Assert.AreEqual(p.SessionId, posMsgList[1]);
-            Assert.AreEqual(_touchId, posMsgList[2]);
-            Assert.AreEqual(_pos.X, posMsgList[3]);
-            Assert.AreEqual(_pos.Y, posMsgList[4]);
-            Assert.AreEqual(_pos.Z, posMsgList[5]);
-            Assert.AreEqual(0, posMsgList[6]);
-            Assert.AreEqual(0, posMsgList[7]);
-            Assert.AreEqual(0, posMsgList[8]);
-            Assert.AreEqual(0, posMsgList[9]);
-            Assert.AreEqual(0, posMsgList[10]);
-            Assert.AreEqual(0, posMsgList[11]);
-            Assert.AreEqual(0, posMsgList[12]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsg.Address.Value, Is.EqualTo("/tuio/25Dobj"));
+
+                Assert.That(posMsgList.Count, Is.EqualTo(13));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsgList[0], Is.EqualTo("set"));
+                Assert.That(posMsgList[1], Is.EqualTo(p.SessionId));
+                Assert.That(posMsgList[2], Is.EqualTo(_touchId));
+                Assert.That(posMsgList[3], Is.EqualTo(_pos.X));
+                Assert.That(posMsgList[4], Is.EqualTo(_pos.Y));
+                Assert.That(posMsgList[5], Is.EqualTo(_pos.Z));
+                Assert.That(posMsgList[6], Is.EqualTo(0));
+                Assert.That(posMsgList[7], Is.EqualTo(0));
+                Assert.That(posMsgList[8], Is.EqualTo(0));
+                Assert.That(posMsgList[9], Is.EqualTo(0));
+                Assert.That(posMsgList[10], Is.EqualTo(0));
+                Assert.That(posMsgList[11], Is.EqualTo(0));
+                Assert.That(posMsgList[12], Is.EqualTo(0));
+            });
+
             var end = msgList[3];
             var endArgs = end.Arguments.ToList();
-            Assert.AreEqual("/tuio/25Dobj", end.Address.Value);
-            
-            Assert.AreEqual(2, endArgs.Count);
-            Assert.AreEqual("fseq", endArgs[0]);
-            Assert.AreEqual(p.FrameId, endArgs[1]);
+            Assert.That(end.Address.Value, Is.EqualTo("/tuio/25Dobj"));
+
+            Assert.That(endArgs.Count, Is.EqualTo(2));
+            Assert.That(endArgs[0], Is.EqualTo("fseq"));
+            Assert.That(endArgs[1], Is.EqualTo(p.FrameId));
         }
         
         [Test]
@@ -226,57 +249,80 @@ namespace ReFlex.Core.Tuio.Test
          
             var result = _builder.CreateTuio11Messages(p, TuioInterpretation.Point3D);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var msgList = result.ToList();
-            Assert.AreEqual(4, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(4));
 
             var start = msgList[0];
             var startArgs = start.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", start.Address.Value);
-            
-            Assert.AreEqual(2, startArgs.Count);
-            Assert.AreEqual("source", startArgs[0]);
-            Assert.AreEqual(p.Source, startArgs[1]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+
+                Assert.That(startArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(startArgs[0], Is.EqualTo("source"));
+                Assert.That(startArgs[1], Is.EqualTo(p.Source));
+            });
 
             var alive = msgList[1];
             var aliveArgs = alive.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", alive.Address.Value);
-            
-            Assert.AreEqual(2, aliveArgs.Count);
-            Assert.AreEqual("alive", aliveArgs[0]);
-            Assert.AreEqual(p.SessionId, aliveArgs[1]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(alive.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+
+                Assert.That(aliveArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(aliveArgs[0], Is.EqualTo("alive"));
+                Assert.That(aliveArgs[1], Is.EqualTo(p.SessionId));
+            });
+
             var posMsg = msgList[2];
             var posMsgList = posMsg.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", posMsg.Address.Value);
-            
-            Assert.AreEqual(17, posMsgList.Count);
-            Assert.AreEqual("set", posMsgList[0]);
-            Assert.AreEqual(p.SessionId, posMsgList[1]);
-            Assert.AreEqual(_touchId, posMsgList[2]);
-            Assert.AreEqual(_pos.X, posMsgList[3]);
-            Assert.AreEqual(_pos.Y, posMsgList[4]);
-            Assert.AreEqual((_pos.Z + 1f) * 0.5f, posMsgList[5]);
-            Assert.AreEqual(0, posMsgList[6]);
-            Assert.AreEqual(0, posMsgList[7]);
-            Assert.AreEqual(0, posMsgList[8]);
-            Assert.AreEqual(0, posMsgList[9]);
-            Assert.AreEqual(0, posMsgList[10]);
-            Assert.AreEqual(0, posMsgList[11]);
-            Assert.AreEqual(0, posMsgList[12]);
-            Assert.AreEqual(0, posMsgList[13]);
-            Assert.AreEqual(0, posMsgList[14]);
-            Assert.AreEqual(0, posMsgList[15]);
-            Assert.AreEqual(0, posMsgList[16]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsg.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+                Assert.That(posMsgList.Count, Is.EqualTo(17));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsgList[0], Is.EqualTo("set"));
+                Assert.That(posMsgList[1], Is.EqualTo(p.SessionId));
+                Assert.That(posMsgList[2], Is.EqualTo(_touchId));
+                Assert.That(posMsgList[3], Is.EqualTo(_pos.X));
+                Assert.That(posMsgList[4], Is.EqualTo(_pos.Y));
+                Assert.That(posMsgList[5], Is.EqualTo((_pos.Z + 1f) * 0.5f));
+                Assert.That(posMsgList[6], Is.EqualTo(0));
+                Assert.That(posMsgList[7], Is.EqualTo(0));
+                Assert.That(posMsgList[8], Is.EqualTo(0));
+                Assert.That(posMsgList[9], Is.EqualTo(0));
+                Assert.That(posMsgList[10], Is.EqualTo(0));
+                Assert.That(posMsgList[11], Is.EqualTo(0));
+                Assert.That(posMsgList[12], Is.EqualTo(0));
+                Assert.That(posMsgList[13], Is.EqualTo(0));
+                Assert.That(posMsgList[14], Is.EqualTo(0));
+                Assert.That(posMsgList[15], Is.EqualTo(0));
+                Assert.That(posMsgList[16], Is.EqualTo(0));
+            });
+
             var end = msgList[3];
             var endArgs = end.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", end.Address.Value);
-            
-            Assert.AreEqual(2, endArgs.Count);
-            Assert.AreEqual("fseq", endArgs[0]);
-            Assert.AreEqual(p.FrameId, endArgs[1]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(end.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+
+                Assert.That(endArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(endArgs[0], Is.EqualTo("fseq"));
+                Assert.That(endArgs[1], Is.EqualTo(p.FrameId));
+            });
         }
         
         [Test]
@@ -294,42 +340,57 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio20Messages(p, TuioInterpretation.TouchPoint2DwithPressure);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var msgList = result.ToList();
-            Assert.AreEqual(3, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(3));
 
             var start = msgList[0];
             var startArgs = start.Arguments.ToList();
-            Assert.AreEqual("/tuio2/frm", start.Address.Value);
-            
-            Assert.AreEqual(4, startArgs.Count);
-            Assert.AreEqual(_frameId, startArgs[0]);
-            Assert.AreEqual(p.Time, startArgs[1]);
-            Assert.AreEqual(p.Dimension, startArgs[2]);
-            Assert.AreEqual(p.Source, startArgs[3]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio2/frm"));
+
+                Assert.That(startArgs.Count, Is.EqualTo(4));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(startArgs[0], Is.EqualTo(_frameId));
+                Assert.That(startArgs[1], Is.EqualTo(p.Time));
+                Assert.That(startArgs[2], Is.EqualTo(p.Dimension));
+                Assert.That(startArgs[3], Is.EqualTo(p.Source));
+            });
+
             var posMsg = msgList[1];
             var posMsgList = posMsg.Arguments.ToList();
-            Assert.AreEqual("/tuio2/ptr", posMsg.Address.Value);
-            
-            Assert.AreEqual(9, posMsgList.Count);
-            Assert.AreEqual(p.SessionId, posMsgList[0]);
-            Assert.AreEqual(1, posMsgList[1]);
-            Assert.AreEqual(_touchId, posMsgList[2]);
-            Assert.AreEqual(_pos.X, posMsgList[3]);
-            Assert.AreEqual(_pos.Y, posMsgList[4]);
-            Assert.AreEqual(0, posMsgList[5]);
-            Assert.AreEqual(0, posMsgList[6]);
-            Assert.AreEqual(1f, posMsgList[7]);
-            Assert.AreEqual(_pos.Z, posMsgList[8]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsg.Address.Value, Is.EqualTo("/tuio2/ptr"));
+
+                Assert.That(posMsgList.Count, Is.EqualTo(9));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsgList[0], Is.EqualTo(p.SessionId));
+                Assert.That(posMsgList[1], Is.EqualTo(1));
+                Assert.That(posMsgList[2], Is.EqualTo(_touchId));
+                Assert.That(posMsgList[3], Is.EqualTo(_pos.X));
+                Assert.That(posMsgList[4], Is.EqualTo(_pos.Y));
+                Assert.That(posMsgList[5], Is.EqualTo(0));
+                Assert.That(posMsgList[6], Is.EqualTo(0));
+                Assert.That(posMsgList[7], Is.EqualTo(1f));
+                Assert.That(posMsgList[8], Is.EqualTo(_pos.Z));
+            });
+
             var alive = msgList[2];
             var aliveArgs = alive.Arguments.ToList();
-            Assert.AreEqual("/tuio2/alv", alive.Address.Value);
-            
-            Assert.AreEqual(1, aliveArgs.Count);
-            Assert.AreEqual(p.SessionId, aliveArgs[0]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(alive.Address.Value, Is.EqualTo("/tuio2/alv"));
+
+                Assert.That(aliveArgs.Count, Is.EqualTo(1));
+            });
+            Assert.That(aliveArgs[0], Is.EqualTo(p.SessionId));
         }
         
         [Test]
@@ -347,43 +408,58 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio20Messages(p, TuioInterpretation.Point3D);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var msgList = result.ToList();
-            Assert.AreEqual(3, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(3));
 
             var start = msgList[0];
             var startArgs = start.Arguments.ToList();
-            Assert.AreEqual("/tuio2/frm", start.Address.Value);
-            
-            Assert.AreEqual(4, startArgs.Count);
-            Assert.AreEqual(_frameId, startArgs[0]);
-            Assert.AreEqual(p.Time, startArgs[1]);
-            Assert.AreEqual(p.Dimension, startArgs[2]);
-            Assert.AreEqual(p.Source, startArgs[3]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio2/frm"));
+
+                Assert.That(startArgs.Count, Is.EqualTo(4));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(startArgs[0], Is.EqualTo(_frameId));
+                Assert.That(startArgs[1], Is.EqualTo(p.Time));
+                Assert.That(startArgs[2], Is.EqualTo(p.Dimension));
+                Assert.That(startArgs[3], Is.EqualTo(p.Source));
+            });
+
             var posMsg = msgList[1];
             var posMsgList = posMsg.Arguments.ToList();
-            Assert.AreEqual("/tuio2/p3d", posMsg.Address.Value);
-            
-            Assert.AreEqual(10, posMsgList.Count);
-            Assert.AreEqual(p.SessionId, posMsgList[0]);
-            Assert.AreEqual(1, posMsgList[1]);
-            Assert.AreEqual(_touchId, posMsgList[2]);
-            Assert.AreEqual(_pos.X, posMsgList[3]);
-            Assert.AreEqual(_pos.Y, posMsgList[4]);
-            Assert.AreEqual(( _pos.Z + 1.0f) * 0.5f, posMsgList[5]);
-            Assert.AreEqual(0, posMsgList[6]);
-            Assert.AreEqual(0, posMsgList[7]);
-            Assert.AreEqual(1f, posMsgList[8]);
-            Assert.AreEqual(1f, posMsgList[9]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsg.Address.Value, Is.EqualTo("/tuio2/p3d"));
+
+                Assert.That(posMsgList.Count, Is.EqualTo(10));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(posMsgList[0], Is.EqualTo(p.SessionId));
+                Assert.That(posMsgList[1], Is.EqualTo(1));
+                Assert.That(posMsgList[2], Is.EqualTo(_touchId));
+                Assert.That(posMsgList[3], Is.EqualTo(_pos.X));
+                Assert.That(posMsgList[4], Is.EqualTo(_pos.Y));
+                Assert.That(posMsgList[5], Is.EqualTo((_pos.Z + 1.0f) * 0.5f));
+                Assert.That(posMsgList[6], Is.EqualTo(0));
+                Assert.That(posMsgList[7], Is.EqualTo(0));
+                Assert.That(posMsgList[8], Is.EqualTo(1f));
+                Assert.That(posMsgList[9], Is.EqualTo(1f));
+            });
+
             var alive = msgList[2];
             var aliveArgs = alive.Arguments.ToList();
-            Assert.AreEqual("/tuio2/alv", alive.Address.Value);
-            
-            Assert.AreEqual(1, aliveArgs.Count);
-            Assert.AreEqual(p.SessionId, aliveArgs[0]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(alive.Address.Value, Is.EqualTo("/tuio2/alv"));
+
+                Assert.That(aliveArgs.Count, Is.EqualTo(1));
+            });
+            Assert.That(aliveArgs[0], Is.EqualTo(p.SessionId));
         }
         
         [Test]
@@ -395,27 +471,36 @@ namespace ReFlex.Core.Tuio.Test
 
             var result = _builder.CreateTuio20Messages(p, TuioInterpretation.TouchPoint2DwithPressure);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var msgList = result.ToList();
-            Assert.AreEqual(2, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(2));
 
             var start = msgList[0];
             var startArgs = start.Arguments.ToList();
-            Assert.AreEqual("/tuio2/frm", start.Address.Value);
-            
-            Assert.AreEqual(4, startArgs.Count);
-            Assert.AreEqual(_frameId, startArgs[0]);
-            Assert.AreEqual(p.Time, startArgs[1]);
-            Assert.AreEqual(p.Dimension, startArgs[2]);
-            Assert.AreEqual(p.Source, startArgs[3]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio2/frm"));
+
+                Assert.That(startArgs.Count, Is.EqualTo(4));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(startArgs[0], Is.EqualTo(_frameId));
+                Assert.That(startArgs[1], Is.EqualTo(p.Time));
+                Assert.That(startArgs[2], Is.EqualTo(p.Dimension));
+                Assert.That(startArgs[3], Is.EqualTo(p.Source));
+            });
+
             var alive = msgList[1];
             var aliveArgs = alive.Arguments.ToList();
-            Assert.AreEqual("/tuio2/alv", alive.Address.Value);
-            
-            Assert.AreEqual(1, aliveArgs.Count);
-            Assert.AreEqual(p.SessionId, aliveArgs[0]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(alive.Address.Value, Is.EqualTo("/tuio2/alv"));
+
+                Assert.That(aliveArgs.Count, Is.EqualTo(1));
+            });
+            Assert.That(aliveArgs[0], Is.EqualTo(p.SessionId));
         }
         
         [Test]
@@ -427,34 +512,52 @@ namespace ReFlex.Core.Tuio.Test
          
             var result = _builder.CreateTuio11Messages(p, TuioInterpretation.Point3D);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             var msgList = result.ToList();
-            Assert.AreEqual(3, msgList.Count);
+            Assert.That(msgList.Count, Is.EqualTo(3));
 
             var start = msgList[0];
             var startArgs = start.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", start.Address.Value);
-            
-            Assert.AreEqual(2, startArgs.Count);
-            Assert.AreEqual("source", startArgs[0]);
-            Assert.AreEqual(p.Source, startArgs[1]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(start.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+
+                Assert.That(startArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(startArgs[0], Is.EqualTo("source"));
+                Assert.That(startArgs[1], Is.EqualTo(p.Source));
+            });
 
             var alive = msgList[1];
             var aliveArgs = alive.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", alive.Address.Value);
-            
-            Assert.AreEqual(2, aliveArgs.Count);
-            Assert.AreEqual("alive", aliveArgs[0]);
-            Assert.AreEqual(p.SessionId, aliveArgs[1]);
-            
+            Assert.Multiple(() =>
+            {
+                Assert.That(alive.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+
+                Assert.That(aliveArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(aliveArgs[0], Is.EqualTo("alive"));
+                Assert.That(aliveArgs[1], Is.EqualTo(p.SessionId));
+            });
+
             var end = msgList[2];
             var endArgs = end.Arguments.ToList();
-            Assert.AreEqual("/tuio/3Dobj", end.Address.Value);
-            
-            Assert.AreEqual(2, endArgs.Count);
-            Assert.AreEqual("fseq", endArgs[0]);
-            Assert.AreEqual(p.FrameId, endArgs[1]);
+            Assert.Multiple(() =>
+            {
+                Assert.That(end.Address.Value, Is.EqualTo("/tuio/3Dobj"));
+
+                Assert.That(endArgs.Count, Is.EqualTo(2));
+            });
+            Assert.Multiple(() =>
+            {
+                Assert.That(endArgs[0], Is.EqualTo("fseq"));
+                Assert.That(endArgs[1], Is.EqualTo(p.FrameId));
+            });
         }
     }
 }

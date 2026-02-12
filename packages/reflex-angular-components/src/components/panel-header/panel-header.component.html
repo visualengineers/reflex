@@ -1,0 +1,14 @@
+<h2 class="heading-secondary">{{elementTitle}}</h2>
+<ng-content></ng-content>
+<div class="slider checkbox">
+    <input type="checkbox" class="checkbox-toggle" id="{{elementId}}-toggle"
+    [attr.name]="elementId + '-toggle'"
+    [attr.aria-labelledby]="elementId + '-label'"
+    [(ngModel)]="data" (ngModelChange)="update($event)" [attr.disabled]="disabled ? true : null"/>
+
+    <label class="checkbox-toggle-label" for="{{elementId}}-toggle"
+      [id]="elementId + '-label'"
+      [attr.name]="elementId + '-label'">
+        <ng-content select=[extraLabel]></ng-content>
+        <span class="on">ON</span><span class="off">OFF</span></label>
+</div>

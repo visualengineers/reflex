@@ -12,11 +12,11 @@ namespace ReFlex.Core.Interactivity.Components
     public class InteractionSmoothingBehaviour
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
         #region Fields
-        
+
         private List<InteractionFrame> _interactionFrames = new List<InteractionFrame>();
-        
+
         private int _frameId = 0;
         private int _maxTouchId = 0;
         private FilterType _type = FilterType.None;
@@ -27,18 +27,18 @@ namespace ReFlex.Core.Interactivity.Components
         #endregion
 
         #region Properties
-        
+
         public float TouchMergeDistance2D { get; set; } = 64f;
-        
+
         public  int NumFramesHistory { get; set; }
-        
+
         public  int NumFramesSmoothing { get; set; }
 
         public int MaxNumEmptyFramesBetween { get; set; }
 
         public int CurrentFrameId => _frameId;
         public int CurrentMaxId => _maxTouchId;
-        
+
         public int MaxConfidence { get; set; }
 
         public float DepthScale
@@ -48,9 +48,9 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         public InteractionFrame[] InteractionsFramesCache => _interactionFrames.ToArray();
-        
+
         #endregion
-        
+
         #region Constructor
 
         public InteractionSmoothingBehaviour(int numFramesHistory)
@@ -58,9 +58,9 @@ namespace ReFlex.Core.Interactivity.Components
             NumFramesHistory = numFramesHistory;
             _filter = new SimpleMovingAverageFilter((int) Math.Floor(NumFramesHistory / 2d));
         }
-        
+
         #endregion
-        
+
         #region public Methods
 
         public void Reset()
@@ -102,7 +102,7 @@ namespace ReFlex.Core.Interactivity.Components
                     _filter = null;
                     break;
             }
-            
+
             Logger.Info($"switched Interaction Processing Smoothing Filter to {_filter?.GetType().FullName ?? "None\""}");
         }
 
@@ -110,25 +110,25 @@ namespace ReFlex.Core.Interactivity.Components
         {
             _frameId++;
 
-            // reconstruct ids by mapping touches in history 
+            // reconstruct ids by mapping touches in history
             var mappedInteractionIds = MapClosestInteraction(rawInteractions.Take(20).ToList());
-            
+
             // store raw interactions with associated ids
             var newFrame = new InteractionFrame(_frameId, mappedInteractionIds);
-            
+
             _interactionFrames.Add(newFrame);
-            
+
             // remove old entries / update when _numFrames has changed
             UpdateInteractionFramesList();
 
             // create new Frame for smoothed values
             var result = new InteractionFrame(_frameId);
-            
+
             var frames = _interactionFrames.ToArray();
-                
+
             var allInteractionIds = frames
                 .SelectMany(frame => frame.Interactions.Select(interaction => interaction.TouchId)).Distinct().ToList();
-            
+
             allInteractionIds.ForEach(id =>
             {
                 var lastFrameId = frames.OrderByDescending(frame => frame.FrameId).FirstOrDefault(frame =>
@@ -144,13 +144,13 @@ namespace ReFlex.Core.Interactivity.Components
                 if (smoothed != null)
                     result.Interactions.Add(smoothed);
             });
-            
+
 
             return result;
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// order list of frames by frame id descending and remove old frames
         /// </summary>
@@ -167,10 +167,34 @@ namespace ReFlex.Core.Interactivity.Components
                 {
                     Logger.Error(e, $"Exception catched in {GetType()}.{nameof(this.UpdateInteractionFramesList)}.");
                 }
-                    
+
             }
         }
-        
+
+        /// <summary>
+        /// replaces the frame in the cache with the updated frame (if FrameId is existing, otherwise, nothing is changed)
+        /// </summary>
+        /// <param name="updatedFrame">Frame containing updated values</param>
+        public void UpdateCachedFrame(InteractionFrame updatedFrame)
+        {
+          var frameIdxToBeReplaced = _interactionFrames.FindIndex((f) => f.FrameId == updatedFrame.FrameId);
+          if (frameIdxToBeReplaced < 0)
+            return;
+
+          // _interactionFrames[frameIdxToBeReplaced] = updatedFrame;
+          _interactionFrames[frameIdxToBeReplaced].Interactions.ForEach((interaction) =>
+          {
+            var updatedInteraction =
+              updatedFrame.Interactions.FirstOrDefault((update) => update.TouchId == interaction.TouchId);
+            if (updatedInteraction != null)
+            {
+              interaction.Confidence = updatedInteraction.Confidence;
+              interaction.ExtremumDescription = updatedInteraction.ExtremumDescription;
+
+            }
+          });
+        }
+
         /// <summary>
         /// Apply smoothing according to chosen filter type.
         /// Extracts touches of a given id from frames history and  sends them to smoothing algorithm
@@ -182,7 +206,7 @@ namespace ReFlex.Core.Interactivity.Components
             var interactionsHistory = new List<Interaction>();
 
             var frames = new List<InteractionFrame>(_interactionFrames.OrderBy(frame => frame.FrameId));
-            
+
             frames.ForEach(frame =>
             {
                 var lastTouch =
@@ -192,13 +216,13 @@ namespace ReFlex.Core.Interactivity.Components
 
                 interactionsHistory.Add(new Interaction(lastTouch));
             });
-            
+
             var smooth = interactionsHistory.LastOrDefault();
 
             var raw = interactionsHistory.Select(interaction => interaction.Position).ToList();
 
             if (NumFramesSmoothing > 0 &&
-                smooth != null && raw.Count >= NumFramesSmoothing && 
+                smooth != null && raw.Count >= NumFramesSmoothing &&
                 _type != FilterType.None && _filter != null)
             {
                 var framesForSmoothing = raw.Take(NumFramesSmoothing).ToList();
@@ -210,8 +234,8 @@ namespace ReFlex.Core.Interactivity.Components
 
             return smooth;
         }
-        
-        
+
+
 
         /// <summary>
         /// Try to identify an interaction that can be associated with the given interaction (from another frame, or smoothed ?) in the given frame
@@ -228,11 +252,11 @@ namespace ReFlex.Core.Interactivity.Components
                 rawInteractions.ForEach(AssignMaxId);
                 return rawInteractions;
             }
-            
+
             // reset touch id to negative value
             rawInteractions.ForEach(Interaction => Interaction.TouchId = -1);
 
-            // step 1: look in past frames for 
+            // step 1: look in past frames for
 
             var pastFrames = _interactionFrames.Where(frame => frame.Interactions.Count > 0).OrderByDescending(frame => frame.FrameId).ToArray();
 
@@ -245,8 +269,8 @@ namespace ReFlex.Core.Interactivity.Components
             while (candidates.Length != 0 && i >= 0)
             {
              // List : candidateIdx, Array<touchId, distances> (ordered by distance desc))
-                var distances = 
-                    candidates.Select((interaction, idx) => Tuple.Create(idx, 
+                var distances =
+                    candidates.Select((interaction, idx) => Tuple.Create(idx,
                         pastFrames[i].Interactions
                             .Select(otherInteraction => Tuple.Create(otherInteraction, Point3.Squared2DDistance(interaction.Position, otherInteraction.Position)))
                             .OrderBy(tpl => tpl.Item2)
@@ -261,7 +285,7 @@ namespace ReFlex.Core.Interactivity.Components
                     // distances.Where(dist => dist.Item2.Count == 0).ToList().ForEach(tpl =>
                     //    {
                     //        var interaction = new Interaction(candidates[tpl.Item1]);
-                    //         AssignMaxId(interaction);                            
+                    //         AssignMaxId(interaction);
                     //         result.Add(interaction);
                     //     }
                     // );
@@ -285,7 +309,7 @@ namespace ReFlex.Core.Interactivity.Components
                             }
                         });
                 }
-                
+
                 distances.ForEach(dist =>
                 {
                     if (dist.Item2[0].Item2 < TouchMergeDistance2D)
@@ -312,26 +336,26 @@ namespace ReFlex.Core.Interactivity.Components
                                 result.Remove(alreadyAdded);
                                 interaction.Confidence++;
                                 result.Add(interaction);
-                            } 
-                            else 
+                            }
+                            else
                             {
-                               alreadyAdded.Confidence = interaction.Confidence; 
-                            }    
+                               alreadyAdded.Confidence = interaction.Confidence;
+                            }
 
                         }
-                    }                   
+                    }
                 });
 
                 candidates = candidates.Where(interaction => interaction.TouchId < 0).ToArray();
-                
+
                 i--;
             }
-                    
+
             var newInteractions =  candidates.ToList();
             newInteractions.ForEach(AssignMaxId);
-            
+
             result.AddRange(newInteractions);
-            
+
             return result.OrderBy(interaction => interaction.TouchId).ToList();
         }
 
@@ -350,9 +374,9 @@ namespace ReFlex.Core.Interactivity.Components
             // find maximum confidence in history for touch id
             var maxExistingConfidence = pastFrames.SelectMany(frames => frames.Interactions)
                 .Where(inter => Equals(inter.TouchId, touchId)).Max(inter => inter.Confidence);
-            
+
             // increment and clamp to max value
             return (int) Math.Min(Math.Max(currentConfidence, maxExistingConfidence) + 1, MaxConfidence);
         }
-    } 
+    }
 }

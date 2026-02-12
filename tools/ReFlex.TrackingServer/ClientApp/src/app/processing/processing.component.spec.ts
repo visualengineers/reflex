@@ -7,28 +7,29 @@ import { LogService } from '../log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { of } from 'rxjs';
-import { MockPanelHeaderComponent } from '../elements/panel-header/panel-header.component.mock';
-import { MockValueSelectionComponent } from '../elements/value-selection/value-selection.component.mock';
-import { MockValueSliderComponent } from '../elements/value-slider/value-slider.mock';
 import { InteractionsComponent } from './interactions/interactions.component';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { MockHistoryVisualizationComponent } from './history-visualization/history-visualization.component.mock';
 import { MockHistoryComponent } from './history/history.component.mock';
-import { MockOptionCheckboxComponent } from '../elements/option-checkbox/option-checkbox.component.mock';
 import { CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, RemoteProcessingAlgorithm, RemoteProcessingServiceSettings } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, OptionCheckboxComponent, MockOptionCheckboxComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
+import { HistoryVisualizationComponent } from './history-visualization/history-visualization.component';
+import { HistoryComponent } from './history/history.component';
+import { MockInteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component.mock';
+import { MockInteractionsComponent } from './interactions/interactions.component.mock';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
     'saveSettings'
   ]);
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService', 
+const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
   [
      'computeCalibratedAbsolutePosition',
      'getFrameSize'
@@ -37,9 +38,11 @@ const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibra
 
 const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingService',
   [
+    'getFrames',
     'getStatus',
     'getObserverTypes',
     'getSelectedObserverType',
+    'getHistory',
     'getInteractions',
     'getInterval',
     'getRemoteProcessorSettings'
@@ -47,7 +50,7 @@ const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessin
   ]
 );
 
-const customFrame: FrameSizeDefinition = 
+const customFrame: FrameSizeDefinition =
   { width: 500, height: 400, left: 150, top: 75 };
 
 const interactionData : CompleteInteractionData = {
@@ -73,40 +76,52 @@ describe('ProcessingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        ProcessingComponent,
+    imports: [FormsModule,
+        ProcessingComponent
+    ],
+    providers: [
+        {
+            provide: CalibrationService, useValue: calibrationService
+        },
+        {
+            provide: ProcessingService, useValue: processingService
+        },
+        {
+            provide: SettingsService, useValue: settingsService
+        },
+        {
+            provide: LogService, useValue: logService
+        },
+        {
+            provide: 'BASE_URL', useValue: 'http://localhost'
+        }
+    ]
+    }).overrideComponent(ProcessingComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        ValueSelectionComponent,
+        ValueSliderComponent,
+        OptionCheckboxComponent,
+        InteractionsComponent,
+        InteractionsVisualizationComponent,
+        HistoryVisualizationComponent,
+        HistoryComponent
+      ] },
+      add: { imports: [
         MockPanelHeaderComponent,
         MockValueSelectionComponent,
         MockValueSliderComponent,
         MockOptionCheckboxComponent,
-        InteractionsComponent,
-        InteractionsVisualizationComponent,
+        MockInteractionsComponent,
+        MockInteractionsVisualizationComponent,
         MockHistoryVisualizationComponent,
         MockHistoryComponent
-       ],
-      imports: [FormsModule ],
-      providers: [
-        {
-          provide: CalibrationService, useValue: calibrationService
-        },
-        {
-          provide: ProcessingService, useValue: processingService
-        },
-        {
-          provide: SettingsService, useValue: settingsService
-        },
-        {
-          provide: LogService, useValue: logService
-        },
-        {
-          provide: 'BASE_URL', useValue: 'http://localhost'
-        }
-      ]
+       ] }
     })
     .compileComponents();
   }));
 
-  beforeEach(() => { 
+  beforeEach(() => {
     calibrationService.computeCalibratedAbsolutePosition.and.returnValue(of(interactionData));
     calibrationService.getFrameSize.and.returnValue(of(customFrame));
 
@@ -121,9 +136,9 @@ describe('ProcessingComponent', () => {
     settingsService.saveSettings.and.returnValue(of(DEFAULT_SETTINGS));
 
     logService.sendErrorLog.and.returnValue();
-    
+
     fixture = TestBed.createComponent(ProcessingComponent);
-    component = fixture.componentInstance;    
+    component = fixture.componentInstance;
   });
 
   afterEach(() => {
@@ -149,12 +164,11 @@ describe('ProcessingComponent', () => {
     expect(component).toBeTruthy();
 
     expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledTimes(1);
-    expect(calibrationService.getFrameSize).toHaveBeenCalledTimes(1);
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
     // BUG ?
     expect(processingService.getStatus).toHaveBeenCalledTimes(2);
-    
+
     expect(processingService.getObserverTypes).toHaveBeenCalledTimes(1);
     expect(processingService.getSelectedObserverType).toHaveBeenCalledTimes(1);
     expect(processingService.getInterval).toHaveBeenCalledTimes(1);

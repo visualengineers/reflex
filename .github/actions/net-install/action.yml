@@ -1,0 +1,17 @@
+name: '.NET install'
+description: 'Install .NET and restore packages'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: install .NET
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: '8.x'
+    - name: Restore workloads
+      shell: pwsh
+      run: dotnet workload restore
+    - name: Restore dependencies (ReFlex.sln)
+      shell: pwsh
+      run: dotnet restore

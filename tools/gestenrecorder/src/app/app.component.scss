@@ -1,0 +1,93 @@
+@use 'reflex' as reflex;
+
+.recorder__main__content {
+    background-color: reflex.$color-black;
+    position: fixed;
+    color: reflex.$color-grey-light-3;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 51px 1fr min-content;
+}
+.recorder__header{
+    background-color: reflex.$color-white;
+    border: 1px solid reflex.$color-primary;
+    background-color: reflex.$color-white;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.recorder__body{
+    border: 1px solid reflex.$color-primary;
+    background-color: transparent;
+    position: relative;
+}
+.recorder__footer{
+    border: 1px solid reflex.$color-primary;
+    background-color: reflex.$color-success;
+}
+
+#settings {
+    position: absolute;
+    top: 3em;
+    right: 1em;
+}
+
+.image-container {
+    height: 100%;
+    display: block;
+    position: relative;
+   }
+
+#emulation {
+    height: 100%;
+    width: calc(100% - 5em);
+    display: inline-block;
+}
+
+#navbar  {
+    width: 5em;
+    float: right;
+    height: 100%;
+    background-color: reflex.$color-grey-dark;
+
+    ul{
+        list-style: none;
+        list-style-position: inside;
+        padding: 0;
+        width: 5em;
+        float: right;
+        margin: 0;
+}
+        li{
+            width: 5em;
+            height: 5em;
+            }
+}
+
+img.header__logo {
+    max-height: 51px;
+}
+
+.settings__button-group {
+    margin-top: 0px;
+}
+
+.button{
+    cursor: pointer;
+}
+
+.toggle__container {
+    display: block;
+    border: none;
+    text-align: center;
+    width: 9.3rem;
+    height: 2.7rem;
+    margin-left: 0.9rem;
+    font-family: "Barlow Demi", sans-serif;
+    font-size: inherit;
+    line-height: inherit;
+    color: reflex.$color-primary;
+}
+

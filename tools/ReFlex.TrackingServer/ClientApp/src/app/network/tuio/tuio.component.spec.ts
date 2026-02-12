@@ -6,19 +6,18 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { of } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { MockPanelHeaderComponent } from 'src/app/elements/panel-header/panel-header.component.mock';
-import { MockValueSelectionComponent } from 'src/app/elements/value-selection/value-selection.component.mock';
-import { MockValueTextComponent } from 'src/app/elements/value-text/value-text.component.mock';
 import { FormsModule } from '@angular/forms';
 import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
 import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
+import { MockPanelHeaderComponent, MockValueSelectionComponent, MockValueTextComponent, PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { PackageDetailsComponent } from './package-details/package-details.component';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]);
 
-  const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+  const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings',
     'update'
@@ -30,7 +29,8 @@ const tuioService = jasmine.createSpyObj<TuioService>('fakeTuioService',
     'getTransportProtocols',
     'getTuioProtocolVersions',
     'getTuioInterpretations',
-    'getStatus'
+    'getStatus',
+    'getPackages'
   ]);
 
 const broadcastingState: JsonSimpleValue = { name: 'IsBroadcasting', value: true };
@@ -44,25 +44,23 @@ describe('TuioComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ 
-        TuioComponent, 
-        MockPackageDetailsComponent,
-        MockPanelHeaderComponent, 
-        MockValueSelectionComponent, 
-        MockValueTextComponent
-      ],
-      imports: [ FormsModule ],
-      providers: [
+    imports: [FormsModule,
+        TuioComponent
+    ],
+    providers: [
         {
-          provide: SettingsService, useValue: settingsService
+            provide: SettingsService, useValue: settingsService
         },
         {
-          provide: TuioService, useValue: tuioService
+            provide: TuioService, useValue: tuioService
         },
         {
-          provide: LogService, useValue: logService
+            provide: LogService, useValue: logService
         }
-      ]
+    ]
+    }).overrideComponent(TuioComponent, {
+      remove: { imports: [ PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, PackageDetailsComponent] },
+      add: { imports: [ MockPanelHeaderComponent, MockValueSelectionComponent, MockValueTextComponent, MockPackageDetailsComponent ] }
     })
     .compileComponents();
   });

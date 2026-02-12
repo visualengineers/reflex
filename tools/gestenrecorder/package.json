@@ -1,0 +1,19 @@
+{
+  "name": "gestenrecorder",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "serve:ssr:gestenrecorder": "node dist/gestenrecorder/server/server.mjs"
+  },
+  "private": true,
+  "dependencies": {
+    "@reflex/angular-components": "file:../../packages/reflex-angular-components"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}

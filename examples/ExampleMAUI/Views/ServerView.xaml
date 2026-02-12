@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:ExampleMAUI.ViewModels"
+             x:Class="ExampleMAUI.Views.ServerView" x:DataType="viewModels:ServerViewModel">
+  <Grid Style="{StaticResource StatusPanelBorder}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+      <ColumnDefinition Width="2*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+    <VerticalStackLayout Grid.Column="0" HorizontalOptions="Fill" Margin="10,0,0,0">
+      <HorizontalStackLayout>
+        <Ellipse
+                      Style="{StaticResource ConnectionStateVisual}"
+                      IsVisible="{Binding IsDisconnected}"
+                      Fill="{StaticResource BrushConnectionStatusDisconnected}"
+                      />
+        <Ellipse
+                      Style="{StaticResource ConnectionStateVisual}"
+                      IsVisible="{Binding IsConnected}"
+                      Fill="{StaticResource BrushConnectionStatusConnected}"
+                  />
+        <Label Style="{StaticResource TextDescriptionLabel}">Address</Label>
+      </HorizontalStackLayout>
+      <Label Style="{StaticResource TextDescriptionLabel}">FrameNumber</Label>
+      <Label Style="{StaticResource TextDescriptionLabel}">Touches</Label>
+    </VerticalStackLayout>
+    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Fill">
+      <Label Style="{StaticResource TextDescriptionItem}" Text="{Binding ServerAddress}"/>
+      <Label Style="{StaticResource TextDescriptionItem}" Text="{Binding FrameNumber}"/>
+      <Label Style="{StaticResource TextDescriptionItem}" Text="{Binding NumTouches}"/>
+      <Button Command="{Binding ConnectCommand}"
+                      IsVisible="{Binding IsDisconnected}"
+                      IsEnabled="{Binding ConnectEnabled}"          
+                      Text="Connect"/>
+      <Button Command="{Binding DisconnectCommand}"
+                      IsVisible="{Binding IsConnected}"
+                      Text="Disconnect"/>
+    </VerticalStackLayout>
+    <BoxView Grid.Column="0" Style="{StaticResource VerticalBorder}"/>
+  </Grid>
+</ContentView>

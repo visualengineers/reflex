@@ -1,0 +1,56 @@
+{
+    "classes": [
+        {
+            "name": "Primary Color",
+            "colors":
+            [
+                { "name": "ColorPrimary", "code": "#0071B7", "opacity": 1 },
+                { "name": "ColorPrimaryLight", "code": "#29A6DD", "opacity": 1 },
+                { "name": "ColorPrimaryLight2", "code": "#C0E0EE", "opacity": 1 }
+            ]
+        },
+        {
+            "name": "Grey",
+            "colors":
+            [
+                { "name": "ColorBlack", "code": "#000000", "opacity": 1 },
+                { "name": "ColorGreyDark", "code": "#4D4D4D", "opacity": 1 },
+                { "name": "ColorGreyLight", "code": "#949494", "opacity": 1 },
+                { "name": "ColorGreyLight2", "code": "#C7C7C7", "opacity": 1 },
+                { "name": "ColorGreyLight3", "code": "#E1E1E1", "opacity": 1 },
+                { "name": "ColorGreyLight4", "code": "#EFEFEF", "opacity": 1 },
+                { "name": "ColorWhite", "code": "#FFFFFF", "opacity": 1 }
+            ]
+        },
+        {
+            "name": "Visualization",
+            "colors": 
+            [
+                { "name": "ColorDark1_100", "code": "#002338", "opacity": 1 },
+                { "name": "ColorDark1_75", "code": "#002338", "opacity": 0.75 },
+                { "name": "ColorDark2_100", "code": "#225473", "opacity": 1 },
+                { "name": "ColorDark2_75", "code": "#225473", "opacity": 0.75 },
+                { "name": "ColorDefault_100", "code": "#005B94", "opacity": 1 },
+                { "name": "ColorDefault_75", "code": "#005B94", "opacity": 0.75 },
+                { "name": "ColorLight2_100", "code": "#0071B7", "opacity": 1 },
+                { "name": "ColorLight2_75", "code": "#0071B7", "opacity": 0.75 },
+                { "name": "ColorLight1_100", "code": "#3F99D1", "opacity": 1 },
+                { "name": "ColorLight1_75", "code": "#3F99D1", "opacity": 0.75 },
+                { "name": "ColorLight0_100", "code": "#79D2FA", "opacity": 1 },
+                { "name": "ColorLight0_75", "code": "#79D2FA", "opacity": 0.75 }
+            ]
+        },
+        {
+            "name": "Signal Colors",
+            "colors": 
+            [
+                { "name": "ColorSuccess", "code": "#026331", "opacity": 1 },
+                { "name": "ColorSuccessLight", "code": "#008D45", "opacity": 1 },
+                { "name": "ColorError", "code": "#6D090C", "opacity": 1 },
+                { "name": "ColorErrorLight", "code": "#BC272D", "opacity": 1 },
+                { "name": "ColorCalibration", "code": "#FFAE18", "opacity": 1 },
+                { "name": "ColorCalibrationLight", "code": "#FFFFCC", "opacity": 1 }
+            ]
+        }
+    ]
+}

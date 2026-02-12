@@ -13,17 +13,17 @@ namespace ExampleWPF.ViewModels;
 public class ServerViewModel : BindableBase, IDisposable
 {
     private readonly ServerConnection _server;
-    
+
     public string ServerAddress => _server.ServerAddress;
     public bool IsConnected => _server.IsConnected;
     public bool IsDisconnected => !IsConnected;
-    
+
     public int FrameNumber{ get; private set; }
-    
+
     public int NumTouches { get; private set; }
     public ICommand ConnectCommand { get; private set; }
     public ICommand DisconnectCommand { get; private set; }
-    
+
     public ServerViewModel()
     {
         _server = ContainerLocator.Current.Resolve<ServerConnection>();
@@ -54,18 +54,18 @@ public class ServerViewModel : BindableBase, IDisposable
         _server.Disconnect();
         RaisePropertyChanged(nameof(IsConnected));
         RaisePropertyChanged(nameof(IsDisconnected));
-        
+
         _server.ClientInstance.NewDataReceived -= UpdateServerInfo;
 
         FrameNumber = 0;
         NumTouches = 0;
-        
+
         RaisePropertyChanged(nameof(FrameNumber));
         RaisePropertyChanged(nameof(NumTouches));
     }
 
     public void Dispose()
     {
-        Disconnect();           
+        Disconnect();
     }
 }

@@ -1,22 +1,18 @@
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { MockPanelHeaderComponent } from 'src/app/elements/panel-header/panel-header.component.mock';
 import { LogService } from 'src/app/log/log.service';
 import { PointCloudService } from 'src/shared/services/point-cloud.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { TrackingService } from 'src/shared/services/tracking.service';
-
 import { PointCloudComponent } from './point-cloud.component';
-import { MockValueSliderComponent } from 'src/app/elements/value-slider/value-slider.mock';
-import { MockOptionCheckboxComponent } from 'src/app/elements/option-checkbox/option-checkbox.component.mock';
-import { SettingsGroupComponent } from 'src/app/elements/settings-group/settings-group.component';
 import { DEFAULT_SETTINGS, DepthCameraState, Interaction, Point3, TrackingConfigState } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, MockPanelHeaderComponent, MockOptionCheckboxComponent, MockSettingsGroupComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
 
-const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService', 
+const trackingService = jasmine.createSpyObj<TrackingService>('fakeTrackingService',
   [
     'getStatus'
   ]
@@ -34,13 +30,13 @@ const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessin
   ]
 );
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService', 
+const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
   [
     'getSettings'
   ]
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', 
+const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
     'sendErrorLog'
   ]
@@ -50,23 +46,23 @@ let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
 
 const state: TrackingConfigState = {
-  isCameraSelected: true, 
-  selectedCameraName: 'TestCamera', 
-  selectedConfigurationName: 'TestConfig', 
+  isCameraSelected: true,
+  selectedCameraName: 'TestCamera',
+  selectedConfigurationName: 'TestConfig',
   depthCameraStateName: DepthCameraState[DepthCameraState.Streaming]
 };
 
 const dummyPoints = new Array<Point3>();
 
-for (let i = 0; i < 100; i++) {  
+for (let i = 0; i < 100; i++) {
   let pt = {
-    x: i, 
-    y: -i, 
-    z: i + (1/i), 
-    isFiltered: i < 10 || i > 90, 
+    x: i,
+    y: -i,
+    z: i + (1/i),
+    isFiltered: i < 10 || i > 90,
     isValid: i % 2 == 0
   };
-  
+
   dummyPoints.push(pt);
 };
 
@@ -77,34 +73,43 @@ describe('PointCloudComponent', () => {
   beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ 
-        PointCloudComponent,
+    imports: [FormsModule,
+        PointCloudComponent],
+    providers: [
+        {
+            provide: TrackingService, useValue: trackingService
+        },
+        {
+            provide: PointCloudService, useValue: pointCloudService
+        },
+        {
+            provide: ProcessingService, useValue: processingService
+        },
+        {
+            provide: SettingsService, useValue: settingsService
+        },
+        {
+            provide: LogService, useValue: logService
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    })
+    .overrideComponent(PointCloudComponent, {
+      remove: { imports: [
+        PanelHeaderComponent,
+        ValueSliderComponent,
+        OptionCheckboxComponent,
+        SettingsGroupComponent,
+      ] },
+      add: { imports: [
         MockPanelHeaderComponent,
         MockValueSliderComponent,
         MockOptionCheckboxComponent,
-        SettingsGroupComponent ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
-        {
-          provide: TrackingService, useValue: trackingService
-        },
-        {
-          provide: PointCloudService, useValue: pointCloudService
-        },
-        {
-          provide: ProcessingService, useValue: processingService
-        },
-        {
-          provide: SettingsService, useValue: settingsService
-        },
-        {
-          provide: LogService, useValue: logService
-        }
-      ]
+        MockSettingsGroupComponent,
+       ] }
     })
+
     .compileComponents();
     })
   );
@@ -113,7 +118,7 @@ describe('PointCloudComponent', () => {
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
-    
+
     fixture = TestBed.createComponent(PointCloudComponent);
     component = fixture.componentInstance;
 
@@ -129,7 +134,7 @@ describe('PointCloudComponent', () => {
 
   afterEach(() => {
     pointCloudService.getPointCloud.calls.reset();
-    processingService.getInteractions.calls.reset(); 
+    processingService.getInteractions.calls.reset();
     trackingService.getStatus.calls.reset();
     settingsService.getSettings.calls.reset();
     logService.sendErrorLog.calls.reset();
@@ -158,7 +163,7 @@ describe('PointCloudComponent', () => {
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
-  it('should create a point cloud with the given points', async () => {    
+  it('should create a point cloud with the given points', async () => {
 
     pointCloudService.getPointCloud.and.returnValue(of(
       dummyPoints
@@ -168,7 +173,7 @@ describe('PointCloudComponent', () => {
     component.livePreviewChanged();
 
     fixture.detectChanges();
-    
+
     expect(component.numFramesReceived).toBe(1);
 
     expect(component['isPointCloudInitialized']).toBeTrue();
@@ -178,20 +183,20 @@ describe('PointCloudComponent', () => {
 
     for (var i = 0; i < dummyPoints.length; i++) {
       let n = i*3;
-      
+
       let pt = dummyPoints[i];
 
       expect(component['points'].geometry?.attributes?.position?.array[n]).toBeCloseTo(pt.x * 10, 4);
       expect(component['points'].geometry?.attributes?.position?.array[n+1]).toBeCloseTo(pt.y * -10, 4);
       expect(component['points'].geometry?.attributes?.position?.array[n+2]).toBeCloseTo(pt.z * 10, 4);
 
-      
+
       if (pt.isFiltered) {
         expect(component['points'].geometry?.attributes?.color?.array[n]).toBe(1);
         expect(component['points'].geometry?.attributes?.color?.array[n+1]).toBe(0);
         expect(component['points'].geometry?.attributes?.color?.array[n+2]).toBe(0);
       }
-      
+
       // TODO: test if color are set appropriately (need to specify distances accordingly...)
 
       expect(logService.sendErrorLog).not.toHaveBeenCalled();
@@ -208,12 +213,12 @@ describe('PointCloudComponent', () => {
 
     component.livePreview = true;
     component.livePreviewChanged();
-    
+
     fixture.detectChanges();
 
     expect(pointCloudService.getPointCloud).toHaveBeenCalledTimes(1);
 
-    expect(component.numFramesReceived).toBe(3);    
+    expect(component.numFramesReceived).toBe(3);
 
     expect(component['points'].geometry?.attributes?.position?.array[0]).toBeCloseTo(100, 4);
     expect(component['points'].geometry?.attributes?.position?.array[1]).toBeCloseTo(-110, 4);
@@ -221,11 +226,11 @@ describe('PointCloudComponent', () => {
   });
 
   it('should not update point cloud when preview is toggled off', async() => {
-    
+
     let obs = new BehaviorSubject(new Array<Point3>);
 
     pointCloudService.getPointCloud.and.returnValue(obs);
-    
+
     fixture.detectChanges();
 
     expect(pointCloudService.getPointCloud).toHaveBeenCalledTimes(1);
@@ -243,7 +248,7 @@ describe('PointCloudComponent', () => {
       [{x: 4, y: 5, z: 6, isValid: true, isFiltered: false}, {x: 7, y: 8, z: 9, isValid: true, isFiltered: false}],
     );
 
-    obs.next([{x: 10, y: 11, z: 12, isValid: true, isFiltered: false }]);   
+    obs.next([{x: 10, y: 11, z: 12, isValid: true, isFiltered: false }]);
 
     // ? should this not be 2 ?
     expect(component.numFramesReceived).toBe(3);
@@ -289,18 +294,18 @@ describe('PointCloudComponent', () => {
 
   });
 
-  it('should create interactions when service emits new values', async() => {    
+  it('should create interactions when service emits new values', async() => {
     processingService.getInteractions.and.returnValue(of([
-      { 
-        touchId: 0, 
+      {
+        touchId: 0,
         position: {x: 1, y: 2, z: 3, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
         confidence: 10,
         time: 123456
        },
-       { 
-        touchId: 1, 
+       {
+        touchId: 1,
         position: { x: 4, y: 5, z: 6, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
@@ -312,7 +317,7 @@ describe('PointCloudComponent', () => {
 
     component.livePreview = true;
     component.livePreviewChanged();
-    
+
     fixture.detectChanges();
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
@@ -320,35 +325,35 @@ describe('PointCloudComponent', () => {
     expect(component.numFramesReceived).toBe(0);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(2);   
-    
+    expect(component['interactions']).toHaveSize(2);
+
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
-  
+
 
   it('should update interactions when service emits new values', async() => {
     let obs = new BehaviorSubject(new Array<Interaction>);
-    
+
     processingService.getInteractions.and.returnValue(obs);
 
     component.livePreview = true;
-    component.livePreviewChanged();    
-    
+    component.livePreviewChanged();
+
     fixture.detectChanges();
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
 
     obs.next([
-      { 
-        touchId: 0, 
+      {
+        touchId: 0,
         position: {x: 1, y: 2, z: 3, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
         confidence: 10,
         time: 123456
        },
-       { 
-        touchId: 1, 
+       {
+        touchId: 1,
         position: { x: 4, y: 5, z: 6, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
@@ -361,7 +366,7 @@ describe('PointCloudComponent', () => {
     expect(component.numFramesReceived).toBe(0);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(2); 
+    expect(component['interactions']).toHaveSize(2);
 
     obs.next([]);
 
@@ -369,8 +374,8 @@ describe('PointCloudComponent', () => {
     expect(component['interactions']).toHaveSize(0);
 
     obs.next([
-      { 
-        touchId: 0, 
+      {
+        touchId: 0,
         position: {x: 1, y: 2, z: 3, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
@@ -390,27 +395,27 @@ describe('PointCloudComponent', () => {
 
   it('should not update interactions when live preview is toggled off', async() => {
     let obs = new BehaviorSubject(new Array<Interaction>);
-    
+
     processingService.getInteractions.and.returnValue(obs);
 
     component.livePreview = true;
     component.livePreviewChanged();
-    
+
     fixture.detectChanges();
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
 
     obs.next([
-      { 
-        touchId: 0, 
+      {
+        touchId: 0,
         position: {x: 1, y: 2, z: 3, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
         confidence: 10,
         time: 123456
       },
-      { 
-        touchId: 1, 
+      {
+        touchId: 1,
         position: { x: 4, y: 5, z: 6, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
@@ -423,17 +428,17 @@ describe('PointCloudComponent', () => {
     expect(component.numFramesReceived).toBe(0);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(2); 
+    expect(component['interactions']).toHaveSize(2);
 
     component.livePreview = false;
-    component.livePreviewChanged();    
-  
+    component.livePreviewChanged();
+
     expect(component['interactions']).toBeDefined();
     expect(component['interactions']).toHaveSize(0);
 
     obs.next([
-      { 
-        touchId: 0, 
+      {
+        touchId: 0,
         position: {x: 1, y: 2, z: 3, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
@@ -446,27 +451,27 @@ describe('PointCloudComponent', () => {
     expect(component['interactions']).toHaveSize(0);
 
     component.livePreview = true;
-    component.livePreviewChanged(); 
+    component.livePreviewChanged();
 
     obs.next([
-      { 
-        touchId: 0, 
+      {
+        touchId: 0,
         position: {x: 1, y: 2, z: 3, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
         confidence: 10,
         time: 123456
       },
-      { 
-        touchId: 1, 
+      {
+        touchId: 1,
         position: { x: 4, y: 5, z: 6, isValid: true, isFiltered: false},
         type: 0,
         extremumDescription: { type: 0, numFittingPoints: 10, percentageFittingPoints: 1 },
         confidence: 0,
         time: 656565989
       },
-      { 
-        touchId: 2, 
+      {
+        touchId: 2,
         position: { x: 7, y: 8, z: 9, isValid: true, isFiltered: false},
         type: 1,
         extremumDescription: { type: 1, numFittingPoints: 10, percentageFittingPoints: 1 },
@@ -489,19 +494,19 @@ describe('PointCloudComponent', () => {
     let obs = new BehaviorSubject(new Array<Point3>);
 
     pointCloudService.getPointCloud.and.returnValue(obs);
-    
+
     component.livePreview = true;
     component.livePreviewChanged();
-    
+
     fixture.detectChanges();
 
     expect(pointCloudService.getPointCloud).toHaveBeenCalledTimes(1);
-    
+
     obs.next([{x: 1, y: 2, z: 3, isValid: true, isFiltered: false}]);
     obs.next([{x: 4, y: 5, z: 6, isValid: true, isFiltered: false}, {x: 7, y: 8, z: 9, isValid: true, isFiltered: false}]);
-    obs.next([{x: 10, y: 11, z: 12, isValid: true, isFiltered: false }]);    
+    obs.next([{x: 10, y: 11, z: 12, isValid: true, isFiltered: false }]);
 
-    expect(component.numFramesReceived).toBe(3); 
+    expect(component.numFramesReceived).toBe(3);
 
     component.livePreviewEnabled = false;
 
@@ -521,10 +526,10 @@ describe('PointCloudComponent', () => {
 
     component.livePreview = true;
     component.livePreviewChanged();
-    
+
     obs.next([{x: 1, y: 2, z: 3, isValid: true, isFiltered: false}]);
 
-    // strange: does start with 2 (?) 
+    // strange: does start with 2 (?)
     expect(component.numFramesReceived).toBe(2);
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
@@ -554,13 +559,13 @@ describe('PointCloudComponent', () => {
   });
 
   it('should catch errors and log them correctly: status and settings', async () => {
-    
+
     const errorSettings = 'TestError: settingsService.getSettings';
     settingsService.getSettings.and.returnValue(throwError(errorSettings));
 
     const errorStatus = 'TestError: trackingService.getStatus';
     trackingService.getStatus.and.returnValue(throwError(errorStatus));
-   
+
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -569,8 +574,8 @@ describe('PointCloudComponent', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorStatus);
   });
 
-  it('should catch errors and log them correctly: pointCloud and interactions', async () => {   
-    
+  it('should catch errors and log them correctly: pointCloud and interactions', async () => {
+
     const errorPointCloud = 'TestError: pointCloudService.getPointCloud';
     pointCloudService.getPointCloud.and.returnValue(throwError(errorPointCloud));
 

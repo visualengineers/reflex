@@ -1,0 +1,38 @@
+@use 'reflex' as reflex;
+
+.hover-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: reflex.$color-white;
+  border: 1px solid reflex.$color-primary;
+  padding: 10px;
+  z-index: 1000;
+
+  .settings__item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+
+    label {
+      margin-right: 10px;
+    }
+
+    input {
+      flex-grow: 1;
+    }
+  }
+
+  p {
+    color: reflex.$color-primary;
+  }
+
+  .settings__item input {
+    border: none;
+    border-bottom: 1px solid black;
+    background: none;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+  }
+}

@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
 import { BehaviorSubject, NEVER, Observable, Subscription, combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
@@ -8,7 +10,11 @@ import { WebSocketService } from 'src/shared/services/webSocket.service';
 @Component({
   selector: 'app-depth-image',
   templateUrl: './depth-image.component.html',
-  styleUrls: ['./depth-image.component.scss']
+  styleUrls: ['./depth-image.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
 
@@ -25,20 +31,20 @@ export class DepthImageComponent implements OnInit, OnDestroy {
   public livePreview = false;
   public numFramesReceived = 0;
 
-  private _fullScreen = false;
+  private pfullScreen = false;
 
   private readonly livePreview$ = new BehaviorSubject<boolean>(false);
 
   private readonly shouldShowLiveView$: Observable<boolean>;
 
-  private _livePreviewEnabled = false;
+  private plivePreviewEnabled = false;
 
   private depthImageSubscription?: Subscription;
 
-  private readonly _address = 'depthImage';
+  private readonly address = 'depthImage';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _socket?: Subject<MessageEvent>;
+  private socket?: Subject<MessageEvent>;
 
   // eslint-disable-next-line new-cap
   public constructor(@Inject('BASE_URL') private readonly baseUrl: string, private readonly angularRenderer: Renderer2, private readonly wsService: WebSocketService, private readonly trackingService: TrackingService) {
@@ -62,29 +68,29 @@ export class DepthImageComponent implements OnInit, OnDestroy {
   }
 
   public get fullScreen(): boolean {
-    return this._fullScreen;
+    return this.pfullScreen;
   }
 
   public set fullScreen(fs: boolean) {
-    this._fullScreen = fs;
-    this.fullScreenChanged.emit(this._fullScreen);
+    this.pfullScreen = fs;
+    this.fullScreenChanged.emit(this.pfullScreen);
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public get livePreviewEnabled(): boolean {
-    return this._livePreviewEnabled;
+    return this.plivePreviewEnabled;
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   @Input()
   public set livePreviewEnabled(value: boolean) {
-    this._livePreviewEnabled = value;
+    this.plivePreviewEnabled = value;
 
     if (!value) {
       this.numFramesReceived = 0;
     }
 
-    if (!this._livePreviewEnabled && this.livePreview) {
+    if (!this.plivePreviewEnabled && this.livePreview) {
       this.livePreview = false;
       this.livePreviewChanged();
     }
@@ -140,8 +146,8 @@ export class DepthImageComponent implements OnInit, OnDestroy {
   }
 
   private startSocket(): Observable<MessageEvent> {
-    this._socket = this.wsService.createSocket({
-      url: `${this.baseUrl}${this._address}`,
+    this.socket = this.wsService.createSocket({
+      url: `${this.baseUrl}${this.address}`,
       deserializer: (value) => value
     });
 
@@ -150,14 +156,14 @@ export class DepthImageComponent implements OnInit, OnDestroy {
     //   deserializer: (value) => value
     // });
 
-    this._socket.next(new MessageEvent('message', { data: 'Start' }));
+    this.socket.next(new MessageEvent('message', { data: 'Start' }));
 
     return this.wsService.getResponseStream();
   }
 
   private stopSocket(): void {
-    if (this._socket) {
-      this._socket.complete();
+    if (this.socket) {
+      this.socket.complete();
     }
   }
 
@@ -168,7 +174,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
     this.imageData = result.data as string;
 
-    this._socket?.next(new MessageEvent('message', { data: 'continue' }));
+    this.socket?.next(new MessageEvent('message', { data: 'continue' }));
   }
 
 }

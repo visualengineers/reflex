@@ -1,17 +1,17 @@
-@import 'abstracts/variables';
+@use 'reflex' as reflex;
 
-.measure {    
+.measure {
 
     &__visualization {
-        margin-top: $default-margin;
+        margin-top: reflex.$default-margin;
         width: 100%;
         height: 20vh;
 
-        border: 1px solid $color-grey-light-3;
+        border: 1px solid reflex.$color-grey-light-3;
 
         position: relative;
 
-        background-color: $color-white;
+        background-color: reflex.$color-white;
 
         z-index: 200;
     }

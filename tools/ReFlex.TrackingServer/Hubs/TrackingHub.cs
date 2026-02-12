@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using TrackingServer.Data.Tracking;
+using ReFlex.Server.Data.Tracking;
 using TrackingServer.Model;
 
 namespace TrackingServer.Hubs
@@ -11,7 +10,7 @@ namespace TrackingServer.Hubs
         public static readonly string TrackingStateGroup = "TrackingState";
         public static readonly string RecordingGroup = "RecordingState";
 
-        public TrackingHub(TrackingService trackingService) 
+        public TrackingHub(TrackingService trackingService)
             : base(trackingService, TrackingStateGroup)
         {
             _trackingService = trackingService;

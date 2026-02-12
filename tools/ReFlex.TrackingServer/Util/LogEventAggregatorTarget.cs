@@ -1,13 +1,12 @@
 ﻿using NLog;
 using NLog.Targets;
-using Prism.Events;
 
 namespace TrackingServer.Util
 {
     [Target("LogEventAggregator")]
     public sealed class LogEventAggregatorTarget : TargetWithLayout
     {
-        private readonly IEventAggregator _evtAggregator;
+        private readonly IEventAggregator? _evtAggregator;
 
         public LogEventAggregatorTarget()
         {
@@ -15,7 +14,7 @@ namespace TrackingServer.Util
             Name = "LogEventAggregator";
         }
 
-        public LogEventAggregatorTarget(IEventAggregator evtAggregator) : this()
+        public LogEventAggregatorTarget(IEventAggregator? evtAggregator) : this()
         {
             _evtAggregator = evtAggregator;
         }

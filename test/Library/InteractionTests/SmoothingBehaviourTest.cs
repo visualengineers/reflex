@@ -57,8 +57,8 @@ namespace InteractionTests
                 interaction.Time = DateTime.Now.Ticks;
 
                 var sourceInteractions = new List<Interaction> {interaction};
-                
-                Assert.AreEqual(cache.Count, _smoothing.InteractionsFramesCache.Length);
+
+                Assert.That(_smoothing.InteractionsFramesCache.Length, Is.EqualTo(cache.Count));
                 ValidateCache(cache);
                 
                 var result = _smoothing.Update(sourceInteractions);
@@ -100,8 +100,11 @@ namespace InteractionTests
 
            ValidateCache(cache);
 
-           Assert.AreEqual(0, _smoothing.CurrentMaxId);
-           Assert.AreEqual(0, _smoothing.CurrentFrameId);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_smoothing.CurrentMaxId, Is.EqualTo(0));
+                Assert.That(_smoothing.CurrentFrameId, Is.EqualTo(0));
+            });
         }
 
         
@@ -133,11 +136,11 @@ namespace InteractionTests
                 var interactions = sourceInteractions;
                 
                 CheckResult(result, interactionsCount, expectedFrameId, confidence, touchIds, expectedMaxId, cacheSize);
-                
-                Assert.IsTrue(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => frame.Interactions.Count == interactionsCount));
-                
-                Assert.IsTrue(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => 
-                    ValidateInteractionInFrame(interactions[0], new List<Interaction> {frame.Interactions[0]})));
+
+                Assert.That(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => frame.Interactions.Count == interactionsCount), Is.True);
+
+                Assert.That(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => 
+                    ValidateInteractionInFrame(interactions[0], new List<Interaction> {frame.Interactions[0]})), Is.True);
                 
            }
         }
@@ -195,14 +198,17 @@ namespace InteractionTests
                     check2 = Tuple.Create(sourceInteractions[1], map1);
                 }
 
-                Assert.IsTrue(ValidateInteractionMapping(check1.Item1, check1.Item2));
-                Assert.IsTrue(ValidateInteractionMapping(check2.Item1, check2.Item2));
-                
+                Assert.Multiple(() =>
+                {
+                    Assert.That(ValidateInteractionMapping(check1.Item1, check1.Item2), Is.True);
+                    Assert.That(ValidateInteractionMapping(check2.Item1, check2.Item2), Is.True);
 
-                Assert.IsTrue(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => frame.Interactions.Count == interactionsCount));
-                
-                Assert.IsTrue(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => 
-                    ValidateInteractionInFrame(interactions[0], new List<Interaction> {frame.Interactions[0]})));
+
+                    Assert.That(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => frame.Interactions.Count == interactionsCount), Is.True);
+
+                    Assert.That(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame =>
+                        ValidateInteractionInFrame(interactions[0], new List<Interaction> { frame.Interactions[0] })), Is.True);
+                });
             }
         }
         
@@ -246,10 +252,13 @@ namespace InteractionTests
                 check1 = Tuple.Create(interaction1, map2);
                 check2 = Tuple.Create(interaction2, map1);
             }
-            
-            Assert.IsTrue(ValidateInteractionMapping(check1.Item1, check1.Item2));
-            Assert.IsTrue(ValidateInteractionMapping(check2.Item1, check2.Item2));
-            
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(check1.Item1, check1.Item2), Is.True);
+                Assert.That(ValidateInteractionMapping(check2.Item1, check2.Item2), Is.True);
+            });
+
             var result2 = _smoothing.Update(new List<Interaction>());
             
             CheckResult(result2, 2, 2, confidence, touchIds, 2, 2);
@@ -268,10 +277,13 @@ namespace InteractionTests
                 check1 = Tuple.Create(interaction1, map2);
                 check2 = Tuple.Create(interaction2, map1);
             }
-            
-            Assert.IsTrue(ValidateInteractionMapping(check1.Item1, check1.Item2));
-            Assert.IsTrue(ValidateInteractionMapping(check2.Item1, check2.Item2));
-           
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(check1.Item1, check1.Item2), Is.True);
+                Assert.That(ValidateInteractionMapping(check2.Item1, check2.Item2), Is.True);
+            });
+
         }
         
         /// <summary>
@@ -298,8 +310,8 @@ namespace InteractionTests
             var touchIds = new List<int> {0};
             
             CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+
+            Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
             
             var data2 = GetTestData(new[]{3});
 
@@ -310,10 +322,13 @@ namespace InteractionTests
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
             
-            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);
 
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction2, result.Interactions[1]), Is.True);
+            });
 
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
@@ -324,10 +339,13 @@ namespace InteractionTests
             touchIds = new List<int> {0, 1, 2};
             
             CheckResult(result, 3, 3, confidence, touchIds, 3, 3);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[2]));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction2, result.Interactions[1]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction3, result.Interactions[2]), Is.True);
+            });
         }
 
         /// <summary>
@@ -354,8 +372,8 @@ namespace InteractionTests
             var touchIds = new List<int> {0};
             
             CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+
+            Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
             
             var data2 = GetTestData(new[]{3});
 
@@ -366,10 +384,13 @@ namespace InteractionTests
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
             
-            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);
 
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction2, result.Interactions[1]), Is.True);
+            });
 
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
@@ -381,9 +402,12 @@ namespace InteractionTests
             touchIds = new List<int> {1, 2};
             
             CheckResult(result, 2, 3, confidence, touchIds, 3, 3);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[1]));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction2, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction3, result.Interactions[1]), Is.True);
+            });
         }
 
         /// <summary>
@@ -410,8 +434,8 @@ namespace InteractionTests
             var touchIds = new List<int> {0};
             
             CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+
+            Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
             
             var data2 = GetTestData(new[]{3});
 
@@ -422,10 +446,13 @@ namespace InteractionTests
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
             
-            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);
 
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction2, result.Interactions[1]), Is.True);
+            });
 
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
@@ -437,9 +464,12 @@ namespace InteractionTests
             touchIds = new List<int> {0, 1};
             
             CheckResult(result, 2, 3, confidence, touchIds, 2, 3);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[1]));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction3, result.Interactions[1]), Is.True);
+            });
         }
 
         /// <summary>
@@ -466,8 +496,8 @@ namespace InteractionTests
             var touchIds = new List<int> {0};
             
             CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
+
+            Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
             
             var data2 = GetTestData(new[]{3});
 
@@ -478,10 +508,13 @@ namespace InteractionTests
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
             
-            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);            
+            CheckResult(result, 2, 2, confidence, touchIds, 2, 2);
 
-            Assert.IsTrue(ValidateInteractionMapping(interaction1, result.Interactions[0]));
-            Assert.IsTrue(ValidateInteractionMapping(interaction2, result.Interactions[1]));
+            Assert.Multiple(() =>
+            {
+                Assert.That(ValidateInteractionMapping(interaction1, result.Interactions[0]), Is.True);
+                Assert.That(ValidateInteractionMapping(interaction2, result.Interactions[1]), Is.True);
+            });
 
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
@@ -494,8 +527,8 @@ namespace InteractionTests
             touchIds = new List<int> {1};
             
             CheckResult(result, 1, 3, confidence, touchIds, 2, 3);
-            
-            Assert.IsTrue(ValidateInteractionMapping(interaction3, result.Interactions[0]));
+
+            Assert.That(ValidateInteractionMapping(interaction3, result.Interactions[0]), Is.True);
         }
         
         /// <summary>
@@ -535,8 +568,8 @@ namespace InteractionTests
             CheckResult(result2, 1, 2, confidence, touchIds, 1, 2);
 
             sourceInteractions = GetTestData();
-            
-            Assert.AreEqual(-1, sourceInteractions[0].TouchId);
+
+            Assert.That(sourceInteractions[0].TouchId, Is.EqualTo(-1));
             
             var result3 = _smoothing.Update(sourceInteractions);
             
@@ -567,8 +600,8 @@ namespace InteractionTests
             }
             
             sourceInteractions = GetTestData();
-            
-            Assert.AreEqual(-1, sourceInteractions[0].TouchId);
+
+            Assert.That(sourceInteractions[0].TouchId, Is.EqualTo(-1));
             
             var result3 = _smoothing.Update(sourceInteractions);
             
@@ -632,33 +665,44 @@ namespace InteractionTests
             int maxId,
             int cacheSize)
         {
-            Assert.AreEqual(frameId, result.FrameId);
-            Assert.AreEqual(interactionsCount, result.Interactions.Count);
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.FrameId, Is.EqualTo(frameId));
+                Assert.That(result.Interactions.Count, Is.EqualTo(interactionsCount));
+            });
 
             for (var i = 0; i < result.Interactions.Count; i++)
             {
                 var interaction = result.Interactions[i];
-                Assert.AreEqual(confidence[i], interaction.Confidence);
-                Assert.IsNotNull(result.Interactions.FirstOrDefault(inter => inter.TouchId == touchIds[i]));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(interaction.Confidence, Is.EqualTo(confidence[i]));
+                    Assert.That(result.Interactions.FirstOrDefault(inter => inter.TouchId == touchIds[i]), Is.Not.Null);
+                });
             }
 
+            Assert.Multiple(() =>
+            {
+                Assert.That(_smoothing.InteractionsFramesCache.Length, Is.EqualTo(cacheSize));
+                Assert.That(_smoothing.CurrentFrameId, Is.EqualTo(frameId));
+                Assert.That(_smoothing.CurrentMaxId, Is.EqualTo(maxId));
 
-            Assert.AreEqual(cacheSize, _smoothing.InteractionsFramesCache.Length);
-            Assert.AreEqual(frameId, _smoothing.CurrentFrameId);
-            Assert.AreEqual(maxId, _smoothing.CurrentMaxId);
+                Assert.That(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => frame.FrameId > 0), Is.True);
+            });
 
-            Assert.IsTrue(_smoothing.InteractionsFramesCache.ToList().TrueForAll(frame => frame.FrameId > 0));
-            
         }
         
         private bool ValidateCache(List<InteractionFrame> interactionFrames)
         {
             var cache = _smoothing.InteractionsFramesCache;
-            
-            Assert.AreEqual(0, cache.GroupBy(item => item.FrameId).Count(grp => grp.Count() > 1)); 
-            Assert.AreEqual(interactionFrames.Count, _smoothing.InteractionsFramesCache.Length);
 
-            Assert.IsTrue(interactionFrames.TrueForAll(frame => ValidateInteractionFrame(frame, cache)));
+            Assert.Multiple(() =>
+            {
+                Assert.That(cache.GroupBy(item => item.FrameId).Count(grp => grp.Count() > 1), Is.EqualTo(0));
+                Assert.That(_smoothing.InteractionsFramesCache.Length, Is.EqualTo(interactionFrames.Count));
+
+                Assert.That(interactionFrames.TrueForAll(frame => ValidateInteractionFrame(frame, cache)), Is.True);
+            });
 
             return true;
         }
@@ -666,13 +710,16 @@ namespace InteractionTests
         private bool ValidateInteractionFrame(InteractionFrame frame, InteractionFrame[] cache)
         {
             var cached = cache.FirstOrDefault(item => item.FrameId == frame.FrameId);
-            Assert.IsNotNull(cached);
-                
-            Assert.AreEqual(frame.Interactions.Count, cached.Interactions.Count);
-            Assert.AreEqual(0, cached.Interactions.GroupBy(interaction => interaction.TouchId).Count(grp => grp.Count() > 1));
-            Assert.AreEqual(0, frame.Interactions.GroupBy(interaction => interaction.TouchId).Count(grp => grp.Count() > 1));
-                
-            Assert.IsTrue(frame.Interactions.TrueForAll(interaction => ValidateInteractionInFrame(interaction, cached.Interactions)));
+            Assert.That(cached, Is.Not.Null);
+
+            Assert.That(cached.Interactions.Count, Is.EqualTo(frame.Interactions.Count));
+            Assert.Multiple(() =>
+            {
+                Assert.That(cached.Interactions.GroupBy(interaction => interaction.TouchId).Count(grp => grp.Count() > 1), Is.EqualTo(0));
+                Assert.That(frame.Interactions.GroupBy(interaction => interaction.TouchId).Count(grp => grp.Count() > 1), Is.EqualTo(0));
+
+                Assert.That(frame.Interactions.TrueForAll(interaction => ValidateInteractionInFrame(interaction, cached.Interactions)), Is.True);
+            });
 
             return true;
         }
@@ -681,21 +728,24 @@ namespace InteractionTests
         {
             var cachedInteraction =
                 cachedInteractions.FirstOrDefault(item => item.TouchId == interaction.TouchId);
-                    
-            Assert.IsTrue(ValidateInteractionMapping(interaction, cachedInteraction));
+
+            Assert.That(ValidateInteractionMapping(interaction, cachedInteraction), Is.True);
 
             return true;
         }
 
         private bool ValidateInteractionMapping(Interaction interaction, Interaction cachedInteraction)
         {
-            Assert.IsNotNull(cachedInteraction);
-                    
-            Assert.IsTrue(Math.Abs(interaction.Position.X - cachedInteraction.Position.X) < 1f);
-            Assert.IsTrue(Math.Abs(interaction.Position.Y - cachedInteraction.Position.Y) < 1f);
-            Assert.IsTrue(Math.Abs(interaction.Position.Z - cachedInteraction.Position.Z) < 0.01f);
+            Assert.Multiple(() =>
+            {
+                Assert.That(cachedInteraction, Is.Not.Null);
 
-            Assert.AreEqual(interaction.Type, cachedInteraction.Type);
+                Assert.That(Math.Abs(interaction.Position.X - cachedInteraction.Position.X) < 1f, Is.True);
+                Assert.That(Math.Abs(interaction.Position.Y - cachedInteraction.Position.Y) < 1f, Is.True);
+                Assert.That(Math.Abs(interaction.Position.Z - cachedInteraction.Position.Z) < 0.01f, Is.True);
+            });
+
+            Assert.That(cachedInteraction.Type, Is.EqualTo(interaction.Type));
             
             // TODO: confidence and time cannot be asserted this easy - check anywhere else ? 
 

@@ -1,0 +1,26 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Controls: Text Input</h2>
+  <p>UpdatedValue: {{address}} ({{numChanges}})</p>
+</div>
+<p class="margin-bottom-default">
+  Wrapper for text input field including label and short descriptive text.
+</p>
+<app-value-text class="settings__item"
+    elementId="network-address-text" elementTitle="Address">
+    <input inputField class="form-control form-control-sm" type="text"
+        placeholder="http://127.0.0.1" [(ngModel)]="address"
+        name="network-address-text" id="network-address-text" (change)="updateAddress()">
+    <p description>Specifies the IP Address for the broadcasting server.</p>
+</app-value-text>
+<div class="content__body margin-bottom-default">
+  <app-settings-group elementTitle="Additional Info" toggleId="textbox_info">
+    <ul>
+      <li>use with class <code>settings_item</code></li>
+      <li><code>elementTitle</code> sets the label</li>
+      <li><code>elementId</code> sets id and name of the input element</li>
+      <li>add custom input element inside</li>
+      <li>the description next to the slider is wrapped in a separate paragraph element with <code>description</code> attribute</li>
+
+    </ul>
+  </app-settings-group>
+</div>

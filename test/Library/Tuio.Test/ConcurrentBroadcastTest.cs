@@ -25,6 +25,12 @@ namespace ReFlex.Core.Tuio.Test
 
             _broadcastInstance = new TuioBroadcast(_mockBuilder.Object, _sender);
         }
+        
+        [TearDown]
+        public void Dispose()
+        {
+            _broadcastInstance?.Dispose();
+        }
 
         [Test]
         public async Task CheckIsSending()
@@ -43,23 +49,23 @@ namespace ReFlex.Core.Tuio.Test
             };
             
             await _broadcastInstance.Configure(config);
-            
-            Assert.IsNotNull(_broadcastInstance.Configuration);
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
+
+            Assert.That(_broadcastInstance.Configuration, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
             
             _broadcastInstance.Broadcast(new List<Interaction>());
             
             await Task.Run(() => Thread.Sleep(1000));
-            
-            Assert.IsTrue(((BusyWaitingTuioSender)_sender).IsWaiting);
-            Assert.IsTrue(_broadcastInstance.IsSending);
+
+            Assert.That(((BusyWaitingTuioSender)_sender).IsWaiting, Is.True);
+            Assert.That(_broadcastInstance.IsSending, Is.True);
             
             ((BusyWaitingTuioSender)_sender).StopWaiting();
 
             await Task.Run(() => Thread.Sleep(1000));
-            
-            Assert.IsFalse(((BusyWaitingTuioSender)_sender).IsWaiting);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(((BusyWaitingTuioSender)_sender).IsWaiting, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
         }
         
         [Test]
@@ -79,16 +85,16 @@ namespace ReFlex.Core.Tuio.Test
             };
             
             await _broadcastInstance.Configure(config);
-            
-            Assert.IsNotNull(_broadcastInstance.Configuration);
-            Assert.IsTrue(_broadcastInstance.IsConfigured);
+
+            Assert.That(_broadcastInstance.Configuration, Is.Not.Null);
+            Assert.That(_broadcastInstance.IsConfigured, Is.True);
             
             _broadcastInstance.Broadcast(new List<Interaction>());
             
             await Task.Run(() => Thread.Sleep(1000));
-            
-            Assert.IsTrue(((BusyWaitingTuioSender)_sender).IsWaiting);
-            Assert.IsTrue(_broadcastInstance.IsSending);
+
+            Assert.That(((BusyWaitingTuioSender)_sender).IsWaiting, Is.True);
+            Assert.That(_broadcastInstance.IsSending, Is.True);
             
             ((BusyWaitingTuioSender)_sender).StopWaiting();
             
@@ -96,9 +102,9 @@ namespace ReFlex.Core.Tuio.Test
             await _broadcastInstance.Broadcast(new List<Interaction>());
 
             await Task.Run(() => Thread.Sleep(1000));
-            
-            Assert.IsFalse(((BusyWaitingTuioSender)_sender).IsWaiting);
-            Assert.IsFalse(_broadcastInstance.IsSending);
+
+            Assert.That(((BusyWaitingTuioSender)_sender).IsWaiting, Is.False);
+            Assert.That(_broadcastInstance.IsSending, Is.False);
         }
     }
 }

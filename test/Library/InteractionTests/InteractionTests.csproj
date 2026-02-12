@@ -1,24 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-
+        <TargetFramework>net8.0</TargetFramework>
+        <PackageId>ReFlex.InteractionTests</PackageId>
+        <Authors>Mathias Müller</Authors>
+        <Copyright>Copyright © 2021-2025</Copyright>
+        <Company>
+          GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+          Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+        </Company>
+        <Version>0.9.9</Version>
+        <AssemblyVersion>0.9.9</AssemblyVersion>
+        <FileVersion>0.9.9</FileVersion>
+        <Product>ReFlex.Test</Product>
+        <AssemblyName>ReFlex.InteractionTests</AssemblyName>
+        <RootNamespace>ReFlex.InteractionTests</RootNamespace>
         <IsPackable>false</IsPackable>
 
-        <Configurations>Release;Debug;CI</Configurations>
+        <Configurations>Debug;Release;CI</Configurations>
 
         <Platforms>x64;ARM64;AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.collector" Version="6.0.0">
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeCoverage" Version="17.8.0" />
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+        <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
+        <PackageReference Include="NUnit" Version="4.3.2" />
+        <PackageReference Include="NUnit.Analyzers" Version="4.7.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     </ItemGroup>
 
     <ItemGroup>

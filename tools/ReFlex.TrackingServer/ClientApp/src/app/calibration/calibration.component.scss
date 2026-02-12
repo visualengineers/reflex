@@ -1,6 +1,6 @@
-@import 'abstracts/variables';
+@use 'reflex' as reflex;
 
-.fullScreen {    
+.fullScreen {
     position: fixed;
     box-sizing: border-box;
     width: 100%;
@@ -12,111 +12,111 @@
     z-index: 10;
     margin: 0;
 
-    background-color: $color-white;
+    background-color: reflex.$color-white;
 }
 
 .border__rectangle {
     &--fill {
         position: absolute;
-        background-color: $color-grey-light-3;
+        background-color: reflex.$color-grey-light-3;
     }
     &--horizontal,
     &--vertical {
         position: absolute;
-        background: #00000000;
+        background: reflex.$color-calibration-border-background-default;
     }
-    
+
     &--horizontal {
         width: 100vw;
         left: 0;
         top: -30px;
         height: 60px;
     }
-    
+
     &--vertical {
         width: 60px;
         top: 0;
         left: -30px;
         height: 100vh;
     }
-    
+
     &--horizontal:hover,
-    &--vertical:hover {    
-        background: #00000033;
+    &--vertical:hover {
+        background: reflex.$color-calibration-border-background-hover;
     }
-    
+
     &--horizontal::before,
     &--vertical::before {
         position: relative;
-        background: $color-grey-light;
+        background: reflex.$color-grey-light;
         content:"";
         display: block;
         pointer-events: none;
     }
-    
+
     &--horizontal::before {
         top: 28.5px;
         width: 100vw;
         height: 3px;
     }
-    
+
     &--vertical::before {
         left: 28.5px;
         width: 3px;
         height: 100vh;
     }
-    
+
     &--horizontal:hover::before,
     &--vertical:hover::before {
-        background: $color-primary-light;
+        background: reflex.$color-primary-light;
     }
-    
+
 }
 
 .calibration {
-    &__background {    
+    &__background {
        // background-color: $color-grey-light-3;
         min-width: 600px;
         min-height: 600px;
     }
 
     &__body {
-        margin-bottom: $default-col-gap;
+        margin-bottom: reflex.$default-col-gap;
 
         &--values{
             display: flex;
             justify-content: space-between;
         }
-    }   
+    }
 
     &__panel {
         position: absolute;
         top: 5rem;
         left: 5rem;
         width: 36rem;
-    
+
         padding: 1.5rem;
         font-size: 80%;
-    
-        border: 1px solid $color-grey-light;
-        background-color: $color-white;
+
+        border: 1px solid reflex.$color-grey-light;
+        background-color: reflex.$color-white;
     }
-    
-    &__point--target, 
-    &__point--source, 
+
+    &__point--target,
+    &__point--source,
     &__calibratedPoint {
         position:absolute;
         border-radius: 100%;
 
-        color: $color-white;
-        
-        font-family: $font-heading;
+        color: reflex.$color-white;
+
+        font-family: reflex.$font-heading;
     }
 
     &__point {
-        &--source, 
+        &--source,
         &--target {
-            border: 1px solid $color-calibration-point-border;            
+            border: 1px solid reflex.$color-calibration-point-border;
         }
 
         &--source {
@@ -124,11 +124,11 @@
             left: -20px;
 
             width: 40px;
-            height: 40px;  
+            height: 40px;
 
             padding: 0.8rem 1.5rem;
 
-            background-color: $color-calibration-point;
+            background-color: reflex.$color-calibration-point;
         }
 
         &--target {
@@ -140,7 +140,7 @@
 
             padding: 0.3rem 1rem;
 
-            background-color: $color-success;
+            background-color: reflex.$color-success;
         }
     }
 
@@ -152,9 +152,9 @@
         width: 40px;
         height: 40px;
 
-        background-color:$color-primary;        
+        background-color: reflex.$color-primary;
 
-        border: 3px solid $color-calibration-point-border;
+        border: 3px solid reflex.$color-calibration-point-border;
 
         padding: 0.6rem 1.3rem;
     }
@@ -170,15 +170,15 @@
 
     &__main-buttons {
 
-        position: absolute;    
-        left: -14rem;        
-        margin: 2rem;    
+        position: absolute;
+        left: -14rem;
+        margin: 2rem;
     }
 
     &__values {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        column-gap: $default-col-gap;
+        column-gap: reflex.$default-col-gap;
 
         &--container {
             grid-column: span 2;

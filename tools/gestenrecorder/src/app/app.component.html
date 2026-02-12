@@ -1,0 +1,26 @@
+<div class="recorder__main__content" role="main">
+    <div class="recorder__header">
+        <div>
+            <img src="./assets/img/reflex-logo2.png" class="header__logo">
+        </div>
+        <div class="settings__button-group">
+            <button class="button" (click)="buildGesture()">Build</button>
+            <button class="button" (click)="playGesture()">&#9654;</button>
+            <button class="button" (click)="resetGesture()">&#8634;</button>
+            <div class="toggle__container">
+                <app-option-checkbox [(data)]="toggleLoopActive" elementId="first-toggle" elementTitle="Loop" ></app-option-checkbox>
+            </div>
+        </div>
+        <div class="recorder__gestureoptions">
+            <app-dropdown></app-dropdown>
+        </div>
+    </div>
+    <div class="recorder__body">
+        <app-touch-area></app-touch-area>
+    </div>
+    <div class="recorder__footer">
+        <app-pullup></app-pullup>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

@@ -1,8 +1,6 @@
-﻿using System;
-using Implementation.Interfaces;
+﻿using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Events;
 using ReFlex.Core.Networking.Util;
 using TrackingServer.Events;
@@ -16,28 +14,26 @@ namespace TrackingServer.Model
         private readonly ConfigurationManager _settingsManager;
         private readonly INetworkManager _networkManager;
         private readonly IEventAggregator _eventAggregator;
-        
+
         private NetworkInterface _type;
         private int _port;
-        
+
         private bool _isServerBroadcasting;
-        
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
+
         public NetworkInterface Type
         {
             get
             {
-                if (_networkManager != null)
-                    _type = _networkManager.Type;
-
+                _type = _networkManager.Type;
                 return _type;
             }
             set
             {
-                if (_networkManager == null || _type == value) 
+                if (_type == value)
                     return;
-                
+
                 IsServerBroadcasting = false;
                 _networkManager.Type = value;
             }
@@ -47,36 +43,22 @@ namespace TrackingServer.Model
         {
             get
             {
-                if (_networkManager != null)
-                    _port = _networkManager.Port;
-
+                _port = _networkManager.Port;
                 return _port;
             }
-            set
-            {
-                if (_networkManager != null)
-                    _networkManager.Port = value;
-            }
+            set => _networkManager.Port = value;
         }
-        
+
         public string Address
         {
-            get => _networkManager?.Address;
-            set
-            {
-                if (_networkManager != null)
-                    _networkManager.Address = value;
-            }
+            get => _networkManager.Address;
+            set => _networkManager.Address = value;
         }
-        
+
         public string Endpoint
         {
-            get => _networkManager?.Endpoint;
-            set
-            {
-                if (_networkManager != null)
-                    _networkManager.Endpoint = value;
-            }
+            get => _networkManager.Endpoint;
+            set => _networkManager.Endpoint = value;
         }
 
         public bool IsServerBroadcasting
@@ -84,21 +66,18 @@ namespace TrackingServer.Model
             get => _isServerBroadcasting;
             set
             {
-                if (_networkManager == null)
-                    return;
-
                 if (value)
                     StartServer();
                 else
                     StopServer();
 
                 _isServerBroadcasting = _networkManager.IsRunning;
-                
+
                 CurrentState.OnNext(GetState());
             }
         }
-        
-        public string State { get => CurrentState.Value; }
+
+        public string State => CurrentState.Value ?? "";
 
         public NetworkingService(ConfigurationManager settingsManager, INetworkManager networkManager,
             IEventAggregator eventAggregator, IHubContext<NetworkingHub> hubContext)
@@ -112,16 +91,16 @@ namespace TrackingServer.Model
             _eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Subscribe(LoadSettings);
 
             _eventAggregator.GetEvent<RequestServiceRestart>()?.Subscribe(StartService);
-            
+
             CurrentState.OnNext(GetState());
-            
+
             Logger.Info($"Sucessfully initialized {GetType().FullName}." );
         }
 
         public void StartService()
         {
             IsServerBroadcasting = false;
-            
+
             LoadSettings();
 
             IsServerBroadcasting = true;
@@ -131,27 +110,27 @@ namespace TrackingServer.Model
         {
             LoadSettings();
         }
-        
+
         public override void Dispose()
         {
             base.Dispose();
-            _eventAggregator?.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
-            _eventAggregator?.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
+            _eventAggregator.GetEvent<RequestSaveSettingsEvent>()?.Unsubscribe(SaveSettings);
+            _eventAggregator.GetEvent<RequestLoadSettingsEvent>()?.Unsubscribe(LoadSettings);
         }
-        
+
         private void StartServer()
         {
-            Logger.Log(LogLevel.Info, $"started Server of type {_networkManager?.Type} on address: {_networkManager?.ServerAddress}");
-            _networkManager?.Run();
+            Logger.Log(LogLevel.Info, $"started Server of type {_networkManager.Type} on address: {_networkManager.ServerAddress}");
+            _networkManager.Run();
         }
 
         private void StopServer()
         {
-            _networkManager?.Stop();
+            _networkManager.Stop();
             Logger.Log(LogLevel.Info,
-                $"stopped Server (Address: {_networkManager?.ServerAddress})");
+                $"stopped Server (Address: {_networkManager.ServerAddress})");
         }
-        
+
         private void LoadSettings()
         {
             Port = _settingsManager.Settings.NetworkSettingValues.Port;

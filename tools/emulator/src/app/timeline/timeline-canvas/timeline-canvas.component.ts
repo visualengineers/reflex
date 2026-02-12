@@ -3,7 +3,7 @@ import { OnDestroy } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, fromEvent, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, publishBehavior, refCount, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, publishBehavior, refCount } from 'rxjs/operators';
 import { ConfigurationService, Layers } from 'src/app/service/configuration.service';
 import { ConnectionService } from 'src/app/service/connection.service';
 import { NormalizedPoint } from '../../model/NormalizedPoint.model';
@@ -15,9 +15,9 @@ interface Size {
 }
 
 @Component({
-  selector: 'app-timeline-canvas',
-  templateUrl: './timeline-canvas.component.html',
-  styleUrls: ['./timeline-canvas.component.sass']
+    selector: 'app-timeline-canvas',
+    templateUrl: './timeline-canvas.component.html',
+    styleUrls: ['./timeline-canvas.component.sass']
 })
 export class TimelineCanvasComponent implements OnInit, OnDestroy {
 
@@ -68,7 +68,7 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     // points
     const points$ = combineLatest([this.configurationService.getNormalizedPoints(), timelineSize$])
       .pipe(
-        map(([points, size]) => points.map(p => this.circleDtoFromNormalizedPoint(p, size)))
+        map(([points]) => points.map(p => this.circleDtoFromNormalizedPoint(p)))
       );
     this.pointsSubscription = points$
       .subscribe( p => this.points = p);
@@ -96,7 +96,7 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     }
 
     const amountLayers = (this.layers?.up ?? 0) + (this.layers?.down ?? 0); // total amount of layers
-    let layerDepth: number;                       // height of a single layer in px
+
 
     // 'fixed layer height' approach for timeline sizing, scroll on overflow
     // layerDepth = 15;
@@ -106,7 +106,7 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     // alternative 'zoom fit' approach for timeline sizing:
     this.canvas.nativeElement.width = this.timelineElement.offsetWidth;
     this.canvas.nativeElement.height = this.timelineElement.offsetHeight;
-    layerDepth = this.ctx.canvas.height / amountLayers;
+    const layerDepth = this.ctx.canvas.height / amountLayers;  // height of a single layer in px
 
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -140,9 +140,9 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     * @param p the point to convert
     * @param canvasSize the size of the canvas
     */
-  private circleDtoFromNormalizedPoint(p: NormalizedPoint, timelineSize: Size ): CircleDto {
+  private circleDtoFromNormalizedPoint(p: NormalizedPoint ): CircleDto {
 
-    const circleSize = this.configurationService.getCircleSize();
+    //const  circleSize = this.configurationService.getCircleSize();
 
     const amountLayers = ((this.layers?.up ?? 0) + (this.layers?.down ?? 0));
     const lDepthPx = (this.ctx?.canvas?.height ?? 0) / amountLayers; // height (px) of a single layer drawn on timeline

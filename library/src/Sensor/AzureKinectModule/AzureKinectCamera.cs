@@ -143,9 +143,6 @@ namespace ReFlex.Sensor.AzureKinectModule
 
         private async void QueryDepthStream()
         {
-            
-                 
-
             while (_queryDepth)
             {
                 using (var transformedDepth = new Image(

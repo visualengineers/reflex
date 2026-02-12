@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <PlatformTarget>x64</PlatformTarget>
@@ -49,7 +49,6 @@
     <ProjectReference Include="..\..\Core\Tracking\Tracking.csproj" />
     <ProjectReference Include="..\..\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
     <ProjectReference Include="..\..\Sensor\EmulatorModule\EmulatorModule.csproj" />
-    <ProjectReference Include="..\..\Sensor\Kinect2Module\Kinect2Module.csproj" />
     <ProjectReference Include="..\..\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
     <ProjectReference Include="..\..\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
     <ProjectReference Include="..\..\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />
@@ -59,29 +58,29 @@
       <Version>2.5.2</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.6</Version>
+      <Version>2.0.7</Version>
     </PackageReference>
     <PackageReference Include="ControlzEx">
       <Version>5.0.2</Version>
     </PackageReference>
     <PackageReference Include="DynamicExpresso.Core">
-      <Version>2.13.0</Version>
+      <Version>2.16.1</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro">
-      <Version>2.4.9</Version>
+      <Version>2.4.10</Version>
     </PackageReference>
     <PackageReference Include="MathNet.Numerics">
       <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Prism.Core">
-      <Version>8.1.97</Version>
+      <Version>9.0.537</Version>
     </PackageReference>
     <PackageReference Include="Prism.Unity">
-      <Version>8.1.97</Version>
+      <Version>9.0.537</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
-      <Version>8.1.97</Version>
+      <Version>9.0.537</Version>
     </PackageReference>
     <PackageReference Include="SharpGL">
       <Version>3.1.1</Version>

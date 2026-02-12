@@ -1,32 +1,32 @@
-@import 'abstracts/variables';
+@use 'reflex' as reflex;
 
 .depthImage {
 
     &__view {
         position: relative;
 
-        margin-top: $default-col-gap;
-        margin-bottom: $default-col-gap;
-        border: 1px solid $color-grey-light-3;     
-        
-        & img {      
+        margin-top: reflex.$default-col-gap;
+        margin-bottom: reflex.$default-col-gap;
+        border: 1px solid reflex.$color-grey-light-3;
+
+        & img {
             display: flex;
             width: 100%;
-            height: auto;        
+            height: auto;
         }
     }
 
-    &__render {      
-        
+    &__render {
+
         &.fullScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;  
-            
+            height: 100vh;
+
             // z-index: 1500;
-            background-color: $color-white;  
+            background-color: reflex.$color-white;
         }
 
         &:focus {

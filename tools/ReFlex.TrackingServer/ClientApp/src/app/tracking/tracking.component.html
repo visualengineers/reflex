@@ -4,11 +4,11 @@
             elementTitle="Camera Configuration"
             elementId="tracking-camera"
             [(data)]="isActive"
-            (onChange)="start()"
+            (change)="start()"
             [disabled]="selectedCameraIdx < 0 || selectedConfigurationIdx < 0"
         >
 
-        </app-panel-header>       
+        </app-panel-header>
         <h3 class="heading-tertiary" [ngClass]="{success: isActive, error: !isActive}">{{statusText}}</h3>
         <p class="settings__status-detail">{{statusDetailsText}}</p>
         <app-value-selection Title="Camera" ElementId="tracking-camera-select" class="settings__item">
@@ -32,10 +32,10 @@
         <div class="settings__item">
             <div class="settings__item--content">
                 <label class="settings__item--label">Autostart</label>
-                <div class="slider checkbox">      
+                <div class="slider checkbox">
                     <input type="checkbox" value="None" id="checkbox-autostart" class="checkbox-toggle" name="checkbox-autostart"
                     [(ngModel)]="autostart" (ngModelChange)="saveAutoStart()"/>
-                    <label class="checkbox-toggle-label" for="checkbox-autostart"><span class="on">ON</span><span class="off">OFF</span></label> 
+                    <label class="checkbox-toggle-label" for="checkbox-autostart"><span class="on">ON</span><span class="off">OFF</span></label>
                 </div>
             </div>
             <div class="settings__item--info">
@@ -43,19 +43,19 @@
             </div>
         </div>
         <app-recording [recordingName]="selectedCameraIdx > 0 && selectedCameraIdx < cameras.length ? cameras[selectedCameraIdx].id : ''"></app-recording>
-        <app-settings></app-settings> 
+        <app-settings></app-settings>
     </div>
     <div class="visualization__panel">
-        <div class="point-cloud content" *ngIf="displayPointCloud">        
+        <div class="point-cloud content" *ngIf="displayPointCloud">
             <div class="point-cloud__visualization" #pointCloudContainer>
                 <app-point-cloud (fullScreenChanged)="onPointCloudFullScreenChanged($event)" [width]="pointCloudContainer.offsetWidth - 20" [livePreviewEnabled]="isActive"></app-point-cloud>
             </div>
-        </div> 
-        
+        </div>
+
         <div class="depth-image" *ngIf="displayDepthImage">
             <div>
                 <app-depth-image (fullScreenChanged)="onDepthImageFullScreenChanged($event)" [livePreviewEnabled]="isActive"></app-depth-image>
             </div>
-        </div> 
-    </div>    
+        </div>
+    </div>
 </div>

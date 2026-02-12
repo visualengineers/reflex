@@ -1,0 +1,24 @@
+<div class="pullup__button__div">
+  <button (click)="isPullupOpen = !isPullupOpen" class="pullup__button" [ngStyle]="{'top': isPullupOpen ? '67%' : '95%'}">
+
+      <h1><img [src]="'./assets/img/dropdown-arrow.svg'" [class.rotated]="!isPullupOpen"></h1>
+
+  </button>
+</div>
+
+
+
+<div *ngIf="isPullupOpen" class="pullup__area">
+  <div class="pullup__content">
+    <table class="pullup__table">
+      <tr>
+        <td>
+          <app-timeline></app-timeline>
+        </td>
+        <td>
+          <app-track-component></app-track-component>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

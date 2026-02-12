@@ -1,0 +1,60 @@
+@use "../abstracts/variables";
+
+/* reset browser-styles by using the universal selector */
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+
+  // this defines what 1 rem is - base size definition
+  font-size: 62.5%;               // 1 rem = 10px
+
+  background-color: variables.$color-white;
+}
+
+::selection {
+  background-color: variables.$color-primary;
+  color: variables.$color-white;
+}
+
+canvas:focus {
+  outline: none;
+}
+
+.container {
+  max-width: 100%;
+}
+
+a.link {
+  &,
+  &:visited,
+  &:active {
+    display: inline-block;
+    text-decoration:none;    
+    font-family: variables.$font-heading;
+    color: variables.$color-primary-light;
+    line-height: 1.6rem;
+    border-bottom: 1px solid variables.$color-grey-light-2;
+  }
+
+  &:hover {
+    color: variables.$color-grey-light;
+    border-bottom: 1px solid variables.$color-primary;    
+  }
+}
+
+strong {
+  color: variables.$color-grey-light;
+  font-family: variables.$font-heading;
+}
+
+code {
+  font-weight: 800;
+  color: variables.$color-primary-light;
+}

@@ -2,26 +2,34 @@
   "name": "@reflex/emulator",
   "author": "Mathias Müller",
   "description": "Emulator for depth sensing input for developing applications for Elastic Displays using the ReFlex framework",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4300",
     "build": "ng build",
     "test": "ng test",
+    "test-ci": "ng test --no-watch --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "ng build --base-href ./ && electron .",
-    "build:electron-win": "ng build --base-href ./ && electron-builder build --win"
+    "build:electron-win": "ng build --base-href ./ && electron-builder build --win",
+    "build:electron-osx": "ng build --base-href ./ && electron-builder build --mac --x64",
+    "build:electron-osx-arm64": "ng build --base-href ./ && electron-builder build --mac --arm64",
+    "build:electron-linux": "ng build --base-href ./ && electron-builder build --linux --x64",
+    "build:electron-linux-arm64": "ng build --base-href ./ && electron-builder build --linux --arm64"
   },
   "build": {
     "appId": "reflex.emulator",
     "productName": "ReFlex Emulator",
     "copyright": "Copyright © 2023",
-    "buildVersion": "0.9.8",
+    "buildVersion": "0.9.9",
     "electronVersion": "23.2.4",
     "win": {
-      "icon": "dist/assets/icon/app_icon_inverted.ico"
+      "icon": "dist/browser/assets/icon/app_icon_inverted.ico"
+    },
+    "mac": {
+      "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     },
     "files": [
       "node_modules/**/*",
@@ -33,16 +41,6 @@
     }
   },
   "private": true,
-  "dependencies": {
-    "@fortawesome/angular-fontawesome": "^0.13.0",
-    "@fortawesome/fontawesome-free": "^6.4.0",
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@fortawesome/free-regular-svg-icons": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
-    "@reflex/shared-types": "file:../../packages/reflex-shared-types",
-    "bootstrap": "^5.3.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/visualengineers/reflex.git"
@@ -61,5 +59,15 @@
   "homepage": "https://github.com/visualengineers/reflex#readme",
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "dependencies": {
+    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@reflex/shared-types": "file:../../packages/reflex-shared-types",
+    "bootstrap": "^5.3.3"
+  }
 }

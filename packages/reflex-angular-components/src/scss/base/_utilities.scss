@@ -1,0 +1,85 @@
+@use "../abstracts/variables";
+
+.success {
+    color: variables.$color-success-light;
+}
+
+.error {
+    color: variables.$color-error-light;
+}
+
+.margin-bottom-default {
+    margin-bottom: variables.$default-col-gap;
+}
+
+.margin-bottom-large {
+  margin-bottom: variables.$margin-large
+}
+
+.margin-top-default {
+    margin-top: variables.$default-margin;
+}
+
+.margin-top-large {
+    margin-top: variables.$margin-large
+}
+
+.justified {
+    width: 100%;
+}
+
+.rotate {
+    animation: rotation 2s;
+}
+
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-359deg);
+    }
+}
+
+.linear {
+    animation-timing-function: linear;
+}
+
+.infinite {
+    animation-iteration-count: infinite;
+}
+
+.clearBg {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: variables.$color-grey-light-4;
+
+    z-index: 100;
+
+    top:0;
+    left:0;
+}
+
+
+.interaction-undefined {
+    background-color: variables.$color-calibration-point;
+}
+
+.interaction-minimum {
+    background-color: variables.$color-primary;
+}
+
+.interaction-maximum {
+    background-color: variables.$color-success-light;
+}
+
+.interaction-invalid {
+    background-color: variables.$color-error-light;
+}
+
+.grid-full-width {
+    grid-column: 1/ -1;
+}
+

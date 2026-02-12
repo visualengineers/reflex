@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Core.Events</PackageId>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright ©  2021-2023</Copyright>
+    <Copyright>Copyright © 2021-2025</Copyright>
     <Company>
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
@@ -16,11 +16,18 @@
     <Platforms>x64;ARM64;AnyCPU</Platforms>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Configurations>Debug;Release;CI</Configurations>
+    <AssemblyVersion>0.9.9</AssemblyVersion>
+    <FileVersion>0.9.9</FileVersion>
   </PropertyGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
+    <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\lib&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Exec Command="mkdir -p &quot;../../../export/lib&quot; &amp;&amp; cp -r &quot;$(OutDir)&quot; &quot;../../../export/lib&quot;" Condition=" '$(OS)' != 'Windows_NT' " />
+  </Target>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.8.0" />
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
   </ItemGroup>
 
   <ItemGroup>

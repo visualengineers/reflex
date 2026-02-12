@@ -1,0 +1,428 @@
+{
+    "versions": [
+        {
+            "version": "0.9.9",
+            "date": "09.11.2024",
+            "library":
+            [
+                "optimization, bugfixing and cleanup",
+                "added tests for ReFlex.Core",
+                "update to .NET 8",
+                "fixing and optimization of interaction smoothing",
+                "cleanup and optimization of Intel RealSense support",
+                "added replayService for replay of recorded sensor data",
+                "optimization of extremum filtering and classification"
+            ],
+            "server":
+            [
+              "optimization of calibration procedure",
+              "fix Mac OS (ARM x64) compatibility issues",
+              "fix startup crash when configuration file could not be loaded (restoring defaults)",
+              "settings validation on load and fallback to default values",
+              "fix for issues with raw shader material after three.js update",
+              "current settings can be displayed in a popup"
+            ],
+            "templates": [
+                "added extended html example with logging",
+                "Angular example for shared UI components",
+                "unification of example applications",
+                "added WPF example for .NET Core"
+            ],
+            "tools": [
+                "updated Angular to Version 17",
+                "updated example applications",
+                "power save blocker for electron applications to prevent decreased app performance when app is minimized / has lost focus",
+                "added logging server as separate tool",
+                "added shared Angular components for reusable ui components and style",
+                "added data format for storing interaction data",
+                "Emulator: added service for replaying stored interaction data",
+                "tests for shared Angular components"
+            ],
+            "misc":
+            [
+                "integrated dependabot in repository",
+                "CI optimizations (caching / reusable actions, different workflows for PRs / pushes on main)",
+                "cleanup script for cleaning build artifacts, cached dependencies and intermediate files",
+                "test reports for .NET unit tests (Cobertura -> ReportGenerator Html output)",
+                "test reports for shared types and emulator",
+                "build configuration based on command-line parameters to control which sensors are available (resolving platform-pendent issues)",
+                "added github pages for documentation"
+            ]
+        },
+        {
+            "version": "0.9.8",
+            "date": "26.07.2023",
+            "library":
+            [
+                "fix: extremum checks"
+            ],
+            "server":
+            [
+               "added tests for angular components and services",
+               "updated Angular to Version 16"
+
+            ],
+            "templates": [
+                "added Unity Package",
+                "added Unreal Engine 4 plugin"
+            ],
+            "misc":
+            [
+                "test reports: junit, code coverage (Istanbul)",
+                "added / configured recommended extensions for vs code",
+                "conversion from private repo with submodules to public open source mono-repo"
+            ]
+        },
+        {
+            "version": "0.9.7",
+            "date": "26.04.2023",
+            "library":
+            [
+                "minor fixes in Advanced Limitation Filter"
+            ],
+            "server":
+            [
+               "updated Angular to Version 15.2",
+               "update packages",
+               "semi-automatic calibration",
+               "stream point cloud compressed as depth image"
+            ]
+        },
+        {
+            "version": "0.9.6",
+            "date": "19.01.2023",
+            "library":
+            [
+                "implemented modular performance tracing",
+                "performance and stability optimization for box filter",
+                "limitation filter resets invalid values to zero plane"
+            ],
+            "server":
+            [
+               "completed Python gRPC interaction processing microservice"
+
+            ],
+            "misc":
+            [
+                "added Insomnia requests for testing signalR and websockets communication",
+                "point cloud benchmarks"
+            ]
+        },
+        {
+            "version": "0.9.5",
+            "date": "27.12.2022",
+            "library":
+            [
+                "update to .NET 6.0",
+                "update nuget packages",
+                "fixes in legacy applications",
+                "fix: start/stop networking"
+            ],
+            "server":
+            [
+               "updated Angular to Version 15",
+               "refactoring: reusable ui components for form elements",
+               "fix linter issues",
+               "fix: duplicate signalR subscription for TUIO"
+
+            ],
+            "misc":
+            [
+                "added github CI",
+                "integrated linter for Angular Client App",
+                "consistent naming scheme for components"
+            ]
+        },
+        {
+            "version": "0.9.4",
+            "date": "22.12.2022",
+            "library":
+            [
+                "implemented TUIO protocol",
+                "minor fixes for recording"
+            ],
+            "server":
+            [
+               "refactoring: SignalR HubGroups",
+               "integrating TUIO in networking tab",
+               "visualization of TUIO packages"
+            ],
+            "misc":
+            [
+                "tests for TUIO broadcast"
+            ]
+
+        },
+        {
+            "version": "0.9.3",
+            "date": "29.07.2022",
+            "library":
+            [
+               "minor fixes for extremum description and smoothing"
+            ]
+        },
+        {
+            "version": "0.9.2",
+            "date": "29.07.2022",
+            "server":
+            [
+               "Python gRPC service implementation for processing point cloud",
+               "optimization of signalR subscriptions"
+            ]
+        },
+        {
+            "version": "0.9.1",
+            "date": "13.07.2022",
+            "library":
+            [
+                "advanced limitation filter based on distance to zero plane",
+                "fix: border issues with box filter",
+                "performance data can be collected for point cloud processing and interaction processing"
+            ],
+            "server":
+            [
+               "implemented autostart feature",
+               "save / restore filter mask for advanced limitation filter in settings",
+               "show performance data in ui"
+            ]
+        },
+        {
+            "version": "0.9.0",
+            "date": "11.07.2022",
+            "library":
+            [
+                "added extremum description for better distinguishing multiple touches"
+            ],
+            "server":
+            [
+               "compute zero plane in settings",
+               "visualization of extremum type",
+               "fix interaction list layout issues"
+            ]
+        },
+        {
+            "version": "0.8.5",
+            "date": "08.07.2022",
+            "library":
+            [
+                "depth scale for smoothing z values"
+            ],
+            "server":
+            [
+               "fix: electron caching issues"
+            ]
+        },
+        {
+            "version": "0.8.4",
+            "date": "30.06.2022",
+            "server":
+            [
+               "fix: point cloud is still updated after tab change",
+               "better error logging",
+               "fix: status of network and processing are recovered OnInit"
+            ]
+        },
+        {
+            "version": "0.8.3",
+            "date": "14.06.2022",
+            "server":
+            [
+                "minor fixes for measurement UI"
+            ]
+        },
+        {
+            "version": "0.8.2",
+            "date": "03.06.2022",
+            "library":
+            [
+                "conversion of point cloud to indexed point clouds for triangulation"
+            ]
+        },
+        {
+            "version": "0.8.1",
+            "date": "01.06.2022",
+            "library":
+            [
+                "added tools for surface measurements"
+            ],
+            "server":
+            [
+               "recording depth stream to csv",
+               "measurement service",
+               "added jupyter notebook for pointcloud triangulation",
+               "electron app with borderless fullscreen window"
+            ]
+        },
+        {
+            "version": "0.8.0",
+            "date": "23.03.2022",
+            "library":
+            [
+                "performance measurements and optimization of point cloud processing",
+                "reduced number of parallel threads for point cloud and removed unnecessary locks"
+            ],
+            "server":
+            [
+               "fix platform incompatibilities due to image formats",
+               "use generic image formats and update imaging libraries"
+            ],
+            "templates":
+            [
+                "added basic vue template"
+            ]
+        },
+        {
+            "version": "0.7.0",
+            "date": "30.11.2021",
+            "library":
+            [
+                "validation of calibration matrix",
+                "streaming of raw depth image",
+                "synthetic depth image for emulator",
+                "image-based emulator",
+                "depth image recorder camera and replay camera"
+            ],
+            "server":
+            [
+                "added internal ASP.NET websocket communication",
+                "added electron support",
+                "updated Angular to Version 13",
+                "refactoring of depth image streaming",
+                "use ImageSharp for Image-Based Emulator - recording / replay"
+            ],
+            "templates":
+            [
+                "extended html example"
+            ]
+        },
+        {
+            "version": "0.6.0",
+            "date": "08.06.2021",
+            "library":
+            [
+                "added smoothing of interactions",
+                "added advanced filtering: average, moving average, polynomial filter, savitzky-golay",
+                "added interaction history",
+                "lower resolutions for emulator to increase performance"
+            ],
+            "server":
+            [
+                "",
+                "display interaction history and interaction frames",
+                "added save / load / restore of config",
+                "simple calibration tutorial screen",
+                "additional settings for point cloud: grid/bounding box, show/hide distance planes, point size"
+
+            ],
+            "templates":
+            [
+                "added basic react/redux template",
+                "added basic angular template",
+                "plain html example"
+            ],
+            "misc":
+            [
+                "added extended interaction tests"
+            ]
+        },
+        {
+            "version": "0.5.0",
+            "date": "15.04.2021",
+            "library":
+            [
+                "fix: depth calculation for Emulator",
+                "better configurability of networking services",
+                "better calibration procedure",
+                "serialization of calibration",
+                "nuget package updates",
+                "Linux compatibility"
+            ],
+            "server":
+            [
+                "visualization of interactions",
+                "completed basic functionality",
+                "display interactions in point cloud visualization",
+                "added user interface for calibration",
+                "major interface design update",
+                "updated Angular to Version 11",
+                "created ReFlex Logo",
+                "Home screen with version Info"
+            ],
+            "misc":
+            [
+                "added Insomnia for testing REST API"
+            ]
+        },
+        {
+            "version": "0.4.0",
+            "date": "11.03.2021",
+            "library":
+            [
+                "Added support for Microsoft Azure Kinect DK",
+                "Changes of pointcloud are emitted as events",
+                "logging optimization",
+                "added IsFiltered property for Point3",
+                "Bugfixing for EmulatorCamera and EmulatedPointCloud",
+                "Linux compatibility"
+            ],
+            "server":
+            [
+                "added signalR for streaming point cloud",
+                "pushing camera state using signalR",
+                "Azure Kinect support",
+                "additional visualization of point cloud features",
+                "fix page reloading and camera state issues",
+                "Frontend UI styling and optimization",
+                "asynchronous loading of shaders for point cloud",
+                "implemented interaction processing controller and extended networking controller"
+            ]
+        },
+        {
+            "version": "0.3.0",
+            "date": "20.08.2020",
+            "library":
+            [
+                "switch to WatsonTcp library",
+                "Prism module loading using Prise",
+                "moved cameras into separate sensor module",
+                "general refactoring of sensor code",
+                "Added support for RealSense L515"
+            ],
+            "server":
+            [
+                "first version ASP.NET tracking server",
+                "implemented client app as Angular application (v9)",
+                "implemented settings view in server" ,
+                "added nlog and retrieval of log files (polling)",
+                "project setup for vs code and build tasks",
+                "rendering point cloud using three.js"
+            ]
+        },
+        {
+            "version": "0.2.0",
+            "date": "04.04.2020",
+            "library":
+            [
+                "first version of emulator",
+                "performance optimization",
+                "fix several threading issues in multi-touch interaction observer",
+                "implemented websocket communication",
+                "moved implementation from WPF server to ReFlex Library"
+            ]
+        },
+        {
+            "version": "0.1.0",
+            "date": "09.03.2020",
+            "library":
+            [
+                "migration of dSense Library from .NET 4.7 to .Net Standard 2.0"
+            ],
+            "misc":
+            [
+                "renaming from dSense to ReFlex",
+                "namespace adjustments",
+                "initial repository structure"
+            ]
+        }
+    ]
+}

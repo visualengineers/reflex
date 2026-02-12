@@ -1,0 +1,15 @@
+@use 'reflex' as reflex;
+
+
+.colors-panel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.color {
+  &__group {
+    & .heading-secondary {
+      margin-bottom: reflex.$default-margin;
+    }
+  }
+}

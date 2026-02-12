@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Implementation.Interfaces;
+﻿using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
-using Prism.Events;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Events;
@@ -29,15 +25,15 @@ namespace TrackingServer.Model
             _interactionSubscriptions;
         private readonly HubGroupSubscriptionManager<IList<InteractionFrame>>
             _interactionFrameSubscriptions;
-        private readonly HubGroupSubscriptionManager<InteractionHistory[]> 
+        private readonly HubGroupSubscriptionManager<InteractionHistory[]>
             _interactionHistorySubscriptions;
-        
+
         #endregion
 
         #region Properties
-        
-        public string State { get => CurrentState?.Value; }
-        
+
+        public string State => CurrentState.Value ?? "";
+
         public bool IsLoopRunning
         {
             get => _timerLoop.IsLoopRunning;
@@ -47,10 +43,10 @@ namespace TrackingServer.Model
                 if (_timerLoop.IsLoopRunning == value)
                     return;
                 _timerLoop.IsLoopRunning = value;
-                CurrentState?.OnNext(GetState());
+                CurrentState.OnNext(GetState());
             }
         }
-        
+
         public int Interval
         {
             get => _timerLoop.IntervalLength;
@@ -61,7 +57,7 @@ namespace TrackingServer.Model
             get => _interactionManager.Type;
             set => _interactionManager.Type = value;
         }
-        
+
         public IHubGroupSubscriptionManager InteractionSubscriptionManager => _interactionSubscriptions;
 
         public IHubGroupSubscriptionManager InteractionFrameSubscriptionManager => _interactionFrameSubscriptions;
@@ -73,7 +69,7 @@ namespace TrackingServer.Model
         #region Constrcutor
 
         public ProcessingService(ITimerLoop loop, IInteractionManager interactionManager,
-            ConfigurationManager configManager, CalibrationService calibrationService, 
+            ConfigurationManager configManager, CalibrationService calibrationService,
             IEventAggregator eventAggregator, IHubContext<ProcessingHub> hubContext)
             : base(ProcessingHub.ProcessingStateGroup, hubContext)
         {
@@ -87,7 +83,7 @@ namespace TrackingServer.Model
             eventAggregator.GetEvent<RequestServiceRestart>()?.Subscribe(StartService);
 
             _timerLoop.IsLoopRunningChanged += OnLoopRunningChanged;
-            
+
             CurrentState.OnNext(GetState());
 
             _interactionSubscriptions = new HubGroupSubscriptionManager<IList<Interaction>>("interactions");
@@ -118,16 +114,16 @@ namespace TrackingServer.Model
         }
 
         #endregion
-        
+
         #region public Methods
 
         public void Init()
         {
             LoadSettings();
         }
-        
+
         #endregion
-        
+
         public sealed override string GetState()
         {
             return IsLoopRunning ? "Active" : "Inactive";
@@ -138,21 +134,21 @@ namespace TrackingServer.Model
             base.Dispose();
             _timerLoop.IsLoopRunningChanged -= OnLoopRunningChanged;
         }
-        
+
         public void StartService()
         {
             if (IsLoopRunning)
             {
                 IsLoopRunning = false;
             }
-            
+
             Init();
-            
+
             IsLoopRunning = true;
         }
 
         #region private Methods
-        
+
         private void LoadSettings()
         {
             _timerLoop.IntervalLength = _configManager.Settings.ProcessingSettingValues.IntervalDuration;
@@ -189,13 +185,13 @@ namespace TrackingServer.Model
             return InteractionHistory.RetrieveHistoryFromInteractionFrames(calibratedFrames).ToArray();
 
         }
-        
-        private void OnLoopRunningChanged(object sender, bool e)
+
+        private void OnLoopRunningChanged(object? sender, bool e)
         {
             IsLoopRunning = e;
             CurrentState?.OnNext(GetState());
         }
-        
+
         #endregion
     }
 }

@@ -6,8 +6,12 @@ Plugin for using ReFlex with Unreal Engine using WebSockets
 
 ## Requirements
 
-* Unreal Engine 4.27
-* Editor (recommended): JetBrains Rider 2023.1.2
+* Unreal Engine 5.2.1
+* Editor (recommended): JetBrains Rider
+* Visual Studio 2022 Build Tools:
+  * C++ 2022 Redistributable Update
+  * MSVC v143 - VS 2022 C++ x86/x64 build tools
+  * Windows 10 SDK (10.0.18362.0)
 
 ## Keyboard Shortcuts
 

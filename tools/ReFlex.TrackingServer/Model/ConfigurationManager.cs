@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NLog;
-using Prism.Events;
-using TrackingServer.Data;
+using ReFlex.Server.Data;
 using TrackingServer.Events;
 
 namespace TrackingServer.Model
@@ -12,10 +11,10 @@ namespace TrackingServer.Model
     /// </summary>
     public class ConfigurationManager
     {
-        private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IWebHostEnvironment _env;
-        private readonly IEventAggregator _evtAggregator;
+        private readonly IEventAggregator? _evtAggregator;
         private readonly string _path;
         private readonly string _restorePath;
         private readonly string _backupPath;
@@ -24,7 +23,7 @@ namespace TrackingServer.Model
 
         public bool CanRestoreBackup => File.Exists(RetrieveFullPath(_backupPath));
 
-        public ConfigurationManager(IWebHostEnvironment environment, IEventAggregator evtAggregator, string filePath, string filePathRestore, string  filePathBackup)
+        public ConfigurationManager(IWebHostEnvironment environment, IEventAggregator? evtAggregator, string filePath, string filePathRestore, string filePathBackup)
         {
             _path = filePath;
             _restorePath = filePathRestore;
@@ -35,7 +34,17 @@ namespace TrackingServer.Model
             // initialize Settings with default values
             Settings = new TrackingServerAppSettings();
 
-            Load();
+            try
+            {
+              Load();
+            }
+            catch (Exception exc)
+            {
+              Logger.Error(exc, "Error when reading configuration file - restoring default values.");
+
+              ReadSettings(_restorePath);
+              WriteSettings(_path);
+            }
         }
 
         public void Load()
@@ -46,33 +55,35 @@ namespace TrackingServer.Model
         public void LoadSettings(TrackingServerAppSettings settings)
         {
             Settings = settings;
-            _evtAggregator.GetEvent<RequestConfigurationUpdateEvent>().Publish(settings.IsAutoStartEnabled);
-            
+            _evtAggregator?.GetEvent<RequestConfigurationUpdateEvent>().Publish(settings.IsAutoStartEnabled);
+
         }
 
         public void RestoreDefaults()
         {
             WriteSettings(_backupPath);
-            
+
             Logger.Info($"Restore Default Settings from File {RetrieveFullPath(_restorePath)}.");
-            
+
             ReadSettings(_restorePath);
         }
 
         public void RestoreBackup()
         {
             Logger.Info("Restore Settings from Backup ...");
-            
+
             if (!CanRestoreBackup)
             {
                 Logger.Error($"Cannot restore backup: File '{RetrieveFullPath(_backupPath)}' does not exist.");
                 return;
             }
-            
+
             ReadSettings(_backupPath);
-            File.Delete(RetrieveFullPath(_backupPath));
+            var fullPath = RetrieveFullPath(_backupPath);
+            if (fullPath != null)
+              File.Delete(fullPath);
         }
-        
+
         /// <summary>
         /// Creates a backup and saves new Settings
         /// </summary>
@@ -80,7 +91,7 @@ namespace TrackingServer.Model
         public void Update(TrackingServerAppSettings updatedSettings)
         {
             WriteSettings(_backupPath);
-            
+
             Settings = updatedSettings;
             WriteSettings(_path);
         }
@@ -104,8 +115,8 @@ namespace TrackingServer.Model
 
             Logger.Info($"Sucessfully loaded Config from file '{fullPath}'");
             Logger.Trace($"Current config values: {Environment.NewLine}{Settings.GetCompleteValues()}");
-            
-            _evtAggregator.GetEvent<ServerSettingsUpdatedEvent>().Publish(Settings);
+
+            _evtAggregator?.GetEvent<ServerSettingsUpdatedEvent>().Publish(Settings);
         }
 
         private void WriteSettings(string path)
@@ -121,11 +132,11 @@ namespace TrackingServer.Model
 
             Logger.Info($"Sucessfully wrote new config.");
             Logger.Trace($"Updated values: {Environment.NewLine}{Settings.GetCompleteValues()}.");
-            
-            _evtAggregator.GetEvent<ServerSettingsUpdatedEvent>().Publish(Settings);
+
+            _evtAggregator?.GetEvent<ServerSettingsUpdatedEvent>().Publish(Settings);
         }
 
-        private string RetrieveFullPath(string path)
+        private string? RetrieveFullPath(string path)
         {
             return _env.WebRootFileProvider.GetFileInfo(path).PhysicalPath;
         }

@@ -4,10 +4,23 @@ import { NetworkingService } from 'src/shared/services/networking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
 import { NetworkInterface, NetworkSettings } from '@reflex/shared-types';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TuioComponent } from './tuio/tuio.component';
 
 @Component({
   selector: 'app-network',
-  templateUrl: './network.component.html'
+  templateUrl: './network.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    PanelHeaderComponent,
+    ValueSelectionComponent,
+    ValueTextComponent,
+    ValueSliderComponent,
+    TuioComponent
+  ]
 })
 export class NetworkComponent implements OnInit, OnDestroy {
 

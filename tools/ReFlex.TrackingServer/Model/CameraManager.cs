@@ -1,10 +1,14 @@
 ﻿using NLog;
 using ReFlex.Core.Tracking.Interfaces;
 using ReFlex.Sensor.EmulatorModule;
-#if !NO_EXTERNAL_SENSORS
-using System.Runtime.InteropServices;
+#if MS_AZURE_KINECT
 using ReFlex.Sensor.AzureKinectModule;
+#endif
+#if MS_KINECT2
+using System.Runtime.InteropServices;
 using ReFlex.Sensor.Kinect2Module;
+#endif
+#if INTEL_REALSENSE
 using ReFlex.Sensor.RealSenseD435Module;
 using ReFlex.Sensor.RealSenseL515Module;
 using ReFlex.Sensor.RealSenseR2Module;
@@ -23,8 +27,7 @@ namespace TrackingServer.Model
         {
             _depthCameras = new List<IDepthCamera>();
 
-#if !NO_EXTERNAL_SENSORS
-
+#if INTEL_REALSENSE
             try
             {
                 var realSenseR2 = new RealsenseR2Camera();
@@ -34,21 +37,6 @@ namespace TrackingServer.Model
             catch (Exception exception)
             {
                 Logger.Error(exception);
-            }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-
-               try
-               {
-                   var kinect2 = new Kinect2Camera();
-                   _depthCameras.Add(kinect2);
-                   Logger.Info($"Successfully loaded {kinect2.ModelDescription} camera.");
-               }
-               catch (Exception exception)
-               {
-                   Logger.Error(exception);
-               }
-
             }
 
             try
@@ -73,7 +61,28 @@ namespace TrackingServer.Model
                 Logger.Error(exception);
             }
 
-            try
+#endif
+#if MS_KINECT2
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+
+               try
+               {
+                   var kinect2 = new Kinect2Camera();
+                   _depthCameras.Add(kinect2);
+                   Logger.Info($"Successfully loaded {kinect2.ModelDescription} camera.");
+               }
+               catch (Exception exception)
+               {
+                   Logger.Error(exception);
+               }
+
+            }
+#endif
+
+#if MS_AZURE_KINECT
+
+           try
             {
                 var azureKinectCamera = new AzureKinectCamera();
                 _depthCameras.Add(azureKinectCamera);
@@ -92,6 +101,12 @@ namespace TrackingServer.Model
                 // var emulator = new EmulatorCamera();
                 _depthCameras.Add(emulator);
                 Logger.Info($"Successfully loaded {emulator.ModelDescription} camera.");
+
+                var gestureRecorder = new EmulatorCamera("127.0.0.1", 30000, "/Recorder");
+                _depthCameras.Add(gestureRecorder);
+
+                Logger.Info($"Successfully loaded {gestureRecorder.ModelDescription} camera.");
+
             }
             catch (Exception exception)
             {

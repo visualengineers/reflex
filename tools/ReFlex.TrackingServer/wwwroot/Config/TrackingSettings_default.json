@@ -9,6 +9,7 @@
     },
     "MinDistanceFromSensor": 0.47,
     "LimitationFilterType": 0,
+    "FilterMask":[],
     "UseOptimizedBoxFilter": false,
     "AdvancedLimitationFilterThreshold": 0.06,
     "AdvancedLimitationFilterSamples": 8,
@@ -34,6 +35,7 @@
     "SmoothingValues": {
       "InteractionHistorySize": 15,
       "NumSmoothingSamples": 3,
+      "MaxNumEmptyFramesBetween":3,
       "TouchMergeDistance2D": 81.0,
       "DepthScale": 490.0,
       "Type": 1
@@ -107,7 +109,14 @@
     "InteractionType": 2,
     "IntervalDuration": 30
   },
-  "RemoteProcessingServiceSettingsValues":null,
+  "RemoteProcessingServiceSettingsValues": {
+    "Address":"http://localhost:50051",
+    "NumSkipValues":0,
+    "CompleteDataSet":false,
+    "CutOff":0.1,
+    "Factor":1200.0,
+    "Algorithm":0
+  },
   "TuioSettingValues": {
     "SensorWidth": 640,
     "SensorHeight": 480,

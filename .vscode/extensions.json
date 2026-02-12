@@ -6,6 +6,8 @@
         "esbenp.prettier-vscode",
         "lucono.karma-test-explorer",
         "formulahendry.dotnet-test-explorer",
-        "vue.volar"
+        "vue.volar",
+        "editorconfig.editorconfig",
+        "angular.ng-template"
     ]
 }

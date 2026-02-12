@@ -1,0 +1,22 @@
+name: "ReFlex: Build/Lint/Test all npm projects"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [ opened, reopened, edited, synchronize ]
+    branches:
+      - main
+
+jobs:
+  angular-lint:
+    runs-on: windows-latest
+    name: install and build
+    steps:
+      - name: checkout repo with submodules
+        uses: actions/checkout@main
+      - name: setup node and install packages
+        uses: ./.github/actions/npm-install
+      - name: build complete (build / lint / test-ci commands in each workspace)
+        run: npm run build-complete

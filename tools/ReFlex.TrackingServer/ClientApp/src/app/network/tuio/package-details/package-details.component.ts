@@ -17,12 +17,12 @@ export class PackageDetailsComponent implements OnInit, OnDestroy {
     packageContent: ''
   };
 
-  private _packageSubscription?: Subscription;
+  private packageSubscription?: Subscription;
 
   public constructor(private readonly tuioService: TuioService, private readonly logService: LogService) { }
 
   public ngOnInit(): void {
-    this._packageSubscription = this.tuioService.getPackages().subscribe((result) => {
+    this.packageSubscription = this.tuioService.getPackages().subscribe((result) => {
       this.details = result;
     }, (error) => {
       const errorText = `${error} - ${JSON.stringify(error, null, 3)}`;
@@ -31,7 +31,7 @@ export class PackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._packageSubscription?.unsubscribe();
+    this.packageSubscription?.unsubscribe();
   }
 
 

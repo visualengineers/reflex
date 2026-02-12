@@ -1,0 +1,27 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Controls: Panel</h2>
+</div>
+<p class="margin-bottom-default">
+  Heading with configurable label and optional toggle. Toggle data can be assigned using Two-Way DataBinding. Additional content can be placed in the center of the header.
+</p>
+<app-panel-header class="content__header" elementTitle="Section title with toggle" elementId="testId" ngDefaultControl
+  [(data)]="toggleHeaderActive" (change)="toggleHeaderChanged()" [disabled]="!canToggleHeader">
+  <div>{{toggleToast}}</div>
+</app-panel-header>
+<div class="content__body margin-bottom-default">
+  <p></p>
+  <p id="toggleMessage" [ngClass]="toggleHeaderActive ? 'bg-active' : 'bg-inactive'" class="settings__status-detail">
+    the toggle in the header is {{ toggleHeaderActive ? 'active' : 'inactive' }}
+  </p>
+  <app-settings-group elementTitle="Additional Info" toggleId="panel_header_info">
+    <ul>
+      <li>use with style <code>content__header</code></li>
+      <li><code>elementTitle</code> sets the title</li>
+      <li><code>elementId</code> sets id and name of the input toggle</li>
+      <li>use <code>[(data)]</code> property for displaying a toggle and bind to its value (Two-way-binding)</li>
+      <li>use <code>(change)</code> for callbacks when the bound dat value changes</li>
+      <li><code>[disabled]</code> can be bound to set enabled state</li>
+      <li>content inside the element is displayed in the center of the title using angular content projection</li>
+    </ul>
+  </app-settings-group>
+</div>
