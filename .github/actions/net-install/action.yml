@@ -8,7 +8,7 @@ runs:
     - name: install .NET
       uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '8.x'
+        dotnet-version: '8.0.x'
     - name: Restore workloads
       shell: pwsh
       run: dotnet workload restore
