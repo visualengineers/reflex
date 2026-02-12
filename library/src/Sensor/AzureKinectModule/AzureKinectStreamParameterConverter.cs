@@ -23,7 +23,6 @@ namespace ReFlex.Sensor.AzureKinectModule
                     return new StreamParameter(512, 512, fps, DepthImageFormat.Greyccale48bpp);
                 case DepthMode.WFOV_Unbinned:
                     return new StreamParameter(1024, 1024, fps, DepthImageFormat.Greyccale48bpp);
-                    break;
                 case DepthMode.PassiveIR:
                     throw new ArgumentException("Passive IR only is not supported");
                 default:

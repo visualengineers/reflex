@@ -43,7 +43,7 @@ public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessor
         var interaction = new Interaction(new Point3(rX, rY, 0.1f), InteractionType.Push, 20);
         result.Add(interaction);
       });
-      
+
       return new Tuple<IList<Interaction>, ProcessPerformance>(result, measurement);
     }
 }

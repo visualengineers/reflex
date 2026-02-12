@@ -19,7 +19,7 @@ namespace Emulator.Benchmark.Networking.Util
 
         private uint _numChannels;
         private uint _bytesPerChannel;
-        public uint MaxDepthImageValue => 255 * _bytesPerChannel;
+        private uint MaxDepthImageValue { get => 255 * _bytesPerChannel; }
 
         public Point3[]? Points { get; private set; }
 
@@ -30,6 +30,10 @@ namespace Emulator.Benchmark.Networking.Util
             _emulatorParameters = param;
             _pushRange = _emulatorParameters.PlaneDistanceInMeter - _emulatorParameters.MinDepthInMeter;
             _pullRange = _emulatorParameters.MaxDepthInMeter - _emulatorParameters.PlaneDistanceInMeter;
+
+            // default initialization
+            _currentParams = new StreamParameter(100,100, 10);
+            InitializePointCloud(_currentParams);
         }
 
         public void InitializePointCloud(StreamParameter param)

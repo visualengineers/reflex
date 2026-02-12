@@ -13,7 +13,6 @@ namespace ReFlex.Core.Tuio.Test
     public class ConcurrentBroadcastTest
     {
         private TuioBroadcast _broadcastInstance;
-        private TuioConfiguration _config;
 
         private Mock<ITuioMessageBuilder> _mockBuilder;
         private ITuioSender _sender;

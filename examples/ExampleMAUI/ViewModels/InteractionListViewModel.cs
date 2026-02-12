@@ -30,11 +30,13 @@ public class InteractionListViewModel : BindableBase, IDisposable
     {
         _messageId++;
 
-        var dispatcher = Application.Current?.Dispatcher;
         var formattedMessage = FormatJson(e.Message);
+        var dispatcher = Application.Current?.Dispatcher;
 
         dispatcher?.Dispatch(() =>
         {
+
+
             Messages.Add(new InteractionMessage(formattedMessage, _messageId));
 
             var count = Messages.Count;

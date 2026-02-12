@@ -25,7 +25,7 @@
                 "${workspaceFolder}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
-                "/p:Platform=arm64",
+                "/p:Platform=ARM64",
                 "-c",
                 "Debug"
             ],
@@ -54,6 +54,21 @@
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary",
                 "/p:Platform=x64",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build (Release ARM64)",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "/p:Platform=ARM64",
                 "-c",
                 "Release"
             ],
@@ -177,7 +192,7 @@
                     "relative",
                     "${cwd}"
                 ],
-                "pattern": "$tsc"                
+                "pattern": "$tsc"
             },
             "presentation": {
                 "focus": true,
@@ -185,7 +200,7 @@
             },
             "label": "run logging server",
             "detail": "start logging server on port 4302"
-        },        
+        },
         {
             "type": "npm",
             "script": "start",
@@ -252,7 +267,7 @@
             },
             "label": "run react example client app",
             "detail": "serve react app on http://localhost:3000 "
-        },        
+        },
         {
             "label": "open emulator",
             "windows": {

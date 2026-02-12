@@ -17,7 +17,8 @@ namespace ReFlex.Sensor.EmulatorModule
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private EmulatedPointCloud? _pointCloud;
-    private EmulatorService? _service;
+    private readonly int _port;
+    private readonly EmulatorService? _service = new();
 
     #endregion
 
@@ -58,12 +59,16 @@ namespace ReFlex.Sensor.EmulatorModule
     /// <summary>
     /// creates the <see cref="ReFlex.Core.Networking.Components.WebSocketClient"/>
     /// </summary>
-    /// <param name="address">adress to which the emulator sends its websocket events</param>
+    /// <param name="address">address to which the emulator sends its websocket events</param>
     /// <param name="port">the port on which they communicate</param>
     /// <param name="endpoint">endpoint of the eumlator</param>
     public EmulatorCamera(string address, int port, string endpoint) : base(address, port, endpoint)
     {
+      _port = port;
       StateChanged?.Invoke(this, State);
+
+      StreamParameter = GetPossibleConfigurations()[0];
+      _pointCloud = new EmulatedPointCloud(ComputeEmulatorParameters(StreamParameter));
     }
 
     #endregion
@@ -82,17 +87,8 @@ namespace ReFlex.Sensor.EmulatorModule
     /// <param name="parameter"></param>
     public void EnableStream(StreamParameter parameter)
     {
-      var param = new EmulatorParameters
-      {
-        HeightInMeters = 1.6f,
-        WidthInMeters = 2.4f,
-        MaxDepthInMeter = 2.1f,
-        MinDepthInMeter = 0.8f,
-        PlaneDistanceInMeter = 1.45f,
-        Radius = (int)(parameter.Width * 0.4)
-      };
-
       StreamParameter = parameter;
+      var param = ComputeEmulatorParameters(parameter);
 
       _pointCloud = new EmulatedPointCloud(param);
       _pointCloud.InitializePointCloud(parameter);
@@ -132,8 +128,6 @@ namespace ReFlex.Sensor.EmulatorModule
 
     protected override void InitServices()
     {
-      _service = new EmulatorService();
-
       Server?.AddWebSocketService(Endpoint, () => _service);
 
       _service.InteractionsReceived += InteractionsReceivedFromEmulatorInstance;
@@ -164,6 +158,18 @@ namespace ReFlex.Sensor.EmulatorModule
       Start();
 
       Logger.Info($"[{GetType().Name}]: Restarting Complete.");
+    }
+
+    private EmulatorParameters ComputeEmulatorParameters(StreamParameter streamParams) {
+      return new EmulatorParameters
+      {
+        HeightInMeters = 1.6f,
+        WidthInMeters = 2.4f,
+        MaxDepthInMeter = 2.1f,
+        MinDepthInMeter = 0.8f,
+        PlaneDistanceInMeter = 1.45f,
+        Radius = (int) (streamParams.Width * 0.4)
+      };
     }
   }
 }

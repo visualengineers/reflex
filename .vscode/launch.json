@@ -17,6 +17,20 @@
                 "Web Frontend - Angular",
                 "Server Backend - .NET Core (Release)"
             ]
+        },
+        {
+            "name": ".NET Core & Chrome (Debug ARM64)",
+            "configurations": [
+                "Web Frontend - Angular",
+                "Server Backend - .NET Core (Debug ARM64)"
+            ]
+        },
+        {
+            "name": ".NET Core & Chrome (Release ARM64)",
+            "configurations": [
+                "Web Frontend - Angular",
+                "Server Backend - .NET Core (Release ARM64)"
+            ]
         }
     ],
     "configurations": [
@@ -128,7 +142,8 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "development",
-                "Platform": "x64"
+                "Platform": "x64",
+                "DisableElectron": "true"
             },
         },
         {
@@ -158,7 +173,8 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "production",
-                "Platform": "x64"
+                "Platform": "x64",
+                "DisableElectron": "true"
             },
         },
         {
@@ -170,8 +186,39 @@
             "args": [],
             "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
             "stopAtEntry": false,
-            "internalConsoleOptions": "neverOpen",
-            "externalConsole": true,
+            "internalConsoleOptions": "openOnSessionStart",
+            "externalConsole": false,
+            "launchBrowser": {
+                "enabled": false,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "development",
+                "Platform": "ARM64",
+                "DisableElectron": "true"
+            },
+        },
+        {
+            "name": "Server Backend - .NET Core (Release ARM64)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build (Release ARM64)",
+            "program": "${workspaceFolder}/tools/ReFlex.TrackingServer/bin/ARM64/Release/net8.0/ReFlex.TrackingServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/tools/ReFlex.TrackingServer",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart",
+            "externalConsole": false,
             "launchBrowser": {
                 "enabled": false,
                 "args": "${auto-detect-url}",
@@ -188,7 +235,8 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "production",
-                "Platform": "x64"
+                "Platform": "ARM64",
+                "DisableElectron": "true"
             },
         }
     ]
