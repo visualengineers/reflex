@@ -34,7 +34,7 @@
     "angular-plotly.js": "^5.2.2",
     "d3": "^7.9.0",
     "file-saver": "^2.0.5",
-    "happy-dom": "15.11.7",
+    "happy-dom": "20.0.2",
     "plotly.js-dist-min": "^2.33.0",
     "rxjs": "^7.8.1",
     "three": "^0.170.0",
