@@ -21,7 +21,8 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
 7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
-8. [Documentation (github pages)](#documentation-github-pages)
+8. [Updating .NET](#updating-net)
+9. [Documentation (github pages)](#documentation-github-pages)
 
 ## Build status
 
@@ -164,6 +165,15 @@ Therefore, the repository should be initialized in the root folder by running th
   ```bash
    ./cleanup_packages.sh package-directories.txt
   ```
+
+**[⬆ back to top](#table-of-contents)**
+
+## Updating .NET
+
+- The .NET version which is used to **build** the ReFlex Solution is specified in the `global.json` file in the root directory
+- .NET versions must be updated in all projects (`library`) and Server component of `tools/ReFlex.TrackingServer` as well als `examples/ExampleWPF` and `examples/MAUI`
+- After a .NET Update this need to be changed to the matching .NET version in `global.json`, to ensure compatibility
+- `global.json` is needed especially for CI, as th github action `setup-dotnet` by defauilt installs the newest version and build the solution with this version, which is likely to cause errors
 
 **[⬆ back to top](#table-of-contents)**
 

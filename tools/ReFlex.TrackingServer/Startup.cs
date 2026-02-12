@@ -3,8 +3,8 @@ using Implementation.Components;
 using Implementation.Interfaces;
 using Newtonsoft.Json.Serialization;
 using NLog;
-using NLog.Config;
 using NLog.Extensions.Logging;
+using NLog.Targets;
 using ReFlex.Core.Calibration.Components;
 using ReFlex.Core.Calibration.Util;
 using ReFlex.Core.Common.Components;
@@ -29,7 +29,7 @@ namespace TrackingServer
         private const string _corsPolicy = "allowLocalhostConnections";
         private readonly IWebHostEnvironment _env;
         private readonly IEventAggregator _evtAggregator;
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Startup(IWebHostEnvironment env)
         {
@@ -54,11 +54,15 @@ namespace TrackingServer
             _env = env;
             _evtAggregator = new EventAggregator();
 
-            // make NLog DI aware
-            ConfigurationItemFactory.Default.CreateInstance = type =>
-                type == typeof(LogEventAggregatorTarget)
-                    ? new LogEventAggregatorTarget(_evtAggregator)
-                    : Activator.CreateInstance(type);
+            // // make NLog DI aware
+            // ConfigurationItemFactory.Default.CreateInstance = type =>
+            //     type == typeof(LogEventAggregatorTarget)
+            //         ? new LogEventAggregatorTarget(_evtAggregator)
+            //         : Activator.CreateInstance(type);
+
+            LogManager.Setup().SetupExtensions(ext => {
+                ext.RegisterTarget(() => new LogEventAggregatorTarget(_evtAggregator));
+            });
 
             _logger.Trace($"Configured NLog for DI");
 
