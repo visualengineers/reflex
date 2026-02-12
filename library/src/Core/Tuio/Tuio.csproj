@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="CoreOSC" Version="1.0.0" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.13.0" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="18.0.1" />
     <PackageReference Include="NLog" Version="6.1.0" />
   </ItemGroup>
 
