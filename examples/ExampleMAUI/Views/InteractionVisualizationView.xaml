@@ -7,7 +7,7 @@
              x:Class="ExampleMAUI.Views.InteractionVisualizationView"
              x:DataType="viewModels:InteractionVisualizationViewModel">
   <util:InteractionGraphicsView
-    Background="{StaticResource GrayLight}"
+    Background="{StaticResource WhiteBrush}"
     InteractionList="{Binding Interactions}">
     <util:InteractionGraphicsView.Drawable>
       <util:InteractionsDrawable/>

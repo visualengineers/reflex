@@ -5,7 +5,6 @@
              x:Class="ExampleMAUI.MainPage"
              Title="ReFlex | .NET MAUI Example"
              Background="{StaticResource WhiteBrush}">
-
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="350"></ColumnDefinition>

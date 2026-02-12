@@ -24,10 +24,8 @@ public class ServerViewModel : BindableBase, IDisposable
   {
     _server = connection;
 
-    ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected);
-    (ConnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsDisconnected);
-    DisconnectCommand = new DelegateCommand(Disconnect, () => IsConnected);
-    (DisconnectCommand as DelegateCommand)?.ObservesCanExecute(() => IsConnected);
+    ConnectCommand = new DelegateCommand(Connect, () => IsDisconnected).ObservesCanExecute(() => IsDisconnected);
+    DisconnectCommand = new DelegateCommand(Disconnect, () => IsConnected).ObservesCanExecute(() => IsConnected);
   }
 
   private void Connect()
@@ -39,6 +37,8 @@ public class ServerViewModel : BindableBase, IDisposable
 
     RaisePropertyChanged(nameof(IsConnected));
     RaisePropertyChanged(nameof(IsDisconnected));
+
+    var dispatcher = Application.Current?.Dispatcher;
 
     _server.ClientInstance.NewDataReceived += UpdateServerInfo;
   }

@@ -4,12 +4,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="using:ExampleMAUI.ViewModels"
              xmlns:models="clr-namespace:ExampleMAUI.Models"
-             x:Class="ExampleMAUI.Views.InteractionListView" x:DataType="viewModels:InteractionListViewModel">
+             x:Class="ExampleMAUI.Views.InteractionListView"
+             x:DataType="viewModels:InteractionListViewModel">
   <Border Stroke="{StaticResource Primary}" Padding="10" StrokeThickness="1">
     <CollectionView
         ItemsLayout="VerticalList"
         VerticalOptions="FillAndExpand"
-        ItemsUpdatingScrollMode="KeepLastItemInView"       
+        ItemsUpdatingScrollMode="KeepLastItemInView"
         VerticalScrollBarVisibility="Default" HorizontalScrollBarVisibility="Never"
         ItemsSource="{Binding Messages}">
       <CollectionView.ItemTemplate>
