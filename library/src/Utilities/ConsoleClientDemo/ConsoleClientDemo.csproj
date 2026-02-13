@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="Prism.Core" Version="9.0.537" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
