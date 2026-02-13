@@ -1,4 +1,4 @@
-@import '../../styles'
+@use '../../styles' as *
 
 .connection-indicator 
   position: absolute
@@ -145,7 +145,7 @@
   &__tooltip
     color: $grey
 
-@include media-breakpoint-down(sm) 
+@media (max-width: 767.98px)
 
   .sidebar
     &__container
@@ -170,4 +170,3 @@
 
 
   
-
