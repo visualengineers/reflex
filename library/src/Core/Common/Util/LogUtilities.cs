@@ -2,11 +2,13 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using NLog;
 
 namespace ReFlex.Core.Common.Util
 {
     public static class LogUtilities
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly ConcurrentDictionary<string, byte> LoggedErrors = new ConcurrentDictionary<string, byte>();
 
         /// <summary>
@@ -15,26 +17,18 @@ namespace ReFlex.Core.Common.Util
         /// <param name="exception">Exception to log.</param>
         /// <param name="sourceName">Logical source (for example class name) used for scoping deduplication.</param>
         /// <param name="methodName">Method name used for scoping deduplication.</param>
-        /// <param name="logError">Logging callback used when no custom message is provided.</param>
-        /// <param name="logErrorWithMessage">Logging callback used when a custom message is provided.</param>
         /// <param name="message">Optional custom message for the log entry.</param>
         /// <exception cref="ArgumentNullException">Thrown when required arguments are null.</exception>
         public static void LogErrorOnce(
             Exception exception,
             string sourceName,
             string methodName,
-            Action<Exception> logError,
-            Action<Exception, string> logErrorWithMessage,
             string message = null)
         {
             if (sourceName == null)
                 throw new ArgumentNullException(nameof(sourceName));
             if (methodName == null)
                 throw new ArgumentNullException(nameof(methodName));
-            if (logError == null)
-                throw new ArgumentNullException(nameof(logError));
-            if (logErrorWithMessage == null)
-                throw new ArgumentNullException(nameof(logErrorWithMessage));
 
             if (exception == null)
             {
@@ -49,11 +43,11 @@ namespace ReFlex.Core.Common.Util
 
             if (string.IsNullOrWhiteSpace(message))
             {
-                logError(exception);
+                Log.Error(exception);
                 return;
             }
 
-            logErrorWithMessage(exception, message);
+            Log.Error(exception, message);
         }
 
         /// <summary>

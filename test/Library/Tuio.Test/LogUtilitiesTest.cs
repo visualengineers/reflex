@@ -1,4 +1,7 @@
 ﻿using System;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using NUnit.Framework;
 using ReFlex.Core.Common.Util;
 
@@ -7,40 +10,61 @@ namespace ReFlex.Core.Tuio.Test
     [TestFixture]
     public class LogUtilitiesTest
     {
+        private LoggingConfiguration _previousConfiguration;
+        private MemoryTarget _memoryTarget;
+
+        [SetUp]
+        public void Setup()
+        {
+            // Store current configuration to restore it after each test.
+            _previousConfiguration = LogManager.Configuration;
+
+            // Capture all log entries in memory so assertions can validate deduplication behavior.
+            _memoryTarget = new MemoryTarget("LogUtilitiesMemoryTarget")
+            {
+                Layout = "${level}|${message}|${exception:format=Type,Message}"
+            };
+
+            var config = new LoggingConfiguration();
+            config.AddRuleForAllLevels(_memoryTarget);
+            LogManager.Configuration = config;
+            LogManager.ReconfigExistingLoggers();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Ensure static deduplication state does not leak into the next test.
+            LogUtilities.ClearLoggedErrors();
+
+            // Restore original logging configuration for the rest of the test suite.
+            LogManager.Configuration = _previousConfiguration;
+            LogManager.ReconfigExistingLoggers();
+
+            _memoryTarget?.Dispose();
+        }
+
         [Test]
         public void TestNoAdditionalLogWhenKeyExists()
         {
             // Use a unique source scope so tests stay isolated even with shared static cache.
             var sourceName = CreateUniqueSourceName(nameof(TestNoAdditionalLogWhenKeyExists));
             var methodName = "SendUdp";
-            var logCount = 0;
 
-            try
-            {
-                // First occurrence should be logged.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("send failed"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            // First occurrence should be logged.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("send failed"),
+                sourceName,
+                methodName);
 
-                // Same exception signature in same source/method should be suppressed.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("send failed"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            // Same exception signature in same source/method should be suppressed.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("send failed"),
+                sourceName,
+                methodName);
 
-                // Exactly one log entry is expected.
-                Assert.That(logCount, Is.EqualTo(1));
-            }
-            finally
-            {
-                // Cleanup test-specific cache entries.
-                LogUtilities.ClearLoggedErrors(sourceName);
-            }
+            // Exactly one log entry is expected.
+            Assert.That(_memoryTarget.Logs.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -49,39 +73,28 @@ namespace ReFlex.Core.Tuio.Test
             // Unique source keeps this test independent from other runs.
             var sourceName = CreateUniqueSourceName(nameof(TestClearAllowsLoggingAgain));
             var methodName = "SendTcp";
-            var logCount = 0;
 
-            try
-            {
-                // First log call should pass through.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("connection failed"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++,
-                    "custom message");
+            // First log call should pass through.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("connection failed"),
+                sourceName,
+                methodName,
+                "custom message");
 
-                // Reset deduplication state for this source.
-                LogUtilities.ClearLoggedErrors(sourceName);
+            // Reset deduplication state for this source.
+            LogUtilities.ClearLoggedErrors(sourceName);
 
-                // After reset, same error must be logged again.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("connection failed"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++,
-                    "custom message");
+            // After reset, same error must be logged again.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("connection failed"),
+                sourceName,
+                methodName,
+                "custom message");
 
-                // One log before and one log after clear.
-                Assert.That(logCount, Is.EqualTo(2));
-            }
-            finally
-            {
-                // Cleanup test-specific cache entries.
-                LogUtilities.ClearLoggedErrors(sourceName);
-            }
+            // One log before and one log after clear.
+            Assert.That(_memoryTarget.Logs.Count, Is.EqualTo(2));
+            Assert.That(_memoryTarget.Logs[0], Does.Contain("custom message"));
+            Assert.That(_memoryTarget.Logs[1], Does.Contain("custom message"));
         }
 
         [Test]
@@ -90,76 +103,51 @@ namespace ReFlex.Core.Tuio.Test
             // Unique source keeps this test independent from other runs.
             var sourceName = CreateUniqueSourceName(nameof(TestDifferentMessagesAndExceptionTypesAreLoggedOnceEach));
             var methodName = "SendOscMessageTcp";
-            var logCount = 0;
 
-            try
-            {
-                // Distinct signatures: message, type and inner-exception chain.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("message A"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            // Distinct signatures: message, type and inner-exception chain.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("message A"),
+                sourceName,
+                methodName);
 
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("message B"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("message B"),
+                sourceName,
+                methodName);
 
-                LogUtilities.LogErrorOnce(
-                    new ArgumentException("message A"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new ArgumentException("message A"),
+                sourceName,
+                methodName);
 
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("message A", new Exception("inner A")),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("message A", new Exception("inner A")),
+                sourceName,
+                methodName);
 
-                // Repeat all variants; duplicates should be suppressed.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("message A"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            // Repeat all variants; duplicates should be suppressed.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("message A"),
+                sourceName,
+                methodName);
 
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("message B"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("message B"),
+                sourceName,
+                methodName);
 
-                LogUtilities.LogErrorOnce(
-                    new ArgumentException("message A"),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new ArgumentException("message A"),
+                sourceName,
+                methodName);
 
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("message A", new Exception("inner A")),
-                    sourceName,
-                    methodName,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("message A", new Exception("inner A")),
+                sourceName,
+                methodName);
 
-                // Four unique signatures should produce four logs total.
-                Assert.That(logCount, Is.EqualTo(4));
-            }
-            finally
-            {
-                // Cleanup test-specific cache entries.
-                LogUtilities.ClearLoggedErrors(sourceName);
-            }
+            // Four unique signatures should produce four logs total.
+            Assert.That(_memoryTarget.Logs.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -169,50 +157,31 @@ namespace ReFlex.Core.Tuio.Test
             var sourceName = CreateUniqueSourceName(nameof(TestSameErrorIsLoggedOncePerMethod));
             var firstMethod = "SendTcp";
             var secondMethod = "SendOscMessageTcp";
-            var logCount = 0;
 
-            try
-            {
-                // Same error in first method: only first call logs.
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("same error"),
-                    sourceName,
-                    firstMethod,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            // Same error in first method: only first call logs.
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("same error"),
+                sourceName,
+                firstMethod);
 
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("same error"),
-                    sourceName,
-                    firstMethod,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("same error"),
+                sourceName,
+                firstMethod);
 
-                Assert.That(logCount, Is.EqualTo(1));
+            // Same error in different method should log once again (method is part of the key).
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("same error"),
+                sourceName,
+                secondMethod);
 
-                // Same error in different method should log once again (method is part of the key).
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("same error"),
-                    sourceName,
-                    secondMethod,
-                    _ => logCount++,
-                    (_, __) => logCount++);
+            LogUtilities.LogErrorOnce(
+                new InvalidOperationException("same error"),
+                sourceName,
+                secondMethod);
 
-                LogUtilities.LogErrorOnce(
-                    new InvalidOperationException("same error"),
-                    sourceName,
-                    secondMethod,
-                    _ => logCount++,
-                    (_, __) => logCount++);
-
-                // One log per method is expected.
-                Assert.That(logCount, Is.EqualTo(2));
-            }
-            finally
-            {
-                // Cleanup test-specific cache entries.
-                LogUtilities.ClearLoggedErrors(sourceName);
-            }
+            // One log per method is expected.
+            Assert.That(_memoryTarget.Logs.Count, Is.EqualTo(2));
         }
 
         private static string CreateUniqueSourceName(string testName)

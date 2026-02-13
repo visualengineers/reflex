@@ -38,16 +38,6 @@ namespace ReFlex.Core.Tuio.Components
         private string _serverAddress;
         private int _serverPort;
 
-        private void LogError(Exception exception)
-        {
-            Log.Error(exception);
-        }
-
-        private void LogErrorWithMessage(Exception exception, string message)
-        {
-            Log.Error(exception, message);
-        }
-
         /// <summary>
         /// Specifies whether a valid <see cref="TuioConfiguration"/> has been provided and sending is enabled.
         /// </summary>
@@ -108,8 +98,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendUdp), LogError,
-                    LogErrorWithMessage, "Error sending osc message via UDP");
+                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendUdp), "Error sending osc message via UDP");
             }
         }
 
@@ -128,8 +117,7 @@ namespace ReFlex.Core.Tuio.Components
                 }
                 catch (Exception exc)
                 {
-                    LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendTcp), LogError,
-                        LogErrorWithMessage);
+                    LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendTcp));
                 }
             }
 
@@ -160,8 +148,7 @@ namespace ReFlex.Core.Tuio.Components
                 }
                 catch (Exception exc)
                 {
-                    LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendWebSocket),
-                        LogError, LogErrorWithMessage);
+                    LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendWebSocket));
                 }
             }
 
@@ -186,8 +173,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendOscMessageUdp),
-                    LogError, LogErrorWithMessage);
+                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendOscMessageUdp));
             }
         }
 
@@ -213,8 +199,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendOscMessageTcp),
-                    LogError, LogErrorWithMessage);
+                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendOscMessageTcp));
             }
         }
 
@@ -242,8 +227,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogUtilities.LogErrorOnce(exc, nameof(TuioSender),
-                    nameof(SendOscMessageWebSocket), LogError, LogErrorWithMessage);
+                LogUtilities.LogErrorOnce(exc, nameof(TuioSender), nameof(SendOscMessageWebSocket));
             }
         }
 
