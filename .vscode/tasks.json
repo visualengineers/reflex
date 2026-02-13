@@ -149,7 +149,7 @@
                         "regexp": "(.*?)"
                     },
                     "endsPattern": {
-                        "regexp": "√ Compiled successfully.|Failed to compile."
+                        "regexp": "(?:[\\u221A\\u2713\\u2714]\\s*)?Compiled successfully\\.|(?:Browser\\s+)?[Aa]pplication bundle generation complete\\.|Failed to compile\\."
                     }
                 }
             }
@@ -170,7 +170,7 @@
                         "regexp": "(.*?)"
                     },
                     "endsPattern": {
-                        "regexp": "√ Compiled successfully.|Failed to compile."
+                        "regexp": "(?:[\\u221A\\u2713\\u2714]\\s*)?Compiled successfully\\.|(?:Browser\\s+)?[Aa]pplication bundle generation complete\\.|Failed to compile\\."
                     }
                 }
             },
@@ -223,7 +223,7 @@
                         "regexp": "(.*?)"
                     },
                     "endsPattern": {
-                        "regexp": "√ Compiled successfully.|Failed to compile."
+                        "regexp": "(?:[\\u221A\\u2713\\u2714]\\s*)?Compiled successfully\\.|(?:Browser\\s+)?[Aa]pplication bundle generation complete\\.|Failed to compile\\."
                     }
                 }
             },
