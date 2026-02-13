@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Text;
 
 namespace ReFlex.Core.Common.Util
 {
     public static class LogUtilities
     {
+        private static readonly ConcurrentDictionary<string, byte> LoggedErrors = new ConcurrentDictionary<string, byte>();
+
         /// <summary>
         /// Logs an exception only once for the same source, method and exception signature.
         /// </summary>
-        /// <param name="loggedErrors">Thread-safe cache that stores signatures of already logged errors.</param>
         /// <param name="exception">Exception to log.</param>
         /// <param name="sourceName">Logical source (for example class name) used for scoping deduplication.</param>
         /// <param name="methodName">Method name used for scoping deduplication.</param>
@@ -18,7 +20,6 @@ namespace ReFlex.Core.Common.Util
         /// <param name="message">Optional custom message for the log entry.</param>
         /// <exception cref="ArgumentNullException">Thrown when required arguments are null.</exception>
         public static void LogErrorOnce(
-            ConcurrentDictionary<string, byte> loggedErrors,
             Exception exception,
             string sourceName,
             string methodName,
@@ -26,8 +27,10 @@ namespace ReFlex.Core.Common.Util
             Action<Exception, string> logErrorWithMessage,
             string message = null)
         {
-            if (loggedErrors == null)
-                throw new ArgumentNullException(nameof(loggedErrors));
+            if (sourceName == null)
+                throw new ArgumentNullException(nameof(sourceName));
+            if (methodName == null)
+                throw new ArgumentNullException(nameof(methodName));
             if (logError == null)
                 throw new ArgumentNullException(nameof(logError));
             if (logErrorWithMessage == null)
@@ -39,7 +42,7 @@ namespace ReFlex.Core.Common.Util
             }
 
             var errorKey = BuildErrorKey(sourceName, methodName, exception);
-            if (!loggedErrors.TryAdd(errorKey, 0))
+            if (!LoggedErrors.TryAdd(errorKey, 0))
             {
                 return;
             }
@@ -51,6 +54,31 @@ namespace ReFlex.Core.Common.Util
             }
 
             logErrorWithMessage(exception, message);
+        }
+
+        /// <summary>
+        /// Clears deduplication entries.
+        /// If <paramref name="sourceName"/> is provided, only entries for this source are removed.
+        /// If it is null or whitespace, all entries are removed.
+        /// </summary>
+        /// <param name="sourceName">Optional source name filter.</param>
+        public static void ClearLoggedErrors(string sourceName = null)
+        {
+            if (string.IsNullOrWhiteSpace(sourceName))
+            {
+                LoggedErrors.Clear();
+                return;
+            }
+
+            var sourcePrefix = $"{sourceName}:";
+            var keys = LoggedErrors.Keys
+                .Where(key => key.StartsWith(sourcePrefix, StringComparison.Ordinal))
+                .ToList();
+
+            foreach (var key in keys)
+            {
+                LoggedErrors.TryRemove(key, out _);
+            }
         }
 
         /// <summary>
