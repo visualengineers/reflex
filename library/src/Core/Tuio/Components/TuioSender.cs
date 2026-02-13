@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreOSC;
@@ -12,6 +11,7 @@ using CoreOSC.IO;
 using NLog;
 using ReFlex.Core.Common.Adapter;
 using ReFlex.Core.Common.Interfaces;
+using ReFlex.Core.Common.Util;
 using ReFlex.Core.Tuio.Interfaces;
 using ReFlex.Core.Tuio.Util;
 
@@ -40,43 +40,14 @@ namespace ReFlex.Core.Tuio.Components
         private string _serverAddress;
         private int _serverPort;
 
-        private void LogErrorOnce(Exception exc, string methodName, string message = null)
+        private void LogError(Exception exception)
         {
-            if (exc == null)
-            {
-                return;
-            }
-
-            var errorKey = $"{methodName}:{BuildExceptionSignature(exc)}";
-            if (!_loggedSendErrors.TryAdd(errorKey, 0))
-            {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                Log.Error(exc);
-                return;
-            }
-
-            Log.Error(exc, message);
+            Log.Error(exception);
         }
 
-        private static string BuildExceptionSignature(Exception exc)
+        private void LogErrorWithMessage(Exception exception, string message)
         {
-            var builder = new StringBuilder();
-            var current = exc;
-
-            while (current != null)
-            {
-                builder.Append(current.GetType().FullName);
-                builder.Append(':');
-                builder.Append(current.Message);
-                builder.Append('|');
-                current = current.InnerException;
-            }
-
-            return builder.ToString();
+            Log.Error(exception, message);
         }
 
         /// <summary>
@@ -139,7 +110,8 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogErrorOnce(exc, nameof(SendUdp), "Error sending osc message via UDP");
+                LogUtilities.LogErrorOnce(_loggedSendErrors, exc, nameof(TuioSender), nameof(SendUdp), LogError,
+                    LogErrorWithMessage, "Error sending osc message via UDP");
             }
         }
 
@@ -158,7 +130,8 @@ namespace ReFlex.Core.Tuio.Components
                 }
                 catch (Exception exc)
                 {
-                    LogErrorOnce(exc, nameof(SendTcp));
+                    LogUtilities.LogErrorOnce(_loggedSendErrors, exc, nameof(TuioSender), nameof(SendTcp), LogError,
+                        LogErrorWithMessage);
                 }
             }
 
@@ -189,7 +162,8 @@ namespace ReFlex.Core.Tuio.Components
                 }
                 catch (Exception exc)
                 {
-                    LogErrorOnce(exc, nameof(SendWebSocket));
+                    LogUtilities.LogErrorOnce(_loggedSendErrors, exc, nameof(TuioSender), nameof(SendWebSocket),
+                        LogError, LogErrorWithMessage);
                 }
             }
 
@@ -214,7 +188,8 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogErrorOnce(exc, nameof(SendOscMessageUdp));
+                LogUtilities.LogErrorOnce(_loggedSendErrors, exc, nameof(TuioSender), nameof(SendOscMessageUdp),
+                    LogError, LogErrorWithMessage);
             }
         }
 
@@ -240,7 +215,8 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogErrorOnce(exc, nameof(SendOscMessageTcp));
+                LogUtilities.LogErrorOnce(_loggedSendErrors, exc, nameof(TuioSender), nameof(SendOscMessageTcp),
+                    LogError, LogErrorWithMessage);
             }
         }
 
@@ -268,7 +244,8 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                LogErrorOnce(exc, nameof(SendOscMessageWebSocket));
+                LogUtilities.LogErrorOnce(_loggedSendErrors, exc, nameof(TuioSender),
+                    nameof(SendOscMessageWebSocket), LogError, LogErrorWithMessage);
             }
         }
 

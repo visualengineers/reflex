@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Text;
+
+namespace ReFlex.Core.Common.Util
+{
+    public static class LogUtilities
+    {
+        /// <summary>
+        /// Logs an exception only once for the same source, method and exception signature.
+        /// </summary>
+        /// <param name="loggedErrors">Thread-safe cache that stores signatures of already logged errors.</param>
+        /// <param name="exception">Exception to log.</param>
+        /// <param name="sourceName">Logical source (for example class name) used for scoping deduplication.</param>
+        /// <param name="methodName">Method name used for scoping deduplication.</param>
+        /// <param name="logError">Logging callback used when no custom message is provided.</param>
+        /// <param name="logErrorWithMessage">Logging callback used when a custom message is provided.</param>
+        /// <param name="message">Optional custom message for the log entry.</param>
+        /// <exception cref="ArgumentNullException">Thrown when required arguments are null.</exception>
+        public static void LogErrorOnce(
+            ConcurrentDictionary<string, byte> loggedErrors,
+            Exception exception,
+            string sourceName,
+            string methodName,
+            Action<Exception> logError,
+            Action<Exception, string> logErrorWithMessage,
+            string message = null)
+        {
+            if (loggedErrors == null)
+                throw new ArgumentNullException(nameof(loggedErrors));
+            if (logError == null)
+                throw new ArgumentNullException(nameof(logError));
+            if (logErrorWithMessage == null)
+                throw new ArgumentNullException(nameof(logErrorWithMessage));
+
+            if (exception == null)
+            {
+                return;
+            }
+
+            var errorKey = BuildErrorKey(sourceName, methodName, exception);
+            if (!loggedErrors.TryAdd(errorKey, 0))
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                logError(exception);
+                return;
+            }
+
+            logErrorWithMessage(exception, message);
+        }
+
+        /// <summary>
+        /// Creates a key that uniquely identifies an error context for deduplicated logging.
+        /// </summary>
+        /// <param name="sourceName">Logical source (for example class name).</param>
+        /// <param name="methodName">Method name where the exception occurred.</param>
+        /// <param name="exception">Exception to create the key from.</param>
+        /// <returns>Deterministic key based on source, method and exception signature.</returns>
+        private static string BuildErrorKey(string sourceName, string methodName, Exception exception)
+        {
+            return $"{sourceName}:{methodName}:{BuildExceptionSignature(exception)}";
+        }
+
+        /// <summary>
+        /// Builds a deterministic signature from the exception chain.
+        /// This includes each exception type and message, including inner exceptions.
+        /// </summary>
+        /// <param name="exception">Exception to convert to a signature.</param>
+        /// <returns>Signature string that can be used for deduplication.</returns>
+        private static string BuildExceptionSignature(Exception exception)
+        {
+            var builder = new StringBuilder();
+            var current = exception;
+
+            while (current != null)
+            {
+                builder.Append(current.GetType().FullName);
+                builder.Append(':');
+                builder.Append(current.Message);
+                builder.Append('|');
+                current = current.InnerException;
+            }
+
+            return builder.ToString();
+        }
+    }
+}
