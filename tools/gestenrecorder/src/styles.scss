@@ -1,14 +1,20 @@
 @use 'reflex' as reflex;
+@use 'bootstrap/dist/css/bootstrap.min.css';
+@use 'bootstrap/scss/mixins/breakpoints' as bootstrap-breakpoints;
 
-@import 'bootstrap/dist/css/bootstrap.min.css';
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import 'bootstrap/scss/mixins/breakpoints';
+$bootstrap-grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+);
 
-@include media-breakpoint-down(xs);
-@include media-breakpoint-down(sm);
-@include media-breakpoint-down(md);
-@include media-breakpoint-down(lg);
+@include bootstrap-breakpoints.media-breakpoint-down(xs, $bootstrap-grid-breakpoints);
+@include bootstrap-breakpoints.media-breakpoint-down(sm, $bootstrap-grid-breakpoints);
+@include bootstrap-breakpoints.media-breakpoint-down(md, $bootstrap-grid-breakpoints);
+@include bootstrap-breakpoints.media-breakpoint-down(lg, $bootstrap-grid-breakpoints);
 
 $white: #ffffff;
 $grey-lightest: #f7f7f7;
