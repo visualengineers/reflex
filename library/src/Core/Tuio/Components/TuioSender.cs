@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreOSC;
@@ -18,17 +20,18 @@ namespace ReFlex.Core.Tuio.Components
     public class TuioSender : ITuioSender
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly ConcurrentDictionary<string, byte> _loggedSendErrors = new ConcurrentDictionary<string, byte>();
 
         /// <summary>
         /// Client for sending TUIO Messages to Server using UDP
         /// </summary>
         protected UdpClient UdpClient;
-        
+
         /// <summary>
         /// Client Interface for sending TUIO Messages to Server using TCP. (use <see cref="TcpClientAdapter"/> for better test abilities)
         /// </summary>
         protected ITcpClient TcpClient;
-        
+
         /// <summary>
         /// Client Interface for sending TUIO Messages to Server using WebSocket protocol. (use <see cref="ClientWebSocketAdapter"/> for better test abilities)
         /// </summary>
@@ -36,6 +39,45 @@ namespace ReFlex.Core.Tuio.Components
 
         private string _serverAddress;
         private int _serverPort;
+
+        private void LogErrorOnce(Exception exc, string methodName, string message = null)
+        {
+            if (exc == null)
+            {
+                return;
+            }
+
+            var errorKey = $"{methodName}:{BuildExceptionSignature(exc)}";
+            if (!_loggedSendErrors.TryAdd(errorKey, 0))
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                Log.Error(exc);
+                return;
+            }
+
+            Log.Error(exc, message);
+        }
+
+        private static string BuildExceptionSignature(Exception exc)
+        {
+            var builder = new StringBuilder();
+            var current = exc;
+
+            while (current != null)
+            {
+                builder.Append(current.GetType().FullName);
+                builder.Append(':');
+                builder.Append(current.Message);
+                builder.Append('|');
+                current = current.InnerException;
+            }
+
+            return builder.ToString();
+        }
 
         /// <summary>
         /// Specifies whether a valid <see cref="TuioConfiguration"/> has been provided and sending is enabled.
@@ -78,6 +120,7 @@ namespace ReFlex.Core.Tuio.Components
 
             _serverAddress = config.ServerAddress;
             _serverPort = config.ServerPort;
+            _loggedSendErrors.Clear();
             IsInitialized = true;
         }
 
@@ -96,7 +139,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                Log.Error(exc, $"Error sending osc message via UDP");
+                LogErrorOnce(exc, nameof(SendUdp), "Error sending osc message via UDP");
             }
         }
 
@@ -115,7 +158,7 @@ namespace ReFlex.Core.Tuio.Components
                 }
                 catch (Exception exc)
                 {
-                    Log.Error(exc);
+                    LogErrorOnce(exc, nameof(SendTcp));
                 }
             }
 
@@ -146,7 +189,7 @@ namespace ReFlex.Core.Tuio.Components
                 }
                 catch (Exception exc)
                 {
-                    Log.Error(exc);
+                    LogErrorOnce(exc, nameof(SendWebSocket));
                 }
             }
 
@@ -165,7 +208,14 @@ namespace ReFlex.Core.Tuio.Components
         /// <param name="msg"><see cref="OscMessage"/> to be transmitted</param>
         protected virtual async Task SendOscMessageUdp(OscMessage msg)
         {
-            await UdpClient.SendMessageAsync(msg);
+            try
+            {
+                await UdpClient.SendMessageAsync(msg);
+            }
+            catch (Exception exc)
+            {
+                LogErrorOnce(exc, nameof(SendOscMessageUdp));
+            }
         }
 
         /// <summary>
@@ -190,7 +240,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                Log.Error(exc);
+                LogErrorOnce(exc, nameof(SendOscMessageTcp));
             }
         }
 
@@ -218,7 +268,7 @@ namespace ReFlex.Core.Tuio.Components
             }
             catch (Exception exc)
             {
-                Log.Error(exc);
+                LogErrorOnce(exc, nameof(SendOscMessageWebSocket));
             }
         }
 
@@ -237,6 +287,7 @@ namespace ReFlex.Core.Tuio.Components
             UdpClient?.Dispose();
             TcpClient?.Dispose();
             WsClient?.Dispose();
+            _loggedSendErrors.Clear();
 
             IsInitialized = false;
         }
