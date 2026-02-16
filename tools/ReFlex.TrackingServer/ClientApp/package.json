@@ -45,7 +45,7 @@
   ],
   "private": true,
   "dependencies": {
-    "@microsoft/signalr": "6.0.1",
+    "@microsoft/signalr": "9.0.6",
     "@reflex/angular-components": "file:../../../packages/reflex-angular-components",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
     "d3": "^7.9.0",
