@@ -8,6 +8,118 @@
 - `PUT /api/Tracking/{id}` und `PUT /api/Tracking/Configuration/{id}` haben zwar einen Body-Parameter, werten ihn im Controller aber nicht aus.
 - Der WebSocket-Endpunkt `GET /ReFlex` ist kein REST-Endpunkt und daher hier nicht Teil der Tabelle.
 
+## Beispiel-Requests
+
+Die lokalen Launch-Profile verwenden standardmaessig `http://localhost:5000` oder `https://localhost:5001`.
+
+```bash
+BASE_URL=http://localhost:5000
+JSON_HEADER='Content-Type: application/json'
+```
+
+Falls du lokal ueber HTTPS testest, ist wegen des Dev-Zertifikats oft `curl -k` praktischer:
+
+```bash
+BASE_URL=https://localhost:5001
+curl -k "$BASE_URL/api/VersionInfo"
+```
+
+### Einfache GET-Requests
+
+```bash
+curl "$BASE_URL/api/Tracking"
+curl "$BASE_URL/api/Tracking/Status"
+curl "$BASE_URL/api/Settings"
+curl "$BASE_URL/api/DepthImage/PointCloud"
+curl "$BASE_URL/api/VersionInfo"
+```
+
+### Primitive JSON-Bodies
+
+JSON-Strings muessen in `curl` als JSON-String serialisiert werden, also z. B. `-d '"recording-01"'`.
+
+```bash
+curl -X PUT "$BASE_URL/api/Tracking/StartRecording" \
+  -H "$JSON_HEADER" \
+  -d '"recording-01"'
+
+curl -X PUT "$BASE_URL/api/Tracking/SetAutostart" \
+  -H "$JSON_HEADER" \
+  -d 'true'
+
+curl -X POST "$BASE_URL/api/Settings/Threshold" \
+  -H "$JSON_HEADER" \
+  -d '0.12'
+
+curl -X PUT "$BASE_URL/api/Tracking/SetDepthImagePreview" \
+  -H "$JSON_HEADER" \
+  -d 'false'
+```
+
+### `JsonSimpleValue<T>`-Bodies
+
+```bash
+curl -X POST "$BASE_URL/api/Network/SetPort" \
+  -H "$JSON_HEADER" \
+  -d '{"name":"Port","value":5500}'
+
+curl -X POST "$BASE_URL/api/Processing/SetUpdateInterval" \
+  -H "$JSON_HEADER" \
+  -d '{"name":"UpdateInterval","value":50}'
+
+curl -X POST "$BASE_URL/api/Processing/SelectObserverType" \
+  -H "$JSON_HEADER" \
+  -d '{"name":"ObserverType","value":"Remote"}'
+
+curl -X POST "$BASE_URL/api/Tuio/SelectTransportProtocol" \
+  -H "$JSON_HEADER" \
+  -d '{"name":"TransportProtocol","value":"Udp"}'
+
+curl -X POST "$BASE_URL/api/Log/Add" \
+  -H "$JSON_HEADER" \
+  -d '{"name":"Message","value":"API smoke test"}'
+```
+
+### Objekt-Payloads
+
+```bash
+curl -X POST "$BASE_URL/api/Calibration/UpdateFrameSize" \
+  -H "$JSON_HEADER" \
+  -d '{"width":1920,"height":1080,"left":0,"top":0}'
+
+curl -X POST "$BASE_URL/api/Calibration/UpdateCalibrationPoint/0" \
+  -H "$JSON_HEADER" \
+  -d '{"positionX":120,"positionY":250,"touchId":1}'
+
+curl -X POST "$BASE_URL/api/Processing/SetRemoteProcessorSettings" \
+  -H "$JSON_HEADER" \
+  -d '{"address":"http://localhost:50051/","numSkipValues":0,"completeDataSet":true,"cutOff":0.1,"factor":1200,"algorithm":"Default"}'
+
+curl -X POST "$BASE_URL/api/Network/StartBroadcast" \
+  -H "$JSON_HEADER" \
+  -d '{"networkInterfaceType":"Tcp","interval":33,"address":"127.0.0.1","port":7777,"endpoint":"reflex"}'
+
+curl -X POST "$BASE_URL/api/Settings/PointCloudSettings" \
+  -H "$JSON_HEADER" \
+  -d '{"fullResolution":false,"updateInterval":100,"pointCloudSize":40000}'
+```
+
+### Endpunkte mit Pfadparametern
+
+```bash
+curl "$BASE_URL/api/Tracking/Configurations/0"
+curl "$BASE_URL/api/Tracking/RecordingFrameCount/recording-01"
+curl "$BASE_URL/api/Log/Messages/25"
+
+curl -X PUT "$BASE_URL/api/Tracking/ToggleTracking/0" \
+  -H "$JSON_HEADER" \
+  -d '0'
+
+curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
+  -H "$JSON_HEADER" \
+  -d '{"name":"RecordId","value":42}'
+```
+
 ## Calibration
 
 | Methode | Route | Request | Response | Beschreibung |
