@@ -6,6 +6,7 @@
   "tracks": [
     {
       "touchId": 1,
+      "startFrame": 0,
       "frames": [
         {
           "x": 0.0,
