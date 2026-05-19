@@ -61,17 +61,7 @@
     "defaults"
   ],
   "dependencies": {
-    "@angular/animations": "20.3.21",
-    "@angular/common": "20.3.21",
-    "@angular/compiler": "20.3.21",
-    "@angular/core": "20.3.21",
-    "@angular/forms": "20.3.21",
-    "@angular/platform-browser": "20.3.21",
-    "@angular/platform-browser-dynamic": "20.3.21",
-    "@angular/platform-server": "20.3.21",
-    "@angular/router": "20.3.21",
-    "@angular/ssr": "20.3.26",
-    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/angular-fontawesome": "^4.0.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
@@ -79,16 +69,5 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@reflex/shared-types": "file:../../packages/reflex-shared-types",
     "bootstrap": "^5.3.3"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.26",
-    "@angular-eslint/builder": "^19.0.2",
-    "@angular-eslint/eslint-plugin": "^19.3.0",
-    "@angular-eslint/eslint-plugin-template": "^19.3.0",
-    "@angular-eslint/schematics": "^19.3.0",
-    "@angular-eslint/template-parser": "^19.3.0",
-    "@angular/cli": "20.3.26",
-    "@angular/compiler-cli": "20.3.21",
-    "@angular/language-service": "20.3.21"
   }
 }
