@@ -11,28 +11,9 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "21.2.13",
-    "@angular/common": "21.2.13",
-    "@angular/compiler": "21.2.13",
-    "@angular/core": "21.2.13",
-    "@angular/forms": "21.2.13",
-    "@angular/platform-browser": "21.2.13",
-    "@angular/platform-browser-dynamic": "21.2.13",
-    "@angular/platform-server": "21.2.13",
-    "@angular/router": "21.2.13",
-    "@angular/ssr": "^21.2.11",
     "@reflex/angular-components": "file:../../packages/reflex-angular-components"
   },
   "devDependencies": {
-    "@angular-eslint/builder": "^19.0.2",
-    "@angular-eslint/eslint-plugin": "^19.3.0",
-    "@angular-eslint/eslint-plugin-template": "^19.3.0",
-    "@angular-eslint/schematics": "^19.3.0",
-    "@angular-eslint/template-parser": "^19.3.0",
-    "@angular/build": "^21.2.11",
-    "@angular/cli": "21.2.11",
-    "@angular/compiler-cli": "21.2.13",
-    "@angular/language-service": "21.2.13",
     "@types/express": "^5.0.0"
   }
 }
