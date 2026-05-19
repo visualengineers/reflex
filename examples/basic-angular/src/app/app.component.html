@@ -1,24 +1,38 @@
 <!-- Toolbar -->
 <div class="toolbar" role="banner">
-  <img
-    id="reflex-logo"
-    alt="ReFlex Logo"
-    src="assets/img/reflex-logo.png"
-  />
+  <img id="reflex-logo" alt="ReFlex Logo" src="assets/img/reflex-logo.png" />
   <span class="toolbar__title">{{ title }}</span>
-    <div class="spacer"></div>
-    <img id="htw-logo-img" alt="HTW-Logo" src="assets/img/logo--image.png">
-    <img id="htw-logo-text" alt="HTW-Logo" src="assets/img/logo--text.png">
+  <div class="spacer"></div>
+  <img id="htw-logo-img" alt="HTW-Logo" src="assets/img/logo--image.png" />
+  <img id="htw-logo-text" alt="HTW-Logo" src="assets/img/logo--text.png" />
 </div>
 
 <div class="content" role="main" #interactionCanvas>
-  <div *ngFor="let tp of TouchPoints$ | async">
-    <div class="touchPoint" [style]="'transform: translate('+tp.position.x * this.Width+'px, '+tp.position.y * this.Height+'px) scale('+Math.abs(tp.position.z)+');'">
-      <div class="touchPoint__outerCircle {{tp.position.z < 0 ? ' push' : ' pull'}}"></div>
-      <div class="touchPoint__innerCircle"><p>{{tp.touchId}}</p></div>
+  @for (tp of TouchPoints$ | async; track tp) {
+  <div>
+    <div
+      class="touchPoint"
+      [style]="
+        'transform: translate(' +
+        tp.position.x * this.Width +
+        'px, ' +
+        tp.position.y * this.Height +
+        'px) scale(' +
+        Math.abs(tp.position.z) +
+        ');'
+      "
+    >
+      <div
+        class="touchPoint__outerCircle {{
+          tp.position.z < 0 ? ' push' : ' pull'
+        }}"
+      ></div>
+      <div class="touchPoint__innerCircle">
+        <p>{{ tp.touchId }}</p>
+      </div>
     </div>
   </div>
-
+  }
 </div>
 
 <app-status></app-status>
