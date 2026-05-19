@@ -34,7 +34,18 @@
     "test:net-with-report": "dotnet coverage collect dotnet test --output test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura && dotnet reportgenerator -reports:test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:\"test/artifacts/coverage-net/report\" -reporttypes:Html -assemblyfilters:\"+ReFlex.*;-*.Test\"",
     "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp"
   },
-
+  "workspaces": [
+    "packages/reflex-shared-types",
+    "packages/reflex-angular-components",
+    "tools/ReFlex.TrackingServer/ClientApp",
+    "tools/emulator",
+    "tools/gestenrecorder",
+    "tools/logging",
+    "examples/basic-angular",
+    "examples/basic-react",
+    "examples/basic-vue",
+    "examples/shared-components-demo"
+  ],
   "dependencies": {
     "@angular/animations": "21.2.13",
     "@angular/common": "21.2.13",
