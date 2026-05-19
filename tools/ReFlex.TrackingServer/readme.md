@@ -23,9 +23,10 @@ Platform-independent server application using ASP.NET Core as backend and Angula
 ## Installation and start
 
 - Prerequisites:
-  - .NET 8.0  
+  - .NET 10.0
     [Download](https://dotnet.microsoft.com/download/dotnet-core)
-  - node js v. 18 oder higher  
+    *Remark*: Download the SDK for development, it also includes the necessary ASP.NET runtime
+  - Node.js v20 oder higher  
     [Download](https://nodejs.org/en/)
   - C# Extension for VS Code (for debugging)  
     [Download](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)

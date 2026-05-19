@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <PackageId>ReFlex.PointCloud.Benchmark</PackageId>
         <Authors>Mathias Müller</Authors>
         <Copyright>Copyright © 2021-2025</Copyright>
