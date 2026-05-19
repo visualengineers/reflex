@@ -45,6 +45,16 @@
   ],
   "private": true,
   "dependencies": {
+    "@angular/animations": "19.1.4",
+    "@angular/common": "19.1.4",
+    "@angular/compiler": "19.1.4",
+    "@angular/core": "19.1.4",
+    "@angular/forms": "19.1.4",
+    "@angular/platform-browser": "19.1.4",
+    "@angular/platform-browser-dynamic": "19.1.4",
+    "@angular/platform-server": "19.1.4",
+    "@angular/router": "19.1.4",
+    "@angular/ssr": "19.2.7",
     "@microsoft/signalr": "6.0.1",
     "@reflex/angular-components": "file:../../../packages/reflex-angular-components",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
@@ -52,6 +62,15 @@
     "three": "^0.175.0"
   },
   "devDependencies": {
+     "@angular-devkit/build-angular": "^19.2.7",
+    "@angular-eslint/builder": "^19.0.2",
+    "@angular-eslint/eslint-plugin": "^19.3.0",
+    "@angular-eslint/eslint-plugin-template": "^19.3.0",
+    "@angular-eslint/schematics": "^19.3.0",
+    "@angular-eslint/template-parser": "^19.3.0",
+    "@angular/cli": "19.1.5",
+    "@angular/compiler-cli": "19.1.4",
+    "@angular/language-service": "19.1.4",
     "@types/d3": "^7.4.3",
     "@types/three": "^0.175.0",
     "@types/webxr": "^0.5.22"
