@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SettingsGroupComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
@@ -6,7 +6,7 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
 @Component({
   selector: 'app-select',
-  imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueSelectionComponent],
+  imports: [FormsModule, SettingsGroupComponent, ValueSelectionComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss'
 })

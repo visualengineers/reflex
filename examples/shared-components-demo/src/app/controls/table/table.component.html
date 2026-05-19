@@ -14,12 +14,14 @@
     </tr>
   </thead>
   <tbody class="points__table--body">
-    <tr *ngFor="let entry of tableData">
-      <td scope="row">{{ entry?.id }}</td>
-      <td scope="row">{{ entry?.name }}</td>
-      <td scope="row" class="text-column">{{ entry?.message }}</td>
-      <td scope="row">{{ entry?.time?.toFixed(2) ?? ' - '}} ms</td>
-    </tr>
+    @for (entry of tableData; track entry) {
+      <tr>
+        <td scope="row">{{ entry?.id }}</td>
+        <td scope="row">{{ entry?.name }}</td>
+        <td scope="row" class="text-column">{{ entry?.message }}</td>
+        <td scope="row">{{ entry?.time?.toFixed(2) ?? ' - '}} ms</td>
+      </tr>
+    }
   </tbody>
 </table>
 <div class="content__body margin-bottom-default">

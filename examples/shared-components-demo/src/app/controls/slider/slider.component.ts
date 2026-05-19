@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SettingsGroupComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-slider',
-  imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueSliderComponent],
+  imports: [FormsModule, SettingsGroupComponent, ValueSliderComponent],
   templateUrl: './slider.component.html',
   styleUrl: './slider.component.scss'
 })

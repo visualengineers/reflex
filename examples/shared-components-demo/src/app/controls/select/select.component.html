@@ -13,9 +13,11 @@
     id="settings-filter-select"
     (change)="saveFilterType()"
     title="select smoothing filter">
-    <option *ngFor="let filter of filters; let i = index" [value]="i">
-      {{ filter }}
-    </option>
+    @for (filter of filters; track filter; let i = $index) {
+      <option [value]="i">
+        {{ filter }}
+      </option>
+    }
   </select>
   <p description>
     Select one of the available Filters from the list.
