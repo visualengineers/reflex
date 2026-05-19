@@ -1,19 +1,13 @@
-import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
+import { enableProdMode } from '@angular/core';
+import { appConfig } from './app/app.config';
+import { bootstrapApplication } from '@angular/platform-browser';
 import { environment } from './environments/environment';
+import { App } from './app/app';
 
-const providers = [
-  { provide: 'WEBSOCKET_URL', useValue: environment.websocketUrl, deps: [] },
-];
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic(providers)
-  .bootstrapModule(AppModule, {
-    applicationProviders: [provideZoneChangeDetection()],
-  })
+bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));

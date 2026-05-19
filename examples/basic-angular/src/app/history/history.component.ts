@@ -6,8 +6,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'app-history',
     templateUrl: './history.component.html',
-    styleUrls: ['./history.component.scss'],
-    standalone: false
+    styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent  implements OnInit, OnDestroy {
   private _frames: Subscription | undefined;
@@ -28,7 +27,7 @@ export class HistoryComponent  implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    this._frames?.unsubscribe();    
+    this._frames?.unsubscribe();
   }
 
 }
