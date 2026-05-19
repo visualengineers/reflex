@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "rootDir": "./src",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -31,5 +32,13 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "fullTemplateTypeCheck": true,
-  }
+  },
+  "references": [
+    {
+      "path": "./ClientApp/tsconfig.app.json"
+    },
+    {
+      "path": "./ClientApp/tsconfig.spec.json"
+    }
+  ]
 }

@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  templateUrl: './app.html',
   imports: [
-    RouterModule,
+    RouterOutlet,
     NavMenuComponent
   ]
 })
-export class AppComponent {
+export class App {
   public title = 'ReFlex TrackingServer';
 }

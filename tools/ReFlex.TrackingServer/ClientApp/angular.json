@@ -49,7 +49,7 @@
             "security": {
               "allowedHosts": []
             },
-            "outputMode": "server",
+            "outputMode": "static",
             "ssr": {
               "entry": "src/server.ts"
             }
