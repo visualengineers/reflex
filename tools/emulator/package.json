@@ -2,7 +2,7 @@
   "name": "@reflex/emulator",
   "author": "Mathias Müller",
   "description": "Emulator for depth sensing input for developing applications for Elastic Displays using the ReFlex framework",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "main": "main.js",
   "scripts": {
     "ng": "ng",
@@ -23,7 +23,7 @@
     "appId": "reflex.emulator",
     "productName": "ReFlex Emulator",
     "copyright": "Copyright © 2023",
-    "buildVersion": "0.9.9",
+    "buildVersion": "0.9.10",
     "electronVersion": "23.2.4",
     "win": {
       "icon": "dist/browser/assets/icon/app_icon_inverted.ico"
