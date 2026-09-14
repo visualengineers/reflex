@@ -1,30 +1,30 @@
 # ReFlex TrackingServer REST API
 
-## Hinweise
+## Notes
 
-- Basisroute fuer die REST-Endpunkte ist in der Regel `/api/{Controller}`.
-- Einige Endpunkte erwarten primitive JSON-Werte im Body, also z. B. `true`, `3` oder `"recording-01"`.
-- Viele Schreib-Endpunkte verwenden `JsonSimpleValue<T>` im Format `{"name":"Port","value":9000}`. Bei den in der Tabelle markierten Endpunkten muss `name` exakt dem angegebenen Wert entsprechen, sonst antwortet der Controller mit `400 Bad Request`.
-- `PUT /api/Tracking/{id}` und `PUT /api/Tracking/Configuration/{id}` haben zwar einen Body-Parameter, werten ihn im Controller aber nicht aus.
-- Der WebSocket-Endpunkt `GET /ReFlex` ist kein REST-Endpunkt und daher hier nicht Teil der Tabelle.
+- The base route for REST endpoints is usually `/api/{Controller}`.
+- Some endpoints expect primitive JSON values in the body, for example `true`, `3`, or `"recording-01"`.
+- Many write endpoints use `JsonSimpleValue<T>` in the format `{"name":"Port","value":9000}`. For the endpoints marked in the table, `name` must exactly match the specified value; otherwise, the controller responds with `400 Bad Request`.
+- `PUT /api/Tracking/{id}` and `PUT /api/Tracking/Configuration/{id}` have a body parameter, but the controller does not evaluate it.
+- The WebSocket endpoint `GET /ReFlex` is not a REST endpoint and is therefore not included in this table.
 
-## Beispiel-Requests
+## Example Requests
 
-Die lokalen Launch-Profile verwenden standardmaessig `http://localhost:5000` oder `https://localhost:5001`.
+The local launch profiles use `http://localhost:5000` or `https://localhost:5001` by default.
 
 ```bash
 BASE_URL=http://localhost:5000
 JSON_HEADER='Content-Type: application/json'
 ```
 
-Falls du lokal ueber HTTPS testest, ist wegen des Dev-Zertifikats oft `curl -k` praktischer:
+When testing locally over HTTPS, `curl -k` is often more convenient because of the development certificate:
 
 ```bash
 BASE_URL=https://localhost:5001
 curl -k "$BASE_URL/api/VersionInfo"
 ```
 
-### Einfache GET-Requests
+### Simple GET Requests
 
 ```bash
 curl "$BASE_URL/api/Tracking"
@@ -34,9 +34,9 @@ curl "$BASE_URL/api/DepthImage/PointCloud"
 curl "$BASE_URL/api/VersionInfo"
 ```
 
-### Primitive JSON-Bodies
+### Primitive JSON Bodies
 
-JSON-Strings muessen in `curl` als JSON-String serialisiert werden, also z. B. `-d '"recording-01"'`.
+JSON strings must be serialized as JSON strings in `curl`, for example `-d '"recording-01"'`.
 
 ```bash
 curl -X PUT "$BASE_URL/api/Tracking/StartRecording" \
@@ -56,7 +56,7 @@ curl -X PUT "$BASE_URL/api/Tracking/SetDepthImagePreview" \
   -d 'false'
 ```
 
-### `JsonSimpleValue<T>`-Bodies
+### `JsonSimpleValue<T>` Bodies
 
 ```bash
 curl -X POST "$BASE_URL/api/Network/SetPort" \
@@ -80,7 +80,7 @@ curl -X POST "$BASE_URL/api/Log/Add" \
   -d '{"name":"Message","value":"API smoke test"}'
 ```
 
-### Objekt-Payloads
+### Object Payloads
 
 ```bash
 curl -X POST "$BASE_URL/api/Calibration/UpdateFrameSize" \
@@ -104,7 +104,7 @@ curl -X POST "$BASE_URL/api/Settings/PointCloudSettings" \
   -d '{"fullResolution":false,"updateInterval":100,"pointCloudSize":40000}'
 ```
 
-### Endpunkte mit Pfadparametern
+### Endpoints with Path Parameters
 
 ```bash
 curl "$BASE_URL/api/Tracking/Configurations/0"
@@ -122,156 +122,156 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 
 ## Calibration
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Calibration/FrameSize` | - | `FrameSizeDefinition` | Liefert die aktuelle Fenster-/Frame-Groesse der Kalibrierung. |
-| `GET` | `/api/Calibration/SourceValues` | - | `CalibrationPoint[]` | Liefert die Quellpunkte der Kalibrierung. |
-| `GET` | `/api/Calibration/TargetValues` | - | `CalibrationPoint[]` | Liefert die Zielpunkte der Kalibrierung. |
-| `GET` | `/api/Calibration/GetCalibrationMatrix` | - | `CalibrationTransform` | Berechnet die Transformationsmatrix neu und gibt sie zurueck. |
-| `GET` | `/api/Calibration/ApplyCalibration` | - | `CalibrationTransform` | Berechnet die Transformationsmatrix und gibt sie zurueck. |
-| `GET` | `/api/Calibration/Restart` | - | `CalibrationTransform` | Setzt den Kalibrierungsprozess zurueck und liefert die aktuelle Matrix. |
-| `GET` | `/api/Calibration/SaveCalibration` | - | `CalibrationTransform` | Schliesst die Kalibrierung ab und liefert die gespeicherte Matrix. |
-| `POST` | `/api/Calibration/UpdateFrameSize` | Body: `FrameSizeDefinition` | `FrameSizeDefinition` oder `400` | Setzt die Fenster-/Frame-Groesse fuer die Kalibrierung. |
-| `POST` | `/api/Calibration/UpdateCalibrationPoint/{index}` | Pfad: `index` (`0..2`), Body: `CalibrationPoint` | `CalibrationTransform` oder `400` | Aktualisiert einen bestehenden Zielpunkt und liefert die resultierende Matrix. |
-| `POST` | `/api/Calibration/AddCalibrationPoint` | Body: `CalibrationPoint` | `CalibrationTransform` oder `400` | Fuegt einen weiteren Kalibrierungspunkt hinzu. |
-| `POST` | `/api/Calibration/CalibratedInteractions` | Body: `Interaction[]` | `Interaction[]` oder `400` | Kalibriert ein Interaktions-Array und gibt die kalibrierten Werte zurueck. |
+| `GET` | `/api/Calibration/FrameSize` | - | `FrameSizeDefinition` | Returns the current calibration window/frame size. |
+| `GET` | `/api/Calibration/SourceValues` | - | `CalibrationPoint[]` | Returns the calibration source points. |
+| `GET` | `/api/Calibration/TargetValues` | - | `CalibrationPoint[]` | Returns the calibration target points. |
+| `GET` | `/api/Calibration/GetCalibrationMatrix` | - | `CalibrationTransform` | Recalculates and returns the transformation matrix. |
+| `GET` | `/api/Calibration/ApplyCalibration` | - | `CalibrationTransform` | Calculates and returns the transformation matrix. |
+| `GET` | `/api/Calibration/Restart` | - | `CalibrationTransform` | Resets the calibration process and returns the current matrix. |
+| `GET` | `/api/Calibration/SaveCalibration` | - | `CalibrationTransform` | Completes calibration and returns the saved matrix. |
+| `POST` | `/api/Calibration/UpdateFrameSize` | Body: `FrameSizeDefinition` | `FrameSizeDefinition` or `400` | Sets the calibration window/frame size. |
+| `POST` | `/api/Calibration/UpdateCalibrationPoint/{index}` | Path: `index` (`0..2`), Body: `CalibrationPoint` | `CalibrationTransform` or `400` | Updates an existing target point and returns the resulting matrix. |
+| `POST` | `/api/Calibration/AddCalibrationPoint` | Body: `CalibrationPoint` | `CalibrationTransform` or `400` | Adds another calibration point. |
+| `POST` | `/api/Calibration/CalibratedInteractions` | Body: `Interaction[]` | `Interaction[]` or `400` | Calibrates an interaction array and returns the calibrated values. |
 
 ## Tracking
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Tracking` | - | `IDepthCamera[]` | Liefert alle verfuegbaren Kameras. |
-| `GET` | `/api/Tracking/{id}` | Pfad: Kamera-ID | `IDepthCamera` oder `null` | Liefert eine einzelne Kamera anhand ihrer ID. |
-| `PUT` | `/api/Tracking/{id}` | Pfad: Kamera-ID, Body: JSON-String (ungenutzt) | leer | Waehlt eine Kamera per ID aus. |
-| `GET` | `/api/Tracking/Configurations/{id}` | Pfad: Kamera-ID | `StreamParameter[]` | Liefert die verfuegbaren Konfigurationen fuer eine Kamera. |
-| `PUT` | `/api/Tracking/Configuration/{id}` | Pfad: Konfigurations-ID, Body: JSON-String (ungenutzt) | leer | Waehlt eine Kamerakonfiguration per ID aus. |
-| `GET` | `/api/Tracking/SelectedCamera` | - | `IDepthCamera` | Liefert die aktuell ausgewaehlte Kamera. |
-| `GET` | `/api/Tracking/SelectedCameraConfig` | - | `StreamParameter` | Liefert die aktuell ausgewaehlte Kamerakonfiguration. |
-| `PUT` | `/api/Tracking/SetDepthImagePreview` | Body: JSON-Boolean | `202 Accepted` | Aktiviert oder deaktiviert den Raw-Depth-Preview-Stream. |
-| `PUT` | `/api/Tracking/SetDepthImagePointCloudPreview` | Body: JSON-Boolean | `202 Accepted` | Aktiviert oder deaktiviert den Point-Cloud-Preview-Stream. |
-| `GET` | `/api/Tracking/Status` | - | `TrackingConfigState` oder `null` | Liefert den aktuellen Tracking-Status. |
-| `PUT` | `/api/Tracking/ToggleTracking/{id}` | Pfad: Kamera-ID, Body: JSON-Integer `configIdx` | `202 Accepted` | Startet oder stoppt das Tracking fuer Kamera und Konfiguration. |
-| `GET` | `/api/Tracking/Recordings` | - | `StreamParameter[]` | Liefert die vorhandenen Recording-Konfigurationen. |
-| `PUT` | `/api/Tracking/StartRecording` | Body: JSON-String `name` | `string` oder `403` | Startet eine Aufnahme der aktuell streamenden Kamera. |
-| `GET` | `/api/Tracking/StopRecording` | - | `string` | Stoppt die laufende Aufnahme und liefert das Recorder-Ergebnis. |
-| `PUT` | `/api/Tracking/DeleteRecording` | Body: JSON-String `name` | `bool` | Loescht eine benannte Aufnahme. |
-| `GET` | `/api/Tracking/ClearRecordings` | - | `string` | Loescht alle Aufnahmen und liefert die Anzahl geloeschter Eintraege als String. |
-| `GET` | `/api/Tracking/RecordingState` | - | `bool` | Gibt an, ob aktuell aufgenommen wird. |
-| `GET` | `/api/Tracking/RecordingFrameCount/{name}` | Pfad: Aufnahme-Name | `int` | Liefert die Anzahl gespeicherter Frames einer Aufnahme. |
-| `GET` | `/api/Tracking/GetAutostartEnabled` | - | `bool` | Liefert den aktuellen Auto-Start-Status. |
-| `PUT` | `/api/Tracking/SetAutostart` | Body: JSON-Boolean | `bool` | Setzt den Auto-Start-Status. |
+| `GET` | `/api/Tracking` | - | `IDepthCamera[]` | Returns all available cameras. |
+| `GET` | `/api/Tracking/{id}` | Path: camera ID | `IDepthCamera` or `null` | Returns a single camera by its ID. |
+| `PUT` | `/api/Tracking/{id}` | Path: camera ID, Body: JSON string (unused) | empty | Selects a camera by ID. |
+| `GET` | `/api/Tracking/Configurations/{id}` | Path: camera ID | `StreamParameter[]` | Returns the available configurations for a camera. |
+| `PUT` | `/api/Tracking/Configuration/{id}` | Path: configuration ID, Body: JSON string (unused) | empty | Selects a camera configuration by ID. |
+| `GET` | `/api/Tracking/SelectedCamera` | - | `IDepthCamera` | Returns the currently selected camera. |
+| `GET` | `/api/Tracking/SelectedCameraConfig` | - | `StreamParameter` | Returns the currently selected camera configuration. |
+| `PUT` | `/api/Tracking/SetDepthImagePreview` | Body: JSON boolean | `202 Accepted` | Enables or disables the raw depth preview stream. |
+| `PUT` | `/api/Tracking/SetDepthImagePointCloudPreview` | Body: JSON boolean | `202 Accepted` | Enables or disables the point cloud preview stream. |
+| `GET` | `/api/Tracking/Status` | - | `TrackingConfigState` or `null` | Returns the current tracking status. |
+| `PUT` | `/api/Tracking/ToggleTracking/{id}` | Path: camera ID, Body: JSON integer `configIdx` | `202 Accepted` | Starts or stops tracking for the camera and configuration. |
+| `GET` | `/api/Tracking/Recordings` | - | `StreamParameter[]` | Returns the existing recording configurations. |
+| `PUT` | `/api/Tracking/StartRecording` | Body: JSON string `name` | `string` or `403` | Starts a recording for the currently streaming camera. |
+| `GET` | `/api/Tracking/StopRecording` | - | `string` | Stops the running recording and returns the recorder result. |
+| `PUT` | `/api/Tracking/DeleteRecording` | Body: JSON string `name` | `bool` | Deletes a named recording. |
+| `GET` | `/api/Tracking/ClearRecordings` | - | `string` | Deletes all recordings and returns the number of deleted entries as a string. |
+| `GET` | `/api/Tracking/RecordingState` | - | `bool` | Indicates whether recording is currently active. |
+| `GET` | `/api/Tracking/RecordingFrameCount/{name}` | Path: recording name | `int` | Returns the number of stored frames for a recording. |
+| `GET` | `/api/Tracking/GetAutostartEnabled` | - | `bool` | Returns the current auto-start status. |
+| `PUT` | `/api/Tracking/SetAutostart` | Body: JSON boolean | `bool` | Sets the auto-start status. |
 
 ## Settings
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Settings` | - | `TrackingServerAppSettings` | Liefert die komplette aktuelle Server-Konfiguration. |
-| `POST` | `/api/Settings` | Body: `TrackingServerAppSettings` | leer | Uebernimmt und speichert die komplette Konfiguration. |
-| `GET` | `/api/Settings/CanRestore` | - | `JsonSimpleValue<bool>` | Liefert, ob ein Backup fuer Restore verfuegbar ist. Name: `CanRestoreBackup`. |
-| `GET` | `/api/Settings/Restore` | - | `TrackingServerAppSettings` | Stellt die letzte Sicherung wieder her. |
-| `GET` | `/api/Settings/Reset` | - | `TrackingServerAppSettings` | Setzt die Konfiguration auf Defaults zurueck. |
-| `POST` | `/api/Settings/LoadSettings` | Body: `TrackingServerAppSettings` | `TrackingServerAppSettings` | Laedt Client-seitige Settings in den Serverzustand. |
-| `POST` | `/api/Settings/Border` | Body: `Border` | `Border` | Aktualisiert die Border-Einstellungen. |
-| `POST` | `/api/Settings/MinDistanceFromSensor` | Body: JSON-Float | `float` | Setzt den minimalen Sensorabstand. |
-| `POST` | `/api/Settings/LimitationFilterType` | Body: `FilterSettings` | `JsonSimpleValue<bool>` | Aktualisiert mehrere Limitation-/Filter-Einstellungen gesammelt. Rueckgabe: `{name:"success", value:true}`. |
-| `GET` | `/api/Settings/InitializeAdvancedLimitationFilter` | - | `JsonSimpleValue<bool>` | Initialisiert den erweiterten Limitation Filter. Rueckgabe-Name: `Success`. |
-| `GET` | `/api/Settings/LimitationFilterInitializing` | - | `JsonSimpleValue<bool>` | Liefert den Initialisierungsstatus des Limitation Filters. Name: `IsInitializing`. |
-| `GET` | `/api/Settings/LimitationFilterInitState` | - | `JsonSimpleValue<bool>` | Liefert, ob der Limitation Filter initialisiert ist. Name: `IsInitialized`. |
-| `GET` | `/api/Settings/ResetAdvancedLimitationFilter` | - | `JsonSimpleValue<bool>` | Setzt den Limitation Filter zurueck. Rueckgabe-Name: `Success`. |
-| `GET` | `/api/Settings/ComputeZeroPlaneDistance` | - | `Distance` | Berechnet die Zero-Plane-Distanz neu und speichert sie als Default. |
-| `POST` | `/api/Settings/Distance` | Body: `Distance` | `Distance` | Aktualisiert die Distanz-Einstellungen. |
-| `POST` | `/api/Settings/Confidence` | Body: `ConfidenceParameter` | `ConfidenceParameter` | Aktualisiert die Confidence-Einstellungen. |
-| `POST` | `/api/Settings/Threshold` | Body: JSON-Float | `JsonSimpleValue<float>` | Setzt den Threshold. Rueckgabe-Name: `Threshold`. |
-| `POST` | `/api/Settings/MinAngle` | Body: JSON-Float | `JsonSimpleValue<float>` | Setzt den Minimalwinkel. Rueckgabe-Name: `MinAngle`. |
-| `PUT` | `/api/Settings/FilterRadius/{radius}` | Pfad: `radius` | `JsonSimpleValue<int>` | Setzt den Box-Filter-Radius. Name: `BoxFilterRadius`. |
-| `PUT` | `/api/Settings/FilterPasses/{numPasses}` | Pfad: `numPasses` | `JsonSimpleValue<int>` | Setzt die Anzahl der Box-Filter-Durchlaeufe. Name: `BoxFilterNumPasses`. |
-| `PUT` | `/api/Settings/FilterThreads/{numThreads}` | Pfad: `numThreads` | `JsonSimpleValue<int>` | Setzt die Anzahl der Box-Filter-Threads. Name: `BoxFilterNumThreads`. |
-| `POST` | `/api/Settings/UseOptimizedBoxFilter` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Aktiviert oder deaktiviert den optimierten Box-Filter. Nur `value` wird verwendet. |
-| `POST` | `/api/Settings/Smoothing` | Body: `SmoothingParameter` | `SmoothingParameter` | Aktualisiert die Smoothing-Einstellungen. |
-| `POST` | `/api/Settings/ExtremumsCheck` | Body: `ExtremumDescriptionSettings` | `ExtremumDescriptionSettings` | Aktualisiert die Extremum-Erkennung. |
-| `GET` | `/api/Settings/MeasurePerformance` | - | `JsonSimpleValue<bool>` | Liefert, ob Performance-Messung aktiv ist. Name: `MeasurePerformance`. |
-| `POST` | `/api/Settings/MeasurePerformance` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Setzt die Performance-Messung. Nur `value` wird verwendet; Rueckgabe: `{name:"success", value:true}`. |
-| `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Aktualisiert die Point-Cloud-Einstellungen. |
+| `GET` | `/api/Settings` | - | `TrackingServerAppSettings` | Returns the complete current server configuration. |
+| `POST` | `/api/Settings` | Body: `TrackingServerAppSettings` | empty | Applies and saves the complete configuration. |
+| `GET` | `/api/Settings/CanRestore` | - | `JsonSimpleValue<bool>` | Returns whether a backup is available for restore. Name: `CanRestoreBackup`. |
+| `GET` | `/api/Settings/Restore` | - | `TrackingServerAppSettings` | Restores the latest backup. |
+| `GET` | `/api/Settings/Reset` | - | `TrackingServerAppSettings` | Resets the configuration to defaults. |
+| `POST` | `/api/Settings/LoadSettings` | Body: `TrackingServerAppSettings` | `TrackingServerAppSettings` | Loads client-side settings into the server state. |
+| `POST` | `/api/Settings/Border` | Body: `Border` | `Border` | Updates the border settings. |
+| `POST` | `/api/Settings/MinDistanceFromSensor` | Body: JSON float | `float` | Sets the minimum distance from the sensor. |
+| `POST` | `/api/Settings/LimitationFilterType` | Body: `FilterSettings` | `JsonSimpleValue<bool>` | Updates multiple limitation/filter settings together. Return value: `{name:"success", value:true}`. |
+| `GET` | `/api/Settings/InitializeAdvancedLimitationFilter` | - | `JsonSimpleValue<bool>` | Initializes the advanced limitation filter. Return name: `Success`. |
+| `GET` | `/api/Settings/LimitationFilterInitializing` | - | `JsonSimpleValue<bool>` | Returns the initialization status of the limitation filter. Name: `IsInitializing`. |
+| `GET` | `/api/Settings/LimitationFilterInitState` | - | `JsonSimpleValue<bool>` | Returns whether the limitation filter is initialized. Name: `IsInitialized`. |
+| `GET` | `/api/Settings/ResetAdvancedLimitationFilter` | - | `JsonSimpleValue<bool>` | Resets the limitation filter. Return name: `Success`. |
+| `GET` | `/api/Settings/ComputeZeroPlaneDistance` | - | `Distance` | Recalculates the zero-plane distance and saves it as the default. |
+| `POST` | `/api/Settings/Distance` | Body: `Distance` | `Distance` | Updates the distance settings. |
+| `POST` | `/api/Settings/Confidence` | Body: `ConfidenceParameter` | `ConfidenceParameter` | Updates the confidence settings. |
+| `POST` | `/api/Settings/Threshold` | Body: JSON float | `JsonSimpleValue<float>` | Sets the threshold. Return name: `Threshold`. |
+| `POST` | `/api/Settings/MinAngle` | Body: JSON float | `JsonSimpleValue<float>` | Sets the minimum angle. Return name: `MinAngle`. |
+| `PUT` | `/api/Settings/FilterRadius/{radius}` | Path: `radius` | `JsonSimpleValue<int>` | Sets the box filter radius. Name: `BoxFilterRadius`. |
+| `PUT` | `/api/Settings/FilterPasses/{numPasses}` | Path: `numPasses` | `JsonSimpleValue<int>` | Sets the number of box filter passes. Name: `BoxFilterNumPasses`. |
+| `PUT` | `/api/Settings/FilterThreads/{numThreads}` | Path: `numThreads` | `JsonSimpleValue<int>` | Sets the number of box filter threads. Name: `BoxFilterNumThreads`. |
+| `POST` | `/api/Settings/UseOptimizedBoxFilter` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Enables or disables the optimized box filter. Only `value` is used. |
+| `POST` | `/api/Settings/Smoothing` | Body: `SmoothingParameter` | `SmoothingParameter` | Updates the smoothing settings. |
+| `POST` | `/api/Settings/ExtremumsCheck` | Body: `ExtremumDescriptionSettings` | `ExtremumDescriptionSettings` | Updates extremum detection. |
+| `GET` | `/api/Settings/MeasurePerformance` | - | `JsonSimpleValue<bool>` | Returns whether performance measurement is active. Name: `MeasurePerformance`. |
+| `POST` | `/api/Settings/MeasurePerformance` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Sets performance measurement. Only `value` is used; return value: `{name:"success", value:true}`. |
+| `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Updates the point cloud settings. |
 
 
 ## Processing
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Processing/GetInterval` | - | `int` | Liefert das aktuelle Update-Intervall in Millisekunden. |
-| `GET` | `/api/Processing/GetObserverType` | - | `uint` | Liefert den aktuell gesetzten `ObserverType` als numerischen Enum-Wert. |
-| `GET` | `/api/Processing/GetObserverTypes` | - | `string[]` | Liefert alle verfuegbaren `ObserverType`-Namen. |
-| `GET` | `/api/Processing/GetRemoteProcessorSettings` | - | `RemoteProcessingServiceSettings` | Liefert die Remote-Processing-Konfiguration. |
-| `GET` | `/api/Processing/IsLoopRunning` | - | `JsonSimpleValue<bool>` | Liefert, ob die Verarbeitungs-Schleife laeuft. Name: `IsLoopRunning`. |
-| `POST` | `/api/Processing/SetUpdateInterval` | Body: `JsonSimpleValue<int>` mit `name = "UpdateInterval"` | `JsonSimpleValue<int>` oder `400` | Setzt das Update-Intervall. |
-| `POST` | `/api/Processing/SelectObserverType` | Body: `JsonSimpleValue<string>` mit `name = "ObserverType"` | `JsonSimpleValue<string>`, `400` oder `500` | Waehlt einen neuen Observer-Typ. |
-| `POST` | `/api/Processing/SetRemoteProcessorSettings` | Body: `RemoteProcessingServiceSettings` | `RemoteProcessingServiceSettings` oder `400` | Aktualisiert die Remote-Processing-Konfiguration. |
-| `PUT` | `/api/Processing/ToggleInteractionProcessing` | - | `JsonSimpleValue<bool>` | Startet oder stoppt die Interaktionsverarbeitung. Name: `IsProcessing`. |
+| `GET` | `/api/Processing/GetInterval` | - | `int` | Returns the current update interval in milliseconds. |
+| `GET` | `/api/Processing/GetObserverType` | - | `uint` | Returns the currently set `ObserverType` as a numeric enum value. |
+| `GET` | `/api/Processing/GetObserverTypes` | - | `string[]` | Returns all available `ObserverType` names. |
+| `GET` | `/api/Processing/GetRemoteProcessorSettings` | - | `RemoteProcessingServiceSettings` | Returns the remote processing configuration. |
+| `GET` | `/api/Processing/IsLoopRunning` | - | `JsonSimpleValue<bool>` | Returns whether the processing loop is running. Name: `IsLoopRunning`. |
+| `POST` | `/api/Processing/SetUpdateInterval` | Body: `JsonSimpleValue<int>` with `name = "UpdateInterval"` | `JsonSimpleValue<int>` or `400` | Sets the update interval. |
+| `POST` | `/api/Processing/SelectObserverType` | Body: `JsonSimpleValue<string>` with `name = "ObserverType"` | `JsonSimpleValue<string>`, `400` or `500` | Selects a new observer type. |
+| `POST` | `/api/Processing/SetRemoteProcessorSettings` | Body: `RemoteProcessingServiceSettings` | `RemoteProcessingServiceSettings` or `400` | Updates the remote processing configuration. |
+| `PUT` | `/api/Processing/ToggleInteractionProcessing` | - | `JsonSimpleValue<bool>` | Starts or stops interaction processing. Name: `IsProcessing`. |
 
 ## Network
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Network/Status` | - | `NetworkAttributes` | Liefert einen zusammengefassten Networking-Status inklusive Adresse, Port, Endpoint und Interfaces. |
-| `GET` | `/api/Network/IsActive` | - | `bool` | Liefert, ob das Server-Broadcasting aktiv ist. |
-| `GET` | `/api/Network/GetAddress` | - | `string` | Liefert die konfigurierte Netzwerkadresse. |
-| `GET` | `/api/Network/GetPort` | - | `int` | Liefert den konfigurierten Netzwerkport. |
-| `GET` | `/api/Network/GetEndpoint` | - | `string` | Liefert den konfigurierten Endpoint. |
-| `GET` | `/api/Network/GetNetworkType` | - | `uint` | Liefert das aktuell gewaehlte Interface als numerischen Enum-Wert. |
-| `GET` | `/api/Network/GetNetworkTypes` | - | `string[]` | Liefert alle verfuegbaren `NetworkInterface`-Namen. |
-| `POST` | `/api/Network/SetPort` | Body: `JsonSimpleValue<int>` mit `name = "Port"` | `JsonSimpleValue<int>` oder `400` | Setzt den Netzwerkport. |
-| `POST` | `/api/Network/SetAddress` | Body: `JsonSimpleValue<string>` mit `name = "Address"` | `JsonSimpleValue<string>` oder `400` | Setzt die Netzwerkadresse. |
-| `POST` | `/api/Network/SetEndpoint` | Body: `JsonSimpleValue<string>` mit `name = "Endpoint"` | `JsonSimpleValue<string>` oder `400` | Setzt den Endpoint. |
-| `POST` | `/api/Network/SelectNetworkType` | Body: `JsonSimpleValue<string>` mit `name = "NetworkType"` | `JsonSimpleValue<string>`, `400` oder `500` | Waehlt das zu nutzende Netzwerk-Interface. |
-| `POST` | `/api/Network/StartBroadcast` | Body: `NetworkSettings` | `NetworkSettings` | Aktualisiert bei Bedarf die Settings, speichert sie und startet anschliessend das Broadcasting. |
-| `PUT` | `/api/Network/ToggleNetworking` | - | `JsonSimpleValue<bool>` | Startet oder stoppt das Networking. Name: `IsBroadcasting`. |
-| `PUT` | `/api/Network/Save` | - | `JsonSimpleValue<bool>` | Persistiert die aktuellen Networking-Einstellungen. Name: `SaveSuccessful`. |
+| `GET` | `/api/Network/Status` | - | `NetworkAttributes` | Returns a summarized networking status including address, port, endpoint, and interfaces. |
+| `GET` | `/api/Network/IsActive` | - | `bool` | Returns whether server broadcasting is active. |
+| `GET` | `/api/Network/GetAddress` | - | `string` | Returns the configured network address. |
+| `GET` | `/api/Network/GetPort` | - | `int` | Returns the configured network port. |
+| `GET` | `/api/Network/GetEndpoint` | - | `string` | Returns the configured endpoint. |
+| `GET` | `/api/Network/GetNetworkType` | - | `uint` | Returns the currently selected interface as a numeric enum value. |
+| `GET` | `/api/Network/GetNetworkTypes` | - | `string[]` | Returns all available `NetworkInterface` names. |
+| `POST` | `/api/Network/SetPort` | Body: `JsonSimpleValue<int>` with `name = "Port"` | `JsonSimpleValue<int>` or `400` | Sets the network port. |
+| `POST` | `/api/Network/SetAddress` | Body: `JsonSimpleValue<string>` with `name = "Address"` | `JsonSimpleValue<string>` or `400` | Sets the network address. |
+| `POST` | `/api/Network/SetEndpoint` | Body: `JsonSimpleValue<string>` with `name = "Endpoint"` | `JsonSimpleValue<string>` or `400` | Sets the endpoint. |
+| `POST` | `/api/Network/SelectNetworkType` | Body: `JsonSimpleValue<string>` with `name = "NetworkType"` | `JsonSimpleValue<string>`, `400` or `500` | Selects the network interface to use. |
+| `POST` | `/api/Network/StartBroadcast` | Body: `NetworkSettings` | `NetworkSettings` | Updates the settings if needed, saves them, and then starts broadcasting. |
+| `PUT` | `/api/Network/ToggleNetworking` | - | `JsonSimpleValue<bool>` | Starts or stops networking. Name: `IsBroadcasting`. |
+| `PUT` | `/api/Network/Save` | - | `JsonSimpleValue<bool>` | Persists the current networking settings. Name: `SaveSuccessful`. |
 
 ## Tuio
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Tuio/IsBroadcasting` | - | `JsonSimpleValue<bool>` | Liefert, ob TUIO-Broadcasting aktiv ist. Name: `IsBroadcasting`. |
-| `GET` | `/api/Tuio/GetTuioConfiguration` | - | `TuioConfiguration` | Liefert die aktuelle TUIO-Konfiguration. |
-| `GET` | `/api/Tuio/GetTransportProtocols` | - | `string[]` | Liefert alle verfuegbaren `TransportProtocol`-Namen. |
-| `GET` | `/api/Tuio/GetTuioProtocolVersions` | - | `string[]` | Liefert alle verfuegbaren `ProtocolVersion`-Namen. |
-| `GET` | `/api/Tuio/GetTuioInterpretations` | - | `string[]` | Liefert alle verfuegbaren `TuioInterpretation`-Namen. |
-| `POST` | `/api/Tuio/SetPort` | Body: `JsonSimpleValue<int>` mit `name = "Port"` | `JsonSimpleValue<int>` oder `400` | Setzt den TUIO-Port. |
-| `POST` | `/api/Tuio/SetAddress` | Body: `JsonSimpleValue<string>` mit `name = "Address"` | `JsonSimpleValue<string>` oder `400` | Setzt die TUIO-Adresse. |
-| `POST` | `/api/Tuio/SelectTransportProtocol` | Body: `JsonSimpleValue<string>` mit `name = "TransportProtocol"` | `JsonSimpleValue<string>`, `400` oder `500` | Waehlt das Transportprotokoll. |
-| `POST` | `/api/Tuio/SelectTuioProtocol` | Body: `JsonSimpleValue<string>` mit `name = "ProtocolVersion"` | `JsonSimpleValue<string>`, `400` oder `500` | Waehlt die TUIO-Protokollversion. |
-| `POST` | `/api/Tuio/SelectTuioInterpretation` | Body: `JsonSimpleValue<string>` mit `name = "TuioInterpretation"` | `JsonSimpleValue<string>`, `400` oder `500` | Waehlt die TUIO-Interpretation. |
-| `PUT` | `/api/Tuio/ToggleBroadcast` | - | `JsonSimpleValue<bool>` | Startet oder stoppt das TUIO-Broadcasting. Name: `IsBroadcasting`. |
-| `PUT` | `/api/Tuio/Save` | - | `JsonSimpleValue<bool>` | Persistiert die aktuellen TUIO-Einstellungen. Name: `SaveSuccessful`. |
+| `GET` | `/api/Tuio/IsBroadcasting` | - | `JsonSimpleValue<bool>` | Returns whether TUIO broadcasting is active. Name: `IsBroadcasting`. |
+| `GET` | `/api/Tuio/GetTuioConfiguration` | - | `TuioConfiguration` | Returns the current TUIO configuration. |
+| `GET` | `/api/Tuio/GetTransportProtocols` | - | `string[]` | Returns all available `TransportProtocol` names. |
+| `GET` | `/api/Tuio/GetTuioProtocolVersions` | - | `string[]` | Returns all available `ProtocolVersion` names. |
+| `GET` | `/api/Tuio/GetTuioInterpretations` | - | `string[]` | Returns all available `TuioInterpretation` names. |
+| `POST` | `/api/Tuio/SetPort` | Body: `JsonSimpleValue<int>` with `name = "Port"` | `JsonSimpleValue<int>` or `400` | Sets the TUIO port. |
+| `POST` | `/api/Tuio/SetAddress` | Body: `JsonSimpleValue<string>` with `name = "Address"` | `JsonSimpleValue<string>` or `400` | Sets the TUIO address. |
+| `POST` | `/api/Tuio/SelectTransportProtocol` | Body: `JsonSimpleValue<string>` with `name = "TransportProtocol"` | `JsonSimpleValue<string>`, `400` or `500` | Selects the transport protocol. |
+| `POST` | `/api/Tuio/SelectTuioProtocol` | Body: `JsonSimpleValue<string>` with `name = "ProtocolVersion"` | `JsonSimpleValue<string>`, `400` or `500` | Selects the TUIO protocol version. |
+| `POST` | `/api/Tuio/SelectTuioInterpretation` | Body: `JsonSimpleValue<string>` with `name = "TuioInterpretation"` | `JsonSimpleValue<string>`, `400` or `500` | Selects the TUIO interpretation. |
+| `PUT` | `/api/Tuio/ToggleBroadcast` | - | `JsonSimpleValue<bool>` | Starts or stops TUIO broadcasting. Name: `IsBroadcasting`. |
+| `PUT` | `/api/Tuio/Save` | - | `JsonSimpleValue<bool>` | Persists the current TUIO settings. Name: `SaveSuccessful`. |
 
 ## DepthImage
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/DepthImage/PointCloud` | - | `Point3[]` | Liefert die aktuelle Point Cloud oder ein leeres Array. |
-| `GET` | `/api/DepthImage/VectorField` | - | `Vector2[][]` | Liefert das aktuelle Vector Field als Jagged Array oder ein leeres Array. |
+| `GET` | `/api/DepthImage/PointCloud` | - | `Point3[]` | Returns the current point cloud or an empty array. |
+| `GET` | `/api/DepthImage/VectorField` | - | `Vector2[][]` | Returns the current vector field as a jagged array or an empty array. |
 
 ## Log
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/Log` | - | `LogMessageDetail[]` | Liefert die aktuell gepufferten Log-Meldungen. |
-| `GET*` | `/api/Log/Messages/{startIndex}` | Pfad: Startindex | `LogMessageDetail[]` | Liefert Log-Meldungen ab einem Startindex. |
-| `POST` | `/api/Log/Add` | Body: `JsonSimpleValue<string>` | leer | Schreibt `value` als Error-Logeintrag. |
+| `GET` | `/api/Log` | - | `LogMessageDetail[]` | Returns the currently buffered log messages. |
+| `GET*` | `/api/Log/Messages/{startIndex}` | Path: start index | `LogMessageDetail[]` | Returns log messages starting at a start index. |
+| `POST` | `/api/Log/Add` | Body: `JsonSimpleValue<string>` | empty | Writes `value` as an error log entry. |
 
-`GET*`: Im Code ist fuer `/api/Log/Messages/{startIndex}` kein `[HttpGet]` gesetzt, sondern nur `[Route]`. Der Endpunkt ist damit nicht explizit auf GET eingeschraenkt, wird aber als Lese-Endpunkt verwendet.
+`GET*`: In the code, `/api/Log/Messages/{startIndex}` does not have `[HttpGet]` set, only `[Route]`. The endpoint is therefore not explicitly restricted to GET, but it is used as a read endpoint.
 
 ## VersionInfo
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/VersionInfo` | - | `AppVersionInfo[]` | Liefert die bekannten Versionsinformationen der Anwendung. |
+| `GET` | `/api/VersionInfo` | - | `AppVersionInfo[]` | Returns the known version information for the application. |
 
 ## RecordRawDepth
 
-| Methode | Route | Request | Response | Beschreibung |
+| Method | Route | Request | Response | Description |
 |---|---|---|---|---|
-| `GET` | `/api/RecordRawDepth/IsCapturing` | - | `bool` | Liefert, ob gerade Rohdaten aufgenommen werden. |
-| `GET` | `/api/RecordRawDepth/CurrentRecordId` | - | `int` | Liefert die ID der aktuellen oder letzten Aufnahme. |
-| `GET` | `/api/RecordRawDepth/CurrentSampleIdx` | - | `int` | Liefert den aktuellen Sample-Index innerhalb der laufenden Aufnahme. |
-| `PUT` | `/api/RecordRawDepth/RecordSamples` | Body: `JsonSimpleValue<int>` | `JsonSimpleValue<int>` | Startet eine Rohdatenaufnahme mit fester Laenge von 10 Samples nach `wwwroot/measurements/{id}`. Rueckgabe-Name: `RecordId`. |
+| `GET` | `/api/RecordRawDepth/IsCapturing` | - | `bool` | Returns whether raw data is currently being captured. |
+| `GET` | `/api/RecordRawDepth/CurrentRecordId` | - | `int` | Returns the ID of the current or most recent recording. |
+| `GET` | `/api/RecordRawDepth/CurrentSampleIdx` | - | `int` | Returns the current sample index within the running recording. |
+| `PUT` | `/api/RecordRawDepth/RecordSamples` | Body: `JsonSimpleValue<int>` | `JsonSimpleValue<int>` | Starts a raw data recording with a fixed length of 10 samples to `wwwroot/measurements/{id}`. Return name: `RecordId`. |
