@@ -1,5 +1,21 @@
 # ReFlex TrackingServer REST API
 
+<!-- omit in toc -->
+## Table of contents
+
+1. [Notes](#notes)
+2. [Example Requests](#example-requests)
+3. [Calibration](#calibration)
+4. [Tracking](#tracking)
+5. [Settings](#settings)
+6. [Processing](#processing)
+7. [Network](#network)
+8. [Tuio](#tuio)
+9. [DepthImage](#depthimage)
+10. [Log](#log)
+11. [VersionInfo](#versioninfo)
+12. [RecordRawDepth](#recordrawdepth)
+
 ## Notes
 
 - The base route for REST endpoints is usually `/api/{Controller}`.
@@ -7,6 +23,8 @@
 - Many write endpoints use `JsonSimpleValue<T>` in the format `{"name":"Port","value":9000}`. For the endpoints marked in the table, `name` must exactly match the specified value; otherwise, the controller responds with `400 Bad Request`.
 - `PUT /api/Tracking/{id}` and `PUT /api/Tracking/Configuration/{id}` have a body parameter, but the controller does not evaluate it.
 - The WebSocket endpoint `GET /ReFlex` is not a REST endpoint and is therefore not included in this table.
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Example Requests
 
@@ -120,6 +138,8 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
   -d '{"name":"RecordId","value":42}'
 ```
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Calibration
 
 | Method | Route | Request | Response | Description |
@@ -135,6 +155,8 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 | `POST` | `/api/Calibration/UpdateCalibrationPoint/{index}` | Path: `index` (`0..2`), Body: `CalibrationPoint` | `CalibrationTransform` or `400` | Updates an existing target point and returns the resulting matrix. |
 | `POST` | `/api/Calibration/AddCalibrationPoint` | Body: `CalibrationPoint` | `CalibrationTransform` or `400` | Adds another calibration point. |
 | `POST` | `/api/Calibration/CalibratedInteractions` | Body: `Interaction[]` | `Interaction[]` or `400` | Calibrates an interaction array and returns the calibrated values. |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Tracking
 
@@ -160,6 +182,8 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 | `GET` | `/api/Tracking/RecordingFrameCount/{name}` | Path: recording name | `int` | Returns the number of stored frames for a recording. |
 | `GET` | `/api/Tracking/GetAutostartEnabled` | - | `bool` | Returns the current auto-start status. |
 | `PUT` | `/api/Tracking/SetAutostart` | Body: JSON boolean | `bool` | Sets the auto-start status. |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Settings
 
@@ -193,6 +217,7 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 | `POST` | `/api/Settings/MeasurePerformance` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Sets performance measurement. Only `value` is used; return value: `{name:"success", value:true}`. |
 | `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Updates the point cloud settings. |
 
+__[⬆ back to top](#table-of-contents)__
 
 ## Processing
 
@@ -207,6 +232,8 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 | `POST` | `/api/Processing/SelectObserverType` | Body: `JsonSimpleValue<string>` with `name = "ObserverType"` | `JsonSimpleValue<string>`, `400` or `500` | Selects a new observer type. |
 | `POST` | `/api/Processing/SetRemoteProcessorSettings` | Body: `RemoteProcessingServiceSettings` | `RemoteProcessingServiceSettings` or `400` | Updates the remote processing configuration. |
 | `PUT` | `/api/Processing/ToggleInteractionProcessing` | - | `JsonSimpleValue<bool>` | Starts or stops interaction processing. Name: `IsProcessing`. |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Network
 
@@ -227,6 +254,8 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 | `PUT` | `/api/Network/ToggleNetworking` | - | `JsonSimpleValue<bool>` | Starts or stops networking. Name: `IsBroadcasting`. |
 | `PUT` | `/api/Network/Save` | - | `JsonSimpleValue<bool>` | Persists the current networking settings. Name: `SaveSuccessful`. |
 
+__[⬆ back to top](#table-of-contents)__
+
 ## Tuio
 
 | Method | Route | Request | Response | Description |
@@ -244,12 +273,16 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 | `PUT` | `/api/Tuio/ToggleBroadcast` | - | `JsonSimpleValue<bool>` | Starts or stops TUIO broadcasting. Name: `IsBroadcasting`. |
 | `PUT` | `/api/Tuio/Save` | - | `JsonSimpleValue<bool>` | Persists the current TUIO settings. Name: `SaveSuccessful`. |
 
+__[⬆ back to top](#table-of-contents)__
+
 ## DepthImage
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/DepthImage/PointCloud` | - | `Point3[]` | Returns the current point cloud or an empty array. |
 | `GET` | `/api/DepthImage/VectorField` | - | `Vector2[][]` | Returns the current vector field as a jagged array or an empty array. |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## Log
 
@@ -261,11 +294,15 @@ curl -X PUT "$BASE_URL/api/RecordRawDepth/RecordSamples" \
 
 `GET*`: In the code, `/api/Log/Messages/{startIndex}` does not have `[HttpGet]` set, only `[Route]`. The endpoint is therefore not explicitly restricted to GET, but it is used as a read endpoint.
 
+__[⬆ back to top](#table-of-contents)__
+
 ## VersionInfo
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/VersionInfo` | - | `AppVersionInfo[]` | Returns the known version information for the application. |
+
+__[⬆ back to top](#table-of-contents)__
 
 ## RecordRawDepth
 
