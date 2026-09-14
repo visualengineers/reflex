@@ -1,5 +1,4 @@
-﻿using System;
-using ReFlex.Core.Common.Interfaces;
+﻿using ReFlex.Core.Common.Interfaces;
 
 namespace ReFlex.Core.Common.Components
 {

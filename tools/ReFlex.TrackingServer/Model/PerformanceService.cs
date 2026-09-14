@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Reactive.Linq;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
-using TrackingServer.Data.Performance;
+using ReFlex.Server.Data.Performance;
 using TrackingServer.Hubs;
 
 namespace TrackingServer.Model
@@ -18,16 +16,16 @@ namespace TrackingServer.Model
         private readonly IHubContext<PerformanceHub> _hubContext;
         private readonly IObservable<PerformanceDataConverted> _performanceObservable;
         private readonly ConcurrentDictionary<string, IDisposable> _performanceSubscriptions;
-        
+
         public PerformanceService(IPerformanceAggregator performanceAggregator, IHubContext<PerformanceHub> hubContext)
         {
             _performanceAggregator = performanceAggregator;
             _hubContext = hubContext;
 
             var performanceObservable = Observable.FromEventPattern<PerformanceData>(
-                (handler) => _performanceAggregator.PerformanceDataUpdated += handler, 
+                (handler) => _performanceAggregator.PerformanceDataUpdated += handler,
                 (handler) => _performanceAggregator.PerformanceDataUpdated -= handler);
-  
+
             _performanceObservable = performanceObservable
                 .Select(evt => ConvertData(evt.EventArgs))
                 .Do(performanceData => _hubContext.Clients.Groups(PerformanceHub.PerformanceGroup).SendAsync("performanceData", performanceData).Wait())
@@ -44,6 +42,8 @@ namespace TrackingServer.Model
                 Data = data.Data.Select(item => new PerformanceDataItemConverted
                 {
                     FrameId = item.FrameId,
+                    FrameStart = item.FrameStart,
+                    FrameEnd = item.FrameEnd,
                     LimitationFilter = item.Filter.LimitationFilter.TotalMilliseconds,
                     ValueFilter = item.Filter.ValueFilter.TotalMilliseconds,
                     ThresholdFilter = item.Filter.ThresholdFilter.TotalMilliseconds,
@@ -54,7 +54,7 @@ namespace TrackingServer.Model
                     ProcessingConvert = item.Process.ConvertDepthValue.TotalMilliseconds,
                     ProcessingSmoothing = item.Process.Smoothing.TotalMilliseconds,
                     ProcessingExtremum = item.Process.ComputeExtremumType.TotalMilliseconds
-                    
+
                 }).ToArray()
             };
             return result;
@@ -63,7 +63,7 @@ namespace TrackingServer.Model
         public void SubscribePerformanceData(string id)
         {
             _performanceSubscriptions.AddOrUpdate(
-                id, 
+                id,
                 (addId) => _performanceObservable.Subscribe(),
                 (updateId, sub) => {
                     sub.Dispose();
@@ -71,7 +71,7 @@ namespace TrackingServer.Model
                 });
         }
 
-        public void UnsubscribePerformanceData(string id) 
+        public void UnsubscribePerformanceData(string id)
         {
             if (_performanceSubscriptions.TryRemove(id, out var sub))
             {

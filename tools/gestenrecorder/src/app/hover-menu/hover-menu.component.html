@@ -1,0 +1,30 @@
+<div class="hover-menu" *ngIf="hoveredPoint">
+  <button class="button" (click)="toggleFixed()">{{ isFixed ? 'Lösen' : 'Fixieren' }}</button>
+  <app-value-text class="settings__item margin-bottom-default"
+    elementId="hoveredPoint.x" elementTitle="x:">
+    <input inputField class="form-control form-control-sm" type="number"
+    placeholder="1" [(ngModel)]="hoveredPoint.x"
+    name="hoveredPoint.x" id="hoveredPoint.x" (change)="updatePoint()">
+  </app-value-text>
+
+  <app-value-text class="settings__item margin-bottom-default"
+    elementId="hoveredPoint.y" elementTitle="y:">
+    <input inputField class="form-control form-control-sm" type="number"
+    placeholder="1" [(ngModel)]="hoveredPoint.y"
+    name="hoveredPoint.y" id="hoveredPoint.y" (change)="updatePoint()">
+  </app-value-text>
+
+  <app-value-text class="settings__item margin-bottom-default"
+    elementId="hoveredPoint.z" elementTitle="z:">
+    <input inputField class="form-control form-control-sm" type="number"
+    placeholder="1" [(ngModel)]="hoveredPoint.z"
+    name="hoveredPoint.z" id="hoveredPoint.z" (change)="updatePoint()">
+  </app-value-text>
+
+  <app-value-text class="settings__item margin-bottom-default"
+    elementId="hoveredPoint.index" elementTitle="index:">
+    <input inputField class="form-control form-control-sm" type="text"
+    placeholder="1" [(ngModel)]="hoveredPoint.index"
+    name="hoveredPoint.index" id="hoveredPoint.index" (change)="getIndex()">
+  </app-value-text>
+</div>

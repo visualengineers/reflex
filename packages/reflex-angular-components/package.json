@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Angular Component library for common Components used by the ReFlex Framework",
   "sideEffects": false,
-  "devDependencies": {},
   "scripts": {
     "build": "ng build",
     "test": "ng test",

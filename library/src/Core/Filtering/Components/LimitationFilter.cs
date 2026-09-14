@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Serialization;
 using ReFlex.Core.Common.Components;
 using NLog;
 

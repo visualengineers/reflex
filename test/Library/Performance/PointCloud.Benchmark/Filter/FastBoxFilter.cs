@@ -9,7 +9,7 @@ public class FastBoxFilter
 {
     #region fields
 
-    private int _radius, _diameter, _width;
+    private int _radius;
 
     #endregion
 
@@ -55,19 +55,18 @@ public class FastBoxFilter
         if (_radius % 2 == 0)
             _radius++;
 
-        var Avg = 1f / _radius;
+        var avg = 1f / _radius;
 
-        for (int j = 0; j < height; j++)
+        for (var j = 0; j < height; j++)
         {
             var hSum = 0f;
-            var iAvg = 0f;
 
-            for (int x = 0; x < _radius; x++)
+            for (var x = 0; x < _radius; x++)
             {
                 hSum += targetRef[x][j].Z;
             }
 
-            iAvg = hSum * Avg;
+            var iAvg = hSum * avg;
 
             for (var i = 0; i < width; i++)
             {
@@ -78,7 +77,7 @@ public class FastBoxFilter
                     var tmp = targetRef[i + 1 + _radius / 2][j].Z;
                     hSum += tmp;
 
-                    iAvg = hSum * Avg;
+                    iAvg = hSum * avg;
                 }
 
                 targetRef[i][j].Z = iAvg;
@@ -91,26 +90,25 @@ public class FastBoxFilter
         for (var i = 0; i < width; i++)
         {
             var tSum = 0f;
-            var iAvg = 0f;
-            for (int y = 0; y < _radius; y++)
+            for (var y = 0; y < _radius; y++)
             {
                 var tmpColor = targetRef[i][y].Z;
                 tSum += tmpColor;
             }
 
-            iAvg = tSum * Avg;
+            var iAvg = tSum * avg;
 
-            for (int j = 0; j < height; j++)
+            for (var j = 0; j < height; j++)
             {
                 if (j - _radius / 2 >= 0 && j + 1 + _radius / 2 < height)
                 {
-                    var tmp_pColor = targetRef[i][j - _radius / 2].Z;
-                    tSum -= tmp_pColor;
+                    var tmpPColor = targetRef[i][j - _radius / 2].Z;
+                    tSum -= tmpPColor;
 
-                    var tmp_nColor = targetRef[i][j + 1 + _radius / 2].Z;
-                    tSum += tmp_nColor;
+                    var tmpNColor = targetRef[i][j + 1 + _radius / 2].Z;
+                    tSum += tmpNColor;
                     //
-                    iAvg = tSum * Avg;
+                    iAvg = tSum * avg;
                 }
 
                 targetRef[i][j].Z = iAvg;
@@ -125,12 +123,6 @@ public class FastBoxFilter
     private void SetRadius(int radius)
     {
         _radius = radius;
-        _diameter = radius * 2 + 1;
-    }
-
-    private int ComputeIndex(int x, int y)
-    {
-        return x * _width + y;
     }
 
     #endregion

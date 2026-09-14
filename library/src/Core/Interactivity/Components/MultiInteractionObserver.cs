@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 
@@ -105,6 +103,7 @@ namespace ReFlex.Core.Interactivity.Components
             if (_isProcessing)
                 return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Skipped));
 
+            var processingDateTime = DateTime.Now.Ticks;
             var perfItem = new ProcessPerformance();
             if (MeasurePerformance)
             {
@@ -179,7 +178,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
 
-            UpdatePerformanceMetrics(perfItem);
+            UpdatePerformanceMetrics(perfItem, processingDateTime);
 
             OnNewInteractions(confidentInteractions.ToList());
 

@@ -5,7 +5,6 @@ import { SettingsGroupComponent, ValueTextComponent } from '@reflex/angular-comp
 
 @Component({
   selector: 'app-text-box',
-  standalone: true,
   imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueTextComponent],
   templateUrl: './text-box.component.html',
   styleUrl: './text-box.component.scss'

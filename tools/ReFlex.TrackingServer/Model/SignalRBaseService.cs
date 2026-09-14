@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Subjects;
+﻿using System.Reactive.Subjects;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using TrackingServer.Interfaces;
@@ -10,26 +9,27 @@ namespace TrackingServer.Model
     public abstract class SignalRBaseService<T,TU> : ISignalRBaseService<T>, IDisposable where T : class where TU : Hub
     {
         private static Logger Log = LogManager.GetCurrentClassLogger();
-        
+
         protected readonly HubGroupSubscriptionManager<T>
             StateSubscription;
-        
-        protected BehaviorSubject<T> CurrentState { get; }
-        
+
+        protected BehaviorSubject<T?> CurrentState { get; }
+
         private readonly IDisposable _stateHubSubscription;
-        
+
         public IHubGroupSubscriptionManager StateSubscriptionManager => StateSubscription;
 
-        public event EventHandler<T> StateChanged;
-        
+        public event EventHandler<T>? StateChanged;
+
         protected SignalRBaseService(string stateGroupIdentifier, IHubContext<TU> hubContext)
         {
-            CurrentState = new BehaviorSubject<T>(null);
-            _stateHubSubscription = CurrentState.Subscribe(state => 
+            CurrentState = new BehaviorSubject<T?>(null);
+            _stateHubSubscription = CurrentState.Subscribe(state =>
             {
-                StateChanged?.Invoke(this, state);
+                if (state != null)
+                  StateChanged?.Invoke(this, state);
             });
-            
+
             StateSubscription = new HubGroupSubscriptionManager<T>(stateGroupIdentifier);
             StateSubscription.Setup(
                 (handler) => StateChanged += handler,
@@ -43,7 +43,7 @@ namespace TrackingServer.Model
 
         public virtual void Dispose()
         {
-            CurrentState?.Dispose();
+            CurrentState.Dispose();
             _stateHubSubscription?.Dispose();
         }
     }

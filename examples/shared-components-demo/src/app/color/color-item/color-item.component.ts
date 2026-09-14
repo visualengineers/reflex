@@ -3,7 +3,6 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-color-item',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './color-item.component.html',
   styleUrl: './color-item.component.scss'

@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using ReFlex.Sensor.EmulatorModule;
-using System;
-using System.Linq;
+﻿using ReFlex.Sensor.EmulatorModule;
 using System.Net.WebSockets;
-using System.Threading;
-using System.Threading.Tasks;
 using Graphics;
-using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using ReFlex.Core.Tracking.Util;
 using TrackingServer.Model;
@@ -21,7 +14,7 @@ namespace TrackingServer.Util
     /// </summary>
     public static class DepthImageReceiver
     {
-        private static ImageBasedEmulatorCamera Camera;
+        private static ImageBasedEmulatorCamera? _camera;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -31,14 +24,14 @@ namespace TrackingServer.Util
 
             app.Use(async (context, next) =>
             {
-                if (Camera == null)
+                if (_camera == null)
                 {
                     var success = RetrieveCamera(app);
                     if (!success)
                         await next();
                 }
 
-                if (context.Request.Path == Camera.Id)
+                if (context.Request.Path == _camera?.Id)
                 {
                     if (context.WebSockets.IsWebSocketRequest)
                     {
@@ -62,9 +55,9 @@ namespace TrackingServer.Util
 
         private static bool RetrieveCamera(IApplicationBuilder app)
         {
-            Camera = app.ApplicationServices.GetService<CameraManager>()?.AvailableCameras?.FirstOrDefault(cam => cam.GetType() == typeof(ImageBasedEmulatorCamera)) as ImageBasedEmulatorCamera;
+            _camera = app.ApplicationServices.GetService<CameraManager>()?.AvailableCameras.FirstOrDefault(cam => cam.GetType() == typeof(ImageBasedEmulatorCamera)) as ImageBasedEmulatorCamera;
 
-            if (Camera != null)
+            if (_camera != null)
                 return true;
 
             Logger.Log(LogLevel.Error,
@@ -79,7 +72,7 @@ namespace TrackingServer.Util
             var buffer = new byte[4096 * 10];
             WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-            while (!result.CloseStatus.HasValue && Camera?.State == DepthCameraState.Streaming)
+            while (!result.CloseStatus.HasValue && _camera?.State == DepthCameraState.Streaming)
             {
                 try
                 {
@@ -87,7 +80,7 @@ namespace TrackingServer.Util
 
                     var imageData = StreamDataConverter.DecodeImageData(streamData.ToArray(), "data:image/jpeg;base64,");
 
-                    Camera.Update(StreamDataConverter.ConvertJpegToRawBytes(imageData, Camera.StreamParameter.Width, Camera.StreamParameter.Height, DepthImageFormat.Rgb24bpp));
+                    _camera.Update(StreamDataConverter.ConvertJpegToRawBytes(imageData, _camera.StreamParameter.Width, _camera.StreamParameter.Height, DepthImageFormat.Rgb24bpp));
                 }
                 catch (Exception exc)
                 {
@@ -101,9 +94,9 @@ namespace TrackingServer.Util
                 }
             }
 
-            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+            await webSocket.CloseAsync(result.CloseStatus ?? WebSocketCloseStatus.NormalClosure, result.CloseStatusDescription, CancellationToken.None);
         }
 
-        
+
     }
 }

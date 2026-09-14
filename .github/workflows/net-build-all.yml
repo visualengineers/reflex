@@ -1,4 +1,4 @@
-# Build, test .NET
+# Build, test .NET Solution (without executables)
 name: "ReFlex: Build, Test .NET Solution"
 
 on:
@@ -21,5 +21,9 @@ jobs:
         uses: actions/checkout@main
       - name: setup .NET and restore nuget packages
         uses: ./.github/actions/net-install
+      - name: build ReFlex without external sensors
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        run: dotnet build ReFlex.sln -c CI /p:Platform=x64
       - name: execute tests (no reports)
         run: dotnet test

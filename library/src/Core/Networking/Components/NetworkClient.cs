@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using NLog;
 using ReFlex.Core.Networking.Interfaces;
 using ReFlex.Core.Networking.Util;
@@ -88,7 +89,11 @@ namespace ReFlex.Core.Networking.Components
 
         public void Send(NetworkingDataMessage message)
         {
-            _networkClient.Send(message.Message);
+          var result = Task.Run(() => _networkClient.SendAsync(message.Message)).GetAwaiter().GetResult();
+          if (result == false)
+          {
+            Logger.Warn($"Sending message {message.Message} to server {_address}:{_port} failed.");
+          }
         }
 
         public void OnNewDataReceived(object sender, MessageReceivedEventArgs evtData)

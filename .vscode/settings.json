@@ -1,13 +1,13 @@
 {
   "eslint.workingDirectories": [
       "./tools/ReFlex.TrackingServer/ClientApp",
-    ],    
-    "karmaTestExplorer.projectWorkspaces": [ 
+    ],
+    "karmaTestExplorer.projectWorkspaces": [
       {
         "rootPath": "./tools/ReFlex.TrackingServer/ClientApp/",
         "karmaConfFilePath": "src/karma.conf.js",
         "testFiles": ["src/**/*.spec.ts"]
-      } 
+      }
     ],
     "karmaTestExplorer.allowGlobalPackageFallback": true,
     "karmaTestExplorer.autoWatchBatchDelay": 100,
@@ -21,5 +21,19 @@
         "--remote-debugging-port=9222"
       ]
     },
-    "dotnet.unitTestDebuggingOptions": {}
+    "dotnet.unitTestDebuggingOptions": {},
+    "[javascript]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true,
+      "files.trimFinalNewlines": true,
+      "files.trimTrailingWhitespace": true
+    },
+    "[typescript]": {
+      "files.trimTrailingWhitespace": true,
+      "files.trimFinalNewlines": true,
+      "prettier.singleQuote": true,
+      "javascript.preferences.quoteStyle": "single",
+      "typescript.preferences.quoteStyle": "single",
+      "files.insertFinalNewline": true
+    }
 }

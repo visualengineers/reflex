@@ -23,6 +23,12 @@ runs:
       with:
         path: ${{ github.workspace }}/tools/emulator/node_modules
         key: ${{ runner.os }}_emulator-modules-${{ hashFiles(format('{0}/tools/emulator/package.json', github.workspace)) }}
+    - name: cache node-modules server
+      id: cache_server
+      uses: actions/cache@main
+      with:
+        path: ${{ github.workspace }}/tools/ReFlex.TrackingServer/ClientApp/node_modules
+        key: ${{ runner.os }}_server-modules-${{ hashFiles(format('{0}tools/ReFlex.TrackingServer/ClientApp/package.json', github.workspace)) }}
     - name: cache node-modules basic-react
       id: cache_basic_react
       uses: actions/cache@main
@@ -38,5 +44,5 @@ runs:
     - name: install packages
       shell: bash
       working-directory: ${{ github.workspace }}
-      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true'  || steps.cache_basic_react.outputs.cache-hit != 'true'  || steps.cache_basic_vue.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || steps.cache_emulator.outputs.cache-hit != 'true' || steps.cache_server.outputs.cache-hit != 'true' || steps.cache_basic_react.outputs.cache-hit != 'true'  || steps.cache_basic_vue.outputs.cache-hit != 'true'
       run: npm ci --include=dev

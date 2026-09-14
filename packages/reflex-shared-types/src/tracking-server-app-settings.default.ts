@@ -15,6 +15,7 @@ import { TransportProtocol } from './config/transport-protocol';
 import { TuioConfiguration } from './config/tuio-configuration';
 import { TuioInterpretation } from './config/tuio-interpretation';
 import { TrackingServerAppSettings } from './tracking-server-app-settings';
+import { PointCloudSettings } from './config/point-cloud-settings';
 
 const _defaultFilter: FilterSettings = {
   threshold: 0,
@@ -88,11 +89,18 @@ const _defaultRemoteProcessingSettings: RemoteProcessingServiceSettings = {
   algorithm: RemoteProcessingAlgorithm.Default
 };
 
+const _defaultPointCloudSettingValues: PointCloudSettings = {
+  pointCloudSize: 40000,
+  updateInterval: 100,
+  fullResolution: false
+}
+
 const _values: TrackingServerAppSettings = {
   filterSettingValues: _defaultFilter,
   calibrationValues: _defaultCalibration,
   cameraConfigurationValues: _defaultCameraConfig,
   networkSettingValues: _defaultNetworkSettings,
+  pointCloudSettingValues: _defaultPointCloudSettingValues,
   processingSettingValues: _defaultProcessingSettings,
   remoteProcessingServiceSettingsValues: _defaultRemoteProcessingSettings,
   tuioSettingValues: _defaultTuioSettings,

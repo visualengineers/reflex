@@ -10,7 +10,7 @@
         [attr.aria-labelledby]="elementId + '-label'"
         [(ngModel)]="data"
         (ngModelChange)="onModelChange($event)"
-        [attr.disabled]="disabled"
+        [attr.disabled]="disabled ? true : null"
       />
       <label class="checkbox-toggle-label"
         for="{{elementId}}-checkbox"

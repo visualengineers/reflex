@@ -1,8 +1,10 @@
+@use "../abstracts/variables";
+
 .content {
-  margin-top: $margin-large;
+  margin-top: variables.$margin-large;
 
   &__header {
-    border-bottom: 1px solid $color-primary;
+    border-bottom: 1px solid variables.$color-primary;
     display: flex;
     justify-content: space-between;
   }
@@ -10,8 +12,8 @@
 
 .settings {
   &__status-detail {
-    font-family: $font-primary;
-    color: $color-grey-light-2;
+    font-family: variables.$font-primary;
+    color: variables.$color-grey-light-2;
   }
 
   &__group {
@@ -35,7 +37,7 @@
 
     &--button {
       grid-column: 1;
-      background-color: $color-white;
+      background-color: variables.$color-white;
       height: 2rem;
       width: 2rem;
       padding-top: 0.2rem;
@@ -61,7 +63,7 @@
       &::before {
         width: 1.2rem;
         height: 2px;
-        background-color: $color-primary;
+        background-color: variables.$color-primary;
         display: inline-block;
       }
 
@@ -84,19 +86,19 @@
     display: grid;
 
     grid-template-columns: repeat(3, 1fr);
-    column-gap: $default-col-gap;
+    column-gap: variables.$default-col-gap;
   }
 
   &__item-narrow {
     display: grid;
 
     grid-template-columns: 2fr 1fr 1fr;
-    column-gap: $default-col-gap;
+    column-gap: variables.$default-col-gap;
   }
 
   &__item,
   &__item-narrow {
-    font-size: $font-size-small;
+    font-size: variables.$font-size-small;
 
     &--content,
     &--content-range {
@@ -151,11 +153,11 @@
     }
 
     &--input {
-      margin-left: $default-col-gap;
+      margin-left: variables.$default-col-gap;
     }
 
     &--label {
-      font-family: $font-heading;
+      font-family: variables.$font-heading;
       line-height: 2rem;
     }
 
@@ -169,13 +171,13 @@
       overflow: visible;
       visibility: hidden;
 
-      color: $color-grey-light;
+      color: variables.$color-grey-light;
     }
 
     &--valueMin,
     &--valueMax {
-      font-family: $font-tertiary;
-      color: $color-grey-light;
+      font-family: variables.$font-tertiary;
+      color: variables.$color-grey-light;
     }
 
     &--valueMin {
@@ -183,7 +185,7 @@
     }
 
     &--unit {
-      font-family: $font-secondary;
+      font-family: variables.$font-secondary;
     }
   }
 
@@ -192,7 +194,7 @@
 
     justify-content: flex-end;
     grid-column: 1 / span 2;
-    margin-top: $default-col-gap;
-    line-height: $default-button-height;
+    margin-top: variables.$default-col-gap;
+    line-height: variables.$default-button-height;
   }
 }

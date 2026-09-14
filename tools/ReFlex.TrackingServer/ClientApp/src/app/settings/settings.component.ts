@@ -7,10 +7,24 @@ import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { switchMap } from 'rxjs/operators';
 import { DEFAULT_SETTINGS, DepthCameraState, ExtremumTypeCheckMethod, FilterType, JsonSimpleValue, LimitationFilterType, PerformanceData, PerformanceDataItem, TrackingServerAppSettings } from '@reflex/shared-types';
+import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { FormsModule } from '@angular/forms';
+import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
-  templateUrl: './settings.component.html'
+  templateUrl: './settings.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    SettingsGroupComponent,
+    ValueSliderComponent,
+    ValueSelectionComponent,
+    OptionCheckboxComponent,
+    PerformanceVisualizationComponent
+  ],
+  standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
@@ -26,29 +40,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public performanceDataFilter: PerformanceData = { data: [] };
   public performanceDataProcess: PerformanceData = { data: [] };
+  public performanceDataCompleteTimeFrame: PerformanceData = { data: [] };
 
   public performanceDataFilterVis: Array<PerformanceDataItem> = [];
   public performanceDataProcessingVis: Array<PerformanceDataItem> = [];
+  public performanceDataCompleteTimeFrameVis: Array<PerformanceDataItem> = [];
 
   public performanceDataFilterGroups = ['limitationFilter', 'valueFilter', 'thresholdFilter', 'boxFilter', 'updatePointCloud'];
   public performanceDataProcessingGroups = ['processingPreparation', 'processingUpdate', 'processingConvert', 'processingSmoothing', 'processingExtremum'];
 
   public filters: Array<JsonSimpleValue> = Object.values(FilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as FilterType)
     .map((x) => (
       { name: FilterType[Number(x)], value: x }));
 
   public selectedFilterIdx = -1;
 
   public limitationFilters: Array<JsonSimpleValue> = Object.values(LimitationFilterType)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as LimitationFilterType)
     .map((x) => (
       { name: LimitationFilterType[Number(x)], value: x }));
 
   public selectedLimitationFilterIdx = -1;
 
   public checks: Array<JsonSimpleValue> = Object.values(ExtremumTypeCheckMethod)
-    .filter((k) => k === Number(k))
+    .filter((k) => k === Number(k) as ExtremumTypeCheckMethod)
     .map((x) => (
       { name: ExtremumTypeCheckMethod[Number(x)], value: x }));
 
@@ -278,6 +294,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.saveExtremumValues();
   }
 
+  public savePointCloudValues(): void {
+    this.settingsService.setPointCloudSettings(this.settings.pointCloudSettingValues).subscribe({
+      next: (result) => {
+        console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);
+        this.settingsService.update();
+      },
+      error: (error) => {
+        console.error(error);
+        this.logService.sendErrorLog(`${error}`);
+      }
+    });
+  }
+
   public saveDistance(): void {
     this.settingsService.setDistance(this.settings.filterSettingValues.distanceValue).subscribe((result) => {
       console.log(`Successfully sent POST request: ${JSON.stringify(result)}`);
@@ -457,8 +486,35 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.performanceDataProcessingVis = this.performanceDataProcessingVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
 
       }
+
+      const existingIdxEnd = this.performanceDataCompleteTimeFrame.data.filter((item) => item.frameId === elem.frameId && item.frameEnd > elem.frameEnd);
+      if (existingIdxEnd.length > 0) {
+        elem.frameEnd = existingIdxEnd.sort((a, b) => a.frameEnd - b.frameEnd)[0].frameEnd;
+      }
+
+      const existingIdxStart = this.performanceDataCompleteTimeFrame.data.filter((item) => item.frameId === elem.frameId && item.frameStart < elem.frameStart);
+      if (existingIdxStart.length > 0) {
+        elem.frameStart = existingIdxStart.sort((a, b) => b.frameStart - a.frameStart)[0].frameStart;
+      }
+
+      elem.totalFrameTime = Math.abs(elem.frameEnd - elem.frameStart) / 1000.0;
+
+      this.performanceDataCompleteTimeFrame.data.push(elem);
+
+      if (elem.totalFrameTime > 0 && elem.totalFrameTime < 100000) {
+        const existingIdx = this.performanceDataCompleteTimeFrameVis.findIndex((item) => item.frameId === elem.frameId);
+        if (existingIdx < 0) {
+          this.performanceDataCompleteTimeFrameVis.push(elem);
+        } else {
+          this.performanceDataCompleteTimeFrameVis[existingIdx] = elem;
+        }
+      }
+
+      this.performanceDataCompleteTimeFrameVis = this.performanceDataCompleteTimeFrameVis.sort((a, b) => a.frameId - b.frameId).slice(-200);
+
     });
 
+    this.performanceDataCompleteTimeFrame.data = this.performanceDataCompleteTimeFrame.data.sort((a, b) => a.frameId - b.frameId).slice(-1000);
     this.performanceDataFilter.data = this.performanceDataFilter.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
     this.performanceDataProcess.data = this.performanceDataProcess.data.sort((a, b) => a.frameId - b.frameId).slice(-7);
   }

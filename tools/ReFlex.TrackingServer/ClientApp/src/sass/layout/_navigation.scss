@@ -1,54 +1,56 @@
+@use 'reflex' as reflex;
+
 .navigation {
     grid-row: top-start / top-end;
     grid-column: content-panel-start / content-panel-end;
-    justify-self: stretch; 
+    justify-self: stretch;
     align-self: flex-end;
-    font-size: $font-size-large;
-    font-family: $font-heading;
-    color: $color-grey-light-2;  
-    margin-bottom: 3.8rem; 
-   
+    font-size: reflex.$font-size-large;
+    font-family: reflex.$font-heading;
+    color: reflex.$color-grey-light-2;
+    margin-bottom: 3.8rem;
+
     ul {
         grid-column: -6 / -1;
-        
+
         display:flex;
-        justify-content: space-between;        
+        justify-content: space-between;
         list-style: none;
 
-        @include respond(tab-port) {
+        @include reflex.respond(tab-port) {
             grid-column: -7 / -1;
             justify-content: space-evenly;
-        } 
+        }
 
-        @include respond(phone-large) { 
-            height: 6rem;    
-        }    
-    }   
-    
+        @include reflex.respond(phone-large) {
+            height: 6rem;
+        }
+    }
+
     &__link {
         display: block;
 
         &:link,
         &:visited {
             display: block;
-            color: $color-grey-light;
+            color: reflex.$color-grey-light;
             text-decoration: none;
         }
 
         &:hover {
             display: block;
-            color: $color-primary-light;
+            color: reflex.$color-primary-light;
             transform: scale(1.2);
-            transition: all 0.2s;        
+            transition: all 0.2s;
         }
     }
-    
-    
-    &__item {        
+
+
+    &__item {
         display: block;
 
         & .link-active {
-            color: $color-primary;
+            color: reflex.$color-primary;
         }
     }
 }
@@ -56,5 +58,5 @@
 app-nav-menu {
     display: grid;
     grid-template-columns: repeat(7, minmax(6rem, 1fr));
-    column-gap: $default-col-gap;
+    column-gap: reflex.$default-col-gap;
 }

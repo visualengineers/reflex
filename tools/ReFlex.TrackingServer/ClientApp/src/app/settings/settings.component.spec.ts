@@ -5,11 +5,12 @@ import { LogService } from '../log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { PerformanceService } from 'src/shared/services/performance.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { DEFAULT_SETTINGS, DepthCameraState, PerformanceData, TrackingConfigState } from '@reflex/shared-types';
-import { OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { MockOptionCheckboxComponent, MockSettingsGroupComponent, MockValueSelectionComponent, MockValueSliderComponent, OptionCheckboxComponent, SettingsGroupComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const logService = jasmine.createSpyObj<LogService>('fakeLogService',
   [
@@ -50,34 +51,42 @@ describe('SettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        SettingsComponent
-      ],
-      imports: [
-        FormsModule,
-        HttpClientTestingModule,
+    imports: [
+      FormsModule,
+      SettingsComponent
+    ],
+    providers: [
+        {
+            provide: TrackingService, useValue: trackingService
+        },
+        {
+            provide: PerformanceService, useValue: performanceService
+        },
+        {
+            provide: SettingsService, useValue: settingsService
+        },
+        {
+            provide: LogService, useValue: logService
+        },
+        {
+            provide: 'BASE_URL', useValue: 'http://localhost'
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+    }).overrideComponent(SettingsComponent, {
+      remove: { imports: [
         ValueSliderComponent,
         OptionCheckboxComponent,
         SettingsGroupComponent,
-        ValueSelectionComponent
-      ],
-      providers: [
-        {
-          provide: TrackingService, useValue: trackingService
-        },
-        {
-          provide: PerformanceService, useValue: performanceService
-        },
-        {
-          provide: SettingsService, useValue: settingsService
-        },
-        {
-          provide: LogService, useValue: logService
-        },
-        {
-          provide: 'BASE_URL', useValue: 'http://localhost'
-        }
-      ]
+        ValueSelectionComponent,
+      ] },
+      add: { imports: [
+        MockValueSliderComponent,
+        MockOptionCheckboxComponent,
+        MockSettingsGroupComponent,
+        MockValueSelectionComponent,
+       ] }
     })
     .compileComponents();
   }));

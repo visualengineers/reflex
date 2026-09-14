@@ -1,7 +1,4 @@
-@import 'reflex';
-
-@import 'layout/base';
-@import 'layout/header';
-@import 'layout/navigation';
-@import 'layout/content';
-@import 'layout/footer';
+@forward 'layout/header';
+@forward 'layout/navigation';
+@forward 'layout/content';
+@forward 'layout/footer';

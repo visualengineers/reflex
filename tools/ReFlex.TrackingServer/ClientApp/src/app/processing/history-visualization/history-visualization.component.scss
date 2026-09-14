@@ -1,4 +1,4 @@
-@import 'main';
+@use 'reflex' as reflex;
 
 .history {
 
@@ -13,12 +13,12 @@
     }
 
     &__point {
-        fill: $color-grey-light-3;
+        fill: reflex.$color-grey-light-3;
     }
 
     &__line {
         stroke-width: 1;
-        stroke: $color-primary-light;
+        stroke: reflex.$color-primary-light;
         stroke-dasharray: 1 3;
     }
 }

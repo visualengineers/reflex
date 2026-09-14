@@ -1,3 +1,5 @@
+@use "../abstracts/variables";
+
 @font-face {
     font-family: 'Barlow';
     src: url('/assets/fonts/Barlow-Regular.ttf') format("opentype");
@@ -24,26 +26,26 @@
 }
 
 body {
-    font-family: $font-primary;
+    font-family: variables.$font-primary;
     font-weight: 400;
-    font-size: $default-font-size;
+    font-size: variables.$default-font-size;
     line-height: 1.7;
-    color: $color-grey-dark; 
+    color: variables.$color-grey-dark; 
 }
 
 .heading-primary {
-    font-family: $font-secondary;    
-    font-size: $font-size-large;
-    color: $color-primary;    
+    font-family: variables.$font-secondary;    
+    font-size: variables.$font-size-large;
+    color: variables.$color-primary;    
 }
 
 .heading-secondary {
-    font-family: $font-secondary;
-    font-size: $font-size-medium;
+    font-family: variables.$font-secondary;
+    font-size: variables.$font-size-medium;
 }
 
 .heading-tertiary {
-    font-family: $font-heading;
-    font-size: $font-size-medium;
-    color: $color-grey-light;
+    font-family: variables.$font-heading;
+    font-size: variables.$font-size-medium;
+    color: variables.$color-grey-light;
 }

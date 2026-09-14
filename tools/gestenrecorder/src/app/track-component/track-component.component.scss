@@ -1,0 +1,34 @@
+.points__table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.points__table th:nth-child(1),
+.points__table td:nth-child(1) {
+  width: 5%; /* Anpassen der Breite der Spalte "ID" */
+}
+
+.points__table th:nth-child(2),
+.points__table td:nth-child(2) {
+  width: 30%; /* Anpassen der Breite der Spalte "ID" */
+}
+
+.points__table th:nth-child(3),
+.points__table td:nth-child(3) {
+  width: 15%; /* Anpassen der Breite der Spalte "Frames" */
+}
+
+.points__table th:nth-child(4),
+.points__table td:nth-child(4) {
+  width: 15%; /* Anpassen der Breite der Spalte "Speed" */
+}
+
+.points__table input[type="text"],
+.points__table input[type="number"] {
+  border: none;
+  background: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+

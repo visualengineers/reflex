@@ -4,7 +4,6 @@ using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using Math = System.Math;
-using System.Threading.Tasks;
 
 namespace ReFlex.Core.Networking.Util
 {

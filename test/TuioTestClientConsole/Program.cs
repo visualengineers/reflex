@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Tuio;
-using ReFlex.Core.Tuio.Components;
 using ReFlex.Core.Tuio.Util;
 
 namespace TuioTestClientConsole

@@ -1,30 +1,32 @@
+@use 'reflex' as reflex;
+
 .footer {
     grid-column: page-start / page-end;
-    grid-row: bottom-start / bottom-end; 
+    grid-row: bottom-start / bottom-end;
 
     align-self: stretch;
 
     overflow: visible;
 
-    margin-left: $default-margin;
-    margin-right: $default-margin;
-    
+    margin-left: reflex.$default-margin;
+    margin-right: reflex.$default-margin;
+
 
 
     &__content {
         display: flex;
         justify-content: space-between;
-        
-        margin-left: $side-colum-width-left;
-        margin-right: $side-column-width-right;
 
-        border-top: 1px solid $color-black;
+        margin-left: reflex.$side-colum-width-left;
+        margin-right: reflex.$side-column-width-right;
 
-        padding-top: $default-margin;
+        border-top: 1px solid reflex.$color-black;
 
-        @include respond(phone-large) {
-            margin-left: $default-margin;
-            margin-right: $default-margin;
+        padding-top: reflex.$default-margin;
+
+        @include reflex.respond(phone-large) {
+            margin-left: reflex.$default-margin;
+            margin-right: reflex.$default-margin;
         }
 
         &--text {
@@ -32,20 +34,20 @@
         }
 
         &--logos {
-            justify-self: right;            
+            justify-self: right;
 
             & img {
-                margin-left: $default-col-gap;
-                height: $default-logo-height;
+                margin-left: reflex.$default-col-gap;
+                height: reflex.$default-logo-height;
 
-                @include respond(tab-port) {
-                    height: $small-logo-height;
-                }  
+                @include reflex.respond(tab-port) {
+                    height: reflex.$small-logo-height;
+                }
             }
 
             & img:first-child {
                 margin-left: 0;
             }
         }
-    }    
+    }
 }

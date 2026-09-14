@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using TrackingServer.Model;
+﻿using TrackingServer.Model;
 
 namespace TrackingServer.Hubs
 {

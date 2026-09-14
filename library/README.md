@@ -16,7 +16,7 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 
 ### Frameworks
 
-* .NET 7.0
+* .NET 8.0
 
 ### IDEs
 

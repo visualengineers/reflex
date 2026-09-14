@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GestureReplayService } from './gesture-replay.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { Gesture } from '../data/gesture';
 import { GestureTrack } from '../data/gesture-track';
 import { ConnectionService } from './connection.service';
@@ -37,10 +37,9 @@ const testTrack: GestureTrack = {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-    });
+    imports: [],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     service = TestBed.inject(GestureReplayService);
 
     service.loopGesture = false;

@@ -1,0 +1,21 @@
+<div class="content__header margin-bottom-default">
+  <h2 class="heading-primary">Saving Options</h2>
+</div>
+
+<app-value-selection elementTitle="Gesture" elemtId="settings-filter-select" class="settings__item margin-bottom-default">
+  <select selection [(ngModel)]="selectedGestureFile"
+  class="custom-select"
+  data-enpassusermodified="yes"
+  name="Gesture"
+  id="gestureFileNames"
+  style="min-width: 12rem;">
+  <option *ngFor="let name of gestureFileNames" [value]="name">
+    {{ name }}
+  </option>
+</select>
+</app-value-selection>
+
+<div class="settings__button-container">
+  <button class="button" (click)="saveCreatedGesture()">Save</button>
+  <button class="button" (click)="loadSelectedGesture()">Load</button>
+</div>

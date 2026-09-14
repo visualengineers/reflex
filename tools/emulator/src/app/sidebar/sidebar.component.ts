@@ -3,11 +3,17 @@ import { Camera, ConfigurationService, CircleSize, Layers, ViewOption, ViewPort 
 import { ConnectionService} from '../service/connection.service';
 import { BackgroundSource } from '../model/BackgroundSource.model';
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.sass']
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: ['./sidebar.component.sass'],
+    imports: [
+      CommonModule,
+      FormsModule
+    ]
 })
 export class SidebarComponent implements OnInit, OnDestroy {
 
@@ -53,7 +59,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.connectionService.init();
-    
+
     this.amountProjectionLayers = this.configurationService.getAmountProjectionLayers();
     this.backgroundSources = this.configurationService.getBackgroundSources();
     this.cameraOptions = this.configurationService.getCameraOptions();
@@ -77,7 +83,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   onWebSocketConnectionStateChanged(state: boolean) {
-  
+
     if (state === true) {
       this.renderer.addClass(this.indicator?.nativeElement, 'success');
       this.renderer.removeClass(this.indicator?.nativeElement, 'error');

@@ -1,4 +1,4 @@
-@import '../../style/abstracts/_variables';
+@use '../../style/abstracts/variables' as *;
 
 .message-container {
     display: flex; 

@@ -23,7 +23,7 @@ Platform-independent server application using ASP.NET Core as backend and Angula
 ## Installation and start
 
 - Prerequisites:
-  - .NET 6.0  
+  - .NET 8.0  
     [Download](https://dotnet.microsoft.com/download/dotnet-core)
   - node js v. 18 oder higher  
     [Download](https://nodejs.org/en/)
@@ -326,6 +326,13 @@ By default, no sensors are included in the Build, you can add sensor Support by 
 
 ### Remarks
 
+- Electron Packaging may fail under Windows with the following error:
+  
+  ```bash
+    Cannot create symbolic link : Dem Client fehlt ein erforderliches Recht.
+  ```
+
+  try to run the command with elevated privileges
 - internally, the ports are different, when using the web app (default: `8000` instead of `5000`/`5001`in the development setup).
 - HTTPS is not supported (therefore, angular websockets also only use `ws` instead of `wss`)
 - Settings for electron build can be modified in the `electron.manifest.json` located in the `ReFlex.TrackingServer` directory
@@ -394,19 +401,19 @@ refer to [GitHub issue](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/iss
   **Solution:** Install dev certificates on the machine using `'dotnet dev-certs https --trust'
 
 - Electron App crashes on startup:
-  - built from the wrong directory: if the errro message states that some node module could not be found (e.g. `Cannot find module '@socket.io/component-emitter'`), than the electron app likely was build from another than the `tools/ReFlex.TrackingServer` directory
+  - built from the wrong directory: if the error message states that some node module could not be found (e.g. `Cannot find module '@socket.io/component-emitter'`), than the electron app likely was build from another than the `tools/ReFlex.TrackingServer` directory
   - if the configuration/settings file is corrupted, the app also crashes on startup. Try replacing the `TrackingSettings.json` in the  app directory under `resources/bin/wwwroot/Config` with the contents of `TrackingSettings_default.json`
 
 - Path to `ReFlex.TrackingServer.dll` in `launch.json` is different when building with VS Code or Rider/Visual Studio. In case of building with VS Code: Change
 
   ```json
-  "program": "${workspaceFolder}/TrackingServer/bin/Debug/net6.0/ReFlex.TrackingServer.dll",
+  "program": "${workspaceFolder}/TrackingServer/bin/Debug/net8.0/ReFlex.TrackingServer.dll",
   ```
 
   to
 
   ```json
-  "program": "${workspaceFolder}/TrackingServer/bin/x64/Debug/net6.0/ReFlex.TrackingServer.dll",
+  "program": "${workspaceFolder}/TrackingServer/bin/x64/Debug/net8.0/ReFlex.TrackingServer.dll",
   ```
 
   in `.NET Core` Configuration
@@ -428,6 +435,8 @@ refer to [GitHub issue](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/iss
 ```
 
 - if **Microsoft Azure Kinect** is not available as sensor and the error `k4a.dll cannot be found` is logged: make sure **Visual C++ Redistributable** is installed on the machine (see [Prerequisites](#installation-and-start)).
+
+- Building the Application the first time may fail due an error thrown when copying a sensor dll from the library in the post-build step. simply re-running the build command a second time solves that issue.
 
 **[⬆ back to top](#table-of-contents)**
 

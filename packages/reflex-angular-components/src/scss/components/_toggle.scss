@@ -1,3 +1,5 @@
+@use "../abstracts/variables";
+
 // fullscreen toggle button
 .fullscreen {
     &__checkbox {
@@ -6,7 +8,7 @@
   
     // button on top of Background
     &__button {
-      background-color: $color-primary;
+      background-color: variables.$color-primary;
       height: 4rem;
       width: 4rem;
       position: absolute;
@@ -36,7 +38,7 @@
       &:after {
           width: 2.8rem;
           height: 4px;
-          background-color: $color-white;
+          background-color: variables.$color-white;
           display: inline-block;
       }
   
@@ -90,7 +92,7 @@
     width: 100px;
     margin: -3px 0 0 0;
     display: block;
-    font-size: $font-size-small;
+    font-size: variables.$font-size-small;
   }
   
   // Toggle Switch
@@ -101,7 +103,7 @@
   }
   
   label.checkbox-toggle-label {
-    color: $color-primary;  
+    color: variables.$color-primary;  
     
     span.on {
       position: absolute;
@@ -120,14 +122,14 @@
     span.text {
       display: block;
       margin-top: 0.6rem;
-      font-family: $font-tertiary;
+      font-family: variables.$font-tertiary;
     }
     
   }
   
   label.checkbox-toggle-label:before   {
       content: '';
-      background: $color-primary-light-2;
+      background: variables.$color-primary-light-2;
       border-radius: 20px 20px 20px 20px;
       border: none;
       width: 48px; 
@@ -146,7 +148,7 @@
         top: 8px;
         width: 14px;
         height: 14px;
-        background: $color-white;
+        background: variables.$color-white;
         transition: .1s ease-in;  
   }
   
@@ -154,32 +156,32 @@
     visibility: hidden; 
   
     &:disabled + label.checkbox-toggle-label {
-      color: $color-grey-light-2;
+      color: variables.$color-grey-light-2;
     }
   
     &:disabled + label.checkbox-toggle-label:after {
-      background: $color-grey-light-2;
+      background: variables.$color-grey-light-2;
     }
   
     &:disabled + label.checkbox-toggle-label:before {
-      background: $color-grey-light-3;
+      background: variables.$color-grey-light-3;
     }
   
     &:checked + label.checkbox-toggle-label:after {
       opacity: 1;
       transform: translateX(26px);
-      background: $color-primary;
+      background: variables.$color-primary;
       
     } 
   
     &:checked + label.checkbox-toggle-label:before {
-      background: $color-white;
-      border: 1px solid $color-grey-dark;
+      background: variables.$color-white;
+      border: 1px solid variables.$color-grey-dark;
   
     } 
   
     &:checked + label.checkbox-toggle-label {
-      color: $color-primary;
+      color: variables.$color-primary;
       
       span.on {        
         display:inline-block;

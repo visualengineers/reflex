@@ -18,7 +18,7 @@ function createWindow() {
   // load the dist folder from Angular
   win.loadURL(
     url.format({
-      pathname: path.join(__dirname, '/dist/index.html'), // compiled version of our app
+      pathname: path.join(__dirname, '/dist/browser/index.html'), // compiled version of our app
       protocol: "file:",
       slashes: true
     })

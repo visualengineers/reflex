@@ -1,8 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Configuration;
-using Newtonsoft.Json;
-using ReFlex.Core.Common.Util;
 
 namespace ReFlex.Core.Tuio.Util
 {

@@ -13,7 +13,7 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 {
     private readonly IRemoteInteractionProcessorService _service;
     private readonly Stopwatch _stopWatch = new();
-    
+
     public RemoteInteractionProcessor(IRemoteInteractionProcessorService service)
     {
         _service = service;
@@ -22,9 +22,9 @@ public class RemoteInteractionProcessor: InteractionObserverBase
     public override ObserverType Type { get; } = ObserverType.Remote;
     public override PointCloud3 PointCloud { get; set; }
     public override VectorField2 VectorField { get; set; }
-    
+
     public override event EventHandler<IList<Interaction>> NewInteractions;
-    
+
     public override async Task<ProcessingResult> Update()
     {
         if (!_service.IsConnected)
@@ -38,27 +38,28 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 
         if (_service.IsBusy)
             return new ProcessingResult();
-        
+
         var result = new ProcessingResult(ProcessServiceStatus.Available);
 
         var processed = await _service.Update(PointCloud, result.PerformanceMeasurement, MeasurePerformance);
 
         var candidates = processed.Item1;
         var perfItem = new ProcessPerformance { Preparation = processed.Item2.Preparation, Update = processed.Item2.Update };
+        var start = DateTime.Now.Ticks;
         if (MeasurePerformance)
         {
             _stopWatch.Start();
         }
-        
+
         var interactions = ConvertDepthValue(candidates.ToList());
-        
+
         if (MeasurePerformance)
         {
             _stopWatch.Stop();
             perfItem.ConvertDepthValue = _stopWatch.Elapsed;
             _stopWatch.Reset();
         }
-        
+
         if (MeasurePerformance)
         {
             _stopWatch.Start();
@@ -83,7 +84,7 @@ public class RemoteInteractionProcessor: InteractionObserverBase
             _stopWatch.Reset();
         }
 
-        UpdatePerformanceMetrics(perfItem);
+        UpdatePerformanceMetrics(perfItem, start);
 
         NewInteractions?.Invoke(this, processedInteractions);
 

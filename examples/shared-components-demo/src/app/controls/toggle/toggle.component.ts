@@ -5,7 +5,6 @@ import { OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular
 
 @Component({
   selector: 'app-toggle',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

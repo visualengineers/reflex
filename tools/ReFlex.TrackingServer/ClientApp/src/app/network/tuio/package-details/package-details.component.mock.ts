@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { PackageDetailsComponent } from './package-details.component';
 import { TuioPackageDetails } from '@reflex/shared-types';
 
-@Component({selector: 'app-package-details',  template: ''})
+@Component({
+    selector: 'app-package-details', template: ''
+})
 export class MockPackageDetailsComponent implements Partial<PackageDetailsComponent> {
 
   public details: TuioPackageDetails = {

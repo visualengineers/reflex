@@ -1,9 +1,9 @@
-@import 'reflex';
+@use 'reflex' as reflex;
 
 .bg-active {
-  color: $color-success;
+  color: reflex.$color-success;
 }
 
 .bg-inactive {
-  color: $color-error;
+  color: reflex.$color-error;
 }

@@ -5,7 +5,6 @@ import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-buttons',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

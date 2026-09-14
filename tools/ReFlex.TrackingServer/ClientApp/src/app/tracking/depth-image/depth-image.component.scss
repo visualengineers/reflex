@@ -1,13 +1,13 @@
-@import 'main';
+@use 'reflex' as reflex;
 
 .depthImage {
 
     &__view {
         position: relative;
 
-        margin-top: $default-col-gap;
-        margin-bottom: $default-col-gap;
-        border: 1px solid $color-grey-light-3;
+        margin-top: reflex.$default-col-gap;
+        margin-bottom: reflex.$default-col-gap;
+        border: 1px solid reflex.$color-grey-light-3;
 
         & img {
             display: flex;
@@ -26,7 +26,7 @@
             height: 100vh;
 
             // z-index: 1500;
-            background-color: $color-white;
+            background-color: reflex.$color-white;
         }
 
         &:focus {

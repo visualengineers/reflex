@@ -1,15 +1,15 @@
-@import 'abstracts/variables';
-@import 'abstracts/mixins';
+@forward 'abstracts/variables';
+@forward 'abstracts/mixins';
 
-@import 'base/base';
-@import 'base/icons';
-@import 'base/typography';
-@import 'base/utilities';
+@forward 'base/base';
+@forward 'base/icons';
+@forward 'base/typography';
+@forward 'base/utilities';
 
-@import 'components/button';
-@import 'components/input';
-@import 'components/list';
-@import 'components/table';
-@import 'components/toggle';
+@forward 'components/button';
+@forward 'components/input';
+@forward 'components/list';
+@forward 'components/table';
+@forward 'components/toggle';
 
-@import 'layout/base';
+@forward 'layout/base';

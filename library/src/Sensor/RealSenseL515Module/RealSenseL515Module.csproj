@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>ReFlex.Sensor.RealSenseL515Module</PackageId>
     <Authors>Mathias Müller</Authors>
-    <Copyright>Copyright ©  2021-2023</Copyright>
+    <Copyright>Copyright © 2021-2025</Copyright>
     <Company>
       GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
       Hochschule fuer Technik und Wirtschaft Dresden, Dresden
     </Company>
-    <Version>1.0.0</Version>
+    <Version>0.9.9</Version>
+    <AssemblyVersion>0.9.9</AssemblyVersion>
+    <FileVersion>0.9.9</FileVersion>
     <Product>ReFlex.Sensor</Product>
     <AssemblyName>ReFlex.Sensor.RealSenseL515Module</AssemblyName>
     <RootNamespace>ReFlex.Sensor.RealSenseL515Module</RootNamespace>
@@ -28,9 +30,9 @@
 
   <ItemGroup>
     <PackageReference Include="Intel.RealSenseWithNativeDll" Version="2.51.1.1" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="18.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
+    <PackageReference Include="NLog" Version="6.1.0" />
     <PackageReference Include="Prise.Plugin" Version="6.0.0" />
   </ItemGroup>
 

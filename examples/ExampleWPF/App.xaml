@@ -17,9 +17,9 @@
                         <GradientStop Offset="0" Color="#00ffffff"></GradientStop>
                         <GradientStop Offset="1" Color="#33000000"></GradientStop>
                     </LinearGradientBrush>
-                    <ImageBrush x:Key="ReFlexLogo" ImageSource="pack://application:,,,/ExampleWPF;component/Resources/img/reflex-logo.png"/>
-                    <ImageBrush x:Key="HTWLogo" ImageSource="pack://application:,,,/ExampleWPF;component/Resources/img/logo--image.png"/>
-                    <ImageBrush x:Key="HTWText" ImageSource="pack://application:,,,/ExampleWPF;component/Resources/img/logo--text.png"/>
+                    <ImageBrush x:Key="ReFlexLogo" ImageSource="pack://application:,,,/ReFlex.ExampleWPF;component/Resources/img/reflex-logo.png"/>
+                    <ImageBrush x:Key="HTWLogo" ImageSource="pack://application:,,,/ReFlex.ExampleWPF;component/Resources/img/logo--image.png"/>
+                    <ImageBrush x:Key="HTWText" ImageSource="pack://application:,,,/ReFlex.ExampleWPF;component/Resources/img/logo--text.png"/>
                     <FontFamily x:Key="FontCondensed">
                         pack://application:,,,/ExampleWPF;component/Resources/fonts/#Barlow Condensed Regular
                     </FontFamily>
@@ -34,7 +34,7 @@
                         <Setter Property="Padding" Value="5"></Setter>
                     </Style>
                     <Style TargetType="Ellipse" x:Key="ConnectionStateVisual">
-                        <Setter Property="Width" Value="15"/>   
+                        <Setter Property="Width" Value="15"/>
                         <Setter Property="Height" Value="15"/>
                         <Setter Property="Margin" Value="0,0,10,0"/>
                         <Setter Property="Stroke" Value="{StaticResource GreyLight}"/>

@@ -4,7 +4,6 @@ import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-table',
-  standalone: true,
   imports: [CommonModule, SettingsGroupComponent],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'

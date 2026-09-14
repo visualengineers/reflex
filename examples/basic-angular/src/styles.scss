@@ -1,4 +1,3 @@
-@import 'style/abstracts/_variables';
-@import 'style/base/typography';
-@import 'style/base/base';
-
+@use 'style/abstracts/variables';
+@use 'style/base/typography';
+@use 'style/base/base';

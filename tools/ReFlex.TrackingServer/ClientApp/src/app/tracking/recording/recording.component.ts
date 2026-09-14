@@ -1,4 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ValueTextComponent } from '@reflex/angular-components/dist';
 import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate, TrackingConfigState } from '@reflex/shared-types';
 import { of, Subscription } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
@@ -8,7 +11,12 @@ import { RecordingService } from 'src/shared/services/recording.service';
 @Component({
   selector: 'app-recording',
   templateUrl: './recording.component.html',
-  styleUrls: ['./recording.component.scss']
+  styleUrls: ['./recording.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ValueTextComponent
+  ]
 })
 export class RecordingComponent implements OnInit {
 

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MathNet.Numerics;
+﻿using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using ReFlex.Core.Common.Components;
 

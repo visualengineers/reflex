@@ -1,7 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>ReFlex.TrackingServer</PackageId>
+    <Authors>Mathias Müller</Authors>
+    <Copyright>Copyright © 2021-2025</Copyright>
+    <Company>
+      GTV - Gesellschaft fuer Technische Visualistik mbH, Dresden
+      Hochschule fuer Technik und Wirtschaft Dresden, Dresden
+    </Company>
+    <Version>1.0.0</Version>
+    <Product>ReFlex.Utilities</Product>
+    <AssemblyName>ReFlex.TrackingServer</AssemblyName>
+    <RootNamespace>ReFlex.TrackingServer</RootNamespace>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <Nullable>enable</Nullable>
@@ -35,20 +46,20 @@
     <!-- Define additional preprocessor directives -->
     <DefineConstants Condition="'$(DefineAdditionalConstants)' != ''">$(DefineConstants);$(DefineAdditionalConstants)</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>    
+  <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.63.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.20" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.20" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.20" />
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.10.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="ServiceStack.Text" Version="8.2.2" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
-    <PackageReference Include="System.Reactive" Version="6.0.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.15" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="18.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="6.1.1" />
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="ServiceStack.Text" Version="10.0.6" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="System.Reactive" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,24 +71,17 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\library\src\Core\Graphics\Graphics.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
-    <ProjectReference Include="..\..\library\src\Core\Util\Util.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
-  </ItemGroup>
   <ItemGroup Condition="'$(DefineConstants.Contains(MS_AZURE_KINECT))' == true ">
     <ProjectReference Include="..\..\library\src\Sensor\AzureKinectModule\AzureKinectModule.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(DefineConstants.Contains(MS_KINECT2))' == true">
     <ProjectReference Include="..\..\library\src\Sensor\Kinect2Module\Kinect2Module.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(DefineConstants.Contains(INTEL_REALSENSE))' == true">    
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />    
+  <ItemGroup Condition="'$(DefineConstants.Contains(INTEL_REALSENSE))' == true">
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseL515Module\RealSenseL515Module.csproj" />
     <ProjectReference Include="..\..\library\src\Sensor\RealSenseR2Module\RealSenseR2Module.csproj" />
-    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />    
-  </ItemGroup>  
+    <ProjectReference Include="..\..\library\src\Sensor\RealSenseR435Module\RealSenseD435Module.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Content Update="wwwroot\Config\TrackingSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -93,7 +97,7 @@
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
-  
+
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)..\..\" Command="npm install" />
@@ -138,5 +142,11 @@
     <Protobuf Include="Protos\interactionTypes.proto">
       <Generator>MSBuild:Compile</Generator>
     </Protobuf>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\library\src\Core\Common\Common.csproj" />
+    <ProjectReference Include="..\..\library\src\Core\Implementation\Implementation.csproj" />
+    <ProjectReference Include="..\..\library\src\Sensor\EmulatorModule\EmulatorModule.csproj" />
+    <ProjectReference Include="..\..\library\src\Server\Data\Data.csproj" />
   </ItemGroup>
 </Project>

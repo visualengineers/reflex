@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using TrackingServer.Data.Config;
+﻿using ReFlex.Server.Data.Config;
 
 namespace TrackingServer.Events;
 
@@ -9,5 +8,5 @@ namespace TrackingServer.Events;
 /// </summary>
 public class RemoteProcessingSettingsChangedEvent : PubSubEvent<RemoteProcessingServiceSettings>
 {
-    
+
 }
