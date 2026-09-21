@@ -110,5 +110,4 @@ Frame duration measures the total time that elapses on the client side between t
 
 The average processing time of the pipeline was 24.32 ms (SD = 16.854 ms, median = 18.95 ms, 95% CI = [24.269 ms, 24.370 ms]). Here, too, the times are stable. However, alongside a comparatively small number of outliers, a larger number of times in the mid-range were observed. Specifically, this means that the number of frames in which the pipeline execution took more than 100 ms was very low, at 3,533 frames (= 0.829 per cent of the total data series). When considering the target of 50 ms, however, a significantly larger number of data points are affected (18,571 frames, 4.360 per cent of the data).
 
-
 __[⬆ back to top](#table-of-contents)__
