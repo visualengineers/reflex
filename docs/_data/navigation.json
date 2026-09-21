@@ -122,8 +122,13 @@
                                     "path": "/software/apps/server/",
                                     "file": "video-tutorial.html",
                                     "type": "page"
+                                },
+                                {
+                                    "name": "REST API",
+                                    "path": "/software/apps/server/",
+                                    "file": "rest-api.html",
+                                    "type": "page"
                                 }
-
                             ]
                         },
                         {
