@@ -1,0 +1,58 @@
+name: "Library: Update README package versions"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'library/src/**/*.csproj'
+      - 'library/src/ReFlex.Library.sln'
+      - 'library/README.md'
+      - 'scripts/update_library_package_versions.py'
+      - '.github/workflows/library-readme-packages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: library-readme-packages-main
+  cancel-in-progress: false
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+      - name: Update and commit package versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          for attempt in 1 2 3; do
+            # Recompute from the latest main, including after a concurrent push.
+            # Only the disposable runner checkout is reset here.
+            git fetch origin main
+            git checkout -B main origin/main
+            python3 scripts/update_library_package_versions.py
+
+            if git diff --quiet -- library/README.md; then
+              echo 'Package versions are up to date.'
+              exit 0
+            fi
+
+            git add -- library/README.md
+            git commit -m 'docs: sync library NuGet package versions'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push attempt ${attempt} failed; retrying from current main."
+          done
+
+          echo '::error::Could not push README update. Check branch rules and Actions write permissions.'
+          exit 1
