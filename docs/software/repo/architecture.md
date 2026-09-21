@@ -87,7 +87,7 @@ A component was designed and implemented as a plug-in to utilise elastic display
 
 __[⬆ back to top](#table-of-contents)__
 
-### dSense (2028)
+### dSense (2020)
 
 The subsequent adaptation of the architecture focused on the processing pipeline, beginning with the extension of the sensor abstraction layer to accommodate various sensors. Following the extraction of depth values, the sensor values are filtered, after which processing takes place to detect touch interactions. The core framework encapsulates the basic functionalities, interfaces and data types. The optimisation of this pipeline, with a focus on multi-touch interactions, meant that the use of pixel-based blending and vector field streaming was not initially supported directly by the framework.
 
