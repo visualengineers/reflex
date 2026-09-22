@@ -1,4 +1,4 @@
-# ReFlex TrackingServer REST API
+# ReFlex.TrackingServer: REST API
 
 <!-- omit in toc -->
 ## Table of contents
