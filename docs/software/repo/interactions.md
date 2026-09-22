@@ -14,7 +14,6 @@ title: Interactions Format
 6. [Message Format (JSON)](#message-format-json)
 7. [Conversion between .NET timestamp and TypeScript/JavaScript DateTime](#conversion-between-net-timestamp-and-typescriptjavascript-datetime)
 
-
 ## Introduction
 
 ## Interaction Format Specification

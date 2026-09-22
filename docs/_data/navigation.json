@@ -44,7 +44,13 @@
                             "type": "page"
                         },
                         {
-                            "name": "Interactions",
+                            "name": "Touch Detection",
+                            "path": "/software/repo/",
+                            "file": "touch-detection.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Interactions Format",
                             "path": "/software/repo/",
                             "file": "interactions.html",
                             "type": "page"
