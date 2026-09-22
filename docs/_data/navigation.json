@@ -95,7 +95,7 @@
                                 {
                                     "name": "Configuration File",
                                     "path": "/software/repo/",
-                                    "file": "configuration.html",
+                                    "file": "config-file.html",
                                     "type": "page"
                                 },
                                 {
@@ -107,7 +107,7 @@
                                 {
                                     "name": "SignalR",
                                     "path": "/software/apps/server/",
-                                    "file": "signalr.html",
+                                    "file": "signal-r.html",
                                     "type": "page"
                                 },
                                 {

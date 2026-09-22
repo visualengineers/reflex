@@ -1,4 +1,8 @@
-# ReFlex.TrackingServer Overview
+---
+title: ReFlex.TrackingServer Overview
+---
+
+# {{ page.title }}
 
 <!-- omit in toc -->
 ## Table of contents
@@ -7,12 +11,12 @@
 
 ## Introduction
 
-The diagram illustrates the requirements and functionalities of the server application, organised by sections of the configuration interface.
+The diagram illustrates the [requirements]({{ site.baseurl }}/software/repo/requirements.html) and functionalities of the server application, organised by sections of the configuration interface.
 
 Blue boxes represent functional requirements, green boxes represent non-functional requirements, and orange boxes represent development tools.
 
-The grey boxes represent the individual features of the user interface, which can be loaded via the configuration file (dark blue border) or set via the REST API (magenta border).
+The grey boxes represent the individual features of the user interface, which can be loaded via the [configuration file]({{ site.baseurl }}/software/repo/config-file.html) (dark blue border) or set via the [REST API]({{ site.baseurl }}/software/apps/server/rest-api.html) (magenta border).
 
-Light blue borders indicate parts of the [data format] in which interactions are transmitted to client applications.
+Light blue borders indicate parts of the [data format]({{ site.baseurl }}/software/repo/interactions.html) in which interactions are transmitted to client applications.
 
 __[⬆ back to top](#table-of-contents)__
