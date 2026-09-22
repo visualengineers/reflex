@@ -1,6 +1,42 @@
 {
   "years": [
     {
+      "name": 2026,
+      "elements": [
+        {
+          "id": "2026_Dissertation",
+          "title": "Werkzeuge und Methoden zur Erforschung von Elastic Displays",
+          "authors": "Mathias Müller",
+          "reference": "Dissertation, TU Dresden, Juni 2026",
+          "image": "2026_Dissertation.jpg",
+          "preview": "2026_Dissertation_prev.jpg",
+          "keywords": [ "Shape-Changing Interfaces", "Elastic Displays", "Open Science", "Human-Computer Interaction", "Software Frameworks", "Development Tools" ],
+          "doi": "",
+          "abstract": "2026_Dissertation.html",
+          "lang": "de",
+          "type": "monography"
+        }
+      ]
+    },
+    {
+      "name": 2025,
+      "elements": [
+        {
+          "id": "2025_CTU",
+          "title": "ReFlex: An Open Science Approach for Research on Elastic Displays",
+          "authors": "Mathias Müller & Dietrich Kammer",
+          "reference": "28th Bilateral Student Workshop CTU Prague - HTW Dresden - User Interfaces & Visualization 2025, Dresden",
+          "image": "2025_CTU-Prag.jpg",
+          "preview": "2025_CTU-Prag_prev.jpg",
+          "keywords": [ "Shape-Changing Interfaces", "Elastic Displays", "Open Science", "Replication Crisis", "Human-Computer Interaction", "Software Frameworks", "Development Tools" ],
+          "doi": "https://doi.org/10.69558/2025007",
+          "abstract": "2025_CTU-Prag.html",
+          "lang": "en",
+          "type": "conference"
+        }
+      ]
+    },
+    {
       "name": 2024,
       "elements": [
         {
