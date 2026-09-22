@@ -1,4 +1,8 @@
-# ReFlex.TrackingServer: REST API
+---
+title: ReFlex.TrackingServer - REST API
+---
+
+# {{ page.title }}
 
 <!-- omit in toc -->
 ## Table of contents
