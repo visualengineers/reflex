@@ -71,7 +71,52 @@
                             "name": "Development Documentation",
                             "path": "/software/repo/",
                             "file": "dev.html",
-                            "type": "page"
+                            "type": "page",
+                            "content":
+                            [
+                                {
+                                    "name": "Requirements Analysis",
+                                    "path": "/software/repo/",
+                                    "file": "requirements.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Sensor Abstraction Layer",
+                                    "path": "/software/repo/",
+                                    "file": "abstraction-layer.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Interaction Observer",
+                                    "path": "/software/repo/",
+                                    "file": "interaction-observer.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "Configuration File",
+                                    "path": "/software/repo/",
+                                    "file": "configuration.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "REST API",
+                                    "path": "/software/apps/server/",
+                                    "file": "rest-api.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "SignalR",
+                                    "path": "/software/apps/server/",
+                                    "file": "signalr.html",
+                                    "type": "page"
+                                },
+                                {
+                                    "name": "TUIO",
+                                    "path": "/software/repo/",
+                                    "file": "tuio.html",
+                                    "type": "page"
+                                }
+                            ]
                         },
                         {
                             "name": "Version History",
@@ -93,6 +138,12 @@
                             "type": "page",
                             "content":
                             [
+                                {
+                                    "name": "Overview",
+                                    "path": "/software/apps/server/",
+                                    "file": "server-overview.html",
+                                    "type": "page"
+                                },
                                 {
                                     "name": "Tracking view",
                                     "path": "/software/apps/server/",
@@ -127,12 +178,6 @@
                                     "name": "Video tutorials",
                                     "path": "/software/apps/server/",
                                     "file": "video-tutorial.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "REST API",
-                                    "path": "/software/apps/server/",
-                                    "file": "rest-api.html",
                                     "type": "page"
                                 }
                             ]
