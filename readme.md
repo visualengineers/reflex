@@ -5,7 +5,7 @@ Software Development SDK for **Elastic Displays** as open source mono repo
 Complete Documentation as github pages available at [https://visual-engineers.org/reflex/](https://visual-engineers.org/reflex/)
 
 - .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
-- APS.NET Core / Angular server application as frontend for library
+- ASP.NET Core / Angular server application as frontend for library
 - can be packaged as electron app for desktop
 - Example client applications for Plain HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Engine 5
 - Emulator as Development Tool
@@ -20,9 +20,10 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 4. [use shared code](#use-shared-code)
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
-7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
+7. [Known issues](#known-issues)
 8. [Updating .NET](#updating-net)
 9. [Documentation (github pages)](#documentation-github-pages)
+
 
 ## Build status
 
@@ -133,7 +134,7 @@ Therefore, the repository should be initialized in the root folder by running th
 | `npm run test:net-with-report`                       | executes .NET tests on .NET Solution *ReFlex.sln* and generates report for tests  | Currently only compatible with Windows  |
 | `npm run test:server`                       | executes tests on *ReFlex.TrackingServer* project |  |
 
-### Known issues
+### Known issues (NPM commands)
 
 - Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
   Therefore, `electron-builder` needs to be installed globally before executing a `build:emulator:electron-xxx` script
@@ -152,9 +153,9 @@ Therefore, the repository should be initialized in the root folder by running th
 
 **[⬆ back to top](#table-of-contents)**
 
-## Known issues / Troubleshooting
+## Known issues
 
-- `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
+- `Karma Test Explorer` Plugin for VS Code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
 - if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
   - `%AppData%` Folder (Windows)
   - `~/.config` Folder (Linux)

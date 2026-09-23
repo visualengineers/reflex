@@ -4,12 +4,7 @@ title: ReFlex.TrackingServer Overview
 
 # {{ page.title }}
 
-<!-- omit in toc -->
-## Table of contents
-
-1. [Introduction](#introduction)
-
-## Introduction
+![Server application features based on requirements]({{ site.baseurl }}/assets/img/overview/server-ui_requirements.png)
 
 The diagram illustrates the [requirements]({{ site.baseurl }}/software/repo/requirements.html) and functionalities of the server application, organised by sections of the configuration interface.
 
