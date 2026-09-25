@@ -1,6 +1,6 @@
 {
   "name": "@reflex/shared-types",
-  "version": "0.9.8",
+  "version": "0.9.10",
   "description": "common types for reuse between typescript projects",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
