@@ -1,7 +1,6 @@
 const { app, BrowserWindow, session, powerSaveBlocker } = require('electron');
 const url = require('url');
 const path = require('path');
-const { context } = require('three/src/nodes/core/ContextNode.js');
 
 const powerSaveId = powerSaveBlocker.start('prevent-display-sleep');
 
