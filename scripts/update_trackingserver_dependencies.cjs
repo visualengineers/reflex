@@ -1,24 +1,12 @@
-#!/usr/bin/env bash
-# Usage: bash scripts/update_trackingserver_dependencies.sh
-# Requires Node.js, but no npm install. Can be run from any working directory.
-# Merge declared dependencies (not devDependencies or installed/lockfile versions).
-# App entries override root entries; file: references use the local package version.
-# Only the target's dependencies object is replaced; all other bytes are preserved.
-set -euo pipefail
-
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
-
-if ! command -v node >/dev/null 2>&1; then
-    echo "Error: Node.js is required to update the TrackingServer dependencies." >&2
-    exit 1
-fi
-
-node - "$REPO_ROOT" <<'NODE'
+// Usage: npm run update:server:dependencies
+// Requires no npm install. Paths are resolved relative to this script.
+// Merge declared dependencies (not devDependencies or installed/lockfile versions).
+// App entries override root entries; file: references use the local package version.
+// Only the target's dependencies object is replaced; all other bytes are preserved.
 const fs = require('node:fs');
 const path = require('node:path');
 
-const root = process.argv[2];
+const root = path.resolve(__dirname, '..');
 const app = path.join(root, 'tools/ReFlex.TrackingServer/ClientApp');
 const target = path.join(app, 'src/assets/data/package.json');
 const readJson = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -85,4 +73,3 @@ try {
     console.error(`Error: ${error.message}`);
     process.exitCode = 1;
 }
-NODE
