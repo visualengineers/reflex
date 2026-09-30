@@ -12,7 +12,6 @@ title: "Case Studies: Overview"
 3. [Case Study Profiles](#case-study-profiles)
 4. [Case Study Descriptions](#case-study-descriptions)
 5. [Summary](#summary)
-6. [Case Studies and Framework Development](#case-studies-and-framework-development)
 
 ## Purpose and Research Approach
 
@@ -105,6 +104,14 @@ The following illustration traces these overlapping development periods and thei
 
 ![Chronological Order of Case Studies with associated framework iteration]({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_overview_timelines_ganntt.png){:.full-width-scheme .transparent-background}
 
+### Case Studies and Framework Development
+
+Taken together, the case studies provide the application context needed to understand the framework's functionality and design decisions. Recording the questions, implementation choices, limitations, and findings of each iteration makes it possible to trace how practical experience informed subsequent development.
+
+Observations of users helped examine assumptions and open questions in model development. The range of application contexts also supported requirements elicitation and validation of the reference architecture and tools. Beyond software, the studies enabled the testing and refinement of design methods and hardware, as well as the derivation of design guidelines.
+
+In this documentation, these accounts will also serve as the basis for the forthcoming [requirements analysis](../../software/repo/requirements.md). The individual studies establish the evidence from which shared requirements and the rationale for framework features can be derived.
+
 ### Demonstrations and Technical Maturity
 
 Comparing demonstration counts by case study and event type reveals that DeepZoom and DisPlay were shown most frequently, with DisPlay's game elements making it particularly suitable for public events. FlexiWall and Layers also featured prominently; considered together as successive approaches to layer interaction, they form the most frequently demonstrated concept. Selection depended partly on explicit requests and positive feedback from earlier events, so these counts reflect the demonstration context.
@@ -120,15 +127,5 @@ In regard to the distribution of demonstrations across several years, FlexiWall,
 The studies address the **Application and Content** aspect of the [Grand Challenges for Shape-Changing Interfaces](../scientific/challenges_introduction.md#grand-challenges-for-shape-changing-interfaces) by exploring application scenarios and the distinctive capabilities of Elastic Displays. Their focus reflects the characteristics of manual interaction, especially hand-eye coordination: volumetric data, lenses, and zoomable user interfaces were central topics. Physics-based interaction metaphors were explored mainly in information visualization, with DisPlay also applying them to spatial interaction.
 
 Beyond DisPlay and several smaller prototypes, comparatively few complex spatial interaction scenarios were explored. This remains an opportunity for further research.
-
-**[⬆ back to top](#table-of-contents)**
-
-## Case Studies and Framework Development 
-
-Taken together, the case studies provide the application context needed to understand the framework's functionality and design decisions. Recording the questions, implementation choices, limitations, and findings of each iteration makes it possible to trace how practical experience informed subsequent development.
-
-Observations of users helped examine assumptions and open questions in model development. The range of application contexts also supported requirements elicitation and validation of the reference architecture and tools. Beyond software, the studies enabled the testing and refinement of design methods and hardware, as well as the derivation of design guidelines.
-
-In this documentation, these accounts will also serve as the basis for the forthcoming [requirements analysis](../../software/repo/requirements.md). The individual studies establish the evidence from which shared requirements and the rationale for framework features can be derived.
 
 **[⬆ back to top](#table-of-contents)**
