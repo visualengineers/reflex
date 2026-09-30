@@ -10,8 +10,9 @@ title: "Case Studies: Overview"
 1. [Purpose and Research Approach](#purpose-and-research-approach)
 2. [Chronological Overview](#chronological-overview)
 3. [Case Study Profiles](#case-study-profiles)
-4. [Structure of Each Case Study](#structure-of-each-case-study)
-5. [Relationship to the Framework](#relationship-to-the-framework)
+4. [Case Study Descriptions](#case-study-descriptions)
+5. [Summary](#summary)
+6. [Case Studies and Framework Development](#case-studies-and-framework-development)
 
 ## Purpose and Research Approach
 
@@ -20,6 +21,8 @@ The case studies explore how Elastic Displays can support different application 
 Insights from conceiving, implementing, presenting, and discussing these prototypes provide the basis for more general conclusions about Elastic Displays. Feedback from users and experts, together with scientific exchange, informs the development of tools, models, and methods. This follows the [application-oriented research approach](../scientific/challenges_introduction.md#tools---methods---models) underlying the project.
 
 The studies are presented chronologically to make it clear how each iteration draws on observations from earlier work. Consecutive studies do not necessarily address the most closely related topics; their order traces the development of ideas and technical capabilities.
+
+The documentation of the individual case studies is intended to serve as a starting point for future implementations: as a source of inspiration, a record of user feedback on interaction design, and a basis for comparable application contexts and interaction and visualization concepts.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -32,7 +35,7 @@ The timeline in the source overview identifies the following main periods of wor
 | Year | Case studies                                                                         |
 | ---- | ------------------------------------------------------------------------------------ |
 | 2012 | [DepthTouch](depthtouch.md)                                                          |
-| 2014 | [FlexiWall](felxiwall.md)                                                            |
+| 2014 | [FlexiWall](flexiwall.md)                                                            |
 | 2015 | [DEEP](deep.md)                                                                      |
 | 2016 | [Interactive Animations](interactive-animations.md)                                  |
 | 2017 | [Glyphboard](glyphboard.md), [Zoomable Product Browser](zoomable-product-browser.md) |
@@ -70,7 +73,7 @@ Repository links generally refer to versions that have been updated, prepared fo
 
 **[⬆ back to top](#table-of-contents)**
 
-## Structure of Each Case Study
+## Case Study Descriptions
 
 Following the profile, each case study uses four sections to document its motivation, implementation, application, and findings.
 
@@ -92,14 +95,40 @@ This section summarizes insights from trying out the prototype, feedback from us
 
 **[⬆ back to top](#table-of-contents)**
 
-## Relationship to the Framework
+## Summary
+
+### Iterative and Parallel Development
+
+Starting with the FlexiWall experimentation environment, the studies generally built on findings from earlier iterations. Some scenarios also developed in parallel: Glyphboard and DeepZoom explored different approaches to zoomable user interfaces, while FlexiWall continued to support early concept exploration using example images, in a manner comparable to paper prototyping.
+
+The following illustration traces these overlapping development periods and their underlying framework iterations: FlexiWall, dSense, and ReFlex. Grey segments represent initial concept development, solid colours indicate active implementation, and transparent segments show maintenance for demonstrations. White and black circles mark demonstrations and publications respectively; dotted connections indicate ports to later framework versions. These ports supported reuse and helped validate the evolving tools.
+
+![Chronological Order of Case Studies with associated framework iteration]({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_overview_timelines_ganntt.png){:.full-width-scheme .transparent-background}
+
+### Demonstrations and Technical Maturity
+
+Comparing demonstration counts by case study and event type reveals that DeepZoom and DisPlay were shown most frequently, with DisPlay's game elements making it particularly suitable for public events. FlexiWall and Layers also featured prominently; considered together as successive approaches to layer interaction, they form the most frequently demonstrated concept. Selection depended partly on explicit requests and positive feedback from earlier events, so these counts reflect the demonstration context.
+
+![Number of Demonstration per Case Study and Event Type]({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_summary_event-type.png){:.full-width-scheme .transparent-background}
+
+In regard to the distribution of demonstrations across several years, FlexiWall, DisPlay, and DeepZoom remained in use over extended periods and at different venues. More prototypes were eventually shown at the same event, while the annual number of presentations did not increase proportionally. The summary interprets this as an indication of a more consistent, stable technical foundation: switching scenarios became possible without physical modifications, reconfiguration, or renewed calibration.
+
+![Number of Demonstrations per Case Study and Year]({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_summary_events-year.png){:.full-width-scheme .transparent-background}
+
+### Research Focus and Open Questions
+
+The studies address the **Application and Content** aspect of the [Grand Challenges for Shape-Changing Interfaces](../scientific/challenges_introduction.md#grand-challenges-for-shape-changing-interfaces) by exploring application scenarios and the distinctive capabilities of Elastic Displays. Their focus reflects the characteristics of manual interaction, especially hand-eye coordination: volumetric data, lenses, and zoomable user interfaces were central topics. Physics-based interaction metaphors were explored mainly in information visualization, with DisPlay also applying them to spatial interaction.
+
+Beyond DisPlay and several smaller prototypes, comparatively few complex spatial interaction scenarios were explored. This remains an opportunity for further research.
+
+**[⬆ back to top](#table-of-contents)**
+
+## Case Studies and Framework Development 
 
 Taken together, the case studies provide the application context needed to understand the framework's functionality and design decisions. Recording the questions, implementation choices, limitations, and findings of each iteration makes it possible to trace how practical experience informed subsequent development.
+
+Observations of users helped examine assumptions and open questions in model development. The range of application contexts also supported requirements elicitation and validation of the reference architecture and tools. Beyond software, the studies enabled the testing and refinement of design methods and hardware, as well as the derivation of design guidelines.
 
 In this documentation, these accounts will also serve as the basis for the forthcoming [requirements analysis](../../software/repo/requirements.md). The individual studies establish the evidence from which shared requirements and the rationale for framework features can be derived.
 
 **[⬆ back to top](#table-of-contents)**
-
-<!-- Summarized from "Werkzeuge und Methoden zur Erforschung von Elastic Displays",
-     Chapter 5, introductory overview, pp. 127-129 (case-studies_overview.pdf).
-     Chronology follows Figure 5-1; documentation structure follows Figure 5-2. -->
