@@ -79,29 +79,43 @@ FlexiWall served as an experimentation environment spanning several application 
 
 Transparent acrylic tangibles provided more control over the shape of the surface. Plates cut from 3 mm acrylic included rectangles measuring 25 × 20 cm, circles with a diameter of 20 cm, and strips measuring 3 × 20 cm. Embedded magnets and counterparts behind the fabric attached them to the display while allowing lateral movement.
 
+![Tangibles]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-tangibles.png)
+
 The plates could act as physical lenses and reduce occlusion because users held them at their edges. They also supported collaborative interaction: two people could use separate strips to span a larger cross-section between them.
 
 ### Photography and Image Editing
 
 Images with different focal planes allowed users to control local focus through deformation. A second example used seven exposure levels: pushing into the surface revealed information from darker exposures in bright regions, while pulling outward revealed brighter exposures in shadow regions.
 
+![Depth-of-Field]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-dof.png)
+
 Both examples treated the depth image as a continuously adjustable layer mask. More generally, deformation could control an image effect's strength across different regions. Because the prototype did not preserve the resulting manipulation, these scenarios primarily supported exploratory comparison and discussion rather than a complete image-editing workflow.
+
+![High Dynamic Range]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-hdr.png)
 
 ### Painting and Image Analysis
 
-Different versions of Vermeer's *Girl Reading a Letter at an Open Window* illustrated how deformation could reveal changes in a painting's composition. Another example compared photographic and infrared images of the Ghent Altarpiece to explore differences relevant to art-historical analysis and restoration.
+Different versions of Vermeer's *Girl Reading a Letter at an Open Window* illustrated how deformation could reveal changes in a painting's composition. Another example compared photographic and infrared images of the [Ghent Altarpiece by Van Eyck](https://closertovaneyck.kikirpa.be/) to explore differences relevant to art-historical analysis and restoration.
+
+![Vermeer]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-vermeer.png)
 
 These examples addressed distinct tasks: assessing changes to the overall composition and identifying local differences between imaging techniques. Their differing needs later informed the discussion of global layer switching and bounded comparison lenses.
+
+![Van Eyck]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-van-eyck.png)
 
 ### Maps
 
 Thematic maps placed information such as public transport routes, parking, traffic, and cycling routes over a satellite image. Local deformation exposed additional information while retaining the surrounding map as context.
 
-Historical maps instead mapped time to depth. Examples included seven stages of Central European political history from 1500 onward and changes to the Roman Empire's borders. These datasets exposed the need to distinguish individual periods clearly and to identify the date of the currently displayed region.
+![Maps]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-maps.png)
+
+Historical maps instead mapped time to depth. Examples included seven stages of [Central European political history](https://www.atlas-europa.de/t01/territorien-staaten/t01-territorien-staaten.htm) from 1500 onward and changes to the Roman Empire's borders. These datasets exposed the need to distinguish individual periods clearly and to identify the date of the currently displayed region.
 
 ### Time Series
 
-Image sequences mapped temporal change to deformation. Examples explored objects moving in the same or opposite directions, glacier retreat, and snow-crystal formation. Applying different amounts of pressure, or combining pushing and pulling, could align different objects' movements and make differences in their speed tangible.
+Image sequences mapped temporal change to deformation. Examples explored objects moving in the same or opposite directions, [glacier retreat](https://www.gletschervergleiche.ch/Pages/ImageCompareDet.aspx?Id=1), and [snow-crystal formation](https://vimeo.com/87342468). Applying different amounts of pressure, or combining pushing and pulling, could align different objects' movements and make differences in their speed tangible.
+
+![Time Series]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-time.png)
 
 ### Volumetric Data
 
@@ -111,11 +125,15 @@ MRI slices illustrated navigation through a spatial volume. Surface deformation,
 
 A gigapixel panorama of Dresden approximated geometric zoom by assigning increasingly magnified views of the image centre to successive layers. This offered an initial impression of depth-controlled zoom but did not support freely choosing a zoom centre. Later experiments investigated shader mappings, while the broader questions were pursued in subsequent case studies.
 
-Image mockups also supported early exploration of **semantic zoom**. One concept combined sunburst diagrams and edge bundling to show software classes and their relationships. Increasing deformation would reveal progressively more detail, from attribute and method names to types, visibility, and parameters. Another concept explored relationships between publications, authors, and topics. These were prototypes for assessing interaction and visualization ideas, rather than fully implemented information systems.
+![Geometric Zoom]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-zoom.png)
+
+Image mockups also supported early exploration of semantic zoom. One concept combined sunburst diagrams and edge bundling to show software classes and their relationships. Increasing deformation would reveal progressively more detail, from attribute and method names to types, visibility, and parameters. Another concept explored relationships between publications, authors, and topics. These were prototypes for assessing interaction and visualization ideas, rather than fully implemented information systems.
 
 ### Comparing Clustering Results
 
-Layers also represented alternative results of clustering multidimensional data, including different parameter settings for BIRCH, DBSCAN, and k-means. Switching between aligned visualizations helped compare how elements were grouped. Later iterations added split views and Magic Lenses. Datasets and further questions connected this work to the Glyphboard case study.
+Layers also represented alternative results of clustering multidimensional data, including different parameter settings for BIRCH, DBSCAN, and k-means. Switching between aligned visualizations helped compare how elements were grouped. Later iterations added split views and Magic Lenses. Datasets and further questions connected this work to the [Glyphboard case study](glyphboard.md).
+
+![Big Data Landscapes]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-glyphboard.png)
 
 **[⬆ back to top](#table-of-contents)**
 
