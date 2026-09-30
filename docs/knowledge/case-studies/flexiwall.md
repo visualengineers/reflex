@@ -22,7 +22,7 @@ title: "Case Study: FlexiWall"
 | Format | Large vertical Elastic Display wall |
 | Framework | FlexiWall |
 | Sensor | Microsoft Kinect |
-| Architecture | Monolithic (.NET 4, WPF) |
+| Architecture | Monolithic (.NET, WPF) |
 | Scenario | Experimentation environment for rapid prototyping, photography, painting, maps, volumetric data, time series, and clustering algorithms |
 | Features | - interaction with data layers<br> - direct use of the depth image <br> - exploration of scenarios through rapid prototyping |
 | Publication | *Franke, I. S., Müller, M., Gründer, T. & Groh, R.* (2014): **FlexiWall: Interaction in-between 2D and 3D Interfaces**. HCI International 2014, pp. 415–420. DOI: [10.1007/978-3-319-07857-1_73](https://doi.org/10.1007/978-3-319-07857-1_73).<br><br>*Müller, M., Knöfel, A., Gründer, T., Franke, I. & Groh, R.* (2014): **FlexiWall: Exploring Layered Data with Elastic Displays**. ITS '14, pp. 439–442. DOI: [10.1145/2669485.2669529](https://doi.org/10.1145/2669485.2669529). <br><br>*Müller, M., Kammer, D. & Groh, R.* (2016): **Elastische Displays im Einsatz**. Mensch und Computer 2016 – Workshopband. DOI: [10.18420/muc2016-ws10-0007](https://doi.org/10.18420/muc2016-ws10-0007). |
