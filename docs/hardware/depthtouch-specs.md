@@ -16,7 +16,7 @@ title: "DepthTouch: Technical Specifications"
 
 ## Projector
 
-![Optoma GT 1070Xe]({{ site.baseurl }}/assets/img/hardware/optoma_gt1070xe.jpg)
+![Optoma GT 1070Xe]({{ site.baseurl }}/assets/img/hardware/optoma_gt1070xe.jpg){:.content__title-image}
 
 **Optoma GT 1070Xe**
 

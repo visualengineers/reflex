@@ -4,6 +4,16 @@ title: "Case Study: FlexiWall"
 
 # {{ page.title }}
 
+<!-- omit in toc -->
+## Table of Contents
+
+1. [Research Questions](#research-questions)
+2. [Features and Limitations](#features-and-limitations)
+3. [Scenario](#scenario)
+4. [Findings and Discussion](#findings-and-discussion)
+
+![FlexiWall: Title Image]({{ site.baseurl }}/assets/img/kb/case-studies/flexiwall-title.jpg){:.content__title-image}
+
 | Profile field | Description |
 | ------------- | ----------- |
 | Title | FlexiWall |
@@ -19,16 +29,6 @@ title: "Case Study: FlexiWall"
 | Repository | [reflex-flexiwall-legacy-wpf](https://github.com/visualengineers/reflex-flexiwall-legacy-wpf) |
 
 The profile describes the historical FlexiWall iteration. As explained in the [case study overview](overview.md#case-study-profiles), the published repository may include later adaptations.
-
-<!-- omit in toc -->
-
-## Table of Contents
-
-1. [Table of Contents](#table-of-contents)
-2. [Research Questions](#research-questions)
-3. [Features and Limitations](#features-and-limitations)
-4. [Scenario](#scenario)
-5. [Findings and Discussion](#findings-and-discussion)
 
 ## Research Questions
 
