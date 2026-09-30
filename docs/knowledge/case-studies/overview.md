@@ -23,6 +23,8 @@ The studies are presented chronologically to make it clear how each iteration dr
 
 **[⬆ back to top](#table-of-contents)**
 
+![Chronological Order of Case Studies](({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_overview_timelines.png){:.full-width-scheme})
+
 ## Chronological Overview
 
 The timeline in the source overview identifies the following main periods of work:
