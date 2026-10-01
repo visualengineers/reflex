@@ -74,7 +74,7 @@ Three layouts were explored: random placement, four quadrants organized by produ
 
 Each product was represented by a circular glyph. Semantic zoom progressively exposed more attributes for a smaller set of products, while geometric enlargement provided space to read them.
 
-![Visualization Concept: Glyphs and Leve-of-Detail]({{ site.baseurl }}/assets/img/kb/case-studies/zoomable-product-browser_visualization-concept.png){:.full-width-scheme .transparent-background}
+![Visualization Concept: Glyphs and Level-of-Detail]({{ site.baseurl }}/assets/img/kb/case-studies/zoomable-product-browser_visualization-concept.jpg){:.full-width-scheme .transparent-background}
 
 | Detail level | Product representation |
 | ------------ | ---------------------- |
