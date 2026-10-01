@@ -26,8 +26,6 @@ title: "Case Study: DisPlay - Game Concepts"
 
 The seventh case study explored **surface deformation as a means of influencing virtual environments through physical forces**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles). The source does not list an associated publication or repository.
 
-<!-- Source: case-studies-display.pdf, section 5.7, pp. 181-186. -->
-
 ## Research Questions
 
 DisPlay returned to the playful exploration of physical effects introduced by [DepthTouch](depthtouch.md). Studies such as [DEEP](deep.md) and the [Zoomable Product Browser](zoomable-product-browser.md) had mapped simulated forces to abstract actions such as selection and filtering. DisPlay instead investigated how deformation could influence objects in a virtual environment, ideally making simple physical principles understandable through interaction.
