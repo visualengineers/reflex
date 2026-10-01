@@ -12,6 +12,8 @@ title: "Case Study: DeepZoom - Gigapixel Visualizations"
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
 
+![Case Study: DeepZoom - Gigapixel Visualizations]({{ site.baseurl }}/assets/img/kb/case-studies/deep-zoom_title.jpg){:.content__title-image}
+
 | Profile field | Description |
 | ------------- | ----------- |
 | Title | DeepZoom |
@@ -71,7 +73,9 @@ This was a limit of the implementation described in the study. Loading complete 
 
 ### Lens Placement and Overview Context
 
-The study considered five presentation concepts, illustrated in Figure 5-39 of the source:
+![Lens placement options]({{ site.baseurl }}/assets/img/kb/case-studies/deep-zoom_zoom-modes.png)
+
+The case study considered five presentation concepts, illustrated in Figure 5-39 of the source:
 
 | Presentation | Relationship between detail and context |
 | ------------ | --------------------------------------- |
@@ -92,6 +96,8 @@ Several kinds of content tested the same interaction approach:
 - **Maps and aerial imagery:** Pre-rendered Google Maps satellite images at different resolutions and historical aerial photographs of Dresden from 1953 connected a city-wide overview with individual streets and buildings.
 - **Event plans:** Exhibition plans supplied as vector graphics were used for OUTPUT and Fit4Congress. The overview showed room and stand silhouettes; the detailed image added room names and event information.
 
+![Examples for Zoomable Imagery]({{ site.baseurl }}/assets/img/kb/case-studies/deep-zoom_examples.png)
+
 The event plans combined **geometric zoom**, enlarging the image, with **semantic zoom**, revealing additional content. They suggested an information-terminal scenario in which visitors could explore both a venue's layout and its programme. However, embedding all labels in the detail image made small text appear at low magnification, where it was difficult to read and could distract from the overview.
 
 ### Comparing Different Image Layers
@@ -103,6 +109,8 @@ The lens made colour changes and alterations to pictorial elements visible withi
 ### Gradually Revealing Annotations
 
 The final iteration addressed the readability problem by separating annotations from the underlying detail image. A semi-transparent information layer became progressively more opaque as magnification increased, keeping fine detail unobtrusive at low zoom levels.
+
+![Semantic Layers in Zoomable Images]({{ site.baseurl }}/assets/img/kb/case-studies/deep-zoom_semantic-layers.png)
 
 For the Dresden panorama, the overlay labelled significant buildings at their image positions, resembling an augmented-reality view. The same approach was tested with other panoramas and with traffic information overlaid on maps. It worked in both the full-screen and lens presentations.
 
