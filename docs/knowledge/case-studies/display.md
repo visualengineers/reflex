@@ -12,6 +12,8 @@ title: "Case Study: DisPlay - Game Concepts"
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
 
+![Case Study: DisPlay]({{ site.baseurl }}/assets/img/kb/case-studies/display_title.jpg){:.content__title-image}
+
 | Profile field | Description |
 | ------------- | ----------- |
 | Title | DisPlay |
@@ -30,7 +32,9 @@ The seventh case study explored **surface deformation as a means of influencing 
 
 DisPlay returned to the playful exploration of physical effects introduced by [DepthTouch](depthtouch.md). Studies such as [DEEP](deep.md) and the [Zoomable Product Browser](zoomable-product-browser.md) had mapped simulated forces to abstract actions such as selection and filtering. DisPlay instead investigated how deformation could influence objects in a virtual environment, ideally making simple physical principles understandable through interaction.
 
-The study addressed four main questions:
+![IGame Concepts: Ball Simulation and Spaceship Game]({{ site.baseurl }}/assets/img/kb/case-studies/display_overview.png)
+
+The case study addressed four main questions:
 
 - How can gravity, friction, inertia, velocity, and acceleration support interaction in spatial environments?
 - Does the simulation require an accurate vector field derived from the surface relief, or can detected deformation extrema provide a sufficient approximation?
@@ -81,6 +85,8 @@ Apart from short idle-screen texts, the scenarios had no fixed reading direction
 
 ### Ball Simulation: Revisiting DepthTouch
 
+![Ball Simulation Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_ball-sim.png)
+
 The first level adapted DepthTouch's circles into **three-dimensional balls**. Shading made their volume visible, while textures revealed rotation. The physics engine added size-dependent mass, inertia, friction, and more complex collisions.
 
 Moving to a three-dimensional simulation also allowed balls to move vertically and stack. Invisible boundaries formed a virtual glass box: a floor and side walls contained the balls, while a ceiling slightly above the diameter of the largest ball limited vertical movement. This reduced excessive stacking while retaining some of the additional behaviour introduced by the engine.
@@ -89,11 +95,15 @@ The scenario thus explored both the visual appeal and interaction consequences o
 
 ### Particle Simulation
 
+![IParticle Simulation Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_particles.png)
+
 The second level used a particle effect as a proof of concept for interactive force-field visualization. Pressing created a force source at the hand position, and deformation depth controlled its strength. Particles responded by changing their trajectories, producing an interactive snowstorm-like effect.
 
 Magnetic fields and interactions between them motivated the concept, but the prototype **did not simulate magnetic field lines**. Producing those patterns would have required additional constraints on particle motion, which remained outside the implemented scenario.
 
-### Space Game: Steering Objects through Forces
+### Spaceship Game: Steering Objects through Forces
+
+![Spaceship Game Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_spaceship.png)
 
 The third level developed a game around indirect control. An initial projectile concept would have mapped pressure to launch speed and contact position to firing direction. It was set aside because it favoured single-touch interaction and fitted the idea of simultaneous gravitational sources less well.
 

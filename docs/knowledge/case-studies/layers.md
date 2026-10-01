@@ -1,5 +1,5 @@
 ---
-title: "Case Study: Layers - Layered Data"
+title: "Case Study: Layers - Layered Data on Elastic Displays"
 ---
 
 # {{ page.title }}
@@ -11,6 +11,8 @@ title: "Case Study: Layers - Layered Data"
 2. [Features and Limitations](#features-and-limitations)
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
+
+![Case Study: Layers]({{ site.baseurl }}/assets/img/kb/case-studies/layers_title.jpg){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |
@@ -28,8 +30,6 @@ title: "Case Study: Layers - Layered Data"
 The ninth case study combined **layer blending, multi-touch detection, and interactive lenses** in a web-based successor to the [FlexiWall experimentation environment](flexiwall.md). The profile describes the ReFlex implementation reported in the source, following the conventions in the [case study overview](overview.md#case-study-profiles). The published repository may include later adaptations. The source does not list an associated publication.
 
 This account documents the research questions, interaction concepts, and findings. Dataset configuration, texture conversion, controls, and development instructions are maintained in the [Layers application documentation](../../software/apps/layers.md).
-
-<!-- Source: case-studies-layers.pdf, section 5.9, pp. 194-203. -->
 
 ## Research Questions
 
