@@ -1,5 +1,7 @@
 # reflex-layers
 
+This page documents application setup, content preparation, and controls. For the research questions, interaction concepts, and findings of the historical implementation, see [Case Study: Layers - Layered Data](../../knowledge/case-studies/layers.md).
+
 <!-- omit in toc -->
 ## Table-of-contents
 
@@ -18,7 +20,7 @@
 
 ## User Interface
 
-The application features basically three visualization / interaction modes (see also [Interaction Modes](#interaction-modes)).
+The application provides three presentation concepts. Magic Lens has separate single-touch and multi-touch variants; availability depends on the texture format. See [Interaction Modes](#interaction-modes) for behaviour and configuration options.
 
 ### Magic Lens (single touch and multi-touch)
 
@@ -54,14 +56,15 @@ Pixel Blending Options include developer / debugging options, whether to interpo
 
 1. `Texture2D`
    * multiple images in common file formats (preferably `png` and `jpg`)
-   * constraint: maximum 15 images can be used
+   * Pixel Blending supports a maximum of 15 separately supplied layer textures in the case-study implementation; this limit does not apply generally to image-based lens navigation
 2. `TextureArray`:
-   * Number of images of equal size provided ina single file
-   * either in RAW format (raw bit data) or in `Khronos KTX` texture format, could contain 256 or more images
+   * multiple images of equal size provided in a single file
+   * either in RAW format (raw byte data) or in `Khronos KTX2` texture format
+   * the case study describes a 256-layer limit for its raw-data representation; KTX2 avoids that restriction, but usable array sizes still depend on the graphics implementation and hardware
 3. `Texture3D`:
    * number of images of equal size, encoded as volumetric data structure
    * either in `DDS` format (raw bit data) or in `Khronos KTX` texture format
-   * __REMARK:__ currently not working / not implemented as `three.js` _can_ read and load DDS textures, but binding to a `Texture3d` is not working (it seems that three.js focuses on Texture Arrays)
+   * __REMARK:__ not a usable option in the implementation described by the case study: 3D-texture integration with three.js was unreliable, so existing FlexiWall 3D textures required conversion. This is distinct from the supported `TextureArray` formats.
 
 ### Common Properties for TextureResource
 
@@ -112,9 +115,9 @@ There is an optional parameter `config` that can be set for each dataset. It spe
       "showLenseUI": true,
       // show position in the current layer on the side
       "showLayerUI": false,
-      // selected mask for Magic Lens (only 3D Textures)
+      // selected mask for Magic Lens (TextureArray only)
       "defaultLensMaskIdx": 1,
-      // selected border color for Magic Lens (only 3D Textures) - RGBA (Hex)
+      // selected border color for Magic Lens (TextureArray only) - hex color
       "lensBorderColor": "#ffff00",
       // scaling factor of lens
       "lensSize": 1.0,
@@ -305,6 +308,15 @@ Example Config:
 
 ## Interaction Modes
 
+The case-study implementation supports the following combinations. These describe the reported prototype; later repository versions may extend them.
+
+| Mode | Texture2D | TextureArray |
+| ---- | --------- | ------------ |
+| Pixel Blending | Supported, with the layer limit described under [Texture Formats](#texture-formats) | Supported |
+| Magic Lens (single-touch) | Supported | Supported |
+| Magic Lens (multi-touch) | Supported | Not implemented |
+| Layer Navigation | Supported | Supported |
+
 ### Pixel Blending
 
 * Blends the image based on the color value from the depth sensor
@@ -320,21 +332,21 @@ Example Config:
 ### Magic Lens (Single or Multi-Touch)
 
 * Displays a lens at the finger position containing the content based on the deformation at the fingertip
-* In Single-touch mode, the first touch is used to determine the lens position, in multi-touch mode, a lens for every finger is displayed
+* In single-touch mode, the contact furthest from the resting plane determines the lens position and layer. In multi-touch mode, each contact controls a lens, up to the dataset's configured `maxNumLenses` (Texture2D only in the case-study implementation).
 * Options:
   * __Lens Size__: Scaling factor for the lens (_Default:_ __1.0__)
   * __Lens Offset X__: move the lens from the fingertips in horizontal direction (_Default:_ __0.0__)
   * __Lens Offset Y__: move the lens from the fingertips in vertical direction (_Default:_ __0.0__)
-  * __Show Lens UI__: show current layer at the border of the lens (_Default:_ __true__)
+  * __Show Lens UI__: show current layer at the border of the lens (Texture2D only; _Default:_ __true__)
   * __Show Layer UI__: show layers and current position of the lenses at the side of the screen (_Default:_ __true__)
 
 ### Layer Navigation
 
-* go through layers by deforming the screen, complete layer is displayed based on the deepest finger position
+* Navigate through layers by deforming the screen. The contact furthest from the resting plane selects the layer displayed across the entire screen.
 * Options:
   * __Show Layer UI__: show layers and current position at the side of the screen (_Default:_ __true__)
 
-When using KTX-Arrays, __Lens Modes__ offer an additional option to specify the lens mask. his can be customized to achieve effects such as a fisheye effect. Also, the border color of the lens can be specified.
+For texture-array lenses, a grayscale mask can interpolate between the selected layer and the resting view, producing effects such as a fisheye-like transition. The lens border color is also configurable. Lens size, offset, and the layer widget at the screen edge are available for both texture formats; widgets directly on the lens are limited to Texture2D in the case-study implementation.
 
 ## Project Setup and Development
 
