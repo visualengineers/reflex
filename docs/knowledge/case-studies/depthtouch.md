@@ -1,5 +1,5 @@
 ---
-title: "Case Study: DepthTouch"
+title: "Analysis: DepthTouch Prototype"
 ---
 
 # {{ page.title }}
