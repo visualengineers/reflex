@@ -465,61 +465,61 @@
                           "content":
                           [
                             {
-                              "name": "DepthTouch (2012)",
+                              "name": "DepthTouch",
                               "path": "/knowledge/case-studies/",
                               "file": "depthtouch.html",
                               "type": "page"
                             },
                             {
-                              "name": "FlexiWall (2014)",
+                              "name": "FlexiWall",
                               "path": "/knowledge/case-studies/",
                               "file": "flexiwall.html",
                               "type": "page"
                             },
                             {
-                                "name": "DEEP (2015)",
+                                "name": "DEEP",
                                 "path": "/knowledge/case-studies/",
                                 "file": "deep.html",
                                 "type": "page"
                             },
                             {
-                              "name": "Interactive Animations (2016)",
+                              "name": "Interactive Animations",
                               "path": "/knowledge/case-studies/",
                               "file": "interactive-animations.html",
                               "type": "page"
                             },
                             {
-                              "name": "Zoomable Product Browser (2017)",
+                              "name": "Zoomable Product Browser",
                               "path": "/knowledge/case-studies/",
                               "file": "zoomable-product-browser.html",
                               "type": "page"
                             },
                             {
-                              "name": "Glyphboard (2017)",
+                              "name": "Glyphboard",
                               "path": "/knowledge/case-studies/",
                               "file": "glyphboard.html",
                               "type": "page"
                             },
                             {
-                                "name": "DeepZoom (2018)",
+                                "name": "DeepZoom",
                                 "path": "/knowledge/case-studies/",
                                 "file": "deep-zoom.html",
                                 "type": "page"
                             },
                             {
-                              "name": "DisPlay (2018)",
+                              "name": "DisPlay",
                               "path": "/knowledge/case-studies/",
                               "file": "display.html",
                               "type": "page"
                             },
                             {
-                              "name": "Construction Progress Visualization (2020)",
+                              "name": "Construction Progress Visualization",
                               "path": "/knowledge/case-studies/",
                               "file": "bim.html",
                               "type": "page"
                             },
                             {
-                                "name": "Layers (2022)",
+                                "name": "Layers",
                                 "path": "/knowledge/case-studies/",
                                 "file": "layers.html",
                                 "type": "page"

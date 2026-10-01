@@ -12,6 +12,8 @@ title: "Case Study: Glyphboard"
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
 
+![Case Study: Big Data Landscapes on Elastic Displays]({{ site.baseurl }}/assets/img/kb/case-studies/glyphboard_title.jpg){:.content__title-image}
+
 | Profile field | Description |
 | ------------- | ----------- |
 | Title | Glyphboard |
@@ -28,13 +30,13 @@ title: "Case Study: Glyphboard"
 
 The fifth case study explored **zoomable user interfaces for information visualization**. The profile covers the historical dSense and ReFlex iterations, following the conventions in the [case study overview](overview.md#case-study-profiles). The published repository may include later adaptations.
 
-<!-- Source: case-studies-glyphboard.pdf, section 5.5, pp. 170-175. -->
-
 ## Research Questions
 
 Glyphboard returned to the exploration of complex information spaces after earlier studies had investigated simpler content and navigation concepts. [FlexiWall](flexiwall.md) had identified zoomable user interfaces as a promising scenario, but its layer-based interaction model did not readily support continuous navigation. The single-touch implementation from [Interactive Animations](interactive-animations.md) provided the initial technical basis.
 
 The application context was **Glyphboard**, a web application developed at the Chair of Media Design at Technische Universität Dresden. It uses dimensionality reduction to visualize multidimensional data as a scatterplot and reveals individual attributes through more detailed glyphs as magnification increases. Although Glyphboard supports both magnifying lenses and full-screen enlargement, this case study concentrated on immersive exploration through continuous full-screen zoom.
+
+![Impressions of the Glyphboard app in the vertical Elastic Display]({{ site.baseurl }}/assets/img/kb/case-studies/glyphboard_overview.png)
 
 Three questions guided the work:
 
@@ -76,6 +78,8 @@ Later iterations therefore used multi-touch detection to distinguish one-point z
 
 The starting view was a scatterplot of a preprocessed, clustered dataset. Spatial proximity indicated related items, while colour identified broader group membership. Earlier FlexiWall experiments had compared clustering results; Glyphboard instead supported further exploratory analysis within a complex dataset.
 
+![Semantic Zoom in the Scatterplot]({{ site.baseurl }}/assets/img/kb/case-studies/glyphboard_semantic-zoom.png)
+
 Semantic zoom progressively revealed the dimensions of individual items at configurable magnification thresholds:
 
 | Detail level | Data representation |
@@ -98,6 +102,8 @@ The multi-touch version switched to panning when **two pressure points** were de
 
 Moving a contact laterally adjusted direction; reversing the contacts' relative depths reversed movement. Adding or removing a second contact enabled transitions between pan and zoom without selecting a separate interface control.
 
+![Glyphboard: Interaction Concept]({{ site.baseurl }}/assets/img/kb/case-studies/glyphboard_interaction-concept.png){:.full-width-scheme .transparent-background}
+
 ### Hover, Feedback, and Reset
 
 The refined interaction introduced a shallow-deformation range before zoom began. Within this range, the application displayed details for the nearest data point in the vicinity of the detected position, providing a **hover effect**. Further deformation crossed the zoom threshold.
@@ -105,6 +111,8 @@ The refined interaction introduced a shallow-deformation range before zoom began
 Visual feedback identified the current operation: a cursor and contextual information for hover, an anchor and directional arrows indicating movement and speed for panning, and a magnifying-glass icon for zoom.
 
 The later reset gesture used **three rapid presses**. When deformation exceeded a configurable amplitude three times within a configurable time interval, both zoom and pan returned to their initial values. This offered a way to return to the overview and explore another region without pulling the membrane.
+
+![Updated UI with Gesture Feedback]({{ site.baseurl }}/assets/img/kb/case-studies/glyphboard_gesture-ui.png)
 
 **[⬆ back to top](#table-of-contents)**
 

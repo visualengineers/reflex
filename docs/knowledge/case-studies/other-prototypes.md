@@ -13,9 +13,9 @@ title: "Case Studies: Other Prototypes"
 
 These smaller prototypes explored specific technological and conceptual approaches, addressing open questions identified during model development. They also served to validate the ReFlex framework in practical use and were demonstrated at selected events to gather user feedback.
 
-![EscapeRoom: Game concepts with vibrotactile feedback]({{ site.baseurl }}/assets/img/kb/case-studies/others-escape-room.png){:.content__title-image}
-
 ## EscapeRoom
+
+![EscapeRoom: Game concepts with vibrotactile feedback]({{ site.baseurl }}/assets/img/kb/case-studies/others-escape-room.png){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |
@@ -56,9 +56,9 @@ Vibrotactile cues accompanied these gestures, connecting their execution and com
 
 **[⬆ back to top](#table-of-contents)**
 
-![MIReFlex: Spatial Audio Placement in Multisensory Interaction Room]({{ site.baseurl }}/assets/img/kb/case-studies/others-flightsim.jpg){:.content__title-image}
-
 ## FlightSim
+
+![MIReFlex: Spatial Audio Placement in Multisensory Interaction Room]({{ site.baseurl }}/assets/img/kb/case-studies/others-flightsim.jpg){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |
@@ -94,9 +94,9 @@ Steering followed a **joystick-like mapping**: the direction vector was the diff
 
 **[⬆ back to top](#table-of-contents)**
 
-![MIReFlex: Spatial Audio Placement in Multisensory Interaction Room]({{ site.baseurl }}/assets/img/kb/case-studies/others-mireflex.jpg){:.content__title-image}
-
 ## MIReFlex
+
+![MIReFlex: Spatial Audio Placement in Multisensory Interaction Room]({{ site.baseurl }}/assets/img/kb/case-studies/others-mireflex.jpg){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |
