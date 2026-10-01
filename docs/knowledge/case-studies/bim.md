@@ -12,6 +12,9 @@ title: "Case Study: Construction Progress Visualization"
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
 
+![Case Study: Construction Progress Visualization]({{ site.baseurl }}/assets/img/kb/case-studies/bim_title.jpg){:.content__title-image}
+
+
 | Profile field | Description |
 | ------------- | ----------- |
 | Title | Layered Maps |
