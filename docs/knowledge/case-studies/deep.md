@@ -80,17 +80,19 @@ Technical limitations prevented transferring this calibration to the existing la
 
 The example dataset contained **more than 700 visualization projects** from the DelViz prototype. Its classification scheme had three levels: categories (*Data*, *Visualization*, and *Interaction*), dimensions such as data structure or data type, and individual tags describing a project's characteristics. Projects could carry multiple tags across these dimensions.
 
+![DelViz scheme with categories and associated Tags]({{ site.baseurl }}/assets/img/kb/case-studies/deep_delviz.png)
+
 The scenario assumed a researcher looking for a suitable visualization for a dataset. Instead of selecting projects directly at the outset, the researcher explored and weighted tags describing desired data characteristics, representations, or interaction capabilities. Negative weights allowed exclusion criteria.
 
 Exclusion was meaningful because tags were not mutually exclusive. For example, selecting *Static* while excluding *3D* differed from selecting *Static* and *2D*: the latter could also retrieve projects combining 2D and 3D representations.
 
-### Attraction, Repulsion, and Weighting
+### Interaction Concept: Attraction, Repulsion, and Weighting
 
 Tags appeared as floating elements on the surface. Pushing on a tag attracted associated projects; pulling the surface outward at that tag repelled them, filtering them out of the result set. Projects without that tag were unaffected by its direct selection force.
 
 Selecting several tags combined their forces. A project associated with two equally weighted tags moved towards the midpoint between them; unequal deformation shifted the equilibrium towards the stronger attraction. Other tags also responded, more weakly, according to the relative overlap of their associated project sets. Movement speed reflected deformation strength and the relationships to the active tags.
 
-![DEEP interaction concept: attraction, combined selection, repulsion, and semantic zoom]({{ site.baseurl }}/assets/img/kb/scientific/concept_deep.png){:.full-width-scheme .transparent-background}
+![DEEP interaction concept: attraction, combined selection, repulsion, and semantic zoom]({{ site.baseurl }}/assets/img/kb/case-studies/deep_interactions-concept.png){:.full-width-scheme .transparent-background}
 
 This dynamic arrangement let users explore relationships by adjusting the surface and observing the response. Deformation provided continuous control over weighting, while releasing the surface removed the applied influence and provided a natural reset.
 
@@ -109,7 +111,11 @@ This temporary pause supported detail inspection; it did not provide a general m
 
 The visualization limited each category to three dimensions to keep their colours distinguishable. *Data* used green, *Visualization* red, and *Interaction* blue, with shades distinguishing dimensions. Circular tags combined coloured labels and ring segments; unused segments remained grey to preserve the circular outline. Project symbols combined a preview image with coloured dimension segments and a highlight suggesting a rounded physical object.
 
+![DEEP color scheme]({{ site.baseurl }}/assets/img/kb/case-studies/deep_categories.png){:.full-width-scheme .transparent-background}
+
 An earlier idea to make inactive dimension segments transparent was discarded: movement, proximity, and connecting lines already communicated influence, while transparency made category colours harder to distinguish.
+
+![DEEP Tag Design Evolution]({{ site.baseurl }}/assets/img/kb/case-studies/deep_tags.png){:.full-width-scheme .transparent-background}
 
 Initially, only tags were visible. Pressing a tag progressively revealed associated projects:
 
@@ -119,13 +125,17 @@ Initially, only tags were visible. Pressing a tag progressively revealed associa
 | Increasing deformation | Larger symbols with preview images |
 | Stronger deformation | Preview images with associated dimension segments |
 
+![DEEP Entities Design Evolution]({{ site.baseurl }}/assets/img/kb/case-studies/deep_entities.png){:.full-width-scheme .transparent-background}
+
 Symbol size and opacity reflected selection strength. Connecting lines identified the influencing tags, with thicker lines indicating stronger influence. Tags themselves had no separate detail levels.
+
+![DEEP Visualization of Relationships]({{ site.baseurl }}/assets/img/kb/case-studies/deep_relations.png){:.full-width-scheme .transparent-background}
 
 ### Semantic Zoom on Individual Projects
 
 Pressing a project revealed an annotation in three successive stages: its title, an image of the visualization, and finally a description with metadata, including the recorded date and web address. Deformation depth therefore controlled the amount of information displayed rather than simply magnifying the existing image.
 
-![DEEP: Inspecting a visualization project through semantic zoom]({{ site.baseurl }}/assets/img/kb/scientific/hybrid_deep.jpg)
+![DEEP: Inspecting a visualization project through semantic zoom]({{ site.baseurl }}/assets/img/kb/case-studies/deep_semantic-zoom.png)
 
 **[⬆ back to top](#table-of-contents)**
 
