@@ -91,7 +91,9 @@ Layers provided three ways to explore the same content. Magic Lens had separate 
 
 In Pixel Blending, the grayscale values corresponding to the resting plane and maximum deformation were configurable. This allowed the dataset to be mapped, for example, entirely to the depth range reached by pressing inward.
 
-The modes were not available in every combination. **Texture2D supported all four selectable variants, whereas TextureArray supported Pixel Blending, a single Magic Lens, and Layer Navigation. Multiple texture-array lenses were not implemented in the reported study.**
+The modes were not available in every combination. **Texture2D supported all four selectable variants, whereas TextureArray supported Pixel Blending, a single Magic Lens, and Layer Navigation. Multiple texture-array lenses were not implemented in the reported case study.**
+
+![Shader Lens Options]({{ site.baseurl }}/assets/img/kb/case-studies/layers_masks.png){:.full-width-scheme .transparent-background}
 
 ### Lens Appearance and Orientation
 
@@ -111,6 +113,8 @@ For image-based lenses, the implemented metadata consisted of a **configurable l
 A separate **layer widget** represented the available depth range as a vertical axis, marking the layers and the depths of detected contacts. It was particularly useful for lenses and full-screen navigation, where it showed the current position in the layer stack. During Pixel Blending, contact markers indicated how far users had deformed the surface into the data volume, but did not describe the complete distribution of visible layers.
 
 ### Datasets and Application Contexts
+
+![Lens Examples]({{ site.baseurl }}/assets/img/kb/case-studies/layers_examples.png)
 
 The experimentation environment adapted earlier FlexiWall content and explored larger layer stacks:
 
@@ -134,6 +138,8 @@ Global options also covered depth-range mapping, calibration, debugging views, a
 **[⬆ back to top](#table-of-contents)**
 
 ## Findings and Discussion
+
+![Glyphboard: Interaction Concept]({{ site.baseurl }}/assets/img/kb/case-studies/layers_influences.png){:.full-width-scheme .transparent-background}
 
 ### Combining Earlier Results
 

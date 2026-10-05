@@ -71,6 +71,8 @@ Its layer model related construction phases to their physical depth. This suited
 
 ## Scenario
 
+![Map-Interaction on the Elastic Display]({{ site.baseurl }}/assets/img/kb/case-studies/bim_overview.png)
+
 ### Supporting Construction Consultations
 
 The application was intended to help participants communicate project status, examine dependent processes, and negotiate responses to delays or conflicts. The **construction plan occupied the centre of the display**, with compact schedule and cost summaries along the top and left edges. Expanding these summaries provided access to detailed planning views.
@@ -82,6 +84,8 @@ The visualization concept combined semantic zoom, interactive lenses, and an ext
 Semantic zoom kept the initial map uncluttered and progressively revealed more detail as users pressed into the surface. Pressing near the map's edges panned the view.
 
 Semantic layers filtered the map by construction process. In the selected scenario, work in deeper ground layers generally preceded work above them; completed layers were sealed before subsequent work began. The ordering of underground services, road construction, and landscaping therefore allowed physical depth and process sequence to share a layer representation.
+
+![Layer Navigation]({{ site.baseurl }}/assets/img/kb/case-studies/bim_layers.png)
 
 Full-map navigation and local layer inspection were separated visually: the map could be magnified and moved, while the magic lens exposed a selected process layer within its surrounding context. Deformation depth selected the layer displayed inside the lens.
 
@@ -99,6 +103,8 @@ The compact timeline showed deviations from the original schedule for individual
 
 Pressing the timeline expanded it into a **hierarchical Gantt chart with three levels**, allowing processes to be expanded or collapsed. Dependencies were represented using the critical-path method. PlanningLineGlyph features communicated temporal tolerances and changes, including critical changes that caused dependency conflicts or delayed the overall project.
 
+![Interface Concept]({{ site.baseurl }}/assets/img/kb/case-studies/bim_interface.png)
+
 Pressing a task provided semantic zoom through three information levels:
 
 | Detail level | Information shown |
@@ -112,6 +118,8 @@ The cost concept followed a similar structure with a vertical layout and cost ba
 Cost ranges were omitted because, in the scenario, these figures were not normally communicated between clients and contractors. Interaction development concentrated on schedule adjustment; the cost overview supported assessment of alternative conflict resolutions.
 
 ### Manipulating Tasks and Resetting the Application
+
+![Interaction Concept]({{ site.baseurl }}/assets/img/kb/case-studies/bim_interaction-concept.png){:.full-width-scheme .transparent-background}
 
 The **Shift gesture** adapted the two-contact translation concept from [Glyphboard](glyphboard.md). Contacts near a task bar were interpreted according to their positions relative to it:
 
