@@ -167,7 +167,7 @@ A **histogram of visible layers** was proposed as a richer overview for Pixel Bl
 
 ### Implications for Framework Development
 
-Layers provided an application-level validation of the ReFlex architecture by combining depth textures, pressure points, calibration, and server settings in one client, with configuration also communicated back to the server. For the forthcoming [requirements analysis](../../software/repo/requirements.md), it provides evidence for the following areas:
+Layers provided an application-level validation of the ReFlex architecture by combining depth textures, pressure points, calibration, and server settings in one client, with configuration also communicated back to the server. For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), it provides evidence for the following areas:
 
 - **Multiple input representations:** Expose both surface-wide depth data and discrete contacts so applications can combine blending with lenses and annotations.
 - **Low-latency streaming:** Support continuous delivery independently of request-based configuration and control.

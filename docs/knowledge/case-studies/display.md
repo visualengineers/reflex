@@ -146,7 +146,7 @@ A boundary preventing objects from escaping was proposed, but would weaken the c
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Integration across technologies:** Deliver interaction data to game-engine clients through a clear communication boundary, accounting for protocol adapters and dependent processes.
 - **Stable, responsive multi-touch:** Preserve multiple contact positions and deformation depths so applications can map them to simultaneous forces with little delay.

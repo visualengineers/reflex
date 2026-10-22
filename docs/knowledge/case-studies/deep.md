@@ -167,7 +167,7 @@ Hands could obscure tags during direct selection. Larger, indirect deformation g
 
 ### Implications for Framework Development
 
-DEEP moved beyond FlexiWall's direct depth-image rendering by exposing pressure-point coordinates to application logic. It also provided concrete experience with sensor abstraction, configurable simulation, data handling, and calibration. For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+DEEP moved beyond FlexiWall's direct depth-image rendering by exposing pressure-point coordinates to application logic. It also provided concrete experience with sensor abstraction, configurable simulation, data handling, and calibration. For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Interaction data and continuity:** Expose multiple positions and deformation depths; support tracking over time where moving contacts or gestures require it.
 - **Configurable processing:** Make the balance between noise suppression, stable detection, and latency explicit.

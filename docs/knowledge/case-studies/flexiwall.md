@@ -172,7 +172,7 @@ Projection distortion was noticeable but often less objectionable to the person 
 
 The environment helped identify suitable data categories and basic interaction metaphors. It also made the limits of direct depth-image rendering explicit: users repeatedly requested labels, metadata, feedback about their position in the layer stack, and gestures, all of which required information beyond the shader's per-pixel layer selection.
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the case study provides evidence for several areas of framework development:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the case study provides evidence for several areas of framework development:
 
 - **Interaction extraction:** Expose contact positions and their association over time to support contextual feedback, gestures, and interaction-dependent lenses.
 - **Configurable visualization:** Support discrete and continuous transitions, local and global views, and combinations of layers with zoom and pan.

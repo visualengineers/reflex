@@ -142,7 +142,7 @@ Adapting the concept to network structures remained a direction for further work
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for several areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for several areas:
 
 - **Detection suited to the task:** Support simple, robust single-point interaction when multiple contacts do not benefit the application.
 - **Automated exhibition startup:** Initialize the sensor and restore the application configuration automatically so the installation is ready for use without manual setup.

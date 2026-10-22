@@ -140,7 +140,7 @@ These proposals expanded the possible interaction vocabulary without establishin
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Independent tracking and application layers:** Maintain a clear communication boundary so that surface input can drive a separately implemented visualization client.
 - **Continuous parameter mappings:** Make position and deformation depth available for direct control of magnification, alongside mappings to speed such as those used in Glyphboard.

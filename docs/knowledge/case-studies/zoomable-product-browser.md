@@ -142,7 +142,7 @@ These alternatives were proposals for further work, rather than demonstrated cap
 
 Although the prototype was developed using single-touch detection, the application context highlighted the importance of multi-touch input with persistent touch identifiers for collaboration and complex gestures. Supporting multiple contacts and tracking each contact across frames therefore emerged as a central requirement for this type of application.
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for several areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for several areas:
 
 - **Interaction data and precision:** Expose position and deformation depth with sufficient stability and low latency for both continuous manipulation and threshold-based actions.
 - **Application state:** Allow applications to suspend dynamic behaviour and preserve selections independently of continued physical deformation.

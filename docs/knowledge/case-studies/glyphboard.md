@@ -144,7 +144,7 @@ The repeated-press reset was easy and ergonomic to perform, but recognition was 
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Independent interaction and visualization layers:** Allow existing applications to consume Elastic Display input through an optional adapter, while retaining their rendering and application logic.
 - **Shared interaction data:** Communicate normalized positions and timing, with identifiers, confidence, and push/pull classification supporting more demanding client interactions.

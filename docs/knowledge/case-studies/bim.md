@@ -158,7 +158,7 @@ The coupling of construction phase and physical depth also had a clear boundary.
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Combining input sources:** Allow surface interaction to work alongside external controls such as a foot switch.
 - **Application-specific gesture interpretation:** Expose multiple contact positions and deformation depths so clients can interpret gestures according to their current mode and target objects.

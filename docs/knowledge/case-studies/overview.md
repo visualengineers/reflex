@@ -110,7 +110,7 @@ Taken together, the case studies provide the application context needed to under
 
 Observations of users helped examine assumptions and open questions in model development. The range of application contexts also supported requirements elicitation and validation of the reference architecture and tools. Beyond software, the studies enabled the testing and refinement of design methods and hardware, as well as the derivation of design guidelines.
 
-In this documentation, these accounts will also serve as the basis for the forthcoming [requirements analysis](../../software/repo/requirements.md). The individual studies establish the evidence from which shared requirements and the rationale for framework features can be derived.
+In this documentation, these accounts will also serve as the basis for the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html). The individual studies establish the evidence from which shared requirements and the rationale for framework features can be derived.
 
 ### Demonstrations and Technical Maturity
 
