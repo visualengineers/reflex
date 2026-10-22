@@ -10,6 +10,7 @@ title: "Case Studies: Other Prototypes"
 1. [EscapeRoom](#escaperoom)
 2. [FlightSim](#flightsim)
 3. [MIReFlex](#mireflex)
+4. [Implications for Framework Development](#implications-for-framework-development)
 
 These smaller prototypes explored specific technological and conceptual approaches, addressing open questions identified during model development. They also served to validate the ReFlex framework in practical use and were demonstrated at selected events to gather user feedback.
 
@@ -123,5 +124,20 @@ The Elastic Display was integrated through the [Unreal Engine plugin]({{ site.ba
 ### Scenario
 
 The tabletop displayed a stylized overhead view of the virtual environment. Users positioned audio objects on this three-dimensional map by pressing into the surface; **deformation depth controlled their height in the virtual scene**. The tabletop thus provided a spatial control view linked to the room's immersive presentation.
+
+**[⬆ back to top](#table-of-contents)**
+
+## Implications for Framework Development
+
+Student development projects provided practical feedback on ReFlex's tools and their accessibility to new developers. Each explored a complete design and implementation cycle, with the emphasis on validating methods and tools rather than iteratively refining the application scenario. Their feedback informed subsequent framework development:
+
+- **Emulation and physical prototyping:** The emulator enabled much of the implementation without access to the installation. In theory, in a final session on the tabletop only gesture speed, dwell times, and depth thresholds need to be adjusted quickly. However, emulation alone could obscure physical constraints: EscapeRoom developers initially treated pulling and pressing as equally accessible, although grasping the real fabric was harder and less precise. Emulator-based development therefore needed to be complemented by early prototyping on an elastic surface.
+- **Recording and replay of gestures:** FlightSim used recorded surface interactions alongside the emulator. Uneditable pauses at the beginning and end of recordings and large files containing complete depth images limited their usefulness. EscapeRoom also exposed the difficulty of emulating gestures with several hands. These observations motivated a dedicated gesture-recorder tool.
+- **Application templates and interface documentation:** Feedback from students led to HTML/JavaScript and React/Redux templates. Documentation of interfaces and data formats was improved, and test requests for the REST API, WebSocket, and SignalR interfaces were prepared in Insomnia and stored as JSON in the repository.
+- **Platform support and emulator performance:** EscapeRoom provided an opportunity to test and improve use on macOS and to address emulator performance on mobile devices. Students reported successful collaboration across Windows, macOS, and Linux, providing practical evidence of progress in portability.
+- **Reusable components and collaborative development:** Students exercised the Angular component library and contributed its implementation through a repository fork and pull request. They valued the configuration interface's point-cloud visualization and the basic HTML template. Incomplete component documentation, individual bugs, and a complicated Angular setup nevertheless showed where reuse and onboarding still needed improvement.
+- **Communication stability and feedback across projects:** WebSocket head-of-line blocking was reported during extended development and debugging of student projects. Its relevance to ordinary application development was considered lower. FlightSim's feedback on the limitations of the earlier FlexiWall environment also informed the Layers application being developed in parallel. Such findings made student projects a continuing source of error reports and requirements for both shared tools and applications.
+
+These experiences supported the usefulness of the framework and its development tools while identifying specific limitations. Many reported issues were addressed during subsequent development; the accounts do not establish that every limitation was resolved. They also showed that software tooling and physical interaction prototyping needed to develop together.
 
 **[⬆ back to top](#table-of-contents)**
