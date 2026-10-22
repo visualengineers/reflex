@@ -122,12 +122,12 @@ The experimentation environment adapted earlier FlexiWall content and explored l
 
 | Content | Exploration supported by the study |
 | ------- | --------------------------------- |
-| **Thematic maps** | Simultaneous lenses exposed different map layers while preserving the surrounding map as context. Layer titles helped identify the content of each lens. |
+| **Thematic maps** | Simultaneous lenses exposed different map layers while preserving the surrounding map as context. Layer titles helped identify the content of each lens. ([Data Source](https://stadtplan.dresden.de/)) |
 | **Paintings** | Alternative image layers could be inspected locally, with lens widgets providing context about the selected layer. |
-| **Scientific animation** | The Cahn-Hilliard visualization from Interactive Animations was ported to the new environment, linking deformation to progression through an image sequence. |
-| **MRI volume** | The dataset identified as *Bruce Goochs Brain* comprised **156 layers at 256 × 256 pixels** each. |
-| **Anatomical sections** | A head subset from the National Library of Medicine's *Visible Human Project* comprised **217 layers at 4096 × 2700 pixels** each. The exploration concept drew on the Visible Human Explorer. |
-| **Historical maps** | A sequence of **47 layers** represented Europe between **1500 and 2008**, making time accessible through depth navigation. |
+| **Scientific animation** | The Cahn-Hilliard visualization from [Interactive Animations](interactive-animations.md) was ported to the new environment, linking deformation to progression through an image sequence. |
+| **MRI volume** | The dataset identified as *Bruce Goochs Brain* comprised **156 layers at 256 × 256 pixels** each ([Data Source](https://github.com/rafaelssantos/volume-datasets)). |
+| **Anatomical sections** | A head subset from the National Library of Medicine's *Visible Human Project* comprised **217 layers at 4096 × 2700 pixels** each ([Data Source](https://www.nlm.nih.gov/research/visible/visible_human.html)). The exploration concept drew on the Visible Human Explorer by North, Shneiderman and Plaisant. |
+| **Historical maps** | A sequence of **47 layers** represented Europe between **1500 and 2008** ([Data Source](https://www.atlas-europa.de/t01/territorien-staaten/t01-territorien-staaten.htm)), making time accessible through depth navigation. |
 
 These examples illustrate semantic, spatial, and temporal interpretations of a layer stack. The medical datasets demonstrated exploration of volumetric content.
 
