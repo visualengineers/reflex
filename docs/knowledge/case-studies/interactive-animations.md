@@ -12,7 +12,7 @@ title: "Case Study: Interactive Animations"
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
 
-![DepthTouch: Title Image]({{ site.baseurl }}/assets/img/kb/case-studies/interactive-animations_title.jpg){:.content__title-image}
+![Interactive Animations: Title Image]({{ site.baseurl }}/assets/img/kb/case-studies/interactive-animations_title.jpg){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |

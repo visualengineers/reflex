@@ -32,7 +32,7 @@ The seventh case study explored **surface deformation as a means of influencing 
 
 DisPlay returned to the playful exploration of physical effects introduced by [DepthTouch](depthtouch.md). Studies such as [DEEP](deep.md) and the [Zoomable Product Browser](zoomable-product-browser.md) had mapped simulated forces to abstract actions such as selection and filtering. DisPlay instead investigated how deformation could influence objects in a virtual environment, ideally making simple physical principles understandable through interaction.
 
-![IGame Concepts: Ball Simulation and Spaceship Game]({{ site.baseurl }}/assets/img/kb/case-studies/display_overview.png)
+![Game Concepts: Ball Simulation and Spaceship Game]({{ site.baseurl }}/assets/img/kb/case-studies/display_overview.png)
 
 The case study addressed four main questions:
 
@@ -101,7 +101,7 @@ The scenario thus explored both the visual appeal and interaction consequences o
 
 ### Particle Simulation
 
-![IParticle Simulation Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_particles.png)
+![Particle Simulation Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_particles.png)
 
 The second level used a particle effect as a proof of concept for interactive force-field visualization. Pressing created a force source at the hand position, and deformation depth controlled its strength. Particles responded by changing their trajectories, producing an interactive snowstorm-like effect.
 

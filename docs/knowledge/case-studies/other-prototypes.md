@@ -58,7 +58,7 @@ Vibrotactile cues accompanied these gestures, connecting their execution and com
 
 ## FlightSim
 
-![MIReFlex: Spatial Audio Placement in Multisensory Interaction Room]({{ site.baseurl }}/assets/img/kb/case-studies/others-flightsim.jpg){:.content__title-image}
+![FlightSim: Immersive Flight Control on an Elastic Display]({{ site.baseurl }}/assets/img/kb/case-studies/others-flightsim.jpg){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |

@@ -141,7 +141,7 @@ Global options also covered depth-range mapping, calibration, debugging views, a
 
 ## Findings and Discussion
 
-![Glyphboard: Interaction Concept]({{ site.baseurl }}/assets/img/kb/case-studies/layers_influences.png){:.full-width-scheme .transparent-background}
+![Layers: Influences of Preceding Case Studies]({{ site.baseurl }}/assets/img/kb/case-studies/layers_influences.png){:.full-width-scheme .transparent-background}
 
 ### Combining Earlier Results
 

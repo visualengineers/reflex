@@ -43,7 +43,7 @@ The central question was how deforming a physical surface could support the mani
 
 The tabletop used commercially available translucent Lycra stretched into an elastic surface. Lycra was selected for its elasticity, durability, affordability, ready availability, and suitability for rear projection. The fabric contained no sensors: a Microsoft Kinect depth camera captured its deformation, while a projector and mirror projected content onto it from below.
 
-![DepthTouch CXonstruction]({{ site.baseurl }}/assets/img/kb/case-studies/depth-touch_construction.png)
+![DepthTouch Construction]({{ site.baseurl }}/assets/img/kb/case-studies/depth-touch_construction.png)
 
 Calibration aligned the coordinate systems of the depth camera and projector. Three points defining two linearly independent vectors were mapped to adjust scaling, translation, and rotation within the surface plane. This procedure corrected alignment within that plane, so the camera still had to be oriented perpendicular to the fabric and the projector's image plane parallel to it.
 

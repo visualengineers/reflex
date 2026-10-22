@@ -116,7 +116,7 @@ In this documentation, these accounts will also serve as the basis for the forth
 
 Comparing demonstration counts by case study and event type reveals that DeepZoom and DisPlay were shown most frequently, with DisPlay's game elements making it particularly suitable for public events. FlexiWall and Layers also featured prominently; considered together as successive approaches to layer interaction, they form the most frequently demonstrated concept. Selection depended partly on explicit requests and positive feedback from earlier events, so these counts reflect the demonstration context.
 
-![Number of Demonstration per Case Study and Event Type]({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_summary_event-type.png){:.full-width-scheme .transparent-background}
+![Number of Demonstrations per Case Study and Event Type]({{ site.baseurl }}/assets/img/kb/case-studies/case-studies_summary_event-type.png){:.full-width-scheme .transparent-background}
 
 In regard to the distribution of demonstrations across several years, FlexiWall, DisPlay, and DeepZoom remained in use over extended periods and at different venues. More prototypes were eventually shown at the same event, while the annual number of presentations did not increase proportionally. The summary interprets this as an indication of a more consistent, stable technical foundation: switching scenarios became possible without physical modifications, reconfiguration, or renewed calibration.
 
