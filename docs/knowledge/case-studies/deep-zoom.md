@@ -53,6 +53,12 @@ The implementation used **.NET and WPF** in a client-server architecture. Despit
 
 This continued Glyphboard's separation of tracking from application logic, while applying it to a native desktop visualization client.
 
+### Tracking Configuration and Development Tools
+
+Framework development optimized depth-image analysis and introduced configurable parameters for creating and filtering the point cloud. These changes allowed processing to be adjusted to the tracking needs of the visualization independently of its image-rendering implementation.
+
+A simple **touch-point simulator** provided synthetic contact input for application development without the physical display. Unlike FlexiWall's depth-image emulator, it simulated detected interaction points rather than a complete surface representation.
+
 ### Mapping Deformation to Magnification
 
 The visualization combined two images: a preview at the application's native resolution, typically **1920 × 1080 pixels**, and a high-resolution detail image. The magnified view was centred on the detected finger position. Deformation depth determined how far the detail image was scaled down from its full resolution: maximum deformation exposed the full available detail, while shallower deformation reduced magnification.
@@ -143,6 +149,8 @@ These proposals expanded the possible interaction vocabulary without establishin
 For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Independent tracking and application layers:** Maintain a clear communication boundary so that surface input can drive a separately implemented visualization client.
+- **Configurable point-cloud processing:** Expose parameters for point-cloud creation and filtering so tracking can be tuned independently of the visualization.
+- **Simulated interaction input:** Support application development through synthetic touch points without requiring the sensor and physical display.
 - **Continuous parameter mappings:** Make position and deformation depth available for direct control of magnification, alongside mappings to speed such as those used in Glyphboard.
 - **Configurable presentation and feedback:** Allow applications to adjust lens offset and provide overview context while accounting for occlusion and projection distortion.
 - **Layered content and annotation visibility:** Support application concepts that relate magnification to alternative imagery and gradual information disclosure.

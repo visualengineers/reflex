@@ -65,6 +65,10 @@ A simple **mouse-based emulator** generated depth-interaction events to make dev
 
 These tools supported testing and diagnosis across the tracking and visualization boundary, alongside adjustment of application behaviour.
 
+The framework also gained a **tracking-configuration user interface** for configuring the sensor and persisting a startup configuration. This interface was separate from the client's game-parameter overlay and the utility used to launch the installation's programs.
+
+**Viewport configuration** supplied parameters defining the portion of the projected surface used by an application. These parameters allowed detected positions to be transformed into the correct application coordinates when the client used only part of the surface.
+
 ### Automated Startup
 
 An **autostart function** had already been implemented for the monolithic application in [Interactive Animations](interactive-animations.md#exploring-a-fluid-simulation). DisPlay's client-server architecture introduced further requirements: startup now had to coordinate separate tracking and visualization applications and, in particular, support client-driven parameterization of the tracking server. The earlier automatic startup was therefore extended to accommodate configuration across application boundaries.
@@ -152,6 +156,7 @@ For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/req
 - **Stable, responsive multi-touch:** Preserve multiple contact positions and deformation depths so applications can map them to simultaneous forces with little delay.
 - **Development and diagnosis:** Provide emulated interaction input and visibility into connection state, received events, and coordinate mappings.
 - **Reproducible exhibition setup:** Restore sensor, processing, and connection settings automatically and coordinate startup across components.
+- **Tracking and viewport configuration:** Provide a configuration interface with persistent startup settings and coordinate mapping for clients that use only part of the projected surface.
 - **Application configuration and guidance:** Persist game parameters, explain unfamiliar interactions, and make automatic transitions sensitive to ongoing input.
 - **Explicit limits of input representations:** Distinguish contact-based force control from full-surface reconstruction when choosing how to connect deformation to a simulation.
 

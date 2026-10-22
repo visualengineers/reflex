@@ -76,4 +76,8 @@ The prototype exposed a distinction relevant to subsequent framework development
 
 These observations raised the broader question of how an elastic surface could extend conventional multi-touch systems with an additional interaction dimension. DepthTouch established the conceptual and technical starting point for the later case studies, including [FlexiWall](flexiwall.md), which explored further uses of surface deformation.
 
+### Implications for Framework Development
+
+The vector-field calculation and three-point calibration were subsequently integrated into later framework iterations as reusable functions for processing surface deformation and mapping sensor coordinates to screen coordinates. The physics simulation remained an application-specific component, separate from the framework. This distinction allowed the underlying sensing and calibration functions to support scenarios beyond the original simulation.
+
 **[⬆ back to top](#table-of-contents)**

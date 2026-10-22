@@ -146,6 +146,7 @@ For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/req
 
 - **Detection suited to the task:** Support simple, robust single-point interaction when multiple contacts do not benefit the application.
 - **Automated exhibition startup:** Initialize the sensor and restore the application configuration automatically so the installation is ready for use without manual setup.
+- **Stability in exhibition operation:** Maintain reliable tracking and application behaviour throughout exhibition use, where interruptions would prevent visitors from exploring the installation independently.
 - **Configurable processing and alignment:** Account for confidence, positional stability, latency, and drift as deformation changes.
 - **Separation of responsibilities:** Expose detected interactions independently of content rendering, while allowing applications to interpret gestures for their own scenarios.
 - **Flexible content handling:** Support longer sequences and responsive animation control, with explicit consideration of runtime content replacement.

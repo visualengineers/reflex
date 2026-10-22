@@ -52,7 +52,7 @@ The implementation used ReFlex's **client-server architecture**, combining an AS
 
 Two rendering approaches offered different capabilities: native web technologies and CSS for image-based lenses, and **WebGL pixel shaders** for per-pixel blending and texture-array lenses. These differences affected both the supported interaction modes and the available lens annotations.
 
-The application reused ReFlex's separate **emulator tool** instead of reimplementing FlexiWall's integrated emulator. Embedding that tool in a frame allowed it to be used as an overlay during development.
+Development in the Layers context produced a separate ReFlex **emulator tool** that generated a **synthetic point cloud** and supported **recording and playback of point-cloud data**. The application used this shared development tool instead of reimplementing FlexiWall's integrated emulator. Embedding the tool in a frame allowed it to be used as an overlay, supporting development and repeated testing with simulated or previously captured surface input.
 
 ### Layer Formats and Capacity
 
@@ -72,6 +72,8 @@ The source describes a 256-layer limit for its raw-data representation. KTX2 avo
 Retrieving depth images through individual **REST requests** offered a simple interface, but its latency was too high for the study's real-time visualization. Continuous transmission used separate interfaces according to the data being delivered: **WebSockets** streamed [interaction data]({{ site.baseurl }}/software/repo/interactions.html), while **SignalR** streamed larger data volumes, namely depth images and point clouds.
 
 Clients could obtain different representations according to their needs: an unprocessed depth image encoded in grayscale, a point cloud in spatial coordinates, or a calibrated point cloud mapped to screen coordinates. Pixel Blending used a grayscale depth texture derived from the selected input, while lens interaction used detected pressure points.
+
+The framework's SignalR interface also supported streaming **vector-field data**. Within Layers, the central advance was the first simultaneous use of interaction data and depth-image streaming in one application. This combination placed additional demands on bandwidth and on keeping the latency of the larger surface-data stream comparable to that of the interaction stream.
 
 The REST API was also extended to exchange configuration data, start and stop the sensor, and let clients explicitly enable or disable streams. Layers thus exercised both continuous data delivery and application-driven control of the tracking server.
 
@@ -167,15 +169,15 @@ A **histogram of visible layers** was proposed as a richer overview for Pixel Bl
 
 ### Implications for Framework Development
 
-Layers provided an application-level validation of the ReFlex architecture by combining depth textures, pressure points, calibration, and server settings in one client, with configuration also communicated back to the server. For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), it provides evidence for the following areas:
+Layers provided an application-level validation of the ReFlex architecture by simultaneously consuming interaction data and streamed depth images, alongside calibration and server settings in one client, with configuration also communicated back to the server. For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), it provides evidence for the following areas:
 
 - **Multiple input representations:** Expose both surface-wide depth data and discrete contacts so applications can combine blending with lenses and annotations.
-- **Low-latency streaming:** Support continuous delivery independently of request-based configuration and control.
+- **Low-latency streaming:** Support concurrent interaction and surface-data streams with sufficient bandwidth and comparable latency, independently of request-based configuration and control.
 - **Calibration and coordinate mapping:** Make raw, processed, and screen-mapped data available according to the visualization's needs.
 - **Bidirectional server integration:** Allow clients to retrieve and change configuration, control sensor operation, and select active streams.
 - **Reusable configuration:** Separate content and dataset-specific interaction presets from application code, enabling rapid changes between scenarios.
 - **Multiple contacts and contextual feedback:** Provide the position and depth information needed for independently controlled lenses and orientation within a layer stack.
-- **Reusable development tools:** Support application testing through the shared emulator instead of duplicating its functionality in each client.
+- **Reusable development tools:** Support application testing through the shared point-cloud emulator and recording/playback tools instead of duplicating their functionality in each client.
 
 These implications connect the implemented capabilities and their limits to framework design. Texture preparation, GPU rendering, and the choice of lens widgets remained application responsibilities.
 

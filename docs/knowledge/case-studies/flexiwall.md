@@ -61,6 +61,8 @@ The original application used .NET 4 and WPF, matching the technological basis o
 
 Datasets were described in XML configuration files containing layer images and metadata. They could be loaded and switched at runtime. The maximum deformation and the **normal plane**, meaning the data layer displayed when the surface was at rest, were also adjustable at runtime. These capabilities made it possible to explore new content without implementing a separate application for each dataset.
 
+A first **depth-image emulator** generated synthetic depth images for development and content preparation. It allowed layer mappings and datasets to be explored without input from the physical display. This development tool was integrated into the experimentation environment.
+
 ### Technical Boundaries
 
 - **Seven image layers:** The WPF `ShaderEffect` implementation using Shader Model 3 in DirectX 9 allowed eight texture parameters. One was reserved for the depth image, leaving seven for content. A later extension alternatively supported DDS volume textures.
@@ -178,7 +180,8 @@ For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/req
 - **Configurable visualization:** Support discrete and continuous transitions, local and global views, and combinations of layers with zoom and pan.
 - **Depth-data quality and calibration:** Address invalid measurements, temporal stability, and alignment beyond the original translation-and-scaling configuration.
 - **Content and prototyping support:** Preserve easy dataset exchange and runtime configuration while overcoming the original layer-count restriction.
+- **Depth-image emulation:** Provide synthetic surface data for developing and preparing content without requiring the physical installation.
 
-These are implications drawn from the prototype's capabilities, limitations, and feedback. They establish a basis for later requirements and design decisions, rather than describing features already present in the original FlexiWall implementation.
+These implications combine development support already implemented in FlexiWall, such as depth-image emulation, with requirements motivated by its limitations and user feedback. They establish a basis for later requirements and design decisions without implying that all listed capabilities were present in the original implementation.
 
 **[⬆ back to top](#table-of-contents)**
