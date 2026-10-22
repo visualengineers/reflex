@@ -27,9 +27,9 @@ title: "Case Study: Layers - Layered Data on Elastic Displays"
 | Features | - multiple lenses and layer annotations<br> - layer blending modes<br> - streaming of sensor data |
 | Repository | [reflex-layers](https://github.com/visualengineers/reflex-layers) |
 
-The ninth case study combined **layer blending, multi-touch detection, and interactive lenses** in a web-based successor to the [FlexiWall experimentation environment](flexiwall.md). The profile describes the ReFlex implementation reported in the source, following the conventions in the [case study overview](overview.md#case-study-profiles). The published repository may include later adaptations. The source does not list an associated publication.
+The ninth case study combined **layer blending, multi-touch detection, and interactive lenses** in a web-based successor to the [FlexiWall experimentation environment](flexiwall.md).
 
-This account documents the research questions, interaction concepts, and findings. Dataset configuration, texture conversion, controls, and development instructions are maintained in the [Layers application documentation](../../software/apps/layers.md).
+This account documents the research questions, interaction concepts, and findings. Dataset configuration, texture conversion, controls, and development instructions are maintained in the [Layers application documentation]({{ site.baseurl }}software/apps/layers.md).
 
 ## Research Questions
 
@@ -63,7 +63,7 @@ The study supported two usable representations of layer content:
 | **Texture2D** | Individual JPG or PNG images could be loaded without conversion and displayed through web elements or a shader. Pixel Blending supported a maximum of 15 separately supplied layer textures; this was a restriction of the shader path, not a general limit on image-based lens navigation. |
 | **TextureArray** | Equal-sized layers were packaged as raw data or a KTX2 texture array. Arrays made many more layers accessible to the shader. Raw data support retained compatibility with existing datasets; a workflow using the KTX Software Tools prepared new arrays. |
 
-The source describes a 256-layer limit for its raw-data representation. KTX2 avoided that particular restriction, but usable array sizes still depended on the graphics implementation, hardware, and available resources. The goal of supporting an arbitrary number of layers should therefore be understood as removing the earlier small fixed limit, rather than providing unlimited capacity.
+The raw-data representation is limited to a maximum of 256 layers. KTX2 avoides that particular restriction, but usable array sizes still depended on the graphics implementation, hardware, and available resources. The goal of supporting an arbitrary number of layers should therefore be understood as removing the earlier small fixed limit, rather than providing unlimited capacity.
 
 **3D textures were investigated but not retained as a usable option**, because support in the three.js implementation used by the study was not reliable. Existing FlexiWall datasets stored as 3D textures consequently required conversion. Texture arrays and 3D textures are distinct representations, even when both hold volumetric content.
 
@@ -110,7 +110,7 @@ Lens size and horizontal and vertical offset were configurable for both data rep
 
 For texture arrays, a **grayscale mask** interpolated between the layer at the current pressure point and the resting view. Linear and exponential gradients produced different transitions, including a fisheye-like appearance. This combined local lens interaction with layer blending; it did not reproduce the measured surface relief inside the lens.
 
-For image-based lenses, the implemented metadata consisted of a **configurable layer title**. Figure 5-52 in the source also illustrates a fan-shaped arrangement of layers at the lens edge. Richer annotations, relationships between layers, and highlighting of related elements were proposed extensions.
+For image-based lenses, the implemented metadata consisted of a **configurable layer title**. Richer annotations, relationships between layers, and highlighting of related elements are possible extensions.
 
 A separate **layer widget** represented the available depth range as a vertical axis, marking the layers and the depths of detected contacts. It was particularly useful for lenses and full-screen navigation, where it showed the current position in the layer stack. During Pixel Blending, contact markers indicated how far users had deformed the surface into the data volume, but did not describe the complete distribution of visible layers.
 
@@ -125,11 +125,11 @@ The experimentation environment adapted earlier FlexiWall content and explored l
 | **Thematic maps** | Simultaneous lenses exposed different map layers while preserving the surrounding map as context. Layer titles helped identify the content of each lens. |
 | **Paintings** | Alternative image layers could be inspected locally, with lens widgets providing context about the selected layer. |
 | **Scientific animation** | The Cahn-Hilliard visualization from Interactive Animations was ported to the new environment, linking deformation to progression through an image sequence. |
-| **MRI volume** | The dataset identified in the source as *Bruce Goochs Brain* comprised **156 layers at 256 × 256 pixels** each. |
+| **MRI volume** | The dataset identified as *Bruce Goochs Brain* comprised **156 layers at 256 × 256 pixels** each. |
 | **Anatomical sections** | A head subset from the National Library of Medicine's *Visible Human Project* comprised **217 layers at 4096 × 2700 pixels** each. The exploration concept drew on the Visible Human Explorer. |
 | **Historical maps** | A sequence of **47 layers** represented Europe between **1500 and 2008**, making time accessible through depth navigation. |
 
-These examples illustrate semantic, spatial, and temporal interpretations of a layer stack. The medical datasets demonstrated exploration of volumetric content; the source does not report clinical evaluation.
+These examples illustrate semantic, spatial, and temporal interpretations of a layer stack. The medical datasets demonstrated exploration of volumetric content.
 
 ### Configuration for Reusable Demonstrations
 
@@ -153,19 +153,19 @@ Layers brought together several strands of the preceding studies:
 - **[DeepZoom](deep-zoom.md):** Configurable lens size and offset.
 - **[Construction Progress Visualization](bim.md):** Layer annotations and contextual information.
 
-The source reports implementation experience and conceptual findings, without participant counts, quantitative usability results, or measured streaming benchmarks. Its conclusions therefore document capabilities and design insights rather than a controlled comparison of interaction techniques.
+The following section provides exploratory observations about the interaction concepts and implementation.
 
 ### Layer Context and Multiple Lenses
 
 The main conceptual advance was connecting **detected pressure points with information beyond the layer image itself**. Layer titles and a visible position in the stack made the selected content explicit, while simultaneous lenses allowed different layers to be inspected together.
 
-Each lens could be controlled through its contact's lateral position and deformation depth. The source identifies this simultaneous depth control as a distinctive opportunity of Elastic Displays relative to conventional multi-touch interaction. Comparing map layers demonstrated the concept; further combinations of lenses and richer metadata remained opportunities for future work.
+Each lens could be controlled through its contact's lateral position and deformation depth. This simultaneous depth control represents a distinctive opportunity of Elastic Displays relative to conventional multi-touch interaction. Comparing map layers demonstrated the concept; further combinations of lenses and richer metadata remained opportunities for future work.
 
 ### Rendering Trade-offs
 
 The two rendering paths exposed a practical trade-off. Image-based web elements supported multiple lenses and interface widgets, while texture arrays enabled larger shader-accessible layer stacks and blending masks. Their capabilities were complementary, so choosing a data format also meant choosing an interaction feature set.
 
-A **histogram of visible layers** was proposed as a richer overview for Pixel Blending. It was not implemented: the existing shader computed output independently per pixel on the GPU and did not provide a global summary. The source anticipated that moving those calculations to the CPU would compromise real-time performance. This was a limitation of the chosen implementation, not evidence that such summaries are generally impossible.
+A **histogram of visible layers** was proposed as a richer overview for Pixel Blending. It was not implemented: the existing shader computed output independently per pixel on the GPU and did not provide a global summary. Moving those calculations to the CPU would compromise real-time performance. This is a limitation of the chosen implementation, not evidence that such summaries are generally impossible.
 
 ### Implications for Framework Development
 

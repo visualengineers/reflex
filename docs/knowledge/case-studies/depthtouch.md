@@ -70,7 +70,9 @@ The physical surface served as both the input medium and a source of haptic feed
 
 ## Findings and Discussion
 
-The source account reports that users consistently highlighted the playful, exploratory character of the interaction and the fabric's natural invitation to deform it. They also emphasized that familiar physical behaviour made the interaction intuitively understandable, relating the concept to reality-based interaction.
+The following section provides exploratory observations about the interaction concepts and implementation.
+
+Users consistently highlighted the playful, exploratory character of the interaction and the fabric's natural invitation to deform it. They also emphasized that familiar physical behaviour made the interaction intuitively understandable, relating the concept to reality-based interaction.
 
 The prototype exposed a distinction relevant to subsequent framework development: capturing surface deformation can support simultaneous interaction without identifying individual contacts, but it does not by itself reveal which actions users perform. DepthTouch demonstrated the opportunities of this approach for physical simulation while making its limits for interpreting user input apparent.
 

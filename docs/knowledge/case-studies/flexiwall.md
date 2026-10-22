@@ -141,13 +141,15 @@ Layers also represented alternative results of clustering multidimensional data,
 
 ## Findings and Discussion
 
+The following section provides exploratory observations about the interaction concepts and implementation.
+
 ### Exploratory Feedback and Scenario Suitability
 
 Prototyping began in 2013, with demonstrations and iterative refinement continuing through 2017. Observations and feedback from these events informed the assessment of scenarios and generated further research questions. The findings represent exploratory experience; they should not be read as results of a controlled comparative evaluation.
 
 Users saw the greatest value in volumetric data, particularly the direct relationship between physical deformation and cross-sections through MRI images. Geometric zoom also attracted positive responses, although the restricted implementation only allowed a preliminary assessment. Thematic maps were another promising application, provided that lenses, additional interaction techniques, and contextual information could be added. Users also requested the exploration of abstract datasets.
 
-Painting variants and historical maps revealed more substantial limitations. Local changes could obscure the overall effect of a painting variant, and some users were reluctant to touch an apparent painting. Historical maps suffered from distortion, reduced text legibility, large differences between the few available time steps, and missing date information. Technical suitability alone did not guarantee added value: the source assessment rated time series as well suited to the layer mechanism but as providing very little additional benefit.
+Painting variants and historical maps revealed more substantial limitations. Local changes could obscure the overall effect of a painting variant, and some users were reluctant to touch an apparent painting. Historical maps suffered from distortion, reduced text legibility, large differences between the few available time steps, and missing date information. Technical suitability alone did not guarantee added value:  time series are well suited to the layer mechanism but are providing very little additional benefit.
 
 ### Choosing How Layers Are Displayed
 

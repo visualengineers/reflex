@@ -118,9 +118,9 @@ The later reset gesture used **three rapid presses**. When deformation exceeded 
 
 ## Findings and Discussion
 
-### Integration and Reuse
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports implementation experience, demonstrations, and user observations, without a participant count or quantitative comparison. The findings therefore provide exploratory design insights.
+### Integration and Reuse
 
 Separating tracking from the application demonstrated that an existing web visualization could be adapted through an optional interaction layer. Defining a shared interaction format was central to this reuse and established a concrete basis for communication between framework and application.
 

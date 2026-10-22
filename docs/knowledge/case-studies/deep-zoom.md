@@ -69,7 +69,7 @@ An optional third image supplied annotations. It matched the detail image's reso
 
 ### Image Size and Memory Limits
 
-The implementation stored pixel colour values in a byte array. The source reports a limit of **2,147,483,591 elements**, corresponding to approximately **30,893 × 17,377 pixels** for a 16:9 image with four RGBA channels. These dimensions remained below one gigapixel but provided approximately **16-fold magnification** relative to the preview, which was sufficient to demonstrate the interaction concepts.
+The implementation stored pixel colour values in a byte array. Due to technological constraints, these arrays are limited to a size of **2,147,483,591 elements**, corresponding to approximately **30,893 × 17,377 pixels** for a 16:9 image with four RGBA channels. These dimensions remained below one gigapixel but provided approximately **16-fold magnification** relative to the preview, which was sufficient to demonstrate the interaction concepts.
 
 This was a limit of the implementation described in the study. Loading complete detail images also constrained possible extensions: in that implementation, a second independent lens would load another copy of the entire detail image into memory. Effective multi-touch use and collaborative viewing with multiple lenses were not addressed.
 
@@ -81,7 +81,7 @@ This was a limit of the implementation described in the study. Loading complete 
 
 ![Lens placement options]({{ site.baseurl }}/assets/img/kb/case-studies/deep-zoom_zoom-modes.png)
 
-The case study considered five presentation concepts, illustrated in Figure 5-39 of the source:
+The case study considered five presentation concepts:
 
 | Presentation | Relationship between detail and context |
 | ------------ | --------------------------------------- |
@@ -97,7 +97,7 @@ The implemented modes were **a lens with configurable offset and full-screen zoo
 
 Several kinds of content tested the same interaction approach:
 
-- **Astronomical imagery:** A high-resolution view of the Milky Way from ESA's Gaia project supported exploration of large-scale structure and local detail. The source credits ESA/Gaia/DPAC and identifies the image licence as CC BY-SA 3.0 IGO.
+- **Astronomical imagery:** A high-resolution view of the Milky Way from ESA's Gaia project supported exploration of large-scale structure and local detail ([Source images](https://sci.esa.int/s/ApPJaGA)).
 - **City panoramas:** A Dresden panorama assembled from photographs taken for the project provided a familiar setting for inspecting buildings and landmarks.
 - **Maps and aerial imagery:** Pre-rendered Google Maps satellite images at different resolutions and historical aerial photographs of Dresden from 1953 connected a city-wide overview with individual streets and buildings.
 - **Event plans:** Exhibition plans supplied as vector graphics were used for OUTPUT and Fit4Congress. The overview showed room and stand silhouettes; the detailed image added room names and event information.
@@ -124,9 +124,9 @@ For the Dresden panorama, the overlay labelled significant buildings at their im
 
 ## Findings and Discussion
 
-### Combining Zoom and Information Layers
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports demonstration feedback and implementation experience, without a participant count or quantitative evaluation. Its findings therefore provide exploratory design insights.
+### Combining Zoom and Information Layers
 
 The restoration comparison and fading annotations demonstrated two ways to enrich zoomable images with additional information. Maps could support multiple semantic overlays, while restoration imagery suggested opportunities to explain or document changes to an artwork. Developing interaction concepts that combine zoom with navigation through several information layers remained a central research question.
 

@@ -113,9 +113,9 @@ Pulling the surface outward at a focus region deleted that region. Its products 
 
 ## Findings and Discussion
 
-### Exploration and Selection Efficiency
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source provides qualitative design observations and a discussion of limitations, without a participant count or quantitative evaluation. These findings describe exploratory experience with the prototype.
+### Exploration and Selection Efficiency
 
 Collecting products through simulated forces fitted the playful interaction concept and made similarity-based search a suitable application context. Adding and removing related products also matched the metaphor. However, tracking inaccuracies and latency made this refinement less efficient than alternatives such as lasso selection or tapping individual items. The study therefore supports the concept's exploratory value without establishing a performance advantage.
 

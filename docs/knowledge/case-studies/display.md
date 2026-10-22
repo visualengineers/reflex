@@ -26,7 +26,7 @@ title: "Case Study: DisPlay - Game Concepts"
 | Scenario | Game concepts for physics-based interaction |
 | Features | - plugin for Unreal Engine 4<br> - exhibition operation<br> - development tools |
 
-The seventh case study explored **surface deformation as a means of influencing virtual environments through physical forces**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles). The source does not list an associated publication or repository.
+The seventh case study explored **surface deformation as a means of influencing virtual environments through physical forces**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles).
 
 ## Research Questions
 
@@ -55,7 +55,7 @@ Communication used **WebSockets**, with an additional intermediary layer to supp
 
 ### Approximating Deformation with Point Forces
 
-The source reports that the Unreal Engine integration did not offer a native way to feed dynamic vector fields into the physics simulation. The implementation therefore approximated deformation through **radial force actors**: point-force sources positioned at detected contacts, with their strength determined by deformation depth.
+The Unreal Engine integration did not offer a native way to feed dynamic vector fields into the physics simulation. The implementation therefore approximated deformation through **radial force actors**: point-force sources positioned at detected contacts, with their strength determined by deformation depth.
 
 This exposed multiple contacts to the simulation without reconstructing the full surface relief. It also imposed a conceptual boundary: the resulting force field did not necessarily match the shape or combined effects of the physical deformation.
 
@@ -128,9 +128,9 @@ Visual feedback identified contact positions, highlighted incoming power-ups and
 
 ## Findings and Discussion
 
-### Physical Realism and Interaction Efficiency
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports demonstrations and discussions with users in several contexts, without a participant count or quantitative evaluation. Its findings provide exploratory observations about the interaction concepts and implementation.
+### Physical Realism and Interaction Efficiency
 
 The balls appeared less agile than DepthTouch's circles because of friction and inertia, although their rendering and collisions were more convincing. Stacking offered an additional effect, but greater physical realism did not automatically improve interaction.
 

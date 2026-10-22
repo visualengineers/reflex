@@ -28,7 +28,7 @@ title: "Case Study: Construction Progress Visualization"
 | Features | - combining layered data with zoomable user interfaces<br> - mode switching through an external foot switch<br> - gesture development |
 | Publication | *Müller, M., Lier, E., Groh, R. & Hannß, F.* (2020): **A Tangible Concept for Layered Map Visualizations: Supporting on-site Civil Engineering Construction Consultations using Elastic Displays**. In: C. Hansen, A. Nürnberger & B. Preim (Eds.): Mensch und Computer 2020 - Workshopband. Bonn, Germany: Gesellschaft für Informatik e. V. (GI). DOI: [10.18420/muc2020-ws121-368](https://doi.org/10.18420/muc2020-ws121-368). |
 
-The eighth case study explored **combining zoomable maps and layered information for construction planning and consultation**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles). The source does not list an associated repository.
+The eighth case study explored **combining zoomable maps and layered information for construction planning and consultation**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles).
 
 ## Research Questions
 
@@ -65,7 +65,7 @@ The two-hand lens used a fixed size. Early trials found that continuously changi
 
 The study focused on construction execution, particularly progress monitoring, schedule updates, and cost control within a Building Information Modeling (BIM) context. It developed a map-based visualization and interaction concept rather than addressing the full project lifecycle.
 
-Its layer model related construction phases to their physical depth. This suited the chosen civil-engineering scenario, but constrained transfer to projects with simultaneous work at different heights. The source describes map interaction, gesture development, and planning visualizations; the reported comparative user test specifically concerns mode switching.
+Its layer model related construction phases to their physical depth. This suited the chosen civil-engineering scenario, but constrained transfer to projects with simultaneous work at different heights. The case study focues on map interaction, gesture development, planning visualizations, and mode switching.
 
 **[⬆ back to top](#table-of-contents)**
 

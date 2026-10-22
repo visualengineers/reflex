@@ -118,9 +118,9 @@ A subsequent prototype introduced two hierarchy levels. Its main menu divided th
 
 ## Findings and Discussion
 
-### Robustness and Spatial Accuracy
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports implementation experience and observations during use, without a participant count or quantitative comparison. Its findings should therefore be understood as exploratory design insights.
+### Robustness and Spatial Accuracy
 
 Global-extremum detection was reported to support smoother, more accurate single-point interaction with simpler filtering than local-extrema detection. It reduced ambiguities from closely spaced contacts, such as those produced by pressing with an entire hand. Temporal smoothing nevertheless could not fully prevent jumps between fingers.
 
@@ -136,7 +136,7 @@ The prototypes used **five or fewer interactive elements** to accommodate these 
 
 ### Navigation and Discoverability
 
-Limiting the number of simultaneously available widgets strengthened the need for navigation between information levels. Observations indicated that moving into a deeper hierarchy level was understandable and usable. The source does not establish the same conclusion for the outward-pull return gesture.
+Limiting the number of simultaneously available widgets strengthened the need for navigation between information levels. Observations indicated that moving into a deeper hierarchy level was understandable and usable.
 
 Adapting the concept to network structures remained a direction for further work. Such interfaces might use back navigation sparingly or provide a reset to the starting point. These possibilities were proposed extensions, rather than demonstrated capabilities of the two-level prototype.
 

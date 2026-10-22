@@ -145,9 +145,9 @@ Pressing a project revealed an annotation in three successive stages: its title,
 
 ## Findings and Discussion
 
-### Understandability and Response Time
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports observations from iterative trials and user feedback, without a participant count or quantitative evaluation. These findings provide exploratory design insights.
+### Understandability and Response Time
 
 The physical response of the elements offered an accessible introduction to the interaction concept and helped communicate relationships in the data. However, controlling the strength of an element's influence through pressure generally required a brief explanation. After familiarization, users found the direct feedback understandable.
 

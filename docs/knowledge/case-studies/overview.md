@@ -29,7 +29,7 @@ The documentation of the individual case studies is intended to serve as a start
 
 ## Chronological Overview
 
-The timeline in the source overview identifies the following main periods of work:
+The timeline identifies the following main periods of work:
 
 | Year | Case studies                                                                         |
 | ---- | ------------------------------------------------------------------------------------ |
