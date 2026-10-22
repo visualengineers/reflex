@@ -69,7 +69,7 @@ The source describes a 256-layer limit for its raw-data representation. KTX2 avo
 
 ### Streaming and Server Control
 
-Retrieving depth images through individual **REST requests** offered a simple interface, but its latency was too high for the study's real-time visualization. The implementation therefore provided **native WebSocket and SignalR interfaces** for continuous transmission.
+Retrieving depth images through individual **REST requests** offered a simple interface, but its latency was too high for the study's real-time visualization. Continuous transmission used separate interfaces according to the data being delivered: **WebSockets** streamed [interaction data]({{ site.baseurl }}/software/repo/interactions.html), while **SignalR** streamed larger data volumes, namely depth images and point clouds.
 
 Clients could obtain different representations according to their needs: an unprocessed depth image encoded in grayscale, a point cloud in spatial coordinates, or a calibrated point cloud mapped to screen coordinates. Pixel Blending used a grayscale depth texture derived from the selected input, while lens interaction used detected pressure points.
 
