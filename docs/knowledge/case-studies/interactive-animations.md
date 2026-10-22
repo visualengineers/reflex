@@ -84,6 +84,8 @@ The first iteration let visitors explore the temporal development of interfaces 
 
 The installation was presented alongside a large-format print in the 2016 Leibniz exhibition *Die beste der möglichen Welten. Was uns und die Welt verbindet.* It combined scientific visualization with an art-installation setting.
 
+Exhibition operation made a fully automated application startup particularly important. An autostart function was implemented so that the monolithic application could initialize the sensor and restore its configuration without manual setup, making the installation ready for visitors.
+
 When no interaction was detected, a short preview played periodically. A stylized, gently pulsing hand suggested movement, while a circular preview behind it indicated the animation. This idle presentation invited visitors to try deforming the surface.
 
 ![Interactive Animations: Fluid Simulation]({{ site.baseurl }}/assets/img/kb/case-studies/interactive-animations_detail.png)
@@ -143,6 +145,7 @@ Adapting the concept to network structures remained a direction for further work
 For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for several areas:
 
 - **Detection suited to the task:** Support simple, robust single-point interaction when multiple contacts do not benefit the application.
+- **Automated exhibition startup:** Initialize the sensor and restore the application configuration automatically so the installation is ready for use without manual setup.
 - **Configurable processing and alignment:** Account for confidence, positional stability, latency, and drift as deformation changes.
 - **Separation of responsibilities:** Expose detected interactions independently of content rendering, while allowing applications to interpret gestures for their own scenarios.
 - **Flexible content handling:** Support longer sequences and responsive animation control, with explicit consideration of runtime content replacement.

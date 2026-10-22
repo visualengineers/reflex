@@ -67,7 +67,9 @@ These tools supported testing and diagnosis across the tracking and visualizatio
 
 ### Automated Startup
 
-Exhibition operation motivated an **autostart function in the framework**. Starting the server loaded the selected sensor, resolution, filtering and processing settings, and connection configuration, then started the corresponding components.
+An **autostart function** had already been implemented for the monolithic application in [Interactive Animations](interactive-animations.md#exploring-a-fluid-simulation). DisPlay's client-server architecture introduced further requirements: startup now had to coordinate separate tracking and visualization applications and, in particular, support client-driven parameterization of the tracking server. The earlier automatic startup was therefore extended to accommodate configuration across application boundaries.
+
+Starting the server loaded the selected sensor, resolution, filtering and processing settings, and connection configuration, then started the corresponding components.
 
 A separate utility with a simple configuration interface launched the programs in the correct order, including the communication intermediary. Framework startup and application settings therefore addressed different parts of the installation's setup.
 
