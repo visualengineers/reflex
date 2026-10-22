@@ -132,12 +132,6 @@ This context-sensitive interpretation distinguished moving an entire interval fr
 
 ## Findings and Discussion
 
-### Comparing Mode-Switching Techniques
-
-The source reports a user test documented in *Lier (2019, pp. 146 ff.)*. The foot switch showed **significant advantages over Together-and-Apart** in task completion, completion time, usability, and user experience. Differences between the foot switch and the contact-count-based two-hand lens were smaller and **not statistically significant in that test**.
-
-The excerpt provides no participant count, effect sizes, or detailed statistics. The result therefore supports a comparison of the tested techniques without establishing a general superiority of external controls or an evaluation of the entire planning workflow.
-
 ### Persistent Views and Physical State
 
 A dedicated mode switch offered a further benefit: retaining the current view allowed users to step away from the wall and see the complete visualization. This addressed the difficulty of inspecting a large display while holding a deformation.
