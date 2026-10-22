@@ -53,9 +53,11 @@ The application retained the monolithic .NET/WPF architecture but substantially 
 
 During development, the sensor changed from the original Microsoft Kinect to Kinect 2. This prompted an initial hardware-independent sensor layer capable of processing depth data from different sensors.
 
+Surface configuration generalized FlexiWall's depth-range mapping by explicitly defining the physical resting plane of the elastic surface and thresholds for minimum deformation. These parameters established the reference from which inward and outward deformation could be interpreted and small deviations excluded from interaction detection.
+
 ### Extracting and Stabilizing Pressure Points
 
-The implementation detected local extrema in the depth image along both horizontal and vertical directions. Differences between neighbouring depth samples approximated partial derivatives, forming a vector field in which sign changes indicated candidate extrema. For performance, the depth image was downscaled to a quarter of its original resolution.
+The implementation processed the point cloud derived from the depth image to detect local extrema along both horizontal and vertical directions. Differences between neighbouring depth samples approximated partial derivatives, forming a vector field in which sign changes indicated candidate extrema. For performance, the depth image was downscaled to a quarter of its original resolution.
 
 Each frame produced a list of extrema. **Persistent touch identities were not implemented**, because the scenario did not require them. Multi-touch detection therefore exposed simultaneous pressure points without uniquely tracking each interaction over time.
 
@@ -70,7 +72,9 @@ Confidence filtering delayed initial detection. Without persistent tracking, lat
 
 Calibration used more reference points to improve spatial accuracy at different deformation depths. It partially accounted for projective distortion and reduced drift between detected and displayed positions. Residual errors remained, especially under stronger deformation and away from the projection centre.
 
-Technical limitations prevented transferring this calibration to the existing layer-rendering component. The earlier depth-image simulation was also incompatible with DEEP, exposing the need for a different approach to interaction emulation as a development tool.
+Technical limitations prevented transferring this calibration to the existing layer-rendering component. In the subsequent consolidation, the extended calibration was also excluded from the main framework because its limited added value did not justify the effort required to perform it. This decision concerned general adoption of the procedure, rather than its implementation in the DEEP prototype.
+
+The earlier depth-image simulation was also incompatible with DEEP, exposing the need for a different approach to interaction emulation as a development tool.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -141,9 +145,9 @@ Pressing a project revealed an annotation in three successive stages: its title,
 
 ## Findings and Discussion
 
-### Understandability and Response Time
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports observations from iterative trials and user feedback, without a participant count or quantitative evaluation. These findings provide exploratory design insights.
+### Understandability and Response Time
 
 The physical response of the elements offered an accessible introduction to the interaction concept and helped communicate relationships in the data. However, controlling the strength of an element's influence through pressure generally required a brief explanation. After familiarization, users found the direct feedback understandable.
 
@@ -167,10 +171,11 @@ Hands could obscure tags during direct selection. Larger, indirect deformation g
 
 ### Implications for Framework Development
 
-DEEP moved beyond FlexiWall's direct depth-image rendering by exposing pressure-point coordinates to application logic. It also provided concrete experience with sensor abstraction, configurable simulation, data handling, and calibration. For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+DEEP moved beyond FlexiWall's direct depth-image rendering by exposing pressure-point coordinates to application logic. It also provided concrete experience with sensor abstraction, configurable simulation, data handling, and calibration. For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Interaction data and continuity:** Expose multiple positions and deformation depths; support tracking over time where moving contacts or gestures require it.
 - **Configurable processing:** Make the balance between noise suppression, stable detection, and latency explicit.
+- **Surface configuration:** Define the resting plane and minimum-deformation thresholds independently of application-specific visualizations.
 - **Spatial alignment:** Account for deformation depth and off-centre interaction when mapping sensed positions to projected content.
 - **Hardware abstraction and emulation:** Support interchangeable sensors and application development without depending on the physical display or a particular rendering technique.
 - **Separation of responsibilities:** Keep sensing, interaction processing, simulation, data access, and visualization sufficiently independent to support different scenarios.

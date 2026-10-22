@@ -12,7 +12,7 @@ title: "Case Study: Interactive Animations"
 3. [Scenario](#scenario)
 4. [Findings and Discussion](#findings-and-discussion)
 
-![DepthTouch: Title Image]({{ site.baseurl }}/assets/img/kb/case-studies/interactive-animations_title.jpg){:.content__title-image}
+![Interactive Animations: Title Image]({{ site.baseurl }}/assets/img/kb/case-studies/interactive-animations_title.jpg){:.content__title-image}
 
 | Profile field | Description |
 | ------------- | ----------- |
@@ -84,6 +84,8 @@ The first iteration let visitors explore the temporal development of interfaces 
 
 The installation was presented alongside a large-format print in the 2016 Leibniz exhibition *Die beste der möglichen Welten. Was uns und die Welt verbindet.* It combined scientific visualization with an art-installation setting.
 
+Exhibition operation made a fully automated application startup particularly important. An autostart function was implemented so that the monolithic application could initialize the sensor and restore its configuration without manual setup, making the installation ready for visitors.
+
 When no interaction was detected, a short preview played periodically. A stylized, gently pulsing hand suggested movement, while a circular preview behind it indicated the animation. This idle presentation invited visitors to try deforming the surface.
 
 ![Interactive Animations: Fluid Simulation]({{ site.baseurl }}/assets/img/kb/case-studies/interactive-animations_detail.png)
@@ -116,9 +118,9 @@ A subsequent prototype introduced two hierarchy levels. Its main menu divided th
 
 ## Findings and Discussion
 
-### Robustness and Spatial Accuracy
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports implementation experience and observations during use, without a participant count or quantitative comparison. Its findings should therefore be understood as exploratory design insights.
+### Robustness and Spatial Accuracy
 
 Global-extremum detection was reported to support smoother, more accurate single-point interaction with simpler filtering than local-extrema detection. It reduced ambiguities from closely spaced contacts, such as those produced by pressing with an entire hand. Temporal smoothing nevertheless could not fully prevent jumps between fingers.
 
@@ -134,15 +136,17 @@ The prototypes used **five or fewer interactive elements** to accommodate these 
 
 ### Navigation and Discoverability
 
-Limiting the number of simultaneously available widgets strengthened the need for navigation between information levels. Observations indicated that moving into a deeper hierarchy level was understandable and usable. The source does not establish the same conclusion for the outward-pull return gesture.
+Limiting the number of simultaneously available widgets strengthened the need for navigation between information levels. Observations indicated that moving into a deeper hierarchy level was understandable and usable.
 
 Adapting the concept to network structures remained a direction for further work. Such interfaces might use back navigation sparingly or provide a reset to the starting point. These possibilities were proposed extensions, rather than demonstrated capabilities of the two-level prototype.
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for several areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for several areas:
 
 - **Detection suited to the task:** Support simple, robust single-point interaction when multiple contacts do not benefit the application.
+- **Automated exhibition startup:** Initialize the sensor and restore the application configuration automatically so the installation is ready for use without manual setup.
+- **Stability in exhibition operation:** Maintain reliable tracking and application behaviour throughout exhibition use, where interruptions would prevent visitors from exploring the installation independently.
 - **Configurable processing and alignment:** Account for confidence, positional stability, latency, and drift as deformation changes.
 - **Separation of responsibilities:** Expose detected interactions independently of content rendering, while allowing applications to interpret gestures for their own scenarios.
 - **Flexible content handling:** Support longer sequences and responsive animation control, with explicit consideration of runtime content replacement.

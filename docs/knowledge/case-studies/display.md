@@ -26,13 +26,13 @@ title: "Case Study: DisPlay - Game Concepts"
 | Scenario | Game concepts for physics-based interaction |
 | Features | - plugin for Unreal Engine 4<br> - exhibition operation<br> - development tools |
 
-The seventh case study explored **surface deformation as a means of influencing virtual environments through physical forces**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles). The source does not list an associated publication or repository.
+The seventh case study explored **surface deformation as a means of influencing virtual environments through physical forces**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles).
 
 ## Research Questions
 
 DisPlay returned to the playful exploration of physical effects introduced by [DepthTouch](depthtouch.md). Studies such as [DEEP](deep.md) and the [Zoomable Product Browser](zoomable-product-browser.md) had mapped simulated forces to abstract actions such as selection and filtering. DisPlay instead investigated how deformation could influence objects in a virtual environment, ideally making simple physical principles understandable through interaction.
 
-![IGame Concepts: Ball Simulation and Spaceship Game]({{ site.baseurl }}/assets/img/kb/case-studies/display_overview.png)
+![Game Concepts: Ball Simulation and Spaceship Game]({{ site.baseurl }}/assets/img/kb/case-studies/display_overview.png)
 
 The case study addressed four main questions:
 
@@ -55,7 +55,7 @@ Communication used **WebSockets**, with an additional intermediary layer to supp
 
 ### Approximating Deformation with Point Forces
 
-The source reports that the Unreal Engine integration did not offer a native way to feed dynamic vector fields into the physics simulation. The implementation therefore approximated deformation through **radial force actors**: point-force sources positioned at detected contacts, with their strength determined by deformation depth.
+The Unreal Engine integration did not offer a native way to feed dynamic vector fields into the physics simulation. The implementation therefore approximated deformation through **radial force actors**: point-force sources positioned at detected contacts, with their strength determined by deformation depth.
 
 This exposed multiple contacts to the simulation without reconstructing the full surface relief. It also imposed a conceptual boundary: the resulting force field did not necessarily match the shape or combined effects of the physical deformation.
 
@@ -65,9 +65,15 @@ A simple **mouse-based emulator** generated depth-interaction events to make dev
 
 These tools supported testing and diagnosis across the tracking and visualization boundary, alongside adjustment of application behaviour.
 
+The framework also gained a **tracking-configuration user interface** for configuring the sensor and persisting a startup configuration. This interface was separate from the client's game-parameter overlay and the utility used to launch the installation's programs.
+
+**Viewport configuration** supplied parameters defining the portion of the projected surface used by an application. These parameters allowed detected positions to be transformed into the correct application coordinates when the client used only part of the surface.
+
 ### Automated Startup
 
-Exhibition operation motivated an **autostart function in the framework**. Starting the server loaded the selected sensor, resolution, filtering and processing settings, and connection configuration, then started the corresponding components.
+An **autostart function** had already been implemented for the monolithic application in [Interactive Animations](interactive-animations.md#exploring-a-fluid-simulation). DisPlay's client-server architecture introduced further requirements: startup now had to coordinate separate tracking and visualization applications and, in particular, support client-driven parameterization of the tracking server. The earlier automatic startup was therefore extended to accommodate configuration across application boundaries.
+
+Starting the server loaded the selected sensor, resolution, filtering and processing settings, and connection configuration, then started the corresponding components.
 
 A separate utility with a simple configuration interface launched the programs in the correct order, including the communication intermediary. Framework startup and application settings therefore addressed different parts of the installation's setup.
 
@@ -95,7 +101,7 @@ The scenario thus explored both the visual appeal and interaction consequences o
 
 ### Particle Simulation
 
-![IParticle Simulation Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_particles.png)
+![Particle Simulation Scenario]({{ site.baseurl }}/assets/img/kb/case-studies/display_particles.png)
 
 The second level used a particle effect as a proof of concept for interactive force-field visualization. Pressing created a force source at the hand position, and deformation depth controlled its strength. Particles responded by changing their trajectories, producing an interactive snowstorm-like effect.
 
@@ -122,9 +128,9 @@ Visual feedback identified contact positions, highlighted incoming power-ups and
 
 ## Findings and Discussion
 
-### Physical Realism and Interaction Efficiency
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports demonstrations and discussions with users in several contexts, without a participant count or quantitative evaluation. Its findings provide exploratory observations about the interaction concepts and implementation.
+### Physical Realism and Interaction Efficiency
 
 The balls appeared less agile than DepthTouch's circles because of friction and inertia, although their rendering and collisions were more convincing. Stacking offered an additional effect, but greater physical realism did not automatically improve interaction.
 
@@ -144,12 +150,13 @@ A boundary preventing objects from escaping was proposed, but would weaken the c
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Integration across technologies:** Deliver interaction data to game-engine clients through a clear communication boundary, accounting for protocol adapters and dependent processes.
 - **Stable, responsive multi-touch:** Preserve multiple contact positions and deformation depths so applications can map them to simultaneous forces with little delay.
 - **Development and diagnosis:** Provide emulated interaction input and visibility into connection state, received events, and coordinate mappings.
 - **Reproducible exhibition setup:** Restore sensor, processing, and connection settings automatically and coordinate startup across components.
+- **Tracking and viewport configuration:** Provide a configuration interface with persistent startup settings and coordinate mapping for clients that use only part of the projected surface.
 - **Application configuration and guidance:** Persist game parameters, explain unfamiliar interactions, and make automatic transitions sensitive to ongoing input.
 - **Explicit limits of input representations:** Distinguish contact-based force control from full-surface reconstruction when choosing how to connect deformation to a simulation.
 

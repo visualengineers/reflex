@@ -28,7 +28,7 @@ title: "Case Study: Construction Progress Visualization"
 | Features | - combining layered data with zoomable user interfaces<br> - mode switching through an external foot switch<br> - gesture development |
 | Publication | *Müller, M., Lier, E., Groh, R. & Hannß, F.* (2020): **A Tangible Concept for Layered Map Visualizations: Supporting on-site Civil Engineering Construction Consultations using Elastic Displays**. In: C. Hansen, A. Nürnberger & B. Preim (Eds.): Mensch und Computer 2020 - Workshopband. Bonn, Germany: Gesellschaft für Informatik e. V. (GI). DOI: [10.18420/muc2020-ws121-368](https://doi.org/10.18420/muc2020-ws121-368). |
 
-The eighth case study explored **combining zoomable maps and layered information for construction planning and consultation**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles). The source does not list an associated repository.
+The eighth case study explored **combining zoomable maps and layered information for construction planning and consultation**. The profile describes the historical dSense implementation, following the conventions in the [case study overview](overview.md#case-study-profiles).
 
 ## Research Questions
 
@@ -65,7 +65,7 @@ The two-hand lens used a fixed size. Early trials found that continuously changi
 
 The study focused on construction execution, particularly progress monitoring, schedule updates, and cost control within a Building Information Modeling (BIM) context. It developed a map-based visualization and interaction concept rather than addressing the full project lifecycle.
 
-Its layer model related construction phases to their physical depth. This suited the chosen civil-engineering scenario, but constrained transfer to projects with simultaneous work at different heights. The source describes map interaction, gesture development, and planning visualizations; the reported comparative user test specifically concerns mode switching.
+Its layer model related construction phases to their physical depth. This suited the chosen civil-engineering scenario, but constrained transfer to projects with simultaneous work at different heights. The case study focues on map interaction, gesture development, planning visualizations, and mode switching.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -132,12 +132,6 @@ This context-sensitive interpretation distinguished moving an entire interval fr
 
 ## Findings and Discussion
 
-### Comparing Mode-Switching Techniques
-
-The source reports a user test documented in *Lier (2019, pp. 146 ff.)*. The foot switch showed **significant advantages over Together-and-Apart** in task completion, completion time, usability, and user experience. Differences between the foot switch and the contact-count-based two-hand lens were smaller and **not statistically significant in that test**.
-
-The excerpt provides no participant count, effect sizes, or detailed statistics. The result therefore supports a comparison of the tested techniques without establishing a general superiority of external controls or an evaluation of the entire planning workflow.
-
 ### Persistent Views and Physical State
 
 A dedicated mode switch offered a further benefit: retaining the current view allowed users to step away from the wall and see the complete visualization. This addressed the difficulty of inspecting a large display while holding a deformation.
@@ -158,7 +152,7 @@ The coupling of construction phase and physical depth also had a clear boundary.
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Combining input sources:** Allow surface interaction to work alongside external controls such as a foot switch.
 - **Application-specific gesture interpretation:** Expose multiple contact positions and deformation depths so clients can interpret gestures according to their current mode and target objects.

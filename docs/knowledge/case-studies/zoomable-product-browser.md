@@ -113,9 +113,9 @@ Pulling the surface outward at a focus region deleted that region. Its products 
 
 ## Findings and Discussion
 
-### Exploration and Selection Efficiency
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source provides qualitative design observations and a discussion of limitations, without a participant count or quantitative evaluation. These findings describe exploratory experience with the prototype.
+### Exploration and Selection Efficiency
 
 Collecting products through simulated forces fitted the playful interaction concept and made similarity-based search a suitable application context. Adding and removing related products also matched the metaphor. However, tracking inaccuracies and latency made this refinement less efficient than alternatives such as lasso selection or tapping individual items. The study therefore supports the concept's exploratory value without establishing a performance advantage.
 
@@ -140,7 +140,9 @@ These alternatives were proposals for further work, rather than demonstrated cap
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for several areas:
+Although the prototype was developed using single-touch detection, the application context highlighted the importance of multi-touch input with persistent touch identifiers for collaboration and complex gestures. Supporting multiple contacts and tracking each contact across frames therefore emerged as a central requirement for this type of application.
+
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for several areas:
 
 - **Interaction data and precision:** Expose position and deformation depth with sufficient stability and low latency for both continuous manipulation and threshold-based actions.
 - **Application state:** Allow applications to suspend dynamic behaviour and preserve selections independently of continued physical deformation.

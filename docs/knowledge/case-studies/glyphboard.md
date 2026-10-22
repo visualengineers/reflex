@@ -118,9 +118,9 @@ The later reset gesture used **three rapid presses**. When deformation exceeded 
 
 ## Findings and Discussion
 
-### Integration and Reuse
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports implementation experience, demonstrations, and user observations, without a participant count or quantitative comparison. The findings therefore provide exploratory design insights.
+### Integration and Reuse
 
 Separating tracking from the application demonstrated that an existing web visualization could be adapted through an optional interaction layer. Defining a shared interaction format was central to this reuse and established a concrete basis for communication between framework and application.
 
@@ -144,7 +144,7 @@ The repeated-press reset was easy and ergonomic to perform, but recognition was 
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Independent interaction and visualization layers:** Allow existing applications to consume Elastic Display input through an optional adapter, while retaining their rendering and application logic.
 - **Shared interaction data:** Communicate normalized positions and timing, with identifiers, confidence, and push/pull classification supporting more demanding client interactions.

@@ -53,6 +53,12 @@ The implementation used **.NET and WPF** in a client-server architecture. Despit
 
 This continued Glyphboard's separation of tracking from application logic, while applying it to a native desktop visualization client.
 
+### Tracking Configuration and Development Tools
+
+Framework development optimized depth-image analysis and introduced configurable parameters for creating and filtering the point cloud. These changes allowed processing to be adjusted to the tracking needs of the visualization independently of its image-rendering implementation.
+
+A simple **touch-point simulator** provided synthetic contact input for application development without the physical display. Unlike FlexiWall's depth-image emulator, it simulated detected interaction points rather than a complete surface representation.
+
 ### Mapping Deformation to Magnification
 
 The visualization combined two images: a preview at the application's native resolution, typically **1920 × 1080 pixels**, and a high-resolution detail image. The magnified view was centred on the detected finger position. Deformation depth determined how far the detail image was scaled down from its full resolution: maximum deformation exposed the full available detail, while shallower deformation reduced magnification.
@@ -63,7 +69,7 @@ An optional third image supplied annotations. It matched the detail image's reso
 
 ### Image Size and Memory Limits
 
-The implementation stored pixel colour values in a byte array. The source reports a limit of **2,147,483,591 elements**, corresponding to approximately **30,893 × 17,377 pixels** for a 16:9 image with four RGBA channels. These dimensions remained below one gigapixel but provided approximately **16-fold magnification** relative to the preview, which was sufficient to demonstrate the interaction concepts.
+The implementation stored pixel colour values in a byte array. Due to technological constraints, these arrays are limited to a size of **2,147,483,591 elements**, corresponding to approximately **30,893 × 17,377 pixels** for a 16:9 image with four RGBA channels. These dimensions remained below one gigapixel but provided approximately **16-fold magnification** relative to the preview, which was sufficient to demonstrate the interaction concepts.
 
 This was a limit of the implementation described in the study. Loading complete detail images also constrained possible extensions: in that implementation, a second independent lens would load another copy of the entire detail image into memory. Effective multi-touch use and collaborative viewing with multiple lenses were not addressed.
 
@@ -75,7 +81,7 @@ This was a limit of the implementation described in the study. Loading complete 
 
 ![Lens placement options]({{ site.baseurl }}/assets/img/kb/case-studies/deep-zoom_zoom-modes.png)
 
-The case study considered five presentation concepts, illustrated in Figure 5-39 of the source:
+The case study considered five presentation concepts:
 
 | Presentation | Relationship between detail and context |
 | ------------ | --------------------------------------- |
@@ -91,7 +97,7 @@ The implemented modes were **a lens with configurable offset and full-screen zoo
 
 Several kinds of content tested the same interaction approach:
 
-- **Astronomical imagery:** A high-resolution view of the Milky Way from ESA's Gaia project supported exploration of large-scale structure and local detail. The source credits ESA/Gaia/DPAC and identifies the image licence as CC BY-SA 3.0 IGO.
+- **Astronomical imagery:** A high-resolution view of the Milky Way from ESA's Gaia project supported exploration of large-scale structure and local detail ([Source images](https://sci.esa.int/s/ApPJaGA)).
 - **City panoramas:** A Dresden panorama assembled from photographs taken for the project provided a familiar setting for inspecting buildings and landmarks.
 - **Maps and aerial imagery:** Pre-rendered Google Maps satellite images at different resolutions and historical aerial photographs of Dresden from 1953 connected a city-wide overview with individual streets and buildings.
 - **Event plans:** Exhibition plans supplied as vector graphics were used for OUTPUT and Fit4Congress. The overview showed room and stand silhouettes; the detailed image added room names and event information.
@@ -118,9 +124,9 @@ For the Dresden panorama, the overlay labelled significant buildings at their im
 
 ## Findings and Discussion
 
-### Combining Zoom and Information Layers
+The following section provides exploratory observations about the interaction concepts and implementation.
 
-The source reports demonstration feedback and implementation experience, without a participant count or quantitative evaluation. Its findings therefore provide exploratory design insights.
+### Combining Zoom and Information Layers
 
 The restoration comparison and fading annotations demonstrated two ways to enrich zoomable images with additional information. Maps could support multiple semantic overlays, while restoration imagery suggested opportunities to explain or document changes to an artwork. Developing interaction concepts that combine zoom with navigation through several information layers remained a central research question.
 
@@ -140,9 +146,11 @@ These proposals expanded the possible interaction vocabulary without establishin
 
 ### Implications for Framework Development
 
-For the forthcoming [requirements analysis](../../software/repo/requirements.md), the study provides evidence for the following areas:
+For the forthcoming [requirements analysis]({{ site.baseurl }}/software/repo/requirements.html), the study provides evidence for the following areas:
 
 - **Independent tracking and application layers:** Maintain a clear communication boundary so that surface input can drive a separately implemented visualization client.
+- **Configurable point-cloud processing:** Expose parameters for point-cloud creation and filtering so tracking can be tuned independently of the visualization.
+- **Simulated interaction input:** Support application development through synthetic touch points without requiring the sensor and physical display.
 - **Continuous parameter mappings:** Make position and deformation depth available for direct control of magnification, alongside mappings to speed such as those used in Glyphboard.
 - **Configurable presentation and feedback:** Allow applications to adjust lens offset and provide overview context while accounting for occlusion and projection distortion.
 - **Layered content and annotation visibility:** Support application concepts that relate magnification to alternative imagery and gradual information disclosure.

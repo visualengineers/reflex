@@ -43,7 +43,7 @@ The central question was how deforming a physical surface could support the mani
 
 The tabletop used commercially available translucent Lycra stretched into an elastic surface. Lycra was selected for its elasticity, durability, affordability, ready availability, and suitability for rear projection. The fabric contained no sensors: a Microsoft Kinect depth camera captured its deformation, while a projector and mirror projected content onto it from below.
 
-![DepthTouch CXonstruction]({{ site.baseurl }}/assets/img/kb/case-studies/depth-touch_construction.png)
+![DepthTouch Construction]({{ site.baseurl }}/assets/img/kb/case-studies/depth-touch_construction.png)
 
 Calibration aligned the coordinate systems of the depth camera and projector. Three points defining two linearly independent vectors were mapped to adjust scaling, translation, and rotation within the surface plane. This procedure corrected alignment within that plane, so the camera still had to be oriented perpendicular to the fabric and the projector's image plane parallel to it.
 
@@ -70,10 +70,16 @@ The physical surface served as both the input medium and a source of haptic feed
 
 ## Findings and Discussion
 
-The source account reports that users consistently highlighted the playful, exploratory character of the interaction and the fabric's natural invitation to deform it. They also emphasized that familiar physical behaviour made the interaction intuitively understandable, relating the concept to reality-based interaction.
+The following section provides exploratory observations about the interaction concepts and implementation.
+
+Users consistently highlighted the playful, exploratory character of the interaction and the fabric's natural invitation to deform it. They also emphasized that familiar physical behaviour made the interaction intuitively understandable, relating the concept to reality-based interaction.
 
 The prototype exposed a distinction relevant to subsequent framework development: capturing surface deformation can support simultaneous interaction without identifying individual contacts, but it does not by itself reveal which actions users perform. DepthTouch demonstrated the opportunities of this approach for physical simulation while making its limits for interpreting user input apparent.
 
 These observations raised the broader question of how an elastic surface could extend conventional multi-touch systems with an additional interaction dimension. DepthTouch established the conceptual and technical starting point for the later case studies, including [FlexiWall](flexiwall.md), which explored further uses of surface deformation.
+
+### Implications for Framework Development
+
+The vector-field calculation and three-point calibration were subsequently integrated into later framework iterations as reusable functions for processing surface deformation and mapping sensor coordinates to screen coordinates. The physics simulation remained an application-specific component, separate from the framework. This distinction allowed the underlying sensing and calibration functions to support scenarios beyond the original simulation.
 
 **[⬆ back to top](#table-of-contents)**
