@@ -52,7 +52,7 @@ The implementation used ReFlex's **client-server architecture**, combining an AS
 
 Two rendering approaches offered different capabilities: native web technologies and CSS for image-based lenses, and **WebGL pixel shaders** for per-pixel blending and texture-array lenses. These differences affected both the supported interaction modes and the available lens annotations.
 
-Development in the Layers context produced a separate ReFlex **emulator tool** that generated a **synthetic point cloud** and supported **recording and playback of point-cloud data**. The application used this shared development tool instead of reimplementing FlexiWall's integrated emulator. Embedding the tool in a frame allowed it to be used as an overlay, supporting development and repeated testing with simulated or previously captured surface input.
+Development in the Layers context used the ReFlex [**emulator tool**]({{ site.baseurl }}/software/app/emulator.html) that generated a **synthetic point cloud** and extended it with **recording and playback of point-cloud data**. The application used this shared development tool instead of reimplementing FlexiWall's integrated emulator. Embedding the tool in a frame allowed it to be used as an overlay, supporting development and repeated testing with simulated or previously captured surface input.
 
 ### Layer Formats and Capacity
 
@@ -177,7 +177,7 @@ Layers provided an application-level validation of the ReFlex architecture by si
 - **Bidirectional server integration:** Allow clients to retrieve and change configuration, control sensor operation, and select active streams.
 - **Reusable configuration:** Separate content and dataset-specific interaction presets from application code, enabling rapid changes between scenarios.
 - **Multiple contacts and contextual feedback:** Provide the position and depth information needed for independently controlled lenses and orientation within a layer stack.
-- **Reusable development tools:** Support application testing through the shared point-cloud emulator and recording/playback tools instead of duplicating their functionality in each client.
+- **Reusable development tools:** Support application testing through the shared [point-cloud emulator]({{ site.baseurl }}/software/app/emulator.html) and recording/playback tools instead of duplicating their functionality in each client.
 
 These implications connect the implemented capabilities and their limits to framework design. Texture preparation, GPU rendering, and the choice of lens widgets remained application responsibilities.
 
