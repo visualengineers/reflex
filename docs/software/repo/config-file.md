@@ -1,5 +1,5 @@
 ---
-title: Configuration File
+title: Server Configuration
 ---
 
 # {{ page.title }}
@@ -21,7 +21,7 @@ title: Configuration File
 
 ## Introduction
 
-`wwwroot/Config/TrackingSettings.json` stores the tracking server configuration represented by `TrackingServerAppSettings`. The sections below follow the file's structure and use its exact property names. Enum values are stored as numbers.
+`tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings.json` stores the tracking server configuration represented by `TrackingServerAppSettings`. The sections below follow the file's structure and use its exact property names. Enum values are stored as numbers.
 
 **Example Value** refers to the values currently checked into the repository, not universal defaults or recommended values for another installation. Camera settings, calibration and the filter mask depend on the physical setup. Explicit C# class defaults are noted separately where relevant. Types refer to the C# model; JSON uses numbers, booleans, strings, arrays and objects.
 

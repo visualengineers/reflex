@@ -16,7 +16,7 @@
             "content":
             [
                 {
-                    "name": "Repository",
+                    "name": "Developer Documentation",
                     "type": "subcategory",
                     "content": [
                         {
@@ -26,15 +26,21 @@
                             "type": "page"
                         },
                         {
-                            "name": "Architecture",
-                            "path": "/software/repo/",
-                            "file": "architecture.html",
-                            "type": "page"
-                        },
-                        {
                             "name": "ReFlex Library (.NET)",
                             "path": "/software/repo/",
                             "file": "library.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Requirements Analysis",
+                            "path": "/software/repo/",
+                            "file": "requirements.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Architecture",
+                            "path": "/software/repo/",
+                            "file": "architecture.html",
                             "type": "page"
                         },
                         {
@@ -50,15 +56,39 @@
                             "type": "page"
                         },
                         {
+                            "name": "Supported Sensors",
+                            "path": "/software/repo/",
+                            "file": "sensors.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Interactions Format",
                             "path": "/software/repo/",
                             "file": "interactions.html",
                             "type": "page"
                         },
                         {
-                            "name": "Supported Sensors",
+                            "name": "Server Configuration",
                             "path": "/software/repo/",
-                            "file": "sensors.html",
+                            "file": "config-file.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "REST API",
+                            "path": "/software/apps/server/",
+                            "file": "rest-api.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "SignalR",
+                            "path": "/software/apps/server/",
+                            "file": "signal-r.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "TUIO",
+                            "path": "/software/repo/",
+                            "file": "tuio.html",
                             "type": "page"
                         },
                         {
@@ -66,57 +96,6 @@
                             "path": "/software/repo/",
                             "file": "ci.html",
                             "type": "page"
-                        },
-                        {
-                            "name": "Development Documentation",
-                            "path": "/software/repo/",
-                            "file": "dev.html",
-                            "type": "page",
-                            "content":
-                            [
-                                {
-                                    "name": "Requirements Analysis",
-                                    "path": "/software/repo/",
-                                    "file": "requirements.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Sensor Abstraction Layer",
-                                    "path": "/software/repo/",
-                                    "file": "abstraction-layer.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Interaction Observer",
-                                    "path": "/software/repo/",
-                                    "file": "interaction-observer.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "Configuration File",
-                                    "path": "/software/repo/",
-                                    "file": "config-file.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "REST API",
-                                    "path": "/software/apps/server/",
-                                    "file": "rest-api.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "SignalR",
-                                    "path": "/software/apps/server/",
-                                    "file": "signal-r.html",
-                                    "type": "page"
-                                },
-                                {
-                                    "name": "TUIO",
-                                    "path": "/software/repo/",
-                                    "file": "tuio.html",
-                                    "type": "page"
-                                }
-                            ]
                         },
                         {
                             "name": "Version History",
