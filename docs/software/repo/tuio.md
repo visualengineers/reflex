@@ -160,21 +160,6 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Configuration and Monitoring
 
-| Setting (`TuioConfiguration`) | Supported values / default | Description |
-| --- | --- | --- |
-| `ServerAddress` | Default: `127.0.0.1` | Address of the TUIO receiver. |
-| `ServerPort` | Default: `3333` | Receiver port. |
-| `Transport` | `Udp` (`0`, default), `Tcp` (`1`), `WebSocket` (`2`) | Transport protocol. |
-| `Protocol` | `TUIO_VERSION_1_1` (`0`), `TUIO_VERSION_2_0` (`1`, default) | TUIO version. |
-| `Interpretation` | `TouchPoint2DwithPressure` (`0`, default), `Point3D` (`1`) | Encoding of interaction points. |
-| `SessionId` | `Int32` | Session identifier used in point and alive messages. |
-| `SensorWidth`, `SensorHeight` | `Int32` each | Sensor resolution used to compute `dimension`. |
-| `SensorDescription` | `String` | Sensor name included in `source`. |
-
-These defaults are defined by `TuioConfiguration`; saved server settings may override them.
-
-The [TUIO REST endpoints]({{ site.baseurl }}/software/apps/server/rest-api.html#tuio) provide configuration, start/stop and persistence operations. Broadcasting is toggled with `PUT /api/Tuio/ToggleBroadcast`; the current configuration is available through `GET /api/Tuio/GetTuioConfiguration`.
-
-The [SignalR interface]({{ site.baseurl }}/software/apps/server/signal-r.html#list-of-signalr-hubs) exposes `/tuiohub`: `startState` subscribes to the broadcast state and `startPackageDetails` subscribes to package details for monitoring.
+Configuration fields, saved example values, defaults and monitoring endpoints are documented under [TuioSettingValues in the configuration file]({{ site.baseurl }}/software/repo/config-file.html#tuiosettingvalues).
 
 __[⬆ back to top](#table-of-contents)__
