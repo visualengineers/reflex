@@ -8,7 +8,7 @@ title: Requirements Analysis
 ## Table of Contents
 
 1. [Functional Requirements](#functional-requirements)
-2. [Development Tools and Research Support](#development-tools-and-research-support)
+2. [Development Tools](#development-tools)
 3. [Non-Functional Requirements](#non-functional-requirements)
 
 The ReFlex framework evolved through the conception, implementation, and demonstration of [Elastic Display case studies]({{ site.baseurl }}/knowledge/case-studies/overview.html). Each application exposed requirements that existing tools did not yet meet. The tools were extended for that scenario, followed by a consolidation step: reusable functionality was integrated into the main framework, more specific mechanisms were generalized, and application-specific components remained outside the core.
@@ -47,7 +47,7 @@ The main architectural consequence was a clear division of responsibilities: the
 
 **[⬆ back to top](#table-of-contents)**
 
-## Development Tools and Research Support
+## Development Tools
 
 The tools evolved alongside the input representations and architecture. A synthetic depth image suited FlexiWall's shader-based rendering, but was insufficient for applications expecting extracted contact data. Later tools therefore simulated contacts or a point cloud and supported recording and playback.
 
