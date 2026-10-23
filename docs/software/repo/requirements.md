@@ -7,13 +7,10 @@ title: Requirements Analysis
 <!-- omit in toc -->
 ## Table of Contents
 
-1. [Deriving Requirements from Case Studies](#deriving-requirements-from-case-studies)
-2. [Functional Contributions and Consolidation](#functional-contributions-and-consolidation)
-3. [Development Tools and Research Support](#development-tools-and-research-support)
-4. [Non-Functional Requirements](#non-functional-requirements)
-5. [From Requirements to Architecture](#from-requirements-to-architecture)
-
-## Deriving Requirements from Case Studies
+1. [Functional Requirements](#functional-requirements)
+2. [Development Tools and Research Support](#development-tools-and-research-support)
+3. [Non-Functional Requirements](#non-functional-requirements)
+4. [From Requirements to Architecture](#from-requirements-to-architecture)
 
 The ReFlex framework evolved through the conception, implementation, and demonstration of [Elastic Display case studies]({{ site.baseurl }}/knowledge/case-studies/overview.html). Each application exposed requirements that existing tools did not yet meet. The tools were extended for that scenario, followed by a consolidation step: reusable functionality was integrated into the main framework, more specific mechanisms were generalized, and application-specific components remained outside the core.
 
@@ -25,22 +22,21 @@ This process distinguishes three kinds of contribution:
 
 The following figure traces these contributions across the case studies and subsequent research projects. It records the origin of requirements and consolidation decisions rather than the complete feature set of each prototype.
 
-![Requirements derived from the case studies, showing integrated and excluded functionality, non-functional requirements, and developer tools]({{ site.baseurl }}/assets/img/overview/requirement_analysis.png){:.full-width-scheme .transparent-background}
-
-**Figure 7-2:** Requirements derived from experience with the case studies. Blue entries indicate functionality integrated into the framework; grey entries indicate concepts excluded from the core; green entries represent non-functional requirements; orange entries identify development tools.
-
-The figure's label *rejected* concerns inclusion in the core framework. It does not mean that the corresponding concept was never implemented or was unsuitable for an application. Physics simulations, zoomable interfaces, gesture interpretation, and interactive lenses remained useful application components. The figure also groups developments around their motivating scenarios; some functions were integrated or generalized in later iterations.
+![Requirements derived from the case studies, showing integrated and excluded functionality, non-functional requirements, and developer tools. Blue entries indicate functionality integrated into the framework; grey entries indicate concepts excluded from the core; green entries represent non-functional requirements; orange entries identify development tools.]({{ site.baseurl }}/assets/img/overview/requirement_analysis.png){:.full-width-scheme .transparent-background}
 
 **[⬆ back to top](#table-of-contents)**
 
-## Functional Contributions and Consolidation
+## Functional Requirements
 
 The progression began with direct use of surface-wide depth data, added discrete contact detection, and eventually separated tracking from visualization through a distributed architecture. The resulting framework needed to expose both continuous surface representations and individual [interactions]({{ site.baseurl }}/software/repo/interactions.html), with configuration and communication independent of a particular application technology.
 
-| Case study | Functional contribution or requirement | Consolidation and application boundary |
-| ---------- | -------------------------------------- | -------------------------------------- |
-| [DepthTouch]({{ site.baseurl }}/knowledge/case-studies/depthtouch.html) | Calculate a vector field from surface deformation and map sensor coordinates to screen coordinates using three-point calibration. | Both functions were taken up in later framework iterations. The physics simulation remained an application-specific component; the transition to FlexiWall did not directly reuse every DepthTouch feature. |
-| [FlexiWall]({{ site.baseurl }}/knowledge/case-studies/flexiwall.html) | Provide access to the depth image, transform its pixel coordinates between sensor and projection spaces, and map depth values to the relevant interaction range. | Depth-image access and mapping became reusable functions. Pixel-based layer blending and loading layered datasets remained application responsibilities. |
+| Case study | Functional contribution |
+| ---------- | -------------------------------------- |
+| [DepthTouch]({{ site.baseurl }}/knowledge/case-studies/depthtouch.html) | **+** Calculate vector field from surface deformation <br> **+** Three-point calibration to map sensor coordinates to screen coordinates <br><br> **-** physics simulation remained an application-specific |
+| [FlexiWall]({{ site.baseurl }}/knowledge/case-studies/flexiwall.html) | **+** access to depth image <br>  **+** transform depth image coordinates between sensor and projection spaces <br> **+** adjust depth values interaction range <br><br> **-** Pixel-based layer blending was not included in th framework <br> **-** Layer data managebement remained application-specific |
+
+
+
 | [DEEP]({{ site.baseurl }}/knowledge/case-studies/deep.html) | Process the depth-derived point cloud to detect multiple contacts. Generalize surface configuration with an explicit resting plane and minimum-deformation thresholds. Abstract the sensor layer to support Kinect generations 1 and 2. | Detection initially supplied multiple points without persistent identities across frames. Physics simulation and zoomable-interface techniques remained external components. Extended calibration was not retained in the main framework because its limited benefit did not justify the calibration effort. |
 | [Interactive Animations]({{ site.baseurl }}/knowledge/case-studies/interactive-animations.html) | Generalize single-touch detection, add image-based calibration and Intel RealSense support, and automatically initialize the sensor and application configuration at startup. | Exhibition use made stable, unattended operation important. Animation control and navigation gestures stayed in the application layer. |
 | [Zoomable Product Browser]({{ site.baseurl }}/knowledge/case-studies/zoomable-product-browser.html) | Establish the relevance of persistent touch identifiers and multi-touch input for collaboration and complex gestures. | The prototype itself used single-touch detection. Its application context motivated contact continuity as a broader requirement; gesture recognition was not developed as a general core-framework component. |
