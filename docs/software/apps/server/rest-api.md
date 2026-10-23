@@ -146,6 +146,11 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Calibration
 
+- Retrieval of current calibration data
+- Specification of parameters
+- Updating of calibration points
+- Explicit transformation from world to image coordinates
+
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/Calibration/FrameSize` | - | `FrameSizeDefinition` | Returns the current calibration window/frame size. |
@@ -163,6 +168,9 @@ __[⬆ back to top](#table-of-contents)__
 __[⬆ back to top](#table-of-contents)__
 
 ## Tracking
+
+- Start/stop the sensor (including emulator/recorder)
+- Specifying parameters (sensor, resolution)
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
@@ -190,6 +198,9 @@ __[⬆ back to top](#table-of-contents)__
 __[⬆ back to top](#table-of-contents)__
 
 ## Settings
+
+- Access to the central settings of the filter pipeline
+- Loading/saving the configuration
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
@@ -225,6 +236,9 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Processing
 
+- Start/stop the processing component
+- Specifying parameters (type of processing, update rate)
+
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/Processing/GetInterval` | - | `int` | Returns the current update interval in milliseconds. |
@@ -240,6 +254,9 @@ __[⬆ back to top](#table-of-contents)__
 __[⬆ back to top](#table-of-contents)__
 
 ## Network
+
+- Start/stop the transmission component
+- Specify parameters (address, protocol, update rate)
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
@@ -262,6 +279,9 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Tuio
 
+- Start/stop TUIO transmission
+- Specifying parameters (version, encoding, protocol)
+
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/Tuio/IsBroadcasting` | - | `JsonSimpleValue<bool>` | Returns whether TUIO broadcasting is active. Name: `IsBroadcasting`. |
@@ -281,6 +301,9 @@ __[⬆ back to top](#table-of-contents)__
 
 ## DepthImage
 
+- Retrieving the point cloud
+- Retrieving the vector field
+
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/DepthImage/PointCloud` | - | `Point3[]` | Returns the current point cloud or an empty array. |
@@ -289,6 +312,9 @@ __[⬆ back to top](#table-of-contents)__
 __[⬆ back to top](#table-of-contents)__
 
 ## Log
+
+- Retrieving the log (in full / in sections)
+- Sending errors for inclusion in the server log
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
@@ -302,6 +328,8 @@ __[⬆ back to top](#table-of-contents)__
 
 ## VersionInfo
 
+- provide server version and current dependencies
+
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
 | `GET` | `/api/VersionInfo` | - | `AppVersionInfo[]` | Returns the known version information for the application. |
@@ -309,6 +337,8 @@ __[⬆ back to top](#table-of-contents)__
 __[⬆ back to top](#table-of-contents)__
 
 ## RecordRawDepth
+
+- Saving the point cloud to a JSON file (surveying) 
 
 | Method | Route | Request | Response | Description |
 |---|---|---|---|---|
