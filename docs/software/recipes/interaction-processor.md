@@ -4,8 +4,6 @@ title: "ReFlex Library: How to implement an Interaction Processor"
 
 # {{ page.title }}
 
-<img src="{{ site.baseurl }}/assets/img/titles/pointcloud.png" class="content__title-image" alt="title image showing a pointcloud representation of two hands deforming the surface"/>
-
 <!-- omit in toc -->
 ## Table of Contents
 
@@ -22,6 +20,8 @@ title: "ReFlex Library: How to implement an Interaction Processor"
 ## General approach
 
 An **Interaction Processor** implements the analysis stage of the ReFlex processing pipeline: it extracts user interactions from the filtered depth point cloud and, optionally, its vector field. This includes detecting candidates, normalising their depth, classifying extrema, and tracking and smoothing touches across frames. Sensor access, point-cloud filtering, calibration of lateral coordinates and broadcasting to clients belong to other parts of the framework.
+
+![interaction processor class diagram]({{ site.baseurl }}/assets/img/overview/interaction-processors.png){:.full-width-scheme .transparent-background}
 
 The extension point is `IInteractionObserver` in `ReFlex.Core.Interactivity.Interfaces`. The built-in processors derive from `InteractionObserverBase` in `ReFlex.Core.Interactivity.Components`. `InteractionManager` selects one implementation through `ObserverType`, supplies data and settings, calls `Update()` and forwards its events. This is a strategy that can be exchanged without changing the sensor implementation.
 
