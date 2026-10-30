@@ -45,7 +45,7 @@ Three 2D plots show input, the actual separable SOS result and candidates over o
 
 Plot coordinates refer to the transmitted raster. Multiply by `sample_step` to obtain sensor coordinates. Updates run every half second for 60 seconds; interrupt the kernel to stop early or rerun the live cell. Old frames become stale, and a backend restart clears the snapshot.
 
-The backend regression test replays a recorded 640x480 frame containing two pushes and one pull at Skip 0/1/3. Separate gRPC and notebook checks use private test servers. See the README for commands.
+The backend regression test replays a recorded 640x480 frame containing two pushes and one pull at Skip 0/1/3. Separate gRPC and notebook checks use private test servers. These checks also run in the reusable Python/gRPC CI workflow, called by the PR and complete workflows. See [CI workflows]({{ site.baseurl }}/software/repo/ci.html) for triggers and the example README for local commands.
 
 Stop with `docker compose -f examples/grpc-service/compose.yaml down`. Saved notebooks persist; `down --volumes` deletes them.
 

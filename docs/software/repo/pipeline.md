@@ -49,13 +49,16 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Analysis Layer
 
-The analysis phase basically extracts the touch interactions based on the vector field and comprises up to five steps:
+The detecting observers share the template pipeline in `InteractionObserverBase.Update()`. `CheckInitialState()` first validates readiness; `Error` or `Skipped` stops processing without analysis or publication. The remaining stages are:
 
-1. __Pre-processing (*Preparation*)__: In this optional step, the point cloud is converted into a usable format or its resolution is reduced to speed up the calculation. In the current implementation, this step is only relevant when using an external service as part of the analysis.
-2. __Extraction of extreme values (*Analyse*)__: Depending on the selected modality, this step involves calculating either the global extreme value (single-touch) in the point cloud or the local extrema based on the vector field, and assigning confidence values to them (multi-touch, see Section 7.2.3). The iteration of the vector field is optimised through parallelised processing. Additionally, the resolution of the vector field can be reduced by skipping values in order to improve performance. This reduction in resolution affects the accuracy of the user interaction’s position. The risk of outliers being filtered out by this approach is low, as only high-frequency outliers based on signal noise are removed. However, as these have already been largely eliminated by previous filtering, this effect is negligible.
-3. __Normalisation of the depth value (*ConvertDepth*)__: The extracted extreme values contain the world coordinates in the sensor’s coordinate system. In the first step, the depth values are mapped to the configured interaction area. Here, the value 0 corresponds to the normal plane, the value -1 corresponds to the maximum depth when pressing into the surface, and +1 to the maximum deflection when pulling away. The lateral positions remain in the world coordinate system for the time being.
-4. __Classification and validation of extreme values (*ExtremumType*)__: In this step, the type of extreme value is first determined.  When using multi-touch detection, this is followed by a classification to determine whether the event is a user interaction or an implicit extremum. Implicit extrema are then removed.
-5. **Smoothing and Touch-ID Assignment (*S*moothing*)**: Finally, the depth values are (optionally) smoothed and the corresponding Touch-ID is reconstructed.
+1. **Candidate extraction (`Analyze`)**: SingleTouch selects the valid point with the greatest absolute deviation from the zero plane. MultiTouch searches the vector field for local extrema. Remote sends a regularly sampled 2D depth raster to the Python gRPC service, which applies spatial SOS filtering and returns geometric candidates. Remote preparation preserves missing positions and request-local sampling geometry; see the [gRPC recipe]({{ site.baseurl }}/software/recipes/grpc-service.html).
+2. **Depth conversion (`ConvertDepthValue`)**: Reject non-finite values and points within the inclusive `MinDistance` dead zone. Classify absolute depth below `Distance` as Push and above it as Pull, then normalise Z to [-1, 1]. Candidate X/Y are sensor-array indices at this stage, not world coordinates.
+3. **Extremum classification and filtering**: Classify using the original point cloud before smoothing. `Global` uses absolute depth relative to the zero plane; local methods examine neighbouring pixels. Remove undefined and opposite extrema before they enter the history. This stage applies to all detecting observers, including Remote and SingleTouch.
+4. **History and smoothing (`ComputeSmoothingValue`)**: Associate touch IDs and update temporal history and smoothing. Earlier touch IDs may remain in the history.
+5. **Output selection (`SelectSmoothedInteractions`)**: The default keeps all smoothed points. SingleTouch selects at most one: the most recent point, with the highest touch ID on timestamp ties. This selection leaves the history unchanged.
+6. **Confidence and publication**: Keep selected points with `Confidence > MinConfidence`, then publish `NewInteractions` exactly once for a successful update, including an empty result. In SingleTouch, a selected point that fails confidence is not replaced by an older point. Remote candidates can require several frames to build sufficient confidence.
+
+The [interaction-processor recipe]({{ site.baseurl }}/software/recipes/interaction-processor.html) describes the hooks and extension contract.
 
 Before the interaction points are finally transmitted, the lateral coordinates are converted from the sensor coordinate system to the projection coordinate system on the basis of the available calibration data. These are then converted into normalised coordinates. The transmitted 3D points are normalised to the range [0, 1] for the X and Y components and [-1, 1] for the Z component.
 
@@ -74,6 +77,8 @@ __[⬆ back to top](#table-of-contents)__
 ## Performance and Stability
 
 Perfomance and stability of the processing pipeline have beeen validated in real-world use of the framework. During a public demonstration in June 2025, measurements of the duration of the individual processing steps were carried out continuously throughout the entire duration of over 6 hours.
+
+These measurements predate the shared observer pipeline and the spatial gRPC implementation. They do not benchmark the current changes; measurement boundaries may differ.
 
 Version 0.9.9 of the framework was used. The following hardware components were utilised:
 

@@ -82,7 +82,8 @@ The template method `Update()` executes the following sequence:
 3. Call `ConvertDepthValue()` to normalise depth and assign Push/Pull.
 4. Classify with `ComputeExtremumType()` and remove implicit extrema with `RemoveExtremumsBetweenTouches()`.
 5. Update touch IDs, history and smoothing through `ComputeSmoothingValue()`.
-6. Apply `ApplyConfidenceFilter()`, report performance data and publish the accepted interactions through `OnNewInteractions()`.
+6. Call `SelectSmoothedInteractions()` to select the output without changing the history. The default retains all points; `SingleInteractionObserver` selects the most recent point, breaking timestamp ties by highest touch ID.
+7. Apply `ApplyConfidenceFilter()`, report performance data and publish the accepted interactions through `OnNewInteractions()`.
 
 | Hook / helper | Behaviour and usage |
 | ------------- | ------------------- |
@@ -92,13 +93,14 @@ The template method `Update()` executes the following sequence:
 | `ComputeExtremumType(...)` | Classifies extrema using the point cloud and configured fixed or stochastic samples. The single-point overload is `protected virtual`; the list overload assigns each interaction's description. `Global` skips neighbourhood sampling and compares absolute sensor depth with `Distance`: below is Minimum, above is Maximum, equal or non-finite is Undefined. |
 | `RemoveExtremumsBetweenTouches(...)` | Retains negative-depth minima and positive-depth maxima, removing undefined and opposite extrema. Called automatically after classification. `Global` follows the same Minimum/Maximum depth convention but does not validate the local neighbourhood. |
 | `ComputeSmoothingValue(IList<Interaction>)` | Updates `InteractionSmoothingBehaviour`, reconstructs IDs, applies smoothing and raises `InteractionHistoryUpdated`. Returns an `InteractionFrame`; the current implementation considers at most 20 input candidates. The template calls it for empty candidate lists as well, allowing history to expire. |
-| `ApplyConfidenceFilter(...)` | Retains interactions with `Confidence > MinConfidence` (strictly greater). Called automatically after history/smoothing. |
+| `SelectSmoothedInteractions(IEnumerable<Interaction>)` | Virtual output-selection hook after smoothing. The base implementation retains all points. SingleTouch selects at most one before confidence filtering; rejected selections are not replaced by an older candidate. History remains intact. |
+| `ApplyConfidenceFilter(...)` | Retains interactions with `Confidence > MinConfidence` (strictly greater). Called automatically after selection of the smoothed output. |
 | `UpdateInteractionFrames(...)` | Optional helper to decrease confidence for missing touches, remove exhausted touches from the supplied frame and update the history cache/event. The shared `Update()` does not call it. |
 | `OnNewInteractions(List<Interaction>)` | Raises the inherited `NewInteractions` event. The template calls it once per successfully processed frame, including when the accepted list is empty. |
 | `CalculateAverageDistance()` | Averages valid, unfiltered Z values and rounds to two decimal places. Ensure at least one valid, unfiltered point exists before using it for calibration. |
 | `UpdateFrameId(int)`, `UpdatePerformanceMetrics(...)` | Associate profiling data with the frame and raise `PerformanceDataUpdated`. The template measures stage durations when `MeasurePerformance` is enabled. |
 
-`SelectSmoothedInteractions()` is a virtual selection hook between smoothing and confidence filtering; by default it retains all interactions. `Update()`, `CheckInitialState()` and the single-point `ComputeExtremumType()` are virtual; the other processing helpers above are non-virtual. Most alternatives only implement `Analyze()` and readiness checks. For a different classifier, override the single-point overload. Only override `Update()` when the shared processing sequence itself must change, and preserve history updates, performance reporting and event publication explicitly in that case.
+`SelectSmoothedInteractions()`, `Update()`, `CheckInitialState()` and the single-point `ComputeExtremumType()` are virtual. `Analyze()` is abstract; the remaining processing helpers above are non-virtual. Most alternatives only implement `Analyze()` and readiness checks. For a different classifier, override the single-point overload. Only override `Update()` when the shared processing sequence itself must change, and preserve history updates, performance reporting and event publication explicitly in that case.
 
 **Configuration detail:** The current setters of `NumSmoothingFrames` and `MaxNumEmptyFramesBetween` forward at least the history length to the smoothing behaviour, even if a smaller value was requested. A value of zero therefore does not reliably disable smoothing through that setter. Use `FilterType.None` to disable the smoothing filter, and verify disappearance timing with the actual history settings. Set `MaxConfidence` explicitly; do not rely on all observer defaults being propagated to the internal smoothing behaviour at construction time.
 
@@ -107,6 +109,8 @@ __[⬆ back to top](#table-of-contents)__
 ## Step 1: Define the detection strategy
 
 The example below implements `CentralInteractionObserver`: an alternative that searches only the central half of each image axis. It ignores invalid/filtered points and returns at most one candidate with the largest deformation in that region. It reuses the complete base pipeline, including local-extremum validation and history. Previously detected touch IDs can remain temporarily in the output according to the history settings. This strategy is useful when an application deliberately limits input to a central area.
+
+This example derives directly from `InteractionObserverBase`, so it retains the default unrestricted output selection. To guarantee at most one published point as in the built-in `SingleInteractionObserver`, also override `SelectSmoothedInteractions()` with the same timestamp/touch-ID selection. Setting `Type` alone does not impose this limit.
 
 The strategy reuses `ObserverType.SingleTouch` and replaces that strategy in the manager in Step 3. This keeps the example usable without changing the enum or client configuration. To offer both implementations independently, follow the additional registration instructions below.
 

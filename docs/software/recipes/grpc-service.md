@@ -81,7 +81,7 @@ Use the request's captured geometry, not mutable current settings. Validate boun
 
 `RemoteInteractionProcessor` passes its configured `Distance` as ZeroPlane. Before normalisation it discards candidates within `MinDistance` of that plane and classifies lower absolute depth as Push, higher depth as Pull. Normalisation and spatial classification precede smoothing, as in `MultiInteractionObserver`. Classification therefore uses the measured position rather than a position shifted by smoothing; the resulting extremum description is retained in the interaction history. Extremum-check settings persist when switching processors.
 
-All detecting observers now inherit the same `Update()` pipeline: analysis, depth conversion, extremum classification, removal of intermediate extrema, smoothing, confidence filtering and publication. Remote candidates must therefore exceed `MinConfidence` before publication; repeated observations accumulate confidence, so a new touch can take several frames to appear. Rejected intermediate extrema never enter the history. The notebook still shows the Python candidates before these ReFlex filters. SingleTouch extracts one candidate per frame and limits the smoothed output to the most recent interaction (highest touch ID on timestamp ties) before confidence filtering. Tracking history remains intact.
+All detecting observers now inherit the same `Update()` pipeline: analysis, depth conversion, extremum classification, removal of intermediate extrema, smoothing, output selection, confidence filtering and publication. Remote candidates must therefore exceed `MinConfidence` before publication; repeated observations accumulate confidence, so a new touch can take several frames to appear. Rejected intermediate extrema never enter the history. The notebook still shows the Python candidates before these ReFlex filters. SingleTouch extracts one candidate per frame and limits the smoothed output to the most recent interaction (highest touch ID on timestamp ties) before confidence filtering. Tracking history remains intact.
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -153,6 +153,8 @@ dotnet test test/Library/InteractionTests/InteractionTests.csproj -c CI
 {% endhighlight %}
 
 The Python tests cover the capture, SOS stability, missing data, plateaus, saddles, short rasters and invalid requests. gRPC tests use a private listener to check version negotiation, snapshots and recovery after invalid requests. Notebook tests run demo and observe against a private test server; they never submit synthetic data to the live sensor service. C# tests cover sampling/reconstruction, non-divisible resolutions, request-local geometry, invalid responses, source-pointcloud preservation, reclassification and the dead zone.
+
+The reusable `python-grpc-test.yml` CI workflow builds the notebook Docker target and runs extraction, gRPC and both notebook modes as separate steps. It is called for PRs targeting `main`, the manual complete workflow and the complete workflow on pushes to `main`. The latter requires this job to succeed before deploying Pages. The .NET solution tests include the C# regression tests and run in `CI/x64`; TRX results are uploaded even after test failures. See [CI workflows]({{ site.baseurl }}/software/repo/ci.html) for triggers and report details.
 
 | Manual check | Expected result |
 | --- | --- |
