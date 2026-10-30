@@ -119,7 +119,7 @@ MIReFlex explored using an Elastic Display to position spatial audio sources wit
 
 The installation combined an Elastic Display tabletop with a **270° surrounding projection**. The implementation used a distributed multiplayer application in Unreal Engine 5, with different roles assigning the views and rendering paths for the surrounding environment and the tabletop. Content was synchronized between the two systems.
 
-The Elastic Display was integrated through the [Unreal Engine plugin]({{ site.baseurl }}/software/templates/ue.md) developed as part of ReFlex.
+The Elastic Display was integrated through the [Unreal Engine plugin]({{ site.baseurl }}/software/templates/ue.html) developed as part of ReFlex.
 
 ### Scenario
 
