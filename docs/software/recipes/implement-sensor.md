@@ -36,6 +36,8 @@ __[⬆ back to top](#table-of-contents)__
 
 ## The `IDepthCamera` Interface
 
+![IDepthCamera interface and related classes]({{ site.baseurl }}/assets/img/overview/class-diagram_idepthcamera.png){:.full-width-scheme .transparent-background}
+
 | Method / Property                       | Description                                                                                               |
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | Id                                      | unique identifier, used to select the sensor. (`string`, readonly)                                        |
