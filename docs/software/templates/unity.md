@@ -9,7 +9,6 @@
 4. [Receiving interactions in a custom scene](#receiving-interactions-in-a-custom-scene)
 5. [Visualization and status overlay](#visualization-and-status-overlay)
 6. [Updating the ReFlex library](#updating-the-reflex-library)
-7. [Implementation notes](#implementation-notes)
 
 ## Basic example
 
@@ -173,12 +172,3 @@ When adding other ReFlex libraries, verify that they and their dependencies supp
 
 __[⬆ back to top](#table-of-contents)__
 
-## Implementation notes
-
-The template is a minimal integration example. The following details in the supplied scripts affect runtime behavior:
-
-* `WebSocketClient.Update()` increments `_idleCount` and resets the local state after **Num Frames Idle** (default `100`) is exceeded. The counter is not reset when messages arrive, so after this threshold the component repeatedly sets `IsConnected` to `false` and clears the interaction cache even if messages continue to arrive. This reset does not close the socket or emit a connection-state event. Correct the idle tracking when adapting the example.
-* Error and close handlers start reconnection coroutines directly from websocket callbacks. When adapting connection handling, also dispatch Unity operations such as `StartCoroutine` to the main thread.
-* The sample overlay expects an `ExtremumDescription` for its type-specific visuals. Although it includes a fallback visual, `DisplayInteractionElementBehaviour.SetValues` still accesses `ExtremumDescription.Type` afterwards; add a null guard if clients must handle payloads without that field.
-
-__[⬆ back to top](#table-of-contents)__
