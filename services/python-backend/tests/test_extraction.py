@@ -156,6 +156,36 @@ class ExtractionTest(unittest.TestCase):
         y,x = np.mgrid[-30:31,-30:31]; raw = (x*x-y*y).astype(float)
         self.assertFalse(any(index == 30*61+30 for _,index,_ in extract_extrema(raw,raw,np.isfinite(raw),1)))
 
+    def test_isolated_extrema_and_plateau_ties_keep_the_same_coordinates(self):
+        shapes = (
+            ([(20, 20)], (20, 20)),
+            ([(29, 29), (30, 30)], (29, 29)),  # Diagonal pixels form one 8-connected plateau.
+            ([(29, 29), (29, 30), (30, 29)], (29, 29)),
+            ([(y, x) for y in range(29, 31) for x in range(28, 32)], (29, 29)),
+        )
+        for coordinates, expected in shapes:
+            with self.subTest(coordinates=coordinates):
+                raw = np.ones((61, 61))
+                for y, x in coordinates:
+                    raw[y, x] = .8
+                candidates = extract_extrema(raw, raw, np.isfinite(raw), 1)
+                self.assertEqual(candidates, [(messages.MINIMUM, expected[0]*61+expected[1], .8)])
+        raw = np.ones((61, 61))
+        raw[15, 15] = .8
+        raw[45, 45] = .7
+        self.assertEqual(extract_extrema(raw, raw, np.isfinite(raw), 1),
+                         [(messages.MINIMUM, 15*61+15, .8), (messages.MINIMUM, 45*61+45, .7)])
+
+    def test_parallel_extrema_match_known_peaks_for_multiple_memory_layouts(self):
+        raw = np.ones((257, 259))
+        raw[70, 60] = .8
+        raw[180, 190] = 1.2
+        expected = [(messages.MINIMUM, 70*259+60, .8), (messages.MAXIMUM, 180*259+190, 1.2)]
+        for filtered in (raw.copy(order='C'), raw.copy(order='F'), raw[::-1].copy()[::-1]):
+            with self.subTest(strides=filtered.strides):
+                np.testing.assert_array_equal(filtered, raw)
+                self.assertEqual(extract_extrema(raw, filtered, np.isfinite(raw), 1), expected)
+
     def test_invalid_requests_and_configuration(self):
         for req in (messages.DepthValues1d(z=[1]*32),
                     messages.DepthValues1d(width=3,height=3,sample_step=1,z=[1]*8),

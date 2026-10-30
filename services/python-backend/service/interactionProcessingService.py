@@ -18,7 +18,7 @@ from generated_services import interactionService_pb2_grpc, interactionTypes_pb2
 PROTOCOL_VERSION = 2
 MIN_CONTRAST = 0.0005
 FILTER_WORKERS = max(1, min(8, int(os.getenv("REFLEX_FILTER_WORKERS", "2"))))
-_FILTER_EXECUTOR = ThreadPoolExecutor(max_workers=FILTER_WORKERS, thread_name_prefix="raster-filter")
+_RASTER_EXECUTOR = ThreadPoolExecutor(max_workers=FILTER_WORKERS, thread_name_prefix="raster-filter")
 
 
 def reconstruct_raster(request):
@@ -65,66 +65,102 @@ def filter_raster(data, cutoff, factor, sample_step):
     # Split perpendicular to the filtered axis: each complete signal keeps its
     # original padding, initial conditions and forward/backward arithmetic.
     rows = np.array_split(data, FILTER_WORKERS, axis=0)
-    result = np.concatenate(list(_FILTER_EXECUTOR.map(
+    result = np.concatenate(list(_RASTER_EXECUTOR.map(
         lambda block: sosfiltfilt(sos, block, axis=1, padlen=x_pad), rows)), axis=0)
     columns = np.array_split(result, FILTER_WORKERS, axis=1)
-    filtered = _FILTER_EXECUTOR.map(
+    filtered = _RASTER_EXECUTOR.map(
         lambda block: sosfiltfilt(sos, np.ascontiguousarray(block.T), axis=1, padlen=y_pad).T,
         columns)
     return np.concatenate(list(filtered), axis=1)
 
 
-def extract_extrema(raw, filtered, valid, sample_step):
-    radius = max(1, math.ceil(10 / sample_step))
-    height, width = raw.shape
-    found = {}
-    for kind, operator in ((messages.MINIMUM, ndimage.minimum_filter),
-                           (messages.MAXIMUM, ndimage.maximum_filter)):
-        mask = filtered == operator(filtered, size=2 * radius + 1, mode="nearest")
-        mask[[0, -1], :] = False
-        mask[:, [0, -1]] = False
-        labels, _ = ndimage.label(mask, structure=np.ones((3, 3)))
-        for label_id, region in enumerate(ndimage.find_objects(labels), 1):
-            if region is None:
-                continue
-            if region[0].stop - region[0].start == 1 and region[1].stop - region[1].start == 1:
-                y, x = region[0].start, region[1].start
+def candidate_positions(mask):
+    """Row-major representatives with the original 8-connected plateau semantics.
+
+    Sparse isolated pixels need no full-raster label/find_objects passes. Dense
+    masks and any adjacent pixels use the component path, preserving tie breaks.
+    The mask's outer border must already be cleared.
+    """
+    if np.count_nonzero(mask) <= 4096:
+        ys, xs = np.nonzero(mask)
+        # Four directed offsets cover every undirected pair in an 8-neighbourhood.
+        adjacent = any(mask[ys + dy, xs + dx].any()
+                       for dy, dx in ((1, 0), (0, 1), (1, 1), (1, -1)))
+        if not adjacent:
+            yield from zip(ys, xs)
+            return
+    labels, _ = ndimage.label(mask, structure=np.ones((3, 3)))
+    for label_id, region in enumerate(ndimage.find_objects(labels), 1):
+        if region is None:
+            continue
+        height = region[0].stop - region[0].start
+        width = region[1].stop - region[1].start
+        if height == width == 1:
+            y, x = region[0].start, region[1].start
+        else:
+            local = labels[region] == label_id
+            if local.all():
+                # Full rectangles have an exact centre; ties select the upper/left pixel.
+                y = region[0].start + (height - 1) // 2
+                x = region[1].start + (width - 1) // 2
             else:
-                coords = np.argwhere(labels[region] == label_id)
-                # One plateau representative: closest to its centre, then row-major.
+                coords = np.argwhere(local)
                 centre = coords.mean(axis=0)
                 y, x = coords[np.argmin(np.sum((coords - centre) ** 2, axis=1))]
                 y += region[0].start
                 x += region[1].start
-            y0, y1 = max(0, y-radius), min(height, y+radius+1)
-            x0, x1 = max(0, x-radius), min(width, x+radius+1)
-            patch = raw[y0:y1, x0:x1]
-            patch_valid = valid[y0:y1, x0:x1]
-            values = patch[patch_valid]
-            if not values.size:
-                continue
-            best = values.min() if kind == messages.MINIMUM else values.max()
-            span = values.max() - best if kind == messages.MINIMUM else best - values.min()
-            # Median contrast cannot exceed the range: reject flat patches cheaply.
-            if span < MIN_CONTRAST:
-                continue
-            contrast = np.median(values) - best if kind == messages.MINIMUM else best - np.median(values)
-            if contrast < MIN_CONTRAST:
-                continue
-            choices = np.argwhere(patch_valid & (patch == best))
-            # Refine to original depth, prefer the location nearest the filtered peak.
-            distance = (choices[:, 0] + y0 - y)**2 + (choices[:, 1] + x0 - x)**2
-            ry, rx = choices[np.argmin(distance)] + [y0, x0]
-            if ry == 0 or rx == 0 or ry == height-1 or rx == width-1:
-                continue
-            # Refinement must not turn a saddle/flank into a local extremum.
-            neighbourhood = raw[max(0, ry-radius):ry+radius+1, max(0, rx-radius):rx+radius+1]
-            finite = neighbourhood[np.isfinite(neighbourhood)]
-            if (kind == messages.MINIMUM and best > finite.min()) or (kind == messages.MAXIMUM and best < finite.max()):
-                continue
-            index = int(ry * width + rx)
-            found[(kind, index)] = float(best)
+        yield y, x
+
+
+def _extract_kind(raw, filtered, valid, radius, kind, operator):
+    height, width = raw.shape
+    found = {}
+    mask = np.equal(filtered, operator(filtered, size=2 * radius + 1, mode="nearest"), order="C")
+    mask[[0, -1], :] = False
+    mask[:, [0, -1]] = False
+    for y, x in candidate_positions(mask):
+        y0, y1 = max(0, y-radius), min(height, y+radius+1)
+        x0, x1 = max(0, x-radius), min(width, x+radius+1)
+        patch = raw[y0:y1, x0:x1]
+        patch_valid = valid[y0:y1, x0:x1]
+        values = patch[patch_valid]
+        if not values.size:
+            continue
+        best = values.min() if kind == messages.MINIMUM else values.max()
+        span = values.max() - best if kind == messages.MINIMUM else best - values.min()
+        # Median contrast cannot exceed the range: reject flat patches cheaply.
+        if span < MIN_CONTRAST:
+            continue
+        contrast = np.median(values) - best if kind == messages.MINIMUM else best - np.median(values)
+        if contrast < MIN_CONTRAST:
+            continue
+        choices = np.argwhere(patch_valid & (patch == best))
+        # Refine to original depth, prefer the location nearest the filtered peak.
+        distance = (choices[:, 0] + y0 - y)**2 + (choices[:, 1] + x0 - x)**2
+        ry, rx = choices[np.argmin(distance)] + [y0, x0]
+        if ry == 0 or rx == 0 or ry == height-1 or rx == width-1:
+            continue
+        # Refinement must not turn a saddle/flank into a local extremum.
+        neighbourhood = raw[max(0, ry-radius):ry+radius+1, max(0, rx-radius):rx+radius+1]
+        finite = neighbourhood[np.isfinite(neighbourhood)]
+        if (kind == messages.MINIMUM and best > finite.min()) or (kind == messages.MAXIMUM and best < finite.max()):
+            continue
+        index = int(ry * width + rx)
+        found[(kind, index)] = float(best)
     return [(kind, index, found[(kind, index)]) for kind, index in sorted(found)]
+
+
+def extract_extrema(raw, filtered, valid, sample_step):
+    radius = max(1, math.ceil(10 / sample_step))
+    kinds = ((messages.MINIMUM, ndimage.minimum_filter),
+             (messages.MAXIMUM, ndimage.maximum_filter))
+    if FILTER_WORKERS > 1 and raw.size >= 65536:
+        # Reuse the raster pool after filtering has completed; no extra worker pool.
+        jobs = [_RASTER_EXECUTOR.submit(_extract_kind, raw, filtered, valid, radius, kind, operator)
+                for kind, operator in kinds]
+        return sorted(candidate for job in jobs for candidate in job.result())
+    return sorted(candidate for kind, operator in kinds
+                  for candidate in _extract_kind(raw, filtered, valid, radius, kind, operator))
 
 
 class InteractionProcessingServicer(interactionService_pb2_grpc.InteractionProcessingServicer):

@@ -84,6 +84,12 @@ valid interior samples. Entirely missing rasters return an empty result.
 Single-pixel extrema avoid plateau-coordinate/centroid allocations; regions whose
 original-depth range is below the contrast threshold are discarded before computing
 the median. Plateaus retain the previous representative and tie-breaking rules.
+Sparse masks with at most 4096 candidate pixels skip full-raster component labelling
+when no pixels are 8-connected neighbours. Connected or dense masks use the
+component path; full rectangular plateaus compute their centre directly. Candidate
+masks use contiguous row-major storage. Large rasters run minimum and maximum
+extraction independently in the same reusable worker pool used by the filter;
+small rasters keep the serial path. Results remain sorted by kind and raster index.
 Butterworth SOS coefficients are cached for up to 32 combinations of cutoff,
 factor and sample step; filter order, precision, padding and forward/backward
 filtering remain unchanged.
