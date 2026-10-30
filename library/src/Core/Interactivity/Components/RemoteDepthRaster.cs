@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 
@@ -14,6 +16,7 @@ public sealed class RemoteDepthRaster
     public int Height { get; }
     public int SampleStep { get; }
     public IReadOnlyList<float> Depths { get; }
+    private readonly float[] _depths;
 
     public RemoteDepthRaster(PointCloud3 cloud, int skip, bool completeDataSet)
     {
@@ -34,7 +37,19 @@ public sealed class RemoteDepthRaster
             values[y * Width + x] = point != null && float.IsFinite(point.Z) &&
                 (completeDataSet || (point.IsValid && !point.IsFiltered)) ? point.Z : float.NaN;
         }
+        _depths = values;
         Depths = Array.AsReadOnly(values);
+    }
+
+    /// <summary>Own row-major IEEE754 float32 payload; NaN keeps its missing-sample meaning.</summary>
+    public byte[] ToLittleEndianBytes()
+    {
+        if (BitConverter.IsLittleEndian)
+            return MemoryMarshal.AsBytes(_depths.AsSpan()).ToArray();
+        var bytes = new byte[checked(_depths.Length * sizeof(float))];
+        for (var index = 0; index < _depths.Length; index++)
+            BinaryPrimitives.WriteSingleLittleEndian(bytes.AsSpan(index * sizeof(float), sizeof(float)), _depths[index]);
+        return bytes;
     }
 
     public bool TryGetSensorIndex(int index, out int sensorIndex)

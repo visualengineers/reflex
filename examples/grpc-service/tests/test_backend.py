@@ -80,6 +80,19 @@ class BackendTest(unittest.TestCase):
         reply = self.client.ComputeInteractions(messages.DepthValues1d(z=[1]*9,width=3,height=3,sample_step=1),timeout=3)
         self.assertEqual(len(reply.interactions),0)
 
+    def test_byte_payload_is_advertised_and_published_in_snapshot(self):
+        state = self.client.GetState(messages.StateRequest(), timeout=3)
+        self.assertTrue(state.supports_float32_payload)
+        raw = np.ones((20, 30), dtype='<f4')
+        raw[0, 0] = np.nan
+        req = messages.DepthValues1d(width=30, height=20, sample_step=1,
+            zero_plane=1, z_float32_le=raw.tobytes())
+        reply = self.client.ComputeInteractions(req, timeout=3)
+        snapshot = self.wait_snapshot(reply.frame_id)
+        self.assertIsNone(snapshot['raw'][0])
+        self.assertEqual(snapshot['raw'][1:], [1]*599)
+        self.assertEqual(len(snapshot['filtered']), 600)
+
     def test_timing_history_and_client_report(self):
         baseline = self.client.GetTimings(messages.TimingRequest(), timeout=3)
         self.assertEqual(baseline.latest_sequence, 0)

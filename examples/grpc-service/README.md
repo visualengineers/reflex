@@ -56,6 +56,16 @@ is `backend:50051`, while the host endpoint is `http://localhost:50051`.
 
 ## Raster and candidates
 
+`GetState.supports_float32_payload` advertises the optional `z_float32_le` byte
+payload. New clients send row-major IEEE754 float32 in little-endian order (four
+bytes per sample); older servers continue to receive repeated `z` values. Exactly
+one representation must be supplied, with NaN retaining its missing-sample meaning.
+The backend validates byte length and reconstructs a NumPy float64 raster directly
+from the binary buffer, preserving the previous processing precision.
+
+The demo defaults to 640 × 480; change `DEMO_WIDTH` / `DEMO_HEIGHT` in the notebook
+to compare other resolutions. It uses the negotiated payload format too.
+
 `NumSkipValues + 1` is the sample step **on both axes**; Skip=1 retains approximately
 one quarter of the points. The request supplies transmitted `width`, `height`,
 `sample_step`, `zero_plane` and row-major `z` values. Dimensions round up when the
@@ -70,6 +80,13 @@ minima/maxima, and refines candidates against original neighbouring depths. A
 minimum contrast of 0.0005 rejects ringing on originally flat regions. The search
 radius is ten sensor pixels, adjusted for sample step. Returned positions must be
 valid interior samples. Entirely missing rasters return an empty result.
+
+Single-pixel extrema avoid plateau-coordinate/centroid allocations; regions whose
+original-depth range is below the contrast threshold are discarded before computing
+the median. Plateaus retain the previous representative and tie-breaking rules.
+Butterworth SOS coefficients are cached for up to 32 combinations of cutoff,
+factor and sample step; filter order, precision, padding and forward/backward
+filtering remain unchanged.
 
 Effective filter sampling rate is `Factor/sample_step`; require
 `0 < CutOff < Factor/(2*sample_step)`. Both raster dimensions must be at least three.

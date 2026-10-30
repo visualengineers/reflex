@@ -2,6 +2,7 @@ import hashlib
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 import grpc
 import numpy as np
@@ -10,6 +11,7 @@ from generated_services import interactionTypes_pb2 as messages
 from service.interactionProcessingService import (
     InteractionProcessingServicer, extract_extrema, filter_raster, fill_missing,
     MIN_CONTRAST,
+    reconstruct_raster, filter_coefficients,
 )
 
 
@@ -32,6 +34,55 @@ class ExtractionTest(unittest.TestCase):
     def setUp(self):
         self.processor = InteractionProcessingServicer()
 
+    def test_byte_payload_matches_repeated_float_frames(self):
+        y, x = np.mgrid[:60, :80]
+        raw = (1.45 - .1*np.exp(-((x-35)**2+(y-30)**2)/100)).astype('<f4')
+        for missing in (False, True):
+            for step in (1, 2, 4):
+                with self.subTest(missing=missing, step=step):
+                    frame = raw[::step, ::step].copy()
+                    if missing:
+                        frame[0, 0] = np.nan
+                        frame[-1, -1] = np.inf
+                    legacy = request(frame, step)
+                    binary = messages.DepthValues1d(width=frame.shape[1], height=frame.shape[0],
+                        sample_step=step, zero_plane=1.45, z_float32_le=frame.astype('<f4').tobytes())
+                    for actual, expected in zip(reconstruct_raster(binary), reconstruct_raster(legacy)):
+                        np.testing.assert_array_equal(actual, expected)
+                    a = self.processor.ComputeInteractions(legacy, Context())
+                    filtered = self.processor.filtered.copy()
+                    b = self.processor.ComputeInteractions(binary, Context())
+                    self.assertEqual([(i.point_idx, i.z, i.extremum_kind) for i in a.interactions],
+                                     [(i.point_idx, i.z, i.extremum_kind) for i in b.interactions])
+                    np.testing.assert_array_equal(self.processor.filtered, filtered)
+        missing = np.full((10, 10), np.nan, dtype='<f4')
+        reply = self.processor.ComputeInteractions(messages.DepthValues1d(width=10, height=10,
+            sample_step=1, z_float32_le=missing.tobytes()), Context())
+        self.assertEqual(len(reply.interactions), 0)
+
+    def test_invalid_and_ambiguous_byte_payloads_are_rejected(self):
+        for payload, depths in ((b'\x00', []), (b'\x00'*32, []), (b'\x00'*40, []),
+                                (b'\x00'*36, [1]*9)):
+            with self.subTest(length=len(payload), mixed=bool(depths)):
+                with self.assertRaises(InvalidRequest):
+                    self.processor.ComputeInteractions(messages.DepthValues1d(width=3, height=3,
+                        sample_step=1, z_float32_le=payload, z=depths), Context())
+
+    def test_coefficients_are_reused_and_keyed_by_all_settings(self):
+        from scipy.signal import butter
+        filter_coefficients.cache_clear()
+        try:
+            with patch('service.interactionProcessingService.butter', wraps=butter) as design:
+                data = np.ones((30, 40))
+                first = filter_raster(data, 2, 100, 1)
+                np.testing.assert_array_equal(filter_raster(data, 2, 100, 1), first)
+                self.assertEqual(design.call_count, 1)
+                for cutoff, factor, step in ((3, 100, 1), (2, 120, 1), (2, 100, 2)):
+                    filter_raster(data, cutoff, factor, step)
+                self.assertEqual(design.call_count, 4)
+        finally:
+            filter_coefficients.cache_clear()
+
     def test_recorded_frame(self):
         path = Path(__file__).parent / 'fixtures/three-deformations.csv'
         metadata = json.loads(path.with_suffix('.json').read_text())
@@ -42,6 +93,13 @@ class ExtractionTest(unittest.TestCase):
             with self.subTest(step=step):
                 raw = full[::step, ::step]
                 reply = self.processor.ComputeInteractions(request(raw, step), Context())
+                expected_filtered = self.processor.filtered.copy()
+                binary_reply = self.processor.ComputeInteractions(messages.DepthValues1d(
+                    width=raw.shape[1], height=raw.shape[0], sample_step=step, zero_plane=1.45,
+                    z_float32_le=raw.astype('<f4').tobytes()), Context())
+                self.assertEqual([(i.point_idx, i.z, i.extremum_kind) for i in reply.interactions],
+                                 [(i.point_idx, i.z, i.extremum_kind) for i in binary_reply.interactions])
+                np.testing.assert_array_equal(self.processor.filtered, expected_filtered)
                 coords = [(i, (i.point_idx % raw.shape[1])*step, (i.point_idx // raw.shape[1])*step)
                           for i in reply.interactions]
                 for expected in metadata['expected']:

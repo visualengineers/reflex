@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Google.Protobuf;
 using Grpc.Net.Client;
 using NLog;
 using ReFlex.Core.Common.Components;
@@ -20,6 +21,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
     private InteractionProcessing.InteractionProcessingClient? _client;
     private GrpcChannel? _channel;
+    private bool _supportsFloat32Payload;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
     private readonly IEventAggregator? _eventAggregator;
@@ -78,6 +80,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             if (status.ProtocolVersion != 2)
                 throw new InvalidOperationException($"Remote processor protocol {status.ProtocolVersion} is incompatible; expected version 2 (2D raster). Update the Python backend.");
             if (!status.IsReady) throw new InvalidOperationException("Remote processor is not ready.");
+            _supportsFloat32Payload = status.SupportsFloat32Payload;
             var configured = await _client.ConfigureAsync(new ConfigRequest
             {
                 Cutoff = (float)_config.CutOff, Factor = (float)_config.Factor
@@ -116,6 +119,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsConnected = false;
             IsBusy = false;
             _client = null;
+            _supportsFloat32Payload = false;
             _channel?.Dispose();
         }
 
@@ -156,7 +160,10 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 Width = raster.Width, Height = raster.Height, SampleStep = raster.SampleStep,
                 ZeroPlane = zeroPlane
             };
-            values.Z.AddRange(raster.Depths);
+            if (_supportsFloat32Payload)
+                values.ZFloat32Le = ByteString.CopyFrom(raster.ToLittleEndianBytes());
+            else
+                values.Z.AddRange(raster.Depths);
 
 
             if (timer != null)

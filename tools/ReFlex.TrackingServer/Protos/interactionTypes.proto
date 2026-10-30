@@ -34,6 +34,7 @@ message DepthValues1d {
   int32 width = 5;                   // transmitted raster width
   int32 height = 6;                  // transmitted raster height
   int32 sample_step = 7;             // original sensor pixels per sample, on both axes
+  bytes z_float32_le = 8;           // optional row-major IEEE754 float32, little-endian; mutually exclusive with z
 }
 
 enum InteractionType {
@@ -71,6 +72,7 @@ message StateResponse {
   bool isReady = 1;
   int32 frame_id = 2;
   int32 protocol_version = 3;         // version 2 requires a regular 2D raster
+  bool supports_float32_payload = 4; // capability; older protocol-v2 peers use repeated z
 }
 
 message SaveRequest {

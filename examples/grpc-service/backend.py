@@ -16,7 +16,7 @@ import numpy as np
 
 from generated_services import interactionService_pb2_grpc as rpc
 from generated_services import interactionTypes_pb2 as messages
-from service.interactionProcessingService import InteractionProcessingServicer
+from service.interactionProcessingService import InteractionProcessingServicer, reconstruct_raster
 
 MAX_MESSAGE_LENGTH = 8 * 1024 * 1024
 OPTIONS = [("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
@@ -26,6 +26,7 @@ OPTIONS = [("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
 def write_snapshot(path, payload):
     """Runs only in the snapshot process, including all JSON/list construction."""
     request, response, filtered, config, received_at = payload
+    raw, _ = reconstruct_raster(request)
     snapshot = {
         "frame_id": response.frame_id,
         "received_at": received_at,
@@ -33,7 +34,7 @@ def write_snapshot(path, payload):
         "width": request.width, "height": request.height,
         "sample_step": request.sample_step, "zero_plane": request.zero_plane,
         "timings_ms": dict(response.timing.milliseconds),
-        "raw": [float(v) if np.isfinite(v) else None for v in request.z],
+        "raw": [float(v) if np.isfinite(v) else None for v in raw.ravel()],
         "filtered": [float(v) if np.isfinite(v) else None for v in filtered.ravel()],
         "interactions": [
             {"point_idx": i.point_idx, "z": i.z, "touch_id": i.touch_id,

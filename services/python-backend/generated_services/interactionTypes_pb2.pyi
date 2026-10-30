@@ -27,7 +27,7 @@ class ConfigResponse(_message.Message):
     def __init__(self, success: bool = ...) -> None: ...
 
 class DepthValues1d(_message.Message):
-    __slots__ = ["height", "max_depth", "min_depth", "sample_step", "width", "z", "zero_plane"]
+    __slots__ = ["height", "max_depth", "min_depth", "sample_step", "width", "z", "z_float32_le", "zero_plane"]
     HEIGHT_FIELD_NUMBER: _ClassVar[int]
     MAX_DEPTH_FIELD_NUMBER: _ClassVar[int]
     MIN_DEPTH_FIELD_NUMBER: _ClassVar[int]
@@ -35,14 +35,16 @@ class DepthValues1d(_message.Message):
     WIDTH_FIELD_NUMBER: _ClassVar[int]
     ZERO_PLANE_FIELD_NUMBER: _ClassVar[int]
     Z_FIELD_NUMBER: _ClassVar[int]
+    Z_FLOAT32_LE_FIELD_NUMBER: _ClassVar[int]
     height: int
     max_depth: float
     min_depth: float
     sample_step: int
     width: int
     z: _containers.RepeatedScalarFieldContainer[float]
+    z_float32_le: bytes
     zero_plane: float
-    def __init__(self, zero_plane: _Optional[float] = ..., min_depth: _Optional[float] = ..., max_depth: _Optional[float] = ..., z: _Optional[_Iterable[float]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., sample_step: _Optional[int] = ...) -> None: ...
+    def __init__(self, zero_plane: _Optional[float] = ..., min_depth: _Optional[float] = ..., max_depth: _Optional[float] = ..., z: _Optional[_Iterable[float]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., sample_step: _Optional[int] = ..., z_float32_le: _Optional[bytes] = ...) -> None: ...
 
 class Interaction(_message.Message):
     __slots__ = ["extremum_kind", "point_idx", "time", "touch_id", "type", "z"]
@@ -121,14 +123,16 @@ class StateRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class StateResponse(_message.Message):
-    __slots__ = ["frame_id", "isReady", "protocol_version"]
+    __slots__ = ["frame_id", "isReady", "protocol_version", "supports_float32_payload"]
     FRAME_ID_FIELD_NUMBER: _ClassVar[int]
     ISREADY_FIELD_NUMBER: _ClassVar[int]
     PROTOCOL_VERSION_FIELD_NUMBER: _ClassVar[int]
+    SUPPORTS_FLOAT32_PAYLOAD_FIELD_NUMBER: _ClassVar[int]
     frame_id: int
     isReady: bool
     protocol_version: int
-    def __init__(self, isReady: bool = ..., frame_id: _Optional[int] = ..., protocol_version: _Optional[int] = ...) -> None: ...
+    supports_float32_payload: bool
+    def __init__(self, isReady: bool = ..., frame_id: _Optional[int] = ..., protocol_version: _Optional[int] = ..., supports_float32_payload: bool = ...) -> None: ...
 
 class TimingAck(_message.Message):
     __slots__ = []

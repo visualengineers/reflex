@@ -4,6 +4,7 @@ import threading
 import time
 import uuid
 from collections import deque
+from functools import lru_cache
 
 import grpc
 import numpy as np
@@ -19,11 +20,19 @@ MIN_CONTRAST = 0.0005
 def reconstruct_raster(request):
     if request.width < 3 or request.height < 3 or request.sample_step < 1:
         raise ValueError("Require width/height >= 3 and sample_step >= 1 (protocol v2).")
-    if len(request.z) != request.width * request.height:
-        raise ValueError("Depth count must equal width * height.")
     if not math.isfinite(request.zero_plane):
         raise ValueError("zero_plane must be finite.")
-    raw = np.asarray(request.z, dtype=np.float64).reshape(request.height, request.width)
+    count = request.width * request.height
+    if request.z_float32_le:
+        if request.z or len(request.z_float32_le) != count * 4:
+            raise ValueError("Require exactly width * height * 4 little-endian float32 bytes and no z values.")
+        # Preserve the previous float64 processing precision; avoid scalar protobuf iteration.
+        raw = np.frombuffer(request.z_float32_le, dtype="<f4").astype(np.float64)
+    else:
+        if len(request.z) != count:
+            raise ValueError("Depth count must equal width * height.")
+        raw = np.asarray(request.z, dtype=np.float64)
+    raw = raw.reshape(request.height, request.width)
     return raw, np.isfinite(raw)
 
 
@@ -34,11 +43,16 @@ def fill_missing(raw, valid):
     return raw[tuple(nearest)]
 
 
-def filter_raster(data, cutoff, factor, sample_step):
+@lru_cache(maxsize=32)
+def filter_coefficients(cutoff, factor, sample_step):
     fs = factor / sample_step
     if not (math.isfinite(fs) and math.isfinite(cutoff) and 0 < cutoff < fs / 2):
         raise ValueError("Require 0 < cutoff < factor / (2 * sample_step).")
-    sos = butter(5, cutoff, fs=fs, output="sos")
+    return butter(5, cutoff, fs=fs, output="sos")
+
+
+def filter_raster(data, cutoff, factor, sample_step):
+    sos = filter_coefficients(cutoff, factor, sample_step)
     # Order 5 has a default SOS pad length of 18; also support small rasters.
     result = sosfiltfilt(sos, data, axis=1, padlen=min(18, data.shape[1] - 1))
     return sosfiltfilt(sos, result, axis=0, padlen=min(18, data.shape[0] - 1))
@@ -57,12 +71,15 @@ def extract_extrema(raw, filtered, valid, sample_step):
         for label_id, region in enumerate(ndimage.find_objects(labels), 1):
             if region is None:
                 continue
-            coords = np.argwhere(labels[region] == label_id)
-            # One plateau representative: closest to its centre, then row-major.
-            centre = coords.mean(axis=0)
-            y, x = coords[np.argmin(np.sum((coords - centre) ** 2, axis=1))]
-            y += region[0].start
-            x += region[1].start
+            if region[0].stop - region[0].start == 1 and region[1].stop - region[1].start == 1:
+                y, x = region[0].start, region[1].start
+            else:
+                coords = np.argwhere(labels[region] == label_id)
+                # One plateau representative: closest to its centre, then row-major.
+                centre = coords.mean(axis=0)
+                y, x = coords[np.argmin(np.sum((coords - centre) ** 2, axis=1))]
+                y += region[0].start
+                x += region[1].start
             y0, y1 = max(0, y-radius), min(height, y+radius+1)
             x0, x1 = max(0, x-radius), min(width, x+radius+1)
             patch = raw[y0:y1, x0:x1]
@@ -71,6 +88,10 @@ def extract_extrema(raw, filtered, valid, sample_step):
             if not values.size:
                 continue
             best = values.min() if kind == messages.MINIMUM else values.max()
+            span = values.max() - best if kind == messages.MINIMUM else best - values.min()
+            # Median contrast cannot exceed the range: reject flat patches cheaply.
+            if span < MIN_CONTRAST:
+                continue
             contrast = np.median(values) - best if kind == messages.MINIMUM else best - np.median(values)
             if contrast < MIN_CONTRAST:
                 continue
@@ -134,7 +155,8 @@ class InteractionProcessingServicer(interactionService_pb2_grpc.InteractionProce
     def GetState(self, request, context):
         with self.lock:
             return messages.StateResponse(isReady=True, frame_id=self.frame_id,
-                                          protocol_version=PROTOCOL_VERSION)
+                                          protocol_version=PROTOCOL_VERSION,
+                                          supports_float32_payload=True)
 
     def Configure(self, request, context):
         if not (math.isfinite(request.factor) and math.isfinite(request.cutoff)
