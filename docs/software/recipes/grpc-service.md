@@ -79,7 +79,7 @@ originalIndex = sensorY * sensorWidth + sensorX
 
 Use the request's captured geometry, not mutable current settings. Validate bounds, finite returned depth and validity of the transmitted sample. Create a new `Point3(sensorX,sensorY,z)` for each accepted candidate: downstream observers use lateral array coordinates and modify depth, so reusing a pointcloud object would corrupt the source data.
 
-`RemoteInteractionProcessor` passes its configured `Distance` as ZeroPlane. Before normalisation it discards candidates within `MinDistance` of that plane and classifies lower absolute depth as Push, higher depth as Pull. The same request-local reference values are used after the asynchronous call. Normalisation, smoothing and spatial classification then follow the existing remote processing sequence.
+`RemoteInteractionProcessor` passes its configured `Distance` as ZeroPlane. Before normalisation it discards candidates within `MinDistance` of that plane and classifies lower absolute depth as Push, higher depth as Pull. The same request-local reference values are used after the asynchronous call. Normalisation and spatial classification precede smoothing, as in `MultiInteractionObserver`. Classification therefore uses the measured position rather than a position shifted by smoothing; the resulting extremum description is retained in the interaction history. Extremum-check settings persist when switching processors.
 
 __[⬆ back to top](#table-of-contents)__
 

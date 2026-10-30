@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -254,8 +254,19 @@ namespace ReFlex.Core.Interactivity.Components
         protected virtual ExtremumDescription ComputeExtremumType(Point3[][] pointsArray, int xPos, int yPos)
         {
             if (ExtremumTypeCheckMethod == ExtremumTypeCheckMethod.Global)
+            {
+                // Global skips neighbourhood validation, but retains the same sensor-depth
+                // convention as the spatial classifier: pushes are minima, pulls maxima.
+                var depth = pointsArray[xPos][yPos].Z;
+                var type = !float.IsFinite(depth) || depth == Distance ? ExtremumType.Undefined
+                    : depth < Distance ? ExtremumType.Minimum : ExtremumType.Maximum;
                 return new ExtremumDescription
-                    { Type = ExtremumType.Maximum, NumFittingPoints = ExtremumTypeCheckNumSamples, PercentageFittingPoints = 1.0f };
+                {
+                    Type = type,
+                    NumFittingPoints = type == ExtremumType.Undefined ? 0 : ExtremumTypeCheckNumSamples,
+                    PercentageFittingPoints = type == ExtremumType.Undefined ? 0 : 1.0f
+                };
+            }
 
             var xMax = pointsArray.Length - 1;
             var yMax = xMax > 0 ? pointsArray[0].Length - 1 : 0;

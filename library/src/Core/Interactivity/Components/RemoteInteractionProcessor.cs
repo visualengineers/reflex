@@ -76,23 +76,13 @@ public class RemoteInteractionProcessor: InteractionObserverBase
             _stopWatch.Reset();
         }
 
+        // Classify at the measured position, before smoothing can move it away
+        // from the extremum. MultiInteractionObserver uses the same ordering.
         if (MeasurePerformance)
         {
             _stopWatch.Start();
         }
-        var frame = ComputeSmoothingValue(interactions);
-        if (MeasurePerformance)
-        {
-            _stopWatch.Stop();
-            perfItem.Smoothing = _stopWatch.Elapsed;
-            _stopWatch.Reset();
-        }
-
-        if (MeasurePerformance)
-        {
-            _stopWatch.Start();
-        }
-        var processedInteractions = ComputeExtremumType(frame.Interactions, PointCloud.AsJaggedArray());
+        var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
         if (MeasurePerformance)
         {
             _stopWatch.Stop();
@@ -100,9 +90,21 @@ public class RemoteInteractionProcessor: InteractionObserverBase
             _stopWatch.Reset();
         }
 
+        if (MeasurePerformance)
+        {
+            _stopWatch.Start();
+        }
+        var frame = ComputeSmoothingValue(processedInteractions);
+        if (MeasurePerformance)
+        {
+            _stopWatch.Stop();
+            perfItem.Smoothing = _stopWatch.Elapsed;
+            _stopWatch.Reset();
+        }
+
         UpdatePerformanceMetrics(perfItem, start);
 
-        NewInteractions?.Invoke(this, processedInteractions);
+        NewInteractions?.Invoke(this, frame.Interactions);
 
         return result;
     }
