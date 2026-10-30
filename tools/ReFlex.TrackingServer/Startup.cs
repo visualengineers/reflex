@@ -253,7 +253,16 @@ namespace TrackingServer
             {
                 try
                 {
-                    var window = await Electron.WindowManager.CreateWindowAsync();
+                    var window = await Electron.WindowManager.CreateWindowAsync(
+                      new ElectronNET.API.Entities.BrowserWindowOptions
+                      {
+                          WebPreferences = new ElectronNET.API.Entities.WebPreferences
+                          {
+                              NodeIntegration = false,
+                              ContextIsolation = true
+                          }
+                      }
+                    );
                     window.SetFullScreen(true);
                     window.SetAutoHideMenuBar(true);
                 }

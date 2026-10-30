@@ -22,7 +22,8 @@ function initWindow() {
     autoHideMenuBar: true,
     frame: false,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
+      contextIsolation: true,
       backgroundThrottling: false
     }
   });

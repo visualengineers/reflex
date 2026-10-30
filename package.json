@@ -32,7 +32,8 @@
     "lint:server": "npm run lint -w tools/ReFlex.TrackingServer/ClientApp",
     "test:emulator": "npm run test -w tools/emulator",
     "test:net-with-report": "dotnet coverage collect dotnet test --output test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura && dotnet reportgenerator -reports:test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:\"test/artifacts/coverage-net/report\" -reporttypes:Html -assemblyfilters:\"+ReFlex.*;-*.Test\"",
-    "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp"
+    "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp",
+    "update:server:dependencies": "node scripts/update_trackingserver_dependencies.cjs"
   },
   "workspaces": [
     "packages/reflex-shared-types",

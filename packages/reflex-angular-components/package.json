@@ -1,6 +1,6 @@
 {
   "name": "@reflex/angular-components",
-  "version": "1.0.0",
+  "version": "0.9.10",
   "description": "Angular Component library for common Components used by the ReFlex Framework",
   "sideEffects": false,
   "scripts": {
