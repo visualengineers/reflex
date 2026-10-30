@@ -255,8 +255,8 @@
                         },
                         {
                             "name": "Client: Configure Server using REST API",
-                            "path": "/software/design/",
-                            "file": "icons.html",
+                            "path": "/software/recipes/",
+                            "file": "configure-server-rest-api.html",
                             "type": "page"
                         },
                         {
