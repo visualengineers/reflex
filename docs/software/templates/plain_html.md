@@ -74,7 +74,7 @@ __[⬆ back to top](#table-of-contents)__
   * Depth value of Interaction is mapped to the size of the circle
   * visualize connection state and connectivity to logging server
 
-![Screenshot of plain html example](/reflex/assets/img/templates/screen_html-logging.png)
+![Screenshot of html example with logging](/reflex/assets/img/templates/screen_html-logging.png)
 
 __[⬆ back to top](#table-of-contents)__
 
