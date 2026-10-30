@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +25,20 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 
     public override event EventHandler<IList<Interaction>> NewInteractions;
 
+    /// <summary>Classify absolute sensor depth before normalisation; do not trust remote type labels.</summary>
+    protected static List<Interaction> ClassifyCandidates(IEnumerable<Interaction> candidates, float zeroPlane, float deadZone)
+    {
+        var result = new List<Interaction>();
+        foreach (var candidate in candidates)
+        {
+            var z = candidate.Position.Z;
+            if (!float.IsFinite(z) || System.Math.Abs(z - zeroPlane) <= deadZone) continue;
+            candidate.Type = z < zeroPlane ? InteractionType.Push : InteractionType.Pull;
+            result.Add(candidate);
+        }
+        return result;
+    }
+
     public override async Task<ProcessingResult> Update()
     {
         if (!_service.IsConnected)
@@ -41,7 +55,9 @@ public class RemoteInteractionProcessor: InteractionObserverBase
 
         var result = new ProcessingResult(ProcessServiceStatus.Available);
 
-        var processed = await _service.Update(PointCloud, result.PerformanceMeasurement, MeasurePerformance);
+        var zeroPlane = Distance;
+        var deadZone = MinDistance;
+        var processed = await _service.Update(PointCloud, zeroPlane, result.PerformanceMeasurement, MeasurePerformance);
 
         var candidates = processed.Item1;
         var perfItem = new ProcessPerformance { Preparation = processed.Item2.Preparation, Update = processed.Item2.Update };
@@ -51,7 +67,7 @@ public class RemoteInteractionProcessor: InteractionObserverBase
             _stopWatch.Start();
         }
 
-        var interactions = ConvertDepthValue(candidates.ToList());
+        var interactions = ConvertDepthValue(ClassifyCandidates(candidates, zeroPlane, deadZone));
 
         if (MeasurePerformance)
         {

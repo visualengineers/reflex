@@ -1,4 +1,4 @@
-﻿namespace ReFlex.Server.Data.Config;
+namespace ReFlex.Server.Data.Config;
 
 public class RemoteProcessingServiceSettings
 {
@@ -8,9 +8,9 @@ public class RemoteProcessingServiceSettings
 
     public bool CompleteDataSet { get; set; } = true;
 
-    public double CutOff { get; set; } = 0.1;
+    public double CutOff { get; set; } = 2.0;
 
-    public double Factor { get; set; } = 1200;
+    public double Factor { get; set; } = 100;
 
     public RemoteProcessingAlgorithm Algorithm { get; set; } = RemoteProcessingAlgorithm.Default;
 

@@ -1,14 +1,13 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Grpc.Net.Client;
 using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Interactivity.Interfaces;
 using ReFlex.gRpc;
-using ServiceStack;
+using ReFlex.Core.Interactivity.Components;
 using ReFlex.Server.Data.Config;
 using TrackingServer.Events;
-using static System.Enum;
 using ConfigurationManager = TrackingServer.Model.ConfigurationManager;
 using Interaction = ReFlex.Core.Common.Components.Interaction;
 using Math = System.Math;
@@ -77,7 +76,14 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             _channel = GrpcChannel.ForAddress(_config.Address);
             _client = new InteractionProcessing.InteractionProcessingClient(_channel);
             var status = await _client.GetStateAsync(new StateRequest());
-            IsConnected = status.IsReady;
+            if (status.ProtocolVersion != 2)
+                throw new InvalidOperationException($"Remote processor protocol {status.ProtocolVersion} is incompatible; expected version 2 (2D raster). Update the Python backend.");
+            if (!status.IsReady) throw new InvalidOperationException("Remote processor is not ready.");
+            var configured = await _client.ConfigureAsync(new ConfigRequest
+            {
+                Cutoff = (float)_config.CutOff, Factor = (float)_config.Factor
+            });
+            IsConnected = configured.Success;
             IsBusy = false;
         }
         catch (Exception exc)
@@ -117,7 +123,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         return IsConnected;
     }
 
-    public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance performance, bool doMeasure)
+    public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, float zeroPlane, ProcessPerformance performance, bool doMeasure)
     {
         var result = new List<Interaction>();
 
@@ -142,11 +148,13 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 _stopWatch.Start();
             }
 
-            var points = pointCloud.AsArray();
-
-            var values = new DepthValues1d();
-
-            var mapping = SendCompleteDataset ? ExtractDepthValues(points, ref values) : ExtractDepthValuesForCleanedUpDataset(points, ref values);
+            var raster = new RemoteDepthRaster(pointCloud, _config.NumSkipValues, SendCompleteDataset);
+            var values = new DepthValues1d
+            {
+                Width = raster.Width, Height = raster.Height, SampleStep = raster.SampleStep,
+                ZeroPlane = zeroPlane
+            };
+            values.Z.AddRange(raster.Depths);
 
 
             if (doMeasure)
@@ -172,7 +180,17 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
             Logger.Info($"Received Interactions from gRPC client on address: {_config.Address}");
 
-            result = reply.Interactions.ToList().ConvertAll(i => ConvertInteraction(points, i, mapping));
+            foreach (var candidate in reply.Interactions)
+            {
+                try
+                {
+                    result.Add(raster.CreateCandidate(candidate.PointIdx, candidate.Z, candidate.TouchId, candidate.Time));
+                }
+                catch (ArgumentException error)
+                {
+                    Logger.Warn(error, "Ignoring invalid remote candidate.");
+                }
+            }
 
             Logger.Info($"Interactions: {result}");
         }
@@ -209,87 +227,6 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     //         _logger.Info($"Data Saved: {response.File}");
     //     }
     // }
-
-    private int[] ExtractDepthValues(Point3[] points, ref DepthValues1d depthValues)
-    {
-        depthValues.Z.AddRange(points.Select(p => p.Z));
-        return Array.Empty<int>();
-    }
-
-    private int[] ExtractDepthValuesForCleanedUpDataset(Point3[] points, ref DepthValues1d depthValues)
-    {
-        var values = new int[points.Length];
-        var cleanedIdx = 0;
-        for (var i = 0; i < points.Length; i++)
-        {
-            var p = points[i];
-            if (p.IsFiltered || !p.IsValid)
-                continue;
-
-            values[cleanedIdx] = i;
-            depthValues.Z.Add(p.Z);
-            cleanedIdx++;
-        }
-
-        return values;
-    }
-
-    private PointCloud3d ConvertPointCloud(Point3[][] data)
-    {
-        var result = new PointCloud3d();
-
-        for (var x = 0; x < data.Length; x++)
-        {
-            for (var y = 0; y < data[x].Length; y++)
-            {
-                var p3 = data[x][y];
-                if (!SendCompleteDataset && (p3.IsFiltered || !p3.IsValid))
-                    continue;
-
-                var p3d = new Point3d
-                {
-                    IsFiltered = p3.IsFiltered,
-                    IsValid = p3.IsFiltered,
-                    X = p3.X,
-                    Y = p3.Y,
-                    Z = p3.Z,
-                    IX = x,
-                    IY = y
-                };
-
-                result.Points.Add(p3d);
-            }
-        }
-        result.SizeZ = result.Points.Count;
-
-        return result;
-    }
-
-    private Interaction ConvertInteraction(Point3[] points, ReFlex.gRpc.Interaction interaction, int[] mapping) {
-        var success = TryParse<ReFlex.Core.Common.Util.InteractionType>(interaction.Type.ToString(), out var type);
-
-        if (success)
-        {
-            type = (ReFlex.Core.Common.Util.InteractionType) interaction.Type.ConvertTo<int>();
-        }
-
-        var reconstructedIndex = SendCompleteDataset || mapping.Length <= interaction.PointIdx
-            ? interaction.PointIdx
-            // reconstruct former index from saved mapping
-            : mapping[interaction.PointIdx];
-
-        var point = points[reconstructedIndex];
-        point.Z = interaction.Z;
-
-        return new Interaction
-        {
-            TouchId = interaction.TouchId,
-            Confidence = 1,
-            Position = point,
-            Time = interaction.Time,
-            Type = type
-        };
-    }
 
     private async void ResetState()
     {
@@ -332,7 +269,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
           var changesDetected =
             (Math.Abs(_config.CutOff - cfg.CutOff) > float.Epsilon ||
-             Math.Abs(_config.Factor - cfg.CutOff) > float.Epsilon);
+             Math.Abs(_config.Factor - cfg.Factor) > float.Epsilon);
 
           if (changesDetected)
           {

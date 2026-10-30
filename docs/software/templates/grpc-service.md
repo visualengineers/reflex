@@ -10,13 +10,13 @@
 ## Basic example
 
 * location: `examples/grpc-service/`
-* technology: Python, gRPC, SciPy, JupyterLab, Matplotlib and Docker Compose
+* technology: Python, gRPC protocol v2, SciPy, JupyterLab, Matplotlib and Docker Compose
 * ReFlex endpoint on the host: `http://localhost:50051`
 * notebook frontend: `http://localhost:8888/lab` (token from container logs)
-* two containers: existing Python backend with an observation adapter, and JupyterLab
-* optional synthetic input for trying the example without a sensor
+* two containers: Python backend with an observation adapter, and JupyterLab
+* optional synthetic 2D input with two pushes and one pull
 
-The example demonstrates remote interaction extraction, unlike the websocket clients which consume final interactions. ReFlex acts as the gRPC client; the Python backend is the gRPC server. The notebook displays transmitted depth values, the actual low-pass filter output and returned candidates. Read the [gRPC service recipe]({{ site.baseurl }}/software/recipes/grpc-service.html) for the implementation steps and protocol limitations.
+ReFlex acts as the gRPC client and the Python backend as its server. The backend extracts geometric 2D extrema using SOS filtering and original-depth validation. ReFlex reconstructs sensor indices and determines Push/Pull relative to its ZeroPlane, before applying its existing dead zone and further processing. Read the [gRPC service recipe]({{ site.baseurl }}/software/recipes/grpc-service.html) for implementation details.
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -29,18 +29,24 @@ docker compose -f examples/grpc-service/compose.yaml up --build -d
 docker compose -f examples/grpc-service/compose.yaml logs notebook
 {% endhighlight %}
 
-Open `http://localhost:8888/lab`, enter the logged token, then open `live-interactions.ipynb`. Run all cells. Choose `MODE = "demo"` for synthetic data while ReFlex processing is stopped, or leave `MODE = "observe"` and enable ReFlex's Remote processor at `http://localhost:50051` with a running sensor. Demo mode changes the backend filter settings; restart the backend before switching back to real sensor input and check the effective settings in the plot.
+Open `http://localhost:8888/lab`, enter the logged token and open `live-interactions.ipynb`. Choose `MODE = "demo"` with ReFlex processing stopped, or leave `MODE = "observe"` and enable ReFlex's Remote processor at `http://localhost:50051`. Run all cells.
 
-Both exposed ports are restricted to the local machine. The notebook connects to `backend:50051` within the Compose network. A health check ensures the backend answers `GetState` before Jupyter starts.
+Upgrade the framework and backend together: version 2 requires raster dimensions and sample step. Set **CutOff=2, Factor=100** explicitly in existing saved configurations; defaults do not overwrite saved values. ReFlex applies filter settings when connecting.
+
+Skip applies to both axes: `NumSkipValues=1` keeps every second row and column. Disabled `Complete Data Set` preserves invalid/filtered positions as missing values. Effective sampling rate is `Factor / (NumSkipValues+1)`; CutOff must be below half that rate.
+
+The notebook uses `backend:50051` inside Compose. The backend health check verifies protocol-v2 readiness before Jupyter starts. Existing notebook volumes retain old files on rebuild: export your edits and replace the bundled notebook as described in the example README, then restart its kernel.
 
 __[⬆ back to top](#table-of-contents)__
 
 ## Live visualisation
 
-The live cell refreshes every half second for 60 seconds. Interrupt the kernel to stop it early, or rerun the cell to continue. The frame number, age, filter settings and candidate details accompany three plots. Without incoming frames it waits; an old frame is marked stale. Only the latest complete snapshot is retained.
+Three 2D plots show input, the actual separable SOS result and candidates over original depth. Missing positions are masked. Marker shapes identify minima/maxima; colours illustrate depth relative to ZeroPlane, without applying ReFlex's dead zone. These are candidates, not final tracked/calibrated interactions.
 
-The horizontal axis is the transmitted array index. The gRPC request has no grid dimensions or validity flags, so the notebook cannot reconstruct a camera image. ReFlex preprocessing may already have altered the data. Returned candidates have not yet passed ReFlex's downstream tracking and calibration.
+Plot coordinates refer to the transmitted raster. Multiply by `sample_step` to obtain sensor coordinates. Updates run every half second for 60 seconds; interrupt the kernel to stop early or rerun the live cell. Old frames become stale, and a backend restart clears the snapshot.
 
-Stop with `docker compose -f examples/grpc-service/compose.yaml down`. Saved notebook edits persist in a named volume; `down --volumes` deletes them. Export edits before resetting volumes. See the example README for export commands and integration tests.
+The backend regression test replays a recorded 640x480 frame containing two pushes and one pull at Skip 0/1/3. Separate gRPC and notebook checks use private test servers. See the README for commands.
+
+Stop with `docker compose -f examples/grpc-service/compose.yaml down`. Saved notebooks persist; `down --volumes` deletes them.
 
 __[⬆ back to top](#table-of-contents)__

@@ -58,19 +58,19 @@
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-cutOff-text" elementTitle="CutOff">
                 <input inputField class="form-control form-control-sm" type="number" 
-                    placeholder="0.1" [(ngModel)]="this.remoteSettings.cutOff" 
+                    placeholder="2" [(ngModel)]="this.remoteSettings.cutOff"
                     step="0.1" min="0"
                     name="processing-remote-cutOff-text" id="processing-remote-cutOff-text" (change)="updateSettings()">
-                   <p description>Frequency cutoff for filtering the depth image. Default: 0.1</p>
+                   <p description>Frequency cutoff for filtering the depth image. Default: 2</p>
             </app-value-text>
 
             <!-- Factor -->
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-factor-text" elementTitle="Factor">
                 <input inputField class="form-control form-control-sm" type="number" 
-                    placeholder="1200" [(ngModel)]="this.remoteSettings.factor" 
+                    placeholder="100" [(ngModel)]="this.remoteSettings.factor"
                     name="processing-remote-factor-text" id="processing-remote-factor-text" (change)="updateSettings()">
-                   <p description>Filter factor for interpolating the depth image. Default: 1200</p>
+                   <p description>Filter factor for interpolating the depth image. Default: 100</p>
             </app-value-text>
 
             <!-- NumSkipValues -->
@@ -79,7 +79,7 @@
                 <input inputField class="form-control form-control-sm" type="number" 
                     placeholder="0" min="0" [(ngModel)]="this.remoteSettings.numSkipValues" 
                     name="processing-remote-numSkipValues-text" id="processing-remote-numSkipValues-text" (change)="updateSettings()">
-                   <p description>Specify the number of values to skip between two points when transferring the data.</p>
+                   <p description>Skip this many sensor pixels between samples on both axes (1 keeps approximately one quarter).</p>
             </app-value-text>
 
             <!-- Toggle Complete Data -->
@@ -88,7 +88,7 @@
                 elementId="processing-remote-factor-limitationFilter"
                 [(data)]="this.remoteSettings.completeDataSet"
                 (onChange)="updateSettings()">
-                Specify whether to send complete data set or only valid depth values.
+                Include finite filtered/invalid points. When disabled, preserve their raster positions as missing values.
             </app-option-checkbox>
 
             <a class="button" (click)="saveRemoteProcessingSettings()"  [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}">Save</a>

@@ -8,182 +8,170 @@ title: "ReFlex Server: Create a gRPC service with live Jupyter visualisation"
 ## Table of Contents
 
 1. [General approach](#general-approach)
-2. [Step 1: Inspect the gRPC contract](#step-1-inspect-the-grpc-contract)
-3. [Step 2: Reuse and observe the Python backend](#step-2-reuse-and-observe-the-python-backend)
-4. [Step 3: Package two containers](#step-3-package-two-containers)
-5. [Step 4: Start the notebook](#step-4-start-the-notebook)
-6. [Step 5: Connect ReFlex](#step-5-connect-reflex)
-7. [Step 6: Verify and extend the example](#step-6-verify-and-extend-the-example)
+2. [Step 1: Define a spatial gRPC contract](#step-1-define-a-spatial-grpc-contract)
+3. [Step 2: Sample and reconstruct in ReFlex](#step-2-sample-and-reconstruct-in-reflex)
+4. [Step 3: Extract spatial extrema in Python](#step-3-extract-spatial-extrema-in-python)
+5. [Step 4: Observe the backend in two containers](#step-4-observe-the-backend-in-two-containers)
+6. [Step 5: Connect and upgrade ReFlex](#step-5-connect-and-upgrade-reflex)
+7. [Step 6: Verify the recorded scene and lifecycle](#step-6-verify-the-recorded-scene-and-lifecycle)
 8. [Further reading](#further-reading)
 
 ## General approach
 
-This recipe builds `examples/grpc-service/`: a Docker Compose example using the existing `services/python-backend/` to extract interactions and a separate JupyterLab container to visualise its work. It also includes synthetic input so that the service can be explored without a depth sensor. The documentation follows the implementation in the repository; the [template overview]({{ site.baseurl }}/software/templates/grpc-service.html) provides a shorter starting point.
-
-The tracking server runs on the host with its sensor support. Its `RemoteInteractionProcessingService` is a **gRPC client**, calling the Python service. Jupyter is an observer of the Python service's input, intermediate filter output and response. It does not intercept the response or replace the tracking server.
+The runnable example in `examples/grpc-service/` combines the existing Python backend with a separate JupyterLab container. ReFlex runs on the host, with its sensor support, and acts as a gRPC **client**. The Python backend extracts geometric candidates; ReFlex determines Push/Pull and performs its subsequent interaction processing. The notebook observes input, intermediate data and candidates.
 
 ```text
 ReFlex tracking server (host)
-    RemoteInteractionProcessingService
-        | GetState / Configure / ComputeInteractions
+    regular 2D sampling -> gRPC ComputeInteractions
         v
-backend container :50051
-    existing InteractionProcessingServicer
-        | response: InteractionFrame -> ReFlex downstream processing
-        | atomic latest.json: input + filter output + candidates
+Python backend container :50051
+    missing-data fill -> SOS along X/Y -> spatial extrema -> original-depth check
+        | candidates -> ReFlex index reconstruction -> ZeroPlane/dead zone -> processing
+        | atomic latest.json
         v
 shared frames volume (read-only for Jupyter)
         v
-notebook container :8888 -> browser plots
+Jupyter container :8888 -> browser: three 2D plots
 ```
 
-In demo mode, the notebook submits synthetic depth arrays to the same gRPC endpoint instead of receiving real ReFlex input. Use only one producer at a time. This example observes processor input, not original camera frames; ReFlex filtering runs upstream. Its plots also do not represent the final calibrated interaction stream.
+The notebook also has a synthetic demo mode. Do not run it concurrently with ReFlex processing: both producers share the backend's configuration and latest snapshot. "Input" means the depths supplied to the Python processor; ReFlex sensor preprocessing has already run. Notebook candidates are not the final tracked and calibrated touch stream.
 
 __[⬆ back to top](#table-of-contents)__
 
-## Step 1: Inspect the gRPC contract
+## Step 1: Define a spatial gRPC contract
 
-The service contract is defined in `tools/ReFlex.TrackingServer/Protos/interactionService.proto` and its Python counterpart in `services/python-backend/generated_services/`. Both use the `interactionService.InteractionProcessing` service name.
+Keep the C# and Python `interactionTypes.proto` definitions synchronised. The service retains its three RPCs:
 
-| RPC | Request | Response and purpose |
-| --- | --- | --- |
-| `GetState` | `StateRequest` | `StateResponse`: readiness and last frame ID; ReFlex uses this when connecting. |
-| `Configure` | `ConfigRequest` | `ConfigResponse`: sets `cutoff` and `factor` for the Butterworth filter. |
-| `ComputeInteractions` | `DepthValues1d` | `InteractionFrame`: frame ID and candidates with `point_idx`, `z`, `type`, `touch_id`, `time`. |
+| RPC | Purpose |
+| --- | --- |
+| `GetState` | Readiness, frame ID and `protocol_version=2`. |
+| `Configure` | Butterworth `cutoff` and `factor`; both must be finite with `0 < cutoff < factor/2`. |
+| `ComputeInteractions` | A regular depth raster in `DepthValues1d`, returning an `InteractionFrame`. |
 
-The C# client currently fills only the repeated `z` field. Although `DepthValues1d` also declares zero-plane and depth-range fields, the adapter does not send them. The Python processor filters the transmitted sequence and detects positive and negative peaks. It returns the **original** depth at each detected index, not the filtered amplitude.
+Protocol v2 adds `width`, `height` and `sample_step` to the depth request. Width and height describe the **transmitted** raster, not the original sensor resolution. `z` is row-major, so `index = y*width+x`, and its length must equal `width*height`. Missing values are NaN. The existing `zero_plane` field carries ReFlex's current `Distance`; the existing min/max-depth fields are not required by this detector.
 
-`CompleteDataSet=true` sends every point's depth. With `false`, invalid/filtered points are removed and ReFlex stores an index mapping to reconstruct their original positions from the reply. Neither mode transfers image dimensions, X/Y coordinates or a validity mask. Use a one-dimensional plot unless you explicitly supply those missing metadata; do not infer a camera grid from array length alone.
+Each returned candidate carries its transmitted `point_idx`, original absolute `z`, and `extremum_kind` (`MINIMUM` or `MAXIMUM`). The legacy `type` field is `NONE`; an extremum's geometric type must not be mistaken for Push/Pull. Touch IDs remain per-frame and timestamps retain the backend's Unix-millisecond convention.
 
-Generate Python stubs during the image build, from the existing Python proto files:
+Generate Python bindings from the backend directory:
 
 {% highlight shell linenos %}
-python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. \
+python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. --pyi_out=. \
   generated_services/interactionTypes.proto generated_services/interactionService.proto
 {% endhighlight %}
 
-Run this in the backend's directory. Generated Python files are build artifacts rather than a second maintained implementation of the contract. If the framework protocol changes, update the Python proto definitions to match it before rebuilding.
+The Docker build generates runtime bindings; the tracking-server build generates its C# bindings. Framework and backend must be upgraded together. New ReFlex clients reject an incompatible version during connection; v2 backends reject requests without valid raster metadata rather than guessing a 1D interpretation.
 
 __[⬆ back to top](#table-of-contents)__
 
-## Step 2: Reuse and observe the Python backend
+## Step 2: Sample and reconstruct in ReFlex
 
-Create an adapter in `examples/grpc-service/backend.py` deriving from `InteractionProcessingServicer`. The implementation calls the existing `ComputeInteractions` and overrides `butter_lowpass_filtfilt` only to record the actual intermediate output:
+`RemoteDepthRaster` captures an immutable, request-local raster. Let `s = NumSkipValues+1`, with non-negative Skip. Sample original coordinates `(x*s,y*s)` starting at the origin, using `ceil(sensorWidth/s)` columns and `ceil(sensorHeight/s)` rows. Skip 1 therefore retains approximately one quarter of the samples.
 
-{% highlight python linenos %}
-def butter_lowpass_filtfilt(self, data, cutoff, fs, order=5):
-    result = super().butter_lowpass_filtfilt(data, cutoff, fs, order)
-    self.filtered = result.tolist()
-    return result
+With `CompleteDataSet=false`, invalid or filtered samples are represented by NaN **at their existing position**, not removed. Non-finite depths are always missing. With `true`, finite depths are included even if their validity/filter flag excludes them from normal processing. This replaces the old arbitrary compaction and its index mapping.
+
+For returned index `i` and transmitted width `w`, reconstruct:
+
+{% highlight text %}
+sensorX = (i % w) * s
+sensorY = (i / w) * s          # integer division
+originalIndex = sensorY * sensorWidth + sensorX
 {% endhighlight %}
 
-The detector itself remains in `services/python-backend/service/interactionProcessingService.py`. Its order-5 Butterworth filter is followed by `scipy.signal.find_peaks` on both the signal and its negation, with prominence `0.0005`. Its sampling factor describes the flattened sequence, not necessarily the camera frame rate.
+Use the request's captured geometry, not mutable current settings. Validate bounds, finite returned depth and validity of the transmitted sample. Create a new `Point3(sensorX,sensorY,z)` for each accepted candidate: downstream observers use lateral array coordinates and modify depth, so reusing a pointcloud object would corrupt the source data.
 
-The adapter validates at least 19 finite samples (the filter's padding requirement) and finite settings satisfying `0 < cutoff < factor / 2`; invalid requests receive gRPC `INVALID_ARGUMENT`. A lock serialises configuration and computation so one snapshot contains matching input, filter parameters, intermediate values and interactions. The backend's `Configure` response must use `ConfigResponse(success=True)`: protobuf message fields require keyword arguments.
-
-After processing, write a temporary JSON file and atomically replace `/data/latest.json`. Jupyter can then read a complete frame without blocking the gRPC response on rendering. Keep only the latest frame to avoid an ever-growing queue. A filesystem error is logged without discarding an otherwise successful extraction response. On startup the adapter removes a snapshot left by a previous run.
-
-This observation step adds array conversion, JSON serialization and disk I/O per processed frame. It is intended for demonstrations and debugging. For higher throughput, consider sampling snapshots or a separate bounded telemetry transport. The original three-RPC interface is unchanged.
+`RemoteInteractionProcessor` passes its configured `Distance` as ZeroPlane. Before normalisation it discards candidates within `MinDistance` of that plane and classifies lower absolute depth as Push, higher depth as Pull. The same request-local reference values are used after the asynchronous call. Normalisation, smoothing and spatial classification then follow the existing remote processing sequence.
 
 __[⬆ back to top](#table-of-contents)__
 
-## Step 3: Package two containers
+## Step 3: Extract spatial extrema in Python
 
-Create a multi-stage `Dockerfile` with a shared Python 3.10 base. Copy the existing backend, install its pinned requirements and generate its gRPC bindings. The repository's backend requirements file is UTF-16; the build converts a temporary copy to UTF-8 before passing it to pip. The source file remains unchanged.
+Keep the processing stages separately testable in `service/interactionProcessingService.py`:
 
-The `backend` target runs the adapter. The `notebook` target additionally installs the versions in `notebook-requirements.txt`, copies `notebooks/live-interactions.ipynb` and starts JupyterLab. Both run as an unprivileged `reflex` user. The build context is the repository root so the existing backend can be copied directly; `Dockerfile.dockerignore` restricts the build input to the example and backend.
+1. Validate raster dimensions (at least three per axis), sample count and positive step. Preserve an `isfinite` mask. All-missing input returns no candidates.
+2. Fill missing positions from the nearest valid sample **for filtering only**. Never return a candidate on a missing position.
+3. Design an order-5 Butterworth filter with `output="sos"`; apply `sosfiltfilt` along X, then Y. Effective sampling rate is `factor/sample_step`, so require `cutoff < factor/(2*sample_step)`. Limit padding for short axes.
+4. Find local 2D minima and maxima using radius `max(1,ceil(10/sample_step))`, corresponding to ten original sensor pixels. Collapse connected plateaus to deterministic representatives; exclude the outer raster border.
+5. Refine each candidate to an original-data extremum in its valid neighbourhood. Require contrast of at least `0.0005` against that neighbourhood's median, with the correct sign. Verify it remains a local extremum after refinement and deduplicate identical type/index pairs.
+6. Return the original depth and geometric kind. Classification relative to ZeroPlane belongs to ReFlex.
 
-Create `compose.yaml` with:
+This addresses three problems of the former flat-array detector: repeated intersections across image rows, incorrect Maximum=PULL/Minimum=PUSH assumptions, and filter overshoot projected onto an originally flat surface. A saddle is not a local 2D extremum; additional supported spatial extrema can still be legitimate candidates. SOS also avoids the numerical sensitivity of direct polynomial filter coefficients at very low cutoff ratios; see the [SciPy Butterworth documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html).
 
-* `backend`, publishing `127.0.0.1:50051:50051` and writing the `frames` volume.
-* `notebook`, publishing `127.0.0.1:8888:8888`, reading `frames` at `/data:ro` and storing notebook edits in a separate `notebooks` volume.
-* `GRPC_TARGET=backend:50051` in the notebook environment. `localhost` inside the notebook container would refer to that container itself.
-* A backend health check calling `GetState` and `depends_on: backend: condition: service_healthy` for the notebook. Compose waits for readiness before starting the dependent service ([Docker startup-order documentation](https://docs.docker.com/compose/how-tos/startup-order/)).
-
-The published addresses assume ReFlex and the browser run on the Docker host. The example uses plaintext local gRPC and leaves Jupyter token authentication enabled; it does not configure remote-machine access.
+The new defaults are cutoff **2**, factor **100**. The previous 0.1/100 configuration nearly erased the recorded deformations when applied along both spatial axes. These settings describe spatial sampling, not camera frames per second. Excessive skip values can violate the Nyquist constraint even when `Configure` itself accepts the base parameters; the frame request then returns `INVALID_ARGUMENT`.
 
 __[⬆ back to top](#table-of-contents)__
 
-## Step 4: Start the notebook
+## Step 4: Observe the backend in two containers
 
-Install Docker with its Compose plugin and start the Docker daemon. From the repository root:
+The example adapter subclasses the existing processor and serialises each completed frame under the same lock as computation/configuration. Its atomic `latest.json` contains raster metadata, ZeroPlane, effective configuration, raw input, the actual SOS result and candidates. JSON uses `null` for missing values. Retain only the latest frame to avoid accumulating a rendering backlog; log snapshot-write errors without discarding successful extraction responses.
+
+The multi-stage Dockerfile uses Python 3.10, installs the existing backend's pinned dependencies, and generates bindings. It converts a temporary copy of the UTF-16 requirements file to UTF-8 for pip. Both containers run as an unprivileged user. The backend target runs the adapter; the notebook target adds JupyterLab and Matplotlib.
+
+Compose publishes only `127.0.0.1:50051` and `127.0.0.1:8888`. The notebook uses `backend:50051` inside the Compose network and mounts snapshots read-only. A separate notebook volume preserves edits. A health check verifies protocol-v2 readiness before Jupyter starts ([Compose startup order](https://docs.docker.com/compose/how-tos/startup-order/)).
+
+From the repository root:
 
 {% highlight shell linenos %}
 docker compose -f examples/grpc-service/compose.yaml up --build -d
-docker compose -f examples/grpc-service/compose.yaml ps
 docker compose -f examples/grpc-service/compose.yaml logs notebook
 {% endhighlight %}
 
-Open `http://localhost:8888/lab` and enter the token shown in the logs. You can also retrieve the running server's URL and token with:
+Open `http://localhost:8888/lab` with the logged token. Alternatively retrieve it with `docker compose -f examples/grpc-service/compose.yaml exec notebook jupyter server list`. Jupyter keeps its [default token authentication](https://jupyter-server.readthedocs.io/en/latest/operators/security.html).
 
-{% highlight shell linenos %}
-docker compose -f examples/grpc-service/compose.yaml exec notebook jupyter server list
-{% endhighlight %}
+Open `live-interactions.ipynb`, choose `demo` with ReFlex processing stopped, and run all cells. Three 2D views show masked input, SOS output and candidates over original depth. Marker shapes distinguish minima/maxima; colours illustrate depth sign relative to ZeroPlane. The notebook does not apply ReFlex's unknown-to-it `MinDistance` and therefore does not claim those colours are final accepted interactions. Coordinates refer to the transmitted raster; multiply by step for original sensor coordinates.
 
-This uses Jupyter's default token authentication; see the [Jupyter security documentation](https://jupyter-server.readthedocs.io/en/latest/operators/security.html).
-
-Open `live-interactions.ipynb`. First try `MODE = "demo"` while ReFlex interaction processing is stopped, then run all cells. The notebook calls `GetState`, configures cutoff `2` and factor `100`, and sends a moving sinusoidal depth profile with higher-frequency noise through `ComputeInteractions`.
-
-The live cell displays three vertically aligned plots: transmitted input, actual low-pass output, and detected Push/Pull candidates over the original signal. It also shows the frame ID, effective parameters, age and candidate details. It reads snapshots every half second for 60 seconds; rerun that cell to continue, or interrupt the kernel to stop early. RPCs have a three-second deadline. Observe mode waits when no snapshot exists, and marks old snapshots stale after three seconds.
+The live cell runs for 60 seconds and refreshes every half second. Rerun it to continue or interrupt the kernel to stop. Old frames are marked stale after three seconds. RPCs have a three-second deadline. Backend restart removes the previous snapshot. Snapshot JSON serialization adds per-frame overhead; this is a debugging example rather than a throughput benchmark.
 
 __[⬆ back to top](#table-of-contents)__
 
-## Step 5: Connect ReFlex
+## Step 5: Connect and upgrade ReFlex
 
-1. Stop the demo loop. If demo mode was used, restart the backend to reset its filter configuration: `docker compose -f examples/grpc-service/compose.yaml restart backend`.
-2. Set `MODE = "observe"` and rerun the notebook cells. This mode calls `GetState` but does not send frames or change settings.
-3. Start the ReFlex tracking server and its sensor. In the Processing view select `Remote` as the interaction processor.
-4. Set Address to `http://localhost` and Port to `50051`. Together these identify the published gRPC service. This is separate from the tracking server's REST/SignalR port.
-5. Choose `Complete Data Set` according to the input. Enable it only if all depths are finite; otherwise disable it to omit invalid/filtered points. At least 19 transmitted values must remain. Compacted indices remain valid for the notebook's plots and ReFlex reconstructs the original indices from its mapping.
-6. Start interaction processing. After connection, apply the desired CutOff/Factor settings in the Processing view and verify the effective values in the notebook. Save the settings if they should persist in ReFlex.
+1. Build both the updated tracking server and Docker images. Protocol-v1 peers are incompatible.
+2. Set ReFlex's Processing view to `Remote`, Address `http://localhost`, Port `50051`.
+3. Explicitly set **CutOff=2, Factor=100** in existing saved configurations and save if desired. Defaults are updated in code and the default settings template, but existing saved settings are not migrated. ReFlex sends filter configuration on each connection and propagates subsequent changes.
+4. Choose Skip and Complete Data Set according to the rules above. Missing positions are retained, not compacted. Check dimensions and effective cutoff constraints after increasing Skip.
+5. Stop any demo loop, set notebook `MODE="observe"`, rerun its cells, and enable sensor tracking and interaction processing. Observe mode does not configure the backend or submit frames.
 
-The Python backend initially uses cutoff `0.1` and factor `100`, while ReFlex's settings class defaults to factor `1200`. Connecting through `GetState` does not itself send a `Configure` request. Treat the parameters shown in the snapshot as authoritative; selecting a value in the UI before connecting does not guarantee it reached the backend. If necessary, change and apply a valid cutoff while connected to trigger configuration delivery.
-
-The Python response is still a set of candidates. ReFlex subsequently performs depth conversion, extremum classification, tracking and calibration. The existing Python implementation assigns IDs within each frame and uses Unix milliseconds for its timestamps, whereas the C# interaction model normally uses .NET ticks. This example preserves that behaviour and makes no claim of persistent Python touch identities or final framework output.
+Rebuilding an image does not replace an edited notebook in a named volume. Export edits, copy in the new bundled notebook and restart its kernel; exact commands are in the example README. This also refreshes imported protobuf bindings.
 
 __[⬆ back to top](#table-of-contents)__
 
-## Step 6: Verify and extend the example
+## Step 6: Verify the recorded scene and lifecycle
 
-Run the integration tests against the built backend image:
+`services/python-backend/tests/fixtures/three-deformations.csv` is an unmodified capture of framework frame 3020: 640x480 samples with ZeroPlane 1.45. The JSON sidecar records capture time, original filter parameters, expected locations and SHA-256. The original depths span approximately 1.312 to 1.571.
+
+The test checks two pushes near `(186,144)` and `(327,216)`, and one pull near `(220,269)`, with a three-pixel full-resolution tolerance. At Skip 1 and 3 the tolerance includes one sample step. Each deformation must have exactly one matching candidate. Additional candidates must be actual original-data-supported spatial extrema, rather than an assumed fixed number of intermediate saddle points.
+
+Run the tests from the repository root:
 
 {% highlight shell linenos %}
-docker compose -f examples/grpc-service/compose.yaml exec backend \
-  python -m unittest discover -s /app/example/tests -v
+docker compose -f examples/grpc-service/compose.yaml exec backend python -m unittest discover -s /app/tests -v
+docker compose -f examples/grpc-service/compose.yaml exec backend python -m unittest discover -s /app/example/tests -v
+docker compose -f examples/grpc-service/compose.yaml exec notebook python /app/example/tests/check_notebook.py
+dotnet test test/Library/InteractionTests/InteractionTests.csproj -c CI
 {% endhighlight %}
 
-The tests start an isolated real gRPC listener, check readiness and configuration, compare candidate results with the existing processor, compare the captured filter output, verify latest-frame replacement and reject invalid data/settings before accepting a valid request again.
+The Python tests cover the capture, SOS stability, missing data, plateaus, saddles, short rasters and invalid requests. gRPC tests use a private listener to check version negotiation, snapshots and recovery after invalid requests. Notebook tests run demo and observe against a private test server; they never submit synthetic data to the live sensor service. C# tests cover sampling/reconstruction, non-divisible resolutions, request-local geometry, invalid responses, source-pointcloud preservation, reclassification and the dead zone.
 
-Verify the complete workflow manually:
-
-| Check | Expected result |
+| Manual check | Expected result |
 | --- | --- |
-| Run demo mode | Frame IDs advance; filtered profiles and both extrema types appear. |
-| Switch to ReFlex with demo stopped | Frames reflect sensor changes; no synthetic producer overwrites them. |
-| Stop ReFlex processing | The last frame remains visible and becomes stale. |
-| Restart backend | Snapshot clears; observe mode waits, then resumes when ReFlex reconnects and submits new frames. |
-| Stop the notebook loop | Kernel interrupt returns control without stopping backend extraction. |
-| Save notebook, stop and start Compose | Saved edits persist in the notebook volume. |
+| Demo | Two pushes and one pull, with spatially meaningful candidate locations. |
+| Live sensor | Positions follow actual deformations; notebook remains an observer. |
+| Stop processing | Last frame remains visible and becomes stale. |
+| Restart backend | Old snapshot clears; frames resume after ReFlex reconnects. |
+| Old protocol peer | Explicit incompatibility error, not silently misinterpreted arrays. |
+| Invalid raster/filter settings | `INVALID_ARGUMENT`; a corrected request can succeed afterwards. |
 
-If Docker cannot connect to its daemon, start Docker before rerunning Compose. If the service is unhealthy, inspect `docker compose -f examples/grpc-service/compose.yaml logs backend`. An occupied port requires changing the published port and matching host-side connection settings. For `INVALID_ARGUMENT`, inspect sample count, non-finite depths and filter settings. Connected without frames usually means the sensor or interaction processing is stopped. If ReFlex does not reconnect after a backend restart, stop and start its interaction processing.
+Inspect backend logs for readiness/configuration errors. If ReFlex does not reconnect, stop and start its interaction processing. An occupied published port requires matching changes to the host-side address.
 
-Stop the containers while preserving notebook edits:
-
-{% highlight shell linenos %}
-docker compose -f examples/grpc-service/compose.yaml down
-{% endhighlight %}
-
-The named notebook volume also preserves the old notebook after an image rebuild. Export edits using `docker compose ... cp` as shown in the example README before resetting it. `down --volumes` deletes both saved notebook edits and snapshots; a subsequent start copies the bundled notebook into a new volume.
-
-To explore another intermediate processing step, capture it in the adapter, add a field to the snapshot and add a notebook plot. Keep the snapshot bound to the same request and document units and indices. To replace the algorithm itself, edit the backend implementation and rebuild the image, retaining the gRPC response contract expected by ReFlex.
+Stop with `docker compose -f examples/grpc-service/compose.yaml down`. Notebook edits persist. `down --volumes` deletes both snapshots and saved notebooks; export edits first. Subsequent startup populates a fresh notebook volume from the image.
 
 __[⬆ back to top](#table-of-contents)__
 
 ## Further reading
 
 * [gRPC/Jupyter template]({{ site.baseurl }}/software/templates/grpc-service.html).
-* [Implement an interaction processor]({{ site.baseurl }}/software/recipes/interaction-processor.html) and [processing pipeline]({{ site.baseurl }}/software/repo/pipeline.html).
-* [Stream sensor data]({{ site.baseurl }}/software/recipes/stream-sensor-data.html) for a SignalR view of point-cloud data.
-* Repository sources: `examples/grpc-service/`, `services/python-backend/`, and `tools/ReFlex.TrackingServer/Services/RemoteInteractionProcessingService.cs`.
+* [Interaction processors]({{ site.baseurl }}/software/recipes/interaction-processor.html) and [processing pipeline]({{ site.baseurl }}/software/repo/pipeline.html).
+* [Stream sensor data]({{ site.baseurl }}/software/recipes/stream-sensor-data.html) for a SignalR point-cloud viewer.
+* Sources: `examples/grpc-service/`, `services/python-backend/`, and `tools/ReFlex.TrackingServer/Services/RemoteInteractionProcessingService.cs`.
 
 __[⬆ back to top](#table-of-contents)__

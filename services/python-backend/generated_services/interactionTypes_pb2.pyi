@@ -5,9 +5,12 @@ from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
+MAXIMUM: ExtremumKind
+MINIMUM: ExtremumKind
 NONE: InteractionType
 PULL: InteractionType
 PUSH: InteractionType
+UNSPECIFIED: ExtremumKind
 
 class ConfigRequest(_message.Message):
     __slots__ = ["cutoff", "factor"]
@@ -24,30 +27,38 @@ class ConfigResponse(_message.Message):
     def __init__(self, success: bool = ...) -> None: ...
 
 class DepthValues1d(_message.Message):
-    __slots__ = ["max_depth", "min_depth", "z", "zero_plane"]
+    __slots__ = ["height", "max_depth", "min_depth", "sample_step", "width", "z", "zero_plane"]
+    HEIGHT_FIELD_NUMBER: _ClassVar[int]
     MAX_DEPTH_FIELD_NUMBER: _ClassVar[int]
     MIN_DEPTH_FIELD_NUMBER: _ClassVar[int]
+    SAMPLE_STEP_FIELD_NUMBER: _ClassVar[int]
+    WIDTH_FIELD_NUMBER: _ClassVar[int]
     ZERO_PLANE_FIELD_NUMBER: _ClassVar[int]
     Z_FIELD_NUMBER: _ClassVar[int]
+    height: int
     max_depth: float
     min_depth: float
+    sample_step: int
+    width: int
     z: _containers.RepeatedScalarFieldContainer[float]
     zero_plane: float
-    def __init__(self, zero_plane: _Optional[float] = ..., min_depth: _Optional[float] = ..., max_depth: _Optional[float] = ..., z: _Optional[_Iterable[float]] = ...) -> None: ...
+    def __init__(self, zero_plane: _Optional[float] = ..., min_depth: _Optional[float] = ..., max_depth: _Optional[float] = ..., z: _Optional[_Iterable[float]] = ..., width: _Optional[int] = ..., height: _Optional[int] = ..., sample_step: _Optional[int] = ...) -> None: ...
 
 class Interaction(_message.Message):
-    __slots__ = ["point_idx", "time", "touch_id", "type", "z"]
+    __slots__ = ["extremum_kind", "point_idx", "time", "touch_id", "type", "z"]
+    EXTREMUM_KIND_FIELD_NUMBER: _ClassVar[int]
     POINT_IDX_FIELD_NUMBER: _ClassVar[int]
     TIME_FIELD_NUMBER: _ClassVar[int]
     TOUCH_ID_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     Z_FIELD_NUMBER: _ClassVar[int]
+    extremum_kind: ExtremumKind
     point_idx: int
     time: int
     touch_id: int
     type: InteractionType
     z: float
-    def __init__(self, touch_id: _Optional[int] = ..., point_idx: _Optional[int] = ..., z: _Optional[float] = ..., type: _Optional[_Union[InteractionType, str]] = ..., time: _Optional[int] = ...) -> None: ...
+    def __init__(self, touch_id: _Optional[int] = ..., point_idx: _Optional[int] = ..., z: _Optional[float] = ..., type: _Optional[_Union[InteractionType, str]] = ..., time: _Optional[int] = ..., extremum_kind: _Optional[_Union[ExtremumKind, str]] = ...) -> None: ...
 
 class InteractionFrame(_message.Message):
     __slots__ = ["frame_id", "interactions"]
@@ -108,12 +119,17 @@ class StateRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class StateResponse(_message.Message):
-    __slots__ = ["frame_id", "isReady"]
+    __slots__ = ["frame_id", "isReady", "protocol_version"]
     FRAME_ID_FIELD_NUMBER: _ClassVar[int]
     ISREADY_FIELD_NUMBER: _ClassVar[int]
+    PROTOCOL_VERSION_FIELD_NUMBER: _ClassVar[int]
     frame_id: int
     isReady: bool
-    def __init__(self, isReady: bool = ..., frame_id: _Optional[int] = ...) -> None: ...
+    protocol_version: int
+    def __init__(self, isReady: bool = ..., frame_id: _Optional[int] = ..., protocol_version: _Optional[int] = ...) -> None: ...
 
 class InteractionType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+
+class ExtremumKind(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
@@ -18,6 +18,6 @@ public interface IRemoteInteractionProcessorService
 
     Task<bool> Disconnect();
 
-    Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance measurement,
+    Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, float zeroPlane, ProcessPerformance measurement,
         bool measurePerformance);
 }
