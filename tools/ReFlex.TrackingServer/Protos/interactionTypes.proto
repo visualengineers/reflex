@@ -1,4 +1,4 @@
-﻿syntax = "proto3";
+syntax = "proto3";
 
 option csharp_namespace = "ReFlex.gRpc";
 
@@ -30,13 +30,22 @@ message DepthValues1d {
   float zero_plane = 1;              // distance to map depth values to 0
   float min_depth = 2;               // minimum distance (zero_plane - max amplitude) - maps to -1
   float max_depth = 3;               // minimum distance (zero_plane + max amplitude) - maps to 1
-  repeated float z = 4;              // z-values (unprocessed)
+  repeated float z = 4;              // row-major depths; NaN marks missing samples
+  int32 width = 5;                   // transmitted raster width
+  int32 height = 6;                  // transmitted raster height
+  int32 sample_step = 7;             // original sensor pixels per sample, on both axes
 }
 
 enum InteractionType {
   NONE = 0;
   PUSH = 1;
   PULL = 2;
+}
+
+enum ExtremumKind {
+  UNSPECIFIED = 0;
+  MINIMUM = 1;
+  MAXIMUM = 2;
 }
 
 message Interaction {
@@ -46,6 +55,7 @@ message Interaction {
 
   InteractionType type = 4;
   int64 time = 5;
+  ExtremumKind extremum_kind = 6;
 }
 
 message InteractionFrame {
@@ -59,6 +69,7 @@ message StateRequest {
 message StateResponse {
   bool isReady = 1;
   int32 frame_id = 2;
+  int32 protocol_version = 3;         // version 2 requires a regular 2D raster
 }
 
 message SaveRequest {

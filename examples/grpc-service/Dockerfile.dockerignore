@@ -1,0 +1,10 @@
+**
+!services/
+!services/python-backend/
+!services/python-backend/**
+!examples/
+!examples/grpc-service/
+!examples/grpc-service/**
+**/__pycache__
+**/.ipynb_checkpoints
+**/.venv

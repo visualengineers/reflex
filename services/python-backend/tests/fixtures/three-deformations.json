@@ -1,0 +1,38 @@
+{
+  "width": 640,
+  "height": 480,
+  "zero_plane": 1.45,
+  "sample_step": 1,
+  "frame_id": 3020,
+  "captured_at": "2026-10-30T14:12:48.961510+00:00",
+  "sha256": "4a6ccf8fc7aec149c1ffe296b06cf1ceb8f452f0ae0a327d4124dfe74040c671",
+  "capture_config": {
+    "cutoff": 0.1,
+    "factor": 100.0
+  },
+  "test_config": {
+    "cutoff": 2,
+    "factor": 100
+  },
+  "expected": [
+    {
+      "x": 186,
+      "y": 144,
+      "kind": "MINIMUM",
+      "type": "PUSH"
+    },
+    {
+      "x": 327,
+      "y": 216,
+      "kind": "MINIMUM",
+      "type": "PUSH"
+    },
+    {
+      "x": 220,
+      "y": 269,
+      "kind": "MAXIMUM",
+      "type": "PULL"
+    }
+  ],
+  "source": "Unmodified /data/latest.json raw values from the running ReFlex framework; geometry and zero plane confirmed by user."
+}

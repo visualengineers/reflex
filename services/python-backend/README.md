@@ -71,3 +71,17 @@ Service is implemented in `service/interactionProcessingService.py`
 ## Deploy and start with electron app
 
 **TODO**: Deployment / Packaging und auto-(re)start
+
+## Spatial protocol v2 and regression tests
+
+The interaction service now requires a row-major raster (`width`, `height`,
+`sample_step`, `zero_plane`, `z`). NaN denotes missing samples. It uses separable
+SOS filtering and original-depth-supported spatial extrema; returned `type` is
+`NONE` and `extremum_kind` identifies MINIMUM/MAXIMUM. ReFlex performs Push/Pull
+classification. Upgrade both peers together and explicitly update saved filter
+settings to cutoff 2 / factor 100; defaults do not migrate saved configurations.
+
+After generating bindings, run `python -m unittest discover -s tests -v` from this
+directory. Tests include the recorded two-push/one-pull scene in `tests/fixtures/`.
+For Docker and live 2D visualisation, see the
+[gRPC/Jupyter example](../../examples/grpc-service/README.md).

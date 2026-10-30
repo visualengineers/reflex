@@ -8,7 +8,7 @@ import { LogService } from '../log/log.service';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { InteractionsComponent } from './interactions/interactions.component';
 import { CompleteInteractionData, DEFAULT_SETTINGS, Interaction, ObserverType, ProcessingSettings, RemoteProcessingServiceSettings, TrackingServerAppSettings } from '@reflex/shared-types';
-import { OptionCheckboxComponent, PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import { OptionCheckboxComponent, PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HistoryComponent } from './history/history.component';
@@ -23,6 +23,7 @@ import { HistoryComponent } from './history/history.component';
     PanelHeaderComponent,
     ValueSelectionComponent,
     ValueSliderComponent,
+    ValueTextComponent,
     OptionCheckboxComponent,
     InteractionsComponent,
     HistoryComponent,

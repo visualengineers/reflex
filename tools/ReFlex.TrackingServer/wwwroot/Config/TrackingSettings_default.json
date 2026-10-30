@@ -113,8 +113,8 @@
     "Address":"http://localhost:50051",
     "NumSkipValues":0,
     "CompleteDataSet":false,
-    "CutOff":0.1,
-    "Factor":1200.0,
+    "CutOff":2.0,
+    "Factor":100.0,
     "Algorithm":0
   },
   "TuioSettingValues": {

@@ -1,0 +1,36 @@
+name: reflex-grpc-example
+services:
+  backend:
+    build:
+      context: ../..
+      dockerfile: examples/grpc-service/Dockerfile
+      target: backend
+    ports:
+      - "127.0.0.1:50051:50051"
+    volumes:
+      - frames:/data
+    healthcheck:
+      test: ["CMD", "python", "/app/example/backend.py", "--healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+  notebook:
+    build:
+      context: ../..
+      dockerfile: examples/grpc-service/Dockerfile
+      target: notebook
+    ports:
+      - "127.0.0.1:8888:8888"
+    environment:
+      GRPC_TARGET: backend:50051
+      SNAPSHOT_PATH: /data/latest.json
+    depends_on:
+      backend:
+        condition: service_healthy
+    volumes:
+      - frames:/data:ro
+      - notebooks:/home/reflex/work
+volumes:
+  frames:
+  notebooks:

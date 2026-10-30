@@ -211,6 +211,12 @@
                             "type": "page"
                         },
                         {
+                            "name": "gRPC and Jupyter",
+                            "path": "/software/templates/",
+                            "file": "grpc-service.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Unity",
                             "path": "/software/templates/",
                             "file": "unity.html",
@@ -248,15 +254,15 @@
                             "type": "page"
                         },
                         {
-                            "name": "Client: Stream depth image",
+                            "name": "Client: Stream sensor data",
                             "path": "/software/recipes/",
-                            "file": "icons.html",
+                            "file": "stream-sensor-data.html",
                             "type": "page"
                         },
                         {
                             "name": "Client: Configure Server using REST API",
-                            "path": "/software/design/",
-                            "file": "icons.html",
+                            "path": "/software/recipes/",
+                            "file": "configure-server-rest-api.html",
                             "type": "page"
                         },
                         {
