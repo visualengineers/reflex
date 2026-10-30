@@ -248,9 +248,9 @@
                             "type": "page"
                         },
                         {
-                            "name": "Client: Stream depth image",
+                            "name": "Client: Stream sensor data",
                             "path": "/software/recipes/",
-                            "file": "icons.html",
+                            "file": "stream-sensor-data.html",
                             "type": "page"
                         },
                         {
