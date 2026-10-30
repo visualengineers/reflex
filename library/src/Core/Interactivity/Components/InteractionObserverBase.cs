@@ -325,7 +325,7 @@ namespace ReFlex.Core.Interactivity.Components
                 _stopWatch.Reset();
             }
 
-            var confidentInteractions = ApplyConfidenceFilter(frame.Interactions);
+            var confidentInteractions = ApplyConfidenceFilter(SelectSmoothedInteractions(frame.Interactions));
 
             UpdatePerformanceMetrics(perfItem, processingDateTime);
 
@@ -333,6 +333,10 @@ namespace ReFlex.Core.Interactivity.Components
 
             return processResult;
         }
+
+        /// <summary>Limits the smoothed output without changing the tracking history.</summary>
+        protected virtual IEnumerable<Interaction> SelectSmoothedInteractions(IEnumerable<Interaction> interactions)
+            => interactions;
 
         protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
         {

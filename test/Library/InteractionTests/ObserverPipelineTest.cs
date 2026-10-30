@@ -110,12 +110,18 @@ public class ObserverPipelineTest
     }
 
     [Test]
-    public async Task SingleTouchCanPublishDistinctHistoricalIds()
+    public async Task SingleTouchPublishesOnlyTheLatestSmoothedInteraction()
     {
         var observer = new SingleInteractionObserver();
         Configure(observer);
         IList<Interaction> published = null;
         var count = 0;
+        var historicalIds = new HashSet<int>();
+        observer.InteractionHistoryUpdated += (_, history) =>
+        {
+            foreach (var interaction in history.SelectMany(frame => frame.Interactions))
+                historicalIds.Add(interaction.TouchId);
+        };
         observer.NewInteractions += (_, data) => { published = data; count++; };
         observer.PointCloud[35,10].Z = 1;
         await observer.Update();
@@ -124,9 +130,10 @@ public class ObserverPipelineTest
         observer.PointCloud[35,10].Z = 1.25f;
         await observer.Update();
         Assert.That(count, Is.EqualTo(2));
-        Assert.That(published, Has.Count.EqualTo(2));
-        Assert.That(published.Select(i => i.TouchId).Distinct().Count(), Is.EqualTo(2));
-        Assert.That(published.Select(i => i.Type), Is.EquivalentTo(new[] { InteractionType.Push, InteractionType.Pull }));
+        Assert.That(historicalIds, Has.Count.EqualTo(2));
+        Assert.That(published, Has.Count.EqualTo(1));
+        Assert.That(published[0].Type, Is.EqualTo(InteractionType.Pull));
+        Assert.That(published[0].Position.X, Is.EqualTo(35));
     }
 
     [TestCase(false, true, true, ProcessServiceStatus.Error)]

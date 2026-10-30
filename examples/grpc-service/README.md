@@ -77,8 +77,9 @@ its `MinDistance` dead zone. A geometric maximum is not automatically a pull. Re
 as MultiTouch: intermediate extrema are removed before history, and touches are
 published only when confidence exceeds `MinConfidence`. New touches can therefore
 take several frames to appear; the notebook shows candidates before these filters.
-SingleTouch also shares this pipeline and may publish multiple historical IDs,
-even though it extracts only one candidate per frame.
+SingleTouch also shares this pipeline but selects at most one interaction after
+smoothing: the most recent, with the highest touch ID on timestamp ties.
+Confidence filtering still applies, and tracking history remains intact.
 Notebook marker shapes show geometry; colours illustrate the depth sign only,
 without applying ReFlex's dead zone. Candidate depths are original measurements.
 IDs remain per-frame and Python timestamps remain Unix milliseconds.

@@ -49,6 +49,11 @@ namespace ReFlex.Core.Interactivity.Components
 
         #endregion
 
+        protected override IEnumerable<Interaction> SelectSmoothedInteractions(IEnumerable<Interaction> interactions)
+            => interactions.OrderByDescending(item => item.Time)
+                .ThenByDescending(item => item.TouchId)
+                .Take(1);
+
         protected override Task<ProcessingResult> CheckInitialState()
         {
           return Task.FromResult(PointCloud == null
