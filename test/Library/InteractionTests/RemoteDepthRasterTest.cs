@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -50,6 +51,25 @@ public class RemoteDepthRasterTest
         Assert.That(complete.Depths[7],Is.EqualTo(8));
         Assert.That(float.IsNaN(complete.Depths[8]),Is.True);
         Assert.Throws<ArgumentException>(()=>raster.CreateCandidate(6,1,0,0));
+    }
+
+    [Test]
+    public void BytePayloadPreservesRowOrderFloatBitsAndMissingValues()
+    {
+        var cloud = Cloud(5, 3);
+        cloud.AsArray()[0].Z = -0.0f;
+        cloud.AsArray()[1].Z = 1.45f;
+        cloud.AsArray()[2].IsValid = false;
+        var raster = new RemoteDepthRaster(cloud, 0, false);
+        var payload = raster.ToLittleEndianBytes();
+        Assert.That(payload.Length, Is.EqualTo(5 * 3 * 4));
+        for (var i = 0; i < raster.Depths.Count; i++)
+        {
+            var bits = BinaryPrimitives.ReadInt32LittleEndian(payload.AsSpan(i * 4, 4));
+            Assert.That(bits, Is.EqualTo(BitConverter.SingleToInt32Bits(raster.Depths[i])));
+        }
+        payload[0] = 255;
+        Assert.That(raster.ToLittleEndianBytes()[0], Is.EqualTo(0), "Payloads must own their buffers");
     }
 
     [Test]

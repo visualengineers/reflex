@@ -48,7 +48,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public isInteractionProcessingActive = false;
 
-  public remoteSettings: RemoteProcessingServiceSettings = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
+  public remoteSettings: RemoteProcessingServiceSettings = { ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues };
   public remoteAddress = '';
   public remotePort = 0;
 
@@ -274,7 +274,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   private updateRemoteSettings(settings: RemoteProcessingServiceSettings): void {
-    this.remoteSettings = settings;
+    this.remoteSettings = { ...settings, useGzipCompression: settings.useGzipCompression ?? true };
 
     const url = new URL(this.remoteSettings.address);
     this.remoteAddress = `${url.protocol}//${url.hostname}`;

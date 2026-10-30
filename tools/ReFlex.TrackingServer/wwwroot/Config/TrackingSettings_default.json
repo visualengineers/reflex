@@ -113,6 +113,7 @@
     "Address":"http://localhost:50051",
     "NumSkipValues":0,
     "CompleteDataSet":false,
+    "UseGzipCompression":true,
     "CutOff":2.0,
     "Factor":100.0,
     "Algorithm":0

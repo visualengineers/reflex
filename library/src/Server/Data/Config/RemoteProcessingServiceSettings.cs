@@ -8,6 +8,8 @@ public class RemoteProcessingServiceSettings
 
     public bool CompleteDataSet { get; set; } = true;
 
+    public bool UseGzipCompression { get; set; } = true;
+
     public double CutOff { get; set; } = 2.0;
 
     public double Factor { get; set; } = 100;
@@ -20,6 +22,7 @@ public class RemoteProcessingServiceSettings
         result += $"  {nameof(Address)}: {Address} | ";
         result += $"{nameof(NumSkipValues)}: {NumSkipValues} | ";
         result += $"{nameof(CompleteDataSet)}: {CompleteDataSet}{Environment.NewLine}";
+        result += $"{nameof(UseGzipCompression)}: {UseGzipCompression} | ";
         result += $"{nameof(Algorithm)}: {Enum.GetName(typeof(RemoteProcessingAlgorithm), Algorithm)} | ";
         result += $"{nameof(CutOff)}: {CutOff} | {nameof(Factor)}: {Factor}{Environment.NewLine}";
         return result;

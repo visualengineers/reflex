@@ -30,6 +30,8 @@ def run():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), options=[
         ('grpc.max_send_message_length', MAX_MESSAGE_LENGTH),
         ('grpc.max_receive_message_length', MAX_MESSAGE_LENGTH),
+        ('grpc.http2.max_frame_size', 1024 * 1024),
+        ('grpc.http2.lookahead_bytes', 2 * 1024 * 1024),
     ],)
     interactionService_pb2_grpc.add_InteractionProcessingServicer_to_server(
         service.InteractionProcessingServicer(), server)

@@ -208,15 +208,16 @@ __[⬆ back to top](#table-of-contents)__
 
 ## RemoteProcessingServiceSettingsValues
 
-Configuration of the remote processing service. Class defaults are `http://localhost:50051/`, `0`, `true`, `0.1`, `1200` and `Default`, respectively.
+Configuration of the remote processing service. Class defaults are `http://localhost:50051/`, Skip `0`, complete dataset `true`, gzip `true`, cutoff `2`, factor `100` and algorithm `Default`.
 
 | Property | Type (.NET) | Example value | Description |
 | --- | --- | --- | --- |
 | `Address` | `string` | `"http://localhost:50051"` | Remote processing service URL. |
 | `NumSkipValues` | `int` | `0` | Stored sample-skipping parameter; its effect depends on the remote processing implementation. |
 | `CompleteDataSet` | `bool` | `false` | Selects transmission of the complete dataset. |
-| `CutOff` | `double` | `0.1` | Filter cutoff parameter passed to the remote service. |
-| `Factor` | `double` | `1200.0` | Scaling factor passed to the remote service. |
+| `UseGzipCompression` | `bool` | `true` | Requests lossless gzip compression for large depth payloads. Missing values in older saved configurations default to enabled. |
+| `CutOff` | `double` | `2.0` | Filter cutoff parameter passed to the remote service. |
+| `Factor` | `double` | `100.0` | Scaling factor passed to the remote service. |
 | `Algorithm` | `RemoteProcessingAlgorithm` | `0` | `0`: Default; `1`: FiltFilt. |
 
 __[⬆ back to top](#table-of-contents)__

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { HttpResponse } from '@angular/common/http';
 
 import { ProcessingComponent } from './processing.component';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +13,7 @@ import { InteractionsVisualizationComponent } from './interactions-visualization
 import { MockHistoryVisualizationComponent } from './history-visualization/history-visualization.component.mock';
 import { MockHistoryComponent } from './history/history.component.mock';
 import { CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, RemoteProcessingAlgorithm, RemoteProcessingServiceSettings } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, OptionCheckboxComponent, MockOptionCheckboxComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
+import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
 import { HistoryVisualizationComponent } from './history-visualization/history-visualization.component';
 import { HistoryComponent } from './history/history.component';
 import { MockInteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component.mock';
@@ -45,7 +46,8 @@ const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessin
     'getHistory',
     'getInteractions',
     'getInterval',
-    'getRemoteProcessorSettings'
+    'getRemoteProcessorSettings',
+    'setRemoteProcessorSettings'
 
   ]
 );
@@ -62,9 +64,10 @@ const interactionData : CompleteInteractionData = {
 const observerTypes = ['None', 'TestObserver', 'RealObserver'];
 
 const remoteObserver : RemoteProcessingServiceSettings = {
-  address: '',
+  address: 'http://localhost:50051',
   numSkipValues: 0,
   completeDataSet: false,
+  useGzipCompression: true,
   cutOff: 0,
   factor: 0,
   algorithm: RemoteProcessingAlgorithm.Default
@@ -101,7 +104,6 @@ describe('ProcessingComponent', () => {
         PanelHeaderComponent,
         ValueSelectionComponent,
         ValueSliderComponent,
-        OptionCheckboxComponent,
         InteractionsComponent,
         InteractionsVisualizationComponent,
         HistoryVisualizationComponent,
@@ -111,7 +113,6 @@ describe('ProcessingComponent', () => {
         MockPanelHeaderComponent,
         MockValueSelectionComponent,
         MockValueSliderComponent,
-        MockOptionCheckboxComponent,
         MockInteractionsComponent,
         MockInteractionsVisualizationComponent,
         MockHistoryVisualizationComponent,
@@ -130,9 +131,10 @@ describe('ProcessingComponent', () => {
     processingService.getObserverTypes.and.returnValue(of(observerTypes));
     processingService.getSelectedObserverType.and.returnValue(of(0));
     processingService.getInterval.and.returnValue(of(100));
-    processingService.getRemoteProcessorSettings.and.returnValue(of(remoteObserver));
+    processingService.getRemoteProcessorSettings.and.returnValue(of({ ...remoteObserver }));
+    processingService.setRemoteProcessorSettings.and.returnValue(of(new HttpResponse({ body: { ...remoteObserver } })));
 
-    settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
+    settingsService.getSettings.and.returnValue(of({ ...DEFAULT_SETTINGS }));
     settingsService.saveSettings.and.returnValue(of(DEFAULT_SETTINGS));
 
     logService.sendErrorLog.and.returnValue();
@@ -151,6 +153,7 @@ describe('ProcessingComponent', () => {
     processingService.getSelectedObserverType.calls.reset();
     processingService.getInterval.calls.reset();
     processingService.getRemoteProcessorSettings.calls.reset();
+    processingService.setRemoteProcessorSettings.calls.reset();
 
     settingsService.getSettings.calls.reset();
     settingsService.saveSettings.calls.reset();
@@ -179,5 +182,38 @@ describe('ProcessingComponent', () => {
     expect(settingsService.saveSettings).not.toHaveBeenCalled();
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
+  });
+
+  it('loads, updates and saves gzip compression through the shared checkbox', async () => {
+    fixture.detectChanges();
+    component.selectedProcessorIdx = 3;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector('#processing-remote-gzipCompression-checkbox');
+    expect(checkbox.checked).toBeTrue();
+
+    checkbox.checked = false;
+    checkbox.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.remoteSettings.useGzipCompression).toBeFalse();
+    expect(processingService.setRemoteProcessorSettings).toHaveBeenCalledWith(jasmine.objectContaining({
+      useGzipCompression: false,
+      address: remoteObserver.address,
+      factor: remoteObserver.factor
+    }));
+
+    component.saveRemoteProcessingSettings();
+    expect(settingsService.saveSettings).toHaveBeenCalledWith(jasmine.objectContaining({
+      remoteProcessingServiceSettingsValues: jasmine.objectContaining({ useGzipCompression: false })
+    }));
+
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(processingService.setRemoteProcessorSettings.calls.mostRecent().args[0].useGzipCompression).toBeTrue();
   });
 });

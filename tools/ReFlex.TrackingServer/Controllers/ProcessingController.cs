@@ -46,6 +46,23 @@ namespace TrackingServer.Controllers
         [HttpGet]
         public RemoteProcessingServiceSettings GetRemoteProcessorSettings() => _configManager.Settings.RemoteProcessingServiceSettingsValues ?? new RemoteProcessingServiceSettings();
 
+        // GET: api/Processing/GzipCompression
+        [HttpGet("GzipCompression")]
+        public bool GetGzipCompression() => GetRemoteProcessorSettings().UseGzipCompression;
+
+        // POST: api/Processing/GzipCompression (JSON boolean)
+        [HttpPost("GzipCompression")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<bool> SetGzipCompression([FromBody] bool enabled)
+        {
+            var settings = GetRemoteProcessorSettings();
+            settings.UseGzipCompression = enabled;
+            SetRemoteProcessorSettings(settings);
+            return enabled;
+        }
+
         // GET: api/Processing/GetObserverType
         [Route("GetObserverType")]
         [HttpGet]

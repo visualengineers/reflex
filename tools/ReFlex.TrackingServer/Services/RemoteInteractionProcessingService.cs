@@ -1,5 +1,9 @@
 using System.Diagnostics;
+using System.IO.Compression;
+using Google.Protobuf;
+using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Compression;
 using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -17,10 +21,19 @@ namespace TrackingServer.Services;
 public class RemoteInteractionProcessingService : IRemoteInteractionProcessorService, IDisposable
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    private readonly Stopwatch _stopWatch = new();
+    private static readonly Metadata GzipRequestHeaders = new()
+    {
+        { "grpc-internal-encoding-request", "gzip" }
+    };
+    private const int CompressionThresholdBytes = 64 * 1024;
 
     private InteractionProcessing.InteractionProcessingClient? _client;
     private GrpcChannel? _channel;
+    private bool _supportsFloat32Payload;
+    private readonly bool _requestCompressionAllowed = !string.Equals(
+        Environment.GetEnvironmentVariable("REFLEX_GRPC_REQUEST_COMPRESSION"), "identity",
+        StringComparison.OrdinalIgnoreCase);
+    private bool _peerSupportsGzip = true;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
     private readonly IEventAggregator? _eventAggregator;
@@ -73,17 +86,26 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsBusy = true;
 
             // The port number must match the port of the gRPC server.
-            _channel = GrpcChannel.ForAddress(_config.Address);
+            _channel = GrpcChannel.ForAddress(_config.Address, new GrpcChannelOptions
+            {
+                CompressionProviders = new ICompressionProvider[]
+                {
+                    new GzipCompressionProvider(CompressionLevel.Fastest)
+                }
+            });
             _client = new InteractionProcessing.InteractionProcessingClient(_channel);
             var status = await _client.GetStateAsync(new StateRequest());
             if (status.ProtocolVersion != 2)
                 throw new InvalidOperationException($"Remote processor protocol {status.ProtocolVersion} is incompatible; expected version 2 (2D raster). Update the Python backend.");
             if (!status.IsReady) throw new InvalidOperationException("Remote processor is not ready.");
+            _supportsFloat32Payload = status.SupportsFloat32Payload;
+            _peerSupportsGzip = true;
             var configured = await _client.ConfigureAsync(new ConfigRequest
             {
                 Cutoff = (float)_config.CutOff, Factor = (float)_config.Factor
             });
             IsConnected = configured.Success;
+            Logger.Info($"Remote request compression: {(_config.UseGzipCompression && _requestCompressionAllowed ? "gzip (Fastest), payloads >= 64 KiB" : "identity")}.");
             IsBusy = false;
         }
         catch (Exception exc)
@@ -117,6 +139,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsConnected = false;
             IsBusy = false;
             _client = null;
+            _supportsFloat32Payload = false;
             _channel?.Dispose();
         }
 
@@ -143,39 +166,65 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
         try
         {
-            if (doMeasure)
-            {
-                _stopWatch.Start();
-            }
+            var timer = doMeasure ? Stopwatch.StartNew() : null;
+            var timings = doMeasure ? new Dictionary<string, double>() : null;
 
             var raster = new RemoteDepthRaster(pointCloud, _config.NumSkipValues, SendCompleteDataset);
+            if (timer != null)
+            {
+                timings!["client_raster_conversion"] = timer.Elapsed.TotalMilliseconds;
+                timer.Restart();
+            }
             var values = new DepthValues1d
             {
                 Width = raster.Width, Height = raster.Height, SampleStep = raster.SampleStep,
                 ZeroPlane = zeroPlane
             };
-            values.Z.AddRange(raster.Depths);
+            if (_supportsFloat32Payload)
+                values.ZFloat32Le = ByteString.CopyFrom(raster.ToLittleEndianBytes());
+            else
+                values.Z.AddRange(raster.Depths);
 
 
-            if (doMeasure)
+            if (timer != null)
             {
-                _stopWatch.Stop();
-                performance.Preparation = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                timings!["client_request_construction"] = timer.Elapsed.TotalMilliseconds;
+                performance.Preparation = TimeSpan.FromMilliseconds(
+                    timings["client_raster_conversion"] + timings["client_request_construction"]);
+                timer.Restart();
             }
 
-            if (doMeasure)
+            var compress = _config.UseGzipCompression && _requestCompressionAllowed && _peerSupportsGzip &&
+                values.ZFloat32Le.Length + values.Z.Count * sizeof(float) >= CompressionThresholdBytes;
+            ReFlex.gRpc.InteractionFrame reply;
+            try
             {
-                _stopWatch.Start();
+                // Compression stays inside the measured RPC duration, including its CPU cost.
+                reply = await _client.ComputeInteractionsAsync(values, headers: compress ? GzipRequestHeaders : null);
+            }
+            catch (RpcException error) when (compress && error.StatusCode == StatusCode.Unimplemented &&
+                error.Status.Detail.Contains("compression", StringComparison.OrdinalIgnoreCase))
+            {
+                // An unsupported encoding is rejected before application processing.
+                _peerSupportsGzip = false;
+                Logger.Warn(error, "Remote peer does not support gzip; retrying with identity encoding.");
+                reply = await _client.ComputeInteractionsAsync(values);
             }
 
-            var reply = await _client.ComputeInteractionsAsync(values);
-
-            if (doMeasure)
+            if (timer != null)
             {
-                _stopWatch.Stop();
-                performance.Update = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                performance.Update = timer.Elapsed;
+                timings!["client_rpc_roundtrip"] = timer.Elapsed.TotalMilliseconds;
+                if (reply.Timing != null && reply.Timing.Milliseconds.TryGetValue("server_total", out var serverMs))
+                {
+                    foreach (var stage in reply.Timing.Milliseconds)
+                        timings[stage.Key] = stage.Value;
+                    timings["client_transport_serialization_overhead"] = Math.Max(0,
+                        timings["client_rpc_roundtrip"] - serverMs);
+                }
+                performance.RemoteFrameId = reply.FrameId;
+                performance.RemoteTimingsMs = timings;
+                timer.Restart();
             }
 
             Logger.Info($"Received Interactions from gRPC client on address: {_config.Address}");
@@ -193,6 +242,8 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             }
 
             Logger.Info($"Interactions: {result}");
+            if (timer != null)
+                timings!["client_response_conversion"] = timer.Elapsed.TotalMilliseconds;
         }
         catch (Exception e)
         {
@@ -205,6 +256,25 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         }
 
         return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
+    }
+
+    public async Task ReportPerformance(ProcessPerformance measurement)
+    {
+        if (_client == null || measurement.RemoteTimingsMs == null) return;
+        var sample = new TimingSample { FrameId = measurement.RemoteFrameId };
+        foreach (var stage in measurement.RemoteTimingsMs)
+            if (stage.Key.StartsWith("client_", StringComparison.Ordinal))
+                sample.Milliseconds.Add(stage.Key, stage.Value);
+        try
+        {
+            // Diagnostic reporting is excluded from the measured pipeline stages.
+            await _client.ReportTimingAsync(sample, deadline: DateTime.UtcNow.AddSeconds(1));
+        }
+        catch (Grpc.Core.RpcException error)
+        {
+            // Older protocol-v2 backends may not implement the optional timing RPC.
+            Logger.Debug(error, "Could not report remote performance diagnostics.");
+        }
     }
 
     public async Task StartService()

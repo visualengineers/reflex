@@ -91,6 +91,14 @@
                 Include finite filtered/invalid points. When disabled, preserve their raster positions as missing values.
             </app-option-checkbox>
 
+            <app-option-checkbox class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3 ? 'collapse' : 'visible')}"
+                elementTitle="gzip Compression"
+                elementId="processing-remote-gzipCompression"
+                [(data)]="remoteSettings.useGzipCompression"
+                (onChange)="updateSettings()">
+                Use lossless compression for large depth frames. Reduces transferred data and uses additional CPU time.
+            </app-option-checkbox>
+
             <a class="button" (click)="saveRemoteProcessingSettings()"  [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}">Save</a>
 
         <div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">

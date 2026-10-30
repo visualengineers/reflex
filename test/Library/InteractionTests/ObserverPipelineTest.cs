@@ -48,6 +48,7 @@ public class ObserverPipelineTest
         public bool SendCompleteDataset { get; set; }
         public int Calls { get; private set; }
         public int ConnectCalls { get; private set; }
+        public ProcessPerformance? Reported { get; private set; }
         public Func<IEnumerable<Interaction>> Candidates { get; set; } = () => new[]
         {
             new Interaction { Position = new Point3(10, 10, .75f), Confidence = 1 }
@@ -59,8 +60,44 @@ public class ObserverPipelineTest
         {
             Calls++;
             Assert.That(zeroPlane, Is.EqualTo(1));
+            if (measurePerformance)
+            {
+                performance.RemoteFrameId = Calls;
+                performance.RemoteTimingsMs = new Dictionary<string, double>
+                {
+                    ["client_rpc_roundtrip"] = 1.25,
+                    ["server_total"] = .5
+                };
+            }
             return Task.FromResult(Tuple.Create(Candidates(), performance));
         }
+        public Task ReportPerformance(ProcessPerformance performance)
+        {
+            Reported = performance;
+            return Task.CompletedTask;
+        }
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task RemoteTimingsReachReporterWithPostprocessingStages(bool enabled)
+    {
+        var service = new Service();
+        var observer = new RemoteInteractionProcessor(service);
+        Configure(observer);
+        observer.MeasurePerformance = enabled;
+        PerformanceDataItem published = null;
+        observer.PerformanceDataUpdated += (_, data) => published = data;
+        await observer.Update();
+        Assert.That(service.Reported.HasValue, Is.EqualTo(enabled));
+        if (!enabled) return;
+        var report = service.Reported.Value;
+        Assert.That(report.RemoteFrameId, Is.EqualTo(1));
+        Assert.That(published.Process.RemoteTimingsMs, Is.SameAs(report.RemoteTimingsMs));
+        Assert.That(report.RemoteTimingsMs["client_rpc_roundtrip"], Is.EqualTo(1.25));
+        foreach (var stage in new[] { "client_remote_total", "client_depth_conversion",
+                     "client_extremum_classification", "client_smoothing" })
+            Assert.That(report.RemoteTimingsMs[stage], Is.GreaterThanOrEqualTo(0));
     }
 
     [Test]
