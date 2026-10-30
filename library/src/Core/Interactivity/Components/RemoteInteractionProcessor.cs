@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -26,6 +27,21 @@ public class RemoteInteractionProcessor : InteractionObserverBase
         return new ProcessingResult(_service.IsBusy ? ProcessServiceStatus.Skipped : ProcessServiceStatus.Available);
     }
 
-    protected override Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance)
-        => _service.Update(PointCloud, Distance, performance, MeasurePerformance);
+    protected override async Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance)
+    {
+        var timer = MeasurePerformance ? Stopwatch.StartNew() : null;
+        var result = await _service.Update(PointCloud, Distance, performance, MeasurePerformance);
+        if (timer != null && result.Item2.RemoteTimingsMs != null)
+            result.Item2.RemoteTimingsMs["client_remote_total"] = timer.Elapsed.TotalMilliseconds;
+        return result;
+    }
+
+    protected override Task ReportPerformance(ProcessPerformance performance)
+    {
+        if (performance.RemoteTimingsMs == null) return Task.CompletedTask;
+        performance.RemoteTimingsMs["client_depth_conversion"] = performance.ConvertDepthValue.TotalMilliseconds;
+        performance.RemoteTimingsMs["client_extremum_classification"] = performance.ComputeExtremumType.TotalMilliseconds;
+        performance.RemoteTimingsMs["client_smoothing"] = performance.Smoothing.TotalMilliseconds;
+        return _service.ReportPerformance(performance);
+    }
 }

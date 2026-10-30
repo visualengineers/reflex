@@ -74,6 +74,15 @@ class ExtractionTest(unittest.TestCase):
         self.assertEqual(len(self.processor.ComputeInteractions(request(raw), Context()).interactions), 0)
         self.assertTrue(np.isfinite(self.processor.filtered).all())
 
+    def test_missing_frame_timings_do_not_reuse_previous_values(self):
+        self.processor.ComputeInteractions(request(np.ones((20, 20))), Context())
+        reply = self.processor.ComputeInteractions(request(np.full((20, 20), np.nan)), Context())
+        timing = reply.timing.milliseconds
+        for stage in ('server_fill_missing', 'server_filter', 'server_extrema'):
+            self.assertEqual(timing[stage], 0)
+        self.assertGreater(timing['server_total'], 0)
+        self.assertGreaterEqual(timing['server_total'], sum(v for k, v in timing.items() if k != 'server_total'))
+
     def test_nan_hole_never_receives_candidate(self):
         y,x = np.mgrid[:80,:80]
         raw = 1.45 - .1*np.exp(-((x-40)**2+(y-40)**2)/100)

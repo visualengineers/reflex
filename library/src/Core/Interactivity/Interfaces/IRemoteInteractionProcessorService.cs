@@ -20,4 +20,6 @@ public interface IRemoteInteractionProcessorService
 
     Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, float zeroPlane, ProcessPerformance measurement,
         bool measurePerformance);
+
+    Task ReportPerformance(ProcessPerformance measurement) => Task.CompletedTask;
 }

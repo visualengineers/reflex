@@ -17,7 +17,6 @@ namespace TrackingServer.Services;
 public class RemoteInteractionProcessingService : IRemoteInteractionProcessorService, IDisposable
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    private readonly Stopwatch _stopWatch = new();
 
     private InteractionProcessing.InteractionProcessingClient? _client;
     private GrpcChannel? _channel;
@@ -143,12 +142,15 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
         try
         {
-            if (doMeasure)
-            {
-                _stopWatch.Start();
-            }
+            var timer = doMeasure ? Stopwatch.StartNew() : null;
+            var timings = doMeasure ? new Dictionary<string, double>() : null;
 
             var raster = new RemoteDepthRaster(pointCloud, _config.NumSkipValues, SendCompleteDataset);
+            if (timer != null)
+            {
+                timings!["client_raster_conversion"] = timer.Elapsed.TotalMilliseconds;
+                timer.Restart();
+            }
             var values = new DepthValues1d
             {
                 Width = raster.Width, Height = raster.Height, SampleStep = raster.SampleStep,
@@ -157,25 +159,30 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             values.Z.AddRange(raster.Depths);
 
 
-            if (doMeasure)
+            if (timer != null)
             {
-                _stopWatch.Stop();
-                performance.Preparation = _stopWatch.Elapsed;
-                _stopWatch.Reset();
-            }
-
-            if (doMeasure)
-            {
-                _stopWatch.Start();
+                timings!["client_request_construction"] = timer.Elapsed.TotalMilliseconds;
+                performance.Preparation = TimeSpan.FromMilliseconds(
+                    timings["client_raster_conversion"] + timings["client_request_construction"]);
+                timer.Restart();
             }
 
             var reply = await _client.ComputeInteractionsAsync(values);
 
-            if (doMeasure)
+            if (timer != null)
             {
-                _stopWatch.Stop();
-                performance.Update = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                performance.Update = timer.Elapsed;
+                timings!["client_rpc_roundtrip"] = timer.Elapsed.TotalMilliseconds;
+                if (reply.Timing != null && reply.Timing.Milliseconds.TryGetValue("server_total", out var serverMs))
+                {
+                    foreach (var stage in reply.Timing.Milliseconds)
+                        timings[stage.Key] = stage.Value;
+                    timings["client_transport_serialization_overhead"] = Math.Max(0,
+                        timings["client_rpc_roundtrip"] - serverMs);
+                }
+                performance.RemoteFrameId = reply.FrameId;
+                performance.RemoteTimingsMs = timings;
+                timer.Restart();
             }
 
             Logger.Info($"Received Interactions from gRPC client on address: {_config.Address}");
@@ -193,6 +200,8 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             }
 
             Logger.Info($"Interactions: {result}");
+            if (timer != null)
+                timings!["client_response_conversion"] = timer.Elapsed.TotalMilliseconds;
         }
         catch (Exception e)
         {
@@ -205,6 +214,25 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
         }
 
         return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
+    }
+
+    public async Task ReportPerformance(ProcessPerformance measurement)
+    {
+        if (_client == null || measurement.RemoteTimingsMs == null) return;
+        var sample = new TimingSample { FrameId = measurement.RemoteFrameId };
+        foreach (var stage in measurement.RemoteTimingsMs)
+            if (stage.Key.StartsWith("client_", StringComparison.Ordinal))
+                sample.Milliseconds.Add(stage.Key, stage.Value);
+        try
+        {
+            // Diagnostic reporting is excluded from the measured pipeline stages.
+            await _client.ReportTimingAsync(sample, deadline: DateTime.UtcNow.AddSeconds(1));
+        }
+        catch (Grpc.Core.RpcException error)
+        {
+            // Older protocol-v2 backends may not implement the optional timing RPC.
+            Logger.Debug(error, "Could not report remote performance diagnostics.");
+        }
     }
 
     public async Task StartService()

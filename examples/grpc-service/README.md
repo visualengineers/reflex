@@ -89,8 +89,53 @@ without applying ReFlex's dead zone. Candidate depths are original measurements.
 IDs remain per-frame and Python timestamps remain Unix milliseconds.
 
 Snapshots overwrite one JSON file atomically; missing values are encoded as `null`.
-The notebook mounts snapshots read-only. JSON writes add work per frame, so this
-adapter is for learning/debugging, not a throughput benchmark.
+The notebook mounts snapshots read-only. A separate process constructs the lists,
+encodes JSON and writes the file. The processing path only enqueues frame references
+in a bounded queue with at most one pending frame, replacing stale work where
+possible. If the queue feeder is still transferring an item, a new snapshot can
+be skipped rather than delaying the RPC. The spatial view can therefore skip
+frames; processing results and per-frame timing history remain independent.
+The worker drains pending work and stops when the gRPC server shuts down.
+
+## Pipeline timing measurements
+
+Rebuild the backend and tracking server after updating the protobuf definitions;
+regenerate local Python bindings as described in the backend README. Timing RPCs
+are additive to protocol v2. Older backends can still process frames, but must be
+updated for the timing notebook.
+
+Enable `MeasurePerformance` in ReFlex and run the notebook's timing cells:
+
+```python
+timing_samples, timing_statistics = await measure_pipeline()  # 60 seconds
+```
+
+The collector polls all new successful frames from a bounded 4096-event backend
+history, merges updates by frame ID, and shows count, mean, standard deviation,
+minimum, median, p95, p99 and maximum in milliseconds, a box plot and a latency
+timeline. It returns raw samples and statistics for optional CSV export. In
+`observe` mode it reads measurements without submitting frames; in `demo` mode it
+generates traffic and reports notebook-client timings instead of C# timings.
+Run collection after stopping the spatial view. Empty/stopped producers, buffer
+overflow and backend restarts are handled explicitly.
+
+Stages cover C# raster conversion and protobuf object construction, RPC roundtrip,
+Python lock wait, raster reconstruction, missing-data interpolation, SOS filter,
+extrema extraction, response construction, snapshot publication, C# candidate
+conversion, depth normalisation, spatial classification/cleanup and smoothing.
+The existing performance event includes `RemoteTimingsMs` and `RemoteFrameId`.
+Client measurements and their diagnostic reporting RPC are enabled only when
+`MeasurePerformance` is active; server timing history is always available.
+
+`client_transport_serialization_overhead` subtracts `server_total` from the RPC
+roundtrip (clamped to zero). It includes serialization, transport and gRPC/runtime
+overhead, and is not a measurement of pure network latency. Totals overlap their
+components and must not all be added. Diagnostic reporting/polling is outside
+stage timings but adds load. `server_snapshot_enqueue` is included in
+`server_total`; `snapshot_background_write` measures construction/encoding/writing
+in the separate process and is outside the synchronous pipeline. Background
+timings only exist for completed published snapshots and must not be added to
+RPC latency. Only successful frames are recorded, not failures/skips.
 
 ## Tests and shutdown
 

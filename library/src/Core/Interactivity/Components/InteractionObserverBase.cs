@@ -246,6 +246,8 @@ namespace ReFlex.Core.Interactivity.Components
 
         protected abstract Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance performance);
 
+        protected virtual Task ReportPerformance(ProcessPerformance performance) => Task.CompletedTask;
+
         protected virtual Task<ProcessingResult> CheckInitialState()
         {
           return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Available));
@@ -271,7 +273,7 @@ namespace ReFlex.Core.Interactivity.Components
             var processed = await Analyze(processResult.PerformanceMeasurement);
 
             var candidates = processed.Item1;
-            var perfItem = new ProcessPerformance { Preparation = processed.Item2.Preparation };
+            var perfItem = processed.Item2;
 
             if (MeasurePerformance)
             {
@@ -327,9 +329,14 @@ namespace ReFlex.Core.Interactivity.Components
 
             var confidentInteractions = ApplyConfidenceFilter(SelectSmoothedInteractions(frame.Interactions));
 
+            // Populate optional remote stage timings before publishing the shared dictionary.
+            var reportTask = MeasurePerformance ? ReportPerformance(perfItem) : Task.CompletedTask;
+            processResult.PerformanceMeasurement = perfItem;
             UpdatePerformanceMetrics(perfItem, processingDateTime);
 
             OnNewInteractions(confidentInteractions.ToList());
+
+            await reportTask;
 
             return processResult;
         }

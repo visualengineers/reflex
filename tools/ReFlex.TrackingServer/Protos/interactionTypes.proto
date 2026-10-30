@@ -61,6 +61,7 @@ message Interaction {
 message InteractionFrame {
   int32 frame_id = 1;
   repeated Interaction interactions = 2;
+  TimingSample timing = 3;
 }
 
 message StateRequest {
@@ -90,3 +91,19 @@ message ConfigRequest {
 message ConfigResponse {
   bool success = 1;
 }
+
+// Monotonic durations in milliseconds; totals overlap their component stages.
+message TimingSample {
+  int64 sequence = 1;
+  int32 frame_id = 2;
+  int64 recorded_at_unix_ms = 3;
+  map<string, double> milliseconds = 4;
+}
+message TimingRequest { int64 after_sequence = 1; }
+message TimingResponse {
+  repeated TimingSample samples = 1;
+  int64 latest_sequence = 2;
+  int64 oldest_sequence = 3;
+  string session_id = 4;
+}
+message TimingAck {}

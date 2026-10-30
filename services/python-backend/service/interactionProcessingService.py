@@ -2,6 +2,8 @@
 import math
 import threading
 import time
+import uuid
+from collections import deque
 
 import grpc
 import numpy as np
@@ -94,6 +96,40 @@ class InteractionProcessingServicer(interactionService_pb2_grpc.InteractionProce
         self.frame_id = 0
         self.config = {"cutoff": 2.0, "factor": 100.0}
         self.filtered = None
+        self.timings = deque(maxlen=4096)
+        self.timing_sequence = 0
+        self.timing_session = uuid.uuid4().hex
+
+    def record_timing(self, sample):
+        """Caller holds lock. Copy records so later reports cannot mutate history."""
+        self.timing_sequence += 1
+        stored = messages.TimingSample()
+        stored.CopyFrom(sample)
+        stored.sequence = self.timing_sequence
+        self.timings.append(stored)
+
+    def GetTimings(self, request, context):
+        with self.lock:
+            return messages.TimingResponse(
+                samples=[s for s in self.timings if s.sequence > request.after_sequence],
+                latest_sequence=self.timing_sequence,
+                oldest_sequence=self.timings[0].sequence if self.timings else 0,
+                session_id=self.timing_session)
+
+    def ReportTiming(self, request, context):
+        with self.lock:
+            # Merge into the original server record; never trust client server timings.
+            original = next((s for s in reversed(self.timings) if s.frame_id == request.frame_id), None)
+            if original is None:
+                context.abort(grpc.StatusCode.NOT_FOUND, "Timing frame no longer retained.")
+            if any(not k.startswith("client_") or not math.isfinite(v) or v < 0
+                   for k, v in request.milliseconds.items()):
+                context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Require finite non-negative client_ timings.")
+            sample = messages.TimingSample()
+            sample.CopyFrom(original)
+            sample.milliseconds.update(request.milliseconds)
+            self.record_timing(sample)
+            return messages.TimingAck()
 
     def GetState(self, request, context):
         with self.lock:
@@ -109,24 +145,43 @@ class InteractionProcessingServicer(interactionService_pb2_grpc.InteractionProce
             return messages.ConfigResponse(success=True)
 
     def ComputeInteractions(self, request, context):
+        started = time.perf_counter_ns()
         with self.lock:
+            timings = {"server_lock_wait": (time.perf_counter_ns() - started) / 1e6}
+            stage = time.perf_counter_ns()
             try:
                 raw, valid = reconstruct_raster(request)
                 # Validate settings even when all samples are missing.
                 if not 0 < self.config["cutoff"] < self.config["factor"] / (2 * request.sample_step):
                     raise ValueError("Require cutoff < factor / (2 * sample_step).")
                 self.filtered = np.full(raw.shape, np.nan)
+                timings["server_reconstruction"] = (time.perf_counter_ns() - stage) / 1e6
+                timings.update(server_fill_missing=0.0, server_filter=0.0, server_extrema=0.0)
                 candidates = []
                 if valid.any():
-                    self.filtered = filter_raster(fill_missing(raw, valid), sample_step=request.sample_step,
+                    stage = time.perf_counter_ns()
+                    filled = fill_missing(raw, valid)
+                    timings["server_fill_missing"] = (time.perf_counter_ns() - stage) / 1e6
+                    stage = time.perf_counter_ns()
+                    self.filtered = filter_raster(filled, sample_step=request.sample_step,
                                                   **self.config)
+                    timings["server_filter"] = (time.perf_counter_ns() - stage) / 1e6
+                    stage = time.perf_counter_ns()
                     candidates = extract_extrema(raw, self.filtered, valid, request.sample_step)
+                    timings["server_extrema"] = (time.perf_counter_ns() - stage) / 1e6
             except ValueError as error:
                 context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(error))
             self.frame_id += 1
             timestamp = round(time.time() * 1000)
-            return messages.InteractionFrame(frame_id=self.frame_id, interactions=[
+            stage = time.perf_counter_ns()
+            response = messages.InteractionFrame(frame_id=self.frame_id, interactions=[
                 messages.Interaction(point_idx=index, z=z, extremum_kind=kind,
                                      type=messages.NONE, touch_id=touch_id, time=timestamp)
                 for touch_id, (kind, index, z) in enumerate(candidates)
             ])
+            timings["server_response_construction"] = (time.perf_counter_ns() - stage) / 1e6
+            timings["server_total"] = (time.perf_counter_ns() - started) / 1e6
+            response.timing.CopyFrom(messages.TimingSample(
+                frame_id=self.frame_id, recorded_at_unix_ms=timestamp, milliseconds=timings))
+            self.record_timing(response.timing)
+            return response

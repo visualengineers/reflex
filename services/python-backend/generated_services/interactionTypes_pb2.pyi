@@ -61,12 +61,14 @@ class Interaction(_message.Message):
     def __init__(self, touch_id: _Optional[int] = ..., point_idx: _Optional[int] = ..., z: _Optional[float] = ..., type: _Optional[_Union[InteractionType, str]] = ..., time: _Optional[int] = ..., extremum_kind: _Optional[_Union[ExtremumKind, str]] = ...) -> None: ...
 
 class InteractionFrame(_message.Message):
-    __slots__ = ["frame_id", "interactions"]
+    __slots__ = ["frame_id", "interactions", "timing"]
     FRAME_ID_FIELD_NUMBER: _ClassVar[int]
     INTERACTIONS_FIELD_NUMBER: _ClassVar[int]
+    TIMING_FIELD_NUMBER: _ClassVar[int]
     frame_id: int
     interactions: _containers.RepeatedCompositeFieldContainer[Interaction]
-    def __init__(self, frame_id: _Optional[int] = ..., interactions: _Optional[_Iterable[_Union[Interaction, _Mapping]]] = ...) -> None: ...
+    timing: TimingSample
+    def __init__(self, frame_id: _Optional[int] = ..., interactions: _Optional[_Iterable[_Union[Interaction, _Mapping]]] = ..., timing: _Optional[_Union[TimingSample, _Mapping]] = ...) -> None: ...
 
 class Point3d(_message.Message):
     __slots__ = ["i_x", "i_y", "is_filtered", "is_valid", "x", "y", "z"]
@@ -127,6 +129,47 @@ class StateResponse(_message.Message):
     isReady: bool
     protocol_version: int
     def __init__(self, isReady: bool = ..., frame_id: _Optional[int] = ..., protocol_version: _Optional[int] = ...) -> None: ...
+
+class TimingAck(_message.Message):
+    __slots__ = []
+    def __init__(self) -> None: ...
+
+class TimingRequest(_message.Message):
+    __slots__ = ["after_sequence"]
+    AFTER_SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    after_sequence: int
+    def __init__(self, after_sequence: _Optional[int] = ...) -> None: ...
+
+class TimingResponse(_message.Message):
+    __slots__ = ["latest_sequence", "oldest_sequence", "samples", "session_id"]
+    LATEST_SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    OLDEST_SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    SAMPLES_FIELD_NUMBER: _ClassVar[int]
+    SESSION_ID_FIELD_NUMBER: _ClassVar[int]
+    latest_sequence: int
+    oldest_sequence: int
+    samples: _containers.RepeatedCompositeFieldContainer[TimingSample]
+    session_id: str
+    def __init__(self, samples: _Optional[_Iterable[_Union[TimingSample, _Mapping]]] = ..., latest_sequence: _Optional[int] = ..., oldest_sequence: _Optional[int] = ..., session_id: _Optional[str] = ...) -> None: ...
+
+class TimingSample(_message.Message):
+    __slots__ = ["frame_id", "milliseconds", "recorded_at_unix_ms", "sequence"]
+    class MillisecondsEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: float
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[float] = ...) -> None: ...
+    FRAME_ID_FIELD_NUMBER: _ClassVar[int]
+    MILLISECONDS_FIELD_NUMBER: _ClassVar[int]
+    RECORDED_AT_UNIX_MS_FIELD_NUMBER: _ClassVar[int]
+    SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    frame_id: int
+    milliseconds: _containers.ScalarMap[str, float]
+    recorded_at_unix_ms: int
+    sequence: int
+    def __init__(self, sequence: _Optional[int] = ..., frame_id: _Optional[int] = ..., recorded_at_unix_ms: _Optional[int] = ..., milliseconds: _Optional[_Mapping[str, float]] = ...) -> None: ...
 
 class InteractionType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
