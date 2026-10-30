@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using Google.Protobuf;
+using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Compression;
 using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -18,10 +21,18 @@ namespace TrackingServer.Services;
 public class RemoteInteractionProcessingService : IRemoteInteractionProcessorService, IDisposable
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static readonly Metadata GzipRequestHeaders = new()
+    {
+        { "grpc-internal-encoding-request", "gzip" }
+    };
+    private const int CompressionThresholdBytes = 64 * 1024;
 
     private InteractionProcessing.InteractionProcessingClient? _client;
     private GrpcChannel? _channel;
     private bool _supportsFloat32Payload;
+    private bool _requestCompressionEnabled = !string.Equals(
+        Environment.GetEnvironmentVariable("REFLEX_GRPC_REQUEST_COMPRESSION"), "identity",
+        StringComparison.OrdinalIgnoreCase);
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
     private readonly IEventAggregator? _eventAggregator;
@@ -74,7 +85,13 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsBusy = true;
 
             // The port number must match the port of the gRPC server.
-            _channel = GrpcChannel.ForAddress(_config.Address);
+            _channel = GrpcChannel.ForAddress(_config.Address, new GrpcChannelOptions
+            {
+                CompressionProviders = new ICompressionProvider[]
+                {
+                    new GzipCompressionProvider(CompressionLevel.Fastest)
+                }
+            });
             _client = new InteractionProcessing.InteractionProcessingClient(_channel);
             var status = await _client.GetStateAsync(new StateRequest());
             if (status.ProtocolVersion != 2)
@@ -86,6 +103,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 Cutoff = (float)_config.CutOff, Factor = (float)_config.Factor
             });
             IsConnected = configured.Success;
+            Logger.Info($"Remote request compression: {(_requestCompressionEnabled ? "gzip (Fastest), payloads >= 64 KiB" : "identity")}.");
             IsBusy = false;
         }
         catch (Exception exc)
@@ -174,7 +192,22 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 timer.Restart();
             }
 
-            var reply = await _client.ComputeInteractionsAsync(values);
+            var compress = _requestCompressionEnabled &&
+                values.ZFloat32Le.Length + values.Z.Count * sizeof(float) >= CompressionThresholdBytes;
+            ReFlex.gRpc.InteractionFrame reply;
+            try
+            {
+                // Compression stays inside the measured RPC duration, including its CPU cost.
+                reply = await _client.ComputeInteractionsAsync(values, headers: compress ? GzipRequestHeaders : null);
+            }
+            catch (RpcException error) when (compress && error.StatusCode == StatusCode.Unimplemented &&
+                error.Status.Detail.Contains("compression", StringComparison.OrdinalIgnoreCase))
+            {
+                // An unsupported encoding is rejected before application processing.
+                _requestCompressionEnabled = false;
+                Logger.Warn(error, "Remote peer does not support gzip; retrying with identity encoding.");
+                reply = await _client.ComputeInteractionsAsync(values);
+            }
 
             if (timer != null)
             {

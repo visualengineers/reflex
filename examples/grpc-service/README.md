@@ -172,6 +172,17 @@ read-ahead for full-resolution requests. Channel reuse and byte-payload negotiat
 remain unchanged. The transport-overhead metric also includes runtime scheduling
 and serialization; it is not a pure network-latency measurement.
 
+The C# client additionally uses lossless gRPC gzip compression at `Fastest` for
+depth payloads of at least 64 KiB. Small state/config/diagnostic messages stay
+uncompressed. This changes the wire encoding, not the protobuf schema, float32
+depths, NaN mask or processing precision. Compression and decompression CPU time
+remain inside `client_rpc_roundtrip` and the derived overhead metric. A peer that
+explicitly rejects the compression algorithm is retried once without compression;
+later calls use identity encoding. Set `REFLEX_GRPC_REQUEST_COMPRESSION=identity`
+before starting the C# process to disable request compression for comparisons or
+poorly compressible input. Gzip is enabled by default; the benefit depends on the
+actual point-cloud data and transport path and should be measured end to end.
+
 ## Tests and shutdown
 
 All test RPCs use private listeners, independent of the running sensor service:

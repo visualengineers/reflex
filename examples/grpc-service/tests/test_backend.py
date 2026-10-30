@@ -100,6 +100,22 @@ class BackendTest(unittest.TestCase):
         self.assertEqual(snapshot['raw'][1:], [1]*599)
         self.assertEqual(len(snapshot['filtered']), 600)
 
+    def test_gzip_and_identity_preserve_full_resolution_candidates_and_snapshot(self):
+        y, x = np.mgrid[:480, :640]
+        raw = (1.45 - .1*np.exp(-((x-250)**2+(y-200)**2)/500)).astype('<f4')
+        raw[0, 0] = np.nan
+        req = messages.DepthValues1d(width=640, height=480, sample_step=1,
+            zero_plane=1.45, z_float32_le=raw.tobytes())
+        identity = self.client.ComputeInteractions(req, timeout=3)
+        first_snapshot = self.wait_snapshot(identity.frame_id)
+        compressed = self.client.ComputeInteractions(req, compression=grpc.Compression.Gzip, timeout=3)
+        second_snapshot = self.wait_snapshot(compressed.frame_id)
+        self.assertGreater(len(identity.interactions), 0)
+        self.assertEqual([(i.point_idx, i.z, i.extremum_kind) for i in identity.interactions],
+                         [(i.point_idx, i.z, i.extremum_kind) for i in compressed.interactions])
+        self.assertEqual(first_snapshot['raw'], second_snapshot['raw'])
+        self.assertEqual(first_snapshot['filtered'], second_snapshot['filtered'])
+
     def test_timing_history_and_client_report(self):
         baseline = self.client.GetTimings(messages.TimingRequest(), timeout=3)
         self.assertEqual(baseline.latest_sequence, 0)
