@@ -24,6 +24,8 @@
   * includes a connection/settings panel and a debug overlay for visualizing interaction points
   * provides reusable plugin code and assets for integration into other Unreal projects
 
+![Screenshot of Unreal Engine Example](/reflex/assets/img/templates/unreal.jpg)
+
 The plugin originated in the [DisPlay case study]({{ site.baseurl }}/knowledge/case-studies/display.html). The original integration used an external Socket.IO plugin and an intermediate web application to translate messages from the dSense framework. The ReFlex version replaces this bridge with Unreal Engine's native WebSocket interface. It packages the connection actor, JSON deserialization and Blueprint data types together so that application logic can also be implemented entirely in Blueprints.
 
 __[⬆ back to top](#table-of-contents)__
@@ -66,6 +68,8 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Plugin architecture and interaction data
 
+![Plugin structure with most relevant classes and members]({{ site.baseurl }}/assets/img/templates/ue_plugin.png){:.full-width-scheme .transparent-background}
+
 The plugin separates websocket communication, deserialization and application logic:
 
 | Component | Purpose |
@@ -101,6 +105,84 @@ To map a normalized position to a viewport with a pixel offset, use `pixelX = le
 __[⬆ back to top](#table-of-contents)__
 
 ## Connecting Blueprints
+
+Blueprint-Class (Header-File) that handles the connection between Unreal and the ReFlex-Framework:
+
+``` cpp
+
+  #pragma once
+
+  #include "CoreMinimal.h"
+  #include "GameFramework/Actor.h"
+
+  #include "IWebSocket.h"
+  #include "MessageSerializer.h"
+
+  #include "ReFlexWebSocketConnection.generated.h"
+
+  UCLASS()
+  class REFLEX_WEBSOCKETS_API AReFlexWebSocketConnection : public AActor
+  {
+    GENERATED_BODY()
+
+    protected:
+
+    virtual void BeginPlay() override;
+    virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+
+    public:
+
+    // Sets default values for this actor's properties
+    AReFlexWebSocketConnection();
+
+    virtual void Tick(float DeltaTime) override;
+
+    // use to convert recevied JSON messages to UDepthInteraction
+    UPROPERTY(BlueprintReadOnly, Category="ReFlex|Data")
+    UMessageSerializer* Serializer;
+
+    // Blueprint Property for connection state
+    UPROPERTY(BlueprintReadOnly, Category="ReFlex|Websockets")
+    bool IsConnected;
+
+    // Blueprint Variable for specifying the websocket address
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ReFlex|Websockets")
+    FString ServerURL = TEXT("ws://127.0.0.1:8001/ReFlex");
+
+    // Blueprint Event triggered after connection is established
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ReFlex|Websockets")
+    void ConnectionSuccessful();
+
+    virtual void ConnectionSuccessful_Implementation();
+
+    // Blueprint event for receiving Interactions
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ReFlex|Websockets")
+
+    void MessageReceived(const FString& Message);
+    virtual void MessageReceived_Implementation(const FString& Message);
+
+    // Blueprint event triggered when connection is closed
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ReFlex|Websockets")
+    void ConnectionClosed(int32 StatusCode, const FString& Reason, bool bWasClean);
+
+    virtual void ConnectionClosed_Implementation(int32 StatusCode, const FString& Reason, bool bWasClean);
+
+    // Blueprint event for connection errors
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="ReFlex|Websockets")
+
+    void ConnectionError(const FString& Error);
+    virtual void ConnectionError_Implementation(const FString& Error);
+
+    // Blueprint function to establish connection
+    UFUNCTION(BlueprintCallable, Category="ReFlex|Websockets")
+    void ConnectToWebsocket();
+
+    // Blueprint function to close connection
+    UFUNCTION(BlueprintCallable, Category="ReFlex|Websockets")
+    void DisconnectFromWebsocket();
+
+  };
+```
 
 ### Add the connection actor
 
