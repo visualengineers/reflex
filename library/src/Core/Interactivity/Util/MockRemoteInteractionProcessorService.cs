@@ -25,7 +25,7 @@ public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessor
         return IsConnected;
     }
 
-    public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, float zeroPlane, ProcessPerformance measurement, bool measurePerformance)
+    public async Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, float zeroPlane, ProcessPerformance measurement, bool measurePerformance)
     {
       var result = new List<Interaction>();
 
@@ -44,6 +44,6 @@ public class MockRemoteInteractionProcessorService : IRemoteInteractionProcessor
         result.Add(interaction);
       });
 
-      return new Tuple<IList<Interaction>, ProcessPerformance>(result, measurement);
+      return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, measurement);
     }
 }

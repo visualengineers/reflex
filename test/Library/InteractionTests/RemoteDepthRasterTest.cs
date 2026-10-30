@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -84,7 +85,10 @@ public class RemoteDepthRasterTest
     {
         public Processor() : base(new MockRemoteInteractionProcessorService()) { }
         public static List<Interaction> Classify(IEnumerable<Interaction> items,float plane,float zone)
-            =>ClassifyCandidates(items,plane,zone);
+        {
+            var processor = new Processor { Distance = plane, MinDistance = zone, MaxDistance = .25f };
+            return processor.ConvertDepthValue(items.ToList());
+        }
     }
 
     [Test]
@@ -100,8 +104,8 @@ public class RemoteDepthRasterTest
         Assert.That(result.Count,Is.EqualTo(2));
         Assert.That(push.Type,Is.EqualTo(InteractionType.Push));
         Assert.That(pull.Type,Is.EqualTo(InteractionType.Pull));
-        Assert.That(push.Position.Z,Is.EqualTo(1.3f));
-        Assert.That(pull.Position.Z,Is.EqualTo(1.6f));
+        Assert.That(push.Position.Z,Is.EqualTo((1.45f-1.3f-.01f)/(.01f-.25f)).Within(.00001));
+        Assert.That(pull.Position.Z,Is.EqualTo((1.6f-.01f-1.45f)/(.25f-.01f)).Within(.00001));
         Assert.That(Processor.Classify(new[]{new Interaction{Position=new Point3(0,0,1.45f)}},1.45f,0),Is.Empty);
     }
 }

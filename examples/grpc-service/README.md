@@ -4,7 +4,8 @@ Two containers demonstrate spatial interaction extraction using the existing
 Python backend and a live Jupyter notebook. The tracking server runs on the host.
 The notebook shows 2D input depth, the actual SOS-filter output and geometric
 extrema. ReFlex classifies those candidates against its ZeroPlane and applies its
-dead zone, normalisation, smoothing and spatial classification afterwards.
+dead zone, normalisation, spatial classification, intermediate-extremum removal,
+smoothing and confidence filtering afterwards.
 
 ## Start and upgrade
 
@@ -72,7 +73,12 @@ Too large a skip or an unsuitable cutoff produces `INVALID_ARGUMENT`.
 
 The wire response has `extremum_kind=MINIMUM/MAXIMUM` and `type=NONE`. ReFlex decides
 PUSH for absolute `z < Distance`, PULL for `z > Distance`, discarding values within
-its `MinDistance` dead zone. A geometric maximum is not automatically a pull.
+its `MinDistance` dead zone. A geometric maximum is not automatically a pull. Remote uses the same pipeline
+as MultiTouch: intermediate extrema are removed before history, and touches are
+published only when confidence exceeds `MinConfidence`. New touches can therefore
+take several frames to appear; the notebook shows candidates before these filters.
+SingleTouch also shares this pipeline and may publish multiple historical IDs,
+even though it extracts only one candidate per frame.
 Notebook marker shapes show geometry; colours illustrate the depth sign only,
 without applying ReFlex's dead zone. Candidate depths are original measurements.
 IDs remain per-frame and Python timestamps remain Unix milliseconds.

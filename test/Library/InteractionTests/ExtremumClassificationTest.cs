@@ -55,10 +55,10 @@ public class ExtremumClassificationTest
         public bool SendCompleteDataset { get; set; }
         public Task<bool> Connect() => Task.FromResult(true);
         public Task<bool> Disconnect() => Task.FromResult(false);
-        public Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 cloud, float zeroPlane,
+        public Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Update(PointCloud3 cloud, float zeroPlane,
             ProcessPerformance measurement, bool measurePerformance)
         {
-            IList<Interaction> candidates = new List<Interaction>
+            IEnumerable<Interaction> candidates = new List<Interaction>
             {
                 new() { Position = new Point3(PushX, 20, cloud[PushX, 20].Z), Confidence = 1 },
                 new() { Position = new Point3(60, 20, cloud[60, 20].Z), Confidence = 1 }
