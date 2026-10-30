@@ -35,7 +35,11 @@ docker compose -f examples/grpc-service/compose.yaml cp notebook:/home/reflex/wo
 docker compose -f examples/grpc-service/compose.yaml cp examples/grpc-service/notebooks/live-interactions.ipynb notebook:/home/reflex/work/live-interactions.ipynb
 ```
 
-Reload the notebook and restart its kernel after upgrading the backend/bindings.
+Reload the notebook from disk and restart its kernel after upgrading the backend/bindings.
+If the third plot has no markers despite non-empty snapshot interactions, check for an
+old notebook that filters `type` for `PUSH`/`PULL`. Protocol v2 deliberately returns
+`type=NONE`: markers must use `extremum_kind` (`MINIMUM`/`MAXIMUM`), with colours
+derived from depth relative to ZeroPlane. Replace the persisted notebook as above.
 
 ## Modes
 

@@ -162,6 +162,7 @@ The reusable `python-grpc-test.yml` CI workflow builds the notebook Docker targe
 | Live sensor | Positions follow actual deformations; notebook remains an observer. |
 | Stop processing | Last frame remains visible and becomes stale. |
 | Restart backend | Old snapshot clears; frames resume after ReFlex reconnects. |
+| Non-empty candidates but no markers | Replace an old persisted notebook: v2 markers use `extremum_kind`, not the wire `type=NONE`. Reload from disk and restart the kernel. |
 | Old protocol peer | Explicit incompatibility error, not silently misinterpreted arrays. |
 | Invalid raster/filter settings | `INVALID_ARGUMENT`; a corrected request can succeed afterwards. |
 
