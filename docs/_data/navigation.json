@@ -211,6 +211,12 @@
                             "type": "page"
                         },
                         {
+                            "name": "gRPC and Jupyter",
+                            "path": "/software/templates/",
+                            "file": "grpc-service.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Unity",
                             "path": "/software/templates/",
                             "file": "unity.html",

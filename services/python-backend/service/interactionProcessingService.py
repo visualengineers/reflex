@@ -28,7 +28,7 @@ class InteractionProcessingServicer(interactionService_pb2_grpc.InteractionProce
         y = filtfilt(b, a, data)
         return y
 
-    def create_interaction(self, p_cloud: interactionTypes_pb2.PointCloud3d, t: str, idx: int, touch_id: int):
+    def create_interaction(self, p_cloud: interactionTypes_pb2.DepthValues1d, t: str, idx: int, touch_id: int):
 
         z = p_cloud.z[idx]
         touch_type = t
@@ -54,10 +54,10 @@ class InteractionProcessingServicer(interactionService_pb2_grpc.InteractionProce
         self.__cutOff = cfg.cutoff
         self.__factor = cfg.factor
 
-        return interactionTypes_pb2.ConfigResponse(True)
+        return interactionTypes_pb2.ConfigResponse(success=True)
 
     def ComputeInteractions(self, request, context):
-        p_cloud = typing.cast(interactionTypes_pb2.PointCloud3d, request)
+        p_cloud = typing.cast(interactionTypes_pb2.DepthValues1d, request)
 
         self.__frameId += 1
         interactions = []
