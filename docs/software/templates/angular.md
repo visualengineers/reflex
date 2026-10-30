@@ -21,6 +21,8 @@
   * displays the connection state, websocket address, received frame count and current number of touches
   * displays received interactions as JSON in a message history
 
+![Screenshot of basic angular example](/reflex/assets/img/templates/angular.png)
+
 Like the [Plain HTML template]({{ site.baseurl }}/software/templates/plain_html.html), this example demonstrates how to connect to ReFlex and receive interaction data. It provides a starting point for an Angular client: websocket communication is encapsulated in a service, and components consume the data through observables. The templates reduce the initial setup effort by extracting the essential integration code from earlier projects and presenting it with a consistent visual design.
 
 __[⬆ back to top](#table-of-contents)__
@@ -142,6 +144,8 @@ The package `@reflex/shared-types` in `packages/reflex-shared-types/` provides r
 ### Angular component library
 
 The separate package `@reflex/angular-components` in `packages/reflex-angular-components/` provides reusable interface elements extracted from the server frontend, together with shared styles and assets. Its public components include `PanelHeaderComponent`, `SettingsGroupComponent`, `OptionCheckboxComponent`, `ValueSelectionComponent`, `ValueSliderComponent` and `ValueTextComponent`.
+
+See the [component documentation]({{ site.baseurl }}/design/components.html) for the available interface elements and the [style guide]({{ site.baseurl }}/design/style-guide.html) for the shared visual design.
 
 The `basic-angular` template implements its own visualization, status and history components and does not import this library. For an interactive demonstration of the shared components, their setup and the style guide, use the separate project in `examples/shared-components-demo/`. After installing the workspace dependencies, run these commands from the repository root:
 
