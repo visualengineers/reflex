@@ -23,6 +23,13 @@ def gated_snapshot(path, payload, started, release):
     write_snapshot(path, payload)
 
 
+def fail_first_snapshot(path, payload, attempted):
+    if not attempted.is_set():
+        attempted.set()
+        raise OSError("Simulated snapshot write failure")
+    write_snapshot(path, payload)
+
+
 class BackendTest(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
@@ -172,3 +179,21 @@ class BackendTest(unittest.TestCase):
         self.assertEqual(batch.oldest_sequence, 5)
         self.assertEqual(batch.latest_sequence, 4100)
         self.assertNotEqual(batch.session_id, InteractionProcessingServicer().timing_session)
+
+    def test_snapshot_failure_recovers_and_shutdown_flushes_latest_frame(self):
+        self.server.stop(0).wait()
+        self.channel.close()
+        attempted = multiprocessing.get_context('spawn').Event()
+        self.server, port = create_server(self.path, '127.0.0.1:0',
+            writer=partial(fail_first_snapshot, attempted=attempted))
+        self.server.start()
+        self.channel = grpc.insecure_channel(f'127.0.0.1:{port}', options=OPTIONS)
+        self.client = rpc.InteractionProcessingStub(self.channel)
+        req = messages.DepthValues1d(z=[1]*9, width=3, height=3, sample_step=1)
+        self.client.ComputeInteractions(req, timeout=3)
+        self.assertTrue(attempted.wait(3))
+        latest = self.client.ComputeInteractions(req, timeout=3)
+        worker = self.server.processor.publisher.process
+        self.server.stop(0).wait()
+        self.assertFalse(worker.is_alive())
+        self.assertEqual(json.loads(self.path.read_text())['frame_id'], latest.frame_id)

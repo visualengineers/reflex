@@ -1,10 +1,12 @@
 """Spatial extrema extraction. Push/Pull classification belongs to ReFlex."""
 import math
+import os
 import threading
 import time
 import uuid
 from collections import deque
 from functools import lru_cache
+from concurrent.futures import ThreadPoolExecutor
 
 import grpc
 import numpy as np
@@ -15,6 +17,8 @@ from generated_services import interactionService_pb2_grpc, interactionTypes_pb2
 
 PROTOCOL_VERSION = 2
 MIN_CONTRAST = 0.0005
+FILTER_WORKERS = max(1, min(8, int(os.getenv("REFLEX_FILTER_WORKERS", "2"))))
+_FILTER_EXECUTOR = ThreadPoolExecutor(max_workers=FILTER_WORKERS, thread_name_prefix="raster-filter")
 
 
 def reconstruct_raster(request):
@@ -54,8 +58,20 @@ def filter_coefficients(cutoff, factor, sample_step):
 def filter_raster(data, cutoff, factor, sample_step):
     sos = filter_coefficients(cutoff, factor, sample_step)
     # Order 5 has a default SOS pad length of 18; also support small rasters.
-    result = sosfiltfilt(sos, data, axis=1, padlen=min(18, data.shape[1] - 1))
-    return sosfiltfilt(sos, result, axis=0, padlen=min(18, data.shape[0] - 1))
+    x_pad, y_pad = min(18, data.shape[1] - 1), min(18, data.shape[0] - 1)
+    if FILTER_WORKERS == 1 or data.size < 65536 or min(data.shape) < FILTER_WORKERS:
+        result = sosfiltfilt(sos, data, axis=1, padlen=x_pad)
+        return sosfiltfilt(sos, result, axis=0, padlen=y_pad)
+    # Split perpendicular to the filtered axis: each complete signal keeps its
+    # original padding, initial conditions and forward/backward arithmetic.
+    rows = np.array_split(data, FILTER_WORKERS, axis=0)
+    result = np.concatenate(list(_FILTER_EXECUTOR.map(
+        lambda block: sosfiltfilt(sos, block, axis=1, padlen=x_pad), rows)), axis=0)
+    columns = np.array_split(result, FILTER_WORKERS, axis=1)
+    filtered = _FILTER_EXECUTOR.map(
+        lambda block: sosfiltfilt(sos, np.ascontiguousarray(block.T), axis=1, padlen=y_pad).T,
+        columns)
+    return np.concatenate(list(filtered), axis=1)
 
 
 def extract_extrema(raw, filtered, valid, sample_step):

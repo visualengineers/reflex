@@ -88,6 +88,12 @@ Butterworth SOS coefficients are cached for up to 32 combinations of cutoff,
 factor and sample step; filter order, precision, padding and forward/backward
 filtering remain unchanged.
 
+Rasters with at least 65536 samples are filtered by two reusable worker threads.
+Work is split perpendicular to the filtered axis, preserving each complete row
+and column, its padding and initial conditions. Small rasters use the serial path.
+Set `REFLEX_FILTER_WORKERS=1` in the backend environment for serial operation;
+values from 2 to 8 select the worker count. Float64 arithmetic is retained.
+
 Effective filter sampling rate is `Factor/sample_step`; require
 `0 < CutOff < Factor/(2*sample_step)`. Both raster dimensions must be at least three.
 Too large a skip or an unsuitable cutoff produces `INVALID_ARGUMENT`.
@@ -107,11 +113,12 @@ IDs remain per-frame and Python timestamps remain Unix milliseconds.
 
 Snapshots overwrite one JSON file atomically; missing values are encoded as `null`.
 The notebook mounts snapshots read-only. A separate process constructs the lists,
-encodes JSON and writes the file. The processing path only enqueues frame references
-in a bounded queue with at most one pending frame, replacing stale work where
-possible. If the queue feeder is still transferring an item, a new snapshot can
-be skipped rather than delaying the RPC. The spatial view can therefore skip
-frames; processing results and per-frame timing history remain independent.
+encodes JSON and writes the file. The processing path coalesces frame references
+in a local single-frame mailbox. A dispatcher transfers the latest pending frame
+only when the snapshot process is ready. This avoids serializing and then receiving
+and unpickling obsolete multi-megabyte frames on the gRPC handler thread. The
+spatial view can skip frames; processing results and per-frame timing history
+remain independent. One frame may be in flight while one newer frame is pending.
 The worker drains pending work and stops when the gRPC server shuts down.
 
 ## Pipeline timing measurements
@@ -153,6 +160,11 @@ stage timings but adds load. `server_snapshot_enqueue` is included in
 in the separate process and is outside the synchronous pipeline. Background
 timings only exist for completed published snapshots and must not be added to
 RPC latency. Only successful frames are recorded, not failures/skips.
+
+The Python gRPC endpoints advertise 1 MiB HTTP/2 DATA frames and 2 MiB stream
+read-ahead for full-resolution requests. Channel reuse and byte-payload negotiation
+remain unchanged. The transport-overhead metric also includes runtime scheduling
+and serialization; it is not a pure network-latency measurement.
 
 ## Tests and shutdown
 

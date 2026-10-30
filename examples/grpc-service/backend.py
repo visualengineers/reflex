@@ -20,7 +20,11 @@ from service.interactionProcessingService import InteractionProcessingServicer, 
 
 MAX_MESSAGE_LENGTH = 8 * 1024 * 1024
 OPTIONS = [("grpc.max_receive_message_length", MAX_MESSAGE_LENGTH),
-           ("grpc.max_send_message_length", MAX_MESSAGE_LENGTH)]
+           ("grpc.max_send_message_length", MAX_MESSAGE_LENGTH),
+           # Requests contain ~1.2 MB at 640x480: advertise larger DATA frames
+           # and stream read-ahead instead of many small transfer bursts.
+           ("grpc.http2.max_frame_size", 1024 * 1024),
+           ("grpc.http2.lookahead_bytes", 2 * 1024 * 1024)]
 
 
 def write_snapshot(path, payload):
@@ -49,7 +53,7 @@ def write_snapshot(path, payload):
     os.replace(temporary, path)
 
 
-def snapshot_worker(path, pending, completed, stopping, writer):
+def snapshot_worker(path, pending, completed, stopping, ready, writer):
     while True:
         try:
             payload = pending.get(timeout=0.1)
@@ -59,44 +63,62 @@ def snapshot_worker(path, pending, completed, stopping, writer):
             continue
         started = time.perf_counter_ns()
         try:
-            writer(path, payload)
-        except Exception:
-            logging.exception("Could not publish notebook snapshot")
-            continue
-        elapsed = (time.perf_counter_ns() - started) / 1e6
-        try:
-            completed.put_nowait((payload[1].frame_id, elapsed))
-        except Full:
-            pass  # Bounded diagnostics too; never block snapshot publication.
+            try:
+                writer(path, payload)
+            except Exception:
+                logging.exception("Could not publish notebook snapshot")
+                continue
+            elapsed = (time.perf_counter_ns() - started) / 1e6
+            try:
+                completed.put_nowait((payload[1].frame_id, elapsed))
+            except Full:
+                pass  # Bounded diagnostics too; never block snapshot publication.
+        finally:
+            ready.release()
 
 
 class SnapshotPublisher:
-    """One pending frame, replacing stale work. A process avoids JSON's GIL cost."""
+    """Coalesce references locally; transfer only when the snapshot process is ready."""
     def __init__(self, path, writer=write_snapshot):
         ctx = multiprocessing.get_context("spawn")
         self.pending = ctx.Queue(maxsize=1)
         self.completed = ctx.Queue(maxsize=64)
         self.stopping = ctx.Event()
+        self.ready = ctx.Semaphore(1)
+        self._condition = threading.Condition()
+        self._latest = None
+        self._closing = False
+        self._abort_dispatch = threading.Event()
         self.process = ctx.Process(target=snapshot_worker,
-            args=(Path(path), self.pending, self.completed, self.stopping, writer), daemon=True)
+            args=(Path(path), self.pending, self.completed, self.stopping, self.ready, writer), daemon=True)
         self.process.start()
+        self._dispatcher = threading.Thread(target=self._dispatch, name="snapshot-dispatch", daemon=True)
+        self._dispatcher.start()
 
     def submit(self, payload):
-        if self.stopping.is_set():
-            return
-        try:
-            self.pending.put_nowait(payload)
-        except Full:
-            try:
-                self.pending.get_nowait()
-            except Empty:
-                # The multiprocessing feeder may still be transferring that item.
-                # Drop this snapshot rather than delaying the RPC.
+        with self._condition:
+            if self._closing:
                 return
+            # Replacing references is constant work. In particular, never receive
+            # or unpickle a multi-megabyte stale frame on the gRPC handler thread.
+            self._latest = payload
+            self._condition.notify()
+
+    def _dispatch(self):
+        while not self._abort_dispatch.is_set():
+            with self._condition:
+                self._condition.wait_for(lambda: self._latest is not None or self._closing)
+                if self._latest is None and self._closing:
+                    return
+            if not self.ready.acquire(timeout=0.1):
+                continue
+            with self._condition:
+                payload, self._latest = self._latest, None
             try:
                 self.pending.put_nowait(payload)
-            except Full:
-                pass
+            except (Full, ValueError):
+                self.ready.release()
+                logging.exception("Could not dispatch notebook snapshot")
 
     def collect(self):
         while True:
@@ -106,6 +128,13 @@ class SnapshotPublisher:
                 return
 
     def close(self):
+        with self._condition:
+            self._closing = True
+            self._condition.notify_all()
+        self._dispatcher.join(timeout=3)
+        if self._dispatcher.is_alive():
+            self._abort_dispatch.set()
+            self._dispatcher.join(timeout=0.5)
         self.stopping.set()
         self.process.join(timeout=3)
         if self.process.is_alive():

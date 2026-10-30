@@ -172,6 +172,22 @@ class ExtractionTest(unittest.TestCase):
         raw = np.full((480,640),1.45)
         np.testing.assert_allclose(filter_raster(raw,.1,100,1),raw,atol=1e-9,rtol=0)
 
+    def test_parallel_filter_preserves_serial_results_and_input(self):
+        from scipy.signal import sosfiltfilt
+        rng = np.random.default_rng(640480)
+        for shape, cutoff, factor, step in (((480, 640), 2, 100, 1),
+                                           ((257, 259), 2, 100, 2),
+                                           ((3, 22000), .1, 1200, 1)):
+            with self.subTest(shape=shape, step=step):
+                data = 1.45 + rng.normal(0, .01, size=shape)
+                original = data.copy()
+                sos = filter_coefficients(cutoff, factor, step)
+                expected = sosfiltfilt(sos, data, axis=1, padlen=min(18, shape[1]-1))
+                expected = sosfiltfilt(sos, expected, axis=0, padlen=min(18, shape[0]-1))
+                actual = filter_raster(data, cutoff, factor, step)
+                np.testing.assert_array_equal(actual, expected)
+                np.testing.assert_array_equal(data, original)
+
 
 if __name__ == '__main__':
     unittest.main()
