@@ -245,11 +245,20 @@ __[⬆ back to top](#table-of-contents)__
 | `GET` | `/api/Processing/GetObserverType` | - | `uint` | Returns the currently set `ObserverType` as a numeric enum value. |
 | `GET` | `/api/Processing/GetObserverTypes` | - | `string[]` | Returns all available `ObserverType` names. |
 | `GET` | `/api/Processing/GetRemoteProcessorSettings` | - | `RemoteProcessingServiceSettings` | Returns the remote processing configuration. |
+| `GET` | `/api/Processing/GzipCompression` | - | `bool` | Returns the requested gzip setting. |
+| `POST` | `/api/Processing/GzipCompression` | Body: JSON `true` or `false` | `bool` or `400` | Enables/disables gzip for subsequent large remote requests. |
 | `GET` | `/api/Processing/IsLoopRunning` | - | `JsonSimpleValue<bool>` | Returns whether the processing loop is running. Name: `IsLoopRunning`. |
 | `POST` | `/api/Processing/SetUpdateInterval` | Body: `JsonSimpleValue<int>` with `name = "UpdateInterval"` | `JsonSimpleValue<int>` or `400` | Sets the update interval. |
 | `POST` | `/api/Processing/SelectObserverType` | Body: `JsonSimpleValue<string>` with `name = "ObserverType"` | `JsonSimpleValue<string>`, `400` or `500` | Selects a new observer type. |
 | `POST` | `/api/Processing/SetRemoteProcessorSettings` | Body: `RemoteProcessingServiceSettings` | `RemoteProcessingServiceSettings` or `400` | Updates the remote processing configuration. |
 | `PUT` | `/api/Processing/ToggleInteractionProcessing` | - | `JsonSimpleValue<bool>` | Starts or stops interaction processing. Name: `IsProcessing`. |
+
+The remote settings DTO also includes `useGzipCompression` (default `true`). Both
+update routes apply it to the next request without reconnecting. The Processing
+page's **gzip Compression** checkbox uses `SetRemoteProcessorSettings`; **Save**
+persists the current remote settings. The setting requests gzip for payloads of at
+least 64 KiB; peer compatibility fallback and the startup environment override
+`REFLEX_GRPC_REQUEST_COMPRESSION=identity` can still force identity encoding.
 
 __[⬆ back to top](#table-of-contents)__
 

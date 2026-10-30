@@ -30,9 +30,10 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     private InteractionProcessing.InteractionProcessingClient? _client;
     private GrpcChannel? _channel;
     private bool _supportsFloat32Payload;
-    private bool _requestCompressionEnabled = !string.Equals(
+    private readonly bool _requestCompressionAllowed = !string.Equals(
         Environment.GetEnvironmentVariable("REFLEX_GRPC_REQUEST_COMPRESSION"), "identity",
         StringComparison.OrdinalIgnoreCase);
+    private bool _peerSupportsGzip = true;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
     private readonly IEventAggregator? _eventAggregator;
@@ -98,12 +99,13 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 throw new InvalidOperationException($"Remote processor protocol {status.ProtocolVersion} is incompatible; expected version 2 (2D raster). Update the Python backend.");
             if (!status.IsReady) throw new InvalidOperationException("Remote processor is not ready.");
             _supportsFloat32Payload = status.SupportsFloat32Payload;
+            _peerSupportsGzip = true;
             var configured = await _client.ConfigureAsync(new ConfigRequest
             {
                 Cutoff = (float)_config.CutOff, Factor = (float)_config.Factor
             });
             IsConnected = configured.Success;
-            Logger.Info($"Remote request compression: {(_requestCompressionEnabled ? "gzip (Fastest), payloads >= 64 KiB" : "identity")}.");
+            Logger.Info($"Remote request compression: {(_config.UseGzipCompression && _requestCompressionAllowed ? "gzip (Fastest), payloads >= 64 KiB" : "identity")}.");
             IsBusy = false;
         }
         catch (Exception exc)
@@ -192,7 +194,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 timer.Restart();
             }
 
-            var compress = _requestCompressionEnabled &&
+            var compress = _config.UseGzipCompression && _requestCompressionAllowed && _peerSupportsGzip &&
                 values.ZFloat32Le.Length + values.Z.Count * sizeof(float) >= CompressionThresholdBytes;
             ReFlex.gRpc.InteractionFrame reply;
             try
@@ -204,7 +206,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
                 error.Status.Detail.Contains("compression", StringComparison.OrdinalIgnoreCase))
             {
                 // An unsupported encoding is rejected before application processing.
-                _requestCompressionEnabled = false;
+                _peerSupportsGzip = false;
                 Logger.Warn(error, "Remote peer does not support gzip; retrying with identity encoding.");
                 reply = await _client.ComputeInteractionsAsync(values);
             }

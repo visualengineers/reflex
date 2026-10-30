@@ -7,6 +7,8 @@ export interface RemoteProcessingServiceSettings {
 
   completeDataSet: boolean;
 
+  useGzipCompression: boolean;
+
   cutOff: number;
 
   factor: number;
