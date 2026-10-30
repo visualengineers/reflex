@@ -27,7 +27,14 @@ jobs:
           dotnet new tool-manifest --force
           dotnet tool install dotnet-reportgenerator-globaltool     
       - name: execute tests and with code coverage
-        run: dotnet test --collect:"XPlat Code Coverage" --results-directory:${{ github.workspace }}/test/artifacts/coverage-net/cobertura/
+        run: dotnet test ReFlex.sln -c CI /p:Platform=x64 --logger trx --collect:"XPlat Code Coverage" --results-directory:${{ github.workspace }}/test/artifacts/coverage-net/cobertura/
+      - name: Upload .NET test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@main
+        with:
+          name: .NET Test Results (Library)
+          path: ${{ github.workspace }}/test/artifacts/coverage-net/cobertura/**/*.trx
+          if-no-files-found: warn
       - name: generate report
         run: dotnet reportgenerator -reports:"${{ github.workspace }}/test/artifacts/coverage-net/cobertura/**/coverage.cobertura.xml" -targetdir:"${{ github.workspace }}/test/artifacts/coverage-net/report" -reporttypes:"Html_Light;HtmlSummary;Cobertura;XML;XMLSummary;JsonSummary;MarkdownSummaryGithub;Badges" -title:"ReFlex - Library" -assemblyfilters:"+ReFlex.*;-*.Test"
       - name: Attach Report as Build Artifact

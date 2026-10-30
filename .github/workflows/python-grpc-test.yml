@@ -1,0 +1,25 @@
+name: "ReFlex Python: Extraction, gRPC & Notebooks"
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  test_python_grpc:
+    name: test spatial extraction and notebook integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: Build notebook test image
+        id: image
+        run: docker build -f examples/grpc-service/Dockerfile --target notebook -t reflex-grpc-ci .
+      - name: Test extraction and recorded frame (Skip 0, 1, 3)
+        run: docker run --rm --workdir /app reflex-grpc-ci python -m unittest discover -s tests -v
+      - name: Test isolated gRPC service
+        if: ${{ !cancelled() && steps.image.outcome == 'success' }}
+        run: docker run --rm --workdir /app reflex-grpc-ci python -m unittest discover -s /app/example/tests -v
+      - name: Test notebook demo and observe modes
+        if: ${{ !cancelled() && steps.image.outcome == 'success' }}
+        run: docker run --rm reflex-grpc-ci python /app/example/tests/check_notebook.py

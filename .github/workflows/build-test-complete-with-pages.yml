@@ -11,6 +11,9 @@ on:
       - main
 
 jobs:
+  test_python_grpc:
+    name: test Python extraction, gRPC and notebooks
+    uses: ./.github/workflows/python-grpc-test.yml
   # build library, generate test report and upload as artifact
   generate_test-report_library:
     name: build and test library
@@ -60,7 +63,7 @@ jobs:
           key: test-reports
           enableCrossOsArchive: true
   update_pages:
-    needs: [ collect-cache_data ]
+    needs: [ collect-cache_data, test_python_grpc ]
     name: update pages
     uses: ./.github/workflows/pages-deploy.yml
 

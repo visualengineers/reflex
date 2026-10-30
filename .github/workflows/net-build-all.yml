@@ -12,6 +12,9 @@ on:
       - main
 
 jobs:
+  test_python_grpc:
+    name: test Python extraction, gRPC and notebooks
+    uses: ./.github/workflows/python-grpc-test.yml
   # build .NET solution
   build_reflex:
     name: build and test .NET Solution
@@ -25,5 +28,12 @@ jobs:
         shell: pwsh
         working-directory: ${{ github.workspace }}
         run: dotnet build ReFlex.sln -c CI /p:Platform=x64
-      - name: execute tests (no reports)
-        run: dotnet test
+      - name: execute tests
+        run: dotnet test ReFlex.sln -c CI /p:Platform=x64 --logger trx --results-directory "${{ github.workspace }}/test/artifacts/test-results-net"
+      - name: Upload .NET test results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@main
+        with:
+          name: .NET Test Results (Solution)
+          path: ${{ github.workspace }}/test/artifacts/test-results-net/**/*.trx
+          if-no-files-found: warn
