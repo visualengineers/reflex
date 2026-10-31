@@ -141,6 +141,8 @@ These are startup checks, not full interaction or sensor tests. They do not publ
 
 ### .NET
 
+The shared .NET setup reads the SDK version from `global.json` and restores workloads and dependencies for `ReFlex.sln`. On Windows, the MAUI example selects its Windows target rather than also requesting Mac Catalyst.
+
 Both .NET test workflows explicitly execute `ReFlex.sln` with configuration `CI` and platform `x64`. `InteractionTests` is part of that solution, so its raster, classification and observer-pipeline regressions are included without a separate test command. This includes the SingleTouch regression that retains multiple historical IDs internally while publishing at most one point after smoothing.
 
 - `net-build-all.yml` uploads TRX files as `.NET Test Results (Solution)`.
