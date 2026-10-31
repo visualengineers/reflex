@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { InteractionFrame } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
@@ -38,7 +31,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
-    // Add 'implements OnDestroy' to the class.
     this.frameSubscription?.unsubscribe();
   }
 }
