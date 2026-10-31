@@ -1,15 +1,25 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { SignalRBaseService } from './signalR.base.service';
 import { concatMap, map } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, Point3 } from '@reflex/shared-types';
+import {
+  Calibration,
+  CalibrationPoint,
+  CalibrationTransform,
+  CompleteInteractionData,
+  FrameSizeDefinition,
+  Interaction,
+  Point3
+} from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalibrationService extends SignalRBaseService<string> {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl: string;
 
   private readonly calibrationRoute = 'api/Calibration/';
   private readonly getFrameSizeRoute = `${this.calibrationRoute}FrameSize`;
@@ -25,51 +35,93 @@ export class CalibrationService extends SignalRBaseService<string> {
   private readonly updateCalibrationPointRoute = `${this.calibrationRoute}UpdateCalibrationPoint/`;
 
   // eslint-disable-next-line new-cap
-  public constructor(private readonly http: HttpClient, @Inject('BASE_URL') private readonly baseUrl: string, logService: LogService) {
+  public constructor() {
+    const baseUrl = inject<string>('BASE_URL' as unknown);
+    const logService = inject(LogService);
+
     super(`${baseUrl}calibhub`, 'calibrationState', logService);
+
+    this.baseUrl = baseUrl;
   }
 
   public getFrameSize(): Observable<FrameSizeDefinition> {
-    return this.http.get<FrameSizeDefinition>(this.baseUrl + this.getFrameSizeRoute);
+    return this.http.get<FrameSizeDefinition>(
+      this.baseUrl + this.getFrameSizeRoute
+    );
   }
 
   public getCalibrationSourcePoints(): Observable<Array<CalibrationPoint>> {
-    return this.http.get<Array<CalibrationPoint>>(this.baseUrl + this.getSourceValuesRoute);
+    return this.http.get<Array<CalibrationPoint>>(
+      this.baseUrl + this.getSourceValuesRoute
+    );
   }
 
-  public getCurrentCalibrationTargetPoints(): Observable<Array<CalibrationPoint>> {
-    return this.http.get<Array<CalibrationPoint>>(this.baseUrl + this.getTargetValuesRoute);
+  public getCurrentCalibrationTargetPoints(): Observable<
+  Array<CalibrationPoint>
+  > {
+    return this.http.get<Array<CalibrationPoint>>(
+      this.baseUrl + this.getTargetValuesRoute
+    );
   }
 
   public getCalibrationMatrix(): Observable<CalibrationTransform> {
-    return this.http.get<CalibrationTransform>(this.baseUrl + this.getCalibrationMatrixRoute);
+    return this.http.get<CalibrationTransform>(
+      this.baseUrl + this.getCalibrationMatrixRoute
+    );
   }
 
   public applyCalibration(): Observable<CalibrationTransform> {
-    return this.http.get<CalibrationTransform>(this.baseUrl + this.applyCalibrationRoute);
+    return this.http.get<CalibrationTransform>(
+      this.baseUrl + this.applyCalibrationRoute
+    );
   }
 
   public restartCalibration(): Observable<CalibrationTransform> {
-    return this.http.get<CalibrationTransform>(this.baseUrl + this.restartCalibrationRoute);
+    return this.http.get<CalibrationTransform>(
+      this.baseUrl + this.restartCalibrationRoute
+    );
   }
 
   public saveCalibration(): Observable<CalibrationTransform> {
-    return this.http.get<CalibrationTransform>(this.baseUrl + this.saveCalibrationRoute);
+    return this.http.get<CalibrationTransform>(
+      this.baseUrl + this.saveCalibrationRoute
+    );
   }
 
-  public updateFrameSize(newSize: FrameSizeDefinition): Observable<HttpResponse<FrameSizeDefinition>> {
-    return this.http.post<FrameSizeDefinition>(this.baseUrl + this.updateFrameSizeRoute, newSize, { observe: 'response' });
+  public updateFrameSize(
+    newSize: FrameSizeDefinition
+  ): Observable<HttpResponse<FrameSizeDefinition>> {
+    return this.http.post<FrameSizeDefinition>(
+      this.baseUrl + this.updateFrameSizeRoute,
+      newSize,
+      { observe: 'response' }
+    );
   }
 
-  public updateCalibrationPoint(idx: number, target: CalibrationPoint): Observable<HttpResponse<CalibrationTransform>> {
-    return this.http.post<CalibrationTransform>(`${this.baseUrl}${this.updateCalibrationPointRoute}${idx}`, target, { observe: 'response' });
+  public updateCalibrationPoint(
+    idx: number,
+    target: CalibrationPoint
+  ): Observable<HttpResponse<CalibrationTransform>> {
+    return this.http.post<CalibrationTransform>(
+      `${this.baseUrl}${this.updateCalibrationPointRoute}${idx}`,
+      target,
+      { observe: 'response' }
+    );
   }
 
-  public computeCalibratedPosition(rawInteractions: Array<Interaction>): Observable<HttpResponse<Array<Interaction>>> {
-    return this.http.post<Array<Interaction>>(`${this.baseUrl}${this.calibrateInteractionsRoute}`, rawInteractions, { observe: 'response' });
+  public computeCalibratedPosition(
+    rawInteractions: Array<Interaction>
+  ): Observable<HttpResponse<Array<Interaction>>> {
+    return this.http.post<Array<Interaction>>(
+      `${this.baseUrl}${this.calibrateInteractionsRoute}`,
+      rawInteractions,
+      { observe: 'response' }
+    );
   }
 
-  public computeCalibratedAbsolutePosition(rawInteractions: Array<Interaction>): Observable<CompleteInteractionData> {
+  public computeCalibratedAbsolutePosition(
+    rawInteractions: Array<Interaction>
+  ): Observable<CompleteInteractionData> {
     return this.computeCalibratedPosition(rawInteractions).pipe(
       concatMap((result) => {
         let normalized: Array<Interaction> = [];
@@ -77,11 +129,13 @@ export class CalibrationService extends SignalRBaseService<string> {
           normalized = result.body;
         }
 
-        return this.getFrameSize().pipe(map((frame) => ({
-          raw: rawInteractions,
-          normalized: normalized,
-          absolute: this.transform(frame, normalized)
-        })));
+        return this.getFrameSize().pipe(
+          map((frame) => ({
+            raw: rawInteractions,
+            normalized: normalized,
+            absolute: this.transform(frame, normalized)
+          }))
+        );
       })
     );
   }
@@ -92,30 +146,47 @@ export class CalibrationService extends SignalRBaseService<string> {
       (handler) => this.connection.off('Calibration', handler)
     );
 
-    return using(() => {
-      this.connection.send('StartCalibrationSubscription').catch((error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      });
+    return using(
+      () => {
+        this.connection.send('StartCalibrationSubscription').catch((error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        });
 
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      return { unsubscribe: async () => this.connection.send('StopCalibrationSubscription').catch((error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }) };
-    }, () => calibration$);
 
+        return {
+          // @todo: check if this is correct
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          unsubscribe: async () =>
+            this.connection
+              .send('StopCalibrationSubscription')
+              .catch((error) => {
+                console.error(error);
+                this.logService.sendErrorLog(`${error}`);
+              })
+        };
+      },
+      () => calibration$
+    );
   }
 
-  private transform(borders: FrameSizeDefinition, normalized: Array<Interaction>): Array<Interaction> {
-
+  private transform(
+    borders: FrameSizeDefinition,
+    normalized: Array<Interaction>
+  ): Array<Interaction> {
     const calibrated: Array<Interaction> = [];
 
     normalized.forEach((norm) => {
       const x = (norm.position.x * borders.width) + borders.left;
       const y = (norm.position.y * borders.height) + borders.top;
 
-      const absolutePos: Point3 = { x: x, y: y, z: norm.position.z, isValid: norm.position.isValid, isFiltered: norm.position.isFiltered };
+      const absolutePos: Point3 = {
+        x: x,
+        y: y,
+        z: norm.position.z,
+        isValid: norm.position.isValid,
+        isFiltered: norm.position.isFiltered
+      };
       calibrated.push({
         touchId: norm.touchId,
         position: absolutePos,

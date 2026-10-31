@@ -1,11 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MeasureService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+
   private readonly baseRoute = 'api/RecordRawDepth/';
 
   private readonly getIsCapturingRoute = `${this.baseRoute}IsCapturing`;
@@ -16,13 +19,6 @@ export class MeasureService {
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-  public constructor(
-    private readonly http: HttpClient,
-    // eslint-disable-next-line new-cap
-    @Inject('BASE_URL') private readonly baseUrl: string
-  ) {
-  }
 
   public isCapturing(): Observable<boolean> {
     return this.http.get<boolean>(this.baseUrl + this.getIsCapturingRoute);
@@ -37,6 +33,10 @@ export class MeasureService {
   }
 
   public startCapture(captureId: number): Observable<string> {
-    return this.http.put(this.baseUrl + this.recordSamplesRoute, `{ "name" : "captureId", "value": ${captureId}}`, { headers: this.headers, responseType: 'text' });
+    return this.http.put(
+      this.baseUrl + this.recordSamplesRoute,
+      `{ "name" : "captureId", "value": ${captureId}}`,
+      { headers: this.headers, responseType: 'text' }
+    );
   }
 }

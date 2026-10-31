@@ -1,14 +1,15 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { ErrorHandler, Injectable, inject } from '@angular/core';
 import { LogService } from 'src/app/log/log.service';
 
 @Injectable()
 export class CustomErrorHandler implements ErrorHandler {
-  public constructor(private readonly logService: LogService) {
-  }
+  private readonly logService = inject(LogService);
 
   public handleError(error?: unknown): void {
     if (error === undefined) {
-      this.logService.sendErrorLog(`undefined error: no error message specified`);
+      this.logService.sendErrorLog(
+        `undefined error: no error message specified`
+      );
 
       return;
     }

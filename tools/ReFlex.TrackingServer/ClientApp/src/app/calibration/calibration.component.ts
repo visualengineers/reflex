@@ -1,13 +1,36 @@
 /* eslint-disable max-lines */
 import { HttpResponse } from '@angular/common/http';
-import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  Renderer2,
+  ViewChild,
+  inject
+} from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
-import { catchError, concatMap, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  concatMap,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
-import { Calibration, CalibrationPoint, CalibrationTransform, CompleteInteractionData, FrameSizeDefinition, Interaction, InteractionType, Point3 } from '@reflex/shared-types';
+import {
+  Calibration,
+  CalibrationPoint,
+  CalibrationTransform,
+  CompleteInteractionData,
+  FrameSizeDefinition,
+  Interaction,
+  InteractionType,
+  Point3
+} from '@reflex/shared-types';
 import { CommonModule } from '@angular/common';
 import { PanelHeaderComponent } from '@reflex/angular-components/dist';
 
@@ -26,12 +49,14 @@ export interface BorderString {
   selector: 'app-calibration',
   templateUrl: './calibration.component.html',
   styleUrls: ['./calibration.component.scss'],
-  imports: [
-    CommonModule,
-    PanelHeaderComponent
-  ]
+  imports: [CommonModule, PanelHeaderComponent]
 })
 export class CalibrationComponent implements OnInit {
+  private readonly renderer = inject(Renderer2);
+  private readonly processingService = inject(ProcessingService);
+  private readonly calibrationService = inject(CalibrationService);
+  private readonly settingsService = inject(SettingsService);
+  private readonly logService = inject(LogService);
 
   private static readonly fullScreenClassName = 'fullScreen';
 
@@ -40,7 +65,6 @@ export class CalibrationComponent implements OnInit {
 
   // TODO: toggle between Calbration / Borders and display of current calibration values
   public isInteractiveCalibrationVisible = false;
-
 
   public borderOffset: Array<number> = [0, 0, 0, 0];
 
@@ -56,14 +80,13 @@ export class CalibrationComponent implements OnInit {
     { positionX: 600, positionY: 700, touchId: -1 }
   ];
 
-  public currentCalibration: Calibration
-    = {
-      lastUpdated: [],
-      sourceValues: [],
-      targetValues: [],
-      lowerThreshold: 0,
-      upperThreshold: 0
-    };
+  public currentCalibration: Calibration = {
+    lastUpdated: [],
+    sourceValues: [],
+    targetValues: [],
+    lowerThreshold: 0,
+    upperThreshold: 0
+  };
 
   public calibrationMatrix: Array<Array<number>> = [
     [1, 0, 0, 0],
@@ -97,21 +120,16 @@ export class CalibrationComponent implements OnInit {
   private completeInteractions$?: Observable<CompleteInteractionData>;
   private isProcessing$?: Observable<string>;
 
-  public constructor(
-    private readonly renderer: Renderer2,
-    private readonly processingService: ProcessingService,
-    private readonly calibrationService: CalibrationService,
-    private readonly settingsService: SettingsService,
-    private readonly logService: LogService
-  ) { }
-
   @HostListener('mousemove', ['$event'])
   public onmouseMove(evt: MouseEvent): void {
     if (this.selectedBorderIndex < 0 || this.selectedBorderIndex > 3) {
       return;
     }
 
-    const offset = this.selectedBorderIndex === 0 || this.selectedBorderIndex === 2 ? evt.movementY : evt.movementX;
+    const offset
+      = this.selectedBorderIndex === 0 || this.selectedBorderIndex === 2
+        ? evt.movementY
+        : evt.movementX;
 
     let newOffset = this.borderOffset[this.selectedBorderIndex] + offset;
 
@@ -120,15 +138,19 @@ export class CalibrationComponent implements OnInit {
     }
 
     // check if borders collide / are too close
-    if ((this.selectedBorderIndex === 0 && this.borderOffset[2] - newOffset < 70)
-        || (this.selectedBorderIndex === 1 && this.borderOffset[3] - newOffset < 70)
-        || (this.selectedBorderIndex === 2 && newOffset - this.borderOffset[0] < 70)
-        || (this.selectedBorderIndex === 3 && newOffset - this.borderOffset[1] < 70)) {
+    if (
+      (this.selectedBorderIndex === 0
+        && this.borderOffset[2] - newOffset < 70)
+      || (this.selectedBorderIndex === 1
+        && this.borderOffset[3] - newOffset < 70)
+      || (this.selectedBorderIndex === 2
+        && newOffset - this.borderOffset[0] < 70)
+      || (this.selectedBorderIndex === 3 && newOffset - this.borderOffset[1] < 70)
+    ) {
       return;
     }
 
     this.borderOffset[this.selectedBorderIndex] = newOffset;
-
   }
 
   public ngOnInit(): void {
@@ -136,7 +158,8 @@ export class CalibrationComponent implements OnInit {
     this.resetSelectedInteraction();
 
     const interactions$ = this.processingService.getInteractions().pipe(
-      concatMap((result: Array<Interaction>) => this.calibrationService.computeCalibratedAbsolutePosition(result)),
+      concatMap((result: Array<Interaction>) =>
+        this.calibrationService.computeCalibratedAbsolutePosition(result)),
       catchError((error: unknown) => {
         console.error(error);
         this.logService.sendErrorLog(`${error}`);
@@ -147,56 +170,64 @@ export class CalibrationComponent implements OnInit {
 
     this.isProcessing$ = this.processingService.getStatus();
 
-    this.completeInteractions$ = this.isProcessing$
-      .pipe(
-        tap((processing) => {
-          this.isProcessingActive = processing === 'Active';
-        }),
-        switchMap((processing) => processing
+    this.completeInteractions$ = this.isProcessing$.pipe(
+      tap((processing) => {
+        this.isProcessingActive = processing === 'Active';
+      }),
+      switchMap((processing) =>
+        processing
           ? interactions$
-          : NEVER.pipe(startWith(
-            { raw: [], normalized: [], absolute: [] }
-          )))
-      );
+          : NEVER.pipe(startWith({ raw: [], normalized: [], absolute: [] })))
+    );
 
     this.settingsService.update();
 
-    this.interactionsSubscription = this.completeInteractions$
+    this.interactionsSubscription = this.completeInteractions$.subscribe(
+      (result) => this.updateInteractions(result),
+      (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
+
+    this.settingsSubscription = this.settingsService.getSettings().subscribe(
+      (result) => {
+        this.updateCalibrationValues(result.calibrationValues);
+        this.maxConfidence = result.filterSettingValues.confidence.max;
+      },
+      (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
+
+    this.calibrationSubscription = this.calibrationService
+      .getFrameSize()
       .subscribe(
-        (result) => this.updateInteractions(result),
+        (result) => {
+          this.updateBorders(result);
+        },
         (error: unknown) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
         }
       );
 
-    this.settingsSubscription = this.settingsService.getSettings().subscribe((result) => {
-      this.updateCalibrationValues(result.calibrationValues);
-      this.maxConfidence = result.filterSettingValues.confidence.max;
-    }, (error: unknown) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
-
-
-    this.calibrationSubscription = this.calibrationService.getFrameSize().subscribe((result) => {
-      this.updateBorders(result);
-    }, (error: unknown) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
-
-    this.matrixSubscription = this.calibrationService.getCalibrationMatrix().subscribe((result) => {
-      this.calibrationMatrix = result.transformation;
-    }, (error: unknown) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.matrixSubscription = this.calibrationService
+      .getCalibrationMatrix()
+      .subscribe(
+        (result) => {
+          this.calibrationMatrix = result.transformation;
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
 
     this.updateSourceValues();
 
     this.updateTargetPoints();
-
   }
 
   public ngOnDestroy(): void {
@@ -207,16 +238,23 @@ export class CalibrationComponent implements OnInit {
   }
 
   public toggleCalibrationMode(): void {
-    this.isInteractiveCalibrationVisible = !this.isInteractiveCalibrationVisible;
+    this.isInteractiveCalibrationVisible
+      = !this.isInteractiveCalibrationVisible;
 
     if (this.view === undefined) {
       return;
     }
 
     if (this.isInteractiveCalibrationVisible) {
-      this.renderer.addClass(this.view.nativeElement, CalibrationComponent.fullScreenClassName);
+      this.renderer.addClass(
+        this.view.nativeElement,
+        CalibrationComponent.fullScreenClassName
+      );
     } else {
-      this.renderer.removeClass(this.view.nativeElement, CalibrationComponent.fullScreenClassName);
+      this.renderer.removeClass(
+        this.view.nativeElement,
+        CalibrationComponent.fullScreenClassName
+      );
     }
   }
 
@@ -247,13 +285,17 @@ export class CalibrationComponent implements OnInit {
   }
 
   public select(interactionIdx: number): void {
-    if (interactionIdx === this.selectedIdx || interactionIdx >= this.interactions.length) {
+    if (
+      interactionIdx === this.selectedIdx
+      || interactionIdx >= this.interactions.length
+    ) {
       this.resetSelectedInteraction();
 
       return;
     }
 
-    this.selectedValue[this.currentlyActiveStage] = this.interactions[interactionIdx];
+    this.selectedValue[this.currentlyActiveStage]
+      = this.interactions[interactionIdx];
     this.selectedIdx = interactionIdx;
   }
 
@@ -263,12 +305,13 @@ export class CalibrationComponent implements OnInit {
   }
 
   public submit(): void {
-
-    if (this.selectedIdx < 0
+    if (
+      this.selectedIdx < 0
       || this.currentlyActiveStage < 0
       || this.currentlyActiveStage > 2
       || this.selectedValue.length < this.currentlyActiveStage + 1
-      || this.selectedValue[this.currentlyActiveStage].touchId < 0) {
+      || this.selectedValue[this.currentlyActiveStage].touchId < 0
+    ) {
       return;
     }
 
@@ -281,13 +324,17 @@ export class CalibrationComponent implements OnInit {
     this.calibratedTargets[this.currentlyActiveStage] = pos;
 
     // todo: never returns ???
-    this.calibrationSubscription = this.calibrationService.updateCalibrationPoint(this.currentlyActiveStage, pos)
-      .subscribe((result: HttpResponse<CalibrationTransform>) => {
-        this.handleUpdatedCalibration(result);
-      }, (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      });
+    this.calibrationSubscription = this.calibrationService
+      .updateCalibrationPoint(this.currentlyActiveStage, pos)
+      .subscribe(
+        (result: HttpResponse<CalibrationTransform>) => {
+          this.handleUpdatedCalibration(result);
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public display(idx: number): void {
@@ -317,7 +364,6 @@ export class CalibrationComponent implements OnInit {
     );
     this.currentlyActiveStage = -1;
     this.resetSelectedInteraction();
-
   }
 
   public applyCalibration(): void {
@@ -336,26 +382,35 @@ export class CalibrationComponent implements OnInit {
   }
 
   public updateFrameSize(): void {
-    const frame: FrameSizeDefinition = { width: this.borderOffset[3] - this.borderOffset[1],
+    const frame: FrameSizeDefinition = {
+      width: this.borderOffset[3] - this.borderOffset[1],
       height: this.borderOffset[2] - this.borderOffset[0],
       left: this.borderOffset[1],
-      top: this.borderOffset[0] };
+      top: this.borderOffset[0]
+    };
 
-    this.calibrationService.updateFrameSize(frame).subscribe((result) => {
-      if (result.body) {
-        console.log(`received updated frame size - result:  ${result.status} - [${result.body.top} | ${result.body.left} | ${result.body.height} | ${result.body.width}]`);
-        this.updateBorders(result.body);
+    this.calibrationService.updateFrameSize(frame).subscribe(
+      (result) => {
+        if (result.body) {
+          console.log(
+            `received updated frame size - result:  ${result.status} - [${result.body.top} | ${result.body.left} | ${result.body.height} | ${result.body.width}]`
+          );
+          this.updateBorders(result.body);
+        }
+      },
+      (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
       }
-    }, (error: unknown) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    );
   }
 
   public getCalibrationSourcePointStyle(index: number): Object {
     return {
       transform: `translate(${this.calibrationSource[index].positionX}px, ${this.calibrationSource[index].positionY}px)`,
-      visibility: `${this.currentlyActiveStage === index ? 'visible' : 'collapse'}`
+      visibility: `${
+        this.currentlyActiveStage === index ? 'visible' : 'collapse'
+      }`
     };
   }
 
@@ -366,7 +421,10 @@ export class CalibrationComponent implements OnInit {
     };
   }
 
-  public getCalibratedInteractionPointStyle(type: InteractionType, position: Point3): TransformString {
+  public getCalibratedInteractionPointStyle(
+    type: InteractionType,
+    position: Point3
+  ): TransformString {
     const resultingPosition = position;
 
     const scale = ((resultingPosition.z * resultingPosition.z) + 0.5) * 2;
@@ -406,7 +464,18 @@ export class CalibrationComponent implements OnInit {
   }
 
   private getDefaultInteraction(): Interaction {
-    return { touchId: -1, confidence: 0, position: { x: 0, y: 0, z: 0, isFiltered: true, isValid: false }, type: 0, extremumDescription: { numFittingPoints: 0, percentageFittingPoints: 0, type: 0 }, time: 0 };
+    return {
+      touchId: -1,
+      confidence: 0,
+      position: { x: 0, y: 0, z: 0, isFiltered: true, isValid: false },
+      type: 0,
+      extremumDescription: {
+        numFittingPoints: 0,
+        percentageFittingPoints: 0,
+        type: 0
+      },
+      time: 0
+    };
   }
 
   private updateInteractions(interactions: CompleteInteractionData): void {
@@ -423,17 +492,27 @@ export class CalibrationComponent implements OnInit {
 
     this.interactions = filtered;
 
-    this.calibratedInteractions = this.displayCalibratedInteractions ? interactions.absolute : filtered;
+    this.calibratedInteractions = this.displayCalibratedInteractions
+      ? interactions.absolute
+      : filtered;
 
     if (this.currentlyActiveStage < 0 || this.currentlyActiveStage > 2) {
       this.resetSelectedInteraction();
     }
 
     // check if touch with current id has been set as target in another stage...
-    const alreadySelectedIds = this.selectedValue.filter((elem, idx) => elem.touchId >= 0 && idx !== this.currentlyActiveStage).map((i) => i.touchId);
-    if (this.interactions.length <= 0
-      || alreadySelectedIds.find((id) => id === this.interactions[0].touchId) !== undefined) {
-      this.selectedValue[this.currentlyActiveStage] = this.getDefaultInteraction();
+    const alreadySelectedIds = this.selectedValue
+      .filter(
+        (elem, idx) => elem.touchId >= 0 && idx !== this.currentlyActiveStage
+      )
+      .map((i) => i.touchId);
+    if (
+      this.interactions.length <= 0
+      || alreadySelectedIds.find((id) => id === this.interactions[0].touchId)
+        !== undefined
+    ) {
+      this.selectedValue[this.currentlyActiveStage]
+        = this.getDefaultInteraction();
       this.selectedIdx = -1;
 
       return;
@@ -443,7 +522,11 @@ export class CalibrationComponent implements OnInit {
 
     // restore index of selected touch id
     if (this.selectedValue[this.currentlyActiveStage]?.touchId >= 0) {
-      restore = this.interactions.find((touch) => touch.touchId === this.selectedValue[this.currentlyActiveStage]?.touchId);
+      restore = this.interactions.find(
+        (touch) =>
+          touch.touchId
+          === this.selectedValue[this.currentlyActiveStage]?.touchId
+      );
     }
 
     if (restore !== undefined) {
@@ -455,8 +538,15 @@ export class CalibrationComponent implements OnInit {
     }
 
     // auto save point with highest confidence if point with this touch id is not already used for calibration
-    if (this.selectedValue[this.currentlyActiveStage].confidence >= this.maxConfidence
-      && this.calibratedTargets.filter((elem) => elem.touchId === this.selectedValue[this.currentlyActiveStage]?.touchId).length === 0) {
+    if (
+      this.selectedValue[this.currentlyActiveStage].confidence
+        >= this.maxConfidence
+      && this.calibratedTargets.filter(
+        (elem) =>
+          elem.touchId
+          === this.selectedValue[this.currentlyActiveStage]?.touchId
+      ).length === 0
+    ) {
       this.submit();
     }
   }
@@ -471,21 +561,27 @@ export class CalibrationComponent implements OnInit {
   }
 
   private updateSourceValues(): void {
-    this.calibrationService.getCalibrationSourcePoints().subscribe((result) => {
-      this.calibrationSource = result;
-    }, (error: unknown) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.calibrationService.getCalibrationSourcePoints().subscribe(
+      (result) => {
+        this.calibrationSource = result;
+      },
+      (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
   }
 
   private updateTargetPoints(): void {
-    this.calibrationService.getCurrentCalibrationTargetPoints().subscribe((result) => {
-      this.calibratedTargets = result;
-    }, (error: unknown) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.calibrationService.getCurrentCalibrationTargetPoints().subscribe(
+      (result) => {
+        this.calibratedTargets = result;
+      },
+      (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
   }
 
   private updateBorders(borderValues: FrameSizeDefinition): void {
@@ -493,13 +589,16 @@ export class CalibrationComponent implements OnInit {
     this.updateSourceValues();
   }
 
-  private handleUpdatedCalibration(result: HttpResponse<CalibrationTransform>): void {
+  private handleUpdatedCalibration(
+    result: HttpResponse<CalibrationTransform>
+  ): void {
     const trans = result.body as CalibrationTransform;
     if (trans !== undefined) {
       this.calibrationMatrix = trans.transformation;
       if (this.currentlyActiveStage < 2 && this.currentlyActiveStage >= 0) {
         this.currentlyActiveStage += 1;
-        this.selectedValue[this.currentlyActiveStage] = this.getDefaultInteraction();
+        this.selectedValue[this.currentlyActiveStage]
+          = this.getDefaultInteraction();
       } else {
         this.currentlyActiveStage = -1;
         this.selectedValue = this.getDefaultSelectedValues();

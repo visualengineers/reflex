@@ -1,25 +1,27 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { TouchPointService } from 'src/services/touch-point.service';
 import { InteractionFrame } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-history',
-    templateUrl: './history.component.html',
-    styleUrls: ['./history.component.scss']
+  selector: 'app-history',
+  templateUrl: './history.component.html',
+  styleUrls: ['./history.component.scss'],
 })
-export class HistoryComponent  implements OnInit, OnDestroy {
+export class HistoryComponent implements OnInit, OnDestroy {
+  private _pointService = inject(TouchPointService);
+
   private _frames: Subscription | undefined;
 
   public Frames: Array<InteractionFrame> = [];
   public JSON: JSON;
 
-  constructor(private _pointService: TouchPointService) {
+  constructor() {
     this.JSON = JSON;
-   }
+  }
 
   ngOnInit(): void {
-    this._frames = this._pointService.getHistory().subscribe(res => {
+    this._frames = this._pointService.getHistory().subscribe((res) => {
       this.Frames = res;
     });
   }
@@ -29,5 +31,4 @@ export class HistoryComponent  implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     this._frames?.unsubscribe();
   }
-
 }

@@ -1,10 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription } from 'rxjs';
-import { DEFAULT_SETTINGS, ProtocolVersion, TransportProtocol, TuioConfiguration, TuioInterpretation } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import {
+  DEFAULT_SETTINGS,
+  ProtocolVersion,
+  TransportProtocol,
+  TuioConfiguration,
+  TuioInterpretation
+} from '@reflex/shared-types';
+import {
+  PanelHeaderComponent,
+  ValueSelectionComponent,
+  ValueTextComponent
+} from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PackageDetailsComponent } from './package-details/package-details.component';
@@ -22,6 +32,9 @@ import { PackageDetailsComponent } from './package-details/package-details.compo
   ]
 })
 export class TuioComponent implements OnInit, OnDestroy {
+  private readonly settingsService = inject(SettingsService);
+  private readonly tuioService = inject(TuioService);
+  private readonly logService = inject(LogService);
 
   public statusText = '';
   public errorText = '';
@@ -45,22 +58,23 @@ export class TuioComponent implements OnInit, OnDestroy {
   private statusTextSubscription?: Subscription;
   private settingsSubscription?: Subscription;
 
-  public constructor(private readonly settingsService: SettingsService, private readonly tuioService: TuioService, private readonly logService: LogService) { }
-
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().subscribe((result) => {
-      if (result.tuioSettingValues) {
-        this.config = result.tuioSettingValues;
-        this.transportProtocolIdx = this.config.transport;
-        this.tuioProtocolVersionIdx = this.config.protocol;
-        this.tuioInterpretationIdx = this.config.interpretation;
-        this.serverAddress = this.config.serverAddress;
-        this.serverPort = this.config.serverPort;
+    this.settingsSubscription = this.settingsService.getSettings().subscribe(
+      (result) => {
+        if (result.tuioSettingValues) {
+          this.config = result.tuioSettingValues;
+          this.transportProtocolIdx = this.config.transport;
+          this.tuioProtocolVersionIdx = this.config.protocol;
+          this.tuioInterpretationIdx = this.config.interpretation;
+          this.serverAddress = this.config.serverAddress;
+          this.serverPort = this.config.serverPort;
+        }
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
       }
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    );
 
     this.settingsService.update();
 
@@ -73,81 +87,112 @@ export class TuioComponent implements OnInit, OnDestroy {
   }
 
   public fetchCurrentValues(): void {
-
-    this.tuioService.getIsBroadcasting().subscribe((result) => {
-      if (result.body?.name === 'IsBroadcasting') {
-        this.isBroadcasting = result.body.value === true;
+    this.tuioService.getIsBroadcasting().subscribe(
+      (result) => {
+        if (result.body?.name === 'IsBroadcasting') {
+          this.isBroadcasting = result.body.value === true;
+        }
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
       }
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    );
 
-    this.tuioService.getTransportProtocols().subscribe((result) => {
-      this.transportProtocols = result;
-      if (this.config) {
-        this.transportProtocolIdx = this.config.transport as number;
+    this.tuioService.getTransportProtocols().subscribe(
+      (result) => {
+        this.transportProtocols = result;
+        if (this.config) {
+          this.transportProtocolIdx = this.config.transport as number;
+        }
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
       }
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    );
 
-    this.tuioService.getTuioProtocolVersions().subscribe((result) => {
-      this.tuioProtocolVersions = result;
-      if (this.config) {
-        this.tuioProtocolVersionIdx = this.config.protocol as number;
+    this.tuioService.getTuioProtocolVersions().subscribe(
+      (result) => {
+        this.tuioProtocolVersions = result;
+        if (this.config) {
+          this.tuioProtocolVersionIdx = this.config.protocol as number;
+        }
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
       }
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    );
 
-    this.tuioService.getTuioInterpretations().subscribe((result) => {
-      this.tuioInterpretations = result;
-      if (this.config) {
-        this.tuioInterpretationIdx = this.config.interpretation as number;
+    this.tuioService.getTuioInterpretations().subscribe(
+      (result) => {
+        this.tuioInterpretations = result;
+        if (this.config) {
+          this.tuioInterpretationIdx = this.config.interpretation as number;
+        }
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
       }
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    );
 
-    this.statusTextSubscription = this.tuioService.getStatus().subscribe((result) => {
-      this.statusText = result;
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.statusTextSubscription = this.tuioService.getStatus().subscribe(
+      (result) => {
+        this.statusText = result;
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
   }
 
   public setAddress(): void {
     this.config.serverAddress = this.serverAddress;
-    this.tuioService.setAddress(this.config.serverAddress).subscribe((result) => {
-      console.log(`response to change TUIO server address: ${result.status} - ${result.body?.value}`);
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.tuioService.setAddress(this.config.serverAddress).subscribe(
+      (result) => {
+        console.log(
+          `response to change TUIO server address: ${result.status} - ${result.body?.value}`
+        );
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
   }
 
   public setPort(): void {
     this.config.serverPort = this.serverPort;
-    this.tuioService.setPort(this.config.serverPort).subscribe((result) => {
-      console.log(`response to change TUIO server port: ${result.status} - ${result.body?.value}`);
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.tuioService.setPort(this.config.serverPort).subscribe(
+      (result) => {
+        console.log(
+          `response to change TUIO server port: ${result.status} - ${result.body?.value}`
+        );
+      },
+      (error) => {
+        this.logService.sendErrorLog(`${error}`);
+        console.error(error);
+      }
+    );
   }
 
   public setTransportProtocol(): void {
-    this.tuioService.setTransportProtocol(this.transportProtocols[this.transportProtocolIdx]).subscribe((result) => {
-      console.log(`response to change TUIO transport protocol: ${result.status} - ${result.body?.value}`);
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.tuioService
+      .setTransportProtocol(this.transportProtocols[this.transportProtocolIdx])
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change TUIO transport protocol: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public updateTransportProtocol(idx: number): void {
@@ -158,12 +203,21 @@ export class TuioComponent implements OnInit, OnDestroy {
   }
 
   public setTuioProtocolVersion(): void {
-    this.tuioService.setTuioProtocolVersion(this.tuioProtocolVersions[this.tuioProtocolVersionIdx]).subscribe((result) => {
-      console.log(`response to change TUIO protocol version: ${result.status} - ${result.body?.value}`);
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.tuioService
+      .setTuioProtocolVersion(
+        this.tuioProtocolVersions[this.tuioProtocolVersionIdx]
+      )
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change TUIO protocol version: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public updateTuioProtocolVersion(idx: number): void {
@@ -174,12 +228,21 @@ export class TuioComponent implements OnInit, OnDestroy {
   }
 
   public setTuioInterpretation(): void {
-    this.tuioService.setTuioInterpretation(this.tuioInterpretations[this.tuioInterpretationIdx]).subscribe((result) => {
-      console.log(`response to change TUIO interpretation: ${result.status} - ${result.body?.value}`);
-    }, (error) => {
-      this.logService.sendErrorLog(`${error}`);
-      console.error(error);
-    });
+    this.tuioService
+      .setTuioInterpretation(
+        this.tuioInterpretations[this.tuioInterpretationIdx]
+      )
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change TUIO interpretation: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public updateTuioInterpretation(idx: number): void {
@@ -191,32 +254,44 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public isBroadcastingChanged(): void {
     this.errorText = '';
-    this.tuioService.toggleBroadcasting()
-      .subscribe((result) => {
-        console.log(`Tuio Broadcast status toggle - result:  ${result.status} - ${result.body?.value}`);
+    this.tuioService.toggleBroadcasting().subscribe(
+      (result) => {
+        console.log(
+          `Tuio Broadcast status toggle - result:  ${result.status} - ${result.body?.value}`
+        );
         this.isBroadcasting = result.body?.value as boolean;
-      }, (error) => {
+      },
+      (error) => {
         this.isBroadcasting = false;
         this.errorText = `${error} - ${JSON.stringify(error, null, 3)}`;
         this.logService.sendErrorLog(this.errorText);
-      });
+      }
+    );
   }
 
   public saveTuioConfig(): void {
-    this.tuioService.saveSettings()
-      .subscribe(() => {
-      }, (error) => {
-        this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(error, null, 3)}`;
+    this.tuioService.saveSettings().subscribe(
+      () => {},
+      (error) => {
+        this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(
+          error,
+          null,
+          3
+        )}`;
         this.logService.sendErrorLog(this.errorText);
-      });
+      }
+    );
   }
 
   public isConfigValid(): boolean {
-    return this.config != null
-      && typeof this.config.serverAddress === 'string' && this.config.serverAddress.trim() !== ''
+    return (
+      this.config != null
+      && typeof this.config.serverAddress === 'string'
+      && this.config.serverAddress.trim() !== ''
       && this.config.serverPort > 0
       && this.transportProtocolIdx >= 0
       && this.tuioInterpretationIdx >= 0
-      && this.tuioProtocolVersionIdx >= 0;
+      && this.tuioProtocolVersionIdx >= 0
+    );
   }
 }

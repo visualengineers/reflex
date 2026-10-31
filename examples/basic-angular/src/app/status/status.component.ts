@@ -1,36 +1,39 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
 import { interval, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
 
 @Component({
-    selector: 'app-status',
-    templateUrl: './status.component.html',
-    styleUrls: ['./status.component.scss']
+  selector: 'app-status',
+  templateUrl: './status.component.html',
+  styleUrls: ['./status.component.scss'],
 })
 export class StatusComponent implements OnInit, OnDestroy {
+  private _pointService = inject(TouchPointService);
 
   _touchPoints$: Observable<Interaction[]> | undefined;
-  _touchPointSubscription: Subscription| undefined;
+  _touchPointSubscription: Subscription | undefined;
 
   _connectionSubscription: Subscription | undefined;
 
-  public WebSocketAddress = "";
+  public WebSocketAddress = '';
   public IsConnected = false;
   public FrameNumber = 0;
   public TouchCount = 0;
 
-  constructor(private _pointService: TouchPointService) { }
-
   ngOnInit(): void {
     this._touchPoints$ = this._pointService.getTouchPoints();
-    this._touchPointSubscription = this._touchPoints$.subscribe(res => {
+    this._touchPointSubscription = this._touchPoints$.subscribe((res) => {
       this.TouchCount = res.length;
     });
-    interval(500).subscribe(() => this.IsConnected = this._pointService.isConnected());
+    interval(500).subscribe(
+      () => (this.IsConnected = this._pointService.isConnected())
+    );
     console.log(this.IsConnected);
     this.WebSocketAddress = this._pointService.getAddress();
-    this._pointService.getFrameNumber().subscribe((n) => this.FrameNumber = n);
+    this._pointService
+      .getFrameNumber()
+      .subscribe((n) => (this.FrameNumber = n));
   }
 
   ngOnDestroy(): void {
@@ -38,8 +41,5 @@ export class StatusComponent implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     this._touchPointSubscription?.unsubscribe();
     this._connectionSubscription?.unsubscribe();
-
   }
-
-
 }

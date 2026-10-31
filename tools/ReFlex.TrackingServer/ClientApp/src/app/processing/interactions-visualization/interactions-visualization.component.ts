@@ -1,6 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CompleteInteractionData, ElementPosition, ExtremumDescription, ExtremumType, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject
+} from '@angular/core';
+import {
+  CompleteInteractionData,
+  ElementPosition,
+  ExtremumDescription,
+  ExtremumType,
+  FrameSizeDefinition,
+  Interaction
+} from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
@@ -11,28 +26,35 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-interactions-visualization',
   templateUrl: './interactions-visualization.component.html',
   styleUrls: ['./interactions-visualization.component.scss'],
-  imports: [
-    CommonModule,
-    FormsModule,
-    HistoryVisualizationComponent
-  ]
+  imports: [CommonModule, FormsModule, HistoryVisualizationComponent]
 })
 export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
+  private readonly calibrationService = inject(CalibrationService);
+  private readonly logService = inject(LogService);
 
   @ViewChild('interactionVis')
   public container?: ElementRef;
 
-  public interactions: CompleteInteractionData = { raw: [], absolute: [], normalized: [] };
+  public interactions: CompleteInteractionData = {
+    raw: [],
+    absolute: [],
+    normalized: []
+  };
+
   public calibratedInteractions: Array<Interaction> = [];
 
   public fullScreen = false;
   public maxConfidence = 30;
 
   private frameSizeSubscription?: Subscription;
-  private frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
-  private pEventId = 0;
+  private frameSize: FrameSizeDefinition = {
+    top: 0,
+    left: 0,
+    width: 500,
+    height: 400
+  };
 
-  public constructor(private readonly calibrationService: CalibrationService, private readonly logService: LogService) { }
+  private pEventId = 0;
 
   public get eventId(): number {
     return this.pEventId;
@@ -44,12 +66,17 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.frameSizeSubscription = this.calibrationService.getFrameSize().subscribe((result) => {
-      this.frameSize = result;
-    }, (error) => {
-      console.error(error);
-      this.logService.sendErrorLog(`${error}`);
-    });
+    this.frameSizeSubscription = this.calibrationService
+      .getFrameSize()
+      .subscribe(
+        (result) => {
+          this.frameSize = result;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public ngOnDestroy(): void {
@@ -79,15 +106,25 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   public updateCalibratedInteractions(result: CompleteInteractionData): void {
     this.interactions = result;
 
-    this.calibratedInteractions = this.fullScreen ? result.absolute : result.normalized;
+    this.calibratedInteractions = this.fullScreen
+      ? result.absolute
+      : result.normalized;
 
     if (this.container === undefined) {
       return;
     }
 
     this.calibratedInteractions.forEach((int) => {
-      int.position.x = this.fullScreen ? int.position.x - this.frameSize.left : int.position.x * ((this.container?.nativeElement as HTMLElement | undefined)?.clientWidth ?? 0);
-      int.position.y = this.fullScreen ? int.position.y - this.frameSize.top : int.position.y * ((this.container?.nativeElement as HTMLElement | undefined)?.clientHeight ?? 0);
+      int.position.x = this.fullScreen
+        ? int.position.x - this.frameSize.left
+        : int.position.x
+          * ((this.container?.nativeElement as HTMLElement | undefined)
+            ?.clientWidth ?? 0);
+      int.position.y = this.fullScreen
+        ? int.position.y - this.frameSize.top
+        : int.position.y
+          * ((this.container?.nativeElement as HTMLElement | undefined)
+            ?.clientHeight ?? 0);
       int.position.z = Math.abs(int.position.z) * 2;
     });
   }

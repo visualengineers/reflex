@@ -8,7 +8,7 @@ import { SettingsGroupComponent } from '@reflex/angular-components/dist';
   imports: [
     FormsModule,
     SettingsGroupComponent
-],
+  ],
   templateUrl: './buttons.component.html',
   styleUrl: './buttons.component.scss'
 })

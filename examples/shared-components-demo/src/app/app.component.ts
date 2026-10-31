@@ -22,7 +22,7 @@ import { ButtonsComponent } from './controls/buttons/buttons.component';
     TableComponent,
     ButtonsComponent,
     ColorComponent
-],
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

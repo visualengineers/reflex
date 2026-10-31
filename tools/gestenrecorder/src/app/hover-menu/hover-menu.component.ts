@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
 
 import {
@@ -21,11 +21,11 @@ import { ConfigurationService } from '../service/configuration.service';
   styleUrls: ['./hover-menu.component.scss'],
 })
 export class HoverMenuComponent {
+  private configurationService = inject(ConfigurationService);
+
   @Input() hoveredPoint: NormalizedPoint | null = null;
   @Output() pointUpdated = new EventEmitter<NormalizedPoint>();
   @Input() isFixed: boolean = false;
-
-  constructor(private configurationService: ConfigurationService) {}
 
   toggleFixed() {
     this.isFixed = !this.isFixed;

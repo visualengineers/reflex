@@ -1,21 +1,25 @@
-import { Injectable } from "@angular/core";
-import { Gesture } from "../data/gesture";
-import { ConnectionService } from "./connection.service";
-import { ConfigurationService } from "./configuration.service";
-import { interval } from "rxjs";
-import { ExtremumType, Interaction, InteractionType } from "@reflex/shared-types";
-import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from '@angular/core';
+import { Gesture } from '../data/gesture';
+import { ConnectionService } from './connection.service';
+import { ConfigurationService } from './configuration.service';
+import { interval } from 'rxjs';
+import {
+  ExtremumType,
+  Interaction,
+  InteractionType,
+} from '@reflex/shared-types';
+import { HttpClient } from '@angular/common/http';
 
-@Injectable({ providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class GestureReplayService {
+  private readonly connectionService = inject(ConnectionService);
+  private readonly configService = inject(ConfigurationService);
+  private readonly httpClient = inject(HttpClient);
+
   public loopGesture = true;
 
   private gestureForReplay?: Gesture;
   private currentFrame: number = 0;
-
-  public constructor(private readonly connectionService: ConnectionService, private readonly configService: ConfigurationService, private readonly httpClient: HttpClient) {
-
-  }
 
   /**
    * load gesture from json file and start replay when loading was successful
@@ -28,7 +32,7 @@ export class GestureReplayService {
         console.info('successfully loaded gesture: ', gesture);
         this.start(gesture);
       },
-      error: (error) => console.error(error)
+      error: (error) => console.error(error),
     });
   }
 
@@ -46,11 +50,11 @@ export class GestureReplayService {
     const speed = gesture.speed > 0 ? gesture.speed : 1;
     const i = this.configService.getSendInterval() / speed;
 
-    console.info(`start replay with replay interval of ${i} ms.` );
+    console.info(`start replay with replay interval of ${i} ms.`);
 
     interval(i).subscribe({
-      next: () => (this.update())
-    })
+      next: () => this.update(),
+    });
   }
 
   /**
@@ -75,17 +79,17 @@ export class GestureReplayService {
             y: item.y,
             z: item.z,
             isValid: true,
-            isFiltered: false
+            isFiltered: false,
           },
           type: InteractionType.None,
           extremumDescription: {
             type: ExtremumType.Undefined,
             numFittingPoints: 0,
-            percentageFittingPoints: 0
+            percentageFittingPoints: 0,
           },
           confidence: 0,
-          time: this.currentFrame
-        }
+          time: this.currentFrame,
+        };
         touches.push(touch);
       }
     });
@@ -93,7 +97,7 @@ export class GestureReplayService {
     this.connectionService.sendMessage(touches);
 
     //advance to next frame
-    this.currentFrame = (this.currentFrame + 1);
+    this.currentFrame = this.currentFrame + 1;
 
     if (this.loopGesture) {
       this.currentFrame = this.currentFrame % this.gestureForReplay.numFrames;

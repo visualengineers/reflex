@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Layers } from '../service/configuration.service';
@@ -25,6 +25,8 @@ import {
   styleUrl: './gestureoptions.component.scss',
 })
 export class GestureoptionsComponent implements OnInit, OnDestroy {
+  private configurationService = inject(ConfigurationService);
+
   public layers: Layers = {
     up: 0,
     down: 0,
@@ -45,8 +47,6 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
   public selectedBackgroundImage: string = '';
   public backgroundUrl: string = '';
   private layersSubscription?: Subscription;
-
-  constructor(private configurationService: ConfigurationService) {}
 
   ngOnInit(): void {
     this.backgroundSources = this.configurationService.getBackgroundSources();

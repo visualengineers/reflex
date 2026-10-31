@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
@@ -16,6 +16,10 @@ PlotlyModule.plotlyjs = PlotlyJS;
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent implements OnInit {
+  private http = inject(HttpClient);
+  private gestureService = inject(GestureDataService);
+  private readonly gestureReplayService = inject(GestureReplayService);
+
   public max_value_layer = 1;
   public min_value_layer = -1.2;
   public horizontalPosition = 0;
@@ -67,12 +71,6 @@ export class TimelineComponent implements OnInit {
       staticPlot: true,
     },
   };
-
-  constructor(
-    private http: HttpClient,
-    private gestureService: GestureDataService,
-    private readonly gestureReplayService: GestureReplayService
-  ) {}
 
   ngOnInit() {
     this.gestureService.gesture$.subscribe((gesture) => {

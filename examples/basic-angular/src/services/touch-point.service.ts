@@ -1,94 +1,106 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Interaction, InteractionFrame } from '@reflex/shared-types';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root',
+})
 export class TouchPointService {
-    private _wss: WebSocket;
-    private _numFrames = 0;
-    private _historyRaw: Array<InteractionFrame> = [];
+  private _address = inject<string>('WEBSOCKET_URL' as any);
 
-    private _touchPoints: Subject<Interaction[]> = new Subject<Interaction[]>();
-    private _history: Subject<InteractionFrame[]> = new Subject<InteractionFrame[]>();
-    private _isConnected = false;
-    private _frameNumber: Subject<number> = new Subject<number>();
+  private _wss: WebSocket;
+  private _numFrames = 0;
+  private _historyRaw: Array<InteractionFrame> = [];
 
-    constructor(@Inject('WEBSOCKET_URL') private _address: string) {
-        this._wss = new WebSocket(this._address);
-        this.subscribeWebSocketEvents();
-    }
+  private _touchPoints: Subject<Interaction[]> = new Subject<Interaction[]>();
+  private _history: Subject<InteractionFrame[]> = new Subject<
+    InteractionFrame[]
+  >();
+  private _isConnected = false;
+  private _frameNumber: Subject<number> = new Subject<number>();
 
-    public getTouchPoints() : Observable<Interaction[]> {
-        return this._touchPoints;
-    }
+  constructor() {
+    this._wss = new WebSocket(this._address);
+    this.subscribeWebSocketEvents();
+  }
 
-    public getHistory() : Observable<InteractionFrame[]> {
-        return this._history;
-    }
+  public getTouchPoints(): Observable<Interaction[]> {
+    return this._touchPoints;
+  }
 
-    public getAddress(): string {
-        return this._address;
-    }
+  public getHistory(): Observable<InteractionFrame[]> {
+    return this._history;
+  }
 
-    public getFrameNumber(): Observable<number> {
-        return this._frameNumber;
-    }
+  public getAddress(): string {
+    return this._address;
+  }
 
-    public isConnected(): boolean {
-        return this._wss?.readyState == this._wss.OPEN;
-    }
+  public getFrameNumber(): Observable<number> {
+    return this._frameNumber;
+  }
 
-    private subscribeWebSocketEvents() {
-        var service = this;
-        this._wss.onopen = function() {
-            console.log("Successfully connected to " + service._address);
-            service._isConnected = true;
-          };
+  public isConnected(): boolean {
+    return this._wss?.readyState == this._wss.OPEN;
+  }
 
-        // for sake of simplicity: subscribe to websocket event directly
-        // better do this with RxJS !
-        var service = this;
-        this._wss.onmessage = function(evt) {
+  private subscribeWebSocketEvents() {
+    var service = this;
+    this._wss.onopen = function () {
+      console.log('Successfully connected to ' + service._address);
+      service._isConnected = true;
+    };
 
-            service._numFrames++;
-            service._frameNumber.next(service._numFrames);
+    // for sake of simplicity: subscribe to websocket event directly
+    // better do this with RxJS !
+    var service = this;
+    this._wss.onmessage = function (evt) {
+      service._numFrames++;
+      service._frameNumber.next(service._numFrames);
 
-            // not the most elegant workaround: convert first letter of JSON property to lowercase
-            const lowerCaseStart = evt.data.replace(/"([^"]+)":/g,
-              ($0:string, $1:string) => { return ('"' + $1.charAt(0).toLowerCase() + $1.slice(1) + '":'); });
-
-            // parse data
-            var points = JSON.parse(lowerCaseStart);
-
-            if (points.length <= 0) {
-                service._touchPoints.next([]);
-                service._historyRaw.push({ frameId: service._numFrames, interactions: []})
-                service._history.next(service._historyRaw);
-                return;
-            }
-
-            let tp = new Array<Interaction>();
-
-            points.forEach((pt:Interaction) => {
-                tp.push(pt);
-            });
-
-            service._touchPoints.next(tp);
-            service._historyRaw.push({ frameId: service._numFrames, interactions: tp});
-            if (service._historyRaw.length > 100) {
-                service._historyRaw.splice(0, 1);
-            }
-
-            service._history.next(service._historyRaw);
+      // not the most elegant workaround: convert first letter of JSON property to lowercase
+      const lowerCaseStart = evt.data.replace(
+        /"([^"]+)":/g,
+        ($0: string, $1: string) => {
+          return '"' + $1.charAt(0).toLowerCase() + $1.slice(1) + '":';
         }
+      );
 
-        this._wss.onclose = function() {
+      // parse data
+      var points = JSON.parse(lowerCaseStart);
 
-            // websocket is closed.
-            console.warn(`Connection to ${service._address} is closed...`);
-            service._isConnected = false;
-          };
-    }
+      if (points.length <= 0) {
+        service._touchPoints.next([]);
+        service._historyRaw.push({
+          frameId: service._numFrames,
+          interactions: [],
+        });
+        service._history.next(service._historyRaw);
+        return;
+      }
+
+      let tp = new Array<Interaction>();
+
+      points.forEach((pt: Interaction) => {
+        tp.push(pt);
+      });
+
+      service._touchPoints.next(tp);
+      service._historyRaw.push({
+        frameId: service._numFrames,
+        interactions: tp,
+      });
+      if (service._historyRaw.length > 100) {
+        service._historyRaw.splice(0, 1);
+      }
+
+      service._history.next(service._historyRaw);
+    };
+
+    this._wss.onclose = function () {
+      // websocket is closed.
+      console.warn(`Connection to ${service._address} is closed...`);
+      service._isConnected = false;
+    };
+  }
 }

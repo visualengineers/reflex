@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
@@ -20,21 +20,31 @@ import { FormsModule } from '@angular/forms';
   ]
 })
 export class MeasureSurfaceComponent implements OnInit {
+  private readonly calibrationService = inject(CalibrationService);
+  private readonly logService = inject(LogService);
 
   public fullScreen = false;
 
   private frameSizeSubscription?: Subscription;
-  private frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
-
-  public constructor(private readonly calibrationService: CalibrationService, private readonly logService: LogService) { }
+  private frameSize: FrameSizeDefinition = {
+    top: 0,
+    left: 0,
+    width: 500,
+    height: 400
+  };
 
   public ngOnInit(): void {
-    this.frameSizeSubscription = this.calibrationService.getFrameSize().subscribe((result) => {
-      this.frameSize = result;
-    }, (error) => {
-      console.error(error);
-      this.logService.sendErrorLog(`${error}`);
-    });
+    this.frameSizeSubscription = this.calibrationService
+      .getFrameSize()
+      .subscribe(
+        (result) => {
+          this.frameSize = result;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public ngOnDestroy(): void {
@@ -60,5 +70,4 @@ export class MeasureSurfaceComponent implements OnInit {
       height: `40vh`
     };
   }
-
 }

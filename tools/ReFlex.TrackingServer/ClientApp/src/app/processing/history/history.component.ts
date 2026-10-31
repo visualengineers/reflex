@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { InteractionFrame, InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
@@ -11,12 +11,11 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   selector: 'app-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
-  imports: [
-    CommonModule,
-    SettingsGroupComponent
-  ]
+  imports: [CommonModule, SettingsGroupComponent]
 })
 export class HistoryComponent implements OnInit, OnDestroy {
+  private readonly processingService = inject(ProcessingService);
+  private readonly logService = inject(LogService);
 
   public frames: Array<InteractionFrame> = [];
 
@@ -25,15 +24,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private framesSubscription?: Subscription;
   private historySubscription?: Subscription;
 
-  public constructor(private readonly processingService: ProcessingService, private readonly logService: LogService) { }
-
   public ngOnInit(): void {
     const frames$ = this.processingService.getFrames();
     const history$ = this.processingService.getHistory();
 
-    this.framesSubscription = this.processingService.getStatus()
+    this.framesSubscription = this.processingService
+      .getStatus()
       .pipe(
-        switchMap((processing) => processing ? frames$ : NEVER.pipe<Array<InteractionFrame>>(startWith([])))
+        switchMap((processing) =>
+          processing
+            ? frames$
+            : NEVER.pipe<Array<InteractionFrame>>(startWith([])))
       )
       .subscribe(
         (result) => this.updateFrames(result),
@@ -43,9 +44,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.historySubscription = this.processingService.getStatus()
+    this.historySubscription = this.processingService
+      .getStatus()
       .pipe(
-        switchMap((processing) => processing ? history$ : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
+        switchMap((processing) =>
+          processing
+            ? history$
+            : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
       )
       .subscribe(
         (result) => this.updateHistory(result),

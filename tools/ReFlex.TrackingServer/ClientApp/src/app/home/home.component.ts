@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { VersionInfoService } from 'src/shared/services/version.service';
@@ -9,15 +9,13 @@ import { VersionInfoService } from 'src/shared/services/version.service';
   templateUrl: './home.component.html',
   imports: [CommonModule]
 })
-
 export class HomeComponent implements OnInit {
+  private readonly versionService = inject(VersionInfoService);
+
   public serverLibs?: Observable<Array<AppVersionInfo>>;
   public clientLibs?: Observable<Array<AppVersionInfo>>;
 
   public appVersion?: Observable<AppVersionInfo>;
-
-  public constructor(private readonly versionService: VersionInfoService) { }
-
 
   public ngOnInit(): void {
     this.serverLibs = this.versionService.getServerVersionInfo();

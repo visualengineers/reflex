@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription, timer } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -10,12 +10,11 @@ import { MeasureService } from 'src/shared/services/measure.service';
   selector: 'app-measure-controls',
   templateUrl: './measure-controls.component.html',
   styleUrls: ['./measure-controls.component.scss'],
-  imports: [
-    CommonModule,
-    FormsModule
-  ]
+  imports: [CommonModule, FormsModule]
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
+  private readonly measureService = inject(MeasureService);
+  private readonly logService = inject(LogService);
 
   public captureId = 0;
 
@@ -25,29 +24,28 @@ export class MeasureControlsComponent implements OnInit, OnDestroy {
 
   private captureState?: Subscription;
 
-  public constructor(private readonly measureService: MeasureService, private readonly logService: LogService) { }
-
   public ngOnInit(): void {
-
     const isCapturing$ = this.measureService.isCapturing();
     const sampleIdx$ = this.measureService.getCurrentSampleIdx();
-    this.captureState = timer(0, 500).pipe(
-      concatMap(() => isCapturing$),
-      map((result) => {
-        this.isCapturing = result;
-        console.log(this.isCapturing);
-      }),
-      concatMap(() => sampleIdx$),
-      map((result) => {
-        this.numFramesCaptured = result;
-      }),
-      catchError((error: unknown, caught: Observable<void>) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
+    this.captureState = timer(0, 500)
+      .pipe(
+        concatMap(() => isCapturing$),
+        map((result) => {
+          this.isCapturing = result;
+          console.log(this.isCapturing);
+        }),
+        concatMap(() => sampleIdx$),
+        map((result) => {
+          this.numFramesCaptured = result;
+        }),
+        catchError((error: unknown, caught: Observable<void>) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
 
-        return caught;
-      })
-    ).subscribe();
+          return caught;
+        })
+      )
+      .subscribe();
   }
 
   public ngOnDestroy(): void {

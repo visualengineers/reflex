@@ -1,8 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild,
+  inject
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
-import { BehaviorSubject, NEVER, Observable, Subscription, combineLatest, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  NEVER,
+  Observable,
+  Subscription,
+  combineLatest,
+  Subject
+} from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { WebSocketService } from 'src/shared/services/webSocket.service';
@@ -11,12 +29,13 @@ import { WebSocketService } from 'src/shared/services/webSocket.service';
   selector: 'app-depth-image',
   templateUrl: './depth-image.component.html',
   styleUrls: ['./depth-image.component.scss'],
-  imports: [
-    CommonModule,
-    FormsModule
-  ]
+  imports: [CommonModule, FormsModule]
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
+  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly angularRenderer = inject(Renderer2);
+  private readonly wsService = inject(WebSocketService);
+  private readonly trackingService = inject(TrackingService);
 
   private static readonly fullScreenClassName = 'fullScreen';
 
@@ -47,24 +66,27 @@ export class DepthImageComponent implements OnInit, OnDestroy {
   private socket?: Subject<MessageEvent>;
 
   // eslint-disable-next-line new-cap
-  public constructor(@Inject('BASE_URL') private readonly baseUrl: string, private readonly angularRenderer: Renderer2, private readonly wsService: WebSocketService, private readonly trackingService: TrackingService) {
-
+  public constructor() {
     this.baseUrl = this.baseUrl.replace('http', 'ws');
 
-    const isTracking$ = this.trackingService.getStatus()
-      .pipe(
-        map((status) => status.depthCameraStateName === DepthCameraState[DepthCameraState.Streaming]),
-        distinctUntilChanged()
-      );
+    const isTracking$ = this.trackingService.getStatus().pipe(
+      map(
+        (status) =>
+          status.depthCameraStateName
+          === DepthCameraState[DepthCameraState.Streaming]
+      ),
+      distinctUntilChanged()
+    );
 
-    this.shouldShowLiveView$ = combineLatest(isTracking$, this.livePreview$)
-      .pipe(
-        tap(([isTracking, livePreview]) => {
-          console.debug(`tracking: ${isTracking}, livePreview: ${livePreview}`);
-
-        }),
-        map(([isTracking, livePreview]) => livePreview && isTracking)
-      );
+    this.shouldShowLiveView$ = combineLatest(
+      isTracking$,
+      this.livePreview$
+    ).pipe(
+      tap(([isTracking, livePreview]) => {
+        console.debug(`tracking: ${isTracking}, livePreview: ${livePreview}`);
+      }),
+      map(([isTracking, livePreview]) => livePreview && isTracking)
+    );
   }
 
   public get fullScreen(): boolean {
@@ -96,7 +118,6 @@ export class DepthImageComponent implements OnInit, OnDestroy {
     }
   }
 
-
   public ngOnInit(): void {
     this.depthImageSubscription = this.shouldShowLiveView$
       .pipe(
@@ -127,21 +148,26 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
   public livePreviewChanged(): void {
     this.livePreview$.next(this.livePreview);
-    this.trackingService.setDepthImagePreviewState(this.livePreview).subscribe(
-      () => this.livePreview$.next(this.livePreview)
-    );
+    this.trackingService
+      .setDepthImagePreviewState(this.livePreview)
+      .subscribe(() => this.livePreview$.next(this.livePreview));
   }
 
   public updateSize(): void {
-
     if (this.container === undefined) {
       return;
     }
 
     if (this.fullScreen) {
-      this.angularRenderer.addClass(this.container.nativeElement, DepthImageComponent.fullScreenClassName);
+      this.angularRenderer.addClass(
+        this.container.nativeElement,
+        DepthImageComponent.fullScreenClassName
+      );
     } else {
-      this.angularRenderer.removeClass(this.container.nativeElement, DepthImageComponent.fullScreenClassName);
+      this.angularRenderer.removeClass(
+        this.container.nativeElement,
+        DepthImageComponent.fullScreenClassName
+      );
     }
   }
 
@@ -176,5 +202,4 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
     this.socket?.next(new MessageEvent('message', { data: 'continue' }));
   }
-
 }

@@ -1,6 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, from, fromEventPattern, Observable, using } from 'rxjs';
+import {
+  BehaviorSubject,
+  from,
+  fromEventPattern,
+  Observable,
+  using
+} from 'rxjs';
 import { concatMap, filter, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
 import { PerformanceData } from '@reflex/shared-types';
@@ -9,6 +15,9 @@ import { PerformanceData } from '@reflex/shared-types';
   providedIn: 'root'
 })
 export class PerformanceService {
+  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly logService = inject(LogService);
+
   protected isConnected = new BehaviorSubject<boolean>(false);
 
   private readonly connection: signalR.HubConnection;
@@ -18,7 +27,7 @@ export class PerformanceService {
   private readonly isStarted = new BehaviorSubject<boolean>(false);
 
   // eslint-disable-next-line new-cap
-  public constructor(@Inject('BASE_URL') private readonly baseUrl: string, private readonly logService: LogService) {
+  public constructor() {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}perfhub`)
       .build();
@@ -32,7 +41,6 @@ export class PerformanceService {
       }
     );
 
-
     this.performanceData$ = fromEventPattern<PerformanceData>(
       (handler) => this.connection.on('performanceData', handler),
       (handler) => this.connection.off('performanceData', handler)
@@ -41,32 +49,37 @@ export class PerformanceService {
       filter((x) => x !== undefined)
     );
 
-
     // send 'startState' only after 'isConnected' emits true
     this.startAfterConnected$ = this.isConnected.pipe(
       skipWhile((value) => !value),
-      concatMap(async () => this.connection.send('startCollectingData').catch((error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }))
+      concatMap(async () =>
+        this.connection.send('startCollectingData').catch((error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }))
     );
   }
 
   /**
-     * @return an Observable of Arrays of Point3 from the currently configured camera
-     */
+   * @return an Observable of Arrays of Point3 from the currently configured camera
+   */
   public getData(): Observable<PerformanceData> {
+    return using(
+      () => {
+        this.startAfterConnected$.subscribe(() => this.isStarted.next(true));
 
 
-    return using(() => {
-      this.startAfterConnected$.subscribe(() => this.isStarted.next(true));
-
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      return { unsubscribe: async () => this.connection.send('stopCollectingData').catch((error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }) };
-    }, () => this.performanceData$);
-
+        return {
+          // @todo: check if this is correct
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          unsubscribe: async () =>
+            this.connection.send('stopCollectingData').catch((error) => {
+              console.error(error);
+              this.logService.sendErrorLog(`${error}`);
+            })
+        };
+      },
+      () => this.performanceData$
+    );
   }
 }

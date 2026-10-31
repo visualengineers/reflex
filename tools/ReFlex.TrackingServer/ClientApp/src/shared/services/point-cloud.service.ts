@@ -1,6 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, from, fromEventPattern, Observable, using } from 'rxjs';
+import {
+  BehaviorSubject,
+  from,
+  fromEventPattern,
+  Observable,
+  using
+} from 'rxjs';
 import { concatMap, filter, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
 import { Point3 } from '@reflex/shared-types';
@@ -9,6 +15,9 @@ import { Point3 } from '@reflex/shared-types';
   providedIn: 'root'
 })
 export class PointCloudService {
+  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly logService = inject(LogService);
+
   private readonly connection: signalR.HubConnection;
 
   private readonly isConnected = new BehaviorSubject<boolean>(false);
@@ -18,7 +27,7 @@ export class PointCloudService {
   private readonly points$: Observable<Array<Point3>>;
 
   // eslint-disable-next-line new-cap
-  public constructor(@Inject('BASE_URL') private readonly baseUrl: string, private readonly logService: LogService) {
+  public constructor() {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}pointcloudhub`)
       .build();
@@ -35,19 +44,19 @@ export class PointCloudService {
     this.points$ = fromEventPattern<Array<Point3>>(
       (handler) => this.connection.on('pointCloud', handler),
       (handler) => this.connection.off('pointCloud', handler)
-    )
-      .pipe(
-        share(),
-        filter((x) => x !== undefined)
-      );
+    ).pipe(
+      share(),
+      filter((x) => x !== undefined)
+    );
 
     // send 'startState' only after 'isConnected' emits true
     this.startAfterConnected$ = this.isConnected.pipe(
       skipWhile((value) => !value),
-      concatMap(async () => this.connection.send('startPointCloud').catch((error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }))
+      concatMap(async () =>
+        this.connection.send('startPointCloud').catch((error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }))
     );
   }
 
@@ -55,15 +64,20 @@ export class PointCloudService {
    * @return an Observable of Arrays of Point3 from the currently configured camera
    */
   public getPointCloud(): Observable<Array<Point3>> {
-    return using(() => {
-      this.startAfterConnected$.subscribe(() => this.isStarted.next(true));
+    return using(
+      () => {
+        this.startAfterConnected$.subscribe(() => this.isStarted.next(true));
 
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      return { unsubscribe: async () => this.connection.send('stopPointCloud').catch((error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }) };
-    }, () => this.points$);
-
+        return {
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          unsubscribe: async () =>
+            this.connection.send('stopPointCloud').catch((error) => {
+              console.error(error);
+              this.logService.sendErrorLog(`${error}`);
+            })
+        };
+      },
+      () => this.points$
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import {
   SettingsGroupComponent,
@@ -24,17 +24,15 @@ import { OnInit, OnDestroy } from '@angular/core';
   styleUrl: './recorderoptions.component.scss',
 })
 export class RecorderoptionsComponent implements OnInit, OnDestroy {
+  private configurationService = inject(ConfigurationService);
+  private connectionService = inject(ConnectionService);
+
   public amountTouchPoints: number = 0;
   public circleSize: CircleSize = { min: 0, max: 0 };
   public sendInterval: number = 100;
   public serverConnection?: string;
 
   private amountTouchPointsSubscription?: Subscription;
-
-  constructor(
-    private configurationService: ConfigurationService,
-    private connectionService: ConnectionService
-  ) {}
 
   ngOnInit(): void {
     this.circleSize = this.configurationService.getCircleSize();

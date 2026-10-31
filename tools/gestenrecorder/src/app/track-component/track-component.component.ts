@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 import { FormsModule } from '@angular/forms';
@@ -22,6 +22,9 @@ export interface GestureData {
   styleUrl: './track-component.component.scss',
 })
 export class TrackComponentComponent implements OnInit, OnDestroy {
+  private gestureService = inject(GestureDataService);
+  private gestureReplayService = inject(GestureReplayService);
+
   public selectedIndex: number = -1;
   selectedGesture: Gesture | null = null;
   private gestureSubscription: Subscription = new Subscription();
@@ -34,11 +37,6 @@ export class TrackComponentComponent implements OnInit, OnDestroy {
       speed: 1,
     },
   ];
-
-  constructor(
-    private gestureService: GestureDataService,
-    private gestureReplayService: GestureReplayService
-  ) {}
 
   ngOnInit() {
     this.gestureSubscription = this.gestureService.gesture$.subscribe(

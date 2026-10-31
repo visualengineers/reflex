@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, inject } from '@angular/core';
 
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { GestureoptionsComponent } from '../gestureoptions/gestureoptions.component';
@@ -16,11 +16,11 @@ import { SavingoptionsComponent } from '../savingoptions/savingoptions.component
   styleUrl: './dropdown.component.scss',
 })
 export class DropdownComponent {
+  private elementRef = inject(ElementRef);
+
   isGestureDropdownOpen: boolean = false;
   isRecorderDropdownOpen: boolean = false;
   isSavingDropdownOpen: boolean = false;
-
-  constructor(private elementRef: ElementRef) {}
 
   closeDropdown() {
     this.isGestureDropdownOpen = false;

@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Interaction } from '@reflex/shared-types';
 import { fromEvent, Observable, Subscription } from 'rxjs';
@@ -9,40 +17,36 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    imports: [
-      RouterOutlet,
-      StatusComponent,
-      HistoryComponent,
-      CommonModule
-    ],
-    selector: 'app-root',
-    templateUrl: './app.html',
-    styleUrls: ['./app.scss']
+  imports: [RouterOutlet, StatusComponent, HistoryComponent, CommonModule],
+  selector: 'app-root',
+  templateUrl: './app.html',
+  styleUrls: ['./app.scss'],
 })
 export class App implements AfterViewInit, OnInit, OnDestroy {
+  private _pointService = inject(TouchPointService);
+
   title = 'Basic Angular App';
 
-  public TouchPoints$ : Observable<Interaction[]>;
+  public TouchPoints$: Observable<Interaction[]>;
   public Width = 0;
   public Height = 0;
   public Math = Math;
 
-  resizeObservable$: Observable<Event> | undefined
+  resizeObservable$: Observable<Event> | undefined;
   resizeSubscription$: Subscription | undefined;
 
   @ViewChild('interactionCanvas')
   interactionCanvas: ElementRef | undefined;
 
-
-  constructor(private _pointService : TouchPointService) {
+  constructor() {
     this.TouchPoints$ = this._pointService.getTouchPoints();
   }
 
   ngOnInit() {
-    this.resizeObservable$ = fromEvent(window, 'resize')
-    this.resizeSubscription$ = this.resizeObservable$.subscribe( evt => {
+    this.resizeObservable$ = fromEvent(window, 'resize');
+    this.resizeSubscription$ = this.resizeObservable$.subscribe((evt) => {
       this.updateSize();
-    })
+    });
   }
 
   ngOnDestroy() {

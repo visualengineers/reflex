@@ -1,15 +1,22 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SignalRBaseService } from './signalR.base.service';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { concatMap, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { JsonSimpleValue, TuioConfiguration, TuioPackageDetails } from '@reflex/shared-types';
+import {
+  JsonSimpleValue,
+  TuioConfiguration,
+  TuioPackageDetails
+} from '@reflex/shared-types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TuioService extends SignalRBaseService<string> {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl: string;
+
   private readonly tuioRoute = 'api/Tuio/';
 
   private readonly getConfigurationRoute = `${this.tuioRoute}GetTuioConfiguration`;
@@ -34,21 +41,17 @@ export class TuioService extends SignalRBaseService<string> {
   private readonly packages$: Observable<TuioPackageDetails>;
   private readonly startPackagesAfterConnected$: Observable<void>;
 
-  public constructor(
-    private readonly http: HttpClient,
-    logService: LogService,
-    // eslint-disable-next-line new-cap
-    @Inject('BASE_URL') private readonly baseUrl: string
-  ) {
+  public constructor() {
+    const logService = inject(LogService);
+    const baseUrl = inject<string>('BASE_URL' as unknown);
+
     super(`${baseUrl}tuiohub`, 'tuioState', logService);
+    this.baseUrl = baseUrl;
 
     this.packages$ = fromEventPattern<TuioPackageDetails>(
       (handler) => this.connection.on('currentPackage', handler),
       (handler) => this.connection.off('currentPackage', handler)
-    )
-      .pipe(
-        share()
-      );
+    ).pipe(share());
 
     // send 'startState' only after 'isConnected' emits true
     this.startPackagesAfterConnected$ = this.isConnected.pipe(
@@ -60,16 +63,23 @@ export class TuioService extends SignalRBaseService<string> {
   public getPackages(): Observable<TuioPackageDetails> {
     return using(
       () => {
-        this.startPackagesAfterConnected$.subscribe(() => {}, (error) => {
-          console.error(error);
-          this.logService.sendErrorLog(`${error}`);
-        });
+        this.startPackagesAfterConnected$.subscribe(
+          () => {},
+          (error) => {
+            console.error(error);
+            this.logService.sendErrorLog(`${error}`);
+          }
+        );
 
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        return { unsubscribe: async () => this.connection.send('stopPackageDetails').catch((error) => {
-          console.error(error);
-          this.logService.sendErrorLog(`${error}`);
-        }) };
+        return {
+          // @todo: check if this is correct
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          unsubscribe: async () =>
+            this.connection.send('stopPackageDetails').catch((error) => {
+              console.error(error);
+              this.logService.sendErrorLog(`${error}`);
+            })
+        };
       },
       () => this.packages$
     );
@@ -135,7 +145,10 @@ export class TuioService extends SignalRBaseService<string> {
   public setTransportProtocol(
     observerType: string
   ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'TransportProtocol', value: observerType };
+    const args: JsonSimpleValue = {
+      name: 'TransportProtocol',
+      value: observerType
+    };
 
     return this.http.post<JsonSimpleValue>(
       this.baseUrl + this.selectTransportProtocolRoute,
@@ -147,7 +160,10 @@ export class TuioService extends SignalRBaseService<string> {
   public setTuioProtocolVersion(
     observerType: string
   ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'ProtocolVersion', value: observerType };
+    const args: JsonSimpleValue = {
+      name: 'ProtocolVersion',
+      value: observerType
+    };
 
     return this.http.post<JsonSimpleValue>(
       this.baseUrl + this.selectTuioProtocolRoute,
@@ -159,7 +175,10 @@ export class TuioService extends SignalRBaseService<string> {
   public setTuioInterpretation(
     observerType: string
   ): Observable<HttpResponse<JsonSimpleValue>> {
-    const args: JsonSimpleValue = { name: 'TuioInterpretation', value: observerType };
+    const args: JsonSimpleValue = {
+      name: 'TuioInterpretation',
+      value: observerType
+    };
 
     return this.http.post<JsonSimpleValue>(
       this.baseUrl + this.selectTuioInterpretationRoute,

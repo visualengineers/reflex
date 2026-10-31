@@ -1,34 +1,43 @@
-import { Component } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
-import { TouchAreaComponent } from "./touch-area/touch-area.component";
-import { DropdownComponent } from "./dropdown/dropdown.component";
-import { PullupComponent } from "./pullup/pullup.component";
-import { TimelineComponent } from "./timeline/timeline.component";
-import { GestureDataService } from "./service/gesture-data.service";
-import { GestureReplayService } from "./service/gesture-replay.service";
-import { OptionCheckboxComponent,SettingsGroupComponent } from "@reflex/angular-components/dist";
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { TouchAreaComponent } from './touch-area/touch-area.component';
+import { DropdownComponent } from './dropdown/dropdown.component';
+import { PullupComponent } from './pullup/pullup.component';
+import { TimelineComponent } from './timeline/timeline.component';
+import { GestureDataService } from './service/gesture-data.service';
+import { GestureReplayService } from './service/gesture-replay.service';
+import {
+  OptionCheckboxComponent,
+  SettingsGroupComponent,
+} from '@reflex/angular-components/dist';
 
 @Component({
-    selector: "app-root",
-    imports: [RouterOutlet, TouchAreaComponent, DropdownComponent, PullupComponent, TimelineComponent, OptionCheckboxComponent, SettingsGroupComponent],
-    templateUrl: "./app.component.html",
-    styleUrl: "./app.component.scss"
+  selector: 'app-root',
+  imports: [
+    RouterOutlet,
+    TouchAreaComponent,
+    DropdownComponent,
+    PullupComponent,
+    TimelineComponent,
+    OptionCheckboxComponent,
+    SettingsGroupComponent,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = "gestenrecorder";
-  public toggleLoopActive = true;
+  private gestureService = inject(GestureDataService);
+  private gestureReplayService = inject(GestureReplayService);
 
-  constructor(
-    private gestureService: GestureDataService,
-    private gestureReplayService: GestureReplayService,
-  ) {}
+  title = 'gestenrecorder';
+  public toggleLoopActive = true;
 
   buildGesture(): void {
     this.gestureService.interpolateGesture();
   }
 
   playGesture(): void {
-    if(this.toggleLoopActive){
+    if (this.toggleLoopActive) {
       const gesture = this.gestureService.getGesture();
       this.gestureReplayService.initGestureObject(gesture);
     } else {
@@ -36,7 +45,6 @@ export class AppComponent {
       this.gestureReplayService.initGestureObject(gesture);
       this.gestureReplayService.resetAnimationAfterOneLoop(gesture);
     }
-
   }
 
   resetGesture(): void {

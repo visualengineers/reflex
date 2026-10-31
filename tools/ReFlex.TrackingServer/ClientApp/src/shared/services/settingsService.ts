@@ -1,14 +1,24 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Border, ConfidenceParameter, Distance, ExtremumDescriptionSettings, FilterSettings, JsonSimpleValue, SmoothingParameter, TrackingServerAppSettings } from '@reflex/shared-types';
+import { Injectable, inject } from '@angular/core';
+import {
+  Border,
+  ConfidenceParameter,
+  Distance,
+  ExtremumDescriptionSettings,
+  FilterSettings,
+  JsonSimpleValue,
+  SmoothingParameter,
+  TrackingServerAppSettings
+} from '@reflex/shared-types';
 import { PointCloudSettings } from '@reflex/shared-types/dist/config/point-cloud-settings';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class SettingsService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
 
   private readonly settingsSubject: Subject<TrackingServerAppSettings>;
   private readonly settings$: Observable<TrackingServerAppSettings>;
@@ -38,12 +48,7 @@ export class SettingsService {
   private readonly restoreRoute = `${this.settingsRoute}/Restore`;
   private readonly resetRoute = `${this.settingsRoute}/Reset`;
 
-
-  public constructor(
-    private readonly http: HttpClient,
-    // eslint-disable-next-line new-cap
-    @Inject('BASE_URL') private readonly baseUrl: string
-  ) {
+  public constructor() {
     this.settingsSubject = new Subject<TrackingServerAppSettings>();
     this.settings$ = this.settingsSubject.asObservable();
     this.update();
@@ -54,7 +59,9 @@ export class SettingsService {
   }
 
   public update(): void {
-    this.http.get<TrackingServerAppSettings>(this.settingsRoute).subscribe((result) => this.settingsSubject.next(result));
+    this.http
+      .get<TrackingServerAppSettings>(this.settingsRoute)
+      .subscribe((result) => this.settingsSubject.next(result));
   }
 
   public setBorder(border: Border): Observable<Border> {
@@ -69,53 +76,92 @@ export class SettingsService {
     return this.http.post<JsonSimpleValue>(this.setThresholdRoute, threshold);
   }
 
-  public setConfidence(confidence: ConfidenceParameter): Observable<ConfidenceParameter> {
-    return this.http.post<ConfidenceParameter>(this.setConfidenceRoute, confidence);
+  public setConfidence(
+    confidence: ConfidenceParameter
+  ): Observable<ConfidenceParameter> {
+    return this.http.post<ConfidenceParameter>(
+      this.setConfidenceRoute,
+      confidence
+    );
   }
 
-  public setSmoothingValues(smoothing: SmoothingParameter): Observable<SmoothingParameter> {
-    return this.http.post<SmoothingParameter>(this.setSmoothingValuesRoute, smoothing);
+  public setSmoothingValues(
+    smoothing: SmoothingParameter
+  ): Observable<SmoothingParameter> {
+    return this.http.post<SmoothingParameter>(
+      this.setSmoothingValuesRoute,
+      smoothing
+    );
   }
 
-  public setExtremumSettings(extremumSettings: ExtremumDescriptionSettings): Observable<ExtremumDescriptionSettings> {
-    return this.http.post<ExtremumDescriptionSettings>(this.setExtremumSettingsRoute, extremumSettings);
+  public setExtremumSettings(
+    extremumSettings: ExtremumDescriptionSettings
+  ): Observable<ExtremumDescriptionSettings> {
+    return this.http.post<ExtremumDescriptionSettings>(
+      this.setExtremumSettingsRoute,
+      extremumSettings
+    );
   }
 
-  public setPointCloudSettings(pointCloudSettingValues: PointCloudSettings): Observable<PointCloudSettings> {
-    return this.http.post<PointCloudSettings>(this.setPointCloudSettingsRoute, pointCloudSettingValues);
+  public setPointCloudSettings(
+    pointCloudSettingValues: PointCloudSettings
+  ): Observable<PointCloudSettings> {
+    return this.http.post<PointCloudSettings>(
+      this.setPointCloudSettingsRoute,
+      pointCloudSettingValues
+    );
   }
 
   public setDistance(distance: Distance): Observable<Distance> {
     return this.http.post<Distance>(this.setDistanceRoute, distance);
   }
 
-  public setOptimizedBoxFilter(useOptimizedBoxFilter: boolean): Observable<JsonSimpleValue> {
+  public setOptimizedBoxFilter(
+    useOptimizedBoxFilter: boolean
+  ): Observable<JsonSimpleValue> {
     const sValue: JsonSimpleValue = {
       name: 'UseOptimizedBoxFilter',
       value: useOptimizedBoxFilter
     };
 
-    return this.http.post<JsonSimpleValue>(`${this.setOptimizedBoxFilterRoute}`, sValue);
+    return this.http.post<JsonSimpleValue>(
+      `${this.setOptimizedBoxFilterRoute}`,
+      sValue
+    );
   }
 
   public setFilterRadius(filterRadius: number): Observable<JsonSimpleValue> {
-    return this.http.put<JsonSimpleValue>(`${this.setFilterRadiusRoute}/${filterRadius}`, '');
+    return this.http.put<JsonSimpleValue>(
+      `${this.setFilterRadiusRoute}/${filterRadius}`,
+      ''
+    );
   }
 
   public setFilterPasses(filterPasses: number): Observable<JsonSimpleValue> {
-    return this.http.put<JsonSimpleValue>(`${this.setFilterPassesRoute}/${filterPasses}`, '');
+    return this.http.put<JsonSimpleValue>(
+      `${this.setFilterPassesRoute}/${filterPasses}`,
+      ''
+    );
   }
 
   public setFilterThreads(filterThreads: number): Observable<JsonSimpleValue> {
-    return this.http.put<JsonSimpleValue>(`${this.setFilterThreadsRoute}/${filterThreads}`, '');
+    return this.http.put<JsonSimpleValue>(
+      `${this.setFilterThreadsRoute}/${filterThreads}`,
+      ''
+    );
   }
 
   public setMinAngle(minAngle: number): Observable<JsonSimpleValue> {
     return this.http.post<JsonSimpleValue>(this.setMinAngleRoute, minAngle);
   }
 
-  public setLimitationFilterType(filterSettings: FilterSettings): Observable<JsonSimpleValue> {
-    return this.http.post<JsonSimpleValue>(this.setLimitationFilterTypeRoute, filterSettings);
+  public setLimitationFilterType(
+    filterSettings: FilterSettings
+  ): Observable<JsonSimpleValue> {
+    return this.http.post<JsonSimpleValue>(
+      this.setLimitationFilterTypeRoute,
+      filterSettings
+    );
   }
 
   public getCanRestore(): Observable<JsonSimpleValue> {
@@ -127,11 +173,15 @@ export class SettingsService {
   }
 
   public initializeAdvancedLimitationFilter(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.initializeAdvancedLimitationFilterRoute);
+    return this.http.get<JsonSimpleValue>(
+      this.initializeAdvancedLimitationFilterRoute
+    );
   }
 
   public resetAdvancedLimitationFilter(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.resetAdvancedLimitationFilterRoute);
+    return this.http.get<JsonSimpleValue>(
+      this.resetAdvancedLimitationFilterRoute
+    );
   }
 
   public isLimitationFilterInitialized(): Observable<JsonSimpleValue> {
@@ -139,7 +189,9 @@ export class SettingsService {
   }
 
   public isLimitationFilterInitializing(): Observable<JsonSimpleValue> {
-    return this.http.get<JsonSimpleValue>(this.limitationFilterInitializingRoute);
+    return this.http.get<JsonSimpleValue>(
+      this.limitationFilterInitializingRoute
+    );
   }
 
   public restore(): Observable<TrackingServerAppSettings> {
@@ -153,5 +205,4 @@ export class SettingsService {
   public saveSettings(settings: TrackingServerAppSettings): Observable<object> {
     return this.http.post<object>(this.saveSettingsRoute, settings);
   }
-
 }

@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
@@ -9,7 +8,7 @@ import { OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular
     FormsModule,
     OptionCheckboxComponent,
     SettingsGroupComponent
-],
+  ],
   templateUrl: './toggle.component.html',
   styleUrl: './toggle.component.scss'
 })
