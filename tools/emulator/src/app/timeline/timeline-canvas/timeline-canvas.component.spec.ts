@@ -7,10 +7,10 @@ describe('TimelineCanvasComponent', () => {
   let fixture: ComponentFixture<TimelineCanvasComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
-    imports: [TimelineCanvasComponent]
-})
-    .compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [TimelineCanvasComponent]
+    })
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -1,13 +1,12 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { InteractionsComponent } from './interactions.component';
 @Component({
   selector: 'app-interactions',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockInteractionsComponent
-  implements Partial<InteractionsComponent>
-{
+implements Partial<InteractionsComponent> {
   public get isProcessing(): boolean {
     return true;
   }

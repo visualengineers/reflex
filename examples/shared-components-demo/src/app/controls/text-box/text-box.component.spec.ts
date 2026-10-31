@@ -10,8 +10,8 @@ describe('TextBoxComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TextBoxComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(TextBoxComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

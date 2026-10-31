@@ -10,8 +10,8 @@ describe('GestureoptionsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [GestureoptionsComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(GestureoptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

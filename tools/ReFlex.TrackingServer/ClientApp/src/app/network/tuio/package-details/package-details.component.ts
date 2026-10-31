@@ -1,16 +1,16 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { TuioPackageDetails } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 
 @Component({
   selector: 'app-package-details',

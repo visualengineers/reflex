@@ -1,4 +1,3 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import {
   ApplicationConfig,
   ErrorHandler,
@@ -7,17 +6,18 @@ import {
   provideZonelessChangeDetection
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
-import { routes } from './app.routes';
-import { BrowserModule } from '@angular/platform-browser';
+import { PlatformLocation } from '@angular/common';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
   withXhr
 } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { CustomErrorHandler } from 'src/shared/util/custom-error-handler';
-import { PlatformLocation } from '@angular/common';
+import { routes } from './app.routes';
 
 export function getBaseUrl(platformLocation: PlatformLocation): string {
   // return document.getElementsByTagName('base')[0].href;

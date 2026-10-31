@@ -10,8 +10,8 @@ describe('PullupComponent', () => {
     await TestBed.configureTestingModule({
       imports: [PullupComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(PullupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

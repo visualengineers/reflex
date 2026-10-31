@@ -7,7 +7,7 @@ export function mockReturnValueForArgs(
   value: unknown
 ): void {
   const fallback = mock.getMockImplementation();
-  const matcher = expect.objectContaining({ args }) as { asymmetricMatch(value: unknown): boolean };
+  const matcher = expect.objectContaining({ args }) as { asymmetricMatch: (value: unknown) => boolean };
   mock.mockImplementation((...actual: Array<unknown>) => {
     if (matcher.asymmetricMatch({ args: actual })) {
       return value;

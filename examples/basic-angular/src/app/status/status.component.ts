@@ -1,10 +1,10 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnDestroy,
-  OnInit,
   inject,
-  ChangeDetectionStrategy,
+  OnDestroy,
+  OnInit
 } from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
 import { interval, Observable, Subscription } from 'rxjs';
@@ -14,48 +14,48 @@ import { TouchPointService } from 'src/services/touch-point.service';
   selector: 'app-status',
   templateUrl: './status.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./status.component.scss'],
+  styleUrls: ['./status.component.scss']
 })
 export class StatusComponent implements OnInit, OnDestroy {
+
+  public touchPoints$: Observable<Array<Interaction>> | undefined;
+  public touchPointSubscription: Subscription | undefined;
+
+  public connectionSubscription: Subscription | undefined;
+
+  public webSocketAddress = '';
+  public isConnected = false;
+  public frameNumber = 0;
+  public touchCount = 0;
   private readonly changeDetector = inject(ChangeDetectorRef);
-  private _pointService = inject(TouchPointService);
-
-  _touchPoints$: Observable<Interaction[]> | undefined;
-  _touchPointSubscription: Subscription | undefined;
-
-  _connectionSubscription: Subscription | undefined;
+  private readonly pointService = inject(TouchPointService);
   private frameSubscription?: Subscription;
 
-  public WebSocketAddress = '';
-  public IsConnected = false;
-  public FrameNumber = 0;
-  public TouchCount = 0;
-
-  ngOnInit(): void {
-    this._touchPoints$ = this._pointService.getTouchPoints();
-    this._touchPointSubscription = this._touchPoints$.subscribe((res) => {
+  public ngOnInit(): void {
+    this.touchPoints$ = this.pointService.getTouchPoints();
+    this.touchPointSubscription = this.touchPoints$.subscribe((res) => {
       this.changeDetector.markForCheck();
-      this.TouchCount = res.length;
+      this.touchCount = res.length;
     });
-    this._connectionSubscription = interval(500).subscribe(() => {
-      this.IsConnected = this._pointService.isConnected();
+    this.connectionSubscription = interval(500).subscribe(() => {
+      this.isConnected = this.pointService.isConnected();
       this.changeDetector.markForCheck();
     });
-    console.log(this.IsConnected);
-    this.WebSocketAddress = this._pointService.getAddress();
-    this.frameSubscription = this._pointService
+    console.log(this.isConnected);
+    this.webSocketAddress = this.pointService.getAddress();
+    this.frameSubscription = this.pointService
       .getFrameNumber()
       .subscribe((n) => {
-        this.FrameNumber = n;
+        this.frameNumber = n;
         this.changeDetector.markForCheck();
       });
   }
 
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this._touchPointSubscription?.unsubscribe();
-    this._connectionSubscription?.unsubscribe();
+  public ngOnDestroy(): void {
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    this.touchPointSubscription?.unsubscribe();
+    this.connectionSubscription?.unsubscribe();
     this.frameSubscription?.unsubscribe();
   }
 }

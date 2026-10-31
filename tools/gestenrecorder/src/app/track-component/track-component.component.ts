@@ -1,16 +1,17 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  inject,
-  ChangeDetectionStrategy,
+  OnDestroy,
+  OnInit,
+  inject
 } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 import { FormsModule } from '@angular/forms';
-import { OnInit, OnDestroy } from '@angular/core';
-import { GestureDataService } from '../service/gesture-data.service';
 import { Subscription } from 'rxjs';
 import { Gesture } from '../data/gesture';
+import { GestureDataService } from '../service/gesture-data.service';
 import { GestureReplayService } from '../service/gesture-replay.service';
 
 export interface GestureData {
@@ -25,48 +26,49 @@ export interface GestureData {
   imports: [SettingsGroupComponent, FormsModule],
   templateUrl: './track-component.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './track-component.component.scss',
+  styleUrl: './track-component.component.scss'
 })
 export class TrackComponentComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private gestureService = inject(GestureDataService);
-  private gestureReplayService = inject(GestureReplayService);
 
-  public selectedIndex: number = -1;
-  selectedGesture: Gesture | null = null;
-  private gestureSubscription: Subscription = new Subscription();
+  public selectedIndex = -1;
+  public selectedGesture: Gesture | null = null;
 
   public tableData: Array<GestureData> = [
     {
       id: 1,
       name: 'Finger 1',
       numFrames: 30,
-      speed: 1,
-    },
+      speed: 1
+    }
   ];
 
-  ngOnInit() {
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly gestureService = inject(GestureDataService);
+  private readonly gestureReplayService = inject(GestureReplayService);
+  private gestureSubscription: Subscription = new Subscription();
+
+  public ngOnInit(): void {
     this.gestureSubscription = this.gestureService.gesture$.subscribe(
       (gesture) => {
         this.changeDetector.markForCheck();
         this.selectedGesture = gesture;
 
         // Aktualisiere tableData, wenn selectedGesture aktualisiert wird
-        if (this.selectedGesture) {
+        if (this.selectedGesture !== null) {
           this.tableData = [
             {
               id: this.selectedGesture.id,
               name: this.selectedGesture.name,
               numFrames: this.selectedGesture.numFrames,
-              speed: this.selectedGesture.speed,
-            },
+              speed: this.selectedGesture.speed
+            }
           ];
         }
       }
     );
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.gestureSubscription.unsubscribe();
   }
 
@@ -80,7 +82,7 @@ export class TrackComponentComponent implements OnInit, OnDestroy {
       id: newId,
       name: `Finger ${newId}`,
       numFrames: 30,
-      speed: 1,
+      speed: 1
     };
 
     this.tableData.push(newGestureData);
@@ -97,7 +99,7 @@ export class TrackComponentComponent implements OnInit, OnDestroy {
     this.updateGesture();
   }
 
-  updateGesture(): void {
+  public updateGesture(): void {
     if (this.selectedIndex === -1) {
       return;
     }

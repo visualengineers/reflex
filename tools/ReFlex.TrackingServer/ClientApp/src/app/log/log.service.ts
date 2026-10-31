@@ -1,9 +1,9 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/internal/Observable';
-import { concatMap, tap, catchError } from 'rxjs/operators';
+import { Injectable, inject } from '@angular/core';
 import { JsonSimpleValue, LogMessageDetail } from '@reflex/shared-types';
+import { Observable } from 'rxjs/internal/Observable';
+import { catchError, concatMap, tap } from 'rxjs/operators';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
 @Injectable({
   providedIn: 'root'

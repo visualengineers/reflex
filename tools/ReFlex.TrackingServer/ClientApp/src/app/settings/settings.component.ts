@@ -1,22 +1,24 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 /* eslint-disable max-lines */
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
-import { SettingsService } from 'src/shared/services/settingsService';
-import { Subscription, combineLatest, interval } from 'rxjs';
-import { LogService } from '../log/log.service';
-import { TrackingService } from 'src/shared/services/tracking.service';
-import { PerformanceService } from 'src/shared/services/performance.service';
-import { switchMap } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
+import {
+  OptionCheckboxComponent,
+  SettingsGroupComponent,
+  ValueSelectionComponent,
+  ValueSliderComponent
+} from '@reflex/angular-components/dist';
 import {
   DEFAULT_SETTINGS,
   DepthCameraState,
@@ -28,15 +30,13 @@ import {
   PerformanceDataItem,
   TrackingServerAppSettings
 } from '@reflex/shared-types';
-import {
-  OptionCheckboxComponent,
-  SettingsGroupComponent,
-  ValueSelectionComponent,
-  ValueSliderComponent
-} from '@reflex/angular-components/dist';
-import { FormsModule } from '@angular/forms';
+import { Subscription, combineLatest, interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { PerformanceService } from 'src/shared/services/performance.service';
+import { SettingsService } from 'src/shared/services/settingsService';
+import { TrackingService } from 'src/shared/services/tracking.service';
+import { LogService } from '../log/log.service';
 import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-settings',

@@ -1,16 +1,16 @@
 import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
 } from '@angular/core';
 import { PointCloudComponent } from './point-cloud.component';
 
 @Component({
   selector: 'app-point-cloud',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockPointCloudComponent implements Partial<PointCloudComponent> {
   @Input()
@@ -20,5 +20,5 @@ export class MockPointCloudComponent implements Partial<PointCloudComponent> {
   public fullScreenChanged = new EventEmitter<boolean>();
 
   @Input()
-  public set livePreviewEnabled(value: boolean) {}
+  public livePreviewEnabled = false;
 }

@@ -1,14 +1,14 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { CommonModule } from '@angular/common';
+
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
@@ -21,10 +21,9 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   templateUrl: './history-visualization.component.html',
   styleUrls: ['./history-visualization.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule]
+  imports: []
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
-
   @ViewChild('historyVis')
   public container?: ElementRef<HTMLDivElement>;
 

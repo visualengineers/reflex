@@ -8,17 +8,17 @@
 </div>
 
 <div class="content" role="main" #interactionCanvas>
-  @for (tp of TouchPoints$ | async; track tp) {
+  @for (tp of touchPoints$ | async; track tp) {
   <div>
     <div
       class="touchPoint"
       [style]="
         'transform: translate(' +
-        tp.position.x * this.Width +
+        tp.position.x * this.width +
         'px, ' +
-        tp.position.y * this.Height +
+        tp.position.y * this.height +
         'px) scale(' +
-        Math.abs(tp.position.z) +
+        math.abs(tp.position.z) +
         ');'
       "
     >

@@ -2,7 +2,7 @@
   "scripts": {
     "ng": "ng",
     "build": "npm run build --workspaces --if-present",
-    "build-complete": "npm run build --workspaces --if-present && npm run lint --workspaces --if-present && npm run test-ci --workspaces --if-present",
+    "build-complete": "npm run build --workspaces --if-present && npm run lint && npm run test:lint && npm run test-ci --workspaces --if-present",
     "build:shared-components": "npm run build -w packages/reflex-angular-components",
     "build:shared-types": "npm run build -w packages/reflex-shared-types",
     "build:server": "npm run build -w tools/ReFlex.TrackingServer/ClientApp",
@@ -37,7 +37,10 @@
     "test:net-with-report": "dotnet coverage collect dotnet test --output test/artifacts/coverage-net/cobertura-coverage.xml --output-format cobertura && dotnet reportgenerator -reports:test/artifacts/coverage-net/cobertura-coverage.xml -targetdir:\"test/artifacts/coverage-net/report\" -reporttypes:Html -assemblyfilters:\"+ReFlex.*;-*.Test\"",
     "test:server": "npm run test-ci -w tools/ReFlex.TrackingServer/ClientApp",
     "smoke:electron": "node scripts/smoke-electron.cjs",
-    "update:server:dependencies": "node scripts/update_trackingserver_dependencies.cjs"
+    "update:server:dependencies": "node scripts/update_trackingserver_dependencies.cjs",
+    "lint": "eslint . --max-warnings 0",
+    "lint-fix": "eslint . --fix --max-warnings 0",
+    "test:lint": "node --test scripts/eslint/config.spec.cjs"
   },
   "workspaces": [
     "packages/reflex-shared-types",
@@ -94,12 +97,14 @@
     "eslint": "^10.13.0",
     "eslint-config-angular": "^0.5.0",
     "eslint-plugin-jsdoc": "^65.4.2",
+    "eslint-plugin-vue": "^10.12.0",
     "globals": "^17.13.0",
     "istanbul-lib-instrument": "^6.0.3",
     "ng-packagr": "^22.2.5",
     "playwright": "^1.58.2",
     "tslib": "^2.3.0",
     "typescript": "6.0.3",
-    "vitest": "^4.1.12"
+    "vitest": "^4.1.12",
+    "vue-eslint-parser": "^10.4.1"
   }
 }

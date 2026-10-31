@@ -1,38 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HistoryVisualizationComponent } from './history-visualization.component';
-import { LogService } from 'src/app/log/log.service';
-import { ProcessingService } from 'src/shared/services/processing.service';
-import { of, throwError } from 'rxjs';
 import {
   Interaction,
   InteractionHistory,
-  InteractionHistoryElement,
+  InteractionHistoryElement
 } from '@reflex/shared-types';
+import { of, throwError } from 'rxjs';
+import { LogService } from 'src/app/log/log.service';
+import { ProcessingService } from 'src/shared/services/processing.service';
+import { HistoryVisualizationComponent } from './history-visualization.component';
 
 const processingService = {
   getStatus: vi.fn().mockName('fakeProcessingService.getStatus'),
-  getHistory: vi.fn().mockName('fakeProcessingService.getHistory'),
+  getHistory: vi.fn().mockName('fakeProcessingService.getHistory')
 };
 
 const logService = {
-  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog')
 };
 
-let history = new Array<InteractionHistory>();
+const history = new Array<InteractionHistory>();
 
-for (var i = 0; i < 4; i++) {
-  let h: InteractionHistory = {
+for (let i = 0; i < 4; i++) {
+  const h: InteractionHistory = {
     touchId: i,
-    items: [],
+    items: []
   };
 
-  for (var j = 0; j < 20; j++) {
+  for (let j = 0; j < 20; j++) {
     const x = Math.random();
     const y = Math.random();
     const z = Math.random();
 
-    let base: Interaction = {
+    const base: Interaction = {
       time: 1234567,
       confidence: j,
       touchId: i,
@@ -41,13 +41,13 @@ for (var i = 0; i < 4; i++) {
       extremumDescription: {
         numFittingPoints: 10,
         percentageFittingPoints: 100,
-        type: 1,
-      },
+        type: 1
+      }
     };
 
-    let e: InteractionHistoryElement = {
+    const e: InteractionHistoryElement = {
       frameId: 0,
-      interaction: base,
+      interaction: base
     };
     h.items.push(e);
   }
@@ -65,13 +65,13 @@ describe('HistoryVisualizationComponent', () => {
       providers: [
         {
           provide: ProcessingService,
-          useValue: processingService,
+          useValue: processingService
         },
         {
           provide: LogService,
-          useValue: logService,
-        },
-      ],
+          useValue: logService
+        }
+      ]
     }).compileComponents();
   });
 
@@ -91,9 +91,9 @@ describe('HistoryVisualizationComponent', () => {
     component.history = [];
   });
 
-  it('should create', async () => {
+  it('should create', () => {
     fixture.detectChanges();
-    // await fixture.whenStable();
+    // await await fixture.whenStable();
 
     expect(component.container).toBeDefined();
 

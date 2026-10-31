@@ -16,10 +16,10 @@
   <tbody class="points__table--body">
     @for (entry of tableData; track entry) {
       <tr>
-        <td scope="row">{{ entry?.id }}</td>
-        <td scope="row">{{ entry?.name }}</td>
-        <td scope="row" class="text-column">{{ entry?.message }}</td>
-        <td scope="row">{{ entry?.time?.toFixed(2) ?? ' - '}} ms</td>
+        <td>{{ entry?.id }}</td>
+        <td>{{ entry?.name }}</td>
+        <td class="text-column">{{ entry?.message }}</td>
+        <td>{{ entry?.time?.toFixed(2) ?? ' - '}} ms</td>
       </tr>
     }
   </tbody>

@@ -1,15 +1,14 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
-  ChangeDetectionStrategy,
+  OnInit
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { GestureDataService } from '../service/gesture-data.service';
-import { Gesture } from '../data/gesture';
-import { OnInit } from '@angular/core';
 import { ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { GestureDataService } from '../service/gesture-data.service';
 
 import { FormsModule } from '@angular/forms';
 
@@ -18,17 +17,17 @@ import { FormsModule } from '@angular/forms';
   imports: [ValueSelectionComponent, FormsModule],
   templateUrl: './savingoptions.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './savingoptions.component.scss',
+  styleUrl: './savingoptions.component.scss'
 })
 export class SavingoptionsComponent implements OnInit {
+
+  public gestureFileNames: Array<string> = [];
+  public selectedGestureFile = '';
   private readonly destroyRef = inject(DestroyRef);
   private readonly changeDetector = inject(ChangeDetectorRef);
-  private gestureDataService = inject(GestureDataService);
+  private readonly gestureDataService = inject(GestureDataService);
 
-  gestureFileNames: string[] = [];
-  selectedGestureFile: string = '';
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.gestureDataService
       .getGestureFileNames()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -38,18 +37,18 @@ export class SavingoptionsComponent implements OnInit {
           this.changeDetector.markForCheck();
         },
         error: (error) =>
-          console.error('Error loading gesture file names:', error),
+          console.error('Error loading gesture file names:', error)
       });
   }
 
-  loadSelectedGesture(): void {
+  public loadSelectedGesture(): void {
     if (this.selectedGestureFile) {
       const filePath = `assets/data/${this.selectedGestureFile}`;
       this.gestureDataService.loadGestureFromFile(filePath);
     }
   }
 
-  saveCreatedGesture(): void {
+  public saveCreatedGesture(): void {
     this.gestureDataService.saveGestureToJson();
   }
 }

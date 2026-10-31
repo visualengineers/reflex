@@ -1,15 +1,15 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TouchAreaComponent } from './touch-area/touch-area.component';
-import { DropdownComponent } from './dropdown/dropdown.component';
-import { PullupComponent } from './pullup/pullup.component';
-import { TimelineComponent } from './timeline/timeline.component';
-import { GestureDataService } from './service/gesture-data.service';
-import { GestureReplayService } from './service/gesture-replay.service';
 import {
   OptionCheckboxComponent,
-  SettingsGroupComponent,
+  SettingsGroupComponent
 } from '@reflex/angular-components/dist';
+import { DropdownComponent } from './dropdown/dropdown.component';
+import { PullupComponent } from './pullup/pullup.component';
+import { GestureDataService } from './service/gesture-data.service';
+import { GestureReplayService } from './service/gesture-replay.service';
+import { TimelineComponent } from './timeline/timeline.component';
+import { TouchAreaComponent } from './touch-area/touch-area.component';
 
 @Component({
   selector: 'app-root',
@@ -20,36 +20,35 @@ import {
     PullupComponent,
     TimelineComponent,
     OptionCheckboxComponent,
-    SettingsGroupComponent,
+    SettingsGroupComponent
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './app.component.scss',
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  private gestureService = inject(GestureDataService);
-  private gestureReplayService = inject(GestureReplayService);
 
-  title = 'gestenrecorder';
+  public title = 'gestenrecorder';
   public toggleLoopActive = true;
+  private readonly gestureService = inject(GestureDataService);
+  private readonly gestureReplayService = inject(GestureReplayService);
 
-  buildGesture(): void {
+  public buildGesture(): void {
     this.gestureService.interpolateGesture();
   }
 
-  playGesture(): void {
+  public playGesture(): void {
     if (this.toggleLoopActive) {
       const gesture = this.gestureService.getGesture();
       this.gestureReplayService.initGestureObject(gesture);
     } else {
       const gesture = this.gestureService.getGesture();
       this.gestureReplayService.initGestureObject(gesture);
-      this.gestureReplayService.resetAnimationAfterOneLoop(gesture);
+      this.gestureReplayService.resetAnimationAfterOneLoop();
     }
   }
 
-  resetGesture(): void {
-    const gesture = this.gestureService.getGesture();
-    this.gestureReplayService.resetAnimation(gesture);
+  public resetGesture(): void {
+    this.gestureReplayService.resetAnimation();
   }
 }

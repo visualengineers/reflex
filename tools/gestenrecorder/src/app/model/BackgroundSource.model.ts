@@ -1,4 +1,4 @@
-﻿export interface BackgroundSource {
-    name?: string;
-    src: string;
+export interface BackgroundSource {
+  name?: string;
+  src: string;
 }

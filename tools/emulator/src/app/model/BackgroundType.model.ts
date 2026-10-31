@@ -1,5 +1,5 @@
 export enum BackgroundType {
-    none,
-    localFile,
-    externalUrl
+  none,
+  localFile,
+  externalUrl
 }

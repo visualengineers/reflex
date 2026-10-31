@@ -1,76 +1,80 @@
 import { Injectable, inject } from '@angular/core';
+import { ExtremumType, Interaction } from '@reflex/shared-types';
+import { environment } from '../../../environments/environment';
 import { NormalizedPoint } from '../../model/NormalizedPoint.model';
 import {
   ConfigurationService,
-  Layers,
+  Layers
 } from '../../service/configuration.service';
 import { CircleDto } from '../../shapes/Circle';
-import { environment } from '../../../environments/environment';
-import { Interaction, ExtremumType } from '@reflex/shared-types';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class TouchAreaService {
-  private configurationService = inject(ConfigurationService);
+  private readonly configurationService = inject(ConfigurationService);
 
   // TODO: document all methods in this service
-  addNormalizedPoint(
+  public addNormalizedPoint(
     point: NormalizedPoint,
-    p: NormalizedPoint[],
+    p: Array<NormalizedPoint>,
     maxAmount: number
-  ): NormalizedPoint[] {
+  ): Array<NormalizedPoint> {
     p.push(point);
+
     return this.sliceToMax(maxAmount, p);
   }
 
-  circleDtoFromNormalizedPoint(
+  public circleDtoFromNormalizedPoint(
     p: NormalizedPoint,
     canvasSize: { width: number; height: number },
     layers?: Layers
   ): CircleDto {
     const circleSize = this.configurationService.getCircleSize();
+
     return {
       posX: p.x * canvasSize.width,
       posY: p.y * canvasSize.height,
-      radius: Math.abs(p.z) * circleSize.max + circleSize.min,
+      radius: (Math.abs(p.z) * circleSize.max) + circleSize.min,
       color:
-        Math.sign(p.z) > 0 ? layers?.colorUp ?? '' : layers?.colorDown ?? '',
+        Math.sign(p.z) > 0 ? layers?.colorUp ?? '' : layers?.colorDown ?? ''
     };
   }
 
-  checkIfMouseOnCircles(
+  public checkIfMouseOnCircles(
     event: MouseEvent | PointerEvent | WheelEvent,
-    p: NormalizedPoint[],
+    p: Array<NormalizedPoint>,
     ctx: CanvasRenderingContext2D
   ): boolean {
     return this.getHoveredCircles(event, p, ctx).length > 0;
   }
 
-  deleteNormalizedPoints(
+  public deleteNormalizedPoints(
     event: MouseEvent | PointerEvent,
-    p: NormalizedPoint[],
+    p: Array<NormalizedPoint>,
     ctx: CanvasRenderingContext2D
-  ): NormalizedPoint[] {
+  ): Array<NormalizedPoint> {
     const indices = this.getHoveredCircles(event, p, ctx);
+
     return p.filter((item) => !indices.includes(item.index));
   }
 
-  getHoveredCircles(
+  public getHoveredCircles(
     event: MouseEvent | PointerEvent | WheelEvent,
-    p: NormalizedPoint[],
+    p: Array<NormalizedPoint>,
     ctx: CanvasRenderingContext2D
-  ): number[] {
-    const indices: number[] = [];
+  ): Array<number> {
+    const indices: Array<number> = [];
     p.forEach((point) => {
       if (this.isEventOnCircle(event, point, ctx)) {
         indices.push(point.index);
       }
     });
+
     return indices;
   }
 
-  isEventOnCircle(
+  public isEventOnCircle(
     event: MouseEvent | PointerEvent | WheelEvent,
     point: NormalizedPoint,
     ctx: CanvasRenderingContext2D
@@ -79,21 +83,22 @@ export class TouchAreaService {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    const xDiff = point.x * ctx.canvas.width - mouseX;
-    const yDiff = point.y * ctx.canvas.height - mouseY;
-    const radius =
-      this.configurationService.getCircleSize().min + Math.abs(point.z);
+    const xDiff = (point.x * ctx.canvas.width) - mouseX;
+    const yDiff = (point.y * ctx.canvas.height) - mouseY;
+    const radius
+      = this.configurationService.getCircleSize().min + Math.abs(point.z);
     const distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
     return distance < radius;
   }
 
-  movePointFromEvent(
+  public movePointFromEvent(
     event1: MouseEvent | PointerEvent,
     event2: MouseEvent | PointerEvent,
     index: number,
-    p: NormalizedPoint[],
+    p: Array<NormalizedPoint>,
     ctx: CanvasRenderingContext2D
-  ): NormalizedPoint[] {
+  ): Array<NormalizedPoint> {
     const xDiff = event2.x - event1.x;
     const yDiff = event2.y - event1.y;
     p.forEach((point) => {
@@ -102,10 +107,11 @@ export class TouchAreaService {
         point.y += yDiff / (ctx.canvas.height ?? 1);
       }
     });
+
     return p;
   }
 
-  normalizedPointFromEvent(
+  public normalizedPointFromEvent(
     { target, offsetX, offsetY }: MouseEvent | PointerEvent,
     index: number
   ): NormalizedPoint {
@@ -114,21 +120,21 @@ export class TouchAreaService {
       y: offsetY / (target as HTMLElement).clientHeight,
       time: Date.now(),
       index,
-      z: 0,
+      z: 0
     };
   }
 
-  resizeNormalizedPoints(
+  public resizeNormalizedPoints(
     event: WheelEvent,
-    p: NormalizedPoint[],
+    p: Array<NormalizedPoint>,
     ctx: CanvasRenderingContext2D,
     layers?: Layers
-  ): NormalizedPoint[] {
+  ): Array<NormalizedPoint> {
     const mouseDirection = event.deltaY < 0 ? -1 : 1;
     const maxAmountLayers = Math.max(layers?.up ?? 0, layers?.down ?? 0);
     const normalizedPullLimit = (layers?.up ?? 0) / maxAmountLayers;
     const normalizedPushLimit = ((layers?.down ?? 0) / maxAmountLayers) * -1;
-    let scaleStep = environment.scaleStep;
+    let { scaleStep } = environment;
     scaleStep *= mouseDirection;
     p.forEach((point) => {
       if (this.isEventOnCircle(event, point, ctx)) {
@@ -138,21 +144,22 @@ export class TouchAreaService {
         );
       }
     });
+
     return p;
   }
 
-  sliceToMax(maxAmount: number, p: NormalizedPoint[]): NormalizedPoint[] {
+  public sliceToMax(maxAmount: number, p: Array<NormalizedPoint>): Array<NormalizedPoint> {
     return p.slice(-maxAmount);
   }
 
-  touchPointFromNormalizedPoint(p: NormalizedPoint): Interaction {
+  public touchPointFromNormalizedPoint(p: NormalizedPoint): Interaction {
     return {
       position: {
         x: p.x * this.configurationService.getViewPort().width,
         y: p.y * this.configurationService.getViewPort().height,
         z: p.z,
         isValid: true,
-        isFiltered: false,
+        isFiltered: false
       },
       confidence: 1.0,
       time: p.time,
@@ -161,8 +168,8 @@ export class TouchAreaService {
       extremumDescription: {
         type: ExtremumType.Undefined,
         numFittingPoints: 0,
-        percentageFittingPoints: 0,
-      },
+        percentageFittingPoints: 0
+      }
     };
   }
 }

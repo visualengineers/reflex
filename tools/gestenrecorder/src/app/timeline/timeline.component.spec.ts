@@ -10,8 +10,8 @@ describe('TimelineComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TimelineComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(TimelineComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

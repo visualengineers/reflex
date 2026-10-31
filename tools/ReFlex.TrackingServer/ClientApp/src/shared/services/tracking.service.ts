@@ -1,15 +1,15 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { SignalRBaseService } from './signalR.base.service';
-import { LogService } from 'src/app/log/log.service';
+import { Injectable, inject } from '@angular/core';
 import {
   CameraConfiguration,
   DepthCamera,
   TrackingConfigState
 } from '@reflex/shared-types';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LogService } from 'src/app/log/log.service';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { SignalRBaseService } from './signalR.base.service';
 
 @Injectable({
   providedIn: 'root'

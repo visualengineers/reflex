@@ -1,7 +1,6 @@
-import { Component } from 'react'
+import { Interaction,InteractionFrame } from '@reflex/shared-types';
+import { Component } from 'react';
 import { HistoryState } from '../types/history-state';
-import { InteractionFrame } from '@reflex/shared-types';
-import { Interaction } from '@reflex/shared-types';
 
 // component for rendering point
 export class History extends Component<InteractionFrame, HistoryState> {

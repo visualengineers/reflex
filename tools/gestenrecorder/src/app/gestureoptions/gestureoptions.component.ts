@@ -1,22 +1,21 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  inject,
-  ChangeDetectionStrategy,
+  OnDestroy,
+  OnInit,
+  inject
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { Layers } from '../service/configuration.service';
-import { ViewPort } from '../service/configuration.service';
-import { BackgroundSource } from '../model/BackgroundSource.model';
-import { OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ConfigurationService } from '../service/configuration.service';
 import {
   SettingsGroupComponent,
   ValueSelectionComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
+import { Subscription } from 'rxjs';
+import { BackgroundSource } from '../model/BackgroundSource.model';
+import { ConfigurationService, Layers, ViewPort } from '../service/configuration.service';
 
 @Component({
   selector: 'app-gestureoptions',
@@ -24,41 +23,44 @@ import {
     FormsModule,
     SettingsGroupComponent,
     ValueSelectionComponent,
-    ValueTextComponent,
+    ValueTextComponent
   ],
   templateUrl: './gestureoptions.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './gestureoptions.component.scss',
+  styleUrl: './gestureoptions.component.scss'
 })
 export class GestureoptionsComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private configurationService = inject(ConfigurationService);
 
   public layers: Layers = {
     up: 0,
     down: 0,
     colorUp: '',
-    colorDown: '',
+    colorDown: ''
   };
+
   public viewPort: ViewPort = {
     width: 0,
-    height: 0,
+    height: 0
   };
-  public backgroundType: string[] = [
+
+  public backgroundType: Array<string> = [
     'no background',
     'from assets/img',
-    'from internet url',
+    'from internet url'
   ];
-  public backgroundSources: BackgroundSource[] = [];
+
+  public backgroundSources: Array<BackgroundSource> = [];
   public selectedBackgroundType: string = this.backgroundType[0];
-  public selectedBackgroundImage: string = '';
-  public backgroundUrl: string = '';
+  public selectedBackgroundImage = '';
+  public backgroundUrl = '';
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly configurationService = inject(ConfigurationService);
   private layersSubscription?: Subscription;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.backgroundSources = this.configurationService.getBackgroundSources();
-    this.selectedBackgroundImage =
-      this.configurationService.getBackgroundImage();
+    this.selectedBackgroundImage
+      = this.configurationService.getBackgroundImage();
     this.viewPort = this.configurationService.getViewPort();
     console.log('backgroundSources', this.backgroundSources);
 
@@ -70,23 +72,23 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  saveConfiguration(): void {
-    if (this.layers) {
+  public saveConfiguration(): void {
+    if (this.layers !== undefined) {
       this.configurationService.setLayers(this.layers);
     }
-    if (this.viewPort) {
+    if (this.viewPort !== undefined) {
       this.configurationService.setViewPort(this.viewPort);
     }
     this.configurationService.setBackgroundImage(this.selectedBackgroundImage);
     this.configurationService.setLocalStorage();
   }
 
-  restoreConfiguration(): void {
+  public restoreConfiguration(): void {
     this.configurationService.getLocalStorage();
     this.ngOnInit();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.layersSubscription?.unsubscribe();
   }
 }

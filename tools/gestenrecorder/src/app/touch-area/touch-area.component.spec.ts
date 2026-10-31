@@ -10,8 +10,8 @@ describe('TouchAreaComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TouchAreaComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(TouchAreaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

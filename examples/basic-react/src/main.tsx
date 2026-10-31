@@ -1,6 +1,6 @@
-import ReactDOM from 'react-dom/client'
-import { ReFlexApp } from './app';
 import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { ReFlexApp } from './app';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -1,75 +1,74 @@
+import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectorRef,
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
+  inject,
   OnDestroy,
   OnInit,
-  ViewChild,
-  inject,
-  ChangeDetectionStrategy,
+  ViewChild
 } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { RouterOutlet } from '@angular/router';
 import { Interaction } from '@reflex/shared-types';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
 import { HistoryComponent } from './history/history.component';
 import { StatusComponent } from './status/status.component';
-import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
 
 @Component({
   imports: [RouterOutlet, StatusComponent, HistoryComponent, CommonModule],
   selector: 'app-root',
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./app.scss'],
+  styleUrls: ['./app.scss']
 })
 export class App implements AfterViewInit, OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private _pointService = inject(TouchPointService);
-
-  title = 'Basic Angular App';
-
-  public TouchPoints$: Observable<Interaction[]>;
-  public Width = 0;
-  public Height = 0;
-  public Math = Math;
-
-  resizeObservable$: Observable<Event> | undefined;
-  resizeSubscription$: Subscription | undefined;
 
   @ViewChild('interactionCanvas')
-  interactionCanvas: ElementRef | undefined;
+  public interactionCanvas: ElementRef<HTMLDivElement> | undefined;
 
-  constructor() {
-    this.TouchPoints$ = this._pointService.getTouchPoints();
+  public title = 'Basic Angular App';
+
+  public touchPoints$: Observable<Array<Interaction>>;
+  public width = 0;
+  public height = 0;
+  public math = Math;
+
+  public resizeObservable$: Observable<Event> | undefined;
+  public resizeSubscription$: Subscription | undefined;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly pointService = inject(TouchPointService);
+
+  public constructor() {
+    this.touchPoints$ = this.pointService.getTouchPoints();
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.resizeObservable$ = fromEvent(window, 'resize');
-    this.resizeSubscription$ = this.resizeObservable$.subscribe((evt) => {
+    this.resizeSubscription$ = this.resizeObservable$.subscribe(() => {
       this.updateSize();
     });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.resizeSubscription$) {
       this.resizeSubscription$?.unsubscribe();
     }
   }
 
-  ngAfterViewInit(): void {
-    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    //Add 'implements AfterViewInit' to the class.
+  public ngAfterViewInit(): void {
+    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    // Add 'implements AfterViewInit' to the class.
     this.updateSize();
   }
 
-  private updateSize() {
+  private updateSize(): void {
     this.changeDetector.markForCheck();
     if (this.interactionCanvas) {
-      this.Width = this.interactionCanvas.nativeElement.offsetWidth;
-      this.Height = this.interactionCanvas.nativeElement.offsetHeight;
+      this.width = this.interactionCanvas.nativeElement.offsetWidth;
+      this.height = this.interactionCanvas.nativeElement.offsetHeight;
     }
   }
 }

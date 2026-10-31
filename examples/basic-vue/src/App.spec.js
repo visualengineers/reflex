@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import App from './App.vue'
-import { vi } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 // mock the global Websocket
 const WebSocketMock = vi.fn(() => ({

@@ -10,8 +10,8 @@ describe('SavingoptionsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SavingoptionsComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(SavingoptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

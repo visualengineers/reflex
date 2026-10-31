@@ -1,7 +1,6 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -12,8 +11,7 @@ import {
   Output,
   Renderer2,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
@@ -21,13 +19,15 @@ import {
   BehaviorSubject,
   NEVER,
   Observable,
+  Subject,
   Subscription,
-  combineLatest,
-  Subject
+  combineLatest
 } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TrackingService } from 'src/shared/services/tracking.service';
 import { WebSocketService } from 'src/shared/services/webSocket.service';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 
 @Component({
   selector: 'app-depth-image',

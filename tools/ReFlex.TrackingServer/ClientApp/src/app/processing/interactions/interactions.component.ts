@@ -1,10 +1,10 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 @Component({

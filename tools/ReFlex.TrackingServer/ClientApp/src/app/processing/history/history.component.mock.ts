@@ -1,11 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HistoryComponent } from './history.component';
 
 @Component({
   selector: 'app-history',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockHistoryComponent implements Partial<HistoryComponent> {
-  public constructor() {}
 }

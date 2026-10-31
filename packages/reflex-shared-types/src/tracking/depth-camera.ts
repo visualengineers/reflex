@@ -1,5 +1,5 @@
-import { DepthCameraState } from './depth-camera-state';
 import { CameraConfiguration } from '../config/camera-configuration';
+import { DepthCameraState } from './depth-camera-state';
 
 export interface DepthCamera {
   id: string;

@@ -1,25 +1,25 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { NetworkingService } from 'src/shared/services/networking.service';
-import { SettingsService } from 'src/shared/services/settingsService';
-import { LogService } from '../log/log.service';
-import { NetworkInterface, NetworkSettings } from '@reflex/shared-types';
+import { FormsModule } from '@angular/forms';
 import {
   PanelHeaderComponent,
   ValueSelectionComponent,
   ValueSliderComponent,
   ValueTextComponent
 } from '@reflex/angular-components/dist';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NetworkInterface, NetworkSettings } from '@reflex/shared-types';
+import { Subscription } from 'rxjs';
+import { NetworkingService } from 'src/shared/services/networking.service';
+import { SettingsService } from 'src/shared/services/settingsService';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { LogService } from '../log/log.service';
 import { TuioComponent } from './tuio/tuio.component';
 
 @Component({

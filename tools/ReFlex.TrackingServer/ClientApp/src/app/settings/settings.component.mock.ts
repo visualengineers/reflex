@@ -1,9 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SettingsComponent } from './settings.component';
 
 @Component({
   selector: 'app-settings',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockSettingsComponent implements Partial<SettingsComponent> {}

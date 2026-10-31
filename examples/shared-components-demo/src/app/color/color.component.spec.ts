@@ -10,8 +10,8 @@ describe('ColorComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ColorComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(ColorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

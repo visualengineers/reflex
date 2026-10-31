@@ -18,8 +18,8 @@
     "build:electron-linux-arm64": "node ../../../scripts/build-electron.cjs server linux arm64",
     "test": "ng test TrackingServer --coverage",
     "test-ci": "ng test TrackingServer --no-watch --coverage",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix",
+    "lint": "eslint . --max-warnings 0",
+    "lint-fix": "eslint . --fix --max-warnings 0",
     "e2e": "ng e2e TrackingServer",
     "serve:ssr:TrackingServer": "node dist/server/server.mjs"
   },
@@ -27,7 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/visualengineers/reflex.git"
   },
-  "author": "Mathias M\u00fcller",
+  "author": "Mathias Müller",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/visualengineers/reflex/issues"

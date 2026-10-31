@@ -10,8 +10,8 @@ describe('TrackComponentComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TrackComponentComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(TrackComponentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

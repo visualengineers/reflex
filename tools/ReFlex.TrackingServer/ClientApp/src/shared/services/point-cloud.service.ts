@@ -1,6 +1,6 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { Point3 } from '@reflex/shared-types';
 import {
   BehaviorSubject,
   from,
@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { concatMap, filter, share, skipWhile } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { Point3 } from '@reflex/shared-types';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
 @Injectable({
   providedIn: 'root'

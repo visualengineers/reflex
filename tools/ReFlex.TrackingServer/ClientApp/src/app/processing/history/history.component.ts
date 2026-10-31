@@ -1,12 +1,12 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { CommonModule } from '@angular/common';
+
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { InteractionFrame, InteractionHistory } from '@reflex/shared-types';
@@ -20,10 +20,9 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, SettingsGroupComponent]
+  imports: [SettingsGroupComponent]
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-
   public frames: Array<InteractionFrame> = [];
 
   public history: Array<InteractionHistory> = [];

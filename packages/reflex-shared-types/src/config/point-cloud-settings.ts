@@ -1,5 +1,5 @@
 export interface PointCloudSettings {
-  pointCloudSize: number,
-  updateInterval: number,
-  fullResolution: boolean
+  pointCloudSize: number;
+  updateInterval: number;
+  fullResolution: boolean;
 }

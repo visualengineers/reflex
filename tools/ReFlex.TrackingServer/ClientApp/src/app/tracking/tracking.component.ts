@@ -1,33 +1,33 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
   OnDestroy,
-  inject,
-  ChangeDetectionStrategy
+  OnInit,
+  inject
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { TrackingService } from '../../shared/services/tracking.service';
-import { SettingsService } from 'src/shared/services/settingsService';
-import { LogService } from '../log/log.service';
-import { mergeMap, tap } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
+import {
+  PanelHeaderComponent,
+  ValueSelectionComponent
+} from '@reflex/angular-components/dist';
 import {
   CameraConfiguration,
   DepthCamera,
   DepthCameraState,
   TrackingConfigState
 } from '@reflex/shared-types';
-import {
-  PanelHeaderComponent,
-  ValueSelectionComponent
-} from '@reflex/angular-components/dist';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RecordingComponent } from './recording/recording.component';
+import { Subscription } from 'rxjs';
+import { mergeMap, tap } from 'rxjs/operators';
+import { SettingsService } from 'src/shared/services/settingsService';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { TrackingService } from '../../shared/services/tracking.service';
+import { LogService } from '../log/log.service';
 import { SettingsComponent } from '../settings/settings.component';
-import { PointCloudComponent } from './point-cloud/point-cloud.component';
 import { DepthImageComponent } from './depth-image/depth-image.component';
+import { PointCloudComponent } from './point-cloud/point-cloud.component';
+import { RecordingComponent } from './recording/recording.component';
 
 @Component({
   selector: 'app-tracking',

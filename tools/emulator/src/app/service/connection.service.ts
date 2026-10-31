@@ -1,15 +1,19 @@
-import { Injectable, inject } from '@angular/core';
-import { WebSocketSubject } from 'rxjs/webSocket';
-import { interval, Observable, Subject, Subscription } from 'rxjs';
-import { ConfigurationService } from './configuration.service';
-import { delay, tap } from 'rxjs/operators';
+import { inject, Injectable } from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
+import { interval, Observable, Subject, Subscription } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
+import { WebSocketSubject } from 'rxjs/webSocket';
+import { ConfigurationService } from './configuration.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ConnectionService {
-  private configurationService = inject(ConfigurationService);
+
+  public connectionSuccessful: Subject<boolean>;
+
+  public doReconnect = true;
+  private readonly configurationService = inject(ConfigurationService);
 
   private socket?: WebSocketSubject<Array<Interaction>>;
   private sendInterval$?: Observable<number>;
@@ -18,15 +22,11 @@ export class ConnectionService {
   private sendIntervalSubscription?: Subscription;
   private autoReconnectSubscription?: Subscription;
 
-  public connectionSuccessful: Subject<boolean>;
-
-  public doReconnect = true;
-
-  constructor() {
+  public constructor() {
     this.connectionSuccessful = new Subject();
   }
 
-  init(): void {
+  public init(): void {
     this.autoReconnectSubscription = this.connectionState()
       .pipe(
         tap((result) => (this.doReconnect = !result)),
@@ -35,8 +35,8 @@ export class ConnectionService {
         tap(() => {
           // if reconnect is still required - do reconnect
           if (
-            this.doReconnect === true &&
-            (!this.socket || this.socket.closed)
+            this.doReconnect
+            && (!this.socket || this.socket.closed)
           ) {
             this.doReconnect = false;
             this.connect();
@@ -48,23 +48,25 @@ export class ConnectionService {
     this.reconnect();
   }
 
-  destroy(): void {
+  public destroy(): void {
     this.autoReconnectSubscription?.unsubscribe();
     this.disconnect(false);
   }
 
-  reconnect(): void {
+  public reconnect(): void {
     this.disconnect(true);
   }
 
-  disconnect(triggerReconnect: boolean = true): void {
+  public disconnect(triggerReconnect = true): void {
     this.socket?.complete();
     this.socket?.unsubscribe();
     this.sendIntervalSubscription?.unsubscribe();
-    if (triggerReconnect) this.connectionSuccessful?.next(false);
+    if (triggerReconnect) {
+      this.connectionSuccessful?.next(false);
+    }
   }
 
-  sendMessage(touchPoints: Interaction[]): void {
+  public sendMessage(touchPoints: Array<Interaction>): void {
     this.touchPoints = touchPoints;
   }
 
@@ -83,7 +85,7 @@ export class ConnectionService {
 
     this.socket.subscribe(
       (result) => {
-        console.log('websocket says: ' + result);
+        console.log('websocket says:', result);
       },
       (error) => {
         this.disconnect();
@@ -96,11 +98,10 @@ export class ConnectionService {
     );
     this.sendInterval$ = interval(this.configurationService.getSendInterval());
     this.sendIntervalSubscription = this.sendInterval$.subscribe(() =>
-      this.doSend(this.touchPoints)
-    );
+      this.doSend(this.touchPoints));
   }
 
-  private doSend(touchPoints: Interaction[]) {
+  private doSend(touchPoints: Array<Interaction>): void {
     if (this.socket && !this.socket.closed && !this.socket.hasError) {
       this.socket.next(touchPoints);
 

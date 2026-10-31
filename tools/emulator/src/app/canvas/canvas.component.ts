@@ -1,59 +1,52 @@
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
-import { combineLatest, fromEvent, Subscription, race } from 'rxjs';
+import { Observable, Subscription, combineLatest, race } from 'rxjs';
+import { NormalizedPoint } from '../model/NormalizedPoint.model';
+
 import {
   distinctUntilChanged,
-  map,
   filter,
-  publishBehavior,
-  refCount,
+  map,
+  pairwise,
+  startWith,
   switchMap,
   takeUntil,
-  debounceTime,
-  withLatestFrom,
-  startWith,
-  pairwise,
+  withLatestFrom
 } from 'rxjs/operators';
-import { NormalizedPoint } from '../model/NormalizedPoint.model';
 import { ConfigurationService, Layers } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
 import { CircleDto, CircleRenderer } from '../shapes/Circle';
-import { environment } from 'src/environments/environment';
-import { ExtremumType, Interaction } from '@reflex/shared-types';
-import { CommonModule } from '@angular/common';
-
-interface Size {
-  width: number;
-  height: number;
-}
+import { CanvasPointGeometry } from './canvas-point-geometry';
+import { canvasMouseEvents, windowSizeChanges } from './canvas-streams';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.sass'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule],
+  imports: [CommonModule]
 })
 export class CanvasComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private connectionService = inject(ConnectionService);
-  private configurationService = inject(ConfigurationService);
 
-  @ViewChild('canvas', { static: true }) canvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvas', { static: true }) public canvas?: ElementRef<HTMLCanvasElement>;
+
+  public backgroundPath = '';
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly connectionService = inject(ConnectionService);
+  private readonly configurationService = inject(ConfigurationService);
 
   private addNormalizedPointsSubscription?: Subscription;
 
   private amountTouchPointsSubscription?: Subscription;
-
-  public backgroundPath = '';
 
   private circleRenderer?: CircleRenderer;
 
@@ -78,7 +71,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
 
   private suppressContextMenuSubscription?: Subscription;
 
-  ngOnInit(): void {
+  private readonly geometry = new CanvasPointGeometry(this.configurationService, () => this.ctx, () => this.layers);
+
+  public ngOnInit(): void {
     // PRIVATE VARIABLES
     if (this.canvas?.nativeElement !== undefined) {
       this.ctx = this.canvas.nativeElement.getContext(
@@ -92,22 +87,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     );
 
     // OBSERVABLES
-    const windowSize$ = fromEvent(window, 'resize').pipe(
-      map(
-        () => ({ width: window.innerWidth, height: window.innerHeight } as Size)
-      ),
-      // only react to actual changed values and wait for a stable value (debounce)
-      distinctUntilChanged(
-        (a, b) => a.width === b.width && a.height === b.height
-      ),
-      debounceTime(100),
-      // window size used by multiple observers, by making it a 'hot' observable we keep the most recent value in a buffer
-      publishBehavior({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      } as Size),
-      refCount()
-    );
+    const windowSize$ = windowSizeChanges();
 
     const amountTouchPoints$ = this.configurationService.getAmountTouchPoints();
     const layers$ = this.configurationService.getLayers();
@@ -116,52 +96,28 @@ export class CanvasComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const contextMenu$ = fromEvent<MouseEvent>(
-      this.canvas.nativeElement,
-      'contextmenu'
-    ); // default menu on right click/ menu key event
-
-    const mouseDown$ = fromEvent<MouseEvent>(
-      this.canvas.nativeElement,
-      'mousedown'
-    );
-    const mouseMove$ = fromEvent<MouseEvent>(
-      this.canvas.nativeElement,
-      'mousemove'
-    );
-    const mouseOut$ = fromEvent<MouseEvent>(
-      this.canvas.nativeElement,
-      'mouseout'
-    );
-    const mouseUp$ = fromEvent<MouseEvent>(
-      this.canvas.nativeElement,
-      'mouseup'
-    );
-    const mouseWheel$ = fromEvent<WheelEvent>(
-      this.canvas.nativeElement,
-      'wheel'
-    );
+    const { contextMenu$, mouseDown$, mouseMove$, mouseOut$, mouseUp$, mouseWheel$ } = canvasMouseEvents(this.canvas.nativeElement);
     const normalizedPoints$ = this.configurationService.getNormalizedPoints(); // point subject in configuration service (multicasting!)
 
     // whether circles are currently hovered or not
     const mouseHoversCircle$ = combineLatest([
-      mouseMove$ || mouseDown$,
-      normalizedPoints$,
+      mouseMove$,
+      normalizedPoints$
     ]).pipe(
-      map(([event, points]) => this.checkIfMouseOnCircles(event, points)),
+      map(([event, points]) => this.geometry.checkIfMouseOnCircles(event, points)),
       startWith(false),
       distinctUntilChanged()
     );
 
     // position of last mouseDown$ or mouseWheel$ on a circle
     const mouseEventOnCircle$ = mouseHoversCircle$.pipe(
-      switchMap(() => mouseDown$ || mouseWheel$)
+      switchMap(() => mouseDown$)
     );
 
     // index of circle on which latest mouse event happened
     const activePointIndex$ = mouseEventOnCircle$.pipe(
       withLatestFrom(normalizedPoints$),
-      switchMap(([event, points]) => this.getHoveredCircles(event, points)),
+      switchMap(([event, points]) => this.geometry.getHoveredCircles(event, points)),
       distinctUntilChanged()
     );
 
@@ -172,363 +128,39 @@ export class CanvasComponent implements OnInit, OnDestroy {
         mouseMove$.pipe(
           pairwise(), // to calculate movement, two consecutive values are needed
           takeUntil(race(mouseUp$, mouseOut$))
-        )
-      )
+        ))
     );
 
     // SUBSCRIPTIONS
 
     // html canvas element
-    this.backgroundSubscription =
-      this.configurationService.background$.subscribe(() => {
-        this.backgroundPath = this.configurationService.getBackgroundImage();
-        this.changeDetector.markForCheck();
-      });
+    this.subscribeToBackground();
 
-    this.drawCirclesSubscription = combineLatest([
-      normalizedPoints$,
-      windowSize$,
-      layers$,
-    ])
-      .pipe(
-        map(([points, size]) =>
-          points.map((p) => this.circleDtoFromNormalizedPoint(p, size))
-        )
-      )
-      .subscribe((circleDtos) => this.drawCircleDtos(circleDtos));
+    this.subscribeToDrawCircles(normalizedPoints$, windowSize$, layers$);
 
-    this.resizeCanvasSubscription = windowSize$.subscribe((size) => {
-      if (this.canvas?.nativeElement === undefined) {
-        return;
-      }
-      this.canvas.nativeElement.width = size.width;
-      this.canvas.nativeElement.height = size.height;
-    });
+    this.subscribeToResizeCanvas(windowSize$);
 
     // normalized points modifications
-    this.addNormalizedPointsSubscription = mouseDown$
-      .pipe(
-        withLatestFrom(mouseHoversCircle$),
-        filter(([event, bool]) => event.button === 0 && bool === false), // left mousedown  + on plain canvas
-        map(([event]) => event),
-        map((event, index) => this.normalizedPointFromEvent(event, index)), // creates new NormalizedPoint
-        withLatestFrom(normalizedPoints$, amountTouchPoints$),
-        map(([point, points, amount]) =>
-          this.addNormalizedPoint(point, points, amount)
-        )
-      )
-      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+    this.subscribeToAddNormalizedPoints(mouseDown$, mouseHoversCircle$, normalizedPoints$, amountTouchPoints$);
 
-    this.deleteNormalizedPointsSubscription = mouseDown$
-      .pipe(
-        filter((event: MouseEvent) => event.button === 2), // right mousedown on circle
-        withLatestFrom(normalizedPoints$),
-        map(([event, points]) => this.deleteNormalizedPoints(event, points))
-      )
-      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+    this.subscribeToDeleteNormalizedPoints(mouseDown$, normalizedPoints$);
 
-    this.moveNormalizedPointsSubscription = dragDropMoveLeft$
-      .pipe(
-        withLatestFrom(activePointIndex$, normalizedPoints$),
-        map(([[event1, event2], index, points]) =>
-          this.movePointFromEvent(event1, event2, index, points)
-        )
-      )
-      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+    this.subscribeToMoveNormalizedPoints(dragDropMoveLeft$, activePointIndex$, normalizedPoints$);
 
-    this.resizeNormalizedPointsSubscription = mouseWheel$
-      .pipe(
-        withLatestFrom(normalizedPoints$),
-        map(([event, points]) => this.resizeNormalizedPoints(event, points))
-      )
-      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+    this.subscribeToResizeNormalizedPoints(mouseWheel$, normalizedPoints$);
 
     // suppress default contextmenu
-    this.suppressContextMenuSubscription = contextMenu$
-      .pipe(
-        map((e) => {
-          e.preventDefault();
-          return false;
-        })
-      )
-      .subscribe();
+    this.subscribeToSuppressContextMenu(contextMenu$);
 
     // functionality and information sending
-    this.sendTouchPointsSubscription = normalizedPoints$
-      .pipe(
-        map((points) =>
-          points.map((p) => this.touchPointFromNormalizedPoint(p))
-        )
-      )
-      .subscribe((touchPoints) =>
-        this.connectionService.sendMessage(touchPoints)
-      );
+    this.subscribeToSendTouchPoints(normalizedPoints$);
 
-    this.amountTouchPointsSubscription = amountTouchPoints$
-      .pipe(
-        withLatestFrom(normalizedPoints$),
-        map(([amount, points]) => this.sliceToMax(amount, points))
-      )
-      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+    this.subscribeToAmountTouchPoints(amountTouchPoints$, normalizedPoints$);
 
-    this.layersSubscription = layers$.subscribe((l) => (this.layers = l));
+    this.subscribeToLayers(layers$);
   }
 
-  /**
-   * add point to list if click event occured on plain canvas.
-   * @param point the normalized point to insert
-   * @param p list of current normalized points
-   * @param maxAmount max amount of touch points to be drawn
-   * @return updated list of normalized points
-   */
-  private addNormalizedPoint(
-    point: NormalizedPoint,
-    p: NormalizedPoint[],
-    maxAmount: number
-  ): NormalizedPoint[] {
-    p.push(point); // (re-)append the current point to the back
-
-    return this.sliceToMax(maxAmount, p);
-  }
-
-  /**
-   * Converts a normalized point to a circle dto, by multiplying with the canvas size passed into the method
-   * @param p the point to convert
-   * @param canvasSize the size of the canvas
-   */
-  private circleDtoFromNormalizedPoint(
-    p: NormalizedPoint,
-    canvasSize: Size
-  ): CircleDto {
-    const circleSize = this.configurationService.getCircleSize(); // upper & lower circle size limits (px) from settings
-
-    return {
-      posX: p.x * canvasSize.width,
-      posY: p.y * canvasSize.height,
-      radius: Math.abs(p.z) * circleSize.max + circleSize.min,
-      color:
-        Math.sign(p.z) > 0
-          ? this.layers?.colorUp ?? ''
-          : this.layers?.colorDown ?? '', // assign different colors for push / pull points
-    };
-  }
-
-  /**
-   * checks if pointer is currently on at least one of the circles.
-   * @param event MouseEvent | PointerEvents
-   * @param p list of normalized points
-   * @return true: pointer is on at least one the circles | false: pointer is on plain canvas
-   */
-  private checkIfMouseOnCircles(
-    event: MouseEvent | PointerEvent | WheelEvent,
-    p: NormalizedPoint[]
-  ): boolean {
-    return this.getHoveredCircles(event, p).length > 0 ? true : false;
-  }
-
-  /**
-   * delete point(s) from list if click event occured on them.
-   * @param event MouseEvent | PointerEvents
-   * @param p list of normalized points
-   * @return updated list of normalized points
-   */
-  private deleteNormalizedPoints(
-    event: MouseEvent | PointerEvent,
-    p: NormalizedPoint[]
-  ): NormalizedPoint[] {
-    const indices = this.getHoveredCircles(event, p);
-
-    return p.filter((item) => !indices.includes(item.index));
-  }
-
-  /**
-   * draws list of circleDtos on canvas.
-   * @param circleDtos list of circleDtos to draw
-   */
-  private drawCircleDtos(circleDtos: CircleDto[]): void {
-    if (this.ctx === undefined) {
-      return;
-    }
-
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    circleDtos.forEach((circleDto) => this.circleRenderer?.draw(circleDto));
-  }
-
-  /**
-   * get points affected by mouse or wheel events.
-   * @param event MouseEvent | PointerEvents
-   * @param p list of normalized points
-   * @return list of indices of points on which click / wheel event occured on.
-   */
-  private getHoveredCircles(
-    event: MouseEvent | PointerEvent | WheelEvent,
-    p: NormalizedPoint[]
-  ): number[] {
-    const indices: number[] = [];
-
-    // don't mess up with the order: first remains first point; adding on top; deleting in-place
-    p.forEach((point) => {
-      if (this.isEventOnCircle(event, point)) {
-        indices.push(point.index);
-      }
-    });
-
-    return indices;
-  }
-
-  /**
-   * tells whether a point's corresponding circle on the canvas is currently hovered or not.
-   * @param event MouseEvent | PointerEvents
-   * @param point normalized point
-   * @return true: circle is hovered | false: circle is not hovered
-   */
-  private isEventOnCircle(
-    event: MouseEvent | PointerEvent | WheelEvent,
-    point: NormalizedPoint
-  ): boolean {
-    if (this.ctx === undefined) {
-      return false;
-    }
-    // de-normalization
-    // TODO use function this.circleDtoFromNormalizedPoint to handle this !
-    const xDiff = point.x * this.ctx.canvas.width - event.x;
-    const yDiff = point.y * this.ctx.canvas.height - event.y;
-    const radius =
-      this.configurationService.getCircleSize().min + Math.abs(point.z);
-
-    // calculate distance from point center to pointer position with Pythagoras (in px, because 'z' can hardly be normalized)
-    const distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    const isOnCircle = distance < radius ? true : false;
-
-    return isOnCircle;
-  }
-
-  /**
-   * Moves point(s) if drag and drop event occured on them.
-   * @param event MouseEvent | PointerEvents
-   * @param p list of NormalizedPoints
-   * @return list of normalized points with updated point.x and point.y values..
-   */
-  private movePointFromEvent(
-    event1: MouseEvent | PointerEvent,
-    event2: MouseEvent | PointerEvent,
-    index: number,
-    p: NormalizedPoint[]
-  ): NormalizedPoint[] {
-    // TODO use function this.circleDtofromNormalizedPoint for cleaner code here !
-    // incremental differences in movement
-    const xDiff = event2.x - event1.x;
-    const yDiff = event2.y - event1.y;
-
-    p.forEach((point) => {
-      if (index === point.index) {
-        point.x += xDiff / (this.ctx?.canvas?.width ?? 1);
-        point.y += yDiff / (this.ctx?.canvas?.height ?? 1);
-      }
-    });
-
-    return p;
-  }
-
-  /**
-   * Creates a normalized point (x, y in [0, 1]) from a mouse or pointer event.
-   * @param param0 the destructured parameters needed for calculation of the normalized point
-   * @param index the serial number of the event. This is needed for replacement in the FIFO queue.
-   */
-  private normalizedPointFromEvent(
-    { target, offsetX, offsetY }: MouseEvent | PointerEvent,
-    index: number
-  ): NormalizedPoint {
-    return {
-      x: offsetX / (target as HTMLElement).clientWidth,
-      y: offsetY / (target as HTMLElement).clientHeight,
-      time: Date.now(),
-      index,
-      z: 0,
-    };
-  }
-
-  /**
-   * Resizes point(s) on wheel events using normalized values.
-   * @param event MouseEvent | PointerEvents
-   * @param p list of normalized points
-   * @return list of normalized points, updated point.z values.
-   */
-  private resizeNormalizedPoints(
-    event: WheelEvent,
-    p: NormalizedPoint[]
-  ): NormalizedPoint[] {
-    // 1: move up; -1: move down
-    const mouseDirection = event.deltaY < 0 ? -1 : 1;
-
-    // check if there are more push / pull layers (to define "1" for zvalue normalization)
-    const maxAmountLayers = Math.max(
-      this.layers?.up ?? 0,
-      this.layers?.down ?? 0
-    );
-
-    // ...and set normalized z resizing limits based on that
-    const normalizedPullLimit = (this.layers?.up ?? 0) / maxAmountLayers;
-    const normalizedPushLimit =
-      ((this.layers?.down ?? 0) / maxAmountLayers) * -1;
-
-    // speed up scaling with steps of either -/+ 0.05
-    // hardcoded value can be changed, turned out to be a good choice when testing
-    let scaleStep = environment.scaleStep;
-    scaleStep *= mouseDirection;
-
-    // actual resizing
-    p.forEach((point) => {
-      if (this.isEventOnCircle(event, point)) {
-        point.z = Math.min(
-          Math.max(normalizedPushLimit, point.z + scaleStep),
-          normalizedPullLimit
-        );
-      }
-    });
-
-    return p;
-  }
-
-  /**
-   * Slices an array of normalized points to a given max length (FIFO)
-   * @param maxAmount max amount of items allowed in the array
-   * @param p array of normalized points
-   * @return sliced array of normalized points
-   */
-  private sliceToMax(
-    maxAmount: number,
-    p: NormalizedPoint[]
-  ): NormalizedPoint[] {
-    return p.slice(-maxAmount);
-  }
-
-  /**
-   * Converts a normalized point (0.0 - 1.0) to a touch point, by multiplying x and y by the configured viewport size
-   * @param p the point to convert
-   */
-  private touchPointFromNormalizedPoint(p: NormalizedPoint): Interaction {
-    return {
-      position: {
-        x: p.x * this.configurationService.getViewPort().width,
-        y: p.y * this.configurationService.getViewPort().height,
-        z: p.z,
-        isValid: true,
-        isFiltered: false,
-      },
-      confidence: 1.0,
-      time: p.time,
-      type: 1,
-      touchId: -1,
-      extremumDescription: {
-        type: ExtremumType.Undefined,
-        numFittingPoints: 0,
-        percentageFittingPoints: 0,
-      },
-    };
-  }
-
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.addNormalizedPointsSubscription?.unsubscribe();
     this.amountTouchPointsSubscription?.unsubscribe();
     this.deleteNormalizedPointsSubscription?.unsubscribe();
@@ -542,5 +174,127 @@ export class CanvasComponent implements OnInit, OnDestroy {
     this.backgroundSubscription?.unsubscribe();
 
     this.connectionService.disconnect();
+  }
+
+  /**
+   * draws list of circleDtos on canvas.
+   * @param circleDtos list of circleDtos to draw
+   */
+  private drawCircleDtos(circleDtos: Array<CircleDto>): void {
+    if (this.ctx === undefined) {
+      return;
+    }
+
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    circleDtos.forEach((circleDto) => this.circleRenderer?.draw(circleDto));
+  }
+
+  private subscribeToBackground(): void {
+    this.backgroundSubscription
+      = this.configurationService.background$.subscribe(() => {
+        this.backgroundPath = this.configurationService.getBackgroundImage();
+        this.changeDetector.markForCheck();
+      });
+  }
+
+  private subscribeToDrawCircles(normalizedPoints$: Observable<Array<NormalizedPoint>>, windowSize$: Observable<{ width: number; height: number }>, layers$: Observable<Layers>): void {
+    this.drawCirclesSubscription = combineLatest([
+      normalizedPoints$,
+      windowSize$,
+      layers$
+    ])
+      .pipe(
+        map(([points, size]) =>
+          points.map((p) => this.geometry.circleDtoFromNormalizedPoint(p, size)))
+      )
+      .subscribe((circleDtos) => this.drawCircleDtos(circleDtos));
+  }
+
+  private subscribeToResizeCanvas(windowSize$: Observable<{ width: number; height: number }>): void {
+    this.resizeCanvasSubscription = windowSize$.subscribe((size) => {
+      if (this.canvas?.nativeElement === undefined) {
+        return;
+      }
+      this.canvas.nativeElement.width = size.width;
+      this.canvas.nativeElement.height = size.height;
+    });
+  }
+
+  private subscribeToAddNormalizedPoints(mouseDown$: Observable<MouseEvent>, mouseHoversCircle$: Observable<boolean>, normalizedPoints$: Observable<Array<NormalizedPoint>>, amountTouchPoints$: Observable<number>): void {
+    this.addNormalizedPointsSubscription = mouseDown$
+      .pipe(
+        withLatestFrom(mouseHoversCircle$),
+        filter(([event, bool]) => event.button === 0 && !bool), // left mousedown  + on plain canvas
+        map(([event]) => event),
+        map((event, index) => this.geometry.normalizedPointFromEvent(event, index)), // creates new NormalizedPoint
+        withLatestFrom(normalizedPoints$, amountTouchPoints$),
+        map(([point, points, amount]) =>
+          this.geometry.addNormalizedPoint(point, points, amount))
+      )
+      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+  }
+
+  private subscribeToDeleteNormalizedPoints(mouseDown$: Observable<MouseEvent>, normalizedPoints$: Observable<Array<NormalizedPoint>>): void {
+    this.deleteNormalizedPointsSubscription = mouseDown$
+      .pipe(
+        filter((event: MouseEvent) => event.button === 2), // right mousedown on circle
+        withLatestFrom(normalizedPoints$),
+        map(([event, points]) => this.geometry.deleteNormalizedPoints(event, points))
+      )
+      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+  }
+
+  private subscribeToMoveNormalizedPoints(dragDropMoveLeft$: Observable<[MouseEvent, MouseEvent]>, activePointIndex$: Observable<number>, normalizedPoints$: Observable<Array<NormalizedPoint>>): void {
+    this.moveNormalizedPointsSubscription = dragDropMoveLeft$
+      .pipe(
+        withLatestFrom(activePointIndex$, normalizedPoints$),
+        map(([[event1, event2], index, points]) =>
+          this.geometry.movePointFromEvent(event1, event2, index, points))
+      )
+      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+  }
+
+  private subscribeToResizeNormalizedPoints(mouseWheel$: Observable<WheelEvent>, normalizedPoints$: Observable<Array<NormalizedPoint>>): void {
+    this.resizeNormalizedPointsSubscription = mouseWheel$
+      .pipe(
+        withLatestFrom(normalizedPoints$),
+        map(([event, points]) => this.geometry.resizeNormalizedPoints(event, points))
+      )
+      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+  }
+
+  private subscribeToSuppressContextMenu(contextMenu$: Observable<MouseEvent>): void {
+    this.suppressContextMenuSubscription = contextMenu$
+      .pipe(
+        map((e) => {
+          e.preventDefault();
+
+          return false;
+        })
+      )
+      .subscribe();
+  }
+
+  private subscribeToSendTouchPoints(normalizedPoints$: Observable<Array<NormalizedPoint>>): void {
+    this.sendTouchPointsSubscription = normalizedPoints$
+      .pipe(
+        map((points) =>
+          points.map((p) => this.geometry.touchPointFromNormalizedPoint(p)))
+      )
+      .subscribe((touchPoints) =>
+        this.connectionService.sendMessage(touchPoints));
+  }
+
+  private subscribeToAmountTouchPoints(amountTouchPoints$: Observable<number>, normalizedPoints$: Observable<Array<NormalizedPoint>>): void {
+    this.amountTouchPointsSubscription = amountTouchPoints$
+      .pipe(
+        withLatestFrom(normalizedPoints$),
+        map(([amount, points]) => this.geometry.sliceToMax(amount, points))
+      )
+      .subscribe((x) => this.configurationService.setNormalizedPoints(x));
+  }
+
+  private subscribeToLayers(layers$: Observable<Layers>): void {
+    this.layersSubscription = layers$.subscribe((l) => (this.layers = l));
   }
 }

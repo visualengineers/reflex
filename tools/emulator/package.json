@@ -1,6 +1,6 @@
 {
   "name": "@reflex/emulator",
-  "author": "Mathias M\u00fcller",
+  "author": "Mathias Müller",
   "description": "Emulator for depth sensing input for developing applications for Elastic Displays using the ReFlex framework",
   "version": "0.9.10",
   "main": "main.js",
@@ -10,7 +10,7 @@
     "build": "ng build reflex-emulator",
     "test": "ng test reflex-emulator",
     "test-ci": "ng test reflex-emulator --no-watch --coverage",
-    "lint": "ng lint reflex-emulator",
+    "lint": "eslint . --max-warnings 0",
     "electron": "ng build reflex-emulator --base-href ./ && electron .",
     "build:electron-win": "node ../../scripts/build-electron.cjs emulator win x64",
     "build:electron-osx": "node ../../scripts/build-electron.cjs emulator osx x64",
@@ -21,7 +21,7 @@
   "build": {
     "appId": "reflex.emulator",
     "productName": "ReFlex Emulator",
-    "copyright": "Copyright \u00a9 2023",
+    "copyright": "Copyright © 2023",
     "buildVersion": "0.9.10",
     "electronVersion": "23.2.4",
     "win": {

@@ -1,22 +1,21 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
-import { NEVER, Observable, Subscription } from 'rxjs';
-import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
-import { CalibrationService } from 'src/shared/services/calibration.service';
-import { ProcessingService } from 'src/shared/services/processing.service';
-import { SettingsService } from 'src/shared/services/settingsService';
-import { LogService } from '../log/log.service';
-import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
-import { InteractionsComponent } from './interactions/interactions.component';
+import { FormsModule } from '@angular/forms';
+import {
+  OptionCheckboxComponent,
+  PanelHeaderComponent,
+  ValueSelectionComponent,
+  ValueSliderComponent,
+  ValueTextComponent
+} from '@reflex/angular-components/dist';
 import {
   CompleteInteractionData,
   DEFAULT_SETTINGS,
@@ -26,16 +25,17 @@ import {
   RemoteProcessingServiceSettings,
   TrackingServerAppSettings
 } from '@reflex/shared-types';
-import {
-  OptionCheckboxComponent,
-  PanelHeaderComponent,
-  ValueSelectionComponent,
-  ValueSliderComponent,
-  ValueTextComponent
-} from '@reflex/angular-components/dist';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NEVER, Observable, Subscription } from 'rxjs';
+import { concatMap, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { CalibrationService } from 'src/shared/services/calibration.service';
+import { ProcessingService } from 'src/shared/services/processing.service';
+import { SettingsService } from 'src/shared/services/settingsService';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { LogService } from '../log/log.service';
 import { HistoryComponent } from './history/history.component';
+import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
+import { InteractionsComponent } from './interactions/interactions.component';
 
 @Component({
   selector: 'app-processing',

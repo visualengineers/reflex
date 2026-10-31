@@ -67,6 +67,15 @@
             ],
             "outputPath": "dist/test-angular-components"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "packages/reflex-angular-components/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
+          }
         }
       }
     },
@@ -233,8 +242,9 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "tools/ReFlex.TrackingServer/ClientApp/**/*.ts"
-            ]
+              "tools/ReFlex.TrackingServer/ClientApp/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -385,9 +395,9 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "tools/emulator/src/**/*.ts",
-              "tools/emulator/src/**/*.html"
-            ]
+              "tools/emulator/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -529,6 +539,15 @@
               "chromium"
             ],
             "headless": true
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "tools/gestenrecorder/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -672,6 +691,15 @@
             ],
             "headless": true
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "examples/basic-angular/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
+          }
         }
       }
     },
@@ -814,6 +842,15 @@
               "chromium"
             ],
             "headless": true
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "examples/shared-components-demo/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }

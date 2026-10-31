@@ -1,19 +1,20 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ElementPosition, FrameSizeDefinition } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { LogService } from '../log/log.service';
-import { ElementPosition, FrameSizeDefinition } from '@reflex/shared-types';
-import { CommonModule } from '@angular/common';
-import { MeasureGridComponent } from './measure-grid/measure-grid.component';
 import { MeasureControlsComponent } from './measure-controls/measure-controls.component';
-import { FormsModule } from '@angular/forms';
+import { MeasureGridComponent } from './measure-grid/measure-grid.component';
 
 @Component({
   selector: 'app-measure-surface',
@@ -27,7 +28,7 @@ import { FormsModule } from '@angular/forms';
     MeasureGridComponent
   ]
 })
-export class MeasureSurfaceComponent implements OnInit {
+export class MeasureSurfaceComponent implements OnInit, OnDestroy {
 
   public fullScreen = false;
   private readonly changeDetector = inject(ChangeDetectorRef);

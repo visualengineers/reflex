@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { queryElement } from '../../../../test/helpers/dom';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [AppComponent]
     }).compileComponents();
   });
 
@@ -27,6 +28,6 @@ describe('AppComponent', () => {
     const buttons = compiled.querySelectorAll('.recorder__header > .settings__button-group > button');
     expect(buttons.length).toBe(3);
     expect(buttons[0].textContent).toContain('Build');
-    expect(compiled.querySelector('#first-toggle-checkbox')).toBeTruthy();
+    expect(queryElement<HTMLInputElement>(compiled, '#first-toggle-checkbox')).toBeTruthy();
   });
 });

@@ -10,7 +10,7 @@ describe('ValueSelectComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SelectComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SelectComponent);
     component = fixture.componentInstance;

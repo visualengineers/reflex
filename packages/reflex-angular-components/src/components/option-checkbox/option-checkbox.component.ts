@@ -1,9 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  Output,
-  ChangeDetectionStrategy,
+  Output
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-option-checkbox',
   templateUrl: './option-checkbox.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [FormsModule],
+  imports: [FormsModule]
 })
 export class OptionCheckboxComponent {
   @Input()

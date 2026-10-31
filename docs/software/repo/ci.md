@@ -46,7 +46,7 @@ The .NET and npm PR triggers explicitly cover `opened`, `reopened`, `edited` and
 Three entry-point workflows run for PRs targeting `main`:
 
 - `net-build-all.yml`: builds the .NET solution on `windows-latest`, runs its tests, and invokes `python-grpc-test.yml` as a separate job on `ubuntu-latest`.
-- `npm-build-all.yml`: runs `npm run build-complete` in one job on `windows-latest`, with sequential build, lint and test phases across the npm workspaces.
+- `npm-build-all.yml`: runs `npm run build-complete` in one job on `windows-latest`, with sequential build, repository lint, lint-configuration checks and workspace test phases.
 - `electron-smoke.yml`: runs native packaging and startup checks for both desktop applications across five OS/architecture targets. It also runs for PRs targeting other branches.
 
 The manual complete workflow is not the PR entry point. PR checks do not deploy Pages. `cache-cleanup.yml` runs when the PR closes, rather than as part of its build checks.
@@ -79,34 +79,39 @@ flowchart TD
 npm run build-complete
 ```
 
-The root script expands to three sequential phases:
+The root script expands to four sequential phases:
 
 ```shell
 npm run build --workspaces --if-present
-npm run lint --workspaces --if-present
+npm run lint
+npm run test:lint
 npm run test-ci --workspaces --if-present
 ```
 
-The next phase starts only if the preceding command succeeds. `--if-present` skips a workspace that has no script for that phase; it does not suppress failures of existing scripts. Builds follow the workspace order in the root `package.json`, with shared types and Angular components built before their consumers. Angular projects are configured centrally in the root `angular.json`.
+The next phase starts only if the preceding command succeeds. `--if-present` applies to builds and tests and skips workspaces without those scripts; it does not suppress failures of existing scripts. Lint runs once from the repository root and fails on errors or warnings (`--max-warnings 0`). Builds follow the workspace order in the root `package.json`, with shared types and Angular components built before their consumers. Angular projects are configured centrally in the root `angular.json`.
 
 All ten npm workspaces have a build script. Their additional checks are:
 
 | Workspace | Lint | `test-ci` |
 | --- | --- | --- |
-| `packages/reflex-shared-types` | No script | No script |
-| `packages/reflex-angular-components` | No script | Vitest, headless Chromium, coverage |
+| `packages/reflex-shared-types` | ESLint | No script |
+| `packages/reflex-angular-components` | ESLint | Vitest, headless Chromium, coverage |
 | `tools/ReFlex.TrackingServer/ClientApp` | ESLint | Vitest, headless Chromium, coverage |
-| `tools/emulator` | Angular ESLint builder | Vitest, headless Chromium, coverage |
-| `tools/gestenrecorder` | No script | Vitest, headless Chromium, coverage |
-| `tools/logging` | No script | No script |
-| `examples/basic-angular` | No script | Vitest, headless Chromium, coverage |
+| `tools/emulator` | ESLint | Vitest, headless Chromium, coverage |
+| `tools/gestenrecorder` | ESLint | Vitest, headless Chromium, coverage |
+| `tools/logging` | ESLint | No script |
+| `examples/basic-angular` | ESLint | Vitest, headless Chromium, coverage |
 | `examples/basic-react` | ESLint | No script |
-| `examples/basic-vue` | No script | Vitest with happy-dom |
+| `examples/basic-vue` | ESLint (JavaScript and Vue templates) | Vitest with happy-dom |
 | `examples/shared-components-demo` | ESLint | Vitest, headless Chromium, coverage |
 
 The Angular CI commands disable watch mode; the Vue command uses `vitest run`. Gestenrecorder is included through its own `test-ci` script. Interactive `test` scripts are not used by `build-complete`. Before local execution, run `npx playwright install chromium`. The shared npm-install action installs Chromium (including required OS dependencies) for CI.
 
-ESLint uses the workspace `eslint.config.js` files. TrackingServer's Angular CLI lint target and the emulator use `@angular-eslint/builder:lint`; the npm TrackingServer lint script invokes ESLint directly. The shared TypeScript rule adapter is `scripts/eslint/typescript.config.cjs`. AngularJS's `eslint-plugin-angular` is not required. Angular tests use the applications' zoneless scheduling, including the change-detection regression suites.
+ESLint uses the single root `eslint.config.js`. Every workspace also has a `lint` script for local checks; Angular CLI lint targets use the same configuration through `@angular-eslint/builder:lint`. Repository lint covers application and library sources, specs, mocks, test support files, production environments, Angular external and inline templates, React TSX, Vue single-file components, Electron entry points and repository build scripts. Only generated outputs, dependency directories and build caches are ignored. Per-workspace `tsconfig.eslint.json` files include tests and build configurations (`.ts`, `.tsx`, `.mts`, `.cts`) for type-aware linting without adding test helpers to production entry points.
+
+The shared TypeScript rule adapter is `scripts/eslint/typescript.config.cjs`. It retains the GTV policy, migrates renamed/stylistic TypeScript rules and explicitly restores historical ESLint checks that newer presets omit, including `no-undef`, `no-unreachable` and `no-redeclare`. Necessary decorated Angular test mocks are allowed by the corresponding rule option. Angular template checks include accessibility; Vue templates use `eslint-plugin-vue`. Unused suppression directives are errors. AngularJS's `eslint-plugin-angular` is not required.
+
+`npm run test:lint` checks source-file coverage, workspace scripts, historical rule severities, Angular template checks and actual React-hook/Vue-template violations. `npm run lint-fix` applies automatic fixes; remaining findings must be fixed before CI succeeds. Standalone lint commands require the shared packages to have been built, as their consumers resolve the generated declarations. `build-complete` ensures this ordering. Angular tests use the applications' zoneless scheduling, including the change-detection regression suites. Large suites share typed test contexts and data modules while keeping their cases in smaller spec files.
 
 All six Angular projects use `@angular/build:unit-test` with Vitest and Playwright Chromium. Application builds use `@angular/build:application`; the component library uses `@angular/build:ng-packagr`. The library has a separate `test-build` target to include its global SCSS in browser tests. Coverage (HTML, text summary, LCOV and Cobertura) is written to separate project folders under `test/artifacts/coverage/`. JUnit files under `test/artifacts/tests/` also have distinct names. `npm-build-all.yml` verifies these outputs with `scripts/verify-angular-reports.cjs` and uploads them as `angular-test-reports`, including available reports on failure.
 

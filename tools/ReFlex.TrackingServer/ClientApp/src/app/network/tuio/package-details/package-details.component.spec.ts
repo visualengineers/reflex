@@ -1,23 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PackageDetailsComponent } from './package-details.component';
+import { TuioPackageDetails } from '@reflex/shared-types';
+import { of, throwError } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
-import { of, throwError } from 'rxjs';
-import { TuioPackageDetails } from '@reflex/shared-types';
+import { PackageDetailsComponent } from './package-details.component';
 
 const logService = {
-  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog')
 };
 
 const tuioService = {
-  getPackages: vi.fn().mockName('fakeTuioService.getPackages'),
+  getPackages: vi.fn().mockName('fakeTuioService.getPackages')
 };
 
 const details: TuioPackageDetails = {
   sessionId: 5,
   frameId: 12,
-  packageContent: 'TestContent',
+  packageContent: 'TestContent'
 };
 
 describe('PackageDetailsComponent', () => {
@@ -30,13 +30,13 @@ describe('PackageDetailsComponent', () => {
       providers: [
         {
           provide: TuioService,
-          useValue: tuioService,
+          useValue: tuioService
         },
         {
           provide: LogService,
-          useValue: logService,
-        },
-      ],
+          useValue: logService
+        }
+      ]
     }).compileComponents();
   });
 

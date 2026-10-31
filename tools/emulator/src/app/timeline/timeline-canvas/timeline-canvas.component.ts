@@ -1,52 +1,47 @@
-import { ElementRef, inject, ChangeDetectionStrategy } from '@angular/core';
-import { OnDestroy } from '@angular/core';
-import { ViewChild } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, fromEvent, Subscription } from 'rxjs';
+
 import {
   debounceTime,
   distinctUntilChanged,
   map,
   publishBehavior,
-  refCount,
+  refCount
 } from 'rxjs/operators';
 import {
   ConfigurationService,
-  Layers,
+  Layers
 } from 'src/app/service/configuration.service';
 import { ConnectionService } from 'src/app/service/connection.service';
 import { NormalizedPoint } from '../../model/NormalizedPoint.model';
 import { CircleDto, CircleRenderer } from '../../shapes/Circle';
 
-interface Size {
-  width: number;
-  height: number;
-}
 
 @Component({
   selector: 'app-timeline-canvas',
   templateUrl: './timeline-canvas.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./timeline-canvas.component.sass'],
+  styleUrls: ['./timeline-canvas.component.sass']
 })
 export class TimelineCanvasComponent implements OnInit, OnDestroy {
-  private connectionService = inject(ConnectionService);
-  private configurationService = inject(ConfigurationService);
 
   @ViewChild('timeline', { static: true })
-  canvas?: ElementRef<HTMLCanvasElement>;
+  public canvas?: ElementRef<HTMLCanvasElement>;
+
+  private readonly connectionService = inject(ConnectionService);
+  private readonly configurationService = inject(ConfigurationService);
 
   private ctx?: CanvasRenderingContext2D;
   private circleRenderer?: CircleRenderer;
   private layers?: Layers;
-  private points?: CircleDto[];
+  private points?: Array<CircleDto>;
   private timelineElement?: HTMLElement | null;
   private drawTimelineSubscription?: Subscription;
   private layersSubscription?: Subscription;
   private pointsSubscription?: Subscription;
-  private timelineSubscription?: Subscription;
+  private readonly timelineSubscription?: Subscription;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.canvas?.nativeElement === undefined) {
       return;
     }
@@ -71,8 +66,8 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
         () =>
           ({
             width: this.timelineElement?.offsetWidth ?? 0,
-            height: this.timelineElement?.offsetHeight ?? 0,
-          } as Size)
+            height: this.timelineElement?.offsetHeight ?? 0
+          })
       ),
       distinctUntilChanged(
         (a, b) => a.width === b.width && a.height === b.height
@@ -80,15 +75,15 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
       debounceTime(50),
       publishBehavior({
         width: this.timelineElement.offsetWidth,
-        height: this.timelineElement.offsetWidth,
-      } as Size),
+        height: this.timelineElement.offsetWidth
+      }),
       refCount()
     );
 
     // points
     const points$ = combineLatest([
       this.configurationService.getNormalizedPoints(),
-      timelineSize$,
+      timelineSize$
     ]).pipe(
       map(([points]) => points.map((p) => this.circleDtoFromNormalizedPoint(p)))
     );
@@ -102,7 +97,7 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     this.drawTimelineSubscription = combineLatest([
       timelineSize$,
       layers$,
-      points$,
+      points$
     ])
       .pipe(debounceTime(200))
       .subscribe(() => this.drawTimeline());
@@ -110,12 +105,18 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
     this.drawTimeline();
   }
 
+  public ngOnDestroy(): void {
+    this.drawTimelineSubscription?.unsubscribe();
+    this.layersSubscription?.unsubscribe();
+    this.pointsSubscription?.unsubscribe();
+  }
+
   private drawTimeline(): void {
     if (
-      this.canvas?.nativeElement === undefined ||
-      this.ctx === undefined ||
-      this.timelineElement === null ||
-      this.timelineElement === undefined
+      this.canvas?.nativeElement === undefined
+      || this.ctx === undefined
+      || this.timelineElement === null
+      || this.timelineElement === undefined
     ) {
       return;
     }
@@ -160,8 +161,7 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
 
     // points
     this.points?.forEach((points) =>
-      this.circleRenderer?.drawOnTimeline(points)
-    );
+      this.circleRenderer?.drawOnTimeline(points));
   }
 
   /**
@@ -170,13 +170,13 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
    * @param canvasSize the size of the canvas
    */
   private circleDtoFromNormalizedPoint(p: NormalizedPoint): CircleDto {
-    //const  circleSize = this.configurationService.getCircleSize();
+    // const  circleSize = this.configurationService.getCircleSize();
 
     const amountLayers = (this.layers?.up ?? 0) + (this.layers?.down ?? 0);
     const lDepthPx = (this.ctx?.canvas?.height ?? 0) / amountLayers; // height (px) of a single layer drawn on timeline
     const minLayers = Math.min(this.layers?.up ?? 0, this.layers?.down ?? 0);
     const maxLayers = Math.max(this.layers?.up ?? 0, this.layers?.down ?? 0);
-    const normHeight = 1 + minLayers / maxLayers; // always between 1.0 to 2.0. map this to timeline px height
+    const normHeight = 1 + (minLayers / maxLayers); // always between 1.0 to 2.0. map this to timeline px height
     const normPushLimit = (this.layers?.down ?? 0) / amountLayers;
     const normLDepth = normHeight / amountLayers;
     const normY = normHeight - (normPushLimit + p.z);
@@ -188,18 +188,12 @@ export class TimelineCanvasComponent implements OnInit, OnDestroy {
 
     return {
       posX: lDepthPx / 2,
-      posY: layer * lDepthPx - lDepthPx / 2,
+      posY: (layer * lDepthPx) - (lDepthPx / 2),
       radius: lDepthPx / 2,
       color:
         Math.sign(p.z) > 0
           ? this.layers?.colorUp ?? ''
-          : this.layers?.colorDown ?? '',
+          : this.layers?.colorDown ?? ''
     };
-  }
-
-  ngOnDestroy(): void {
-    this.drawTimelineSubscription?.unsubscribe();
-    this.layersSubscription?.unsubscribe();
-    this.pointsSubscription?.unsubscribe();
   }
 }

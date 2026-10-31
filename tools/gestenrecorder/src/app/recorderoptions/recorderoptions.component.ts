@@ -1,21 +1,21 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  inject,
-  ChangeDetectionStrategy,
+  OnDestroy,
+  OnInit,
+  inject
 } from '@angular/core';
 
-import {
-  SettingsGroupComponent,
-  OptionCheckboxComponent,
-  ValueTextComponent,
-} from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
-import { ConfigurationService } from '../service/configuration.service';
-import { CircleSize } from '../service/configuration.service';
-import { ConnectionService } from '../service/connection.service';
+import {
+  OptionCheckboxComponent,
+  SettingsGroupComponent,
+  ValueTextComponent
+} from '@reflex/angular-components/dist';
 import { Subscription } from 'rxjs';
-import { OnInit, OnDestroy } from '@angular/core';
+import { CircleSize, ConfigurationService } from '../service/configuration.service';
+import { ConnectionService } from '../service/connection.service';
 
 @Component({
   selector: 'app-recorderoptions',
@@ -23,25 +23,25 @@ import { OnInit, OnDestroy } from '@angular/core';
     FormsModule,
     SettingsGroupComponent,
     OptionCheckboxComponent,
-    ValueTextComponent,
+    ValueTextComponent
   ],
   templateUrl: './recorderoptions.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './recorderoptions.component.scss',
+  styleUrl: './recorderoptions.component.scss'
 })
 export class RecorderoptionsComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private configurationService = inject(ConfigurationService);
-  private connectionService = inject(ConnectionService);
 
-  public amountTouchPoints: number = 0;
+  public amountTouchPoints = 0;
   public circleSize: CircleSize = { min: 0, max: 0 };
-  public sendInterval: number = 100;
+  public sendInterval = 100;
   public serverConnection?: string;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly configurationService = inject(ConfigurationService);
+  private readonly connectionService = inject(ConnectionService);
 
   private amountTouchPointsSubscription?: Subscription;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.circleSize = this.configurationService.getCircleSize();
     this.sendInterval = this.configurationService.getSendInterval();
     this.serverConnection = this.configurationService.getServerConnection();
@@ -54,7 +54,7 @@ export class RecorderoptionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  saveConfiguration(): void {
+  public saveConfiguration(): void {
     this.configurationService.setAmoutTouchPoints(this.amountTouchPoints);
     this.configurationService.setCircleSize(this.circleSize);
     this.configurationService.setSendInterval(this.sendInterval);
@@ -65,16 +65,16 @@ export class RecorderoptionsComponent implements OnInit, OnDestroy {
     this.connectionService.reconnect();
   }
 
-  restoreConfiguration(): void {
+  public restoreConfiguration(): void {
     this.configurationService.getLocalStorage();
     this.ngOnInit();
   }
 
-  connectToServer(): void {
+  public connectToServer(): void {
     this.connectionService.init();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.connectionService.disconnect();
     this.amountTouchPointsSubscription?.unsubscribe();
   }

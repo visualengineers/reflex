@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { IntroductionComponent } from './introduction.component';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { IntroductionComponent } from './introduction.component';
 
 describe('IntroductionComponent', () => {
   let component: IntroductionComponent;
@@ -15,7 +15,7 @@ describe('IntroductionComponent', () => {
         provideHttpClientTesting()
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(IntroductionComponent);
     component = fixture.componentInstance;

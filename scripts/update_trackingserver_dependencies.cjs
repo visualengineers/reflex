@@ -38,7 +38,7 @@ try {
 
     // Find the top-level object without reformatting the surrounding JSON.
     // Strings are consumed as complete tokens so braces inside strings are ignored.
-    const tokens = /"(?:\\.|[^"\\])*"|[{}\[\]]/g;
+    const tokens = /"(?:\\.|[^"\\])*"|[{}[\]]/g;
     let depth = 0;
     let start;
     let end;

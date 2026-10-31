@@ -1,5 +1,5 @@
 export enum TrackingModes {
-    EMULATION = 'Emulation',
-    CAMERA = 'Camera'
+  EMULATION = 'Emulation',
+  CAMERA = 'Camera'
 }
 

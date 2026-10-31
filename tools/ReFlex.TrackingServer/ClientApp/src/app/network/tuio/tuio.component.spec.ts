@@ -1,31 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TuioComponent } from './tuio.component';
-import { LogService } from 'src/app/log/log.service';
-import { SettingsService } from 'src/shared/services/settingsService';
-import { TuioService } from 'src/shared/services/tuio.service';
-import { of } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
-import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
 import {
   MockPanelHeaderComponent,
   MockValueSelectionComponent,
   MockValueTextComponent,
   PanelHeaderComponent,
   ValueSelectionComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
+import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
+import { of } from 'rxjs';
+import { LogService } from 'src/app/log/log.service';
+import { SettingsService } from 'src/shared/services/settingsService';
+import { TuioService } from 'src/shared/services/tuio.service';
 import { PackageDetailsComponent } from './package-details/package-details.component';
+import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
+import { TuioComponent } from './tuio.component';
 
 const logService = {
-  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog')
 };
 
 const settingsService = {
   getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
-  update: vi.fn().mockName('fakeSettingsService.update'),
+  update: vi.fn().mockName('fakeSettingsService.update')
 };
 
 const tuioService = {
@@ -40,12 +40,12 @@ const tuioService = {
     .fn()
     .mockName('fakeTuioService.getTuioInterpretations'),
   getStatus: vi.fn().mockName('fakeTuioService.getStatus'),
-  getPackages: vi.fn().mockName('fakeTuioService.getPackages'),
+  getPackages: vi.fn().mockName('fakeTuioService.getPackages')
 };
 
 const broadcastingState: JsonSimpleValue = {
   name: 'IsBroadcasting',
-  value: true,
+  value: true
 };
 const transportProtocols = ['Test1', 'Test2', 'Test3'];
 const tuioVersions = ['Tuio1', 'Tuio2', 'Tuio3', 'Tuio4'];
@@ -61,17 +61,17 @@ describe('TuioComponent', () => {
       providers: [
         {
           provide: SettingsService,
-          useValue: settingsService,
+          useValue: settingsService
         },
         {
           provide: TuioService,
-          useValue: tuioService,
+          useValue: tuioService
         },
         {
           provide: LogService,
-          useValue: logService,
-        },
-      ],
+          useValue: logService
+        }
+      ]
     })
       .overrideComponent(TuioComponent, {
         remove: {
@@ -79,17 +79,17 @@ describe('TuioComponent', () => {
             PanelHeaderComponent,
             ValueSelectionComponent,
             ValueTextComponent,
-            PackageDetailsComponent,
-          ],
+            PackageDetailsComponent
+          ]
         },
         add: {
           imports: [
             MockPanelHeaderComponent,
             MockValueSelectionComponent,
             MockValueTextComponent,
-            MockPackageDetailsComponent,
-          ],
-        },
+            MockPackageDetailsComponent
+          ]
+        }
       })
       .compileComponents();
   });

@@ -1,16 +1,16 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  Output,
-  ChangeDetectionStrategy,
+  Output
 } from '@angular/core';
 import { ValueSliderComponent } from './value-slider.component';
 
 @Component({
   selector: 'app-value-slider',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockValueSliderComponent implements Partial<ValueSliderComponent> {
   @Input()

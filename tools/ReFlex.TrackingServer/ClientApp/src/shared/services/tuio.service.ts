@@ -1,15 +1,15 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SignalRBaseService } from './signalR.base.service';
-import { fromEventPattern, Observable, using } from 'rxjs';
-import { concatMap, share, skipWhile } from 'rxjs/operators';
-import { LogService } from 'src/app/log/log.service';
+import { inject, Injectable } from '@angular/core';
 import {
   JsonSimpleValue,
   TuioConfiguration,
   TuioPackageDetails
 } from '@reflex/shared-types';
+import { fromEventPattern, Observable, using } from 'rxjs';
+import { concatMap, share, skipWhile } from 'rxjs/operators';
+import { LogService } from 'src/app/log/log.service';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { SignalRBaseService } from './signalR.base.service';
 
 @Injectable({
   providedIn: 'root'

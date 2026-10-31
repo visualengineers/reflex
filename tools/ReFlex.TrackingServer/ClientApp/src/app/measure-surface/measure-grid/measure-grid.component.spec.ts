@@ -8,7 +8,7 @@ describe('MeasureGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MeasureGridComponent],
+      imports: [MeasureGridComponent]
     }).compileComponents();
   });
 

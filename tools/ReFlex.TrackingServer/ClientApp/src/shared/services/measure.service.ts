@@ -1,7 +1,7 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
 @Injectable({
   providedIn: 'root'

@@ -1,14 +1,17 @@
 <template>
   <div class="home">
-        <div class="touchpoints__panel">
-          <div v-for="touchPoint in touchData.points">
-            <TouchPoint :point="touchPoint"/>
-          </div>        
-        </div>
-        <div class="status__panel">
-          <Status/>
-        </div>
-        <History/>
+    <div class="touchpoints__panel">
+      <div
+        v-for="touchPoint in touchData.points"
+        :key="touchPoint.id"
+      >
+        <TouchPoint :point="touchPoint" />
+      </div>
+    </div>
+    <div class="status__panel">
+      <Status />
+    </div>
+    <History />
   </div>
 </template>
 
@@ -18,12 +21,12 @@ import Status from '../components/Status.vue';
 import History from '../components/History.vue';
 
 export default {
-  name: "Home",
-  inject: ["touchData", "rawData"],
+  name: "HomeView",
   components: {
     TouchPoint,
-    Status, 
+    Status,
     History
-  }
+  },
+  inject: ["touchData", "rawData"]
 };
 </script>

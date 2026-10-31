@@ -1,6 +1,6 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -8,9 +8,9 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   CompleteInteractionData,
   ElementPosition,
@@ -22,8 +22,8 @@ import {
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-interactions-visualization',

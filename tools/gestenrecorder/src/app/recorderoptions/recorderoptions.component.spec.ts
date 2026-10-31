@@ -10,8 +10,8 @@ describe('RecorderoptionsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [RecorderoptionsComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(RecorderoptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

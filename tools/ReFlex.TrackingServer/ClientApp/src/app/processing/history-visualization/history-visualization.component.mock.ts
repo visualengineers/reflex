@@ -1,13 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HistoryVisualizationComponent } from './history-visualization.component';
 
 @Component({
   selector: 'app-history-visualization',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockHistoryVisualizationComponent
-  implements Partial<HistoryVisualizationComponent>
-{
-  public constructor() {}
+implements Partial<HistoryVisualizationComponent> {
 }

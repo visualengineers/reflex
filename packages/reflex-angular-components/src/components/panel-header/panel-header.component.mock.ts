@@ -1,16 +1,16 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  Output,
-  ChangeDetectionStrategy,
+  Output
 } from '@angular/core';
 import { PanelHeaderComponent } from './panel-header.component';
 
 @Component({
   selector: 'app-panel-header',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockPanelHeaderComponent implements Partial<PanelHeaderComponent> {
   @Input()

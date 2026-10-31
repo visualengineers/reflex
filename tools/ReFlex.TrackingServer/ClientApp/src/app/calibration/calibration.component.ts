@@ -1,17 +1,30 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 /* eslint-disable max-lines */
+import { CommonModule } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
+  OnDestroy,
   OnInit,
   Renderer2,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
+import { PanelHeaderComponent } from '@reflex/angular-components/dist';
+import {
+  Calibration,
+  CalibrationPoint,
+  CalibrationTransform,
+  CompleteInteractionData,
+  FrameSizeDefinition,
+  Interaction,
+  InteractionType,
+  Point3
+} from '@reflex/shared-types';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import {
   catchError,
@@ -24,18 +37,6 @@ import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { LogService } from '../log/log.service';
-import {
-  Calibration,
-  CalibrationPoint,
-  CalibrationTransform,
-  CompleteInteractionData,
-  FrameSizeDefinition,
-  Interaction,
-  InteractionType,
-  Point3
-} from '@reflex/shared-types';
-import { CommonModule } from '@angular/common';
-import { PanelHeaderComponent } from '@reflex/angular-components/dist';
 
 export interface TransformString {
   transform: string;
@@ -55,7 +56,7 @@ export interface BorderString {
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, PanelHeaderComponent]
 })
-export class CalibrationComponent implements OnInit {
+export class CalibrationComponent implements OnInit, OnDestroy {
 
   private static readonly fullScreenClassName = 'fullScreen';
 

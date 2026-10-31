@@ -1,38 +1,42 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { Interaction } from '@reflex/shared-types';
+import { saveAs } from 'file-saver';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Gesture } from '../data/gesture';
 import { GestureTrack } from '../data/gesture-track';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
-import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Interaction } from '@reflex/shared-types';
-import { saveAs } from 'file-saver';
-import { map } from 'rxjs';
 
 // TODO: Wann wird Interpoliert? Durch ButtonClick oder durch Timer? (stand jetzt durch create-Button in TrackComponent)
 // TODO: wenn schon interpoliert und dann noch werte geändert werden, soll die geste nochmal neu interpoliert werden: Großes Problem bisher funkt noch nicht
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class GestureDataService {
-  private http = inject(HttpClient);
+  public readonly gesturePoints$: Observable<Array<GestureTrackFrame>>;
 
-  private gesturePointSubject = new BehaviorSubject<GestureTrackFrame[]>([]);
-  public gesturePoints$: Observable<GestureTrackFrame[]> =
-    this.gesturePointSubject.asObservable();
-  private gestureSubject = new BehaviorSubject<Gesture>({
+  public readonly gesture$: Observable<Gesture>;
+  private readonly http = inject(HttpClient);
+
+  private readonly gesturePointSubject = new BehaviorSubject<Array<GestureTrackFrame>>([]);
+
+  private readonly gestureSubject = new BehaviorSubject<Gesture>({
     id: 1,
     name: 'FirstGesture',
     numFrames: 30,
     speed: 1,
-    tracks: [{ touchId: 1, frames: [] }],
+    tracks: [{ touchId: 1, frames: [] }]
   });
-  public gesture$: Observable<Gesture> = this.gestureSubject.asObservable();
 
-  private fixedFrameIndices = new Set<number>();
+  private readonly fixedFrameIndices = new Set<number>();
 
-  updateGesture(
+  public constructor() {
+    this.gesturePoints$ = this.gesturePointSubject.asObservable();
+    this.gesture$ = this.gestureSubject.asObservable();
+  }
+
+  public updateGesture(
     id: number,
     name: string,
     numFrames: number,
@@ -55,11 +59,11 @@ export class GestureDataService {
     this.gestureSubject.next(currentGesture);
   }
 
-  addGestureTrackFrame(interaction: Interaction): void {
+  public addGestureTrackFrame(interaction: Interaction): void {
     const newFrame = {
       x: interaction.position.x,
       y: interaction.position.y,
-      z: interaction.position.z,
+      z: interaction.position.z
     };
 
     const currentGesture = this.gestureSubject.value;
@@ -67,11 +71,11 @@ export class GestureDataService {
     if (currentGesture.tracks.length === 0) {
       currentGesture.tracks.push({
         touchId: interaction.touchId,
-        frames: [],
+        frames: []
       });
     }
 
-    const track = currentGesture.tracks[0];
+    const [track] = currentGesture.tracks;
     const existingFrameIndex = track.frames.findIndex(
       (frame) => frame.x === newFrame.x && frame.y === newFrame.y
     );
@@ -91,13 +95,13 @@ export class GestureDataService {
   }
 
   // Delete the frame and update fixedFrameIndices
-  deleteGestureTrackFrame(frame: GestureTrackFrame): void {
-    if (!frame) {
+  public deleteGestureTrackFrame(frame: GestureTrackFrame): void {
+    if (frame === undefined) {
       return;
     }
 
     const currentGesture = this.gestureSubject.value;
-    const track = currentGesture.tracks[0];
+    const [track] = currentGesture.tracks;
 
     const index = track.frames.findIndex(
       (f) => f.x === frame.x && f.y === frame.y && f.z === frame.z
@@ -111,14 +115,14 @@ export class GestureDataService {
     console.log('Gesture after deleteGestureTrackFrame:', currentGesture);
   }
 
-  updateGestureTrackFrame(
+  public updateGestureTrackFrame(
     index: number,
     x: number,
     y: number,
     z: number
   ): void {
     const currentGesture = this.gestureSubject.value;
-    const track = currentGesture.tracks[0];
+    const [track] = currentGesture.tracks;
 
     if (index >= 0 && index < track.frames.length) {
       track.frames[index].x = x;
@@ -140,72 +144,72 @@ export class GestureDataService {
 
   // set- und get-Methoden
 
-  setGesture(gesture: Gesture): void {
+  public setGesture(gesture: Gesture): void {
     this.gestureSubject.next(gesture);
   }
 
-  getGesture(): Gesture {
+  public getGesture(): Gesture {
     return this.gestureSubject.value;
   }
 
-  getGestureId(): number {
+  public getGestureId(): number {
     return this.gestureSubject.value.id;
   }
 
-  setGestureId(id: number): void {
+  public setGestureId(id: number): void {
     const currentGesture = this.gestureSubject.value;
     currentGesture.id = id;
     this.gestureSubject.next(currentGesture);
   }
 
-  getGestureName(): string {
+  public getGestureName(): string {
     return this.gestureSubject.value.name;
   }
 
-  setGestureName(name: string): void {
+  public setGestureName(name: string): void {
     const currentGesture = this.gestureSubject.value;
     currentGesture.name = name;
     this.gestureSubject.next(currentGesture);
   }
 
-  getGestureNumFrames(): number {
+  public getGestureNumFrames(): number {
     return this.gestureSubject.value.numFrames;
   }
 
-  setGestureNumFrames(numFrames: number): void {
+  public setGestureNumFrames(numFrames: number): void {
     const currentGesture = this.gestureSubject.value;
     currentGesture.numFrames = numFrames;
     this.gestureSubject.next(currentGesture);
   }
 
-  getGestureSpeed(): number {
+  public getGestureSpeed(): number {
     return this.gestureSubject.value.speed;
   }
 
-  setGestureSpeed(speed: number): void {
+  public setGestureSpeed(speed: number): void {
     const currentGesture = this.gestureSubject.value;
     currentGesture.speed = speed;
     this.gestureSubject.next(currentGesture);
   }
 
-  getGestureTracks(): GestureTrack[] {
+  public getGestureTracks(): Array<GestureTrack> {
     return this.gestureSubject.value.tracks;
   }
 
-  setGestureTracks(tracks: GestureTrack[]): void {
+  public setGestureTracks(tracks: Array<GestureTrack>): void {
     const currentGesture = this.gestureSubject.value;
     currentGesture.tracks = tracks;
     this.gestureSubject.next(currentGesture);
   }
 
-  setGestureTrackFrames(frames: GestureTrackFrame[]): void {
+  public setGestureTrackFrames(frames: Array<GestureTrackFrame>): void {
     const currentGesture = this.gestureSubject.value;
     currentGesture.tracks[0].frames = frames;
     this.gestureSubject.next(currentGesture);
     this.gesturePointSubject.next(frames);
   }
 
-  getGestureTrackFrames(): GestureTrackFrame[] {
+  public getGestureTrackFrames(): Array<GestureTrackFrame> {
     return this.gestureSubject.value.tracks[0].frames;
   }
 
@@ -213,21 +217,21 @@ export class GestureDataService {
 
   public interpolateGesture(): void {
     const currentGesture = this.gestureSubject.value;
-    const track = currentGesture.tracks[0];
-    const numFrames = currentGesture.numFrames;
+    const [track] = currentGesture.tracks;
+    const { numFrames } = currentGesture;
 
     // Keep only the frames that were set in the TouchArea
-    const fixedFrames = track.frames.filter((_, index) =>
-      this.fixedFrameIndices.has(index)
-    );
+    const fixedFrames = track.frames.filter((frame, index) =>
+      this.fixedFrameIndices.has(index));
 
     // If there are less than 2 fixed frames, interpolation cannot be performed
     if (fixedFrames.length < 2) {
       console.warn('Not enough fixed frames to interpolate');
+
       return;
     }
 
-    const newFrames: GestureTrackFrame[] = [];
+    const newFrames: Array<GestureTrackFrame> = [];
     const totalFixedFrames = fixedFrames.length;
 
     // Number of frames between the fixed points
@@ -247,14 +251,14 @@ export class GestureDataService {
       for (let j = 1; j < framesPerSegment; j++) {
         const t = j / framesPerSegment; // T-value for interpolation
 
-        const interpolatedX = startFrame.x + (endFrame.x - startFrame.x) * t;
-        const interpolatedY = startFrame.y + (endFrame.y - startFrame.y) * t;
-        const interpolatedZ = startFrame.z + (endFrame.z - startFrame.z) * t;
+        const interpolatedX = startFrame.x + ((endFrame.x - startFrame.x) * t);
+        const interpolatedY = startFrame.y + ((endFrame.y - startFrame.y) * t);
+        const interpolatedZ = startFrame.z + ((endFrame.z - startFrame.z) * t);
 
         newFrames.push({
           x: interpolatedX,
           y: interpolatedY,
-          z: interpolatedZ,
+          z: interpolatedZ
         });
       }
 
@@ -305,34 +309,39 @@ export class GestureDataService {
           console.error('Invalid gesture format');
         }
       },
-      error: (error) => console.error('Error loading gesture:', error),
+      error: (error) => console.error('Error loading gesture:', error)
     });
   }
 
-  private isValidGesture(json: any): json is Gesture {
+  public getGestureFileNames(): Observable<Array<string>> {
+    const url = 'assets/data/gestures.json';
+
+    return this.http.get<Array<string>>(url);
+  }
+
+  private isValidGesture(json: unknown): json is Gesture {
     return (
-      json &&
-      typeof json.id === 'number' &&
-      typeof json.name === 'string' &&
-      typeof json.numFrames === 'number' &&
-      typeof json.speed === 'number' &&
-      Array.isArray(json.tracks) &&
-      json.tracks.every(
-        (track: any) =>
-          typeof track.touchId === 'number' &&
-          Array.isArray(track.frames) &&
-          track.frames.every(
-            (frame: any) =>
-              typeof frame.x === 'number' &&
-              typeof frame.y === 'number' &&
-              typeof frame.z === 'number'
+      typeof json === 'object'
+      && json !== null
+      && 'id' in json && 'name' in json && 'numFrames' in json && 'speed' in json && 'tracks' in json
+      && typeof json.id === 'number'
+      && typeof json.name === 'string'
+      && typeof json.numFrames === 'number'
+      && typeof json.speed === 'number'
+      && Array.isArray(json.tracks)
+      && json.tracks.every(
+        (track: unknown) =>
+          typeof track === 'object' && track !== null && 'touchId' in track && 'frames' in track
+          && typeof track.touchId === 'number'
+          && Array.isArray(track.frames)
+          && track.frames.every(
+            (frame: unknown) =>
+              typeof frame === 'object' && frame !== null && 'x' in frame && 'y' in frame && 'z' in frame
+              && typeof frame.x === 'number'
+              && typeof frame.y === 'number'
+              && typeof frame.z === 'number'
           )
       )
     );
-  }
-
-  public getGestureFileNames(): Observable<string[]> {
-    const url = 'assets/data/gestures.json';
-    return this.http.get<string[]>(url);
   }
 }

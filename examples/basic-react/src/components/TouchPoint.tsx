@@ -1,5 +1,5 @@
-import { Component } from 'react'
 import { Interaction } from '@reflex/shared-types';
+import { Component } from 'react';
 
 // component for rendering point
 export class TouchPoint extends Component<Interaction> {

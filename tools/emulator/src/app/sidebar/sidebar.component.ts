@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -6,76 +8,76 @@ import {
   OnInit,
   Renderer2,
   ViewChild,
-  inject,
-  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { BackgroundSource } from '../model/BackgroundSource.model';
 import {
   Camera,
-  ConfigurationService,
   CircleSize,
+  ConfigurationService,
   Layers,
   ViewOption,
-  ViewPort,
+  ViewPort
 } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
-import { BackgroundSource } from '../model/BackgroundSource.model';
-import { Subscription } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.sass'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule]
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private configurationService = inject(ConfigurationService);
-  private connectionService = inject(ConnectionService);
-  private renderer = inject(Renderer2);
+
+  @ViewChild('indicator')
+  private readonly indicator?: ElementRef;
 
   public isCollapsed = false;
   public showTracking = true;
   public showProjection = false;
   public backupTimestamp: Date | null = new Date();
   public backgroundType = 0; // 0: none | 1: from 'assets/img' | 2: url
-  public amountProjectionLayers: number = 0;
-  public amountTouchPoints: number = 0;
-  public backgroundImage: string = '';
-  public backgroundSources: BackgroundSource[] = [];
-  public backgroundUrl: string = '';
+  public amountProjectionLayers = 0;
+  public amountTouchPoints = 0;
+  public backgroundImage = '';
+  public backgroundSources: Array<BackgroundSource> = [];
+  public backgroundUrl = '';
   public camera?: Camera;
-  public cameraOptions?: Camera[];
+  public cameraOptions?: Array<Camera>;
   public circleSize: CircleSize = { min: 0, max: 0 };
   public layers: Layers = {
     up: 0,
     down: 0,
     colorUp: '',
-    colorDown: '',
+    colorDown: ''
   };
+
   public viewPort: ViewPort = {
     width: 0,
-    height: 0,
+    height: 0
   };
-  public sendInterval: number = 100;
+
+  public sendInterval = 100;
   public serverConnection?: string;
   public viewOptions: Array<ViewOption> = [];
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly configurationService = inject(ConfigurationService);
+  private readonly connectionService = inject(ConnectionService);
+  private readonly renderer = inject(Renderer2);
 
   private amountTouchPointsSubscription?: Subscription;
   private layersSubscription?: Subscription;
   private stateSubscription?: Subscription;
   private backupSubscription?: Subscription;
 
-  @ViewChild('indicator')
-  private indicator?: ElementRef;
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.connectionService.init();
 
-    this.amountProjectionLayers =
-      this.configurationService.getAmountProjectionLayers();
+    this.amountProjectionLayers
+      = this.configurationService.getAmountProjectionLayers();
     this.backgroundSources = this.configurationService.getBackgroundSources();
     this.cameraOptions = this.configurationService.getCameraOptions();
     this.camera = this.configurationService.getCamera();
@@ -86,8 +88,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.viewPort = this.configurationService.getViewPort();
 
     this.backupSubscription?.unsubscribe();
-    this.backupSubscription =
-      this.configurationService.backupTimestamp$.subscribe((x) => {
+    this.backupSubscription
+      = this.configurationService.backupTimestamp$.subscribe((x) => {
         this.backupTimestamp = x;
         this.changeDetector.markForCheck();
       });
@@ -106,14 +108,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.changeDetector.markForCheck();
       });
 
-    this.stateSubscription =
-      this.connectionService.connectionSuccessful.subscribe((result) =>
-        this.onWebSocketConnectionStateChanged(result)
-      );
+    this.stateSubscription
+      = this.connectionService.connectionSuccessful.subscribe((result) =>
+        this.onWebSocketConnectionStateChanged(result));
   }
 
-  onWebSocketConnectionStateChanged(state: boolean) {
-    if (state === true) {
+  public onWebSocketConnectionStateChanged(state: boolean): void {
+    if (state) {
       this.renderer.addClass(this.indicator?.nativeElement, 'success');
       this.renderer.removeClass(this.indicator?.nativeElement, 'error');
     } else {
@@ -122,7 +123,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  onBackgroundSelected(): void {
+  public onBackgroundSelected(): void {
     switch (this.backgroundType) {
       case 1: {
         this.configurationService.setBackgroundImage(this.backgroundImage);
@@ -139,12 +140,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  restoreConfiguration(): void {
+  public restoreConfiguration(): void {
     this.configurationService.getLocalStorage();
     this.ngOnInit();
   }
 
-  saveConfiguration(): void {
+  public saveConfiguration(): void {
     this.configurationService.setAmountProjectionLayers(
       this.amountProjectionLayers
     );
@@ -174,16 +175,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.connectionService.reconnect();
   }
 
-  toggleSidebar(): void {
+  public toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  toggleSidebarContent(): void {
+  public toggleSidebarContent(): void {
     this.showProjection = !this.showProjection;
     this.showTracking = !this.showTracking;
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.connectionService.destroy();
     this.amountTouchPointsSubscription?.unsubscribe();
     this.backupSubscription?.unsubscribe();

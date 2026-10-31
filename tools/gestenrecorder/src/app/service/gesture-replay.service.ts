@@ -1,33 +1,39 @@
-import { Injectable, OnDestroy, inject } from '@angular/core';
-import { Gesture } from '../data/gesture';
-import { ConnectionService } from './connection.service';
-import { ConfigurationService } from './configuration.service';
-import { BehaviorSubject, interval, Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import {
   ExtremumType,
   Interaction,
-  InteractionType,
+  InteractionType
 } from '@reflex/shared-types';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, interval, Observable, Subscription } from 'rxjs';
+import { Gesture } from '../data/gesture';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
+import { ConfigurationService } from './configuration.service';
+import { ConnectionService } from './connection.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class GestureReplayService implements OnDestroy {
+
+  public loopGesture = true;
+
+  public readonly playbackFrame$: Observable<GestureTrackFrame | null>;
   private readonly connectionService = inject(ConnectionService);
   private readonly configService = inject(ConfigurationService);
   private readonly httpClient = inject(HttpClient);
 
-  public loopGesture = true;
-
   private gestureForReplay?: Gesture;
-  private currentFrame: number = 0;
-  private playbackFrameSubject = new BehaviorSubject<GestureTrackFrame | null>(
+  private currentFrame = 0;
+  private readonly playbackFrameSubject = new BehaviorSubject<GestureTrackFrame | null>(
     null
   );
-  playbackFrame$ = this.playbackFrameSubject.asObservable();
+
   private animationSubscription?: Subscription;
+
+  public constructor() {
+    this.playbackFrame$ = this.playbackFrameSubject.asObservable();
+  }
 
   public ngOnDestroy(): void {
     this.animationSubscription?.unsubscribe();
@@ -41,7 +47,7 @@ export class GestureReplayService implements OnDestroy {
         console.info('successfully loaded gesture: ', gesture);
         this.start(gesture);
       },
-      error: (error) => console.error(error),
+      error: (error) => console.error(error)
     });
   }
 
@@ -49,7 +55,7 @@ export class GestureReplayService implements OnDestroy {
     this.start(gesture);
   }
 
-  public resetAnimation(gesture: Gesture): void {
+  public resetAnimation(): void {
     this.currentFrame = 0;
     if (this.animationSubscription) {
       this.animationSubscription.unsubscribe();
@@ -57,7 +63,7 @@ export class GestureReplayService implements OnDestroy {
     this.update();
   }
 
-  public resetAnimationAfterOneLoop(gesture: Gesture): void {
+  public resetAnimationAfterOneLoop(): void {
     if (this.gestureForReplay) {
       const totalFrames = this.gestureForReplay.numFrames;
 
@@ -65,12 +71,12 @@ export class GestureReplayService implements OnDestroy {
         this.configService.getSendInterval()
       ).subscribe({
         next: () => {
-          if (this.currentFrame == totalFrames) {
-            this.resetAnimation(gesture);
+          if (this.currentFrame === totalFrames) {
+            this.resetAnimation();
           } else {
             this.update();
           }
-        },
+        }
       });
     }
   }
@@ -80,6 +86,7 @@ export class GestureReplayService implements OnDestroy {
       console.log(
         'returned cause gesture undefined in replay-service.start(gesture)'
       );
+
       return;
     }
 
@@ -91,13 +98,14 @@ export class GestureReplayService implements OnDestroy {
     console.info(`start replay with replay interval of ${i} ms.`);
 
     this.animationSubscription = interval(i).subscribe({
-      next: () => this.update(),
+      next: () => this.update()
     });
   }
 
   private update(): void {
     if (this.gestureForReplay === undefined) {
       console.log('gestureForReplay undefined');
+
       return;
     }
 
@@ -113,21 +121,21 @@ export class GestureReplayService implements OnDestroy {
             y: item.y,
             z: item.z,
             isValid: true,
-            isFiltered: false,
+            isFiltered: false
           },
           type: InteractionType.None,
           extremumDescription: {
             type: ExtremumType.Undefined,
             numFittingPoints: 0,
-            percentageFittingPoints: 0,
+            percentageFittingPoints: 0
           },
           confidence: 0,
-          time: this.currentFrame,
+          time: this.currentFrame
         };
         this.playbackFrameSubject.next({
           x: touch.position.x / this.configService.getViewPort().width,
           y: touch.position.y / this.configService.getViewPort().height,
-          z: touch.position.z,
+          z: touch.position.z
         });
         touches.push(touch);
       }

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { queryElement } from '../../../../../../test/helpers/dom';
 
 import { PerformanceVisualizationComponent } from './performance-visualization.component';
 
@@ -8,7 +9,7 @@ describe('PerformanceVisualizationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PerformanceVisualizationComponent],
+      imports: [PerformanceVisualizationComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PerformanceVisualizationComponent);
@@ -21,9 +22,7 @@ describe('PerformanceVisualizationComponent', () => {
   });
   it('renders stacked areas, averages and pointer tooltips after input updates', async () => {
     await fixture.whenStable();
-    const panel: HTMLElement = fixture.nativeElement.querySelector(
-      '.visualization__panel'
-    );
+    const panel: HTMLElement = queryElement((fixture.nativeElement as HTMLInputElement), '.visualization__panel');
     Object.defineProperty(panel, 'clientWidth', { value: 600 });
     Object.defineProperty(panel, 'clientHeight', { value: 180 });
     const samples = [
@@ -34,7 +33,7 @@ describe('PerformanceVisualizationComponent', () => {
         totalFrameTime: 1,
         boxFilter: 5,
         totalFilter: 5,
-        totalProcessing: 10,
+        totalProcessing: 10
       },
       {
         frameId: 2,
@@ -43,8 +42,8 @@ describe('PerformanceVisualizationComponent', () => {
         totalFrameTime: 1,
         boxFilter: 15,
         totalFilter: 15,
-        totalProcessing: 30,
-      },
+        totalProcessing: 30
+      }
     ];
     fixture.componentRef.setInput('refreshRate', 1);
     fixture.componentRef.setInput('numSamples', 2);
@@ -53,16 +52,16 @@ describe('PerformanceVisualizationComponent', () => {
     await fixture.whenStable();
     expect(panel.querySelectorAll('.valgroup path').length).toBe(1);
     expect(
-      panel.querySelector('.valgroup path')?.getAttribute('d')
+      queryElement(panel, '.valgroup path')?.getAttribute('d')
     ).not.toContain('NaN');
     expect(panel.textContent).toContain('10.00 ms');
 
-    const svg = panel.querySelector('svg')!;
+    const svg = queryElement(panel, 'svg');
     const bounds = svg.getBoundingClientRect();
     svg.dispatchEvent(
       new PointerEvent('pointermove', {
         clientX: bounds.left + 20,
-        clientY: bounds.top + 20,
+        clientY: bounds.top + 20
       })
     );
     fixture.componentRef.setInput('data', [...samples]);

@@ -7,10 +7,10 @@ describe('CanvasComponent', () => {
   let fixture: ComponentFixture<CanvasComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
-    imports: [CanvasComponent]
-})
-    .compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [CanvasComponent]
+    })
+      .compileComponents();
   });
 
   beforeEach(() => {

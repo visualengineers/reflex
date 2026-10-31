@@ -1,12 +1,12 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { CommonModule } from '@angular/common';
+
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription, timer } from 'rxjs';
@@ -19,10 +19,9 @@ import { MeasureService } from 'src/shared/services/measure.service';
   templateUrl: './measure-controls.component.html',
   styleUrls: ['./measure-controls.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
-
   public captureId = 0;
 
   public numFramesCaptured = 0;
