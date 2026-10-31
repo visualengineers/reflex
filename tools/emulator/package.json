@@ -9,7 +9,7 @@
     "start": "ng serve reflex-emulator --port 4300",
     "build": "ng build reflex-emulator",
     "test": "ng test reflex-emulator",
-    "test-ci": "ng test reflex-emulator --no-watch --code-coverage",
+    "test-ci": "ng test reflex-emulator --no-watch --code-coverage --browsers=ChromeHeadless",
     "lint": "ng lint reflex-emulator",
     "e2e": "ng e2e reflex-emulator",
     "electron": "ng build reflex-emulator --base-href ./ && electron .",

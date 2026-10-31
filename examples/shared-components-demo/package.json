@@ -8,7 +8,7 @@
     "watch": "ng build shared-components-demo --watch --configuration development",
     "lint": "eslint .",
     "test": "ng test shared-components-demo --browsers Chrome",
-    "test-ci": "ng test shared-components-demo --no-watch"
+    "test-ci": "ng test shared-components-demo --no-watch --browsers=ChromeHeadless"
   },
   "dependencies": {
     "@reflex/angular-components": "file:../../packages/reflex-angular-components"
