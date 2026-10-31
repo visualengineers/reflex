@@ -1,7 +1,20 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
 import {
@@ -10,7 +23,7 @@ import {
   Observable,
   Subscription,
   combineLatest,
-  Subject
+  Subject,
 } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TrackingService } from 'src/shared/services/tracking.service';
@@ -20,7 +33,8 @@ import { WebSocketService } from 'src/shared/services/webSocket.service';
   selector: 'app-depth-image',
   templateUrl: './depth-image.component.html',
   styleUrls: ['./depth-image.component.scss'],
-  imports: [CommonModule, FormsModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, FormsModule],
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -64,8 +78,8 @@ export class DepthImageComponent implements OnInit, OnDestroy {
     const isTracking$ = this.trackingService.getStatus().pipe(
       map(
         (status) =>
-          status.depthCameraStateName
-          === DepthCameraState[DepthCameraState.Streaming]
+          status.depthCameraStateName ===
+          DepthCameraState[DepthCameraState.Streaming]
       ),
       distinctUntilChanged()
     );
@@ -127,7 +141,8 @@ export class DepthImageComponent implements OnInit, OnDestroy {
             this.numFramesReceived++;
           }
         })
-      ).pipe(markViewForCheck(this.changeDetector))
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateDepthImage(result),
         (error) => console.error(error)
@@ -166,7 +181,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
   private startSocket(): Observable<MessageEvent> {
     this.socket = this.wsService.createSocket({
       url: `${this.baseUrl}${this.address}`,
-      deserializer: (value) => value
+      deserializer: (value) => value,
     });
 
     // this._socket = webSocket({

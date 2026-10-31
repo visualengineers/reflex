@@ -1,16 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-settings-group',
   standalone: true,
-  templateUrl: './settings-group.component.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './settings-group.component.html',
 })
 export class SettingsGroupComponent {
-
   @Input()
   public toggleId = 'custom';
 
   @Input()
   public elementTitle = 'Custom Title';
-
 }

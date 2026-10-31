@@ -7,6 +7,7 @@ import {
   Renderer2,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   Camera,
@@ -26,6 +27,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.sass'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, FormsModule],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
@@ -84,12 +86,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.viewPort = this.configurationService.getViewPort();
 
     this.backupSubscription?.unsubscribe();
-    this.backupSubscription = this.configurationService.backupTimestamp$.subscribe(
-      (x) => {
+    this.backupSubscription =
+      this.configurationService.backupTimestamp$.subscribe((x) => {
         this.backupTimestamp = x;
         this.changeDetector.markForCheck();
-      }
-    );
+      });
 
     this.amountTouchPointsSubscription = this.configurationService
       .getAmountTouchPoints()

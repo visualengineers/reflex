@@ -1,8 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GestureReplayService } from './gesture-replay.service';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http';
 import { Gesture } from '../data/gesture';
 import { GestureTrack } from '../data/gesture-track';
 import { ConnectionService } from './connection.service';
@@ -17,30 +25,33 @@ describe('GestureReplayService', () => {
   let connectionService: ConnectionService;
   let configService: ConfigurationService;
 
-const testTrack: GestureTrack = {
-  touchId: 0,
-  frames: [
-    { x: 100, y: 123, z: -0.5 },
-    { x: 250, y: 25, z: -0.3 },
-    { x: 0, y: 200, z: -0.2 },
-    { x: 568, y: 750, z: 0.5 }
-  ],
-  startFrame: 0
-}
+  const testTrack: GestureTrack = {
+    touchId: 0,
+    frames: [
+      { x: 100, y: 123, z: -0.5 },
+      { x: 250, y: 25, z: -0.3 },
+      { x: 0, y: 200, z: -0.2 },
+      { x: 568, y: 750, z: 0.5 },
+    ],
+    startFrame: 0,
+  };
 
   const testData: Gesture = {
     id: 5,
     name: 'testGestureData',
     numFrames: 4,
     speed: 2,
-    tracks: [ testTrack ]
-  }
+    tracks: [testTrack],
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
     service = TestBed.inject(GestureReplayService);
 
     service.loopGesture = false;
@@ -62,9 +73,9 @@ const testTrack: GestureTrack = {
 
   it('should load gesture from file and start replay', (done) => {
     // just assert, that sendmessage is called at least once
-    spyOn(connectionService, "sendMessage").and.callFake(() => {
+    spyOn(connectionService, 'sendMessage').and.callFake(() => {
       done();
-    })
+    });
 
     const file = 'data/dat-file.json';
 
@@ -81,7 +92,7 @@ const testTrack: GestureTrack = {
 
   it('should correctly set interval', (done) => {
     // just assert, that sendmessage is called at least once
-    const sendSpy = spyOn(connectionService, "sendMessage").and.stub();
+    const sendSpy = spyOn(connectionService, 'sendMessage').and.stub();
 
     configService.setSendInterval(1000);
 
@@ -101,18 +112,24 @@ const testTrack: GestureTrack = {
       // 2 times speed, 1000ms send interval --> called after 500 & 1000ms
       expect(sendSpy).toHaveBeenCalledTimes(2);
       done();
-    })
-  })
+    });
+  });
 
   it('should send correct values and stop when not looping', (done) => {
     const receivedFrames: Array<GestureTrackFrame> = [];
 
     // just assert, that sendmessage is called at least once
-    const sendSpy = spyOn(connectionService, "sendMessage").and.callFake((i) => {
-      if (i.length === 1) {
-        receivedFrames.push({ x: i[0].position.x, y: i[0].position.y, z: i[0].position.z })
+    const sendSpy = spyOn(connectionService, 'sendMessage').and.callFake(
+      (i) => {
+        if (i.length === 1) {
+          receivedFrames.push({
+            x: i[0].position.x,
+            y: i[0].position.y,
+            z: i[0].position.z,
+          });
+        }
       }
-    });
+    );
 
     configService.setSendInterval(100);
 
@@ -139,7 +156,7 @@ const testTrack: GestureTrack = {
       expect(receivedFrames[2]).toEqual(testData.tracks[0].frames[2]);
       expect(receivedFrames[3]).toEqual(testData.tracks[0].frames[3]);
       done();
-    })
+    });
   });
 
   it('should send correct values and loop properly', (done) => {
@@ -148,11 +165,17 @@ const testTrack: GestureTrack = {
     service.loopGesture = true;
 
     // just assert, that sendmessage is called at least once
-    const sendSpy = spyOn(connectionService, "sendMessage").and.callFake((i) => {
-      if (i.length === 1) {
-        receivedFrames.push({ x: i[0].position.x, y: i[0].position.y, z: i[0].position.z })
+    const sendSpy = spyOn(connectionService, 'sendMessage').and.callFake(
+      (i) => {
+        if (i.length === 1) {
+          receivedFrames.push({
+            x: i[0].position.x,
+            y: i[0].position.y,
+            z: i[0].position.z,
+          });
+        }
       }
-    });
+    );
 
     configService.setSendInterval(100);
 
@@ -185,6 +208,6 @@ const testTrack: GestureTrack = {
       expect(receivedFrames[8]).toEqual(testData.tracks[0].frames[0]);
       expect(receivedFrames[9]).toEqual(testData.tracks[0].frames[1]);
       done();
-    })
-  })
+    });
+  });
 });

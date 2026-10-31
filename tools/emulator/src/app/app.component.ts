@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CAMERAS } from 'src/app/data/cameras';
 import { faTools, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { GestureReplayService } from './service/gesture-replay.service';
@@ -11,6 +11,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CanvasComponent, SidebarComponent, TimelineComponent, RouterOutlet],
 })
 export class AppComponent {

@@ -1,6 +1,14 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
 import { CalibrationService } from 'src/shared/services/calibration.service';
@@ -16,14 +24,14 @@ import {
   ObserverType,
   ProcessingSettings,
   RemoteProcessingServiceSettings,
-  TrackingServerAppSettings
+  TrackingServerAppSettings,
 } from '@reflex/shared-types';
 import {
   OptionCheckboxComponent,
   PanelHeaderComponent,
   ValueSelectionComponent,
   ValueSliderComponent,
-  ValueTextComponent
+  ValueTextComponent,
 } from '@reflex/angular-components/dist';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -33,6 +41,7 @@ import { HistoryComponent } from './history/history.component';
   selector: 'app-processing',
   templateUrl: './processing.component.html',
   styleUrls: ['./processing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     FormsModule,
@@ -43,8 +52,8 @@ import { HistoryComponent } from './history/history.component';
     OptionCheckboxComponent,
     InteractionsComponent,
     HistoryComponent,
-    InteractionsVisualizationComponent
-  ]
+    InteractionsVisualizationComponent,
+  ],
 })
 export class ProcessingComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -71,7 +80,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   public isInteractionProcessingActive = false;
 
   public remoteSettings: RemoteProcessingServiceSettings = {
-    ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues
+    ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues,
   };
 
   public remoteAddress = '';
@@ -79,7 +88,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public processingSettings: ProcessingSettings = {
     interactionType: ObserverType.None,
-    intervalDuration: 0
+    intervalDuration: 0,
   };
 
   private selectedProcessorSubscription?: Subscription;
@@ -109,18 +118,22 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.statusSubscription = this.processingService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.statusText = result;
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.statusSubscription = this.processingService
+      .getStatus()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.statusText = result;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
 
     this.observerSubscription = this.processingService
-      .getObserverTypes().pipe(markViewForCheck(this.changeDetector))
+      .getObserverTypes()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.processors = result;
@@ -132,7 +145,8 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       );
 
     this.selectedProcessorSubscription = this.processingService
-      .getSelectedObserverType().pipe(markViewForCheck(this.changeDetector))
+      .getSelectedObserverType()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.updateProcessor(result);
@@ -154,10 +168,13 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? interactions$
-            : NEVER.pipe<Array<Interaction>>(startWith([]))),
+            : NEVER.pipe<Array<Interaction>>(startWith([]))
+        ),
         concatMap((raw) =>
-          this.calibrationService.computeCalibratedAbsolutePosition(raw))
-      ).pipe(markViewForCheck(this.changeDetector))
+          this.calibrationService.computeCalibratedAbsolutePosition(raw)
+        )
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateInteractions(result),
         (error) => {
@@ -166,18 +183,22 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.intervalSubscription = this.processingService.getInterval().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.updateInterval(result);
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.intervalSubscription = this.processingService
+      .getInterval()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.updateInterval(result);
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
 
     this.remoteSettingsSubscription = this.processingService
-      .getRemoteProcessorSettings().pipe(markViewForCheck(this.changeDetector))
+      .getRemoteProcessorSettings()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.updateRemoteSettings(result);
@@ -200,23 +221,27 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public isInteractionProcessingActiveChanged(): void {
-    this.processingService.toggleProcessing().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `Processing status toggle - result:  ${result.status} - ${result.body?.value}`
-        );
-        this.isInteractionProcessingActive = result.body?.value as boolean;
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.processingService
+      .toggleProcessing()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `Processing status toggle - result:  ${result.status} - ${result.body?.value}`
+          );
+          this.isInteractionProcessingActive = result.body?.value as boolean;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public setProcessor(): void {
     this.processingService
-      .setObserverType(this.processors[this.selectedProcessorIdx]).pipe(markViewForCheck(this.changeDetector))
+      .setObserverType(this.processors[this.selectedProcessorIdx])
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -231,17 +256,20 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public setInterval(): void {
-    this.processingService.setInterval(this.interval).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `Response to change interval request: ' + ${result.status} - Value: ${result.body?.value}`
-        );
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.processingService
+      .setInterval(this.interval)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `Response to change interval request: ' + ${result.status} - Value: ${result.body?.value}`
+          );
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public setAddress(): void {
@@ -267,7 +295,8 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public updateSettings(): void {
     this.processingService
-      .setRemoteProcessorSettings(this.remoteSettings).pipe(markViewForCheck(this.changeDetector))
+      .setRemoteProcessorSettings(this.remoteSettings)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -284,15 +313,17 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public saveRemoteProcessingSettings(): void {
-    this.saveSettingsSubscription = this.saveSettings$.pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(`saved settings:  ${JSON.stringify(result)}`);
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.saveSettingsSubscription = this.saveSettings$
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(`saved settings:  ${JSON.stringify(result)}`);
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   private updateStatusText(): void {
@@ -327,7 +358,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   ): void {
     this.remoteSettings = {
       ...settings,
-      useGzipCompression: settings.useGzipCompression ?? true
+      useGzipCompression: settings.useGzipCompression ?? true,
     };
 
     const url = new URL(this.remoteSettings.address);

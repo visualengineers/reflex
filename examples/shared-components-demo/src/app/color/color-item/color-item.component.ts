@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-color-item',
   imports: [CommonModule],
   templateUrl: './color-item.component.html',
-  styleUrl: './color-item.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './color-item.component.scss',
 })
 export class ColorItemComponent {
   @Input()

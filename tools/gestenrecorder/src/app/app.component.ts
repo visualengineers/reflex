@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TouchAreaComponent } from './touch-area/touch-area.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
@@ -23,6 +23,7 @@ import {
     SettingsGroupComponent,
   ],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.component.scss',
 })
 export class AppComponent {

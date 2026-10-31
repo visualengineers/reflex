@@ -1,14 +1,24 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 /* eslint-disable max-lines */
 import { HttpResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  Renderer2,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import {
   catchError,
   concatMap,
   startWith,
   switchMap,
-  tap
+  tap,
 } from 'rxjs/operators';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
@@ -22,7 +32,7 @@ import {
   FrameSizeDefinition,
   Interaction,
   InteractionType,
-  Point3
+  Point3,
 } from '@reflex/shared-types';
 import { CommonModule } from '@angular/common';
 import { PanelHeaderComponent } from '@reflex/angular-components/dist';
@@ -42,7 +52,8 @@ export interface BorderString {
   selector: 'app-calibration',
   templateUrl: './calibration.component.html',
   styleUrls: ['./calibration.component.scss'],
-  imports: [CommonModule, PanelHeaderComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, PanelHeaderComponent],
 })
 export class CalibrationComponent implements OnInit {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -65,13 +76,13 @@ export class CalibrationComponent implements OnInit {
   public calibrationSource: Array<CalibrationPoint> = [
     { positionX: 100, positionY: 200, touchId: -1 },
     { positionX: 600, positionY: 200, touchId: -1 },
-    { positionX: 600, positionY: 700, touchId: -1 }
+    { positionX: 600, positionY: 700, touchId: -1 },
   ];
 
   public calibratedTargets: Array<CalibrationPoint> = [
     { positionX: 100, positionY: 200, touchId: -1 },
     { positionX: 600, positionY: 200, touchId: -1 },
-    { positionX: 600, positionY: 700, touchId: -1 }
+    { positionX: 600, positionY: 700, touchId: -1 },
   ];
 
   public currentCalibration: Calibration = {
@@ -79,14 +90,14 @@ export class CalibrationComponent implements OnInit {
     sourceValues: [],
     targetValues: [],
     lowerThreshold: 0,
-    upperThreshold: 0
+    upperThreshold: 0,
   };
 
   public calibrationMatrix: Array<Array<number>> = [
     [1, 0, 0, 0],
     [0, 1, 0, 0],
     [0, 0, 1, 0],
-    [0, 0, 0, 1]
+    [0, 0, 0, 1],
   ];
 
   public interactions: Array<Interaction> = [];
@@ -120,8 +131,8 @@ export class CalibrationComponent implements OnInit {
       return;
     }
 
-    const offset
-      = this.selectedBorderIndex === 0 || this.selectedBorderIndex === 2
+    const offset =
+      this.selectedBorderIndex === 0 || this.selectedBorderIndex === 2
         ? evt.movementY
         : evt.movementX;
 
@@ -133,13 +144,13 @@ export class CalibrationComponent implements OnInit {
 
     // check if borders collide / are too close
     if (
-      (this.selectedBorderIndex === 0
-        && this.borderOffset[2] - newOffset < 70)
-      || (this.selectedBorderIndex === 1
-        && this.borderOffset[3] - newOffset < 70)
-      || (this.selectedBorderIndex === 2
-        && newOffset - this.borderOffset[0] < 70)
-      || (this.selectedBorderIndex === 3 && newOffset - this.borderOffset[1] < 70)
+      (this.selectedBorderIndex === 0 &&
+        this.borderOffset[2] - newOffset < 70) ||
+      (this.selectedBorderIndex === 1 &&
+        this.borderOffset[3] - newOffset < 70) ||
+      (this.selectedBorderIndex === 2 &&
+        newOffset - this.borderOffset[0] < 70) ||
+      (this.selectedBorderIndex === 3 && newOffset - this.borderOffset[1] < 70)
     ) {
       return;
     }
@@ -153,7 +164,8 @@ export class CalibrationComponent implements OnInit {
 
     const interactions$ = this.processingService.getInteractions().pipe(
       concatMap((result: Array<Interaction>) =>
-        this.calibrationService.computeCalibratedAbsolutePosition(result)),
+        this.calibrationService.computeCalibratedAbsolutePosition(result)
+      ),
       catchError((error: unknown) => {
         console.error(error);
         this.logService.sendErrorLog(`${error}`);
@@ -162,7 +174,9 @@ export class CalibrationComponent implements OnInit {
       })
     );
 
-    this.isProcessing$ = this.processingService.getStatus().pipe(markViewForCheck(this.changeDetector));
+    this.isProcessing$ = this.processingService
+      .getStatus()
+      .pipe(markViewForCheck(this.changeDetector));
 
     this.completeInteractions$ = this.isProcessing$.pipe(
       tap((processing) => {
@@ -171,32 +185,39 @@ export class CalibrationComponent implements OnInit {
       switchMap((processing) =>
         processing
           ? interactions$
-          : NEVER.pipe(startWith({ raw: [], normalized: [], absolute: [] })))
+          : NEVER.pipe(startWith({ raw: [], normalized: [], absolute: [] }))
+      )
     );
 
     this.settingsService.update();
 
-    this.interactionsSubscription = this.completeInteractions$.pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => this.updateInteractions(result),
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.interactionsSubscription = this.completeInteractions$
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => this.updateInteractions(result),
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
 
-    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.updateCalibrationValues(result.calibrationValues);
-        this.maxConfidence = result.filterSettingValues.confidence.max;
-      },
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.settingsSubscription = this.settingsService
+      .getSettings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.updateCalibrationValues(result.calibrationValues);
+          this.maxConfidence = result.filterSettingValues.confidence.max;
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
 
     this.calibrationSubscription = this.calibrationService
-      .getFrameSize().pipe(markViewForCheck(this.changeDetector))
+      .getFrameSize()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.updateBorders(result);
@@ -208,7 +229,8 @@ export class CalibrationComponent implements OnInit {
       );
 
     this.matrixSubscription = this.calibrationService
-      .getCalibrationMatrix().pipe(markViewForCheck(this.changeDetector))
+      .getCalibrationMatrix()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.calibrationMatrix = result.transformation;
@@ -232,8 +254,8 @@ export class CalibrationComponent implements OnInit {
   }
 
   public toggleCalibrationMode(): void {
-    this.isInteractiveCalibrationVisible
-      = !this.isInteractiveCalibrationVisible;
+    this.isInteractiveCalibrationVisible =
+      !this.isInteractiveCalibrationVisible;
 
     if (this.view === undefined) {
       return;
@@ -280,16 +302,16 @@ export class CalibrationComponent implements OnInit {
 
   public select(interactionIdx: number): void {
     if (
-      interactionIdx === this.selectedIdx
-      || interactionIdx >= this.interactions.length
+      interactionIdx === this.selectedIdx ||
+      interactionIdx >= this.interactions.length
     ) {
       this.resetSelectedInteraction();
 
       return;
     }
 
-    this.selectedValue[this.currentlyActiveStage]
-      = this.interactions[interactionIdx];
+    this.selectedValue[this.currentlyActiveStage] =
+      this.interactions[interactionIdx];
     this.selectedIdx = interactionIdx;
   }
 
@@ -300,11 +322,11 @@ export class CalibrationComponent implements OnInit {
 
   public submit(): void {
     if (
-      this.selectedIdx < 0
-      || this.currentlyActiveStage < 0
-      || this.currentlyActiveStage > 2
-      || this.selectedValue.length < this.currentlyActiveStage + 1
-      || this.selectedValue[this.currentlyActiveStage].touchId < 0
+      this.selectedIdx < 0 ||
+      this.currentlyActiveStage < 0 ||
+      this.currentlyActiveStage > 2 ||
+      this.selectedValue.length < this.currentlyActiveStage + 1 ||
+      this.selectedValue[this.currentlyActiveStage].touchId < 0
     ) {
       return;
     }
@@ -312,14 +334,15 @@ export class CalibrationComponent implements OnInit {
     const pos: CalibrationPoint = {
       positionX: this.selectedValue[this.currentlyActiveStage].position.x,
       positionY: this.selectedValue[this.currentlyActiveStage].position.y,
-      touchId: this.selectedValue[this.currentlyActiveStage].touchId
+      touchId: this.selectedValue[this.currentlyActiveStage].touchId,
     };
 
     this.calibratedTargets[this.currentlyActiveStage] = pos;
 
     // todo: never returns ???
     this.calibrationSubscription = this.calibrationService
-      .updateCalibrationPoint(this.currentlyActiveStage, pos).pipe(markViewForCheck(this.changeDetector))
+      .updateCalibrationPoint(this.currentlyActiveStage, pos)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result: HttpResponse<CalibrationTransform>) => {
           this.handleUpdatedCalibration(result);
@@ -347,30 +370,36 @@ export class CalibrationComponent implements OnInit {
   }
 
   public resetCalibration(): void {
-    this.calibrationService.restartCalibration().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.calibrationMatrix = result.transformation;
-        this.resetTarget(0);
-        this.resetTarget(1);
-        this.resetTarget(2);
-      },
-      (error) => console.error(error)
-    );
+    this.calibrationService
+      .restartCalibration()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.calibrationMatrix = result.transformation;
+          this.resetTarget(0);
+          this.resetTarget(1);
+          this.resetTarget(2);
+        },
+        (error) => console.error(error)
+      );
     this.currentlyActiveStage = -1;
     this.resetSelectedInteraction();
   }
 
   public applyCalibration(): void {
-    this.calibrationService.applyCalibration().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.calibrationMatrix = result.transformation;
-        console.log(`${result.transformation}`);
-      },
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.calibrationService
+      .applyCalibration()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.calibrationMatrix = result.transformation;
+          console.log(`${result.transformation}`);
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
     this.currentlyActiveStage = -1;
     this.resetSelectedInteraction();
   }
@@ -380,23 +409,26 @@ export class CalibrationComponent implements OnInit {
       width: this.borderOffset[3] - this.borderOffset[1],
       height: this.borderOffset[2] - this.borderOffset[0],
       left: this.borderOffset[1],
-      top: this.borderOffset[0]
+      top: this.borderOffset[0],
     };
 
-    this.calibrationService.updateFrameSize(frame).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        if (result.body) {
-          console.log(
-            `received updated frame size - result:  ${result.status} - [${result.body.top} | ${result.body.left} | ${result.body.height} | ${result.body.width}]`
-          );
-          this.updateBorders(result.body);
+    this.calibrationService
+      .updateFrameSize(frame)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          if (result.body) {
+            console.log(
+              `received updated frame size - result:  ${result.status} - [${result.body.top} | ${result.body.left} | ${result.body.height} | ${result.body.width}]`
+            );
+            this.updateBorders(result.body);
+          }
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
         }
-      },
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+      );
   }
 
   public getCalibrationSourcePointStyle(index: number): Object {
@@ -404,14 +436,14 @@ export class CalibrationComponent implements OnInit {
       transform: `translate(${this.calibrationSource[index].positionX}px, ${this.calibrationSource[index].positionY}px)`,
       visibility: `${
         this.currentlyActiveStage === index ? 'visible' : 'collapse'
-      }`
+      }`,
     };
   }
 
   public getCalibrationTargetPointStyle(index: number): Object {
     return {
       transform: `translate(${this.calibratedTargets[index].positionX}px, ${this.calibratedTargets[index].positionY}px)`,
-      visibility: `${this.currentlyActiveStage >= 0 ? 'visible' : 'collapse'}`
+      visibility: `${this.currentlyActiveStage >= 0 ? 'visible' : 'collapse'}`,
     };
   }
 
@@ -421,10 +453,10 @@ export class CalibrationComponent implements OnInit {
   ): TransformString {
     const resultingPosition = position;
 
-    const scale = ((resultingPosition.z * resultingPosition.z) + 0.5) * 2;
+    const scale = (resultingPosition.z * resultingPosition.z + 0.5) * 2;
 
     return {
-      transform: `translate(${resultingPosition.x}px, ${resultingPosition.y}px) scale(${scale}, ${scale})`
+      transform: `translate(${resultingPosition.x}px, ${resultingPosition.y}px) scale(${scale}, ${scale})`,
     };
   }
 
@@ -433,27 +465,30 @@ export class CalibrationComponent implements OnInit {
       top: `${this.borderOffset[0]}px`,
       left: `${this.borderOffset[1]}px`,
       height: `${this.borderOffset[2] - this.borderOffset[0]}px`,
-      width: `${this.borderOffset[3] - this.borderOffset[1]}px`
+      width: `${this.borderOffset[3] - this.borderOffset[1]}px`,
     };
   }
 
   public saveCalibration(): void {
-    this.calibrationService.saveCalibration().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(result);
-      },
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.calibrationService
+      .saveCalibration()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(result);
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   private getDefaultSelectedValues(): Array<Interaction> {
     return [
       this.getDefaultInteraction(),
       this.getDefaultInteraction(),
-      this.getDefaultInteraction()
+      this.getDefaultInteraction(),
     ];
   }
 
@@ -466,9 +501,9 @@ export class CalibrationComponent implements OnInit {
       extremumDescription: {
         numFittingPoints: 0,
         percentageFittingPoints: 0,
-        type: 0
+        type: 0,
       },
-      time: 0
+      time: 0,
     };
   }
 
@@ -501,12 +536,12 @@ export class CalibrationComponent implements OnInit {
       )
       .map((i) => i.touchId);
     if (
-      this.interactions.length <= 0
-      || alreadySelectedIds.find((id) => id === this.interactions[0].touchId)
-        !== undefined
+      this.interactions.length <= 0 ||
+      alreadySelectedIds.find((id) => id === this.interactions[0].touchId) !==
+        undefined
     ) {
-      this.selectedValue[this.currentlyActiveStage]
-        = this.getDefaultInteraction();
+      this.selectedValue[this.currentlyActiveStage] =
+        this.getDefaultInteraction();
       this.selectedIdx = -1;
 
       return;
@@ -518,8 +553,8 @@ export class CalibrationComponent implements OnInit {
     if (this.selectedValue[this.currentlyActiveStage]?.touchId >= 0) {
       restore = this.interactions.find(
         (touch) =>
-          touch.touchId
-          === this.selectedValue[this.currentlyActiveStage]?.touchId
+          touch.touchId ===
+          this.selectedValue[this.currentlyActiveStage]?.touchId
       );
     }
 
@@ -533,12 +568,12 @@ export class CalibrationComponent implements OnInit {
 
     // auto save point with highest confidence if point with this touch id is not already used for calibration
     if (
-      this.selectedValue[this.currentlyActiveStage].confidence
-        >= this.maxConfidence
-      && this.calibratedTargets.filter(
+      this.selectedValue[this.currentlyActiveStage].confidence >=
+        this.maxConfidence &&
+      this.calibratedTargets.filter(
         (elem) =>
-          elem.touchId
-          === this.selectedValue[this.currentlyActiveStage]?.touchId
+          elem.touchId ===
+          this.selectedValue[this.currentlyActiveStage]?.touchId
       ).length === 0
     ) {
       this.submit();
@@ -550,32 +585,38 @@ export class CalibrationComponent implements OnInit {
       borderValues.top,
       borderValues.left,
       borderValues.top + borderValues.height,
-      borderValues.left + borderValues.width
+      borderValues.left + borderValues.width,
     ];
   }
 
   private updateSourceValues(): void {
-    this.calibrationService.getCalibrationSourcePoints().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.calibrationSource = result;
-      },
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.calibrationService
+      .getCalibrationSourcePoints()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.calibrationSource = result;
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   private updateTargetPoints(): void {
-    this.calibrationService.getCurrentCalibrationTargetPoints().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.calibratedTargets = result;
-      },
-      (error: unknown) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.calibrationService
+      .getCurrentCalibrationTargetPoints()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.calibratedTargets = result;
+        },
+        (error: unknown) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   private updateBorders(borderValues: FrameSizeDefinition): void {
@@ -591,8 +632,8 @@ export class CalibrationComponent implements OnInit {
       this.calibrationMatrix = trans.transformation;
       if (this.currentlyActiveStage < 2 && this.currentlyActiveStage >= 0) {
         this.currentlyActiveStage += 1;
-        this.selectedValue[this.currentlyActiveStage]
-          = this.getDefaultInteraction();
+        this.selectedValue[this.currentlyActiveStage] =
+          this.getDefaultInteraction();
       } else {
         this.currentlyActiveStage = -1;
         this.selectedValue = this.getDefaultSelectedValues();

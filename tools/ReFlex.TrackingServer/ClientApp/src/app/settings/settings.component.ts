@@ -1,7 +1,16 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 /* eslint-disable max-lines */
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription, combineLatest, interval } from 'rxjs';
 import { LogService } from '../log/log.service';
@@ -17,13 +26,13 @@ import {
   LimitationFilterType,
   PerformanceData,
   PerformanceDataItem,
-  TrackingServerAppSettings
+  TrackingServerAppSettings,
 } from '@reflex/shared-types';
 import {
   OptionCheckboxComponent,
   SettingsGroupComponent,
   ValueSelectionComponent,
-  ValueSliderComponent
+  ValueSliderComponent,
 } from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
@@ -39,9 +48,10 @@ import { CommonModule } from '@angular/common';
     ValueSliderComponent,
     ValueSelectionComponent,
     OptionCheckboxComponent,
-    PerformanceVisualizationComponent
+    PerformanceVisualizationComponent,
   ],
-  standalone: true
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: true,
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -74,7 +84,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     'valueFilter',
     'thresholdFilter',
     'boxFilter',
-    'updatePointCloud'
+    'updatePointCloud',
   ];
 
   public performanceDataProcessingGroups = [
@@ -82,7 +92,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     'processingUpdate',
     'processingConvert',
     'processingSmoothing',
-    'processingExtremum'
+    'processingExtremum',
   ];
 
   public filters: Array<JsonSimpleValue> = Object.values(FilterType)
@@ -114,38 +124,42 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private limitationFilterStatePolling?: Subscription;
 
   private selectedFilterType: FilterType = FilterType.None;
-  private selectedLimitationFilterType: LimitationFilterType
-    = LimitationFilterType.LimitationFilter;
+  private selectedLimitationFilterType: LimitationFilterType =
+    LimitationFilterType.LimitationFilter;
 
-  private selectedCheckType: ExtremumTypeCheckMethod
-    = ExtremumTypeCheckMethod.Global;
+  private selectedCheckType: ExtremumTypeCheckMethod =
+    ExtremumTypeCheckMethod.Global;
 
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.settings = this.validateSettings(result);
-        this.selectedFilterIdx
-          = this.settings.filterSettingValues.smoothingValues.type;
-        this.selectedExtremumCheckIdx
-          = this.settings.filterSettingValues.extremumSettings.checkMethod;
-        this.selectedLimitationFilterIdx
-          = this.settings.filterSettingValues.limitationFilterType;
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsSubscription = this.settingsService
+      .getSettings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.settings = this.validateSettings(result);
+          this.selectedFilterIdx =
+            this.settings.filterSettingValues.smoothingValues.type;
+          this.selectedExtremumCheckIdx =
+            this.settings.filterSettingValues.extremumSettings.checkMethod;
+          this.selectedLimitationFilterIdx =
+            this.settings.filterSettingValues.limitationFilterType;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
     this.settingsService.update();
     this.updateCanRestore();
 
     this.trackingStatusSubscription = this.trackingService
-      .getStatus().pipe(markViewForCheck(this.changeDetector))
+      .getStatus()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          this.isTrackingActive
-            = result.depthCameraStateName
-            === DepthCameraState[DepthCameraState.Streaming];
+          this.isTrackingActive =
+            result.depthCameraStateName ===
+            DepthCameraState[DepthCameraState.Streaming];
         },
         (error) => {
           console.error(error);
@@ -153,24 +167,29 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.performanceSubscription = this.performanceService.getData().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.processPerformanceData(result);
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.performanceSubscription = this.performanceService
+      .getData()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.processPerformanceData(result);
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
 
     this.limitationFilterStatePolling = interval(1000)
       .pipe(
         switchMap(() =>
           combineLatest([
             this.settingsService.isLimitationFilterInitializing(),
-            this.settingsService.isLimitationFilterInitialized()
-          ]))
-      ).pipe(markViewForCheck(this.changeDetector))
+            this.settingsService.isLimitationFilterInitialized(),
+          ])
+        )
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.isCurrentlyInitializingLimitationFilter = result[0]
@@ -192,33 +211,41 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   public computeZeroPlane(): void {
-    this.settingsService.getZeroPlaneDistance().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(`Successfully updated distance: ${JSON.stringify(result)}`);
-        this.settingsService.update();
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .getZeroPlaneDistance()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `Successfully updated distance: ${JSON.stringify(result)}`
+          );
+          this.settingsService.update();
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public initializeAdvancedLimitationFilter(): void {
     if (this.isCurrentlyInitializingLimitationFilter) {
       return;
     }
-    this.settingsService.initializeAdvancedLimitationFilter().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `initialized Advanced Limitation Filter: ${result.value}:${result.name}`
-        );
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .initializeAdvancedLimitationFilter()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `initialized Advanced Limitation Filter: ${result.value}:${result.name}`
+          );
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public resetAdvancedLimitationFilter(): void {
@@ -226,78 +253,96 @@ export class SettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.settingsService.resetAdvancedLimitationFilter().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `reset Advanced Limitation Filter: ${result.value}:${result.name}`
-        );
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .resetAdvancedLimitationFilter()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `reset Advanced Limitation Filter: ${result.value}:${result.name}`
+          );
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public saveSettings(settings: TrackingServerAppSettings): void {
-    this.settingsService.saveSettings(settings).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `Successfully sent POST request: ${JSON.stringify(result)}`
-        );
-        this.settingsService.update();
-        this.updateCanRestore();
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .saveSettings(settings)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `Successfully sent POST request: ${JSON.stringify(result)}`
+          );
+          this.settingsService.update();
+          this.updateCanRestore();
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public resetSettings(): void {
-    this.settingsService.reset().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(`reset default settings: ${JSON.stringify(result)}`);
-        this.settingsService.update();
-        this.updateCanRestore();
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .reset()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(`reset default settings: ${JSON.stringify(result)}`);
+          this.settingsService.update();
+          this.updateCanRestore();
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public restoreSettings(): void {
-    this.settingsService.restore().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(`restore settings from backup: ${JSON.stringify(result)}`);
-        this.settingsService.update();
-        this.updateCanRestore();
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .restore()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `restore settings from backup: ${JSON.stringify(result)}`
+          );
+          this.settingsService.update();
+          this.updateCanRestore();
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public updateCanRestore(): void {
-    this.settingsService.getCanRestore().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.canRestore = result.value as boolean;
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsService
+      .getCanRestore()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.canRestore = result.value as boolean;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public saveBorder(): void {
     this.settingsService
-      .setBorder(this.settings.filterSettingValues.borderValue).pipe(markViewForCheck(this.changeDetector))
+      .setBorder(this.settings.filterSettingValues.borderValue)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -316,7 +361,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settingsService
       .setMinDistanceFromSensor(
         this.settings.filterSettingValues.minDistanceFromSensor
-      ).pipe(markViewForCheck(this.changeDetector))
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(`Successfully sent POST request: ${result}`);
@@ -331,7 +377,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveThreshold(): void {
     this.settingsService
-      .setThreshold(this.settings.filterSettingValues.threshold).pipe(markViewForCheck(this.changeDetector))
+      .setThreshold(this.settings.filterSettingValues.threshold)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -348,7 +395,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveConfidence(): void {
     this.settingsService
-      .setConfidence(this.settings.filterSettingValues.confidence).pipe(markViewForCheck(this.changeDetector))
+      .setConfidence(this.settings.filterSettingValues.confidence)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -365,7 +413,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveSmoothingValues(): void {
     this.settingsService
-      .setSmoothingValues(this.settings.filterSettingValues.smoothingValues).pipe(markViewForCheck(this.changeDetector))
+      .setSmoothingValues(this.settings.filterSettingValues.smoothingValues)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -382,7 +431,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveExtremumValues(): void {
     this.settingsService
-      .setExtremumSettings(this.settings.filterSettingValues.extremumSettings).pipe(markViewForCheck(this.changeDetector))
+      .setExtremumSettings(this.settings.filterSettingValues.extremumSettings)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -399,8 +449,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveExtremumCheckType(): void {
     if (
-      this.selectedExtremumCheckIdx <= 0
-      || this.selectedExtremumCheckIdx >= this.checks.length
+      this.selectedExtremumCheckIdx <= 0 ||
+      this.selectedExtremumCheckIdx >= this.checks.length
     ) {
       this.selectedCheckType = ExtremumTypeCheckMethod.Global;
     } else {
@@ -408,15 +458,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .selectedExtremumCheckIdx as ExtremumTypeCheckMethod;
     }
 
-    this.settings.filterSettingValues.extremumSettings.checkMethod
-      = this.selectedCheckType;
+    this.settings.filterSettingValues.extremumSettings.checkMethod =
+      this.selectedCheckType;
 
     this.saveExtremumValues();
   }
 
   public savePointCloudValues(): void {
     this.settingsService
-      .setPointCloudSettings(this.settings.pointCloudSettingValues).pipe(markViewForCheck(this.changeDetector))
+      .setPointCloudSettings(this.settings.pointCloudSettingValues)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe({
         next: (result) => {
           console.log(
@@ -427,13 +478,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error(error);
           this.logService.sendErrorLog(`${error}`);
-        }
+        },
       });
   }
 
   public saveDistance(): void {
     this.settingsService
-      .setDistance(this.settings.filterSettingValues.distanceValue).pipe(markViewForCheck(this.changeDetector))
+      .setDistance(this.settings.filterSettingValues.distanceValue)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -452,7 +504,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settingsService
       .setOptimizedBoxFilter(
         this.settings.filterSettingValues.useOptimizedBoxFilter
-      ).pipe(markViewForCheck(this.changeDetector))
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -469,7 +522,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterRadius(): void {
     this.settingsService
-      .setFilterRadius(this.settings.filterSettingValues.boxFilterRadius).pipe(markViewForCheck(this.changeDetector))
+      .setFilterRadius(this.settings.filterSettingValues.boxFilterRadius)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -486,7 +540,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterPasses(): void {
     this.settingsService
-      .setFilterPasses(this.settings.filterSettingValues.boxFilterNumPasses).pipe(markViewForCheck(this.changeDetector))
+      .setFilterPasses(this.settings.filterSettingValues.boxFilterNumPasses)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -503,7 +558,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterThreads(): void {
     this.settingsService
-      .setFilterThreads(this.settings.filterSettingValues.boxFilterNumThreads).pipe(markViewForCheck(this.changeDetector))
+      .setFilterThreads(this.settings.filterSettingValues.boxFilterNumThreads)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -520,7 +576,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveMinAngle(): void {
     this.settingsService
-      .setMinAngle(this.settings.filterSettingValues.minAngle).pipe(markViewForCheck(this.changeDetector))
+      .setMinAngle(this.settings.filterSettingValues.minAngle)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -537,24 +594,24 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterType(): void {
     if (
-      this.selectedFilterIdx <= 0
-      || this.selectedFilterIdx >= this.filters.length
+      this.selectedFilterIdx <= 0 ||
+      this.selectedFilterIdx >= this.filters.length
     ) {
       this.selectedFilterType = FilterType.None;
     } else {
       this.selectedFilterType = this.selectedFilterIdx as FilterType;
     }
 
-    this.settings.filterSettingValues.smoothingValues.type
-      = this.selectedFilterType;
+    this.settings.filterSettingValues.smoothingValues.type =
+      this.selectedFilterType;
 
     this.saveSmoothingValues();
   }
 
   public saveLimitationFilterType(): void {
     if (
-      this.selectedLimitationFilterIdx <= 0
-      || this.selectedLimitationFilterIdx >= this.limitationFilters.length
+      this.selectedLimitationFilterIdx <= 0 ||
+      this.selectedLimitationFilterIdx >= this.limitationFilters.length
     ) {
       this.selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
     } else {
@@ -562,11 +619,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .selectedLimitationFilterIdx as LimitationFilterType;
     }
 
-    this.settings.filterSettingValues.limitationFilterType
-      = this.selectedLimitationFilterType;
+    this.settings.filterSettingValues.limitationFilterType =
+      this.selectedLimitationFilterType;
 
     this.settingsService
-      .setLimitationFilterType(this.settings.filterSettingValues).pipe(markViewForCheck(this.changeDetector))
+      .setLimitationFilterType(this.settings.filterSettingValues)
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -629,26 +687,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   private processPerformanceData(data: PerformanceData): void {
     data.data.forEach((elem) => {
-      const filterValid
-        = (elem.boxFilter ?? 0) > 0
-        || (elem.limitationFilter ?? 0) > 0
-        || (elem.thresholdFilter ?? 0) > 0
-        || (elem.updatePointCloud ?? 0) > 0
-        || (elem.valueFilter ?? 0) > 0;
-      const processValid
-        = (elem.processingConvert ?? 0) > 0
-        || (elem.processingExtremum ?? 0) > 0
-        || (elem.processingPreparation ?? 0) > 0
-        || (elem.processingSmoothing ?? 0) > 0
-        || (elem.processingUpdate ?? 0) > 0;
+      const filterValid =
+        (elem.boxFilter ?? 0) > 0 ||
+        (elem.limitationFilter ?? 0) > 0 ||
+        (elem.thresholdFilter ?? 0) > 0 ||
+        (elem.updatePointCloud ?? 0) > 0 ||
+        (elem.valueFilter ?? 0) > 0;
+      const processValid =
+        (elem.processingConvert ?? 0) > 0 ||
+        (elem.processingExtremum ?? 0) > 0 ||
+        (elem.processingPreparation ?? 0) > 0 ||
+        (elem.processingSmoothing ?? 0) > 0 ||
+        (elem.processingUpdate ?? 0) > 0;
 
       if (filterValid) {
-        elem.totalFilter
-          = (elem.boxFilter ?? 0)
-          + (elem.limitationFilter ?? 0)
-          + (elem.thresholdFilter ?? 0)
-          + (elem.updatePointCloud ?? 0)
-          + (elem.valueFilter ?? 0);
+        elem.totalFilter =
+          (elem.boxFilter ?? 0) +
+          (elem.limitationFilter ?? 0) +
+          (elem.thresholdFilter ?? 0) +
+          (elem.updatePointCloud ?? 0) +
+          (elem.valueFilter ?? 0);
 
         const existingIdxData = this.performanceDataFilter.data.findIndex(
           (item) => item.frameId === elem.frameId
@@ -672,12 +730,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
       }
 
       if (processValid) {
-        elem.totalProcessing
-          = (elem.processingConvert ?? 0)
-          + (elem.processingExtremum ?? 0)
-          + (elem.processingPreparation ?? 0)
-          + (elem.processingSmoothing ?? 0)
-          + (elem.processingUpdate ?? 0);
+        elem.totalProcessing =
+          (elem.processingConvert ?? 0) +
+          (elem.processingExtremum ?? 0) +
+          (elem.processingPreparation ?? 0) +
+          (elem.processingSmoothing ?? 0) +
+          (elem.processingUpdate ?? 0);
 
         const existingIdxData = this.performanceDataProcess.data.findIndex(
           (item) => item.frameId === elem.frameId
@@ -711,8 +769,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         )[0].frameEnd;
       }
 
-      const existingIdxStart
-        = this.performanceDataCompleteTimeFrame.data.filter(
+      const existingIdxStart =
+        this.performanceDataCompleteTimeFrame.data.filter(
           (item) =>
             item.frameId === elem.frameId && item.frameStart < elem.frameStart
         );
@@ -737,14 +795,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }
       }
 
-      this.performanceDataCompleteTimeFrameVis
-        = this.performanceDataCompleteTimeFrameVis
+      this.performanceDataCompleteTimeFrameVis =
+        this.performanceDataCompleteTimeFrameVis
           .sort((a, b) => a.frameId - b.frameId)
           .slice(-200);
     });
 
-    this.performanceDataCompleteTimeFrame.data
-      = this.performanceDataCompleteTimeFrame.data
+    this.performanceDataCompleteTimeFrame.data =
+      this.performanceDataCompleteTimeFrame.data
         .sort((a, b) => a.frameId - b.frameId)
         .slice(-1000);
     this.performanceDataFilter.data = this.performanceDataFilter.data
@@ -770,8 +828,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
 
     if (!settings.cameraConfigurationValues) {
-      settings.cameraConfigurationValues
-        = DEFAULT_SETTINGS.cameraConfigurationValues;
+      settings.cameraConfigurationValues =
+        DEFAULT_SETTINGS.cameraConfigurationValues;
     }
 
     if (!settings.networkSettingValues) {
@@ -779,13 +837,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
 
     if (!settings.processingSettingValues) {
-      settings.processingSettingValues
-        = DEFAULT_SETTINGS.processingSettingValues;
+      settings.processingSettingValues =
+        DEFAULT_SETTINGS.processingSettingValues;
     }
 
     if (!settings.remoteProcessingServiceSettingsValues) {
-      settings.remoteProcessingServiceSettingsValues
-        = DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
+      settings.remoteProcessingServiceSettingsValues =
+        DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
     }
 
     if (!settings.tuioSettingValues) {

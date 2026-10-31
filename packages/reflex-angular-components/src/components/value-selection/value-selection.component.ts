@@ -1,16 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-value-selection',
   standalone: true,
-  templateUrl: './value-selection.component.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './value-selection.component.html',
 })
 export class ValueSelectionComponent {
-
   @Input()
   public elementTitle = '';
 
   @Input()
   public elementId = 'custom-select';
-
 }

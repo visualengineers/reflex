@@ -9,23 +9,29 @@ import { of, throwError } from 'rxjs';
 import { MockMeasureControlsComponent } from './measure-controls/measure-control.component.mock';
 import { MeasureGridComponent } from './measure-grid/measure-grid.component';
 import { FrameSizeDefinition } from '@reflex/shared-types';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http';
 import { MeasureControlsComponent } from './measure-controls/measure-controls.component';
 import { MockMeasureGridComponent } from './measure-grid/measure-grid.component.mock';
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
-  [
-    'getFrameSize'
-  ]
+const calibrationService = jasmine.createSpyObj<CalibrationService>(
+  'fakeCalibrationService',
+  ['getFrameSize']
 );
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]);
+const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
+  'sendErrorLog',
+]);
 
-const customFrame: FrameSizeDefinition =
-  { width: 500, height: 400, left: 150, top: 75 };
+const customFrame: FrameSizeDefinition = {
+  width: 500,
+  height: 400,
+  left: 150,
+  top: 75,
+};
 
 describe('MeasureSurfaceComponent', () => {
   let component: MeasureSurfaceComponent;
@@ -33,30 +39,36 @@ describe('MeasureSurfaceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      MeasureSurfaceComponent,
-      MockMeasureControlsComponent,
-      MeasureGridComponent
-    ],
-    providers: [
+      imports: [
+        FormsModule,
+        MeasureSurfaceComponent,
+        MockMeasureControlsComponent,
+        MeasureGridComponent,
+      ],
+      providers: [
         {
-            provide: CalibrationService, useValue: calibrationService
+          provide: CalibrationService,
+          useValue: calibrationService,
         },
         {
-            provide: LogService, useValue: logService
+          provide: LogService,
+          useValue: logService,
         },
         {
-        provide: BASE_URL, useValue: 'http://localhost'
+          provide: BASE_URL,
+          useValue: 'http://localhost',
         },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-}).overrideComponent(MeasureSurfaceComponent, {
-      remove: { imports: [ MeasureControlsComponent, MeasureGridComponent] },
-      add: { imports: [ MockMeasureControlsComponent, MockMeasureGridComponent ] }
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     })
-    .compileComponents();
+      .overrideComponent(MeasureSurfaceComponent, {
+        remove: { imports: [MeasureControlsComponent, MeasureGridComponent] },
+        add: {
+          imports: [MockMeasureControlsComponent, MockMeasureGridComponent],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -71,7 +83,6 @@ describe('MeasureSurfaceComponent', () => {
     calibrationService.getFrameSize.calls.reset();
     logService.sendErrorLog.calls.reset();
   });
-
 
   it('should create and initialize values correctly', () => {
     fixture.detectChanges();
@@ -97,8 +108,20 @@ describe('MeasureSurfaceComponent', () => {
 
     expect(component.fullScreen).toBeFalse();
 
-    const expected1 = { position: 'relative', top: '0', left: '0', width: '100%', height: '40vh' };
-    const expected2 = { position: 'absolute', top:  `${customFrame.top}px`, left: `${customFrame.left}px`, width: `${customFrame.width}px`, height: `${customFrame.height}px` };
+    const expected1 = {
+      position: 'relative',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '40vh',
+    };
+    const expected2 = {
+      position: 'absolute',
+      top: `${customFrame.top}px`,
+      left: `${customFrame.left}px`,
+      width: `${customFrame.width}px`,
+      height: `${customFrame.height}px`,
+    };
 
     let style1 = component.getViewStyle();
 

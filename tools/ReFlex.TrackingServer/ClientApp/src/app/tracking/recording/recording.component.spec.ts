@@ -5,12 +5,24 @@ import { of, throwError } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { RecordingComponent } from './recording.component';
-import { CameraConfiguration, DepthCameraState, RecordingState, RecordingStateUpdate } from '@reflex/shared-types';
-import { ValueTextComponent, MockValueTextComponent } from '@reflex/angular-components/dist';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  CameraConfiguration,
+  DepthCameraState,
+  RecordingState,
+  RecordingStateUpdate,
+} from '@reflex/shared-types';
+import {
+  ValueTextComponent,
+  MockValueTextComponent,
+} from '@reflex/angular-components/dist';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http';
 
-
-const recordingService = jasmine.createSpyObj<RecordingService>('fakeRecordingService',
+const recordingService = jasmine.createSpyObj<RecordingService>(
+  'fakeRecordingService',
   [
     'getStatus',
     'getRecordings',
@@ -18,10 +30,12 @@ const recordingService = jasmine.createSpyObj<RecordingService>('fakeRecordingSe
     'startRecording',
     'stopRecording',
     'deleteRecording',
-    'clearRecordings'
-  ]);
+    'clearRecordings',
+  ]
+);
 
-const recordingService_error = jasmine.createSpyObj<RecordingService>('fakeRecordingService',
+const recordingService_error = jasmine.createSpyObj<RecordingService>(
+  'fakeRecordingService',
   [
     'getStatus',
     'getRecordings',
@@ -29,29 +43,31 @@ const recordingService_error = jasmine.createSpyObj<RecordingService>('fakeRecor
     'startRecording',
     'stopRecording',
     'deleteRecording',
-    'clearRecordings'
-  ]);
+    'clearRecordings',
+  ]
+);
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]);
+const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
+  'sendErrorLog',
+]);
 
-const testRecordingCam : CameraConfiguration = {
+const testRecordingCam: CameraConfiguration = {
   name: 'RecordedTest',
   framerate: 30,
   width: 640,
-  height: 480
-}
+  height: 480,
+};
 
-recordingService.getStatus.and.returnValue(of({
-  isCameraSelected: true,
-  depthCameraStateName: DepthCameraState[DepthCameraState.Streaming],
-  selectedCameraName: 'TestCamera',
-  selectedConfigurationName: 'TestConfig'
-}));
+recordingService.getStatus.and.returnValue(
+  of({
+    isCameraSelected: true,
+    depthCameraStateName: DepthCameraState[DepthCameraState.Streaming],
+    selectedCameraName: 'TestCamera',
+    selectedConfigurationName: 'TestConfig',
+  })
+);
 
-const testRecordingPath = 'Path/to/TestRecording.xyz'
+const testRecordingPath = 'Path/to/TestRecording.xyz';
 
 recordingService.startRecording.and.returnValue(of(testRecordingPath));
 
@@ -63,37 +79,47 @@ const testRecordingStateUpdate: RecordingStateUpdate = {
 
 recordingService.stopRecording.and.returnValue(of(testRecordingCam));
 
-recordingService.getRecordingState.and.returnValue(of(testRecordingStateUpdate));
+recordingService.getRecordingState.and.returnValue(
+  of(testRecordingStateUpdate)
+);
 
 const recordingList: Array<CameraConfiguration> = [
   {
     name: 'TestCam',
     framerate: 30,
     width: 100,
-    height: 50
+    height: 50,
   },
   {
     name: 'TestCam 2',
     framerate: 45,
     width: 320,
-    height: 240
-  }
-]
+    height: 240,
+  },
+];
 
 recordingService.getRecordings.and.returnValue(of(recordingList));
 
-recordingService.deleteRecording.and.returnValue(of('Successfully deleted recording'));
+recordingService.deleteRecording.and.returnValue(
+  of('Successfully deleted recording')
+);
 
-recordingService.clearRecordings.and.returnValue(of('Successfully deleted all recordings'));
+recordingService.clearRecordings.and.returnValue(
+  of('Successfully deleted all recordings')
+);
 
 const errorStatus = 'TestError: getStatus()';
 recordingService_error.getStatus.and.returnValue(throwError(errorStatus));
 
 const errorRecordings = 'TestError: getRecordings()';
-recordingService_error.getRecordings.and.returnValue(throwError(errorRecordings));
+recordingService_error.getRecordings.and.returnValue(
+  throwError(errorRecordings)
+);
 
 const errorRecordingState = 'TestError: getRecordingState()';
-recordingService_error.getRecordingState.and.returnValue(throwError(errorRecordingState));
+recordingService_error.getRecordingState.and.returnValue(
+  throwError(errorRecordingState)
+);
 
 const errorStart = 'TestError: startRecording()';
 recordingService_error.startRecording.and.returnValue(throwError(errorStart));
@@ -113,26 +139,25 @@ describe('RecordingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        FormsModule,
-        RecordingComponent
-    ],
-    providers: [
+      imports: [FormsModule, RecordingComponent],
+      providers: [
         {
-            provide: RecordingService, useValue: recordingService
+          provide: RecordingService,
+          useValue: recordingService,
         },
         {
-            provide: LogService, useValue: logService
+          provide: LogService,
+          useValue: logService,
         },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     })
-    .overrideComponent(RecordingComponent, {
-      remove: { imports: [ ValueTextComponent] },
-      add: { imports: [ MockValueTextComponent ] }
-    })
-    .compileComponents();
+      .overrideComponent(RecordingComponent, {
+        remove: { imports: [ValueTextComponent] },
+        add: { imports: [MockValueTextComponent] },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -175,7 +200,9 @@ describe('RecordingComponent', () => {
 
     await fixture.whenStable();
 
-    expect(recordingService.startRecording).toHaveBeenCalledOnceWith(component.recordingName);
+    expect(recordingService.startRecording).toHaveBeenCalledOnceWith(
+      component.recordingName
+    );
 
     expect(recordingService.getRecordingState).toHaveBeenCalledTimes(1);
 
@@ -211,7 +238,6 @@ describe('RecordingComponent', () => {
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
     expect(recordingService.stopRecording).toHaveBeenCalledTimes(1);
-
   });
 
   it('should correctly delete recording', async () => {
@@ -226,7 +252,9 @@ describe('RecordingComponent', () => {
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    expect(recordingService.deleteRecording).toHaveBeenCalledOnceWith(testRecordingCam.name);
+    expect(recordingService.deleteRecording).toHaveBeenCalledOnceWith(
+      testRecordingCam.name
+    );
     expect(recordingService.getRecordings).toHaveBeenCalledTimes(1);
   });
 
@@ -287,13 +315,16 @@ describe('RecordingComponent', () => {
     expect(recordingService.getRecordings).not.toHaveBeenCalled();
   });
 
-  it ('should unsubscribe completely onDestroy', async () => {
+  it('should unsubscribe completely onDestroy', async () => {
     await fixture.whenStable();
 
     component.ngOnDestroy();
 
     expect(component['trackingStateSubscription']?.closed).toBeTruthy();
-    expect(component['recordingStateSubscription'] === undefined || component['recordingStateSubscription'].closed).toBeTrue();
+    expect(
+      component['recordingStateSubscription'] === undefined ||
+        component['recordingStateSubscription'].closed
+    ).toBeTrue();
   });
 
   it('should enable recording when correct name is passed', async () => {
@@ -318,9 +349,8 @@ describe('RecordingComponent', () => {
     component.recordingNameChanged();
 
     expect(component.recordingEnabled).toBeFalse();
-  })
+  });
 });
-
 
 describe('RecordingComponent: Error Handling', () => {
   let component: RecordingComponent;
@@ -328,23 +358,20 @@ describe('RecordingComponent: Error Handling', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        FormsModule,
-        ValueTextComponent,
-        RecordingComponent
+      imports: [FormsModule, ValueTextComponent, RecordingComponent],
+      providers: [
+        {
+          provide: RecordingService,
+          useValue: recordingService_error,
+        },
+        {
+          provide: LogService,
+          useValue: logService,
+        },
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
-    providers: [
-        {
-            provide: RecordingService, useValue: recordingService_error
-        },
-        {
-            provide: LogService, useValue: logService
-        },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
-})
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -375,7 +402,7 @@ describe('RecordingComponent: Error Handling', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorRecordings);
   });
 
-  it ('should start recording only when enabled and correct name given', async () => {
+  it('should start recording only when enabled and correct name given', async () => {
     await fixture.whenStable();
 
     expect(component.recordingEnabled).toBeFalse();
@@ -424,7 +451,9 @@ describe('RecordingComponent: Error Handling', () => {
     component.deleteRecording(testRecordingCam);
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(8);
-    expect(recordingService_error.deleteRecording).toHaveBeenCalledOnceWith(testRecordingCam.name);
+    expect(recordingService_error.deleteRecording).toHaveBeenCalledOnceWith(
+      testRecordingCam.name
+    );
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorDelete);
 
     component.clearRecordings();

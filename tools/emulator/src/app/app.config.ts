@@ -8,6 +8,7 @@ import { GestureReplayService } from './service/gesture-replay.service';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
@@ -24,6 +25,6 @@ export const appConfig: ApplicationConfig = {
       FormsModule
     ),
     GestureReplayService,
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
   ],
 };

@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 import { FormsModule } from '@angular/forms';
@@ -19,6 +24,7 @@ export interface GestureData {
   selector: 'app-track-component',
   imports: [SettingsGroupComponent, FormsModule],
   templateUrl: './track-component.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './track-component.component.scss',
 })
 export class TrackComponentComponent implements OnInit, OnDestroy {

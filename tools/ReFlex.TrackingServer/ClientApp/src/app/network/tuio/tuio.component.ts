@@ -1,5 +1,12 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -9,12 +16,12 @@ import {
   ProtocolVersion,
   TransportProtocol,
   TuioConfiguration,
-  TuioInterpretation
+  TuioInterpretation,
 } from '@reflex/shared-types';
 import {
   PanelHeaderComponent,
   ValueSelectionComponent,
-  ValueTextComponent
+  ValueTextComponent,
 } from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -23,14 +30,15 @@ import { PackageDetailsComponent } from './package-details/package-details.compo
 @Component({
   selector: 'app-tuio',
   templateUrl: './tuio.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     FormsModule,
     PanelHeaderComponent,
     ValueSelectionComponent,
     ValueTextComponent,
-    PackageDetailsComponent
-  ]
+    PackageDetailsComponent,
+  ],
 })
 export class TuioComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -61,22 +69,25 @@ export class TuioComponent implements OnInit, OnDestroy {
   private settingsSubscription?: Subscription;
 
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        if (result.tuioSettingValues) {
-          this.config = result.tuioSettingValues;
-          this.transportProtocolIdx = this.config.transport;
-          this.tuioProtocolVersionIdx = this.config.protocol;
-          this.tuioInterpretationIdx = this.config.interpretation;
-          this.serverAddress = this.config.serverAddress;
-          this.serverPort = this.config.serverPort;
+    this.settingsSubscription = this.settingsService
+      .getSettings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          if (result.tuioSettingValues) {
+            this.config = result.tuioSettingValues;
+            this.transportProtocolIdx = this.config.transport;
+            this.tuioProtocolVersionIdx = this.config.protocol;
+            this.tuioInterpretationIdx = this.config.interpretation;
+            this.serverAddress = this.config.serverAddress;
+            this.serverPort = this.config.serverPort;
+          }
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
         }
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+      );
 
     this.settingsService.update();
 
@@ -89,101 +100,123 @@ export class TuioComponent implements OnInit, OnDestroy {
   }
 
   public fetchCurrentValues(): void {
-    this.tuioService.getIsBroadcasting().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        if (result.body?.name === 'IsBroadcasting') {
-          this.isBroadcasting = result.body.value === true;
+    this.tuioService
+      .getIsBroadcasting()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          if (result.body?.name === 'IsBroadcasting') {
+            this.isBroadcasting = result.body.value === true;
+          }
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
         }
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+      );
 
-    this.tuioService.getTransportProtocols().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.transportProtocols = result;
-        if (this.config) {
-          this.transportProtocolIdx = this.config.transport as number;
+    this.tuioService
+      .getTransportProtocols()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.transportProtocols = result;
+          if (this.config) {
+            this.transportProtocolIdx = this.config.transport as number;
+          }
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
         }
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+      );
 
-    this.tuioService.getTuioProtocolVersions().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.tuioProtocolVersions = result;
-        if (this.config) {
-          this.tuioProtocolVersionIdx = this.config.protocol as number;
+    this.tuioService
+      .getTuioProtocolVersions()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.tuioProtocolVersions = result;
+          if (this.config) {
+            this.tuioProtocolVersionIdx = this.config.protocol as number;
+          }
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
         }
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+      );
 
-    this.tuioService.getTuioInterpretations().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.tuioInterpretations = result;
-        if (this.config) {
-          this.tuioInterpretationIdx = this.config.interpretation as number;
+    this.tuioService
+      .getTuioInterpretations()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.tuioInterpretations = result;
+          if (this.config) {
+            this.tuioInterpretationIdx = this.config.interpretation as number;
+          }
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
         }
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+      );
 
-    this.statusTextSubscription = this.tuioService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.statusText = result;
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.statusTextSubscription = this.tuioService
+      .getStatus()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.statusText = result;
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public setAddress(): void {
     this.config.serverAddress = this.serverAddress;
-    this.tuioService.setAddress(this.config.serverAddress).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `response to change TUIO server address: ${result.status} - ${result.body?.value}`
-        );
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.tuioService
+      .setAddress(this.config.serverAddress)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change TUIO server address: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public setPort(): void {
     this.config.serverPort = this.serverPort;
-    this.tuioService.setPort(this.config.serverPort).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `response to change TUIO server port: ${result.status} - ${result.body?.value}`
-        );
-      },
-      (error) => {
-        this.logService.sendErrorLog(`${error}`);
-        console.error(error);
-      }
-    );
+    this.tuioService
+      .setPort(this.config.serverPort)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change TUIO server port: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error) => {
+          this.logService.sendErrorLog(`${error}`);
+          console.error(error);
+        }
+      );
   }
 
   public setTransportProtocol(): void {
     this.tuioService
-      .setTransportProtocol(this.transportProtocols[this.transportProtocolIdx]).pipe(markViewForCheck(this.changeDetector))
+      .setTransportProtocol(this.transportProtocols[this.transportProtocolIdx])
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -208,7 +241,8 @@ export class TuioComponent implements OnInit, OnDestroy {
     this.tuioService
       .setTuioProtocolVersion(
         this.tuioProtocolVersions[this.tuioProtocolVersionIdx]
-      ).pipe(markViewForCheck(this.changeDetector))
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -233,7 +267,8 @@ export class TuioComponent implements OnInit, OnDestroy {
     this.tuioService
       .setTuioInterpretation(
         this.tuioInterpretations[this.tuioInterpretationIdx]
-      ).pipe(markViewForCheck(this.changeDetector))
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -256,44 +291,50 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public isBroadcastingChanged(): void {
     this.errorText = '';
-    this.tuioService.toggleBroadcasting().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `Tuio Broadcast status toggle - result:  ${result.status} - ${result.body?.value}`
-        );
-        this.isBroadcasting = result.body?.value as boolean;
-      },
-      (error) => {
-        this.isBroadcasting = false;
-        this.errorText = `${error} - ${JSON.stringify(error, null, 3)}`;
-        this.logService.sendErrorLog(this.errorText);
-      }
-    );
+    this.tuioService
+      .toggleBroadcasting()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `Tuio Broadcast status toggle - result:  ${result.status} - ${result.body?.value}`
+          );
+          this.isBroadcasting = result.body?.value as boolean;
+        },
+        (error) => {
+          this.isBroadcasting = false;
+          this.errorText = `${error} - ${JSON.stringify(error, null, 3)}`;
+          this.logService.sendErrorLog(this.errorText);
+        }
+      );
   }
 
   public saveTuioConfig(): void {
-    this.tuioService.saveSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      () => {},
-      (error) => {
-        this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(
-          error,
-          null,
-          3
-        )}`;
-        this.logService.sendErrorLog(this.errorText);
-      }
-    );
+    this.tuioService
+      .saveSettings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        () => {},
+        (error) => {
+          this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(
+            error,
+            null,
+            3
+          )}`;
+          this.logService.sendErrorLog(this.errorText);
+        }
+      );
   }
 
   public isConfigValid(): boolean {
     return (
-      this.config != null
-      && typeof this.config.serverAddress === 'string'
-      && this.config.serverAddress.trim() !== ''
-      && this.config.serverPort > 0
-      && this.transportProtocolIdx >= 0
-      && this.tuioInterpretationIdx >= 0
-      && this.tuioProtocolVersionIdx >= 0
+      this.config != null &&
+      typeof this.config.serverAddress === 'string' &&
+      this.config.serverAddress.trim() !== '' &&
+      this.config.serverPort > 0 &&
+      this.transportProtocolIdx >= 0 &&
+      this.tuioInterpretationIdx >= 0 &&
+      this.tuioProtocolVersionIdx >= 0
     );
   }
 }

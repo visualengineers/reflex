@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GestureDataService } from '../service/gesture-data.service';
 import { Gesture } from '../data/gesture';
@@ -11,6 +17,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-savingoptions',
   imports: [ValueSelectionComponent, FormsModule],
   templateUrl: './savingoptions.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './savingoptions.component.scss',
 })
 export class SavingoptionsComponent implements OnInit {
@@ -22,13 +29,17 @@ export class SavingoptionsComponent implements OnInit {
   selectedGestureFile: string = '';
 
   ngOnInit(): void {
-    this.gestureDataService.getGestureFileNames().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (fileNames) => {
-        this.gestureFileNames = fileNames;
-        this.changeDetector.markForCheck();
-      },
-      error: (error) => console.error('Error loading gesture file names:', error),
-    });
+    this.gestureDataService
+      .getGestureFileNames()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (fileNames) => {
+          this.gestureFileNames = fileNames;
+          this.changeDetector.markForCheck();
+        },
+        error: (error) =>
+          console.error('Error loading gesture file names:', error),
+      });
   }
 
   loadSelectedGesture(): void {

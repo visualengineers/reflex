@@ -1,4 +1,10 @@
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { GestureoptionsComponent } from '../gestureoptions/gestureoptions.component';
@@ -13,6 +19,7 @@ import { SavingoptionsComponent } from '../savingoptions/savingoptions.component
     SavingoptionsComponent,
   ],
   templateUrl: './dropdown.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dropdown.component.scss',
 })
 export class DropdownComponent {

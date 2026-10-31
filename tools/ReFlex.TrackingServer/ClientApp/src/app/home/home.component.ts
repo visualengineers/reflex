@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { VersionInfoService } from 'src/shared/services/version.service';
@@ -7,7 +12,8 @@ import { VersionInfoService } from 'src/shared/services/version.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [CommonModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule],
 })
 export class HomeComponent implements OnInit {
   private readonly versionService = inject(VersionInfoService);

@@ -1,14 +1,24 @@
-
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SettingsGroupComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
+import {
+  SettingsGroupComponent,
+  ValueSelectionComponent,
+} from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
 @Component({
   selector: 'app-select',
   imports: [FormsModule, SettingsGroupComponent, ValueSelectionComponent],
   templateUrl: './select.component.html',
-  styleUrl: './select.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './select.component.scss',
 })
 export class SelectComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -17,25 +27,24 @@ export class SelectComponent implements OnInit, OnDestroy {
     'Custom Special',
     'Moving Average',
     'SavitzyGolay',
-    'None'
+    'None',
   ];
 
   public selectedFilterIdx = 0;
 
   public statusMessage = '';
 
-  private readonly remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
+  private readonly remainingToast: BehaviorSubject<number> =
+    new BehaviorSubject(0);
   private readonly notification$: Subscription = new Subscription();
 
   public ngOnInit(): void {
     this.notification$.add(
-      this.remainingToast.pipe(
-        filter((value) => value === 0)
-      ).subscribe({
+      this.remainingToast.pipe(filter((value) => value === 0)).subscribe({
         next: () => {
           this.statusMessage = '';
           this.changeDetector.markForCheck();
-        }
+        },
       })
     );
   }
@@ -46,12 +55,17 @@ export class SelectComponent implements OnInit, OnDestroy {
 
   public saveFilterType(): void {
     this.remainingToast.next(this.remainingToast.getValue() + 1);
-    this.statusMessage = `savedFilter: ${this.filters[this.selectedFilterIdx]} (x${this.remainingToast.getValue()})`;
+    this.statusMessage = `savedFilter: ${
+      this.filters[this.selectedFilterIdx]
+    } (x${this.remainingToast.getValue()})`;
 
-    this.notification$.add(timer(2000).pipe(
-      filter(() => this.remainingToast.getValue() > 0)
-    ).subscribe({
-      complete: () => this.remainingToast.next(this.remainingToast.getValue() - 1)
-    }));
+    this.notification$.add(
+      timer(2000)
+        .pipe(filter(() => this.remainingToast.getValue() > 0))
+        .subscribe({
+          complete: () =>
+            this.remainingToast.next(this.remainingToast.getValue() - 1),
+        })
+    );
   }
 }

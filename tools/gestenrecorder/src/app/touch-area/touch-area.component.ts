@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { combineLatest, fromEvent, Subscription, race } from 'rxjs';
 import {
@@ -45,6 +46,7 @@ interface Size {
   selector: 'app-touch-area',
   imports: [HoverMenuComponent, CommonModule, FormsModule],
   templateUrl: './touch-area.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./touch-area.component.scss'],
 })
 export class TouchAreaComponent implements OnInit, OnDestroy {
@@ -78,26 +80,28 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ) as CanvasRenderingContext2D;
     }
 
-    this.subscriptions.push(this.gestureReplayService.playbackFrame$.subscribe((value) => {
-      if (value) {
-        const point: NormalizedPoint = {
-          index: 0,
-          x: value.x,
-          y: value.y,
-          z: value.z,
-          time: 0,
-        };
-        const dto = this.touchAreaService.circleDtoFromNormalizedPoint(
-          point,
-          {
-            width: this.canvas?.nativeElement.width ?? 0,
-            height: this.canvas?.nativeElement.height ?? 0,
-          },
-          this.layers
-        );
-        this.drawAnimation(dto);
-      }
-    }));
+    this.subscriptions.push(
+      this.gestureReplayService.playbackFrame$.subscribe((value) => {
+        if (value) {
+          const point: NormalizedPoint = {
+            index: 0,
+            x: value.x,
+            y: value.y,
+            z: value.z,
+            time: 0,
+          };
+          const dto = this.touchAreaService.circleDtoFromNormalizedPoint(
+            point,
+            {
+              width: this.canvas?.nativeElement.width ?? 0,
+              height: this.canvas?.nativeElement.height ?? 0,
+            },
+            this.layers
+          );
+          this.drawAnimation(dto);
+        }
+      })
+    );
 
     // this.gestureService.gesture$.subscribe(gesture => {
     //   if (gesture) {

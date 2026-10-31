@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigurationService } from '../service/configuration.service';
 import { ConnectionService } from '../service/connection.service';
 import { TimelineCanvasComponent } from './timeline-canvas/timeline-canvas.component';
@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.sass'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, TimelineCanvasComponent],
 })
 export class TimelineComponent {

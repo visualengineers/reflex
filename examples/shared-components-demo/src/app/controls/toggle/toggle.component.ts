@@ -1,19 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
+import {
+  OptionCheckboxComponent,
+  SettingsGroupComponent,
+} from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-toggle',
-  imports: [
-    FormsModule,
-    OptionCheckboxComponent,
-    SettingsGroupComponent
-  ],
+  imports: [FormsModule, OptionCheckboxComponent, SettingsGroupComponent],
   templateUrl: './toggle.component.html',
-  styleUrl: './toggle.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './toggle.component.scss',
 })
 export class ToggleComponent {
-
   public toggleBordersActive = true;
   public bordersActive = false;
 }

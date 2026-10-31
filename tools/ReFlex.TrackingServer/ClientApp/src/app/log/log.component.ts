@@ -1,5 +1,12 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from './log.service';
@@ -11,7 +18,8 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-log',
   templateUrl: './log.component.html',
-  imports: [CommonModule, FormsModule, ValueSelectionComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, FormsModule, ValueSelectionComponent],
 })
 export class LogComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -31,7 +39,8 @@ export class LogComponent implements OnInit, OnDestroy {
       .pipe(
         startWith(0),
         switchMap(() => this.logService.getLogs())
-      ).pipe(markViewForCheck(this.changeDetector))
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.messages = [...this.messages, result];
@@ -77,12 +86,12 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   public filter(): void {
-    this.filteredMessages
-      = (this.filterLevel as LogLevel) >= LogLevel.Trace
-      && (this.filterLevel as LogLevel) <= LogLevel.Off
+    this.filteredMessages =
+      (this.filterLevel as LogLevel) >= LogLevel.Trace &&
+      (this.filterLevel as LogLevel) <= LogLevel.Off
         ? this.messages.filter(
-          (msg) => LogLevel[msg.level] === LogLevel[this.filterLevel]
-        )
+            (msg) => LogLevel[msg.level] === LogLevel[this.filterLevel]
+          )
         : this.messages;
   }
 }

@@ -1,17 +1,13 @@
-
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-buttons',
-  imports: [
-    FormsModule,
-    SettingsGroupComponent
-  ],
+  imports: [FormsModule, SettingsGroupComponent],
   templateUrl: './buttons.component.html',
-  styleUrl: './buttons.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './buttons.component.scss',
 })
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-export class ButtonsComponent {
-}
+export class ButtonsComponent {}

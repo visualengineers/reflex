@@ -1,6 +1,13 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ValueTextComponent } from '@reflex/angular-components/dist';
 import {
@@ -8,7 +15,7 @@ import {
   DepthCameraState,
   RecordingState,
   RecordingStateUpdate,
-  TrackingConfigState
+  TrackingConfigState,
 } from '@reflex/shared-types';
 import { of, Subscription } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
@@ -19,7 +26,8 @@ import { RecordingService } from 'src/shared/services/recording.service';
   selector: 'app-recording',
   templateUrl: './recording.component.html',
   styleUrls: ['./recording.component.scss'],
-  imports: [CommonModule, FormsModule, ValueTextComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, FormsModule, ValueTextComponent],
 })
 export class RecordingComponent implements OnInit {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -38,7 +46,7 @@ export class RecordingComponent implements OnInit {
   public recordingState: RecordingStateUpdate = {
     state: RecordingState.Stopped,
     framesRecorded: 0,
-    sessionName: ''
+    sessionName: '',
   };
 
   public recordings: Array<CameraConfiguration> = [];
@@ -54,7 +62,8 @@ export class RecordingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.trackingStateSubscription = this.recordingService
-      .getStatus().pipe(markViewForCheck(this.changeDetector))
+      .getStatus()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateTrackingState(result),
         (error) => {
@@ -109,38 +118,44 @@ export class RecordingComponent implements OnInit {
         return of({
           state: RecordingState.Faulted,
           framesRecorded: 0,
-          sessionName: ''
+          sessionName: '',
         });
       })
     );
 
     this.recordingStateSubscription?.unsubscribe();
-    this.recordingStateSubscription = start.pipe(mergeMap(() => update)).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (recordingState) => this.updateRecordingState(recordingState),
-      (error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-      }
-    );
+    this.recordingStateSubscription = start
+      .pipe(mergeMap(() => update))
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (recordingState) => this.updateRecordingState(recordingState),
+        (error) => {
+          console.error(error);
+          this.loggingService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public stopRecording(): void {
-    this.recordingService.stopRecording().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      () => {
-        this.updateRecordingsList();
-        this.recordingStateSubscription?.unsubscribe();
-        this.recordingState = {
-          state: RecordingState.Stopped,
-          framesRecorded: 0,
-          sessionName: ''
-        };
-        this.isRecording = false;
-      },
-      (error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-      }
-    );
+    this.recordingService
+      .stopRecording()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        () => {
+          this.updateRecordingsList();
+          this.recordingStateSubscription?.unsubscribe();
+          this.recordingState = {
+            state: RecordingState.Stopped,
+            framesRecorded: 0,
+            sessionName: '',
+          };
+          this.isRecording = false;
+        },
+        (error) => {
+          console.error(error);
+          this.loggingService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public deleteRecording(cfg: CameraConfiguration): void {
@@ -150,16 +165,19 @@ export class RecordingComponent implements OnInit {
 
     this.isDeleting = true;
 
-    this.recordingService.deleteRecording(cfg.name).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      () => {
-        this.updateRecordingsList();
-        this.isDeleting = false;
-      },
-      (error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-      }
-    );
+    this.recordingService
+      .deleteRecording(cfg.name)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        () => {
+          this.updateRecordingsList();
+          this.isDeleting = false;
+        },
+        (error) => {
+          console.error(error);
+          this.loggingService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public clearRecordings(): void {
@@ -169,40 +187,46 @@ export class RecordingComponent implements OnInit {
 
     this.isDeleting = true;
 
-    this.recordingService.clearRecordings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      () => {
-        this.updateRecordingsList();
-        this.isDeleting = false;
-      },
-      (error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-      }
-    );
+    this.recordingService
+      .clearRecordings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        () => {
+          this.updateRecordingsList();
+          this.isDeleting = false;
+        },
+        (error) => {
+          console.error(error);
+          this.loggingService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public recordingNameChanged(): void {
-    this.recordingEnabled
-      = typeof this.recordingName === 'string'
-      && this.recordingName.trim().length > 0;
+    this.recordingEnabled =
+      typeof this.recordingName === 'string' &&
+      this.recordingName.trim().length > 0;
   }
 
   private updateRecordingsList(): void {
-    this.recordingService.getRecordings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.recordings = result;
-      },
-      (error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-      }
-    );
+    this.recordingService
+      .getRecordings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.recordings = result;
+        },
+        (error) => {
+          console.error(error);
+          this.loggingService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   private updateTrackingState(status: TrackingConfigState): void {
-    this.recordingEnabled
-      = status.depthCameraStateName
-      === DepthCameraState[DepthCameraState.Streaming];
+    this.recordingEnabled =
+      status.depthCameraStateName ===
+      DepthCameraState[DepthCameraState.Streaming];
   }
 
   private updateRecordingState(status: RecordingStateUpdate): void {

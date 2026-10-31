@@ -7,6 +7,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Interaction } from '@reflex/shared-types';
@@ -21,6 +22,7 @@ import { CommonModule } from '@angular/common';
   imports: [RouterOutlet, StatusComponent, HistoryComponent, CommonModule],
   selector: 'app-root',
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./app.scss'],
 })
 export class App implements AfterViewInit, OnInit, OnDestroy {

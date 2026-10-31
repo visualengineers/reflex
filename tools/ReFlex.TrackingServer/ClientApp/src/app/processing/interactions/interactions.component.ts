@@ -1,16 +1,27 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 @Component({
   selector: 'app-interactions',
   templateUrl: './interactions.component.html',
   styleUrls: ['./interactions.component.scss'],
-  imports: [CommonModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule],
 })
 export class InteractionsComponent {
   private readonly changeDetector = inject(ChangeDetectorRef);
 
-  public interactions: CompleteInteractionData = { raw: [], absolute: [], normalized: [] };
+  public interactions: CompleteInteractionData = {
+    raw: [],
+    absolute: [],
+    normalized: [],
+  };
   public calibratedInteractions: Array<Interaction> = [];
 
   private pIsProcessing = false;
@@ -40,7 +51,10 @@ export class InteractionsComponent {
 
     const resultDate = new Date(tickDate);
 
-    return this.datePipe.transform(resultDate.getTime(), 'HH:mm:ss.SSS') as string;
+    return this.datePipe.transform(
+      resultDate.getTime(),
+      'HH:mm:ss.SSS'
+    ) as string;
   }
 
   public updateInteractions(interactions: CompleteInteractionData): void {

@@ -1,5 +1,11 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
@@ -13,12 +19,13 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-measure-surface',
   templateUrl: './measure-surface.component.html',
   styleUrls: ['./measure-surface.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     FormsModule,
     MeasureControlsComponent,
-    MeasureGridComponent
-  ]
+    MeasureGridComponent,
+  ],
 })
 export class MeasureSurfaceComponent implements OnInit {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -32,12 +39,13 @@ export class MeasureSurfaceComponent implements OnInit {
     top: 0,
     left: 0,
     width: 500,
-    height: 400
+    height: 400,
   };
 
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService
-      .getFrameSize().pipe(markViewForCheck(this.changeDetector))
+      .getFrameSize()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.frameSize = result;
@@ -60,7 +68,7 @@ export class MeasureSurfaceComponent implements OnInit {
         top: `${this.frameSize.top}px`,
         left: `${this.frameSize.left}px`,
         width: `${this.frameSize.width}px`,
-        height: `${this.frameSize.height}px`
+        height: `${this.frameSize.height}px`,
       };
     }
 
@@ -69,7 +77,7 @@ export class MeasureSurfaceComponent implements OnInit {
       top: `0`,
       left: `0`,
       width: `100%`,
-      height: `40vh`
+      height: `40vh`,
     };
   }
 }

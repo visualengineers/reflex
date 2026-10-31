@@ -3,15 +3,21 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule, AppComponent],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      imports: [RouterTestingModule, AppComponent],
+      providers: [
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   it('should create the app', () => {

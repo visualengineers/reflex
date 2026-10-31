@@ -1,10 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-option-checkbox',
-    templateUrl: './option-checkbox.component.html',
-    imports: [FormsModule]
+  selector: 'app-option-checkbox',
+  templateUrl: './option-checkbox.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule],
 })
 export class OptionCheckboxComponent {
   @Input()

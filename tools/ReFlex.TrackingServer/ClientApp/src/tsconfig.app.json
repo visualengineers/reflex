@@ -4,13 +4,14 @@
     "outDir": "../out-tsc/app",
     "types": []
   },
-  "files": [
-    "main.ts",
-    "polyfills.ts",
-    "server.ts",
-    "main.server.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ]
+  "files": ["main.ts", "polyfills.ts", "server.ts", "main.server.ts"],
+  "include": ["src/**/*.d.ts"],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

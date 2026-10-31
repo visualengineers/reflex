@@ -1,5 +1,12 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NetworkingService } from 'src/shared/services/networking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -9,7 +16,7 @@ import {
   PanelHeaderComponent,
   ValueSelectionComponent,
   ValueSliderComponent,
-  ValueTextComponent
+  ValueTextComponent,
 } from '@reflex/angular-components/dist';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +25,7 @@ import { TuioComponent } from './tuio/tuio.component';
 @Component({
   selector: 'app-network',
   templateUrl: './network.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     FormsModule,
@@ -25,8 +33,8 @@ import { TuioComponent } from './tuio/tuio.component';
     ValueSelectionComponent,
     ValueTextComponent,
     ValueSliderComponent,
-    TuioComponent
-  ]
+    TuioComponent,
+  ],
 })
 export class NetworkComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -47,7 +55,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
     port: 0,
     endpoint: '',
     address: '',
-    interval: 100
+    interval: 100,
   };
 
   private statusTextSubscription?: Subscription;
@@ -56,16 +64,19 @@ export class NetworkComponent implements OnInit, OnDestroy {
   private settingsSubscription?: Subscription;
 
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.networkSettings = result.networkSettingValues;
-        this.fetchCurrentValues();
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.settingsSubscription = this.settingsService
+      .getSettings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.networkSettings = result.networkSettingValues;
+          this.fetchCurrentValues();
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public ngOnDestroy(): void {
@@ -76,7 +87,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   public fetchCurrentValues(): void {
     this.statusValuesSubscription = this.networkService
-      .getStatusValues().pipe(markViewForCheck(this.changeDetector))
+      .getStatusValues()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.networkInterfaces = result.interfaces;
@@ -92,37 +104,44 @@ export class NetworkComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.statusTextSubscription = this.networkService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        this.statusText = result;
-      },
-      (error) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.statusTextSubscription = this.networkService
+      .getStatus()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.statusText = result;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public isBroadcastingChanged(): void {
     this.errorText = '';
-    this.networkService.toggleBroadcasting().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `Networking status toggle - result:  ${result.status} - ${result.body?.value}`
-        );
-        this.isBroadcasting = result.body?.value as boolean;
-      },
-      (error) => {
-        this.isBroadcasting = false;
-        this.errorText = `${error} - ${JSON.stringify(error, null, 3)}`;
-        this.logService.sendErrorLog(this.errorText);
-      }
-    );
+    this.networkService
+      .toggleBroadcasting()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `Networking status toggle - result:  ${result.status} - ${result.body?.value}`
+          );
+          this.isBroadcasting = result.body?.value as boolean;
+        },
+        (error) => {
+          this.isBroadcasting = false;
+          this.errorText = `${error} - ${JSON.stringify(error, null, 3)}`;
+          this.logService.sendErrorLog(this.errorText);
+        }
+      );
   }
 
   public setNetworkInterface(): void {
     this.networkService
-      .setNetworkInterface(this.networkInterfaces[this.selectedInterfaceIdx]).pipe(markViewForCheck(this.changeDetector))
+      .setNetworkInterface(this.networkInterfaces[this.selectedInterfaceIdx])
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -137,45 +156,54 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   public setAddress(): void {
-    this.networkService.setAddress(this.networkSettings.address).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `response to change address: ${result.status} - ${result.body?.value}`
-        );
-      },
-      (error: unknown) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.networkService
+      .setAddress(this.networkSettings.address)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change address: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error: unknown) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public setPort(): void {
-    this.networkService.setPort(this.networkSettings.port).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `response to change port: ${result.status} - ${result.body?.value}`
-        );
-      },
-      (error: unknown) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.networkService
+      .setPort(this.networkSettings.port)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change port: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error: unknown) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public setEndpoint(): void {
-    this.networkService.setEndpoint(this.networkSettings.endpoint).pipe(markViewForCheck(this.changeDetector)).subscribe(
-      (result) => {
-        console.log(
-          `response to change endpoint: ${result.status} - ${result.body?.value}`
-        );
-      },
-      (error: unknown) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.networkService
+      .setEndpoint(this.networkSettings.endpoint)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          console.log(
+            `response to change endpoint: ${result.status} - ${result.body?.value}`
+          );
+        },
+        (error: unknown) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public setInterval(): void {
@@ -183,17 +211,20 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   public saveNetworkSettings(): void {
-    this.networkService.saveSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
-      () => {},
-      (error) => {
-        this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(
-          error,
-          null,
-          3
-        )}`;
-        this.logService.sendErrorLog(this.errorText);
-      }
-    );
+    this.networkService
+      .saveSettings()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        () => {},
+        (error) => {
+          this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(
+            error,
+            null,
+            3
+          )}`;
+          this.logService.sendErrorLog(this.errorText);
+        }
+      );
   }
 
   public updateInterfaceType(idx: number): void {

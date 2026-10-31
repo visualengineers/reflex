@@ -1,4 +1,4 @@
-import { ElementRef, inject } from '@angular/core';
+import { ElementRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { OnDestroy } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
@@ -26,6 +26,7 @@ interface Size {
 @Component({
   selector: 'app-timeline-canvas',
   templateUrl: './timeline-canvas.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./timeline-canvas.component.sass'],
 })
 export class TimelineCanvasComponent implements OnInit, OnDestroy {

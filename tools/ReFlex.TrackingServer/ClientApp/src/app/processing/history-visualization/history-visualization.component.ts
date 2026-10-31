@@ -1,6 +1,15 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
@@ -11,7 +20,8 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   selector: 'app-history-visualization',
   templateUrl: './history-visualization.component.html',
   styleUrls: ['./history-visualization.component.scss'],
-  imports: [CommonModule]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule],
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -34,8 +44,10 @@ export class HistoryVisualizationComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? history$
-            : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
-      ).pipe(markViewForCheck(this.changeDetector))
+            : NEVER.pipe<Array<InteractionHistory>>(startWith([]))
+        )
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateHistory(result),
         (error) => {
@@ -52,13 +64,14 @@ export class HistoryVisualizationComponent implements OnInit, OnDestroy {
   private updateHistory(history: Array<InteractionHistory>): void {
     history.forEach((elem) =>
       elem.items.forEach((frame) => {
-        frame.interaction.position.x
-          = frame.interaction.position.x
-          * (this.container?.nativeElement.clientWidth ?? 0);
-        frame.interaction.position.y
-          = frame.interaction.position.y
-          * (this.container?.nativeElement.clientHeight ?? 0);
-      }));
+        frame.interaction.position.x =
+          frame.interaction.position.x *
+          (this.container?.nativeElement.clientWidth ?? 0);
+        frame.interaction.position.y =
+          frame.interaction.position.y *
+          (this.container?.nativeElement.clientHeight ?? 0);
+      })
+    );
 
     this.history = history;
   }

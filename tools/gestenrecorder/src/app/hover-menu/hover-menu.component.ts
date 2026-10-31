@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
 
 import {
@@ -18,6 +25,7 @@ import { ConfigurationService } from '../service/configuration.service';
     FormsModule,
   ],
   templateUrl: './hover-menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./hover-menu.component.scss'],
 })
 export class HoverMenuComponent {

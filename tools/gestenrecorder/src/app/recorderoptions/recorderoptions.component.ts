@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import {
   SettingsGroupComponent,
@@ -21,6 +26,7 @@ import { OnInit, OnDestroy } from '@angular/core';
     ValueTextComponent,
   ],
   templateUrl: './recorderoptions.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recorderoptions.component.scss',
 })
 export class RecorderoptionsComponent implements OnInit, OnDestroy {

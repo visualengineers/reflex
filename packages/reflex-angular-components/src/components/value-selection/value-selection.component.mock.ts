@@ -1,11 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ValueSelectionComponent } from './value-selection.component';
 
 @Component({
-    selector: 'app-value-selection', template: ''
+  selector: 'app-value-selection',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
 })
-export class MockValueSelectionComponent implements Partial<ValueSelectionComponent> {
-
+export class MockValueSelectionComponent
+  implements Partial<ValueSelectionComponent>
+{
   @Input()
   public elementTitle = '';
 

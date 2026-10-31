@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
 import { interval, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
@@ -6,6 +13,7 @@ import { TouchPointService } from 'src/services/touch-point.service';
 @Component({
   selector: 'app-status',
   templateUrl: './status.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./status.component.scss'],
 })
 export class StatusComponent implements OnInit, OnDestroy {
@@ -29,12 +37,10 @@ export class StatusComponent implements OnInit, OnDestroy {
       this.changeDetector.markForCheck();
       this.TouchCount = res.length;
     });
-    this._connectionSubscription = interval(500).subscribe(
-      () => {
-        this.IsConnected = this._pointService.isConnected();
-        this.changeDetector.markForCheck();
-      }
-    );
+    this._connectionSubscription = interval(500).subscribe(() => {
+      this.IsConnected = this._pointService.isConnected();
+      this.changeDetector.markForCheck();
+    });
     console.log(this.IsConnected);
     this.WebSocketAddress = this._pointService.getAddress();
     this.frameSubscription = this._pointService

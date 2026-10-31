@@ -1,6 +1,13 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { InteractionFrame, InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
@@ -12,7 +19,8 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   selector: 'app-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
-  imports: [CommonModule, SettingsGroupComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, SettingsGroupComponent],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -36,8 +44,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? frames$
-            : NEVER.pipe<Array<InteractionFrame>>(startWith([])))
-      ).pipe(markViewForCheck(this.changeDetector))
+            : NEVER.pipe<Array<InteractionFrame>>(startWith([]))
+        )
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateFrames(result),
         (error) => {
@@ -52,8 +62,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? history$
-            : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
-      ).pipe(markViewForCheck(this.changeDetector))
+            : NEVER.pipe<Array<InteractionHistory>>(startWith([]))
+        )
+      )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateHistory(result),
         (error) => {

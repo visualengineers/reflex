@@ -1,7 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SettingsGroupComponent, PanelHeaderComponent } from '@reflex/angular-components/dist';
+import {
+  SettingsGroupComponent,
+  PanelHeaderComponent,
+} from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
 @Component({
@@ -10,10 +20,11 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
     CommonModule,
     FormsModule,
     SettingsGroupComponent,
-    PanelHeaderComponent
+    PanelHeaderComponent,
   ],
   templateUrl: './panel.component.html',
-  styleUrl: './panel.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './panel.component.scss',
 })
 export class PanelComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -21,18 +32,17 @@ export class PanelComponent implements OnInit, OnDestroy {
   public canToggleHeader = true;
   public toggleToast = '';
 
-  private readonly remainingToast: BehaviorSubject<number> = new BehaviorSubject(0);
+  private readonly remainingToast: BehaviorSubject<number> =
+    new BehaviorSubject(0);
   private readonly notification$: Subscription = new Subscription();
 
   public ngOnInit(): void {
     this.notification$.add(
-      this.remainingToast.pipe(
-        filter((value) => value === 0)
-      ).subscribe({
+      this.remainingToast.pipe(filter((value) => value === 0)).subscribe({
         next: () => {
           this.toggleToast = '';
           this.changeDetector.markForCheck();
-        }
+        },
       })
     );
   }
@@ -45,16 +55,18 @@ export class PanelComponent implements OnInit, OnDestroy {
     this.remainingToast.next(this.remainingToast.getValue() + 1);
     this.toggleToast = `changed (x${this.remainingToast.getValue()})`;
 
-    this.notification$.add(timer(2000).pipe(
-      filter(() => this.remainingToast.getValue() > 0)
-    ).subscribe({
-      complete: () => this.remainingToast.next(this.remainingToast.getValue() - 1)
-    }));
+    this.notification$.add(
+      timer(2000)
+        .pipe(filter(() => this.remainingToast.getValue() > 0))
+        .subscribe({
+          complete: () =>
+            this.remainingToast.next(this.remainingToast.getValue() - 1),
+        })
+    );
   }
 
   public update(event: boolean): void {
     this.toggleHeaderActive = event;
     console.log(this.toggleHeaderActive);
   }
-
 }

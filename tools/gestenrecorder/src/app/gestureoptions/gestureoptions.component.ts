@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Layers } from '../service/configuration.service';
@@ -22,6 +27,7 @@ import {
     ValueTextComponent,
   ],
   templateUrl: './gestureoptions.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './gestureoptions.component.scss',
 })
 export class GestureoptionsComponent implements OnInit, OnDestroy {

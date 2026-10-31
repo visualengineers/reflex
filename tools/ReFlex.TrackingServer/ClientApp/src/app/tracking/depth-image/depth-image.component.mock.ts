@@ -1,13 +1,27 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DepthImageComponent } from './depth-image.component';
 
 @Component({
-    selector: 'app-depth-image', template: ''
+  selector: 'app-depth-image',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
 })
 export class MockDepthImageComponent implements Partial<DepthImageComponent> {
   @Output()
   public fullScreenChanged = new EventEmitter<boolean>();
 
   @Input()
-  public set livePreviewEnabled(value: boolean) { }
+  public set livePreviewEnabled(value: boolean) {}
 }

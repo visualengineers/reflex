@@ -1,13 +1,16 @@
-
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SettingsGroupComponent, ValueSliderComponent } from '@reflex/angular-components/dist';
+import {
+  SettingsGroupComponent,
+  ValueSliderComponent,
+} from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-slider',
   imports: [FormsModule, SettingsGroupComponent, ValueSliderComponent],
   templateUrl: './slider.component.html',
-  styleUrl: './slider.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './slider.component.scss',
 })
 export class SliderComponent {
   public sliderData = 0.75;

@@ -1,7 +1,24 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
-import { CompleteInteractionData, ElementPosition, ExtremumDescription, ExtremumType, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import {
+  CompleteInteractionData,
+  ElementPosition,
+  ExtremumDescription,
+  ExtremumType,
+  FrameSizeDefinition,
+  Interaction,
+} from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
@@ -12,7 +29,8 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-interactions-visualization',
   templateUrl: './interactions-visualization.component.html',
   styleUrls: ['./interactions-visualization.component.scss'],
-  imports: [CommonModule, FormsModule, HistoryVisualizationComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, FormsModule, HistoryVisualizationComponent],
 })
 export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
@@ -25,7 +43,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   public interactions: CompleteInteractionData = {
     raw: [],
     absolute: [],
-    normalized: []
+    normalized: [],
   };
 
   public calibratedInteractions: Array<Interaction> = [];
@@ -38,7 +56,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     top: 0,
     left: 0,
     width: 500,
-    height: 400
+    height: 400,
   };
 
   private pEventId = 0;
@@ -54,7 +72,8 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService
-      .getFrameSize().pipe(markViewForCheck(this.changeDetector))
+      .getFrameSize()
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.frameSize = result;
@@ -77,7 +96,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
         top: `${this.frameSize.top}px`,
         left: `${this.frameSize.left}px`,
         width: `${this.frameSize.width}px`,
-        height: `${this.frameSize.height}px`
+        height: `${this.frameSize.height}px`,
       };
     }
 
@@ -86,7 +105,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
       top: `0`,
       left: `0`,
       width: `100%`,
-      height: `40vh`
+      height: `40vh`,
     };
   }
 
@@ -107,13 +126,13 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     this.calibratedInteractions.forEach((int) => {
       int.position.x = this.fullScreen
         ? int.position.x - this.frameSize.left
-        : int.position.x
-          * ((this.container?.nativeElement as HTMLElement | undefined)
+        : int.position.x *
+          ((this.container?.nativeElement as HTMLElement | undefined)
             ?.clientWidth ?? 0);
       int.position.y = this.fullScreen
         ? int.position.y - this.frameSize.top
-        : int.position.y
-          * ((this.container?.nativeElement as HTMLElement | undefined)
+        : int.position.y *
+          ((this.container?.nativeElement as HTMLElement | undefined)
             ?.clientHeight ?? 0);
       int.position.z = Math.abs(int.position.z) * 2;
     });

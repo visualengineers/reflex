@@ -1,4 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { BehaviorSubject } from 'rxjs';
 import { DataService } from '../../services/data.service';
@@ -8,7 +13,8 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-introduction',
   imports: [SettingsGroupComponent, AsyncPipe],
   templateUrl: './introduction.component.html',
-  styleUrl: './introduction.component.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './introduction.component.scss',
 })
 export class IntroductionComponent implements OnInit {
   private readonly dataService = inject(DataService);
@@ -23,7 +29,7 @@ export class IntroductionComponent implements OnInit {
         this.angularJson.next(result);
       },
       error: (error) =>
-        console.error('could not load angular.json text', error)
+        console.error('could not load angular.json text', error),
     });
 
     this.dataService.loadPackageJson().subscribe({
@@ -31,7 +37,7 @@ export class IntroductionComponent implements OnInit {
         this.packageJson.next(result);
       },
       error: (error) =>
-        console.error('could not load angular.json text', error)
+        console.error('could not load angular.json text', error),
     });
 
     this.dataService.loadComponentImports().subscribe({
@@ -39,7 +45,7 @@ export class IntroductionComponent implements OnInit {
         this.componentImports.next(result);
       },
       error: (error) =>
-        console.error('could not load component imports text', error)
+        console.error('could not load component imports text', error),
     });
   }
 }

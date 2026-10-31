@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { combineLatest, fromEvent, Subscription, race } from 'rxjs';
 import {
@@ -38,6 +39,7 @@ interface Size {
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.sass'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule],
 })
 export class CanvasComponent implements OnInit, OnDestroy {
@@ -177,10 +179,11 @@ export class CanvasComponent implements OnInit, OnDestroy {
     // SUBSCRIPTIONS
 
     // html canvas element
-    this.backgroundSubscription = this.configurationService.background$.subscribe(() => {
-      this.backgroundPath = this.configurationService.getBackgroundImage();
-      this.changeDetector.markForCheck();
-    });
+    this.backgroundSubscription =
+      this.configurationService.background$.subscribe(() => {
+        this.backgroundPath = this.configurationService.getBackgroundImage();
+        this.changeDetector.markForCheck();
+      });
 
     this.drawCirclesSubscription = combineLatest([
       normalizedPoints$,

@@ -9,24 +9,40 @@ import { FormsModule } from '@angular/forms';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 import { MockTuioComponent } from './tuio/tuio.component.mock';
-import { HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { DEFAULT_SETTINGS, JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueTextComponent, ValueSliderComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent, MockValueTextComponent } from '@reflex/angular-components/dist';
+import {
+  HttpResponse,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http';
+import {
+  DEFAULT_SETTINGS,
+  JsonSimpleValue,
+  NetworkAttributes,
+} from '@reflex/shared-types';
+import {
+  PanelHeaderComponent,
+  ValueSelectionComponent,
+  ValueTextComponent,
+  ValueSliderComponent,
+  MockPanelHeaderComponent,
+  MockValueSelectionComponent,
+  MockValueSliderComponent,
+  MockValueTextComponent,
+} from '@reflex/angular-components/dist';
 import { TuioComponent } from './tuio/tuio.component';
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
-  [
-    'getSettings',
-    'saveSettings',
-    'update'
-  ]);
+const settingsService = jasmine.createSpyObj<SettingsService>(
+  'fakeSettingsService',
+  ['getSettings', 'saveSettings', 'update']
+);
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]);
+const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
+  'sendErrorLog',
+]);
 
-const networkService = jasmine.createSpyObj<NetworkingService>('fakeNetworkService',
+const networkService = jasmine.createSpyObj<NetworkingService>(
+  'fakeNetworkService',
   [
     'getStatus',
     'getStatusValues',
@@ -35,8 +51,9 @@ const networkService = jasmine.createSpyObj<NetworkingService>('fakeNetworkServi
     'setAddress',
     'setPort',
     'setEndpoint',
-    'saveSettings'
-  ]);
+    'saveSettings',
+  ]
+);
 
 const networkSettings: NetworkAttributes = {
   isActive: true,
@@ -44,7 +61,7 @@ const networkSettings: NetworkAttributes = {
   selectedInterface: 2,
   address: '101.123.0.1',
   port: 12345,
-  endpoint: 'TestEndpoint'
+  endpoint: 'TestEndpoint',
 };
 
 describe('NetworkComponent', () => {
@@ -53,43 +70,49 @@ describe('NetworkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [FormsModule,
-        NetworkComponent
+      imports: [FormsModule, NetworkComponent],
+      providers: [
+        {
+          provide: NetworkingService,
+          useValue: networkService,
+        },
+        {
+          provide: SettingsService,
+          useValue: settingsService,
+        },
+        {
+          provide: LogService,
+          useValue: logService,
+        },
+        {
+          provide: BASE_URL,
+          useValue: 'http://localhost',
+        },
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
-    providers: [
-        {
-            provide: NetworkingService, useValue: networkService
-        },
-        {
-            provide: SettingsService, useValue: settingsService
-        },
-        {
-            provide: LogService, useValue: logService
-        },
-        {
-            provide: BASE_URL, useValue: 'http://localhost'
-        },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-    ]
     })
-    .overrideComponent(NetworkComponent, {
-      remove: { imports: [
-        PanelHeaderComponent,
-        ValueSelectionComponent,
-        ValueTextComponent,
-        ValueSliderComponent,
-        TuioComponent
-      ] },
-      add: { imports: [
-        MockPanelHeaderComponent,
-        MockValueSelectionComponent,
-        MockValueTextComponent,
-        MockValueSliderComponent,
-        MockTuioComponent
-       ] }
-    })
-    .compileComponents();
+      .overrideComponent(NetworkComponent, {
+        remove: {
+          imports: [
+            PanelHeaderComponent,
+            ValueSelectionComponent,
+            ValueTextComponent,
+            ValueSliderComponent,
+            TuioComponent,
+          ],
+        },
+        add: {
+          imports: [
+            MockPanelHeaderComponent,
+            MockValueSelectionComponent,
+            MockValueTextComponent,
+            MockValueSliderComponent,
+            MockTuioComponent,
+          ],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -104,10 +127,16 @@ describe('NetworkComponent', () => {
     networkService.getStatusValues.and.returnValue(of(networkSettings));
     networkService.getStatus.and.returnValue(of('Connected to Testservice...'));
 
-    networkService.saveSettings.and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: {
-      name: 'save result',
-      value: 'save succesful !'
-    }})));
+    networkService.saveSettings.and.returnValue(
+      of(
+        new HttpResponse<JsonSimpleValue>({
+          body: {
+            name: 'save result',
+            value: 'save succesful !',
+          },
+        })
+      )
+    );
   });
 
   afterEach(() => {
@@ -129,7 +158,6 @@ describe('NetworkComponent', () => {
   });
 
   it('should initialize correctly', async () => {
-
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -145,11 +173,17 @@ describe('NetworkComponent', () => {
     expect(component.networkSettings).toBeDefined;
     expect(component.networkSettings.address).toEqual(networkSettings.address);
     expect(component.networkSettings.port).toEqual(networkSettings.port);
-    expect(component.networkSettings.endpoint).toEqual(networkSettings.endpoint);
+    expect(component.networkSettings.endpoint).toEqual(
+      networkSettings.endpoint
+    );
     expect(component.isBroadcasting).toEqual(networkSettings.isActive);
 
-    expect(component.selectedInterfaceIdx).toEqual(networkSettings.selectedInterface);
-    expect(component.networkSettings.networkInterfaceType).toEqual(networkSettings.selectedInterface);
+    expect(component.selectedInterfaceIdx).toEqual(
+      networkSettings.selectedInterface
+    );
+    expect(component.networkSettings.networkInterfaceType).toEqual(
+      networkSettings.selectedInterface
+    );
   });
 
   it('should toggle broadcasting state', async () => {
@@ -160,7 +194,9 @@ describe('NetworkComponent', () => {
 
     const on: JsonSimpleValue = { name: 'isActive', value: true };
     const off: JsonSimpleValue = { name: 'isActive', value: false };
-    networkService.toggleBroadcasting.and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: off })));
+    networkService.toggleBroadcasting.and.returnValue(
+      of(new HttpResponse<JsonSimpleValue>({ body: off }))
+    );
 
     component.isBroadcastingChanged();
 
@@ -172,7 +208,9 @@ describe('NetworkComponent', () => {
     expect(networkService.toggleBroadcasting).toHaveBeenCalledTimes(2);
     expect(component.isBroadcasting).toBe(false);
 
-    networkService.toggleBroadcasting.and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: on })));
+    networkService.toggleBroadcasting.and.returnValue(
+      of(new HttpResponse<JsonSimpleValue>({ body: on }))
+    );
 
     component.isBroadcastingChanged();
 
@@ -185,7 +223,9 @@ describe('NetworkComponent', () => {
     component.isBroadcastingChanged();
 
     expect(networkService.toggleBroadcasting).toHaveBeenCalledTimes(4);
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(`${ErrorToggle} - ${JSON.stringify(ErrorToggle, null, 3)}`);
+    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(
+      `${ErrorToggle} - ${JSON.stringify(ErrorToggle, null, 3)}`
+    );
     expect(component.isBroadcasting).toBe(false);
   });
 
@@ -194,13 +234,22 @@ describe('NetworkComponent', () => {
     await fixture.whenStable();
 
     const off: JsonSimpleValue = { name: 'interface', value: 'None' };
-    const websocket: JsonSimpleValue = { name: 'interface', value: 'Websockets' };
+    const websocket: JsonSimpleValue = {
+      name: 'interface',
+      value: 'Websockets',
+    };
     const tcp: JsonSimpleValue = { name: 'interface', value: 'Tcp' };
 
     const errorTcp = 'TestError: networkService.setNetworkInterface';
 
-    networkService.setNetworkInterface.withArgs('None').and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: off })));
-    networkService.setNetworkInterface.withArgs('Websockets').and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: websocket })));
+    networkService.setNetworkInterface
+      .withArgs('None')
+      .and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: off })));
+    networkService.setNetworkInterface
+      .withArgs('Websockets')
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: websocket }))
+      );
 
     component.selectedInterfaceIdx = 0;
 
@@ -214,7 +263,9 @@ describe('NetworkComponent', () => {
     component.setNetworkInterface();
 
     expect(networkService.setNetworkInterface).toHaveBeenCalledTimes(2);
-    expect(networkService.setNetworkInterface).toHaveBeenCalledWith('Websockets');
+    expect(networkService.setNetworkInterface).toHaveBeenCalledWith(
+      'Websockets'
+    );
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
     component.selectedInterfaceIdx = 2;
@@ -229,7 +280,9 @@ describe('NetworkComponent', () => {
     networkService.setNetworkInterface.calls.reset();
     logService.sendErrorLog.calls.reset();
 
-    networkService.setNetworkInterface.withArgs('Tcp').and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: tcp })));
+    networkService.setNetworkInterface
+      .withArgs('Tcp')
+      .and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: tcp })));
 
     component.setNetworkInterface();
 
@@ -249,7 +302,11 @@ describe('NetworkComponent', () => {
 
     const errorAddress = 'TestError: networkService.setAddress';
 
-    networkService.setAddress.withArgs(newAddress1).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
+    networkService.setAddress
+      .withArgs(newAddress1)
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: update1 }))
+      );
 
     component.networkSettings.address = newAddress1;
 
@@ -273,14 +330,17 @@ describe('NetworkComponent', () => {
 
     component.networkSettings.address = newAddress2;
 
-    networkService.setAddress.withArgs(newAddress2).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update2 })));
+    networkService.setAddress
+      .withArgs(newAddress2)
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: update2 }))
+      );
 
     component.setAddress();
 
     expect(networkService.setAddress).toHaveBeenCalledOnceWith(newAddress2);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
-
 
   it('should set port', async () => {
     fixture.detectChanges();
@@ -294,7 +354,11 @@ describe('NetworkComponent', () => {
 
     const errorPort = 'TestError: networkService.setPort';
 
-    networkService.setPort.withArgs(newPort1).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
+    networkService.setPort
+      .withArgs(newPort1)
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: update1 }))
+      );
 
     component.networkSettings.port = newPort1;
 
@@ -318,14 +382,17 @@ describe('NetworkComponent', () => {
 
     component.networkSettings.port = newPort2;
 
-    networkService.setPort.withArgs(newPort2).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update2 })));
+    networkService.setPort
+      .withArgs(newPort2)
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: update2 }))
+      );
 
     component.setPort();
 
     expect(networkService.setPort).toHaveBeenCalledOnceWith(newPort2);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
-
 
   it('should set endpoint', async () => {
     fixture.detectChanges();
@@ -339,7 +406,11 @@ describe('NetworkComponent', () => {
 
     const errorEndpoint = 'TestError: networkService.setEndpoint';
 
-    networkService.setEndpoint.withArgs(newEndpoint1).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
+    networkService.setEndpoint
+      .withArgs(newEndpoint1)
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: update1 }))
+      );
 
     component.networkSettings.endpoint = newEndpoint1;
 
@@ -363,7 +434,11 @@ describe('NetworkComponent', () => {
 
     component.networkSettings.endpoint = newEndpoint2;
 
-    networkService.setEndpoint.withArgs(newEndpoint2).and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: update2 })));
+    networkService.setEndpoint
+      .withArgs(newEndpoint2)
+      .and.returnValue(
+        of(new HttpResponse<JsonSimpleValue>({ body: update2 }))
+      );
 
     component.setEndpoint();
 
@@ -387,11 +462,15 @@ describe('NetworkComponent', () => {
     component.saveNetworkSettings();
 
     expect(networkService.saveSettings).toHaveBeenCalledTimes(2);
-    expect(logService.sendErrorLog).toHaveBeenCalledWith(`Cannot save settings: ${errorSave} - ${JSON.stringify(errorSave, null, 3)}`);
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(
+      `Cannot save settings: ${errorSave} - ${JSON.stringify(
+        errorSave,
+        null,
+        3
+      )}`
+    );
 
     networkService.saveSettings.calls.reset();
-
-
   });
 
   it('should handle errors correctly: Settings cannot be retrieved', async () => {
@@ -406,7 +485,6 @@ describe('NetworkComponent', () => {
     expect(settingsService.getSettings).toHaveBeenCalledTimes(1);
     expect(networkService.getStatusValues).not.toHaveBeenCalled();
     expect(networkService.getStatus).not.toHaveBeenCalled();
-
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSettings);
@@ -427,7 +505,6 @@ describe('NetworkComponent', () => {
     expect(settingsService.getSettings).toHaveBeenCalledTimes(1);
     expect(networkService.getStatusValues).toHaveBeenCalledTimes(1);
     expect(networkService.getStatus).toHaveBeenCalledTimes(1);
-
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(2);
 
