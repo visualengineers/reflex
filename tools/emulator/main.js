@@ -2,12 +2,13 @@ const { app, BrowserWindow, powerSaveBlocker } = require("electron");
 const path = require("path");
 const url = require("url");
 
-const powerSaveId = powerSaveBlocker.start('prevent-app-suspension');
+let powerSaveId;
 
 app.commandLine.appendSwitch('disable-features', 'TabSuspender');
 
 let win;
 function createWindow() {
+  powerSaveId = powerSaveBlocker.start('prevent-app-suspension');
   win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -36,7 +37,7 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 
-  powerSaveBlocker.stop(powerSaveId);
+  if (powerSaveId !== undefined && powerSaveBlocker.isStarted(powerSaveId)) {
+    powerSaveBlocker.stop(powerSaveId);
+  }
 });
-
-powerSaveBlocker.stop(powerSaveId);

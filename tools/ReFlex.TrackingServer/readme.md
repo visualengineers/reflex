@@ -254,76 +254,32 @@ However, if these commands don't work, it is also possible to globally install t
 
 ### Prerequisites
 
-- globally installed tool `electronize` (matching current _Electron.NET_ version). To install/update the tool, run:
-
-  ```bash
-    dotnet tool install ElectronNET.CLI -g
-  ```
-
-- for updating electron cli:
-
-  ```bash
-    dotnet tool update ElectronNET.CLI -g
-  ```
+- Node.js 22 or newer and `npm ci` in the repository root.
+- The .NET SDK selected by the root `global.json` (`dotnet --version` must succeed).
+- The build restores the repository-local ElectronNET CLI automatically; no global
+  `electronize` or Electron installation is required.
 
 ### Building the App
 
-- to start electron App, go to `ReFlex.TrackingServer` main folder and run the command:
+Run the matching command from the repository root:
 
-  ```bash
-    electronize start
-  ```
+```sh
+npm run build:server:electron-win
+npm run build:server:electron-osx
+npm run build:server:electron-osx-arm64
+npm run build:server:electron-linux
+npm run build:server:electron-linux-arm64
+```
 
-  (optionally, the parameter `/watch` can be added to force recompilation when code changes are detected)
+The same `build:electron-*` scripts are available from `ClientApp`. macOS builds
+require macOS. Output is written to `tools/ReFlex.TrackingServer/bin/Desktop`.
+The scripts build the shared packages and Angular frontend, publish the backend
+for the selected runtime/architecture, and propagate packaging failures.
 
-- for building an application package, the following command is used, depending on thr desired target platform:
-
-  ```bash
-    electronize build /target win
-    electronize build /target osx
-    electronize build /target linux
-  ```
-
-- **IMPORTANT:** `ElectronNET` does not correctly execute the `dotnet publish` command if `.NET5.0` or higher is used (see [github issue](https://github.com/ElectronNET/Electron.NET/issues/532)).
-
-- Therefore, use the following command instead:
-
-  ```bash
-    electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target win
-    electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target osx
-    electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target linux
-  ```
-
-  For building for the ARM64 Platform, the custom target must be specified to build for ARM-based MACs:
-
-  ```bash
-    electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "osx-arm64;" /electron-arch arm64
-  ```
-
-  or for Linux-ARM:
-
-  ```bash
-
-  electronize build .\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom "linux-arm64;" /electron-arch arm64
-
-  ```
-
-  or use the prepared npm commands (from `ClientApp` directory):
-
-  ```bash
-    npm run build:electron-win
-    npm run build:electron-osx
-    npm run build:electron-osx-arm64
-    npm run build:electron-linux
-    npm run build:electron-linux-arm64
-  ```
-
-By default, no sensors are included in the Build, you can add sensor Support by setting the appropriate flags with adding `/p:DefineAdditionalConstants=MS_AZURE_KINECT%2CMS_KINECT2%2CINTEL_REALSENSE` as parameter (use `%2C` as separator for specifying multiple flags)
-(see also [Sensors](#sensors))
-
-- App package can be found in `bin/Desktop` folder
-
-  **IMPORTANT:** Building for mac does not work on Windows, because they require symlinks which are not supported on Windows.
+Append `-- --dir` to produce an unpacked app, then run
+`npm run smoke:electron -- server` from the repository root to verify its startup.
+See [Electron builds and startup checks](../../docs/software/electron-builds.md)
+for platform prerequisites and the GitHub CI matrix for PRs and pushes to `main`.
 
 ### Remarks
 
@@ -391,19 +347,9 @@ refer to [GitHub issue](https://github.com/microsoft/Azure-Kinect-Sensor-SDK/iss
 
 ## Known Issues
 
-- Electron App crashes on startup - One possible issue relates to a missing certificate. error should be like this:
-
-  ```log
-    System.InvalidOperationException: Unable to configure HTTPS endpoint. No server certificate was specified, and the default developer certificate could not be found or is out of date.
-  To generate a developer certificate run 'dotnet dev-certs https'. To trust the certificate (Windows and macOS only) run 'dotnet dev-certs https --trust'.
-  For more information on configuring HTTPS see https://go.microsoft.com/fwlink/?linkid=848054.
-  ```
-
-  **Solution:** Install dev certificates on the machine using `'dotnet dev-certs https --trust'
-
-- Electron App crashes on startup:
-  - built from the wrong directory: if the error message states that some node module could not be found (e.g. `Cannot find module '@socket.io/component-emitter'`), than the electron app likely was build from another than the `tools/ReFlex.TrackingServer` directory
-  - if the configuration/settings file is corrupted, the app also crashes on startup. Try replacing the `TrackingSettings.json` in the  app directory under `resources/bin/wwwroot/Config` with the contents of `TrackingSettings_default.json`
+- Packaged Electron applications use local HTTP and do not require an ASP.NET
+  development HTTPS certificate. Standalone HTTPS development still requires
+  `dotnet dev-certs https --trust`.
 
 - Path to `ReFlex.TrackingServer.dll` in `launch.json` is different when building with VS Code or Rider/Visual Studio. In case of building with VS Code: Change
 

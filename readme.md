@@ -92,7 +92,7 @@ remain relative to their respective configuration files.
 
 - run `npm run build:shared-types` to build shared types library
 - run `npm install` in root directory
-- if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
+- for desktop builds, follow [Electron builds and startup checks](docs/software/electron-builds.md); no global Electron installation is required
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -138,11 +138,11 @@ remain relative to their respective configuration files.
 | `npm run build:server:electron-linux`         | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (x64)                                                          |                                                                                                     |
 | `npm run build:server:electron-linux-arm64`   | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (ARM64)                                                        |                                                                                                     |
 | `npm run build:emulator`                      | builds Emulator Angular App                                                                                                      |                                                                                                     |
-| `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:emulator:electron-osx`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
-| `npm run build:emulator:electron-osx-arm64`   | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
-| `npm run build:emulator:electron-linux`       | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:emulator:electron-linux-arm64` | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
+| `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    |                            |
+| `npm run build:emulator:electron-osx`         | builds *Emulator* as Electron app packaged for macOS (x64) | needs to be run on macOS |
+| `npm run build:emulator:electron-osx-arm64`   | builds *Emulator* as Electron app packaged for macOS (ARM64) | needs to be run on macOS |
+| `npm run build:emulator:electron-linux`       | builds *Emulator* as  Electron app packaged for Linux (x64)                                                                    |                            |
+| `npm run build:emulator:electron-linux-arm64` | builds *Emulator* as  Electron app packaged for Linux (ARM64)                                                                    |                            |
 | `npm run build:example-angular`               | builds Angular Template                                                                                                          |                                                                                                     |
 | `npm run build:example-react`                 | builds React Template                                                                                                            |                                                                                                     |
 | `npm run build:example-vue`                   | builds Vue.js Template                                                                                                           |                                                                                                     |
@@ -162,10 +162,7 @@ remain relative to their respective configuration files.
 
 ### Known issues (NPM commands)
 
-- Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
-  Therefore, `electron-builder` needs to be installed globally before executing a `build:emulator:electron-xxx` script
-- Additionally, `npm install` is executed after packaging to restore the dev dependencies
-- if a command `build:emulator:electron-xxx` is executed from within the emulator project, `npm install` has to be executed manually afterwards
+- Electron packaging uses isolated application files. See [Electron builds and startup checks](docs/software/electron-builds.md) for prerequisites, platform targets and CI smoke tests.
 - test and `build-complete` commands start a headless Chrome instance and therefore require Chrome to be installed and path to Chrome binary to be set in PATH.
 
 **[⬆ back to top](#table-of-contents)**

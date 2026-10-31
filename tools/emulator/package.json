@@ -13,11 +13,11 @@
     "lint": "ng lint reflex-emulator",
     "e2e": "ng e2e reflex-emulator",
     "electron": "ng build reflex-emulator --base-href ./ && electron .",
-    "build:electron-win": "ng build reflex-emulator --base-href ./ && electron-builder build --win",
-    "build:electron-osx": "ng build reflex-emulator --base-href ./ && electron-builder build --mac --x64",
-    "build:electron-osx-arm64": "ng build reflex-emulator --base-href ./ && electron-builder build --mac --arm64",
-    "build:electron-linux": "ng build reflex-emulator --base-href ./ && electron-builder build --linux --x64",
-    "build:electron-linux-arm64": "ng build reflex-emulator --base-href ./ && electron-builder build --linux --arm64"
+    "build:electron-win": "node ../../scripts/build-electron.cjs emulator win x64",
+    "build:electron-osx": "node ../../scripts/build-electron.cjs emulator osx x64",
+    "build:electron-osx-arm64": "node ../../scripts/build-electron.cjs emulator osx arm64",
+    "build:electron-linux": "node ../../scripts/build-electron.cjs emulator linux x64",
+    "build:electron-linux-arm64": "node ../../scripts/build-electron.cjs emulator linux arm64"
   },
   "build": {
     "appId": "reflex.emulator",
@@ -32,12 +32,20 @@
       "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     },
     "files": [
-      "node_modules/**/*",
-      "**/*"
+      "main.js",
+      "dist/**/*",
+      "package.json"
     ],
     "directories": {
       "output": "release",
       "buildResources": "assets"
+    },
+    "npmRebuild": false,
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     }
   },
   "private": true,

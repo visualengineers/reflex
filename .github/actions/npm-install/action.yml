@@ -5,10 +5,10 @@ runs:
   using: 'composite'
 
   steps:
-    - name: install node v18
+    - name: install node v22
       uses: actions/setup-node@main
       with:
-        node-version: 18
+        node-version: 22
         cache: 'npm'
         cache-dependency-path: ${{ github.workspace }}/package.json
     - name: cache node-modules

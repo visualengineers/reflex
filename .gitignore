@@ -507,3 +507,6 @@ docs/software/apps/server.md
 !packages/reflex-shared-types
 /.nx
 /library/export/lib
+
+# Isolated Electron packaging input (generated)
+tools/emulator/.electron-app/
