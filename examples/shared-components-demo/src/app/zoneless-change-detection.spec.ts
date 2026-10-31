@@ -1,7 +1,7 @@
 import { NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { createApplication } from '@angular/platform-browser';
-import { provideHttpClient, withXhr }{ provideHttpClient, withXhr } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { appConfig } from './app.config';
 import { IntroductionComponent } from './introduction/introduction.component';
@@ -17,7 +17,7 @@ describe('Zoneless change detection', () => {
   });
 
   it('renders delayed documentation HTTP responses through AsyncPipe', async () => {
-    TestBed.configureTestingModule({providers: [provideHttpClient(withXhr()withXhr()), provideHttpClientTesting()]});
+    TestBed.configureTestingModule({providers: [provideHttpClient(withXhr()), provideHttpClientTesting()]});
     const fixture = TestBed.createComponent(IntroductionComponent);
     await fixture.whenStable();
     const http = TestBed.inject(HttpTestingController);

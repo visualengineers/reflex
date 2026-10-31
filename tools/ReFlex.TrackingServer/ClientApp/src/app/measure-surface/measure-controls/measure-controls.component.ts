@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription, timer } from 'rxjs';
@@ -19,18 +19,18 @@ import { MeasureService } from 'src/shared/services/measure.service';
   templateUrl: './measure-controls.component.html',
   styleUrls: ['./measure-controls.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule]
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly measureService = inject(MeasureService);
-  private readonly logService = inject(LogService);
 
   public captureId = 0;
 
   public numFramesCaptured = 0;
 
   public isCapturing = false;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly measureService = inject(MeasureService);
+  private readonly logService = inject(LogService);
 
   private captureState?: Subscription;
 

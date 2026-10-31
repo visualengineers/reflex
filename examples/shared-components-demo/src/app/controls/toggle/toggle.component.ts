@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   OptionCheckboxComponent,
-  SettingsGroupComponent,
+  SettingsGroupComponent
 } from '@reflex/angular-components/dist';
 
 @Component({
@@ -10,7 +10,7 @@ import {
   imports: [FormsModule, OptionCheckboxComponent, SettingsGroupComponent],
   templateUrl: './toggle.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './toggle.component.scss',
+  styleUrl: './toggle.component.scss'
 })
 export class ToggleComponent {
   public toggleBordersActive = true;

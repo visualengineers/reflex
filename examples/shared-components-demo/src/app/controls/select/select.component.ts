@@ -4,12 +4,12 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   SettingsGroupComponent,
-  ValueSelectionComponent,
+  ValueSelectionComponent
 } from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
@@ -18,24 +18,25 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
   imports: [FormsModule, SettingsGroupComponent, ValueSelectionComponent],
   templateUrl: './select.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './select.component.scss',
+  styleUrl: './select.component.scss'
 })
 export class SelectComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
   public filters = [
     'Default',
     'Custom Special',
     'Moving Average',
     'SavitzyGolay',
-    'None',
+    'None'
   ];
 
   public selectedFilterIdx = 0;
 
   public statusMessage = '';
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
-  private readonly remainingToast: BehaviorSubject<number> =
-    new BehaviorSubject(0);
+  private readonly remainingToast: BehaviorSubject<number>
+    = new BehaviorSubject(0);
+
   private readonly notification$: Subscription = new Subscription();
 
   public ngOnInit(): void {
@@ -44,7 +45,7 @@ export class SelectComponent implements OnInit, OnDestroy {
         next: () => {
           this.statusMessage = '';
           this.changeDetector.markForCheck();
-        },
+        }
       })
     );
   }
@@ -64,7 +65,7 @@ export class SelectComponent implements OnInit, OnDestroy {
         .pipe(filter(() => this.remainingToast.getValue() > 0))
         .subscribe({
           complete: () =>
-            this.remainingToast.next(this.remainingToast.getValue() - 1),
+            this.remainingToast.next(this.remainingToast.getValue() - 1)
         })
     );
   }

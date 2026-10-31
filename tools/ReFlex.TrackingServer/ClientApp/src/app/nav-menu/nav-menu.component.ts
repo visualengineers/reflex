@@ -6,6 +6,6 @@ import { RouterModule } from '@angular/router';
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [RouterModule],
+  imports: [RouterModule]
 })
 export class NavMenuComponent {}

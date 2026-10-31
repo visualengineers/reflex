@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NetworkingService } from 'src/shared/services/networking.service';
@@ -16,7 +16,7 @@ import {
   PanelHeaderComponent,
   ValueSelectionComponent,
   ValueSliderComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -33,14 +33,10 @@ import { TuioComponent } from './tuio/tuio.component';
     ValueSelectionComponent,
     ValueTextComponent,
     ValueSliderComponent,
-    TuioComponent,
-  ],
+    TuioComponent
+  ]
 })
 export class NetworkComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly settingsService = inject(SettingsService);
-  private readonly networkService = inject(NetworkingService);
-  private readonly logService = inject(LogService);
 
   public statusText = '';
   public errorText = '';
@@ -55,8 +51,13 @@ export class NetworkComponent implements OnInit, OnDestroy {
     port: 0,
     endpoint: '',
     address: '',
-    interval: 100,
+    interval: 100
   };
+
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly settingsService = inject(SettingsService);
+  private readonly networkService = inject(NetworkingService);
+  private readonly logService = inject(LogService);
 
   private statusTextSubscription?: Subscription;
   private statusValuesSubscription?: Subscription;
@@ -229,8 +230,8 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   public updateInterfaceType(idx: number): void {
     this.selectedInterfaceIdx = idx;
-    if (this.networkSettings) {
-      this.networkSettings.networkInterfaceType = idx as NetworkInterface;
+    if (this.networkSettings !== undefined && this.networkSettings !== null) {
+      this.networkSettings.networkInterfaceType = idx;
     }
   }
 }

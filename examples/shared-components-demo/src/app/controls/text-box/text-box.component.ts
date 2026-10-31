@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   SettingsGroupComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
 
 @Component({
@@ -10,7 +10,7 @@ import {
   imports: [FormsModule, SettingsGroupComponent, ValueTextComponent],
   templateUrl: './text-box.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './text-box.component.scss',
+  styleUrl: './text-box.component.scss'
 })
 export class TextBoxComponent {
   public numChanges = 0;

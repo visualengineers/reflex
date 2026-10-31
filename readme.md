@@ -86,6 +86,21 @@ After an update, build shared types and components first, then the applications,
 Paths in `angular.json` are relative to the repository root; paths in `tsconfig` and `ng-package.json`
 remain relative to their respective configuration files.
 
+#### ESLint flat configuration
+
+The existing lint targets use `eslint.config.js` in TrackingServer, emulator,
+shared-components-demo, and basic-react. They work through the workspace npm scripts
+(`npm run lint:server`, `npm run lint:emulator`, or `npm run lint -w <workspace>`).
+TrackingServer's Angular CLI lint target also uses the ESLint builder.
+
+TrackingServer and the demo share `scripts/eslint/typescript.config.cjs`. It reads
+rule definitions from the existing GTV TypeScript policy, registers the current
+parser/plugins directly, and maps removed TypeScript formatting rules to `@stylistic/ts`.
+Type-aware rules resolve `tsconfig.json` relative to each workspace, including when
+ESLint is launched from the repository root. Existing generated-file and test-file
+exclusions are retained. The emulator additionally checks external and inline Angular
+templates. AngularJS's `eslint-plugin-angular` is not used.
+
 #### Zoneless change detection
 
 All Angular applications explicitly provide `provideZonelessChangeDetection()`.

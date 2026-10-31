@@ -4,7 +4,7 @@ import {
   Component,
   Input,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 @Component({
@@ -12,17 +12,18 @@ import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
   templateUrl: './interactions.component.html',
   styleUrls: ['./interactions.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule],
+  imports: [CommonModule]
 })
 export class InteractionsComponent {
-  private readonly changeDetector = inject(ChangeDetectorRef);
 
   public interactions: CompleteInteractionData = {
     raw: [],
     absolute: [],
-    normalized: [],
+    normalized: []
   };
+
   public calibratedInteractions: Array<Interaction> = [];
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
   private pIsProcessing = false;
   private readonly datePipe: DatePipe = new DatePipe('en-US', '+0000');

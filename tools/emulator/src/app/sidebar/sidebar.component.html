@@ -3,10 +3,13 @@
   class="sidebar__container"
 >
   <div class="sidebar__header float-right sticky-top">
-    <span
+    <button
+      type="button"
+      aria-label="Toggle sidebar"
+      [attr.aria-expanded]="!isCollapsed"
       (click)="toggleSidebar()"
-      class="fas {{ isCollapsed ? 'fa-bars' : 'fa-times' }}"
-    ></span>
+      class="p-0 border-0 bg-transparent text-reset fas {{ isCollapsed ? 'fa-bars' : 'fa-times' }}"
+    ></button>
   </div>
 
   @if (!isCollapsed) {

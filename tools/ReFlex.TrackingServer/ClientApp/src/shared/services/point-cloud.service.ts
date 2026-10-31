@@ -27,7 +27,7 @@ export class PointCloudService {
   private readonly startAfterConnected$: Observable<void>;
   private readonly points$: Observable<Array<Point3>>;
 
-  // eslint-disable-next-line new-cap
+
   public constructor() {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}pointcloudhub`)

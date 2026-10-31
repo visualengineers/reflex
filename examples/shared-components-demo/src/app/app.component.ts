@@ -21,11 +21,11 @@ import { ButtonsComponent } from './controls/buttons/buttons.component';
     SliderComponent,
     TableComponent,
     ButtonsComponent,
-    ColorComponent,
+    ColorComponent
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './app.component.scss',
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
   public title = 'ReFlex Shared Components Demo';

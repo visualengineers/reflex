@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
+
 import { Routes } from '@angular/router';
 import { CalibrationComponent } from './calibration/calibration.component';
 import { HomeComponent } from './home/home.component';

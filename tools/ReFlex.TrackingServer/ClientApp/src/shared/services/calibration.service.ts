@@ -35,7 +35,7 @@ export class CalibrationService extends SignalRBaseService<string> {
   private readonly updateFrameSizeRoute = `${this.calibrationRoute}UpdateFrameSize`;
   private readonly updateCalibrationPointRoute = `${this.calibrationRoute}UpdateCalibrationPoint/`;
 
-  // eslint-disable-next-line new-cap
+
   public constructor() {
     const baseUrl = inject(BASE_URL);
     const logService = inject(LogService);
@@ -58,7 +58,7 @@ export class CalibrationService extends SignalRBaseService<string> {
   }
 
   public getCurrentCalibrationTargetPoints(): Observable<
-  Array<CalibrationPoint>
+    Array<CalibrationPoint>
   > {
     return this.http.get<Array<CalibrationPoint>>(
       this.baseUrl + this.getTargetValuesRoute

@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   SettingsGroupComponent,
-  ValueSliderComponent,
+  ValueSliderComponent
 } from '@reflex/angular-components/dist';
 
 @Component({
@@ -10,7 +10,7 @@ import {
   imports: [FormsModule, SettingsGroupComponent, ValueSliderComponent],
   templateUrl: './slider.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './slider.component.scss',
+  styleUrl: './slider.component.scss'
 })
 export class SliderComponent {
   public sliderData = 0.75;

@@ -13,7 +13,7 @@ import {
   Renderer2,
   ViewChild,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   animationFrameScheduler,
@@ -22,7 +22,7 @@ import {
   interval,
   NEVER,
   of,
-  Subscription,
+  Subscription
 } from 'rxjs';
 import {
   catchError,
@@ -30,7 +30,7 @@ import {
   map,
   startWith,
   switchMap,
-  tap,
+  tap
 } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
@@ -46,7 +46,7 @@ import {
   DepthCameraState,
   Interaction,
   Point3,
-  TrackingServerAppSettings,
+  TrackingServerAppSettings
 } from '@reflex/shared-types';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -54,7 +54,7 @@ import {
   OptionCheckboxComponent,
   PanelHeaderComponent,
   SettingsGroupComponent,
-  ValueSliderComponent,
+  ValueSliderComponent
 } from '@reflex/angular-components/dist';
 
 @Component({
@@ -68,18 +68,10 @@ import {
     PanelHeaderComponent,
     SettingsGroupComponent,
     OptionCheckboxComponent,
-    ValueSliderComponent,
-  ],
+    ValueSliderComponent
+  ]
 })
 export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly httpClient = inject(HttpClient);
-  private readonly angularRenderer = inject(Renderer2);
-  private readonly trackingService = inject(TrackingService);
-  private readonly pointCloudService = inject(PointCloudService);
-  private readonly settingsService = inject(SettingsService);
-  private readonly processingService = inject(ProcessingService);
-  private readonly logService = inject(LogService);
 
   public static readonly particleSize: number = 0.07;
 
@@ -92,7 +84,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   public fullScreenChanged = new EventEmitter<boolean>();
 
   @ViewChild('pointCloudRenderContainer')
-  public container?: ElementRef;
+  public container?: ElementRef<HTMLDivElement>;
 
   public livePreview = false;
   public numFramesReceived = 0;
@@ -107,16 +99,24 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   public pointSize = 3;
 
   public intersectedIdx?: number;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly httpClient = inject(HttpClient);
+  private readonly angularRenderer = inject(Renderer2);
+  private readonly trackingService = inject(TrackingService);
+  private readonly pointCloudService = inject(PointCloudService);
+  private readonly settingsService = inject(SettingsService);
+  private readonly processingService = inject(ProcessingService);
+  private readonly logService = inject(LogService);
 
   private readonly renderer?: THREE.WebGLRenderer;
   private readonly scene: THREE.Scene;
   private readonly camera: THREE.Camera;
-  private readonly shaderMaterial: THREE.ShaderMaterial =
-    new THREE.ShaderMaterial({
+  private readonly shaderMaterial: THREE.ShaderMaterial
+    = new THREE.ShaderMaterial({
       blending: THREE.AdditiveBlending,
       depthTest: false,
       transparent: true,
-      vertexColors: true,
+      vertexColors: true
     });
 
   private readonly controls?: OrbitControls;
@@ -162,25 +162,25 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly interactionsMaterial = new THREE.MeshBasicMaterial({
     color: 0xffae18,
     transparent: true,
-    opacity: 0.75,
+    opacity: 0.75
   });
 
   private readonly minPlaneMat = new THREE.MeshBasicMaterial({
     color: 0xff0000,
     transparent: true,
-    opacity: 0.1,
+    opacity: 0.1
   });
 
   private readonly maxPlaneMat = new THREE.MeshBasicMaterial({
     color: 0x0000ff,
     transparent: true,
-    opacity: 0.1,
+    opacity: 0.1
   });
 
   private readonly zeroPlaneMat = new THREE.MeshBasicMaterial({
     color: 0x000000,
     transparent: true,
-    opacity: 0.1,
+    opacity: 0.1
   });
 
   public constructor() {
@@ -192,7 +192,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.httpClient
       .get('assets/shader/pointcloud_vertex.txt', {
-        responseType: 'text',
+        responseType: 'text'
       })
       .subscribe((shader) => {
         this.shaderMaterial.vertexShader = shader.toString();
@@ -201,7 +201,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.httpClient
       .get('assets/shader/pointcloud_fragment.txt', {
-        responseType: 'text',
+        responseType: 'text'
       })
       .subscribe((shader) => {
         this.shaderMaterial.fragmentShader = shader.toString();
@@ -233,7 +233,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const mat = new THREE.MeshBasicMaterial({
       color: 0x006600,
-      wireframe: true,
+      wireframe: true
     });
     this.bbBoxCube = new THREE.Mesh(geometry, mat);
     this.scene.add(this.bbBoxCube);
@@ -294,11 +294,11 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('mousemove', ['$event'])
   public onmouseMove(evt: MouseEvent): void {
     // get mouse coords relative to component (offsetX, offsetY) and convert to normalized device coords needed for raycasting (top left: [0,0] --> [-1, 1], bottom right: [1,1] --> [1,-1])
-    this.mouseXnormalized =
-      (evt.offsetX / (this.container?.nativeElement.clientWidth ?? 1)) * 2 - 1;
-    this.mouseYnormalized =
-      -((evt.offsetY / (this.container?.nativeElement.clientHeight ?? 1)) * 2) +
-      1;
+    this.mouseXnormalized
+      = ((evt.offsetX / (this.container?.nativeElement.clientWidth ?? 1)) * 2) - 1;
+    this.mouseYnormalized
+      = -((evt.offsetY / (this.container?.nativeElement.clientHeight ?? 1)) * 2)
+      + 1;
   }
 
   @HostListener('mouseover', ['$event'])
@@ -349,8 +349,8 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
     const isTracking$ = this.trackingService.getStatus().pipe(
       map(
         (status) =>
-          status.depthCameraStateName ===
-          DepthCameraState[DepthCameraState.Streaming]
+          status.depthCameraStateName
+          === DepthCameraState[DepthCameraState.Streaming]
       ),
       distinctUntilChanged(),
       catchError((err) => {
@@ -363,7 +363,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const shouldShowLiveView$ = combineLatest([
       isTracking$,
-      this.livePreview$,
+      this.livePreview$
     ]).pipe(
       tap(() => this.updateSize()),
       map(([isTracking, livePreview]) => livePreview && isTracking),
@@ -380,8 +380,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pointCloudSubscription = shouldShowLiveView$
       .pipe(
         switchMap((showLiveView) =>
-          showLiveView ? pointCloud$ : NEVER.pipe(startWith([]))
-        ),
+          showLiveView ? pointCloud$ : NEVER.pipe(startWith([]))),
         tap((result) => {
           if (result.length > 0) {
             this.numFramesReceived++;
@@ -408,8 +407,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
     this.interactionsSubscription = shouldShowLiveView$
       .pipe(
         switchMap((showLiveView) =>
-          showLiveView ? interactions$ : NEVER.pipe(startWith([]))
-        ),
+          showLiveView ? interactions$ : NEVER.pipe(startWith([]))),
         catchError((err) => {
           console.error(err);
           this.logService.sendErrorLog(`${err}`);
@@ -472,10 +470,10 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.zeroPlane.position.set(0, 0, defaultDist);
     this.zeroPlane.scale.set(1.2, 1.2, 1);
-    this.maxPlane1.position.set(0, 0, defaultDist + dist.max * 10.0);
-    this.maxPlane2.position.set(0, 0, defaultDist - dist.max * 10.0);
-    this.minPlane1.position.set(0, 0, defaultDist + dist.min * 10.0);
-    this.minPlane2.position.set(0, 0, defaultDist - dist.min * 10.0);
+    this.maxPlane1.position.set(0, 0, defaultDist + (dist.max * 10.0));
+    this.maxPlane2.position.set(0, 0, defaultDist - (dist.max * 10.0));
+    this.minPlane1.position.set(0, 0, defaultDist + (dist.min * 10.0));
+    this.minPlane2.position.set(0, 0, defaultDist - (dist.min * 10.0));
   }
 
   private updatePointCloud(points: Array<Point3>): void {
@@ -487,56 +485,35 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    let positions: Float32Array = new Float32Array();
-    let color: Float32Array;
-    let pointsGeometry: THREE.BufferGeometry;
-    let sizes: Float32Array;
-    let indices: Uint16Array;
-
     if (!this.isPointCloudInitialized) {
-      pointsGeometry = new THREE.BufferGeometry();
-      this.points = new THREE.Points(pointsGeometry, this.shaderMaterial);
+      this.points = new THREE.Points(new THREE.BufferGeometry(), this.shaderMaterial);
       this.scene.add(this.points);
       this.isPointCloudInitialized = true;
     } else {
       this.points.visible = true;
-      pointsGeometry = this.points.geometry;
-      positions = pointsGeometry.attributes.position.array as Float32Array;
-      color = pointsGeometry.attributes.color.array as Float32Array;
-      sizes = pointsGeometry.attributes.size.array as Float32Array;
-      indices = pointsGeometry.attributes.index.array as Uint16Array;
     }
 
+    const pointsGeometry = this.points.geometry;
     if (points.length !== this.previousPointsLength) {
-      positions = new Float32Array(points.length * 3);
-      color = new Float32Array(points.length * 3);
-      sizes = new Float32Array(points.length * 3);
-      indices = new Uint16Array(points.length);
-      pointsGeometry.setAttribute(
-        'position',
-        new THREE.BufferAttribute(positions, 3)
-      );
-      pointsGeometry.setAttribute('color', new THREE.BufferAttribute(color, 3));
-      pointsGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-      pointsGeometry.setAttribute(
-        'index',
-        new THREE.BufferAttribute(indices, 1)
-      );
-      pointsGeometry.setDrawRange(0, points.length);
-
+      this.allocatePointBuffers(pointsGeometry, points.length);
       this.previousPointsLength = points.length;
     }
 
-    const defaultDist =
-      this.settings !== undefined
+    const positions = pointsGeometry.attributes.position.array as Float32Array;
+    const color = pointsGeometry.attributes.color.array as Float32Array;
+    const sizes = pointsGeometry.attributes.size.array as Float32Array;
+    const indices = pointsGeometry.attributes.index.array as Uint16Array;
+
+    const defaultDist
+      = this.settings !== undefined
         ? this.settings.filterSettingValues.distanceValue.default
         : 1;
-    const minExt =
-      this.settings !== undefined
+    const minExt
+      = this.settings !== undefined
         ? defaultDist - this.settings.filterSettingValues.distanceValue.min
         : 1;
-    const maxExt =
-      this.settings !== undefined
+    const maxExt
+      = this.settings !== undefined
         ? this.settings.filterSettingValues.distanceValue.max - defaultDist
         : 1;
 
@@ -553,13 +530,13 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
         color[i + 1] = 0;
         color[i + 2] = 0;
       } else if (point.z > defaultDist) {
-        color[i] = (point.z - defaultDist) / maxExt - 0.5;
-        color[i + 1] = (point.z - defaultDist) / maxExt - 0.5;
-        color[i + 2] = 1.0 - (point.z - defaultDist) / maxExt;
+        color[i] = ((point.z - defaultDist) / maxExt) - 0.5;
+        color[i + 1] = ((point.z - defaultDist) / maxExt) - 0.5;
+        color[i + 2] = 1.0 - ((point.z - defaultDist) / maxExt);
       } else {
-        color[i] = (defaultDist - point.z) / minExt - 0.5;
-        color[i + 1] = 1.0 - (defaultDist - point.z) / minExt;
-        color[i + 2] = (defaultDist - point.z) / minExt - 0.5;
+        color[i] = ((defaultDist - point.z) / minExt) - 0.5;
+        color[i + 1] = 1.0 - ((defaultDist - point.z) / minExt);
+        color[i + 2] = ((defaultDist - point.z) / minExt) - 0.5;
       }
 
       if (index === this.intersectedIdx) {
@@ -572,20 +549,28 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    (pointsGeometry.attributes.position as THREE.BufferAttribute).needsUpdate =
-      true;
-    (pointsGeometry.attributes.color as THREE.BufferAttribute).needsUpdate =
-      true;
-    (pointsGeometry.attributes.size as THREE.BufferAttribute).needsUpdate =
-      true;
-    (pointsGeometry.attributes.index as THREE.BufferAttribute).needsUpdate =
-      true;
+    (pointsGeometry.attributes.position as THREE.BufferAttribute).needsUpdate
+      = true;
+    (pointsGeometry.attributes.color as THREE.BufferAttribute).needsUpdate
+      = true;
+    (pointsGeometry.attributes.size as THREE.BufferAttribute).needsUpdate
+      = true;
+    (pointsGeometry.attributes.index as THREE.BufferAttribute).needsUpdate
+      = true;
 
     this.updateBoundingBox(pointsGeometry);
 
     if (!this.isMouseOver) {
       this.updateMouseOver(positions);
     }
+  }
+
+  private allocatePointBuffers(geometry: THREE.BufferGeometry, length: number): void {
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(length * 3), 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(length * 3), 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(new Float32Array(length * 3), 1));
+    geometry.setAttribute('index', new THREE.BufferAttribute(new Uint16Array(length), 1));
+    geometry.setDrawRange(0, length);
   }
 
   private updateMouseOver(positions: Float32Array): void {
@@ -600,8 +585,8 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
       .filter((intersection) => intersection.distanceToRay !== null)
       .sort(
         (intersection1, intersection2) =>
-          (intersection1.distanceToRay ?? 0) -
-          (intersection2.distanceToRay ?? 0)
+          (intersection1.distanceToRay ?? 0)
+          - (intersection2.distanceToRay ?? 0)
       );
 
     if (sorted.length > 0) {
@@ -614,8 +599,8 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
         const idx = sorted[0].index ?? 0;
 
         const x = positions[idx * 3];
-        const y = positions[idx * 3 + 1];
-        const z = positions[idx * 3 + 2];
+        const y = positions[(idx * 3) + 1];
+        const z = positions[(idx * 3) + 2];
 
         this.hoverP = new THREE.Vector3(x, y, z);
         this.intersectedIdx = idx;
@@ -666,16 +651,16 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
     const resY = this.settings.cameraConfigurationValues.height;
 
     updatedInteractions.forEach((interaction) => {
-      const posX =
-        this.bbCenter.x +
-        interaction.position.x * (this.bbSize.x / resX) -
-        0.5 * this.bbSize.x;
-      const posY =
-        this.bbCenter.y +
-        interaction.position.y * (this.bbSize.y / resY) -
-        0.5 * this.bbSize.y;
+      const posX
+        = (this.bbCenter.x
+        + (interaction.position.x * (this.bbSize.x / resX)))
+        - (0.5 * this.bbSize.x);
+      const posY
+        = (this.bbCenter.y
+        + (interaction.position.y * (this.bbSize.y / resY)))
+        - (0.5 * this.bbSize.y);
 
-      const posZ = interaction.position.z * (dist.max * 10.0) + defaultZ;
+      const posZ = (interaction.position.z * (dist.max * 10.0)) + defaultZ;
       const sphere = new THREE.SphereGeometry(0.1);
       const mesh = new THREE.Mesh(sphere, this.interactionsMaterial);
       mesh.position.set(posX, posY, posZ);

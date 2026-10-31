@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
@@ -19,16 +19,16 @@ import { CommonModule } from '@angular/common';
   selector: 'app-log',
   templateUrl: './log.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, ValueSelectionComponent],
+  imports: [CommonModule, FormsModule, ValueSelectionComponent]
 })
 export class LogComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly logService = inject(LogService);
 
   public messages = new Array<LogMessageDetail>();
   public filteredMessages = new Array<LogMessageDetail>();
 
-  public filterLevel = -1;
+  public filterLevel: LogLevel | -1 = -1;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly logService = inject(LogService);
 
   private logSubscription?: Subscription;
 
@@ -86,12 +86,12 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   public filter(): void {
-    this.filteredMessages =
-      (this.filterLevel as LogLevel) >= LogLevel.Trace &&
-      (this.filterLevel as LogLevel) <= LogLevel.Off
+    this.filteredMessages
+      = this.filterLevel >= LogLevel.Trace
+      && this.filterLevel <= LogLevel.Off
         ? this.messages.filter(
-            (msg) => LogLevel[msg.level] === LogLevel[this.filterLevel]
-          )
+          (msg) => LogLevel[msg.level] === LogLevel[this.filterLevel]
+        )
         : this.messages;
   }
 }

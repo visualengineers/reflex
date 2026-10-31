@@ -7,7 +7,7 @@ import {
   OnInit,
   ViewChild,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
@@ -24,14 +24,14 @@ import {
   ObserverType,
   ProcessingSettings,
   RemoteProcessingServiceSettings,
-  TrackingServerAppSettings,
+  TrackingServerAppSettings
 } from '@reflex/shared-types';
 import {
   OptionCheckboxComponent,
   PanelHeaderComponent,
   ValueSelectionComponent,
   ValueSliderComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -52,16 +52,10 @@ import { HistoryComponent } from './history/history.component';
     OptionCheckboxComponent,
     InteractionsComponent,
     HistoryComponent,
-    InteractionsVisualizationComponent,
-  ],
+    InteractionsVisualizationComponent
+  ]
 })
 export class ProcessingComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly baseUrl = inject(BASE_URL);
-  private readonly settingsService = inject(SettingsService);
-  private readonly processingService = inject(ProcessingService);
-  private readonly calibrationService = inject(CalibrationService);
-  private readonly logService = inject(LogService);
 
   @ViewChild('visualizationContainer')
   public visualization?: InteractionsVisualizationComponent;
@@ -80,7 +74,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   public isInteractionProcessingActive = false;
 
   public remoteSettings: RemoteProcessingServiceSettings = {
-    ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues,
+    ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues
   };
 
   public remoteAddress = '';
@@ -88,8 +82,15 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public processingSettings: ProcessingSettings = {
     interactionType: ObserverType.None,
-    intervalDuration: 0,
+    intervalDuration: 0
   };
+
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly baseUrl = inject(BASE_URL);
+  private readonly settingsService = inject(SettingsService);
+  private readonly processingService = inject(ProcessingService);
+  private readonly calibrationService = inject(CalibrationService);
+  private readonly logService = inject(LogService);
 
   private selectedProcessorSubscription?: Subscription;
   private intervalSubscription?: Subscription;
@@ -168,11 +169,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? interactions$
-            : NEVER.pipe<Array<Interaction>>(startWith([]))
-        ),
+            : NEVER.pipe<Array<Interaction>>(startWith([]))),
         concatMap((raw) =>
-          this.calibrationService.computeCalibratedAbsolutePosition(raw)
-        )
+          this.calibrationService.computeCalibratedAbsolutePosition(raw))
       )
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
@@ -282,15 +281,14 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public updateAddress(): void {
     const completeAddress = `${this.remoteAddress}:${this.remotePort}`;
-    try {
-      const url = new URL(completeAddress);
-      if (url) {
-        this.remoteSettings.address = completeAddress;
-        this.updateSettings();
-      }
-    } catch (exc) {
+    if (!URL.canParse(completeAddress)) {
       console.warn(`Invalid URL: ${completeAddress}`);
+
+      return;
     }
+
+    this.remoteSettings.address = completeAddress;
+    this.updateSettings();
   }
 
   public updateSettings(): void {
@@ -334,13 +332,13 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   private updateProcessor(idx: number): void {
     this.selectedProcessorIdx = idx;
-    if (this.processingSettings) {
-      this.processingSettings.interactionType = idx as ObserverType;
+    if (this.processingSettings !== undefined && this.processingSettings !== null) {
+      this.processingSettings.interactionType = idx;
     }
   }
 
   private updateInterval(interval: number): void {
-    if (this.processingSettings) {
+    if (this.processingSettings !== undefined && this.processingSettings !== null) {
       this.processingSettings.intervalDuration = interval;
     }
     this.interval = interval;
@@ -358,7 +356,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   ): void {
     this.remoteSettings = {
       ...settings,
-      useGzipCompression: settings.useGzipCompression ?? true,
+      useGzipCompression: settings.useGzipCompression ?? true
     };
 
     const url = new URL(this.remoteSettings.address);

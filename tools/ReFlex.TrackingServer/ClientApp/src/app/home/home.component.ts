@@ -3,7 +3,7 @@ import {
   Component,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
@@ -13,15 +13,15 @@ import { VersionInfoService } from 'src/shared/services/version.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule],
+  imports: [CommonModule]
 })
 export class HomeComponent implements OnInit {
-  private readonly versionService = inject(VersionInfoService);
 
   public serverLibs?: Observable<Array<AppVersionInfo>>;
   public clientLibs?: Observable<Array<AppVersionInfo>>;
 
   public appVersion?: Observable<AppVersionInfo>;
+  private readonly versionService = inject(VersionInfoService);
 
   public ngOnInit(): void {
     this.serverLibs = this.versionService.getServerVersionInfo();

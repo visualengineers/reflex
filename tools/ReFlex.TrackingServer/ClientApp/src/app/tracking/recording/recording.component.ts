@@ -6,7 +6,7 @@ import {
   Input,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ValueTextComponent } from '@reflex/angular-components/dist';
@@ -15,7 +15,7 @@ import {
   DepthCameraState,
   RecordingState,
   RecordingStateUpdate,
-  TrackingConfigState,
+  TrackingConfigState
 } from '@reflex/shared-types';
 import { of, Subscription } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
@@ -27,12 +27,9 @@ import { RecordingService } from 'src/shared/services/recording.service';
   templateUrl: './recording.component.html',
   styleUrls: ['./recording.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, ValueTextComponent],
+  imports: [CommonModule, FormsModule, ValueTextComponent]
 })
 export class RecordingComponent implements OnInit {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly recordingService = inject(RecordingService);
-  private readonly loggingService = inject(LogService);
 
   @Input()
   public recordingName = 'default';
@@ -46,10 +43,13 @@ export class RecordingComponent implements OnInit {
   public recordingState: RecordingStateUpdate = {
     state: RecordingState.Stopped,
     framesRecorded: 0,
-    sessionName: '',
+    sessionName: ''
   };
 
   public recordings: Array<CameraConfiguration> = [];
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly recordingService = inject(RecordingService);
+  private readonly loggingService = inject(LogService);
 
   private trackingStateSubscription?: Subscription;
   private recordingStateSubscription?: Subscription;
@@ -118,7 +118,7 @@ export class RecordingComponent implements OnInit {
         return of({
           state: RecordingState.Faulted,
           framesRecorded: 0,
-          sessionName: '',
+          sessionName: ''
         });
       })
     );
@@ -147,7 +147,7 @@ export class RecordingComponent implements OnInit {
           this.recordingState = {
             state: RecordingState.Stopped,
             framesRecorded: 0,
-            sessionName: '',
+            sessionName: ''
           };
           this.isRecording = false;
         },
@@ -203,9 +203,9 @@ export class RecordingComponent implements OnInit {
   }
 
   public recordingNameChanged(): void {
-    this.recordingEnabled =
-      typeof this.recordingName === 'string' &&
-      this.recordingName.trim().length > 0;
+    this.recordingEnabled
+      = typeof this.recordingName === 'string'
+      && this.recordingName.trim().length > 0;
   }
 
   private updateRecordingsList(): void {
@@ -224,9 +224,9 @@ export class RecordingComponent implements OnInit {
   }
 
   private updateTrackingState(status: TrackingConfigState): void {
-    this.recordingEnabled =
-      status.depthCameraStateName ===
-      DepthCameraState[DepthCameraState.Streaming];
+    this.recordingEnabled
+      = status.depthCameraStateName
+      === DepthCameraState[DepthCameraState.Streaming];
   }
 
   private updateRecordingState(status: RecordingStateUpdate): void {

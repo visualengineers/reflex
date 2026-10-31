@@ -6,7 +6,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './color-item.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './color-item.component.scss',
+  styleUrl: './color-item.component.scss'
 })
 export class ColorItemComponent {
   @Input()

@@ -5,6 +5,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-measure-grid',
   templateUrl: './measure-grid.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./measure-grid.component.scss'],
+  styleUrls: ['./measure-grid.component.scss']
 })
 export class MeasureGridComponent {}

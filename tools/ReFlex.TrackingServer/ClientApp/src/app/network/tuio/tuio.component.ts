@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
@@ -13,15 +13,12 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription } from 'rxjs';
 import {
   DEFAULT_SETTINGS,
-  ProtocolVersion,
-  TransportProtocol,
-  TuioConfiguration,
-  TuioInterpretation,
+  TuioConfiguration
 } from '@reflex/shared-types';
 import {
   PanelHeaderComponent,
   ValueSelectionComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -37,14 +34,10 @@ import { PackageDetailsComponent } from './package-details/package-details.compo
     PanelHeaderComponent,
     ValueSelectionComponent,
     ValueTextComponent,
-    PackageDetailsComponent,
-  ],
+    PackageDetailsComponent
+  ]
 })
 export class TuioComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly settingsService = inject(SettingsService);
-  private readonly tuioService = inject(TuioService);
-  private readonly logService = inject(LogService);
 
   public statusText = '';
   public errorText = '';
@@ -64,6 +57,10 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public serverAddress = '';
   public serverPort = 0;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly settingsService = inject(SettingsService);
+  private readonly tuioService = inject(TuioService);
+  private readonly logService = inject(LogService);
 
   private statusTextSubscription?: Subscription;
   private settingsSubscription?: Subscription;
@@ -74,7 +71,7 @@ export class TuioComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          if (result.tuioSettingValues) {
+          if (result.tuioSettingValues !== undefined && result.tuioSettingValues !== null) {
             this.config = result.tuioSettingValues;
             this.transportProtocolIdx = this.config.transport;
             this.tuioProtocolVersionIdx = this.config.protocol;
@@ -121,8 +118,8 @@ export class TuioComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           this.transportProtocols = result;
-          if (this.config) {
-            this.transportProtocolIdx = this.config.transport as number;
+          if (this.config !== undefined && this.config !== null) {
+            this.transportProtocolIdx = this.config.transport;
           }
         },
         (error) => {
@@ -137,8 +134,8 @@ export class TuioComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           this.tuioProtocolVersions = result;
-          if (this.config) {
-            this.tuioProtocolVersionIdx = this.config.protocol as number;
+          if (this.config !== undefined && this.config !== null) {
+            this.tuioProtocolVersionIdx = this.config.protocol;
           }
         },
         (error) => {
@@ -153,8 +150,8 @@ export class TuioComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           this.tuioInterpretations = result;
-          if (this.config) {
-            this.tuioInterpretationIdx = this.config.interpretation as number;
+          if (this.config !== undefined && this.config !== null) {
+            this.tuioInterpretationIdx = this.config.interpretation;
           }
         },
         (error) => {
@@ -232,8 +229,8 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public updateTransportProtocol(idx: number): void {
     this.transportProtocolIdx = idx;
-    if (this.config) {
-      this.config.transport = idx as TransportProtocol;
+    if (this.config !== undefined && this.config !== null) {
+      this.config.transport = idx;
     }
   }
 
@@ -258,8 +255,8 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public updateTuioProtocolVersion(idx: number): void {
     this.tuioProtocolVersionIdx = idx;
-    if (this.config) {
-      this.config.protocol = idx as ProtocolVersion;
+    if (this.config !== undefined && this.config !== null) {
+      this.config.protocol = idx;
     }
   }
 
@@ -284,8 +281,8 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public updateTuioInterpretation(idx: number): void {
     this.tuioInterpretationIdx = idx;
-    if (this.config) {
-      this.config.interpretation = idx as TuioInterpretation;
+    if (this.config !== undefined && this.config !== null) {
+      this.config.interpretation = idx;
     }
   }
 
@@ -328,13 +325,13 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public isConfigValid(): boolean {
     return (
-      this.config != null &&
-      typeof this.config.serverAddress === 'string' &&
-      this.config.serverAddress.trim() !== '' &&
-      this.config.serverPort > 0 &&
-      this.transportProtocolIdx >= 0 &&
-      this.tuioInterpretationIdx >= 0 &&
-      this.tuioProtocolVersionIdx >= 0
+      this.config != null
+      && typeof this.config.serverAddress === 'string'
+      && this.config.serverAddress.trim() !== ''
+      && this.config.serverPort > 0
+      && this.transportProtocolIdx >= 0
+      && this.tuioInterpretationIdx >= 0
+      && this.tuioProtocolVersionIdx >= 0
     );
   }
 }

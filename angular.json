@@ -187,14 +187,10 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tools/ReFlex.TrackingServer/ClientApp/src/tsconfig.app.json",
-              "tools/ReFlex.TrackingServer/ClientApp/src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "tools/ReFlex.TrackingServer/ClientApp/**/node_modules/**"
+            "lintFilePatterns": [
+              "tools/ReFlex.TrackingServer/ClientApp/**/*.ts"
             ]
           }
         }

@@ -2,7 +2,7 @@ import {
   Component,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { BehaviorSubject } from 'rxjs';
@@ -14,14 +14,14 @@ import { AsyncPipe } from '@angular/common';
   imports: [SettingsGroupComponent, AsyncPipe],
   templateUrl: './introduction.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './introduction.component.scss',
+  styleUrl: './introduction.component.scss'
 })
 export class IntroductionComponent implements OnInit {
-  private readonly dataService = inject(DataService);
 
   public angularJson: BehaviorSubject<string> = new BehaviorSubject('');
   public packageJson: BehaviorSubject<string> = new BehaviorSubject('');
   public componentImports: BehaviorSubject<string> = new BehaviorSubject('');
+  private readonly dataService = inject(DataService);
 
   public ngOnInit(): void {
     this.dataService.loadAngularJson().subscribe({
@@ -29,7 +29,7 @@ export class IntroductionComponent implements OnInit {
         this.angularJson.next(result);
       },
       error: (error) =>
-        console.error('could not load angular.json text', error),
+        console.error('could not load angular.json text', error)
     });
 
     this.dataService.loadPackageJson().subscribe({
@@ -37,7 +37,7 @@ export class IntroductionComponent implements OnInit {
         this.packageJson.next(result);
       },
       error: (error) =>
-        console.error('could not load angular.json text', error),
+        console.error('could not load angular.json text', error)
     });
 
     this.dataService.loadComponentImports().subscribe({
@@ -45,7 +45,7 @@ export class IntroductionComponent implements OnInit {
         this.componentImports.next(result);
       },
       error: (error) =>
-        console.error('could not load component imports text', error),
+        console.error('could not load component imports text', error)
     });
   }
 }

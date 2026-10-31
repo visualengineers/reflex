@@ -65,7 +65,7 @@ export class ConfigurationService implements OnDestroy {
     this.camera =  {
       model: 'Azure Kinect DK',
       resolution: '640 × 576'
-    },
+    };
     this.circleSize = {
       min: 20,
       max: 400
@@ -142,7 +142,7 @@ export class ConfigurationService implements OnDestroy {
       if (settings !== null) {
         timestamp = JSON.parse(settings)?.BACKUP_TIMESTAMP as Date;
       }
-    } catch (e) {
+    } catch {
         timestamp = null;
     }
 

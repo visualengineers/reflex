@@ -5,7 +5,7 @@ import {
   OnInit,
   OnDestroy,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TrackingService } from '../../shared/services/tracking.service';
@@ -16,11 +16,11 @@ import {
   CameraConfiguration,
   DepthCamera,
   DepthCameraState,
-  TrackingConfigState,
+  TrackingConfigState
 } from '@reflex/shared-types';
 import {
   PanelHeaderComponent,
-  ValueSelectionComponent,
+  ValueSelectionComponent
 } from '@reflex/angular-components/dist';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -42,14 +42,10 @@ import { DepthImageComponent } from './depth-image/depth-image.component';
     RecordingComponent,
     SettingsComponent,
     PointCloudComponent,
-    DepthImageComponent,
-  ],
+    DepthImageComponent
+  ]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly trackingService = inject(TrackingService);
-  private readonly settingsService = inject(SettingsService);
-  private readonly logService = inject(LogService);
 
   public cameras = new Array<DepthCamera>();
   public configurations = new Array<CameraConfiguration>();
@@ -67,6 +63,10 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   public displayPointCloud = true;
   public displayDepthImage = true;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly trackingService = inject(TrackingService);
+  private readonly settingsService = inject(SettingsService);
+  private readonly logService = inject(LogService);
 
   private statusSubscription?: Subscription;
   private configSubscription?: Subscription;
@@ -86,7 +86,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
-        },
+        }
       });
 
     this.autostartSubscription = this.trackingService
@@ -99,7 +99,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
-        },
+        }
       });
 
     this.statusSubscription = this.trackingService
@@ -113,7 +113,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
-        },
+        }
       });
 
     this.selectedCamSubscription = this.trackingService
@@ -126,7 +126,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.logService.sendErrorLog(`${error}`);
           console.error(error);
-        },
+        }
       });
 
     this.settingsService.update();
@@ -176,13 +176,13 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   public updateState(): void {
-    this.canStart =
-      this.selectedCameraIdx !== undefined &&
-      this.selectedCameraIdx >= 0 &&
-      this.selectedCameraIdx < this.cameras.length &&
-      this.selectedConfigurationIdx !== undefined &&
-      this.selectedConfigurationIdx >= 0 &&
-      this.selectedConfigurationIdx < this.configurations.length;
+    this.canStart
+      = this.selectedCameraIdx !== undefined
+      && this.selectedCameraIdx >= 0
+      && this.selectedCameraIdx < this.cameras.length
+      && this.selectedConfigurationIdx !== undefined
+      && this.selectedConfigurationIdx >= 0
+      && this.selectedConfigurationIdx < this.configurations.length;
   }
 
   public getConfigDescription(cfg: CameraConfiguration): string {
@@ -217,7 +217,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          this.autostart = result as boolean;
+          this.autostart = result;
           this.settingsService.update();
         },
         (error) => {
@@ -236,8 +236,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   private updateSelectedCamera(selectedCam: DepthCamera): void {
-    this.selectedCameraIdx =
-      selectedCam === null
+    this.selectedCameraIdx
+      = selectedCam === null
         ? -1
         : this.cameras.map((cam) => cam.id).indexOf(selectedCam.id);
 
@@ -247,12 +247,12 @@ export class TrackingComponent implements OnInit, OnDestroy {
   private updateSelectedCameraConfig(
     selectedCamConfig: CameraConfiguration
   ): void {
-    this.selectedConfigurationIdx =
-      selectedCamConfig === null
+    this.selectedConfigurationIdx
+      = selectedCamConfig === null
         ? -1
         : this.configurations
-            .map((config) => this.getConfigDescription(config))
-            .indexOf(this.getConfigDescription(selectedCamConfig));
+          .map((config) => this.getConfigDescription(config))
+          .indexOf(this.getConfigDescription(selectedCamConfig));
     this.updateState();
   }
 
@@ -265,16 +265,16 @@ export class TrackingComponent implements OnInit, OnDestroy {
     }
 
     const cameraDesc = status.depthCameraStateName ?? 'no camera selected';
-    const configDesc =
-      status.isCameraSelected && status.selectedConfigurationName
+    const configDesc
+      = status.isCameraSelected && status.selectedConfigurationName
         ? status.selectedConfigurationName
         : 'no config selected';
 
     this.statusText = `${cameraDesc}`;
     this.statusDetailsText = `${configDesc}`;
 
-    this.isActive =
-      status.depthCameraStateName ===
-      DepthCameraState[DepthCameraState.Streaming];
+    this.isActive
+      = status.depthCameraStateName
+      === DepthCameraState[DepthCameraState.Streaming];
   }
 }

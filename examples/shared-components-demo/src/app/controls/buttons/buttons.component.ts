@@ -7,7 +7,7 @@ import { SettingsGroupComponent } from '@reflex/angular-components/dist';
   imports: [FormsModule, SettingsGroupComponent],
   templateUrl: './buttons.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './buttons.component.scss',
+  styleUrl: './buttons.component.scss'
 })
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ButtonsComponent {}

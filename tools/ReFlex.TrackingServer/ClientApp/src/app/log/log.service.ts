@@ -9,11 +9,11 @@ import { JsonSimpleValue, LogMessageDetail } from '@reflex/shared-types';
   providedIn: 'root'
 })
 export class LogService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject(BASE_URL);
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   protected readonly headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(BASE_URL);
 
   private readonly baseRoute = 'api/Log';
   private readonly route = `${this.baseUrl}${this.baseRoute}/Messages/`;

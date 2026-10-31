@@ -4,7 +4,7 @@ import {
   Component,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
@@ -24,22 +24,22 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     MeasureControlsComponent,
-    MeasureGridComponent,
-  ],
+    MeasureGridComponent
+  ]
 })
 export class MeasureSurfaceComponent implements OnInit {
+
+  public fullScreen = false;
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
-
-  public fullScreen = false;
 
   private frameSizeSubscription?: Subscription;
   private frameSize: FrameSizeDefinition = {
     top: 0,
     left: 0,
     width: 500,
-    height: 400,
+    height: 400
   };
 
   public ngOnInit(): void {
@@ -68,7 +68,7 @@ export class MeasureSurfaceComponent implements OnInit {
         top: `${this.frameSize.top}px`,
         left: `${this.frameSize.left}px`,
         width: `${this.frameSize.width}px`,
-        height: `${this.frameSize.height}px`,
+        height: `${this.frameSize.height}px`
       };
     }
 
@@ -77,7 +77,7 @@ export class MeasureSurfaceComponent implements OnInit {
       top: `0`,
       left: `0`,
       width: `100%`,
-      height: `40vh`,
+      height: `40vh`
     };
   }
 }

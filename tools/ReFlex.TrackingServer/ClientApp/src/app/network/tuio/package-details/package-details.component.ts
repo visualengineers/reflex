@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { TuioPackageDetails } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
@@ -16,18 +16,19 @@ import { TuioService } from 'src/shared/services/tuio.service';
   selector: 'app-package-details',
   templateUrl: './package-details.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./package-details.component.scss'],
+  styleUrls: ['./package-details.component.scss']
 })
 export class PackageDetailsComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly tuioService = inject(TuioService);
-  private readonly logService = inject(LogService);
 
   public details: TuioPackageDetails = {
     sessionId: 0,
     frameId: 0,
-    packageContent: '',
+    packageContent: ''
   };
+
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly tuioService = inject(TuioService);
+  private readonly logService = inject(LogService);
 
   private packageSubscription?: Subscription;
 

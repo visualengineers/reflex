@@ -5,12 +5,12 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   SettingsGroupComponent,
-  PanelHeaderComponent,
+  PanelHeaderComponent
 } from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 
@@ -20,20 +20,21 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
     CommonModule,
     FormsModule,
     SettingsGroupComponent,
-    PanelHeaderComponent,
+    PanelHeaderComponent
   ],
   templateUrl: './panel.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './panel.component.scss',
+  styleUrl: './panel.component.scss'
 })
 export class PanelComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
   public toggleHeaderActive = true;
   public canToggleHeader = true;
   public toggleToast = '';
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
-  private readonly remainingToast: BehaviorSubject<number> =
-    new BehaviorSubject(0);
+  private readonly remainingToast: BehaviorSubject<number>
+    = new BehaviorSubject(0);
+
   private readonly notification$: Subscription = new Subscription();
 
   public ngOnInit(): void {
@@ -42,7 +43,7 @@ export class PanelComponent implements OnInit, OnDestroy {
         next: () => {
           this.toggleToast = '';
           this.changeDetector.markForCheck();
-        },
+        }
       })
     );
   }
@@ -60,7 +61,7 @@ export class PanelComponent implements OnInit, OnDestroy {
         .pipe(filter(() => this.remainingToast.getValue() > 0))
         .subscribe({
           complete: () =>
-            this.remainingToast.next(this.remainingToast.getValue() - 1),
+            this.remainingToast.next(this.remainingToast.getValue() - 1)
         })
     );
   }

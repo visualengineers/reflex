@@ -417,7 +417,7 @@ describe('TrackingComponent', () => {
     expect(component.selectedCameraIdx).toBe(1);
     expect(component.selectedConfigurationIdx).toBe(0);
 
-    trackingService.toggleCamera.and.returnValue(of(true));
+    trackingService.toggleCamera.and.returnValue(of(202));
 
     settingsService.update.calls.reset();
 

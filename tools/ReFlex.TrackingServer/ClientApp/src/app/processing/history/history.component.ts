@@ -6,7 +6,7 @@ import {
   OnDestroy,
   OnInit,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { InteractionFrame, InteractionHistory } from '@reflex/shared-types';
@@ -20,16 +20,16 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, SettingsGroupComponent],
+  imports: [CommonModule, SettingsGroupComponent]
 })
 export class HistoryComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly processingService = inject(ProcessingService);
-  private readonly logService = inject(LogService);
 
   public frames: Array<InteractionFrame> = [];
 
   public history: Array<InteractionHistory> = [];
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly processingService = inject(ProcessingService);
+  private readonly logService = inject(LogService);
 
   private framesSubscription?: Subscription;
   private historySubscription?: Subscription;
@@ -44,8 +44,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? frames$
-            : NEVER.pipe<Array<InteractionFrame>>(startWith([]))
-        )
+            : NEVER.pipe<Array<InteractionFrame>>(startWith([])))
       )
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
@@ -62,8 +61,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? history$
-            : NEVER.pipe<Array<InteractionHistory>>(startWith([]))
-        )
+            : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
       )
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(

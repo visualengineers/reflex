@@ -64,7 +64,7 @@ export class TrackingService extends SignalRBaseService<TrackingConfigState> {
     });
   }
 
-  public setAutostartEnabled(enabled: boolean): Observable<Object> {
+  public setAutostartEnabled(enabled: boolean): Observable<boolean> {
     return this.http.put<boolean>(
       this.baseUrl + this.setAutostartRoute,
       enabled,
@@ -75,7 +75,7 @@ export class TrackingService extends SignalRBaseService<TrackingConfigState> {
   public toggleCamera(
     cameraIdx: number,
     configIdx: number
-  ): Observable<Object> {
+  ): Observable<number> {
     return this.http.put<number>(
       `${this.baseUrl}${this.toggleTrackingRoute}${cameraIdx}`,
       configIdx,

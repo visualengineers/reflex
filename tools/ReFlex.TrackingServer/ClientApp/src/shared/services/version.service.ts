@@ -1,11 +1,15 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+interface ClientPackageInfo {
+  name: string;
+  version: string;
+  dependencies: Record<string, string>;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -22,25 +26,14 @@ export class VersionInfoService {
   }
 
   public getClientVersionInfo(): Observable<Array<AppVersionInfo>> {
-    return this.http
-      .get(this.packageFile)
-      .pipe(
-        map((result: any) =>
-          Object.keys(result['dependencies']).map((value) => ({
-            name: value,
-            version: result['dependencies'][value]
-          })))
-      );
+    return this.http.get<ClientPackageInfo>(this.packageFile).pipe(
+      map((result) => Object.entries(result.dependencies).map(([name, version]) => ({ name, version })))
+    );
   }
 
   public getAppVersionInfo(): Observable<AppVersionInfo> {
-    return this.http
-      .get(this.packageFile)
-      .pipe(
-        map((result: any) => ({
-          name: result['name'],
-          version: result['version']
-        }))
-      );
+    return this.http.get<ClientPackageInfo>(this.packageFile).pipe(
+      map(({ name, version }) => ({ name, version }))
+    );
   }
 }

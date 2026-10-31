@@ -6,7 +6,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
   selector: 'app-root',
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [RouterOutlet, NavMenuComponent],
+  imports: [RouterOutlet, NavMenuComponent]
 })
 export class App {
   public title = 'ReFlex TrackingServer';

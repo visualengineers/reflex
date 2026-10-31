@@ -16,10 +16,10 @@ import { PerformanceData } from '@reflex/shared-types';
   providedIn: 'root'
 })
 export class PerformanceService {
-  private readonly baseUrl = inject(BASE_URL);
-  private readonly logService = inject(LogService);
 
   protected isConnected = new BehaviorSubject<boolean>(false);
+  private readonly baseUrl = inject(BASE_URL);
+  private readonly logService = inject(LogService);
 
   private readonly connection: signalR.HubConnection;
   private readonly startAfterConnected$: Observable<void>;
@@ -27,7 +27,7 @@ export class PerformanceService {
   private readonly performanceData$: Observable<PerformanceData>;
   private readonly isStarted = new BehaviorSubject<boolean>(false);
 
-  // eslint-disable-next-line new-cap
+
   public constructor() {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}perfhub`)

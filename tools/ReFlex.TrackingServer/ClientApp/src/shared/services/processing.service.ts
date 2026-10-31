@@ -30,7 +30,7 @@ export class ProcessingService extends SignalRBaseService<string> {
   private readonly setObserverTypeRoute = `${this.processingRoute}SelectObserverType`;
   private readonly toggleInteractionProcessingRoute = `${this.processingRoute}ToggleInteractionProcessing/`;
 
-  // eslint-disable-next-line new-cap
+
   public constructor() {
     const baseUrl = inject(BASE_URL);
     const logService = inject(LogService);

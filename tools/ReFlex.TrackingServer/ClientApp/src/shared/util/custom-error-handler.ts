@@ -14,7 +14,10 @@ export class CustomErrorHandler implements ErrorHandler {
       return;
     }
 
-    this.logService.sendErrorLog(`${error} - ${JSON.stringify(error)}`);
+    const description = error instanceof Error
+      ? error.toString()
+      : typeof error === 'string' ? error : JSON.stringify(error);
+    this.logService.sendErrorLog(`${description} - ${JSON.stringify(error)}`);
 
     console.error(error);
   }

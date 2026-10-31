@@ -9,7 +9,7 @@ import {
   OnInit,
   ViewChild,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription, combineLatest, interval } from 'rxjs';
@@ -26,13 +26,13 @@ import {
   LimitationFilterType,
   PerformanceData,
   PerformanceDataItem,
-  TrackingServerAppSettings,
+  TrackingServerAppSettings
 } from '@reflex/shared-types';
 import {
   OptionCheckboxComponent,
   SettingsGroupComponent,
   ValueSelectionComponent,
-  ValueSliderComponent,
+  ValueSliderComponent
 } from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { PerformanceVisualizationComponent } from '../performance-visualization/performance-visualization.component';
@@ -48,21 +48,15 @@ import { CommonModule } from '@angular/common';
     ValueSliderComponent,
     ValueSelectionComponent,
     OptionCheckboxComponent,
-    PerformanceVisualizationComponent,
+    PerformanceVisualizationComponent
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: true,
+  standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly baseUrl = inject(BASE_URL);
-  private readonly settingsService = inject(SettingsService);
-  private readonly logService = inject(LogService);
-  private readonly trackingService = inject(TrackingService);
-  private readonly performanceService = inject(PerformanceService);
 
   @ViewChild('json')
-  public jsonElement?: ElementRef;
+  public jsonElement?: ElementRef<HTMLTextAreaElement>;
 
   public settings: TrackingServerAppSettings = DEFAULT_SETTINGS;
 
@@ -84,7 +78,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     'valueFilter',
     'thresholdFilter',
     'boxFilter',
-    'updatePointCloud',
+    'updatePointCloud'
   ];
 
   public performanceDataProcessingGroups = [
@@ -92,11 +86,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
     'processingUpdate',
     'processingConvert',
     'processingSmoothing',
-    'processingExtremum',
+    'processingExtremum'
   ];
 
   public filters: Array<JsonSimpleValue> = Object.values(FilterType)
-    .filter((k) => k === (Number(k) as FilterType))
+    .filter((k) => typeof k === 'number')
     .map((x) => ({ name: FilterType[Number(x)], value: x }));
 
   public selectedFilterIdx = -1;
@@ -104,19 +98,25 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public limitationFilters: Array<JsonSimpleValue> = Object.values(
     LimitationFilterType
   )
-    .filter((k) => k === (Number(k) as LimitationFilterType))
+    .filter((k) => typeof k === 'number')
     .map((x) => ({ name: LimitationFilterType[Number(x)], value: x }));
 
   public selectedLimitationFilterIdx = -1;
 
   public checks: Array<JsonSimpleValue> = Object.values(ExtremumTypeCheckMethod)
-    .filter((k) => k === (Number(k) as ExtremumTypeCheckMethod))
+    .filter((k) => typeof k === 'number')
     .map((x) => ({ name: ExtremumTypeCheckMethod[Number(x)], value: x }));
 
   public selectedExtremumCheckIdx = -1;
 
   public showSettingsJSON = false;
   public settingsJSON = '';
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly baseUrl = inject(BASE_URL);
+  private readonly settingsService = inject(SettingsService);
+  private readonly logService = inject(LogService);
+  private readonly trackingService = inject(TrackingService);
+  private readonly performanceService = inject(PerformanceService);
 
   private settingsSubscription?: Subscription;
   private trackingStatusSubscription?: Subscription;
@@ -124,11 +124,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private limitationFilterStatePolling?: Subscription;
 
   private selectedFilterType: FilterType = FilterType.None;
-  private selectedLimitationFilterType: LimitationFilterType =
-    LimitationFilterType.LimitationFilter;
+  private selectedLimitationFilterType: LimitationFilterType
+    = LimitationFilterType.LimitationFilter;
 
-  private selectedCheckType: ExtremumTypeCheckMethod =
-    ExtremumTypeCheckMethod.Global;
+  private selectedCheckType: ExtremumTypeCheckMethod
+    = ExtremumTypeCheckMethod.Global;
 
   public ngOnInit(): void {
     this.settingsSubscription = this.settingsService
@@ -137,12 +137,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           this.settings = this.validateSettings(result);
-          this.selectedFilterIdx =
-            this.settings.filterSettingValues.smoothingValues.type;
-          this.selectedExtremumCheckIdx =
-            this.settings.filterSettingValues.extremumSettings.checkMethod;
-          this.selectedLimitationFilterIdx =
-            this.settings.filterSettingValues.limitationFilterType;
+          this.selectedFilterIdx
+            = this.settings.filterSettingValues.smoothingValues.type;
+          this.selectedExtremumCheckIdx
+            = this.settings.filterSettingValues.extremumSettings.checkMethod;
+          this.selectedLimitationFilterIdx
+            = this.settings.filterSettingValues.limitationFilterType;
         },
         (error) => {
           console.error(error);
@@ -157,9 +157,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          this.isTrackingActive =
-            result.depthCameraStateName ===
-            DepthCameraState[DepthCameraState.Streaming];
+          this.isTrackingActive
+            = result.depthCameraStateName
+            === DepthCameraState[DepthCameraState.Streaming];
         },
         (error) => {
           console.error(error);
@@ -185,9 +185,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         switchMap(() =>
           combineLatest([
             this.settingsService.isLimitationFilterInitializing(),
-            this.settingsService.isLimitationFilterInitialized(),
-          ])
-        )
+            this.settingsService.isLimitationFilterInitialized()
+          ]))
       )
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
@@ -449,17 +448,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveExtremumCheckType(): void {
     if (
-      this.selectedExtremumCheckIdx <= 0 ||
-      this.selectedExtremumCheckIdx >= this.checks.length
+      this.selectedExtremumCheckIdx <= 0
+      || this.selectedExtremumCheckIdx >= this.checks.length
     ) {
       this.selectedCheckType = ExtremumTypeCheckMethod.Global;
     } else {
       this.selectedCheckType = this
-        .selectedExtremumCheckIdx as ExtremumTypeCheckMethod;
+        .selectedExtremumCheckIdx;
     }
 
-    this.settings.filterSettingValues.extremumSettings.checkMethod =
-      this.selectedCheckType;
+    this.settings.filterSettingValues.extremumSettings.checkMethod
+      = this.selectedCheckType;
 
     this.saveExtremumValues();
   }
@@ -478,7 +477,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error(error);
           this.logService.sendErrorLog(`${error}`);
-        },
+        }
       });
   }
 
@@ -594,33 +593,33 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterType(): void {
     if (
-      this.selectedFilterIdx <= 0 ||
-      this.selectedFilterIdx >= this.filters.length
+      this.selectedFilterIdx <= 0
+      || this.selectedFilterIdx >= this.filters.length
     ) {
       this.selectedFilterType = FilterType.None;
     } else {
-      this.selectedFilterType = this.selectedFilterIdx as FilterType;
+      this.selectedFilterType = this.selectedFilterIdx;
     }
 
-    this.settings.filterSettingValues.smoothingValues.type =
-      this.selectedFilterType;
+    this.settings.filterSettingValues.smoothingValues.type
+      = this.selectedFilterType;
 
     this.saveSmoothingValues();
   }
 
   public saveLimitationFilterType(): void {
     if (
-      this.selectedLimitationFilterIdx <= 0 ||
-      this.selectedLimitationFilterIdx >= this.limitationFilters.length
+      this.selectedLimitationFilterIdx <= 0
+      || this.selectedLimitationFilterIdx >= this.limitationFilters.length
     ) {
       this.selectedLimitationFilterType = LimitationFilterType.LimitationFilter;
     } else {
       this.selectedLimitationFilterType = this
-        .selectedLimitationFilterIdx as LimitationFilterType;
+        .selectedLimitationFilterIdx;
     }
 
-    this.settings.filterSettingValues.limitationFilterType =
-      this.selectedLimitationFilterType;
+    this.settings.filterSettingValues.limitationFilterType
+      = this.selectedLimitationFilterType;
 
     this.settingsService
       .setLimitationFilterType(this.settings.filterSettingValues)
@@ -663,16 +662,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (input.files === null) {
       return;
     }
-    const file = input.files[0];
+    const [file] = input.files;
 
     const fileReader = new FileReader();
     fileReader.onload = (): void => {
       if (typeof fileReader.result === 'string') {
         const settings = JSON.parse(
           fileReader.result
-        ) as TrackingServerAppSettings;
+        ) as TrackingServerAppSettings | null;
 
-        if (settings) {
+        if (settings !== null) {
           this.saveSettings(settings);
         } else {
           this.logService.sendErrorLog(
@@ -687,122 +686,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   private processPerformanceData(data: PerformanceData): void {
     data.data.forEach((elem) => {
-      const filterValid =
-        (elem.boxFilter ?? 0) > 0 ||
-        (elem.limitationFilter ?? 0) > 0 ||
-        (elem.thresholdFilter ?? 0) > 0 ||
-        (elem.updatePointCloud ?? 0) > 0 ||
-        (elem.valueFilter ?? 0) > 0;
-      const processValid =
-        (elem.processingConvert ?? 0) > 0 ||
-        (elem.processingExtremum ?? 0) > 0 ||
-        (elem.processingPreparation ?? 0) > 0 ||
-        (elem.processingSmoothing ?? 0) > 0 ||
-        (elem.processingUpdate ?? 0) > 0;
-
-      if (filterValid) {
-        elem.totalFilter =
-          (elem.boxFilter ?? 0) +
-          (elem.limitationFilter ?? 0) +
-          (elem.thresholdFilter ?? 0) +
-          (elem.updatePointCloud ?? 0) +
-          (elem.valueFilter ?? 0);
-
-        const existingIdxData = this.performanceDataFilter.data.findIndex(
-          (item) => item.frameId === elem.frameId
-        );
-        if (existingIdxData < 0) {
-          this.performanceDataFilter.data.push(elem);
-        } else {
-          this.performanceDataFilter.data[existingIdxData] = elem;
-        }
-        const existingIdx = this.performanceDataFilterVis.findIndex(
-          (item) => item.frameId === elem.frameId
-        );
-        if (existingIdx < 0) {
-          this.performanceDataFilterVis.push(elem);
-        } else {
-          this.performanceDataFilterVis[existingIdx] = elem;
-        }
-        this.performanceDataFilterVis = this.performanceDataFilterVis
-          .sort((a, b) => a.frameId - b.frameId)
-          .slice(-100);
-      }
-
-      if (processValid) {
-        elem.totalProcessing =
-          (elem.processingConvert ?? 0) +
-          (elem.processingExtremum ?? 0) +
-          (elem.processingPreparation ?? 0) +
-          (elem.processingSmoothing ?? 0) +
-          (elem.processingUpdate ?? 0);
-
-        const existingIdxData = this.performanceDataProcess.data.findIndex(
-          (item) => item.frameId === elem.frameId
-        );
-        if (existingIdxData < 0) {
-          this.performanceDataProcess.data.push(elem);
-        } else {
-          this.performanceDataProcess.data[existingIdxData] = elem;
-        }
-
-        const existingIdx = this.performanceDataProcessingVis.findIndex(
-          (item) => item.frameId === elem.frameId
-        );
-        if (existingIdx < 0) {
-          this.performanceDataProcessingVis.push(elem);
-        } else {
-          this.performanceDataProcessingVis[existingIdx] = elem;
-        }
-
-        this.performanceDataProcessingVis = this.performanceDataProcessingVis
-          .sort((a, b) => a.frameId - b.frameId)
-          .slice(-200);
-      }
-
-      const existingIdxEnd = this.performanceDataCompleteTimeFrame.data.filter(
-        (item) => item.frameId === elem.frameId && item.frameEnd > elem.frameEnd
-      );
-      if (existingIdxEnd.length > 0) {
-        elem.frameEnd = existingIdxEnd.sort(
-          (a, b) => a.frameEnd - b.frameEnd
-        )[0].frameEnd;
-      }
-
-      const existingIdxStart =
-        this.performanceDataCompleteTimeFrame.data.filter(
-          (item) =>
-            item.frameId === elem.frameId && item.frameStart < elem.frameStart
-        );
-      if (existingIdxStart.length > 0) {
-        elem.frameStart = existingIdxStart.sort(
-          (a, b) => b.frameStart - a.frameStart
-        )[0].frameStart;
-      }
-
-      elem.totalFrameTime = Math.abs(elem.frameEnd - elem.frameStart) / 1000.0;
-
-      this.performanceDataCompleteTimeFrame.data.push(elem);
-
-      if (elem.totalFrameTime > 0 && elem.totalFrameTime < 100000) {
-        const existingIdx = this.performanceDataCompleteTimeFrameVis.findIndex(
-          (item) => item.frameId === elem.frameId
-        );
-        if (existingIdx < 0) {
-          this.performanceDataCompleteTimeFrameVis.push(elem);
-        } else {
-          this.performanceDataCompleteTimeFrameVis[existingIdx] = elem;
-        }
-      }
-
-      this.performanceDataCompleteTimeFrameVis =
-        this.performanceDataCompleteTimeFrameVis
-          .sort((a, b) => a.frameId - b.frameId)
-          .slice(-200);
+      this.updateFilterPerformance(elem);
+      this.updateProcessingPerformance(elem);
+      this.updateFramePerformance(elem);
     });
 
-    this.performanceDataCompleteTimeFrame.data =
-      this.performanceDataCompleteTimeFrame.data
+    this.performanceDataCompleteTimeFrame.data
+      = this.performanceDataCompleteTimeFrame.data
         .sort((a, b) => a.frameId - b.frameId)
         .slice(-1000);
     this.performanceDataFilter.data = this.performanceDataFilter.data
@@ -813,42 +703,144 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .slice(-7);
   }
 
+  private updateFilterPerformance(elem: PerformanceDataItem): void {
+    const filterValid
+      = (elem.boxFilter ?? 0) > 0
+      || (elem.limitationFilter ?? 0) > 0
+      || (elem.thresholdFilter ?? 0) > 0
+      || (elem.updatePointCloud ?? 0) > 0
+      || (elem.valueFilter ?? 0) > 0;
+    if (filterValid) {
+      elem.totalFilter
+        = (elem.boxFilter ?? 0)
+        + (elem.limitationFilter ?? 0)
+        + (elem.thresholdFilter ?? 0)
+        + (elem.updatePointCloud ?? 0)
+        + (elem.valueFilter ?? 0);
+
+      const existingIdxData = this.performanceDataFilter.data.findIndex(
+        (item) => item.frameId === elem.frameId
+      );
+      if (existingIdxData < 0) {
+        this.performanceDataFilter.data.push(elem);
+      } else {
+        this.performanceDataFilter.data[existingIdxData] = elem;
+      }
+      const existingIdx = this.performanceDataFilterVis.findIndex(
+        (item) => item.frameId === elem.frameId
+      );
+      if (existingIdx < 0) {
+        this.performanceDataFilterVis.push(elem);
+      } else {
+        this.performanceDataFilterVis[existingIdx] = elem;
+      }
+      this.performanceDataFilterVis = this.performanceDataFilterVis
+        .sort((a, b) => a.frameId - b.frameId)
+        .slice(-100);
+    }
+  }
+
+  private updateProcessingPerformance(elem: PerformanceDataItem): void {
+    const processValid
+      = (elem.processingConvert ?? 0) > 0
+      || (elem.processingExtremum ?? 0) > 0
+      || (elem.processingPreparation ?? 0) > 0
+      || (elem.processingSmoothing ?? 0) > 0
+      || (elem.processingUpdate ?? 0) > 0;
+
+    if (processValid) {
+      elem.totalProcessing
+        = (elem.processingConvert ?? 0)
+        + (elem.processingExtremum ?? 0)
+        + (elem.processingPreparation ?? 0)
+        + (elem.processingSmoothing ?? 0)
+        + (elem.processingUpdate ?? 0);
+
+      const existingIdxData = this.performanceDataProcess.data.findIndex(
+        (item) => item.frameId === elem.frameId
+      );
+      if (existingIdxData < 0) {
+        this.performanceDataProcess.data.push(elem);
+      } else {
+        this.performanceDataProcess.data[existingIdxData] = elem;
+      }
+
+      const existingIdx = this.performanceDataProcessingVis.findIndex(
+        (item) => item.frameId === elem.frameId
+      );
+      if (existingIdx < 0) {
+        this.performanceDataProcessingVis.push(elem);
+      } else {
+        this.performanceDataProcessingVis[existingIdx] = elem;
+      }
+
+      this.performanceDataProcessingVis = this.performanceDataProcessingVis
+        .sort((a, b) => a.frameId - b.frameId)
+        .slice(-200);
+    }
+  }
+
+  private updateFramePerformance(elem: PerformanceDataItem): void {
+    const existingIdxEnd = this.performanceDataCompleteTimeFrame.data.filter(
+      (item) => item.frameId === elem.frameId && item.frameEnd > elem.frameEnd
+    );
+    if (existingIdxEnd.length > 0) {
+      elem.frameEnd = existingIdxEnd.sort(
+        (a, b) => a.frameEnd - b.frameEnd
+      )[0].frameEnd;
+    }
+
+    const existingIdxStart
+      = this.performanceDataCompleteTimeFrame.data.filter(
+        (item) =>
+          item.frameId === elem.frameId && item.frameStart < elem.frameStart
+      );
+    if (existingIdxStart.length > 0) {
+      elem.frameStart = existingIdxStart.sort(
+        (a, b) => b.frameStart - a.frameStart
+      )[0].frameStart;
+    }
+
+    elem.totalFrameTime = Math.abs(elem.frameEnd - elem.frameStart) / 1000.0;
+
+    this.performanceDataCompleteTimeFrame.data.push(elem);
+
+    if (elem.totalFrameTime > 0 && elem.totalFrameTime < 100000) {
+      const existingIdx = this.performanceDataCompleteTimeFrameVis.findIndex(
+        (item) => item.frameId === elem.frameId
+      );
+      if (existingIdx < 0) {
+        this.performanceDataCompleteTimeFrameVis.push(elem);
+      } else {
+        this.performanceDataCompleteTimeFrameVis[existingIdx] = elem;
+      }
+    }
+
+    this.performanceDataCompleteTimeFrameVis
+      = this.performanceDataCompleteTimeFrameVis
+        .sort((a, b) => a.frameId - b.frameId)
+        .slice(-200);
+  }
+
   /**
    * checks if parts of the config are null/undefined and replaces these parts with default values
    */
   private validateSettings(
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
-    if (!settings.filterSettingValues) {
-      settings.filterSettingValues = DEFAULT_SETTINGS.filterSettingValues;
-    }
+    settings.filterSettingValues ??= DEFAULT_SETTINGS.filterSettingValues;
 
-    if (!settings.calibrationValues) {
-      settings.calibrationValues = DEFAULT_SETTINGS.calibrationValues;
-    }
+    settings.calibrationValues ??= DEFAULT_SETTINGS.calibrationValues;
 
-    if (!settings.cameraConfigurationValues) {
-      settings.cameraConfigurationValues =
-        DEFAULT_SETTINGS.cameraConfigurationValues;
-    }
+    settings.cameraConfigurationValues ??= DEFAULT_SETTINGS.cameraConfigurationValues;
 
-    if (!settings.networkSettingValues) {
-      settings.networkSettingValues = DEFAULT_SETTINGS.networkSettingValues;
-    }
+    settings.networkSettingValues ??= DEFAULT_SETTINGS.networkSettingValues;
 
-    if (!settings.processingSettingValues) {
-      settings.processingSettingValues =
-        DEFAULT_SETTINGS.processingSettingValues;
-    }
+    settings.processingSettingValues ??= DEFAULT_SETTINGS.processingSettingValues;
 
-    if (!settings.remoteProcessingServiceSettingsValues) {
-      settings.remoteProcessingServiceSettingsValues =
-        DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
-    }
+    settings.remoteProcessingServiceSettingsValues ??= DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
 
-    if (!settings.tuioSettingValues) {
-      settings.tuioSettingValues = DEFAULT_SETTINGS.tuioSettingValues;
-    }
+    settings.tuioSettingValues ??= DEFAULT_SETTINGS.tuioSettingValues;
 
     return settings;
   }

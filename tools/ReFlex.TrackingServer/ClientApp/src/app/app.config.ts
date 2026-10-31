@@ -4,7 +4,7 @@ import {
   ErrorHandler,
   importProvidersFrom,
   provideBrowserGlobalErrorListeners,
-  provideZonelessChangeDetection,
+  provideZonelessChangeDetection
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -13,7 +13,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
-  withXhr,
+  withXhr
 } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CustomErrorHandler } from 'src/shared/util/custom-error-handler';
@@ -24,9 +24,7 @@ export function getBaseUrl(platformLocation: PlatformLocation): string {
   return platformLocation.getBaseHrefFromDOM();
 }
 
-const providers = [
-  { provide: BASE_URL, useFactory: getBaseUrl, deps: [PlatformLocation] },
-];
+const providers = [{ provide: BASE_URL, useFactory: getBaseUrl, deps: [PlatformLocation] }];
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,6 +34,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ErrorHandler, useClass: CustomErrorHandler },
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-  ],
+    provideRouter(routes)
+  ]
 };

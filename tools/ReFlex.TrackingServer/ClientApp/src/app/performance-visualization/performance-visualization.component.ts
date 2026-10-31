@@ -4,20 +4,23 @@ import {
   input,
   OnChanges,
   ViewChild,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { PerformanceDataItem } from '@reflex/shared-types';
 import * as d3 from 'd3';
+
+type ChartSvg = d3.Selection<SVGSVGElement, unknown, HTMLElement, unknown>;
+type ChartScale = d3.ScaleLinear<number, number>;
 
 @Component({
   selector: 'app-performance-visualization',
   templateUrl: './performance-visualization.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./performance-visualization.component.scss'],
+  styleUrls: ['./performance-visualization.component.scss']
 })
 export class PerformanceVisualizationComponent implements OnChanges {
   @ViewChild('panel')
-  public d3Panel!: ElementRef;
+  public d3Panel!: ElementRef<HTMLDivElement>;
 
   public readonly data = input<Array<PerformanceDataItem>>([]);
 
@@ -52,28 +55,14 @@ export class PerformanceVisualizationComponent implements OnChanges {
     this.updateIdx = 0;
 
     const entries = this.data().length;
-    const isProcessingGraph = this.isProcessingGraph();
-    if (isProcessingGraph) {
-      // const prep = this.data.map((item) => item.processingPreparation ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
-      // const upd = this.data.map((item) => item.processingUpdate ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
-      // const conv = this.data.map((item) => item.processingConvert ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
-      // const smooth = this.data.map((item) => item.processingSmoothing ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
-      // const extr = this.data.map((item) => item.processingExtremum ?? 0).reduce((prev, curr) => prev + curr, 0) / entries;
-      this.average =
-        entries > 0
-          ? this.data()
-              .map((item) => item.totalProcessing ?? 0)
-              .reduce((prev, curr) => prev + curr, 0) / entries
-          : 0;
-    } else {
-      this.average =
-        entries > 0
-          ? this.data()
-              .map((item) => item.totalFilter ?? 0)
-              .reduce((prev, curr) => prev + curr, 0) / entries
-          : 0;
-    }
+    const total = this.isProcessingGraph() ? 'totalProcessing' : 'totalFilter';
+    this.average = entries > 0
+      ? this.data().reduce((sum, item) => sum + (item[total] ?? 0), 0) / entries
+      : 0;
+    this.renderChart();
+  }
 
+  private renderChart(): void {
     d3.selectAll(`#${this.visId()} > *`).remove();
 
     this.width = this.d3Panel.nativeElement.clientWidth;
@@ -89,8 +78,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
       .style('-webkit-tap-highlight-color', 'transparent')
       .style('overflow', 'visible')
       .on('pointerenter pointermove', (event: Event) =>
-        this.pointermoved(event)
-      )
+        this.pointermoved(event))
       .on('pointerleave', () => this.pointerleft())
       .on('touchstart', (event) => event.preventDefault());
 
@@ -112,8 +100,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
       .domain([
         0,
         d3.max(this.data(), (d) =>
-          this.isProcessingGraph() ? d.totalProcessing : d.totalFilter
-        ) ?? 100,
+          this.isProcessingGraph() ? d.totalProcessing : d.totalFilter) ?? 100
       ]);
 
     svg
@@ -125,11 +112,10 @@ export class PerformanceVisualizationComponent implements OnChanges {
           .selectAll('.tick line')
           .clone()
           .attr('x2', this.width)
-          .attr('stroke-opacity', 0.2)
-      );
+          .attr('stroke-opacity', 0.2));
 
     const area = d3
-      .area()
+      .area<d3.SeriesPoint<PerformanceDataItem>>()
       .x((d, i) => x(i))
       .y0((d) => y(d[0]))
       .y1((d) => y(d[1]));
@@ -143,9 +129,13 @@ export class PerformanceVisualizationComponent implements OnChanges {
       .attr('class', 'valgroup')
       .style('fill', (d, i) => colors[i]);
 
-    // @ts-ignore
     valueGroups.append('path').attr('d', (d) => area(d));
 
+    this.drawAverage(svg, x, y);
+    this.drawTooltip(svg, x, y);
+  }
+
+  private drawAverage(svg: ChartSvg, x: ChartScale, y: ChartScale): void {
     const yAvg = y(this.average);
 
     // draw average line
@@ -179,9 +169,8 @@ export class PerformanceVisualizationComponent implements OnChanges {
           .append('tspan')
           .attr('x', 0)
           .attr('y', (n, i) => `${i * 1.1}em`)
-          .attr('font-weight', (n, i) => (i ? null : 'bold'))
-          .text((d) => d)
-      );
+          .attr('font-weight', (n, i) => i ? null : 'bold')
+          .text((d) => d));
 
     avgText.attr(
       'transform',
@@ -190,11 +179,14 @@ export class PerformanceVisualizationComponent implements OnChanges {
 
     avgBg.attr('transform', `translate(${0},${yAvg - 25})`);
 
+  }
+
+  private drawTooltip(svg: ChartSvg, x: ChartScale, y: ChartScale): void {
     if (this.showTooltip) {
       // const bisect = d3.bisector((d: PerformanceDataItem) => d.frameId).center;
       const i = Math.round(x.invert(this.mousePosition));
 
-      if (i >= this.data().length) {
+      if (i < 0 || i >= this.data().length) {
         return;
       }
       // const i = bisect(this.data, x.invert(this.mousePosition));
@@ -202,7 +194,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
       const tooltip = svg.append('g');
       tooltip.style('display', null);
 
-      const yValue = isProcessingGraph
+      const yValue = this.isProcessingGraph()
         ? this.data()[i].totalProcessing ?? 0
         : this.data()[i].totalFilter ?? 0;
 
@@ -212,14 +204,12 @@ export class PerformanceVisualizationComponent implements OnChanges {
       tooltip.attr('transform', `translate(${posX},${posY})`);
 
       const path = tooltip
-        .selectAll('path')
-        .join('path')
+        .append('path')
         .attr('fill', '#ffffffaa')
         .attr('stroke', 'black');
 
       const text = tooltip
-        .selectAll('text')
-        .join('text')
+        .append('text')
         .call((tooltiptext) =>
           tooltiptext
             .selectAll('tspan')
@@ -227,9 +217,8 @@ export class PerformanceVisualizationComponent implements OnChanges {
             .join('tspan')
             .attr('x', 0)
             .attr('y', (n, ttidx) => `${ttidx * 1.1}em`)
-            .attr('font-weight', (n, ttidx) => (ttidx ? null : 'bold'))
-            .text((d) => d)
-        );
+            .attr('font-weight', (n, ttidx) => ttidx ? null : 'bold')
+            .text((d) => d));
 
       const ttWidth = 50;
       const ttHeight = 25;
@@ -240,7 +229,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
       // draw the box
       path.attr(
         'd',
-        `M${-ttWidth / 2 - 10},-5H-5l5,5l5,-5H${ttWidth / 2 + 10}v${
+        `M${(-ttWidth / 2) - 10},-5H-5l5,5l5,-5H${(ttWidth / 2) + 10}v${
           -ttHeight - 20
         }h-${ttWidth + 20}z`
       );
@@ -249,7 +238,7 @@ export class PerformanceVisualizationComponent implements OnChanges {
 
   private pointermoved(event: Event): void {
     this.showTooltip = true;
-    this.mousePosition = d3.pointer(event)[0];
+    [this.mousePosition] = d3.pointer(event);
   }
 
   private pointerleft(): void {

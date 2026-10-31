@@ -13,7 +13,7 @@ import {
   Renderer2,
   ViewChild,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
@@ -23,7 +23,7 @@ import {
   Observable,
   Subscription,
   combineLatest,
-  Subject,
+  Subject
 } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { TrackingService } from 'src/shared/services/tracking.service';
@@ -34,19 +34,14 @@ import { WebSocketService } from 'src/shared/services/webSocket.service';
   templateUrl: './depth-image.component.html',
   styleUrls: ['./depth-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule]
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly baseUrl = inject(BASE_URL);
-  private readonly angularRenderer = inject(Renderer2);
-  private readonly wsService = inject(WebSocketService);
-  private readonly trackingService = inject(TrackingService);
 
   private static readonly fullScreenClassName = 'fullScreen';
 
   @ViewChild('depthImageRenderContainer')
-  public container?: ElementRef;
+  public container?: ElementRef<HTMLDivElement>;
 
   @Output()
   public fullScreenChanged = new EventEmitter<boolean>();
@@ -55,6 +50,11 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
   public livePreview = false;
   public numFramesReceived = 0;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly baseUrl = inject(BASE_URL);
+  private readonly angularRenderer = inject(Renderer2);
+  private readonly wsService = inject(WebSocketService);
+  private readonly trackingService = inject(TrackingService);
 
   private pfullScreen = false;
 
@@ -68,18 +68,18 @@ export class DepthImageComponent implements OnInit, OnDestroy {
 
   private readonly address = 'depthImage';
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   private socket?: Subject<MessageEvent>;
 
-  // eslint-disable-next-line new-cap
+
   public constructor() {
     this.baseUrl = this.baseUrl.replace('http', 'ws');
 
     const isTracking$ = this.trackingService.getStatus().pipe(
       map(
         (status) =>
-          status.depthCameraStateName ===
-          DepthCameraState[DepthCameraState.Streaming]
+          status.depthCameraStateName
+          === DepthCameraState[DepthCameraState.Streaming]
       ),
       distinctUntilChanged()
     );
@@ -181,7 +181,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
   private startSocket(): Observable<MessageEvent> {
     this.socket = this.wsService.createSocket({
       url: `${this.baseUrl}${this.address}`,
-      deserializer: (value) => value,
+      deserializer: (value) => value
     });
 
     // this._socket = webSocket({

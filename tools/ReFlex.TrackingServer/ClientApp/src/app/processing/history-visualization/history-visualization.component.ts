@@ -8,7 +8,7 @@ import {
   OnInit,
   ViewChild,
   inject,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
@@ -21,17 +21,17 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   templateUrl: './history-visualization.component.html',
   styleUrls: ['./history-visualization.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule],
+  imports: [CommonModule]
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
+
+  @ViewChild('historyVis')
+  public container?: ElementRef<HTMLDivElement>;
+
+  public history: Array<InteractionHistory> = [];
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly processingService = inject(ProcessingService);
   private readonly logService = inject(LogService);
-
-  @ViewChild('historyVis')
-  public container?: ElementRef;
-
-  public history: Array<InteractionHistory> = [];
 
   private historySubscription?: Subscription;
 
@@ -44,8 +44,7 @@ export class HistoryVisualizationComponent implements OnInit, OnDestroy {
         switchMap((processing) =>
           processing
             ? history$
-            : NEVER.pipe<Array<InteractionHistory>>(startWith([]))
-        )
+            : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
       )
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
@@ -64,14 +63,13 @@ export class HistoryVisualizationComponent implements OnInit, OnDestroy {
   private updateHistory(history: Array<InteractionHistory>): void {
     history.forEach((elem) =>
       elem.items.forEach((frame) => {
-        frame.interaction.position.x =
-          frame.interaction.position.x *
-          (this.container?.nativeElement.clientWidth ?? 0);
-        frame.interaction.position.y =
-          frame.interaction.position.y *
-          (this.container?.nativeElement.clientHeight ?? 0);
-      })
-    );
+        frame.interaction.position.x
+          = frame.interaction.position.x
+          * (this.container?.nativeElement.clientWidth ?? 0);
+        frame.interaction.position.y
+          = frame.interaction.position.y
+          * (this.container?.nativeElement.clientHeight ?? 0);
+      }));
 
     this.history = history;
   }
