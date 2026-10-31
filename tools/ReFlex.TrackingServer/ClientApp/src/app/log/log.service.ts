@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
@@ -9,7 +10,7 @@ import { JsonSimpleValue, LogMessageDetail } from '@reflex/shared-types';
 })
 export class LogService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   protected readonly headers = new HttpHeaders({ 'Content-Type': 'application/json' });

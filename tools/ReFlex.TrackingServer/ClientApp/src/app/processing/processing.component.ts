@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
@@ -45,7 +46,7 @@ import { HistoryComponent } from './history/history.component';
   ]
 })
 export class ProcessingComponent implements OnInit, OnDestroy {
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
   private readonly settingsService = inject(SettingsService);
   private readonly processingService = inject(ProcessingService);
   private readonly calibrationService = inject(CalibrationService);

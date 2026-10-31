@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -7,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class MeasureService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
 
   private readonly baseRoute = 'api/RecordRawDepth/';
 

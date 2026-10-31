@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 
@@ -96,7 +97,7 @@ describe('ProcessingComponent', () => {
             provide: LogService, useValue: logService
         },
         {
-            provide: 'BASE_URL', useValue: 'http://localhost'
+            provide: BASE_URL, useValue: 'http://localhost'
         }
     ]
     }).overrideComponent(ProcessingComponent, {

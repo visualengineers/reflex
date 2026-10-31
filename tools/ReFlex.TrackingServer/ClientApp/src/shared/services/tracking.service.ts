@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -27,7 +28,7 @@ export class TrackingService extends SignalRBaseService<TrackingConfigState> {
   private readonly setAutostartRoute = `${this.cameraRoute}SetAutoStart`;
 
   public constructor() {
-    const baseUrl = inject<string>('BASE_URL' as unknown);
+    const baseUrl = inject(BASE_URL);
     const logService = inject(LogService);
 
     super(`${baseUrl}trkhub`, 'trackingState', logService);

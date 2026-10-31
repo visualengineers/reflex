@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +12,7 @@ import { map } from 'rxjs/operators';
 })
 export class VersionInfoService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject<string>('BASE_URL' as any);
+  private readonly baseUrl = inject(BASE_URL);
 
   private readonly packageFile = 'assets/data/package.json';
   private readonly versionAddress = `${this.baseUrl}api/versionInfo`;

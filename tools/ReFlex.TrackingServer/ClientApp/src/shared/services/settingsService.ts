@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
@@ -18,7 +19,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class SettingsService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
 
   private readonly settingsSubject: Subject<TrackingServerAppSettings>;
   private readonly settings$: Observable<TrackingServerAppSettings>;

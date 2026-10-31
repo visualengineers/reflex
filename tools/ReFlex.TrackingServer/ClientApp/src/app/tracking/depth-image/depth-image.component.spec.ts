@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -45,7 +46,7 @@ describe('DepthImageComponent', () => {
             provide: WebSocketService, useValue: wsMock
         },
         {
-            provide: 'BASE_URL', useValue: 'http://localhost'
+            provide: BASE_URL, useValue: 'http://localhost'
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()

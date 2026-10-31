@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TrackingComponent } from './tracking.component';
@@ -160,7 +161,7 @@ describe('TrackingComponent', () => {
         TrackingComponent
       ],
     providers: [
-        { provide: 'BASE_URL', useValue: '', deps: [] },
+        { provide: BASE_URL, useValue: '', deps: [] },
         {
             provide: TrackingService, useValue: trackingService
         },
@@ -470,7 +471,7 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
             provide: LogService, useValue: logService
         },
         {
-          provide: 'BASE_URL', useValue: 'http://localhost'
+          provide: BASE_URL, useValue: 'http://localhost'
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()

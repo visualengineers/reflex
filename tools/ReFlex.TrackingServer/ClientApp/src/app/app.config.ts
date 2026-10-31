@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -13,7 +14,7 @@ export function getBaseUrl(platformLocation: PlatformLocation): string {
   return platformLocation.getBaseHrefFromDOM();
 }
 
-const providers = [{ provide: 'BASE_URL', useFactory: getBaseUrl, deps: [PlatformLocation] }];
+const providers = [{ provide: BASE_URL, useFactory: getBaseUrl, deps: [PlatformLocation] }];
 
 export const appConfig: ApplicationConfig = {
   providers: [

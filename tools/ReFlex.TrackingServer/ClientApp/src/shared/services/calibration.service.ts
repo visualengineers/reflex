@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
@@ -36,7 +37,7 @@ export class CalibrationService extends SignalRBaseService<string> {
 
   // eslint-disable-next-line new-cap
   public constructor() {
-    const baseUrl = inject<string>('BASE_URL' as unknown);
+    const baseUrl = inject(BASE_URL);
     const logService = inject(LogService);
 
     super(`${baseUrl}calibhub`, 'calibrationState', logService);

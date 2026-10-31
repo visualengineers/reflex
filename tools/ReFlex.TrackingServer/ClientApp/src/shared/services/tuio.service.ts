@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SignalRBaseService } from './signalR.base.service';
@@ -43,7 +44,7 @@ export class TuioService extends SignalRBaseService<string> {
 
   public constructor() {
     const logService = inject(LogService);
-    const baseUrl = inject<string>('BASE_URL' as unknown);
+    const baseUrl = inject(BASE_URL);
 
     super(`${baseUrl}tuiohub`, 'tuioState', logService);
     this.baseUrl = baseUrl;

@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 /* eslint-disable max-lines */
 import {
   Component,
@@ -49,7 +50,7 @@ import { CommonModule } from '@angular/common';
   standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
   private readonly settingsService = inject(SettingsService);
   private readonly logService = inject(LogService);
   private readonly trackingService = inject(TrackingService);

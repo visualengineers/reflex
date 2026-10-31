@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { fromEventPattern, Observable, using } from 'rxjs';
@@ -29,7 +30,7 @@ export class RecordingService extends SignalRBaseService<TrackingConfigState> {
   private readonly deleteRecordingRoute = `${this.baseRoute}DeleteRecording`;
 
   public constructor() {
-    const baseUrl = inject<string>('BASE_URL' as unknown);
+    const baseUrl = inject(BASE_URL);
     const logService = inject(LogService);
 
     super(`${baseUrl}trkhub`, 'trackingState', logService);

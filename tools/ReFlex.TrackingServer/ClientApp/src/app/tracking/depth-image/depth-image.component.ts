@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -32,7 +33,7 @@ import { WebSocketService } from 'src/shared/services/webSocket.service';
   imports: [CommonModule, FormsModule]
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
   private readonly angularRenderer = inject(Renderer2);
   private readonly wsService = inject(WebSocketService);
   private readonly trackingService = inject(TrackingService);

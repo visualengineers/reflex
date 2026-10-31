@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NetworkComponent } from './network.component';
@@ -66,7 +67,7 @@ describe('NetworkComponent', () => {
             provide: LogService, useValue: logService
         },
         {
-            provide: 'BASE_URL', useValue: 'http://localhost'
+            provide: BASE_URL, useValue: 'http://localhost'
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()

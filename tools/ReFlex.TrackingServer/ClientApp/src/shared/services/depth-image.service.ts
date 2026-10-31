@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { ImageByteArray } from '@reflex/shared-types';
@@ -11,7 +12,7 @@ export class DepthImageService {
   private readonly connection: signalR.HubConnection;
 
   // eslint-disable-next-line new-cap
-  public constructor(@Inject('BASE_URL') private readonly baseUrl: string, private readonly logService: LogService) {
+  public constructor(@Inject(BASE_URL) private readonly baseUrl: string, private readonly logService: LogService) {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}dihub`)
       .build();

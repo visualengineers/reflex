@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Injectable, inject } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {
@@ -15,7 +16,7 @@ import { PerformanceData } from '@reflex/shared-types';
   providedIn: 'root'
 })
 export class PerformanceService {
-  private readonly baseUrl = inject<string>('BASE_URL' as unknown);
+  private readonly baseUrl = inject(BASE_URL);
   private readonly logService = inject(LogService);
 
   protected isConnected = new BehaviorSubject<boolean>(false);

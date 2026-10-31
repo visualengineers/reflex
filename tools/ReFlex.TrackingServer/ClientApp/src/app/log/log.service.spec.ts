@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed, waitForAsync } from "@angular/core/testing";
@@ -16,7 +17,7 @@ describe('LogService', () => {
     imports: [],
     providers: [
         {
-            provide: 'BASE_URL', useValue: 'http://localhost/'
+            provide: BASE_URL, useValue: 'http://localhost/'
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()

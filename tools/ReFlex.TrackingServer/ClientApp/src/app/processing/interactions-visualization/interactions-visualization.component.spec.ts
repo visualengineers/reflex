@@ -1,3 +1,4 @@
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InteractionsVisualizationComponent } from './interactions-visualization.component';
@@ -89,7 +90,7 @@ describe('InteractionsVisualizationComponent', () => {
             provide: LogService, useValue: logService
         },
         {
-          provide: 'BASE_URL', useValue: 'http://localhost'
+          provide: BASE_URL, useValue: 'http://localhost'
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
