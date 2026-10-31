@@ -1,22 +1,7 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  inject
-} from '@angular/core';
-import {
-  CompleteInteractionData,
-  ElementPosition,
-  ExtremumDescription,
-  ExtremumType,
-  FrameSizeDefinition,
-  Interaction
-} from '@reflex/shared-types';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { CompleteInteractionData, ElementPosition, ExtremumDescription, ExtremumType, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';

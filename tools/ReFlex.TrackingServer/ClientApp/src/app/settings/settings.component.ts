@@ -1,14 +1,7 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 /* eslint-disable max-lines */
-import { ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  inject
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { Subscription, combineLatest, interval } from 'rxjs';
 import { LogService } from '../log/log.service';

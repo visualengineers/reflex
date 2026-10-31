@@ -1,18 +1,7 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  Renderer2,
-  ViewChild,
-  inject
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DepthCameraState } from '@reflex/shared-types';
 import {

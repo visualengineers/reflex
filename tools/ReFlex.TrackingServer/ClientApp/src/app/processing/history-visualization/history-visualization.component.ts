@@ -1,13 +1,6 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  inject
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { InteractionHistory } from '@reflex/shared-types';
 import { NEVER, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';

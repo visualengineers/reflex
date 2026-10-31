@@ -1,15 +1,7 @@
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 /* eslint-disable max-lines */
 import { HttpResponse } from '@angular/common/http';
-import { ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  Renderer2,
-  ViewChild,
-  inject
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, inject } from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import {
   catchError,
