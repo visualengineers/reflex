@@ -6,8 +6,7 @@ import { TouchPointService } from 'src/services/touch-point.service';
 @Component({
     selector: 'app-status',
     templateUrl: './status.component.html',
-    styleUrls: ['./status.component.scss'],
-    standalone: false
+    styleUrls: ['./status.component.scss']
 })
 export class StatusComponent implements OnInit, OnDestroy {
 
@@ -26,7 +25,7 @@ export class StatusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._touchPoints$ = this._pointService.getTouchPoints();
     this._touchPointSubscription = this._touchPoints$.subscribe(res => {
-      this.TouchCount = res.length;      
+      this.TouchCount = res.length;
     });
     interval(500).subscribe(() => this.IsConnected = this._pointService.isConnected());
     console.log(this.IsConnected);
@@ -39,7 +38,7 @@ export class StatusComponent implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     this._touchPointSubscription?.unsubscribe();
     this._connectionSubscription?.unsubscribe();
-    
+
   }
 
 

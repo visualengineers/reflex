@@ -1,15 +1,25 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { Interaction } from '@reflex/shared-types';
 import { fromEvent, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
+import { HistoryComponent } from './history/history.component';
+import { StatusComponent } from './status/status.component';
+import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
+    imports: [
+      RouterOutlet,
+      StatusComponent,
+      HistoryComponent,
+      CommonModule
+    ],
     selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+    templateUrl: './app.html',
+    styleUrls: ['./app.scss']
 })
-export class AppComponent implements AfterViewInit, OnInit, OnDestroy {
+export class App implements AfterViewInit, OnInit, OnDestroy {
   title = 'Basic Angular App';
 
   public TouchPoints$ : Observable<Interaction[]>;

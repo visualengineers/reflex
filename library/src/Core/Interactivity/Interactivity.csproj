@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <PackageId>ReFlex.Core.Interactivity</PackageId>
     <Authors>Mathias Müller</Authors>
@@ -28,7 +28,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeCoverage" Version="18.0.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="NLog" Version="6.1.0" />
+    <PackageReference Include="NLog" Version="6.1.3" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>

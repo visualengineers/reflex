@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { CalibrationComponent } from './calibration/calibration.component';
 import { HomeComponent } from './home/home.component';
 import { LogComponent } from './log/log.component';
@@ -10,7 +9,7 @@ import { ProcessingComponent } from './processing/processing.component';
 import { SettingsComponent } from './settings/settings.component';
 import { TrackingComponent } from './tracking/tracking.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'calibration', component: CalibrationComponent },
@@ -22,9 +21,3 @@ const routes: Routes = [
   { path: 'measure-surface', component: MeasureSurfaceComponent, pathMatch: 'full' }
   // { path: '**', component: PageNotFoundComponent }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, {})],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

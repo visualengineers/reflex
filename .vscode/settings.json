@@ -35,5 +35,6 @@
       "javascript.preferences.quoteStyle": "single",
       "typescript.preferences.quoteStyle": "single",
       "files.insertFinalNewline": true
-    }
+    },
+    "dotnet.defaultSolution": "ReFlex.sln"
 }

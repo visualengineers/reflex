@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { App } from './app';
 import { TouchPointService } from 'src/services/touch-point.service';
 import { StatusComponent } from './status/status.component';
 import { HistoryComponent } from './history/history.component';
@@ -22,7 +22,7 @@ describe('AppComponent', () => {
         RouterModule
       ],
       declarations: [
-        AppComponent,
+        App,
         StatusComponent,
         HistoryComponent
       ],
@@ -38,33 +38,33 @@ describe('AppComponent', () => {
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it(`should have as title 'Basic Angular App'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('Basic Angular App');
   });
 
   it('should render title in toolbar', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('.toolbar__title').textContent).toContain('Basic Angular App');
   });
 
   it('should include status component', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('app-status')).toBeTruthy();
   });
 
   it('should include history component', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('app-history')).toBeTruthy();

@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-table',
-  imports: [CommonModule, SettingsGroupComponent],
+  imports: [SettingsGroupComponent],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })

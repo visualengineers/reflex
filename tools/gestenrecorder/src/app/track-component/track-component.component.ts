@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SettingsGroupComponent } from '@reflex/angular-components/dist'
-import { CommonModule } from '@angular/common';
+import { SettingsGroupComponent } from '@reflex/angular-components/dist';
+
 import { FormsModule } from '@angular/forms';
 import { OnInit, OnDestroy } from '@angular/core';
 import { GestureDataService } from '../service/gesture-data.service';
@@ -16,16 +16,12 @@ export interface GestureData {
 }
 
 @Component({
-    selector: 'app-track-component',
-    imports: [
-        CommonModule,
-        SettingsGroupComponent,
-        FormsModule
-    ],
-    templateUrl: './track-component.component.html',
-    styleUrl: './track-component.component.scss'
+  selector: 'app-track-component',
+  imports: [SettingsGroupComponent, FormsModule],
+  templateUrl: './track-component.component.html',
+  styleUrl: './track-component.component.scss',
 })
-export class TrackComponentComponent implements OnInit, OnDestroy{
+export class TrackComponentComponent implements OnInit, OnDestroy {
   public selectedIndex: number = -1;
   selectedGesture: Gesture | null = null;
   private gestureSubscription: Subscription = new Subscription();
@@ -35,33 +31,37 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
       id: 1,
       name: 'Finger 1',
       numFrames: 30,
-      speed: 1
-    }
+      speed: 1,
+    },
   ];
 
   constructor(
     private gestureService: GestureDataService,
-    private gestureReplayService: GestureReplayService,
+    private gestureReplayService: GestureReplayService
   ) {}
 
   ngOnInit() {
-    this.gestureSubscription = this.gestureService.gesture$.subscribe(gesture => {
-      this.selectedGesture = gesture;
+    this.gestureSubscription = this.gestureService.gesture$.subscribe(
+      (gesture) => {
+        this.selectedGesture = gesture;
 
-      // Aktualisiere tableData, wenn selectedGesture aktualisiert wird
-      if (this.selectedGesture) {
-        this.tableData = [{
-          id: this.selectedGesture.id,
-          name: this.selectedGesture.name,
-          numFrames: this.selectedGesture.numFrames,
-          speed: this.selectedGesture.speed
-        }];
+        // Aktualisiere tableData, wenn selectedGesture aktualisiert wird
+        if (this.selectedGesture) {
+          this.tableData = [
+            {
+              id: this.selectedGesture.id,
+              name: this.selectedGesture.name,
+              numFrames: this.selectedGesture.numFrames,
+              speed: this.selectedGesture.speed,
+            },
+          ];
+        }
       }
-    });
+    );
   }
 
   ngOnDestroy(): void {
-      this.gestureSubscription.unsubscribe();
+    this.gestureSubscription.unsubscribe();
   }
 
   public saveTrack(): void {
@@ -74,11 +74,11 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
       id: newId,
       name: `Finger ${newId}`,
       numFrames: 30,
-      speed: 1
+      speed: 1,
     };
 
     this.tableData.push(newGestureData);
-    console.log("new table data:", this.tableData);
+    console.log('new table data:', this.tableData);
   }
 
   public deleteTrack(index: number): void {
@@ -92,11 +92,16 @@ export class TrackComponentComponent implements OnInit, OnDestroy{
   }
 
   updateGesture(): void {
-    if ( this.selectedIndex === -1 ) {
-      return ;
+    if (this.selectedIndex === -1) {
+      return;
     }
 
     const selectedRow = this.tableData[this.selectedIndex];
-    this.gestureService.updateGesture(selectedRow.id, selectedRow.name, selectedRow.numFrames, selectedRow.speed);
+    this.gestureService.updateGesture(
+      selectedRow.id,
+      selectedRow.name,
+      selectedRow.numFrames,
+      selectedRow.speed
+    );
   }
 }

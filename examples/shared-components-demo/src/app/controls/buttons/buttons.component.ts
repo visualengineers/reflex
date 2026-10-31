@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
@@ -6,10 +6,9 @@ import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 @Component({
   selector: 'app-buttons',
   imports: [
-    CommonModule,
     FormsModule,
     SettingsGroupComponent
-  ],
+],
   templateUrl: './buttons.component.html',
   styleUrl: './buttons.component.scss'
 })

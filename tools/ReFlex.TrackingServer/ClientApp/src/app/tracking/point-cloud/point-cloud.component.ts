@@ -257,7 +257,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isMouseOver = false;
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize', [])
   public updateSize(): void {
     if (this.container === undefined) {
       return;

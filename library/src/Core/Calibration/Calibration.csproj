@@ -13,7 +13,7 @@
     <AssemblyName>ReFlex.Core.Calibration</AssemblyName>
     <RootNamespace>ReFlex.Core.Calibration</RootNamespace>
     <Platforms>x64;ARM64;AnyCPU</Platforms>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Configurations>Debug;Release;CI</Configurations>
     <AssemblyVersion>0.9.9</AssemblyVersion>

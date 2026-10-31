@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ColorComponent } from './color/color.component';
-import { CommonModule } from '@angular/common';
+
 import { IntroductionComponent } from './introduction/introduction.component';
 import { PanelComponent } from './controls/panel/panel.component';
 import { ToggleComponent } from './controls/toggle/toggle.component';
@@ -21,9 +21,8 @@ import { ButtonsComponent } from './controls/buttons/buttons.component';
     SliderComponent,
     TableComponent,
     ButtonsComponent,
-    CommonModule,
     ColorComponent
-  ],
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
