@@ -1,5 +1,6 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ValueTextComponent } from '@reflex/angular-components/dist';
 import {
@@ -21,6 +22,7 @@ import { RecordingService } from 'src/shared/services/recording.service';
   imports: [CommonModule, FormsModule, ValueTextComponent]
 })
 export class RecordingComponent implements OnInit {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly recordingService = inject(RecordingService);
   private readonly loggingService = inject(LogService);
 
@@ -42,7 +44,7 @@ export class RecordingComponent implements OnInit {
   public recordings: Array<CameraConfiguration> = [];
 
   private trackingStateSubscription?: Subscription;
-  private readonly recordingStateSubscription?: Subscription;
+  private recordingStateSubscription?: Subscription;
 
   public get recordingStateLabel(): string {
     return this.recordingState != null
@@ -52,7 +54,7 @@ export class RecordingComponent implements OnInit {
 
   public ngOnInit(): void {
     this.trackingStateSubscription = this.recordingService
-      .getStatus()
+      .getStatus().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateTrackingState(result),
         (error) => {
@@ -112,7 +114,8 @@ export class RecordingComponent implements OnInit {
       })
     );
 
-    start.pipe(mergeMap(() => update)).subscribe(
+    this.recordingStateSubscription?.unsubscribe();
+    this.recordingStateSubscription = start.pipe(mergeMap(() => update)).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (recordingState) => this.updateRecordingState(recordingState),
       (error) => {
         console.error(error);
@@ -122,7 +125,7 @@ export class RecordingComponent implements OnInit {
   }
 
   public stopRecording(): void {
-    this.recordingService.stopRecording().subscribe(
+    this.recordingService.stopRecording().pipe(markViewForCheck(this.changeDetector)).subscribe(
       () => {
         this.updateRecordingsList();
         this.recordingStateSubscription?.unsubscribe();
@@ -147,7 +150,7 @@ export class RecordingComponent implements OnInit {
 
     this.isDeleting = true;
 
-    this.recordingService.deleteRecording(cfg.name).subscribe(
+    this.recordingService.deleteRecording(cfg.name).pipe(markViewForCheck(this.changeDetector)).subscribe(
       () => {
         this.updateRecordingsList();
         this.isDeleting = false;
@@ -166,7 +169,7 @@ export class RecordingComponent implements OnInit {
 
     this.isDeleting = true;
 
-    this.recordingService.clearRecordings().subscribe(
+    this.recordingService.clearRecordings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       () => {
         this.updateRecordingsList();
         this.isDeleting = false;
@@ -185,7 +188,7 @@ export class RecordingComponent implements OnInit {
   }
 
   private updateRecordingsList(): void {
-    this.recordingService.getRecordings().subscribe(
+    this.recordingService.getRecordings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.recordings = result;
       },

@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, inject } from '@angular/core';
 import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
 @Component({
   selector: 'app-interactions',
@@ -8,6 +8,7 @@ import { CompleteInteractionData, Interaction } from '@reflex/shared-types';
   imports: [CommonModule]
 })
 export class InteractionsComponent {
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
   public interactions: CompleteInteractionData = { raw: [], absolute: [], normalized: [] };
   public calibratedInteractions: Array<Interaction> = [];
@@ -48,5 +49,6 @@ export class InteractionsComponent {
     this.interactions.raw = interactions.raw.slice(0, maxItems);
     this.interactions.normalized = interactions.normalized.slice(0, maxItems);
     this.interactions.absolute = interactions.absolute.slice(0, maxItems);
+    this.changeDetector.markForCheck();
   }
 }

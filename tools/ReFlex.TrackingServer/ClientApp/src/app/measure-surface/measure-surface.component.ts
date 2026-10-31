@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
   ]
 })
 export class MeasureSurfaceComponent implements OnInit {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
 
@@ -35,7 +37,7 @@ export class MeasureSurfaceComponent implements OnInit {
 
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService
-      .getFrameSize()
+      .getFrameSize().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.frameSize = result;

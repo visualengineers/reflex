@@ -1,5 +1,5 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SettingsComponent } from './settings.component';
 import { LogService } from '../log/log.service';
@@ -50,8 +50,8 @@ describe('SettingsComponent', () => {
   let component: SettingsComponent;
   let fixture: ComponentFixture<SettingsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [
       FormsModule,
       SettingsComponent
@@ -90,7 +90,7 @@ describe('SettingsComponent', () => {
        ] }
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     logService.sendErrorLog.and.returnValue();

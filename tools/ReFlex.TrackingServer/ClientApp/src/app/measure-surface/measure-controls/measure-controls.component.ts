@@ -1,5 +1,6 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription, timer } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -13,6 +14,7 @@ import { MeasureService } from 'src/shared/services/measure.service';
   imports: [CommonModule, FormsModule]
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly measureService = inject(MeasureService);
   private readonly logService = inject(LogService);
 
@@ -32,6 +34,7 @@ export class MeasureControlsComponent implements OnInit, OnDestroy {
         concatMap(() => isCapturing$),
         map((result) => {
           this.isCapturing = result;
+          this.changeDetector.markForCheck();
           console.log(this.isCapturing);
         }),
         concatMap(() => sampleIdx$),
@@ -44,7 +47,7 @@ export class MeasureControlsComponent implements OnInit, OnDestroy {
 
           return caught;
         })
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe();
   }
 
@@ -53,7 +56,7 @@ export class MeasureControlsComponent implements OnInit, OnDestroy {
   }
 
   public captureFrames(): void {
-    this.measureService.startCapture(this.captureId).subscribe(
+    this.measureService.startCapture(this.captureId).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => console.info(result),
       (error: unknown) => {
         console.error(error);

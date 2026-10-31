@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -32,6 +33,7 @@ import { PackageDetailsComponent } from './package-details/package-details.compo
   ]
 })
 export class TuioComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly settingsService = inject(SettingsService);
   private readonly tuioService = inject(TuioService);
   private readonly logService = inject(LogService);
@@ -59,7 +61,7 @@ export class TuioComponent implements OnInit, OnDestroy {
   private settingsSubscription?: Subscription;
 
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().subscribe(
+    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         if (result.tuioSettingValues) {
           this.config = result.tuioSettingValues;
@@ -87,7 +89,7 @@ export class TuioComponent implements OnInit, OnDestroy {
   }
 
   public fetchCurrentValues(): void {
-    this.tuioService.getIsBroadcasting().subscribe(
+    this.tuioService.getIsBroadcasting().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         if (result.body?.name === 'IsBroadcasting') {
           this.isBroadcasting = result.body.value === true;
@@ -99,7 +101,7 @@ export class TuioComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.tuioService.getTransportProtocols().subscribe(
+    this.tuioService.getTransportProtocols().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.transportProtocols = result;
         if (this.config) {
@@ -112,7 +114,7 @@ export class TuioComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.tuioService.getTuioProtocolVersions().subscribe(
+    this.tuioService.getTuioProtocolVersions().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.tuioProtocolVersions = result;
         if (this.config) {
@@ -125,7 +127,7 @@ export class TuioComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.tuioService.getTuioInterpretations().subscribe(
+    this.tuioService.getTuioInterpretations().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.tuioInterpretations = result;
         if (this.config) {
@@ -138,7 +140,7 @@ export class TuioComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.statusTextSubscription = this.tuioService.getStatus().subscribe(
+    this.statusTextSubscription = this.tuioService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.statusText = result;
       },
@@ -151,7 +153,7 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public setAddress(): void {
     this.config.serverAddress = this.serverAddress;
-    this.tuioService.setAddress(this.config.serverAddress).subscribe(
+    this.tuioService.setAddress(this.config.serverAddress).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `response to change TUIO server address: ${result.status} - ${result.body?.value}`
@@ -166,7 +168,7 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public setPort(): void {
     this.config.serverPort = this.serverPort;
-    this.tuioService.setPort(this.config.serverPort).subscribe(
+    this.tuioService.setPort(this.config.serverPort).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `response to change TUIO server port: ${result.status} - ${result.body?.value}`
@@ -181,7 +183,7 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public setTransportProtocol(): void {
     this.tuioService
-      .setTransportProtocol(this.transportProtocols[this.transportProtocolIdx])
+      .setTransportProtocol(this.transportProtocols[this.transportProtocolIdx]).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -206,7 +208,7 @@ export class TuioComponent implements OnInit, OnDestroy {
     this.tuioService
       .setTuioProtocolVersion(
         this.tuioProtocolVersions[this.tuioProtocolVersionIdx]
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -231,7 +233,7 @@ export class TuioComponent implements OnInit, OnDestroy {
     this.tuioService
       .setTuioInterpretation(
         this.tuioInterpretations[this.tuioInterpretationIdx]
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -254,7 +256,7 @@ export class TuioComponent implements OnInit, OnDestroy {
 
   public isBroadcastingChanged(): void {
     this.errorText = '';
-    this.tuioService.toggleBroadcasting().subscribe(
+    this.tuioService.toggleBroadcasting().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `Tuio Broadcast status toggle - result:  ${result.status} - ${result.body?.value}`
@@ -270,7 +272,7 @@ export class TuioComponent implements OnInit, OnDestroy {
   }
 
   public saveTuioConfig(): void {
-    this.tuioService.saveSettings().subscribe(
+    this.tuioService.saveSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       () => {},
       (error) => {
         this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(

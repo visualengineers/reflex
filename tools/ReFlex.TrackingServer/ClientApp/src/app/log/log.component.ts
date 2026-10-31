@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 import { LogService } from './log.service';
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, FormsModule, ValueSelectionComponent]
 })
 export class LogComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly logService = inject(LogService);
 
   public messages = new Array<LogMessageDetail>();
@@ -29,7 +31,7 @@ export class LogComponent implements OnInit, OnDestroy {
       .pipe(
         startWith(0),
         switchMap(() => this.logService.getLogs())
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.messages = [...this.messages, result];

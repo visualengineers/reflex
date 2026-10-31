@@ -1,5 +1,6 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import {
+import { ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -20,6 +21,7 @@ import { ProcessingService } from 'src/shared/services/processing.service';
   imports: [CommonModule]
 })
 export class HistoryVisualizationComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly processingService = inject(ProcessingService);
   private readonly logService = inject(LogService);
 
@@ -40,7 +42,7 @@ export class HistoryVisualizationComponent implements OnInit, OnDestroy {
           processing
             ? history$
             : NEVER.pipe<Array<InteractionHistory>>(startWith([])))
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateHistory(result),
         (error) => {

@@ -24,6 +24,36 @@ When serving the application, keep the .NET fallback to `index.html` for direct 
 
 Run `ng test TrackingServer` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+## Zoneless change detection
+
+TrackingServer explicitly uses `provideZonelessChangeDetection()` in both the app
+and its test environment. Its polyfills do not load `zone.js` or `zone.js/testing`.
+The root dependency remains available for other applications in the monorepo.
+
+Imperative RxJS subscriptions that write template state use `markViewForCheck()`
+with the component's `ChangeDetectorRef`. This schedules Angular's normal check
+after the callback has updated its fields, including mutations of nested settings.
+It does not call `detectChanges()` or introduce a global polling/change-detection loop.
+
+| Boundary | Components / handling |
+| --- | --- |
+| HTTP and SignalR responses | Tracking, Settings, Processing, Calibration, Network, TUIO, package details and Recording notify their view on subscription emissions. |
+| Polling | Log, capture controls and limitation-filter polling notify the view when results arrive. Capture state also notifies before the subsequent sample-index request completes. |
+| Chained streams | Calibration notifies on processing status even if no interaction has arrived; Recording owns and unsubscribes its recording-state subscription. |
+| Imperative child updates | `InteractionsComponent.updateInteractions()` and `InteractionsVisualizationComponent.updateCalibratedInteractions()` notify their own views when called through `ViewChild`. |
+| Geometry and live frames | Measurement/interaction viewport sizing, history SVGs, WebSocket image frames and point-cloud counters notify Angular. Shader loads, scene-only changes and the WebGL animation loop do not schedule Angular checks per render frame. |
+| Existing Angular notifications | Home uses `AsyncPipe`; template/host events and input bindings continue to schedule change detection themselves. |
+
+[`zoneless-change-detection.spec.ts`](src/app/zoneless-change-detection.spec.ts)
+exercises these boundaries using the real templates, controlled asynchronous
+responses and `fixture.whenStable()`. It deliberately avoids manual
+`detectChanges()`/`markForCheck()` calls and verifies that Zone.js is absent.
+It also checks error-state rendering and subscription cleanup. GPU rendering is
+excluded from the geometry/scheduling unit tests; they use the supported no-WebGL
+fallback. The existing browser/Electron smoke test checks application startup.
+
+Run the complete suite with `npm run test:server` from the repository root.
+
 ## Running end-to-end tests
 
 Run `ng e2e TrackingServer` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.

@@ -1,7 +1,7 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { TestBed, waitForAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { LogService } from "./log.service";
 import { LogLevel, LogMessageDetail } from "@reflex/shared-types";
 
@@ -11,7 +11,7 @@ let httpTestingController: HttpTestingController;
 describe('LogService', () => {  
     let service: LogService;
     
-    beforeEach(waitForAsync(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
     declarations: [],
     imports: [],
@@ -27,7 +27,7 @@ describe('LogService', () => {
       service = TestBed.inject(LogService);
       httpClient = TestBed.inject(HttpClient);
       httpTestingController = TestBed.inject(HttpTestingController);
-    }));
+    });
   
     beforeEach(() => {
         

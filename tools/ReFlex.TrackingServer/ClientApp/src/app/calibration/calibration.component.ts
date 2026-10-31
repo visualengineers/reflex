@@ -1,6 +1,7 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 /* eslint-disable max-lines */
 import { HttpResponse } from '@angular/common/http';
-import {
+import { ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -52,6 +53,7 @@ export interface BorderString {
   imports: [CommonModule, PanelHeaderComponent]
 })
 export class CalibrationComponent implements OnInit {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly renderer = inject(Renderer2);
   private readonly processingService = inject(ProcessingService);
   private readonly calibrationService = inject(CalibrationService);
@@ -168,7 +170,7 @@ export class CalibrationComponent implements OnInit {
       })
     );
 
-    this.isProcessing$ = this.processingService.getStatus();
+    this.isProcessing$ = this.processingService.getStatus().pipe(markViewForCheck(this.changeDetector));
 
     this.completeInteractions$ = this.isProcessing$.pipe(
       tap((processing) => {
@@ -182,7 +184,7 @@ export class CalibrationComponent implements OnInit {
 
     this.settingsService.update();
 
-    this.interactionsSubscription = this.completeInteractions$.subscribe(
+    this.interactionsSubscription = this.completeInteractions$.pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => this.updateInteractions(result),
       (error: unknown) => {
         this.logService.sendErrorLog(`${error}`);
@@ -190,7 +192,7 @@ export class CalibrationComponent implements OnInit {
       }
     );
 
-    this.settingsSubscription = this.settingsService.getSettings().subscribe(
+    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.updateCalibrationValues(result.calibrationValues);
         this.maxConfidence = result.filterSettingValues.confidence.max;
@@ -202,7 +204,7 @@ export class CalibrationComponent implements OnInit {
     );
 
     this.calibrationSubscription = this.calibrationService
-      .getFrameSize()
+      .getFrameSize().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.updateBorders(result);
@@ -214,7 +216,7 @@ export class CalibrationComponent implements OnInit {
       );
 
     this.matrixSubscription = this.calibrationService
-      .getCalibrationMatrix()
+      .getCalibrationMatrix().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.calibrationMatrix = result.transformation;
@@ -325,7 +327,7 @@ export class CalibrationComponent implements OnInit {
 
     // todo: never returns ???
     this.calibrationSubscription = this.calibrationService
-      .updateCalibrationPoint(this.currentlyActiveStage, pos)
+      .updateCalibrationPoint(this.currentlyActiveStage, pos).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result: HttpResponse<CalibrationTransform>) => {
           this.handleUpdatedCalibration(result);
@@ -353,7 +355,7 @@ export class CalibrationComponent implements OnInit {
   }
 
   public resetCalibration(): void {
-    this.calibrationService.restartCalibration().subscribe(
+    this.calibrationService.restartCalibration().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.calibrationMatrix = result.transformation;
         this.resetTarget(0);
@@ -367,7 +369,7 @@ export class CalibrationComponent implements OnInit {
   }
 
   public applyCalibration(): void {
-    this.calibrationService.applyCalibration().subscribe(
+    this.calibrationService.applyCalibration().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.calibrationMatrix = result.transformation;
         console.log(`${result.transformation}`);
@@ -389,7 +391,7 @@ export class CalibrationComponent implements OnInit {
       top: this.borderOffset[0]
     };
 
-    this.calibrationService.updateFrameSize(frame).subscribe(
+    this.calibrationService.updateFrameSize(frame).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         if (result.body) {
           console.log(
@@ -444,7 +446,7 @@ export class CalibrationComponent implements OnInit {
   }
 
   public saveCalibration(): void {
-    this.calibrationService.saveCalibration().subscribe(
+    this.calibrationService.saveCalibration().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(result);
       },
@@ -561,7 +563,7 @@ export class CalibrationComponent implements OnInit {
   }
 
   private updateSourceValues(): void {
-    this.calibrationService.getCalibrationSourcePoints().subscribe(
+    this.calibrationService.getCalibrationSourcePoints().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.calibrationSource = result;
       },
@@ -573,7 +575,7 @@ export class CalibrationComponent implements OnInit {
   }
 
   private updateTargetPoints(): void {
-    this.calibrationService.getCurrentCalibrationTargetPoints().subscribe(
+    this.calibrationService.getCurrentCalibrationTargetPoints().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.calibratedTargets = result;
       },

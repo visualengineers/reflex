@@ -1,5 +1,5 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NetworkComponent } from './network.component';
 import { LogService } from '../log/log.service';
@@ -51,8 +51,8 @@ describe('NetworkComponent', () => {
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [FormsModule,
         NetworkComponent
       ],
@@ -90,7 +90,7 @@ describe('NetworkComponent', () => {
        ] }
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);

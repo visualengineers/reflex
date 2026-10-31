@@ -1,6 +1,7 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { CommonModule } from '@angular/common';
-import {
+import { ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -33,6 +34,7 @@ import { WebSocketService } from 'src/shared/services/webSocket.service';
   imports: [CommonModule, FormsModule]
 })
 export class DepthImageComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly baseUrl = inject(BASE_URL);
   private readonly angularRenderer = inject(Renderer2);
   private readonly wsService = inject(WebSocketService);
@@ -136,7 +138,7 @@ export class DepthImageComponent implements OnInit, OnDestroy {
             this.numFramesReceived++;
           }
         })
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateDepthImage(result),
         (error) => console.error(error)

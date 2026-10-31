@@ -1,5 +1,5 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpResponse } from '@angular/common/http';
 
 import { ProcessingComponent } from './processing.component';
@@ -78,8 +78,8 @@ describe('ProcessingComponent', () => {
   let component: ProcessingComponent;
   let fixture: ComponentFixture<ProcessingComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [FormsModule,
         ProcessingComponent
     ],
@@ -121,7 +121,7 @@ describe('ProcessingComponent', () => {
        ] }
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     calibrationService.computeCalibratedAbsolutePosition.and.returnValue(of(interactionData));
@@ -186,8 +186,7 @@ describe('ProcessingComponent', () => {
   });
 
   it('loads, updates and saves gzip compression through the shared checkbox', async () => {
-    fixture.detectChanges();
-    component.selectedProcessorIdx = 3;
+    processingService.getSelectedObserverType.and.returnValue(of(3));
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();

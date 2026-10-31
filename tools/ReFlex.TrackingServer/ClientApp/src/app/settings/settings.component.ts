@@ -1,6 +1,7 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 /* eslint-disable max-lines */
-import {
+import { ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -50,6 +51,7 @@ import { CommonModule } from '@angular/common';
   standalone: true
 })
 export class SettingsComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly baseUrl = inject(BASE_URL);
   private readonly settingsService = inject(SettingsService);
   private readonly logService = inject(LogService);
@@ -126,7 +128,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     = ExtremumTypeCheckMethod.Global;
 
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().subscribe(
+    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.settings = this.validateSettings(result);
         this.selectedFilterIdx
@@ -145,7 +147,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.updateCanRestore();
 
     this.trackingStatusSubscription = this.trackingService
-      .getStatus()
+      .getStatus().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.isTrackingActive
@@ -158,7 +160,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.performanceSubscription = this.performanceService.getData().subscribe(
+    this.performanceSubscription = this.performanceService.getData().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.processPerformanceData(result);
       },
@@ -175,7 +177,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
             this.settingsService.isLimitationFilterInitializing(),
             this.settingsService.isLimitationFilterInitialized()
           ]))
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.isCurrentlyInitializingLimitationFilter = result[0]
@@ -197,7 +199,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   public computeZeroPlane(): void {
-    this.settingsService.getZeroPlaneDistance().subscribe(
+    this.settingsService.getZeroPlaneDistance().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(`Successfully updated distance: ${JSON.stringify(result)}`);
         this.settingsService.update();
@@ -213,7 +215,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (this.isCurrentlyInitializingLimitationFilter) {
       return;
     }
-    this.settingsService.initializeAdvancedLimitationFilter().subscribe(
+    this.settingsService.initializeAdvancedLimitationFilter().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `initialized Advanced Limitation Filter: ${result.value}:${result.name}`
@@ -231,7 +233,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.settingsService.resetAdvancedLimitationFilter().subscribe(
+    this.settingsService.resetAdvancedLimitationFilter().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `reset Advanced Limitation Filter: ${result.value}:${result.name}`
@@ -245,7 +247,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   public saveSettings(settings: TrackingServerAppSettings): void {
-    this.settingsService.saveSettings(settings).subscribe(
+    this.settingsService.saveSettings(settings).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `Successfully sent POST request: ${JSON.stringify(result)}`
@@ -261,7 +263,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   public resetSettings(): void {
-    this.settingsService.reset().subscribe(
+    this.settingsService.reset().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(`reset default settings: ${JSON.stringify(result)}`);
         this.settingsService.update();
@@ -275,7 +277,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   public restoreSettings(): void {
-    this.settingsService.restore().subscribe(
+    this.settingsService.restore().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(`restore settings from backup: ${JSON.stringify(result)}`);
         this.settingsService.update();
@@ -289,7 +291,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   public updateCanRestore(): void {
-    this.settingsService.getCanRestore().subscribe(
+    this.settingsService.getCanRestore().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.canRestore = result.value as boolean;
       },
@@ -302,7 +304,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveBorder(): void {
     this.settingsService
-      .setBorder(this.settings.filterSettingValues.borderValue)
+      .setBorder(this.settings.filterSettingValues.borderValue).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -321,7 +323,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settingsService
       .setMinDistanceFromSensor(
         this.settings.filterSettingValues.minDistanceFromSensor
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(`Successfully sent POST request: ${result}`);
@@ -336,7 +338,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveThreshold(): void {
     this.settingsService
-      .setThreshold(this.settings.filterSettingValues.threshold)
+      .setThreshold(this.settings.filterSettingValues.threshold).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -353,7 +355,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveConfidence(): void {
     this.settingsService
-      .setConfidence(this.settings.filterSettingValues.confidence)
+      .setConfidence(this.settings.filterSettingValues.confidence).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -370,7 +372,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveSmoothingValues(): void {
     this.settingsService
-      .setSmoothingValues(this.settings.filterSettingValues.smoothingValues)
+      .setSmoothingValues(this.settings.filterSettingValues.smoothingValues).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -387,7 +389,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveExtremumValues(): void {
     this.settingsService
-      .setExtremumSettings(this.settings.filterSettingValues.extremumSettings)
+      .setExtremumSettings(this.settings.filterSettingValues.extremumSettings).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -421,7 +423,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public savePointCloudValues(): void {
     this.settingsService
-      .setPointCloudSettings(this.settings.pointCloudSettingValues)
+      .setPointCloudSettings(this.settings.pointCloudSettingValues).pipe(markViewForCheck(this.changeDetector))
       .subscribe({
         next: (result) => {
           console.log(
@@ -438,7 +440,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveDistance(): void {
     this.settingsService
-      .setDistance(this.settings.filterSettingValues.distanceValue)
+      .setDistance(this.settings.filterSettingValues.distanceValue).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -457,7 +459,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settingsService
       .setOptimizedBoxFilter(
         this.settings.filterSettingValues.useOptimizedBoxFilter
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -474,7 +476,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterRadius(): void {
     this.settingsService
-      .setFilterRadius(this.settings.filterSettingValues.boxFilterRadius)
+      .setFilterRadius(this.settings.filterSettingValues.boxFilterRadius).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -491,7 +493,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterPasses(): void {
     this.settingsService
-      .setFilterPasses(this.settings.filterSettingValues.boxFilterNumPasses)
+      .setFilterPasses(this.settings.filterSettingValues.boxFilterNumPasses).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -508,7 +510,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveFilterThreads(): void {
     this.settingsService
-      .setFilterThreads(this.settings.filterSettingValues.boxFilterNumThreads)
+      .setFilterThreads(this.settings.filterSettingValues.boxFilterNumThreads).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -525,7 +527,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   public saveMinAngle(): void {
     this.settingsService
-      .setMinAngle(this.settings.filterSettingValues.minAngle)
+      .setMinAngle(this.settings.filterSettingValues.minAngle).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -571,7 +573,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       = this.selectedLimitationFilterType;
 
     this.settingsService
-      .setLimitationFilterType(this.settings.filterSettingValues)
+      .setLimitationFilterType(this.settings.filterSettingValues).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CalibrationComponent } from './calibration.component';
 import { LogService } from '../log/log.service';
@@ -152,8 +152,8 @@ describe('CalibrationComponent', () => {
   let component: CalibrationComponent;
   let fixture: ComponentFixture<CalibrationComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [
         CommonModule,
         FormsModule,
@@ -180,7 +180,7 @@ describe('CalibrationComponent', () => {
       add: { imports: [ MockPanelHeaderComponent ] }
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
 
@@ -266,8 +266,8 @@ describe('CalibrationComponent', () => {
     expect(component['maxConfidence']).toEqual(DEFAULT_SETTINGS.filterSettingValues.confidence.max);
   });
 
-  it('should toggle CalibrationView', () => {
-    fixture.detectChanges();
+  it('should toggle CalibrationView', async () => {
+    await fixture.whenStable();
 
     expect(component.isInteractiveCalibrationVisible).toBeFalse();
 
@@ -276,19 +276,19 @@ describe('CalibrationComponent', () => {
     expect(calib.style.visibility).toEqual('collapse');
     expect(calib.classList).not.toContain('fullScreen');
 
-    component.toggleCalibrationMode();
+    (fixture.nativeElement.querySelector('.calibration_buttons button') as HTMLButtonElement).click();
 
     expect(component.isInteractiveCalibrationVisible).toBeTrue();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(calib).toBeTruthy();
     expect(calib.style.visibility).toEqual('visible');
     expect(calib.classList).toContain('fullScreen');
 
-    component.toggleCalibrationMode();
+    (fixture.nativeElement.querySelector('.calibration_buttons button') as HTMLButtonElement).click();
 
     expect(component.isInteractiveCalibrationVisible).toBeFalse();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(calib).toBeTruthy();
     expect(calib.style.visibility).toEqual('collapse');

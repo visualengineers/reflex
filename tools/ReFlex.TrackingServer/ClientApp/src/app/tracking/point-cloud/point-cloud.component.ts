@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import {
+  ChangeDetectorRef,
   AfterViewInit,
   Component,
   ElementRef,
@@ -31,6 +32,7 @@ import {
   tap
 } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import * as THREE from 'three';
@@ -68,6 +70,7 @@ import {
   ]
 })
 export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly httpClient = inject(HttpClient);
   private readonly angularRenderer = inject(Renderer2);
   private readonly trackingService = inject(TrackingService);
@@ -387,6 +390,7 @@ export class PointCloudComponent implements OnInit, AfterViewInit, OnDestroy {
           return of([]);
         })
       )
+      .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updatePointCloud(result),
         (error) => {

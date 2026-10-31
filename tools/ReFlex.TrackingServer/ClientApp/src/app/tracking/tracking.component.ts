@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TrackingService } from '../../shared/services/tracking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -37,6 +38,7 @@ import { DepthImageComponent } from './depth-image/depth-image.component';
   ]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly trackingService = inject(TrackingService);
   private readonly settingsService = inject(SettingsService);
   private readonly logService = inject(LogService);
@@ -66,7 +68,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   private autostartSubscription?: Subscription;
 
   public ngOnInit(): void {
-    this.trackingService.getCameras().subscribe({
+    this.trackingService.getCameras().pipe(markViewForCheck(this.changeDetector)).subscribe({
       next: (result) => {
         this.cameras = result;
       },
@@ -77,7 +79,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     });
 
     this.autostartSubscription = this.trackingService
-      .queryAutostartEnabled()
+      .queryAutostartEnabled().pipe(markViewForCheck(this.changeDetector))
       .subscribe({
         next: (result) => {
           this.autostart = result === 'true';
@@ -88,7 +90,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.statusSubscription = this.trackingService.getStatus().subscribe({
+    this.statusSubscription = this.trackingService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe({
       next: (result) => {
         this.updateStatusText(result);
         this.updateState();
@@ -100,7 +102,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     });
 
     this.selectedCamSubscription = this.trackingService
-      .getSelectedCamera()
+      .getSelectedCamera().pipe(markViewForCheck(this.changeDetector))
       .subscribe({
         next: (result) => {
           this.updateSelectedCamera(result);
@@ -143,7 +145,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
           this.configurations = result;
         }),
         mergeMap(() => this.trackingService.getSelectedCameraConfig())
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (config) => {
           this.updateSelectedCameraConfig(config);
@@ -178,7 +180,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   public start(): void {
     this.trackingService
-      .toggleCamera(this.selectedCameraIdx, this.selectedConfigurationIdx)
+      .toggleCamera(this.selectedCameraIdx, this.selectedConfigurationIdx).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log('toggled camera', result);
@@ -192,7 +194,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   public saveAutoStart(): void {
-    this.trackingService.setAutostartEnabled(this.autostart).subscribe(
+    this.trackingService.setAutostartEnabled(this.autostart).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.autostart = result as boolean;
         this.settingsService.update();

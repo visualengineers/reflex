@@ -1,6 +1,6 @@
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, fakeAsync, flush, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
@@ -70,9 +70,9 @@ describe('PointCloudComponent', () => {
   let component: PointCloudComponent;
   let fixture: ComponentFixture<PointCloudComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
     imports: [FormsModule,
         PointCloudComponent],
     providers: [
@@ -111,10 +111,12 @@ describe('PointCloudComponent', () => {
     })
 
     .compileComponents();
-    })
+    }
   );
 
   beforeEach(() => {
+    // These tests exercise geometry and service state, not native GPU rendering.
+    spyOn(HTMLCanvasElement.prototype, 'getContext').and.returnValue(null);
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);

@@ -1,5 +1,6 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { NEVER, Observable, Subscription } from 'rxjs';
 import { concatMap, tap, startWith, switchMap, map } from 'rxjs/operators';
 import { CalibrationService } from 'src/shared/services/calibration.service';
@@ -46,6 +47,7 @@ import { HistoryComponent } from './history/history.component';
   ]
 })
 export class ProcessingComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly baseUrl = inject(BASE_URL);
   private readonly settingsService = inject(SettingsService);
   private readonly processingService = inject(ProcessingService);
@@ -107,7 +109,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.statusSubscription = this.processingService.getStatus().subscribe(
+    this.statusSubscription = this.processingService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.statusText = result;
       },
@@ -118,7 +120,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
     );
 
     this.observerSubscription = this.processingService
-      .getObserverTypes()
+      .getObserverTypes().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.processors = result;
@@ -130,7 +132,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       );
 
     this.selectedProcessorSubscription = this.processingService
-      .getSelectedObserverType()
+      .getSelectedObserverType().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.updateProcessor(result);
@@ -155,7 +157,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
             : NEVER.pipe<Array<Interaction>>(startWith([]))),
         concatMap((raw) =>
           this.calibrationService.computeCalibratedAbsolutePosition(raw))
-      )
+      ).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => this.updateInteractions(result),
         (error) => {
@@ -164,7 +166,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.intervalSubscription = this.processingService.getInterval().subscribe(
+    this.intervalSubscription = this.processingService.getInterval().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.updateInterval(result);
       },
@@ -175,7 +177,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
     );
 
     this.remoteSettingsSubscription = this.processingService
-      .getRemoteProcessorSettings()
+      .getRemoteProcessorSettings().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.updateRemoteSettings(result);
@@ -198,7 +200,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public isInteractionProcessingActiveChanged(): void {
-    this.processingService.toggleProcessing().subscribe(
+    this.processingService.toggleProcessing().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `Processing status toggle - result:  ${result.status} - ${result.body?.value}`
@@ -214,7 +216,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public setProcessor(): void {
     this.processingService
-      .setObserverType(this.processors[this.selectedProcessorIdx])
+      .setObserverType(this.processors[this.selectedProcessorIdx]).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -229,7 +231,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public setInterval(): void {
-    this.processingService.setInterval(this.interval).subscribe(
+    this.processingService.setInterval(this.interval).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `Response to change interval request: ' + ${result.status} - Value: ${result.body?.value}`
@@ -265,7 +267,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public updateSettings(): void {
     this.processingService
-      .setRemoteProcessorSettings(this.remoteSettings)
+      .setRemoteProcessorSettings(this.remoteSettings).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -282,7 +284,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public saveRemoteProcessingSettings(): void {
-    this.saveSettingsSubscription = this.saveSettings$.subscribe(
+    this.saveSettingsSubscription = this.saveSettings$.pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(`saved settings:  ${JSON.stringify(result)}`);
       },

@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NetworkingService } from 'src/shared/services/networking.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -28,6 +29,7 @@ import { TuioComponent } from './tuio/tuio.component';
   ]
 })
 export class NetworkComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly settingsService = inject(SettingsService);
   private readonly networkService = inject(NetworkingService);
   private readonly logService = inject(LogService);
@@ -54,7 +56,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   private settingsSubscription?: Subscription;
 
   public ngOnInit(): void {
-    this.settingsSubscription = this.settingsService.getSettings().subscribe(
+    this.settingsSubscription = this.settingsService.getSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.networkSettings = result.networkSettingValues;
         this.fetchCurrentValues();
@@ -74,7 +76,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   public fetchCurrentValues(): void {
     this.statusValuesSubscription = this.networkService
-      .getStatusValues()
+      .getStatusValues().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.networkInterfaces = result.interfaces;
@@ -90,7 +92,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.statusTextSubscription = this.networkService.getStatus().subscribe(
+    this.statusTextSubscription = this.networkService.getStatus().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         this.statusText = result;
       },
@@ -103,7 +105,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   public isBroadcastingChanged(): void {
     this.errorText = '';
-    this.networkService.toggleBroadcasting().subscribe(
+    this.networkService.toggleBroadcasting().pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `Networking status toggle - result:  ${result.status} - ${result.body?.value}`
@@ -120,7 +122,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
 
   public setNetworkInterface(): void {
     this.networkService
-      .setNetworkInterface(this.networkInterfaces[this.selectedInterfaceIdx])
+      .setNetworkInterface(this.networkInterfaces[this.selectedInterfaceIdx]).pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           console.log(
@@ -135,7 +137,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   public setAddress(): void {
-    this.networkService.setAddress(this.networkSettings.address).subscribe(
+    this.networkService.setAddress(this.networkSettings.address).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `response to change address: ${result.status} - ${result.body?.value}`
@@ -149,7 +151,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   public setPort(): void {
-    this.networkService.setPort(this.networkSettings.port).subscribe(
+    this.networkService.setPort(this.networkSettings.port).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `response to change port: ${result.status} - ${result.body?.value}`
@@ -163,7 +165,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   public setEndpoint(): void {
-    this.networkService.setEndpoint(this.networkSettings.endpoint).subscribe(
+    this.networkService.setEndpoint(this.networkSettings.endpoint).pipe(markViewForCheck(this.changeDetector)).subscribe(
       (result) => {
         console.log(
           `response to change endpoint: ${result.status} - ${result.body?.value}`
@@ -181,7 +183,7 @@ export class NetworkComponent implements OnInit, OnDestroy {
   }
 
   public saveNetworkSettings(): void {
-    this.networkService.saveSettings().subscribe(
+    this.networkService.saveSettings().pipe(markViewForCheck(this.changeDetector)).subscribe(
       () => {},
       (error) => {
         this.errorText = `Cannot save settings: ${error} - ${JSON.stringify(

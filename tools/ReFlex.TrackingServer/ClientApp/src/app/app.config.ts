@@ -1,5 +1,5 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -18,8 +18,7 @@ const providers = [{ provide: BASE_URL, useFactory: getBaseUrl, deps: [PlatformL
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Service subscriptions update plain fields and rely on Zone.js to refresh views.
-    provideZoneChangeDetection(),
+    provideZonelessChangeDetection(),
     providers,
     importProvidersFrom(
       BrowserModule,

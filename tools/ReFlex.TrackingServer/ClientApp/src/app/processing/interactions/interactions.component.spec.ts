@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InteractionsComponent } from './interactions.component';
 import { DatePipe } from '@angular/common';
@@ -48,12 +48,12 @@ describe('InteractionsComponent', () => {
   smallData.normalized = largeData.normalized.filter((elem, idx) => idx > 20);
   smallData.absolute = largeData.absolute.filter((elem, idx) => idx > 20);
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [InteractionsComponent]
 })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InteractionsComponent);

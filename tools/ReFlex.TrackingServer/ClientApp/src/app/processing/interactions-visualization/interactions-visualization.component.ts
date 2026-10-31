@@ -1,5 +1,6 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import {
+import { ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -29,6 +30,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule, HistoryVisualizationComponent]
 })
 export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
 
@@ -67,7 +69,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService
-      .getFrameSize()
+      .getFrameSize().pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
           this.frameSize = result;
@@ -109,6 +111,9 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     this.calibratedInteractions = this.fullScreen
       ? result.absolute
       : result.normalized;
+
+    // Also used imperatively by ProcessingComponent through ViewChild.
+    this.changeDetector.markForCheck();
 
     if (this.container === undefined) {
       return;

@@ -1,5 +1,5 @@
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TrackingComponent } from './tracking.component';
 import { TrackingService } from 'src/shared/services/tracking.service';
@@ -153,8 +153,8 @@ describe('TrackingComponent', () => {
   let component: TrackingComponent;
   let fixture: ComponentFixture<TrackingComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [
         CommonModule,
         FormsModule,
@@ -191,7 +191,7 @@ describe('TrackingComponent', () => {
         MockDepthImageComponent ] }
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TrackingComponent);
@@ -453,8 +453,8 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
   let component: TrackingComponent;
   let fixture: ComponentFixture<TrackingComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [
         FormsModule,
         CommonModule,
@@ -495,7 +495,7 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
       MockDepthImageComponent ] }
   })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TrackingComponent);
