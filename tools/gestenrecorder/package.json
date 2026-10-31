@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "start": "ng serve gestenrecorder",
+    "build": "ng build gestenrecorder",
+    "watch": "ng build gestenrecorder --watch --configuration development",
+    "test": "ng test gestenrecorder",
     "serve:ssr:gestenrecorder": "node dist/gestenrecorder/server/server.mjs"
   },
   "private": true,

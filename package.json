@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "ng": "ng",
     "build": "npm run build --workspaces --if-present",
     "build-complete": "npm run build --workspaces --if-present && npm run lint --workspaces --if-present && npm run test-ci --workspaces --if-present",
     "build:shared-components": "npm run build -w packages/reflex-angular-components",
@@ -17,6 +18,7 @@
     "build:emulator:electron-linux": "npm run build:electron-linux -w tools/emulator && npm install",
     "build:emulator:electron-linux-arm64": "npm run build:electron-linux-arm64 -w tools/emulator && npm install",
     "build:example-angular": "npm run build -w examples/basic-angular",
+    "build:shared-components-demo": "npm run build -w examples/shared-components-demo",
     "build:example-react": "npm run build -w examples/basic-react",
     "build:example-vue": "npm run build -w examples/basic-vue",
     "build:logging": "npm run build -w tools/logging",
@@ -24,6 +26,7 @@
     "start:emulator": "npm start -w tools/emulator",
     "start:gestenrecorder": "npm start -w tools/gestenrecorder",
     "start:example-angular": "npm start -w examples/basic-angular",
+    "start:shared-components-demo": "npm start -w examples/shared-components-demo",
     "start:example-react": "npm run dev -w examples/basic-react",
     "start:example-vue": "npm run serve -w examples/basic-vue",
     "start:logging": "npm run start -w tools/logging",

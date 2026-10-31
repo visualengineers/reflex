@@ -61,6 +61,31 @@ The repository uses NPM workspaces for better management of dependencies
 
 Therefore, the repository should be initialized in the root folder by running the command `npm install` and not in the sub directories (although there are package.json files, but these files are just handling the local dependencies)
 
+### Angular workspace
+
+All Angular applications and the shared component library are registered in the root `angular.json`.
+Their source directories and build output directories remain inside their existing npm workspaces.
+Angular dependencies are maintained only in the root `package.json`; do not add a separate
+`angular.json` to an application directory.
+
+The existing npm scripts work both from the repository root and from each package directory.
+Direct Angular CLI commands should specify the project explicitly, for example:
+
+```bash
+npm run ng -- build reflex-emulator
+npm run ng -- serve TrackingServer --configuration development
+npm run ng -- test basic-angular --watch=false
+npm run ng -- generate component example --project=shared-components-demo
+```
+
+To update Angular, run `npm run ng -- update @angular/cli@^<next-major> @angular/core@^<next-major>`
+from the repository root, replacing `<next-major>` with the target major version.
+Update one major version at a time, include other packages with their own migrations as needed,
+and review the generated changes. Dependencies no longer need to be copied into individual packages.
+After an update, build shared types and components first, then the applications, and run their tests.
+Paths in `angular.json` are relative to the repository root; paths in `tsconfig` and `ng-package.json`
+remain relative to their respective configuration files.
+
 **[⬆ back to top](#table-of-contents)**
 
 ### Repository initialization

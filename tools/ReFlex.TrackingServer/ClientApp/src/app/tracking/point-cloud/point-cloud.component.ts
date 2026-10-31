@@ -6,7 +6,7 @@ import { LogService } from 'src/app/log/log.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TrackingService } from '../../../shared/services/tracking.service';
 import { PointCloudService } from '../../../shared/services/point-cloud.service';
 import { HttpClient } from '@angular/common/http';
