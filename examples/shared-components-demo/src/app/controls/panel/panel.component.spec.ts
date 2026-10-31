@@ -78,105 +78,53 @@ describe('PanelComponent', () => {
     expect(disabled).toBeFalsy();
   })
 
-  it('should correctly set data binding for toggle data', () => {
-    const settingsGroup = fixture.debugElement.query(By.css('app-panel-header'));
-    expect(settingsGroup).toBeTruthy();
-
-    const id = "testId-toggle";
-
-    component.toggleHeaderActive = true;
-    fixture.detectChanges();
-
-    let toggle = settingsGroup.query(By.css(`#${id}`));
-    expect(toggle).toBeTruthy();
-
-    let messageElem = fixture.debugElement.query(By.css('#toggleMessage'));
-    expect(messageElem).toBeTruthy();
-
-    let messageClass = messageElem.nativeElement.getAttribute('class');
-    expect(messageClass).toContain('bg-active');
-
-    let model = toggle.nativeElement.getAttribute('ng-reflect-model');
-    expect(model).toEqual('true');
+  it('should correctly set data binding for toggle data', async () => {
+    await fixture.whenStable();
+    const toggle: HTMLInputElement = fixture.nativeElement.querySelector('#testId-toggle');
+    const message: HTMLElement = fixture.nativeElement.querySelector('#toggleMessage');
+    expect(toggle.checked).toBeTrue();
+    expect(message.classList).toContain('bg-active');
 
     component.toggleHeaderActive = false;
-    fixture.detectChanges();
+    // This assignment simulates a parent update outside an Angular event handler.
+    fixture.changeDetectorRef.markForCheck();
+    await fixture.whenStable();
 
-    toggle = settingsGroup.query(By.css(`#${id}`));
-    expect(toggle).toBeTruthy();
-
-    messageElem = fixture.debugElement.query(By.css('#toggleMessage'));
-    expect(messageElem).toBeTruthy();
-
-    messageClass = messageElem.nativeElement.getAttribute('class');
-    expect(messageClass).toContain('bg-inactive');
-
-    model = toggle.nativeElement.getAttribute('ng-reflect-model');
-    expect(model).toEqual('false');
-
+    expect(toggle.checked).toBeFalse();
+    expect(message.classList).toContain('bg-inactive');
   });
 
-  it('should correctly set data binding for disabled state', () => {
-    const settingsGroup = fixture.debugElement.query(By.css('app-panel-header'));
-    expect(settingsGroup).toBeTruthy();
-
-    const id = "testId-toggle";
-
-    component.canToggleHeader = true;
-    fixture.detectChanges();
-
-    let toggle = settingsGroup.query(By.css(`#${id}`));
-    expect(toggle).toBeTruthy();
-
-    let disabled = toggle.nativeElement.disabled;
-    expect(disabled).toBeFalsy();
+  it('should correctly set data binding for disabled state', async () => {
+    await fixture.whenStable();
+    const toggle: HTMLInputElement = fixture.nativeElement.querySelector('#testId-toggle');
+    expect(toggle.disabled).toBeFalse();
 
     component.canToggleHeader = false;
-    fixture.detectChanges();
+    fixture.changeDetectorRef.markForCheck();
+    await fixture.whenStable();
+    expect(toggle.disabled).toBeTrue();
 
-    toggle = settingsGroup.query(By.css(`#${id}`));
-    expect(toggle).toBeTruthy();
-
-    disabled = toggle.nativeElement.disabled;
-    expect(disabled).toBeTruthy();
-
+    component.canToggleHeader = true;
+    fixture.changeDetectorRef.markForCheck();
+    await fixture.whenStable();
+    expect(toggle.disabled).toBeFalse();
   });
 
-  it('should correctly update bound data when interacting', () => {
-    const settingsGroup = fixture.debugElement.query(By.css('app-panel-header'));
-    expect(settingsGroup).toBeTruthy();
+  it('should correctly update bound data when interacting', async () => {
+    await fixture.whenStable();
+    const toggle: HTMLInputElement = fixture.nativeElement.querySelector('#testId-toggle');
+    const message: HTMLElement = fixture.nativeElement.querySelector('#toggleMessage');
 
-    const id = "testId-toggle";
+    toggle.click();
+    await fixture.whenStable();
+    expect(component.toggleHeaderActive).toBeFalse();
+    expect(toggle.checked).toBeFalse();
+    expect(message.classList).toContain('bg-inactive');
 
-    component.toggleHeaderActive = true;
-    fixture.detectChanges();
-
-    let toggle = settingsGroup.query(By.css(`#${id}`));
-    expect(toggle).toBeTruthy();
-
-    let messageElem = fixture.debugElement.query(By.css('#toggleMessage'));
-    expect(messageElem).toBeTruthy();
-
-    let messageClass = messageElem.nativeElement.getAttribute('class');
-    expect(messageClass).toContain('bg-active');
-
-    let model = toggle.nativeElement.getAttribute('ng-reflect-model');
-    expect(model).toEqual('true');
-
-    component.toggleHeaderActive = false;
-    fixture.detectChanges();
-
-    toggle = settingsGroup.query(By.css(`#${id}`));
-    expect(toggle).toBeTruthy();
-
-    messageElem = fixture.debugElement.query(By.css('#toggleMessage'));
-    expect(messageElem).toBeTruthy();
-
-    messageClass = messageElem.nativeElement.getAttribute('class');
-    expect(messageClass).toContain('bg-inactive');
-
-    model = toggle.nativeElement.getAttribute('ng-reflect-model');
-    expect(model).toEqual('false');
-
-  })
+    toggle.click();
+    await fixture.whenStable();
+    expect(component.toggleHeaderActive).toBeTrue();
+    expect(toggle.checked).toBeTrue();
+    expect(message.classList).toContain('bg-active');
+  });
 });

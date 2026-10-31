@@ -471,6 +471,11 @@
               "zone.js/testing"
             ],
             "tsConfig": "tools/gestenrecorder/tsconfig.spec.json",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
             "inlineStyleLanguage": "scss",
             "assets": [
               "tools/gestenrecorder/src/favicon.ico",

@@ -18,7 +18,7 @@ describe('HistoryComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HistoryComponent],
+      imports: [HistoryComponent],
       providers: [
         { provide: TouchPointService, useValue: dummyTouchPointService }
       ]

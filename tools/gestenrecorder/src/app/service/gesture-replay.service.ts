@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Gesture } from '../data/gesture';
 import { ConnectionService } from './connection.service';
 import { ConfigurationService } from './configuration.service';
@@ -14,7 +14,7 @@ import { GestureTrackFrame } from '../data/gesture-track-frame';
 @Injectable({
   providedIn: 'root',
 })
-export class GestureReplayService {
+export class GestureReplayService implements OnDestroy {
   private readonly connectionService = inject(ConnectionService);
   private readonly configService = inject(ConfigurationService);
   private readonly httpClient = inject(HttpClient);
@@ -28,6 +28,10 @@ export class GestureReplayService {
   );
   playbackFrame$ = this.playbackFrameSubject.asObservable();
   private animationSubscription?: Subscription;
+
+  public ngOnDestroy(): void {
+    this.animationSubscription?.unsubscribe();
+  }
 
   public initFile(gestureFile: string): void {
     this.httpClient.get(gestureFile, { responseType: 'json' }).subscribe({
@@ -136,7 +140,7 @@ export class GestureReplayService {
     if (this.loopGesture) {
       this.currentFrame = this.currentFrame % this.gestureForReplay.numFrames;
     } else if (this.currentFrame >= this.gestureForReplay.numFrames) {
-      this.currentFrame = this.gestureForReplay.numFrames - 1;
+      this.currentFrame = this.gestureForReplay.numFrames;
     }
   }
 }

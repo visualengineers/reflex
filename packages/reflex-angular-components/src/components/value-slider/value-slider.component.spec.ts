@@ -43,7 +43,7 @@ describe('ValueSliderComponent', () => {
 
   it ('should set id correctly', () => {
     const testId = 'Value Slider TestId';
-    component.elementId = testId;
+    fixture.componentRef.setInput('elementId', testId);
 
     fixture.detectChanges();
 
@@ -75,7 +75,7 @@ describe('ValueSliderComponent', () => {
 
   it ('should set title correctly', () => {
     const testTitle = 'ValueSlider - TestTitle';
-    component.elementTitle = testTitle;
+    fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 
@@ -124,11 +124,11 @@ describe('ValueSliderComponent', () => {
     const unit = 'tests';
     const data = 23;
 
-    component.min = min;
-    component.max = max;
-    component.step = step;
-    component.unit = unit;
-    component.data = data;
+    fixture.componentRef.setInput('min', min);
+    fixture.componentRef.setInput('max', max);
+    fixture.componentRef.setInput('step', step);
+    fixture.componentRef.setInput('unit', unit);
+    fixture.componentRef.setInput('data', data);
 
     fixture.detectChanges();
     await fixture.whenStable();

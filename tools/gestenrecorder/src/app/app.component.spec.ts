@@ -20,10 +20,13 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('gestenrecorder');
   });
 
-  it('should render title', () => {
+  it('should render gesture controls', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, gestenrecorder');
+    const buttons = compiled.querySelectorAll('.recorder__header > .settings__button-group > button');
+    expect(buttons.length).toBe(3);
+    expect(buttons[0].textContent).toContain('Build');
+    expect(compiled.querySelector('#first-toggle-checkbox')).toBeTruthy();
   });
 });

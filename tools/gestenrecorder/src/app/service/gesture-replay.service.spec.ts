@@ -67,7 +67,7 @@ const testTrack: GestureTrack = {
 
     const data = testData;
 
-    service.init(file);
+    service.initFile(file);
 
     const req = httpTestingController.expectOne(file);
     expect(req.request.method).toEqual('GET');
@@ -86,7 +86,7 @@ const testTrack: GestureTrack = {
 
     const data = testData;
 
-    service.init(file);
+    service.initFile(file);
 
     const req = httpTestingController.expectOne(file);
     expect(req.request.method).toEqual('GET');
@@ -117,7 +117,7 @@ const testTrack: GestureTrack = {
 
     const data = testData;
 
-    service.init(file);
+    service.initFile(file);
 
     const req = httpTestingController.expectOne(file);
     expect(req.request.method).toEqual('GET');
@@ -157,7 +157,7 @@ const testTrack: GestureTrack = {
 
     const data = testData;
 
-    service.init(file);
+    service.initFile(file);
 
     const req = httpTestingController.expectOne(file);
     expect(req.request.method).toEqual('GET');
