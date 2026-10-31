@@ -1,8 +1,7 @@
 name: "Library: Update README package versions"
 
 on:
-  push:
-    branches: [main]
+  pull_request:
     paths:
       - 'library/src/**/*.csproj'
       - 'library/src/ReFlex.Library.sln'
