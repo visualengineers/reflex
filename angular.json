@@ -107,14 +107,11 @@
             },
             "scripts": [],
             "browser": "tools/ReFlex.TrackingServer/ClientApp/src/main.ts",
-            "server": "tools/ReFlex.TrackingServer/ClientApp/src/main.server.ts",
             "security": {
               "allowedHosts": []
             },
-            "outputMode": "static",
-            "ssr": {
-              "entry": "tools/ReFlex.TrackingServer/ClientApp/src/server.ts"
-            }
+            "prerender": false,
+            "ssr": false
           },
           "configurations": {
             "production": {

@@ -2,7 +2,7 @@ import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideBrowserGlo
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CustomErrorHandler } from 'src/shared/util/custom-error-handler';
@@ -25,7 +25,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ErrorHandler, useClass: CustomErrorHandler },
     provideHttpClient(withInterceptorsFromDi()),
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideClientHydration(withEventReplay())
+    provideRouter(routes)
   ]
 };

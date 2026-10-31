@@ -14,6 +14,12 @@ Run `ng generate component component-name --project=TrackingServer` to generate 
 
 Run `ng build TrackingServer` to build the project. The build artifacts will be stored in the `dist/` directory.
 
+From the repository root, run `npm run build:server`. A running .NET backend is not required
+for this build. All TrackingServer routes use client-side rendering because their API requests,
+SignalR connections and polling need a live backend at runtime. The build produces the static
+browser application in `dist/browser`; it does not prerender the dashboard pages.
+When serving the application, keep the .NET fallback to `index.html` for direct navigation to routes.
+
 ## Running unit tests
 
 Run `ng test TrackingServer` to execute the unit tests via [Karma](https://karma-runner.github.io).
