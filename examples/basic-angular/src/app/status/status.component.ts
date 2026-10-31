@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Interaction } from '@reflex/shared-types';
 import { interval, Observable, Subscription } from 'rxjs';
 import { TouchPointService } from 'src/services/touch-point.service';
@@ -9,12 +9,14 @@ import { TouchPointService } from 'src/services/touch-point.service';
   styleUrls: ['./status.component.scss'],
 })
 export class StatusComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private _pointService = inject(TouchPointService);
 
   _touchPoints$: Observable<Interaction[]> | undefined;
   _touchPointSubscription: Subscription | undefined;
 
   _connectionSubscription: Subscription | undefined;
+  private frameSubscription?: Subscription;
 
   public WebSocketAddress = '';
   public IsConnected = false;
@@ -24,16 +26,23 @@ export class StatusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._touchPoints$ = this._pointService.getTouchPoints();
     this._touchPointSubscription = this._touchPoints$.subscribe((res) => {
+      this.changeDetector.markForCheck();
       this.TouchCount = res.length;
     });
-    interval(500).subscribe(
-      () => (this.IsConnected = this._pointService.isConnected())
+    this._connectionSubscription = interval(500).subscribe(
+      () => {
+        this.IsConnected = this._pointService.isConnected();
+        this.changeDetector.markForCheck();
+      }
     );
     console.log(this.IsConnected);
     this.WebSocketAddress = this._pointService.getAddress();
-    this._pointService
+    this.frameSubscription = this._pointService
       .getFrameNumber()
-      .subscribe((n) => (this.FrameNumber = n));
+      .subscribe((n) => {
+        this.FrameNumber = n;
+        this.changeDetector.markForCheck();
+      });
   }
 
   ngOnDestroy(): void {
@@ -41,5 +50,6 @@ export class StatusComponent implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     this._touchPointSubscription?.unsubscribe();
     this._connectionSubscription?.unsubscribe();
+    this.frameSubscription?.unsubscribe();
   }
 }

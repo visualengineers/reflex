@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -28,6 +29,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, FormsModule],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private configurationService = inject(ConfigurationService);
   private connectionService = inject(ConnectionService);
   private renderer = inject(Renderer2);
@@ -62,6 +64,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private amountTouchPointsSubscription?: Subscription;
   private layersSubscription?: Subscription;
   private stateSubscription?: Subscription;
+  private backupSubscription?: Subscription;
 
   @ViewChild('indicator')
   private indicator?: ElementRef;
@@ -80,17 +83,27 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.viewOptions = this.configurationService.getViewOptions();
     this.viewPort = this.configurationService.getViewPort();
 
-    this.configurationService.backupTimestamp$.subscribe(
-      (x) => (this.backupTimestamp = x)
+    this.backupSubscription?.unsubscribe();
+    this.backupSubscription = this.configurationService.backupTimestamp$.subscribe(
+      (x) => {
+        this.backupTimestamp = x;
+        this.changeDetector.markForCheck();
+      }
     );
 
     this.amountTouchPointsSubscription = this.configurationService
       .getAmountTouchPoints()
-      .subscribe((amount) => (this.amountTouchPoints = amount));
+      .subscribe((amount) => {
+        this.amountTouchPoints = amount;
+        this.changeDetector.markForCheck();
+      });
 
     this.layersSubscription = this.configurationService
       .getLayers()
-      .subscribe((layers) => (this.layers = layers));
+      .subscribe((layers) => {
+        this.layers = layers;
+        this.changeDetector.markForCheck();
+      });
 
     this.stateSubscription =
       this.connectionService.connectionSuccessful.subscribe((result) =>
@@ -172,7 +185,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.connectionService.destroy();
     this.amountTouchPointsSubscription?.unsubscribe();
-    this.configurationService.backupTimestamp$.unsubscribe();
+    this.backupSubscription?.unsubscribe();
     this.layersSubscription?.unsubscribe();
     this.stateSubscription?.unsubscribe();
   }

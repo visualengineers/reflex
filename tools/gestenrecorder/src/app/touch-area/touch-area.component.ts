@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -47,6 +48,7 @@ interface Size {
   styleUrls: ['./touch-area.component.scss'],
 })
 export class TouchAreaComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private connectionService = inject(ConnectionService);
   private configurationService = inject(ConfigurationService);
   private eventService = inject(EventService);
@@ -76,7 +78,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
       ) as CanvasRenderingContext2D;
     }
 
-    this.gestureReplayService.playbackFrame$.subscribe((value) => {
+    this.subscriptions.push(this.gestureReplayService.playbackFrame$.subscribe((value) => {
       if (value) {
         const point: NormalizedPoint = {
           index: 0,
@@ -95,7 +97,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         );
         this.drawAnimation(dto);
       }
-    });
+    }));
 
     // this.gestureService.gesture$.subscribe(gesture => {
     //   if (gesture) {
@@ -174,6 +176,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         } else {
           this.hoveredPoint = null;
         }
+        this.changeDetector.markForCheck();
         return hoveredCircles.length > 0;
       }),
       startWith(false),
@@ -202,6 +205,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.configurationService.background$.subscribe(() => {
         this.backgroundPath = this.configurationService.getBackgroundImage();
+        this.changeDetector.markForCheck();
         console.log('backgroundPath TouchArea:', this.backgroundPath);
       }),
 
@@ -369,6 +373,7 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
         )
         .subscribe(() => {
           this.isHoverMenuFixed = !this.isHoverMenuFixed;
+          this.changeDetector.markForCheck();
         })
     );
   }
@@ -479,8 +484,6 @@ export class TouchAreaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-    this.configurationService.amountTouchPoints$.unsubscribe();
-    this.configurationService.background$.unsubscribe();
     this.connectionService.disconnect();
   }
 

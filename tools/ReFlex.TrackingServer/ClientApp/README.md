@@ -28,7 +28,8 @@ Run `ng test TrackingServer` to execute the unit tests via [Karma](https://karma
 
 TrackingServer explicitly uses `provideZonelessChangeDetection()` in both the app
 and its test environment. Its polyfills do not load `zone.js` or `zone.js/testing`.
-The root dependency remains available for other applications in the monorepo.
+The other Angular applications and the shared library tests also use zoneless scheduling;
+see the repository README for the audit and verification commands.
 
 Imperative RxJS subscriptions that write template state use `markViewForCheck()`
 with the component's `ChangeDetectorRef`. This schedules Angular's normal check

@@ -30,10 +30,7 @@
             "main": "packages/reflex-angular-components/test.ts",
             "tsConfig": "packages/reflex-angular-components/tsconfig.spec.json",
             "karmaConfig": "packages/reflex-angular-components/karma.conf.js",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": [],
             "styles": [
               "packages/reflex-angular-components/src/scss/reflex.scss"
             ]
@@ -394,9 +391,7 @@
             "outputPath": "tools/gestenrecorder/dist/gestenrecorder",
             "index": "tools/gestenrecorder/src/index.html",
             "browser": "tools/gestenrecorder/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "tools/gestenrecorder/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -466,10 +461,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": [],
             "tsConfig": "tools/gestenrecorder/tsconfig.spec.json",
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -484,7 +476,8 @@
             "styles": [
               "tools/gestenrecorder/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "main": "tools/gestenrecorder/src/test.ts"
           }
         }
       }
@@ -655,9 +648,7 @@
             "outputPath": "examples/shared-components-demo/dist/shared-components-demo",
             "index": "examples/shared-components-demo/src/index.html",
             "browser": "examples/shared-components-demo/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "examples/shared-components-demo/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -729,10 +720,7 @@
         "shared-components-demo": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": [],
             "tsConfig": "examples/shared-components-demo/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [

@@ -1,4 +1,3 @@
-import { provideZoneChangeDetection } from '@angular/core';
 import {
   bootstrapApplication,
   BootstrapContext,
@@ -9,10 +8,7 @@ import { config } from './app/app.config.server';
 const bootstrap = (context: BootstrapContext) =>
   bootstrapApplication(
     AppComponent,
-    {
-      ...config,
-      providers: [provideZoneChangeDetection(), ...config.providers],
-    },
+    config,
     context
   );
 

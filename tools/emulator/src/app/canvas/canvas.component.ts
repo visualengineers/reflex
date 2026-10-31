@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -40,6 +41,7 @@ interface Size {
   imports: [CommonModule],
 })
 export class CanvasComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private connectionService = inject(ConnectionService);
   private configurationService = inject(ConfigurationService);
 
@@ -62,6 +64,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
   private layers?: Layers;
 
   private layersSubscription?: Subscription;
+  private backgroundSubscription?: Subscription;
 
   private moveNormalizedPointsSubscription?: Subscription;
 
@@ -174,8 +177,9 @@ export class CanvasComponent implements OnInit, OnDestroy {
     // SUBSCRIPTIONS
 
     // html canvas element
-    this.configurationService.background$.subscribe(() => {
+    this.backgroundSubscription = this.configurationService.background$.subscribe(() => {
       this.backgroundPath = this.configurationService.getBackgroundImage();
+      this.changeDetector.markForCheck();
     });
 
     this.drawCirclesSubscription = combineLatest([
@@ -532,8 +536,7 @@ export class CanvasComponent implements OnInit, OnDestroy {
     this.resizeNormalizedPointsSubscription?.unsubscribe();
     this.sendTouchPointsSubscription?.unsubscribe();
     this.suppressContextMenuSubscription?.unsubscribe();
-    this.configurationService.amountTouchPoints$.unsubscribe();
-    this.configurationService.background$.unsubscribe();
+    this.backgroundSubscription?.unsubscribe();
 
     this.connectionService.disconnect();
   }

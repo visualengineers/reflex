@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 
 import {
   SettingsGroupComponent,
@@ -24,6 +24,7 @@ import { OnInit, OnDestroy } from '@angular/core';
   styleUrl: './recorderoptions.component.scss',
 })
 export class RecorderoptionsComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private configurationService = inject(ConfigurationService);
   private connectionService = inject(ConnectionService);
 
@@ -41,7 +42,10 @@ export class RecorderoptionsComponent implements OnInit, OnDestroy {
 
     this.amountTouchPointsSubscription = this.configurationService
       .getAmountTouchPoints()
-      .subscribe((amount) => (this.amountTouchPoints = amount));
+      .subscribe((amount) => {
+        this.amountTouchPoints = amount;
+        this.changeDetector.markForCheck();
+      });
   }
 
   saveConfiguration(): void {

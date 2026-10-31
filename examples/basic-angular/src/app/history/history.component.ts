@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { TouchPointService } from 'src/services/touch-point.service';
 import { InteractionFrame } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./history.component.scss'],
 })
 export class HistoryComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private _pointService = inject(TouchPointService);
 
   private _frames: Subscription | undefined;
@@ -22,6 +23,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._frames = this._pointService.getHistory().subscribe((res) => {
+      this.changeDetector.markForCheck();
       this.Frames = res;
     });
   }

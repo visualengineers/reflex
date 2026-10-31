@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   AfterViewInit,
   Component,
   ElementRef,
@@ -23,6 +24,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./app.scss'],
 })
 export class App implements AfterViewInit, OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private _pointService = inject(TouchPointService);
 
   title = 'Basic Angular App';
@@ -62,6 +64,7 @@ export class App implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private updateSize() {
+    this.changeDetector.markForCheck();
     if (this.interactionCanvas) {
       this.Width = this.interactionCanvas.nativeElement.offsetWidth;
       this.Height = this.interactionCanvas.nativeElement.offsetHeight;

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Layers } from '../service/configuration.service';
@@ -25,6 +25,7 @@ import {
   styleUrl: './gestureoptions.component.scss',
 })
 export class GestureoptionsComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private configurationService = inject(ConfigurationService);
 
   public layers: Layers = {
@@ -57,7 +58,10 @@ export class GestureoptionsComponent implements OnInit, OnDestroy {
 
     this.layersSubscription = this.configurationService
       .getLayers()
-      .subscribe((layers) => (this.layers = layers));
+      .subscribe((layers) => {
+        this.layers = layers;
+        this.changeDetector.markForCheck();
+      });
   }
 
   saveConfiguration(): void {

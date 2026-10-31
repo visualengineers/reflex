@@ -86,6 +86,39 @@ After an update, build shared types and components first, then the applications,
 Paths in `angular.json` are relative to the repository root; paths in `tsconfig` and `ng-package.json`
 remain relative to their respective configuration files.
 
+#### Zoneless change detection
+
+All Angular applications explicitly provide `provideZonelessChangeDetection()`.
+Their browser/SSR bootstraps and Karma environments do not load `zone.js` or
+`zone.js/testing`. The shared component library is also tested in zoneless mode;
+it leaves the scheduling provider to its consuming application.
+
+Imperative subscriptions that change template state call `ChangeDetectorRef.markForCheck()`.
+AsyncPipe, template events, HostListeners, and bound input updates already notify Angular.
+Canvas drawing and playback operate directly on the canvas and do not trigger application-wide checks.
+
+| Project | Change-detection boundaries covered by regression tests |
+| --- | --- |
+| `basic-angular` | WebSocket counts/frame numbers/history, connection polling, native resize and touch positions |
+| `reflex-emulator` | Touch count, backup timestamp, nested layer values, connection indicator, canvas background |
+| `gestenrecorder` | Loaded files/gesture table, recorder/layer forms, Plotly updates, canvas background, native hover/fix events, document clicks |
+| `shared-components-demo` | HTTP responses via AsyncPipe, timed toast dismissal, projected panel state |
+| `@reflex/angular-components` | Input updates for all six controls, checkbox/panel two-way bindings, debounced slider output |
+| `TrackingServer` | See its ClientApp README for the HTTP/SignalR/polling/ViewChild audit |
+
+Each project has a `zoneless-change-detection.spec.ts` regression suite. These tests
+assert rendered output using `fixture.whenStable()` without test-side `detectChanges()`
+or `markForCheck()`. Native timers and Plotly's drawing are awaited separately.
+Owned timer/stream subscriptions are detached when the affected views are destroyed;
+components do not unsubscribe shared service subjects.
+
+To check all Angular projects, build the shared types and components first, then run
+`npm run ng -- test <project> --watch=false --browsers=ChromeHeadless` and
+`npm run ng -- build <project> --configuration=production` for the projects above.
+`CHROME_BIN` can point to a locally installed Chrome or the Puppeteer executable.
+The shared-components demo production build also verifies SSR/prerendering.
+Angular dependency versions remain unchanged.
+
 **[⬆ back to top](#table-of-contents)**
 
 ### Repository initialization

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 
 import { FormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ export interface GestureData {
   styleUrl: './track-component.component.scss',
 })
 export class TrackComponentComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private gestureService = inject(GestureDataService);
   private gestureReplayService = inject(GestureReplayService);
 
@@ -41,6 +42,7 @@ export class TrackComponentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.gestureSubscription = this.gestureService.gesture$.subscribe(
       (gesture) => {
+        this.changeDetector.markForCheck();
         this.selectedGesture = gesture;
 
         // Aktualisiere tableData, wenn selectedGesture aktualisiert wird

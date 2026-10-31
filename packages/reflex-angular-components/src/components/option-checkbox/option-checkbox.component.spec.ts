@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OptionCheckboxComponent } from './option-checkbox.component';
 import { FormsModule } from '@angular/forms';

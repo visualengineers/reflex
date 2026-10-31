@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { DestroyRef, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
@@ -16,6 +17,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
   private gestureService = inject(GestureDataService);
   private readonly gestureReplayService = inject(GestureReplayService);
@@ -73,7 +76,7 @@ export class TimelineComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.gestureService.gesture$.subscribe((gesture) => {
+    this.gestureService.gesture$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((gesture) => {
       this.segmentsCount = gesture.numFrames;
       this.segmentWidth = this.graph.layout.width / this.segmentsCount;
       this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
@@ -85,12 +88,13 @@ export class TimelineComponent implements OnInit {
       this.updateGraph([]);
     });
 
-    this.gestureService.gesturePoints$.subscribe((points) => {
+    this.gestureService.gesturePoints$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((points) => {
       this.updateGraph(points);
     });
   }
 
   updateGraph(points: GestureTrackFrame[]) {
+    this.changeDetector.markForCheck();
     const frameValues = Array.from({ length: this.segmentsCount }, (_, i) => i);
     const zValues = points.map((point) => point.z);
 

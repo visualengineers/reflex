@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SettingsGroupComponent, ValueSelectionComponent } from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
@@ -11,6 +11,7 @@ import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
   styleUrl: './select.component.scss'
 })
 export class SelectComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   public filters = [
     'Default',
     'Custom Special',
@@ -31,7 +32,10 @@ export class SelectComponent implements OnInit, OnDestroy {
       this.remainingToast.pipe(
         filter((value) => value === 0)
       ).subscribe({
-        next: () => (this.statusMessage = '')
+        next: () => {
+          this.statusMessage = '';
+          this.changeDetector.markForCheck();
+        }
       })
     );
   }
@@ -44,10 +48,10 @@ export class SelectComponent implements OnInit, OnDestroy {
     this.remainingToast.next(this.remainingToast.getValue() + 1);
     this.statusMessage = `savedFilter: ${this.filters[this.selectedFilterIdx]} (x${this.remainingToast.getValue()})`;
 
-    timer(2000).pipe(
+    this.notification$.add(timer(2000).pipe(
       filter(() => this.remainingToast.getValue() > 0)
     ).subscribe({
       complete: () => this.remainingToast.next(this.remainingToast.getValue() - 1)
-    });
+    }));
   }
 }
