@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
-import { ConnectionService } from './service/connection.service';
+import { ConnectionService } from '../service/connection.service';
 
 
 export function setupTests(): void {

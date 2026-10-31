@@ -121,7 +121,9 @@ Canvas drawing and playback operate directly on the canvas and do not trigger ap
 | `@reflex/angular-components` | Input updates for all six controls, checkbox/panel two-way bindings, debounced slider output |
 | `TrackingServer` | See its ClientApp README for the HTTP/SignalR/polling/ViewChild audit |
 
-Each project has a `zoneless-change-detection.spec.ts` regression suite. These tests
+Zoneless regression tests live in the corresponding component `*.spec.ts` files,
+with application startup checks in the app spec. Shared test contexts and data live
+in `test-utils` folders. These tests
 assert rendered output using `fixture.whenStable()` without test-side `detectChanges()`
 or `markForCheck()`. Native timers and Plotly's drawing are awaited separately.
 Owned timer/stream subscriptions are detached when the affected views are destroyed;

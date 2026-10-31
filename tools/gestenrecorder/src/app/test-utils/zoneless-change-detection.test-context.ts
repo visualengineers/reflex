@@ -2,11 +2,11 @@ import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NEVER, Subject } from 'rxjs';
-import { Gesture } from './data/gesture';
-import { GestureTrackFrame } from './data/gesture-track-frame';
-import { ConnectionService } from './service/connection.service';
-import { GestureDataService } from './service/gesture-data.service';
-import { GestureReplayService } from './service/gesture-replay.service';
+import { Gesture } from '../data/gesture';
+import { GestureTrackFrame } from '../data/gesture-track-frame';
+import { ConnectionService } from '../service/connection.service';
+import { GestureDataService } from '../service/gesture-data.service';
+import { GestureReplayService } from '../service/gesture-replay.service';
 
 export let gestures: Subject<Gesture>;
 

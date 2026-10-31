@@ -1,6 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HttpResponse } from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import {
   MockPanelHeaderComponent,
@@ -11,10 +10,16 @@ import {
   ValueTextComponent
 } from '@reflex/angular-components/dist';
 import { DEFAULT_SETTINGS, JsonSimpleValue } from '@reflex/shared-types';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { TuioService } from 'src/shared/services/tuio.service';
+import {
+  mount,
+  setupTests as setupZonelessTests,
+  text,
+  tuio
+} from '../../test-utils/zoneless-change-detection.test-context';
 import { PackageDetailsComponent } from './package-details/package-details.component';
 import { MockPackageDetailsComponent } from './package-details/package-details.component.mock';
 import { TuioComponent } from './tuio.component';
@@ -139,5 +144,18 @@ describe('TuioComponent', () => {
     expect(tuioService.getTuioProtocolVersions).toHaveBeenCalledTimes(1);
     expect(tuioService.getTuioInterpretations).toHaveBeenCalledTimes(1);
     expect(tuioService.getStatus).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Zoneless change detection: renders TUIO SignalR updates', () => {
+  setupZonelessTests();
+
+  it('renders TUIO SignalR updates', async () => {
+    const response = new Subject<string>();
+    tuio.getStatus.mockReturnValue(response);
+    const fixture = await mount(TuioComponent);
+    response.next('Async TUIO status');
+    await fixture.whenStable();
+    expect(text(fixture)).toContain('Async TUIO status');
   });
 });

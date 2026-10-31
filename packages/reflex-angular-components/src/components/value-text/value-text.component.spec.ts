@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { By } from '@angular/platform-browser';
 import { ValueTextComponent } from './value-text.component';
 
@@ -39,5 +38,22 @@ describe('ValueTextComponent', () => {
 
     const inputElem = fixture.debugElement.query(By.css('.settings__item--label'));
     expect((inputElem.nativeElement as HTMLInputElement).textContent).toEqual(`${testTitle}`);
+  });
+});
+
+describe('Zoneless change detection: renders updated inputs of ValueTextComponent', () => {
+  it('renders updated inputs of ValueTextComponent', async () => {
+    const fixture = TestBed.createComponent(
+      ValueTextComponent
+    );
+    await fixture.whenStable();
+    fixture.componentRef.setInput(
+      'elementTitle',
+      'Asynchronously updated title'
+    );
+    await fixture.whenStable();
+    expect((fixture.nativeElement as HTMLInputElement).textContent).toContain(
+      'Asynchronously updated title'
+    );
   });
 });

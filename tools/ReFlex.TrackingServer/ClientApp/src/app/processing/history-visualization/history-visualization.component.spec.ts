@@ -1,13 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import {
   Interaction,
   InteractionHistory,
   InteractionHistoryElement
 } from '@reflex/shared-types';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subject } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
+import {
+  mount,
+  processing,
+  setupTests as setupZonelessTests
+} from '../../test-utils/zoneless-change-detection.test-context';
+import { interaction } from '../../test-utils/zoneless-change-detection.test-data';
 import { HistoryVisualizationComponent } from './history-visualization.component';
 
 const processingService = {
@@ -139,5 +144,26 @@ describe('HistoryVisualizationComponent', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
 
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorHistory);
+  });
+});
+
+describe('Zoneless change detection: renders history stream emissions in SVG', () => {
+  setupZonelessTests();
+
+  it('renders history stream emissions in SVG', async () => {
+    processing.getStatus.mockReturnValue(of('Active'));
+    const response = new Subject<Array<InteractionHistory>>();
+    processing.getHistory.mockReturnValue(response);
+    const fixture = await mount(HistoryVisualizationComponent);
+    response.next([
+      {
+        touchId: 42,
+        items: [{ frameId: 1, interaction: structuredClone(interaction) }]
+      }
+    ]);
+    await fixture.whenStable();
+    expect(
+      (fixture.nativeElement as HTMLInputElement).querySelectorAll('circle.history__point').length
+    ).toBe(1);
   });
 });
