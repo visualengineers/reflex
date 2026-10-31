@@ -1,16 +1,16 @@
+import type { MockedObject } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StatusComponent } from './status.component';
 import { TouchPointService } from 'src/services/touch-point.service';
 import { of } from 'rxjs';
 
-const dummyTouchPointService: jasmine.SpyObj<TouchPointService> = jasmine.createSpyObj('TouchPointService', [
-  'getTouchPoints',
-  'getHistory',
-  'getAddress',
-  'getFrameNumber',
-  'isConnected'
-]
-);
+const dummyTouchPointService: MockedObject<Pick<TouchPointService, 'getTouchPoints' | 'getFrameNumber' | 'getHistory' | 'getAddress' | 'isConnected'>> = {
+  getTouchPoints: vi.fn().mockName('TouchPointService.getTouchPoints'),
+  getHistory: vi.fn().mockName('TouchPointService.getHistory'),
+  getAddress: vi.fn().mockName('TouchPointService.getAddress'),
+  getFrameNumber: vi.fn().mockName('TouchPointService.getFrameNumber'),
+  isConnected: vi.fn().mockName('TouchPointService.isConnected'),
+};
 
 describe('StatusComponent', () => {
   let component: StatusComponent;
@@ -18,16 +18,15 @@ describe('StatusComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ StatusComponent ],
+      imports: [StatusComponent],
       providers: [
-        { provide: TouchPointService, useValue: dummyTouchPointService }
-      ]
-    })
-    .compileComponents();
+        { provide: TouchPointService, useValue: dummyTouchPointService },
+      ],
+    }).compileComponents();
 
-    dummyTouchPointService.getTouchPoints.and.returnValue(of([]));
-    dummyTouchPointService.isConnected.and.returnValue(true);
-    dummyTouchPointService.getFrameNumber.and.returnValue(of(1));
+    dummyTouchPointService.getTouchPoints.mockReturnValue(of([]));
+    dummyTouchPointService.isConnected.mockReturnValue(true);
+    dummyTouchPointService.getFrameNumber.mockReturnValue(of(1));
   });
 
   beforeEach(() => {

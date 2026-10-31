@@ -31,24 +31,23 @@ import {
   withXhr,
 } from '@angular/common/http';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
-const settingsService = jasmine.createSpyObj<SettingsService>(
-  'fakeSettingsService',
-  ['getSettings', 'getCanRestore', 'update']
-);
+const settingsService = {
+  getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
+  getCanRestore: vi.fn().mockName('fakeSettingsService.getCanRestore'),
+  update: vi.fn().mockName('fakeSettingsService.update'),
+};
 
-const trackingService = jasmine.createSpyObj<TrackingService>(
-  'fakeTrackingService',
-  ['getStatus']
-);
+const trackingService = {
+  getStatus: vi.fn().mockName('fakeTrackingService.getStatus'),
+};
 
-const performanceService = jasmine.createSpyObj<PerformanceService>(
-  'fakePerformanceService',
-  ['getData']
-);
+const performanceService = {
+  getData: vi.fn().mockName('fakePerformanceService.getData'),
+};
 
 const state: TrackingConfigState = {
   isCameraSelected: true,
@@ -115,30 +114,30 @@ describe('SettingsComponent', () => {
   });
 
   beforeEach(() => {
-    logService.sendErrorLog.and.returnValue();
+    logService.sendErrorLog.mockReturnValue(undefined);
 
-    settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
-    settingsService.getCanRestore.and.returnValue(
+    settingsService.getSettings.mockReturnValue(of(DEFAULT_SETTINGS));
+    settingsService.getCanRestore.mockReturnValue(
       of({ name: 'canRestore', value: true })
     );
 
-    trackingService.getStatus.and.returnValue(of(state));
+    trackingService.getStatus.mockReturnValue(of(state));
 
-    performanceService.getData.and.returnValue(of(perfData));
+    performanceService.getData.mockReturnValue(of(perfData));
 
     fixture = TestBed.createComponent(SettingsComponent);
     component = fixture.componentInstance;
   });
 
   afterEach(() => {
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
 
-    settingsService.getSettings.calls.reset();
-    settingsService.getCanRestore.calls.reset();
+    settingsService.getSettings.mockClear();
+    settingsService.getCanRestore.mockClear();
 
-    trackingService.getStatus.calls.reset();
+    trackingService.getStatus.mockClear();
 
-    performanceService.getData.calls.reset();
+    performanceService.getData.mockClear();
   });
 
   it('should create', () => {
@@ -150,29 +149,63 @@ describe('SettingsComponent', () => {
   });
   it('combines partial performance frames and updates existing chart entries', async () => {
     const updates = new Subject<PerformanceData>();
-    performanceService.getData.and.returnValue(updates);
+    performanceService.getData.mockReturnValue(updates);
     await fixture.whenStable();
-    updates.next({data: [{frameId: 1, frameStart: 1000, frameEnd: 5000,
-      totalFrameTime: 0, boxFilter: 2, valueFilter: 3}]});
+    updates.next({
+      data: [
+        {
+          frameId: 1,
+          frameStart: 1000,
+          frameEnd: 5000,
+          totalFrameTime: 0,
+          boxFilter: 2,
+          valueFilter: 3,
+        },
+      ],
+    });
     await fixture.whenStable();
     expect(component.performanceDataFilterVis[0].totalFilter).toBe(5);
 
-    updates.next({data: [{frameId: 1, frameStart: 2000, frameEnd: 6000,
-      totalFrameTime: 0, processingPreparation: 4, processingConvert: 5}]});
+    updates.next({
+      data: [
+        {
+          frameId: 1,
+          frameStart: 2000,
+          frameEnd: 6000,
+          totalFrameTime: 0,
+          processingPreparation: 4,
+          processingConvert: 5,
+        },
+      ],
+    });
     await fixture.whenStable();
     expect(component.performanceDataProcessingVis[0].totalProcessing).toBe(9);
-    expect(component.performanceDataCompleteTimeFrameVis[0].totalFrameTime).toBe(5);
+    expect(
+      component.performanceDataCompleteTimeFrameVis[0].totalFrameTime
+    ).toBe(5);
 
-    updates.next({data: [{frameId: 1, frameStart: 0, frameEnd: 4000,
-      totalFrameTime: 0, boxFilter: 7}]});
+    updates.next({
+      data: [
+        {
+          frameId: 1,
+          frameStart: 0,
+          frameEnd: 4000,
+          totalFrameTime: 0,
+          boxFilter: 7,
+        },
+      ],
+    });
     await fixture.whenStable();
     expect(component.performanceDataFilterVis.length).toBe(1);
     expect(component.performanceDataFilterVis[0].totalFilter).toBe(7);
     expect(component.performanceDataProcessingVis.length).toBe(1);
     expect(component.performanceDataCompleteTimeFrameVis.length).toBe(1);
     expect(component.performanceDataCompleteTimeFrameVis[0].frameStart).toBe(0);
-    expect(component.performanceDataCompleteTimeFrameVis[0].frameEnd).toBe(5000);
-    expect(component.performanceDataCompleteTimeFrameVis[0].totalFrameTime).toBe(5);
+    expect(component.performanceDataCompleteTimeFrameVis[0].frameEnd).toBe(
+      5000
+    );
+    expect(
+      component.performanceDataCompleteTimeFrameVis[0].totalFrameTime
+    ).toBe(5);
   });
-
 });

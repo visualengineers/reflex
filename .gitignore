@@ -510,3 +510,7 @@ docs/software/apps/server.md
 
 # Isolated Electron packaging input (generated)
 tools/emulator/.electron-app/
+
+# Vitest browser failure artifacts
+.vitest-attachments/
+**/__screenshots__/

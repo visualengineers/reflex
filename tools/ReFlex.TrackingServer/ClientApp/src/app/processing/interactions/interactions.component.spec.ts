@@ -11,7 +11,7 @@ describe('InteractionsComponent', () => {
   const largeData: CompleteInteractionData = {
     raw: [],
     normalized: [],
-    absolute: []
+    absolute: [],
   };
 
   for (var i = 0; i < 25; i++) {
@@ -19,29 +19,35 @@ describe('InteractionsComponent', () => {
     const y = Math.random();
     const z = Math.random();
 
-    let base: Interaction =
-      { time: 1234567, confidence: i%10, touchId: i, type: 1,
-        position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
-        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 }
-      }
+    let base: Interaction = {
+      time: 1234567,
+      confidence: i % 10,
+      touchId: i,
+      type: 1,
+      position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
+      extremumDescription: {
+        numFittingPoints: 10,
+        percentageFittingPoints: 100,
+        type: 1,
+      },
+    };
     largeData.normalized.push(base);
     let raw = structuredClone(base);
-    raw.position.x *= 10
-    raw.position.y *= 15
+    raw.position.x *= 10;
+    raw.position.y *= 15;
     raw.position.z *= 5;
     largeData.raw.push(raw);
 
     let abs = structuredClone(base);
-    abs.position.x *= 100
-    abs.position.y *= 150
+    abs.position.x *= 100;
+    abs.position.y *= 150;
     abs.position.z *= 50;
     largeData.absolute.push(abs);
-  };
-
+  }
   const smallData = {
     raw: new Array<Interaction>(),
     normalized: new Array<Interaction>(),
-    absolute: new Array<Interaction>()
+    absolute: new Array<Interaction>(),
   };
 
   smallData.raw = largeData.raw.filter((elem, idx) => idx > 20);
@@ -50,9 +56,8 @@ describe('InteractionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [InteractionsComponent]
-})
-    .compileComponents();
+      imports: [InteractionsComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -70,7 +75,10 @@ describe('InteractionsComponent', () => {
     const expectedDate = new Date(Date.UTC(2023, 5, 8, 15, 35, 32, 926));
 
     const datepipe: DatePipe = new DatePipe('en-US', '+0000');
-    let formattedDate = datepipe.transform(expectedDate, 'HH:mm:ss.SSS') as string;
+    let formattedDate = datepipe.transform(
+      expectedDate,
+      'HH:mm:ss.SSS'
+    ) as string;
 
     const converted = component.getTime(ticks);
     expect(converted).toEqual(formattedDate);
@@ -79,58 +87,60 @@ describe('InteractionsComponent', () => {
   it('should update interactions', () => {
     component.updateInteractions(largeData);
 
-    expect(component.interactions.raw).toHaveSize(10);
-    expect(component.interactions.absolute).toHaveSize(10);
-    expect(component.interactions.normalized).toHaveSize(10);
+    expect(component.interactions.raw).toHaveLength(10);
+    expect(component.interactions.absolute).toHaveLength(10);
+    expect(component.interactions.normalized).toHaveLength(10);
 
-    for(var i = 10; i < 10; i++) {
+    for (var i = 10; i < 10; i++) {
       expect(component.interactions.raw[i]).toEqual(largeData.raw[i]);
-      expect(component.interactions.normalized[i]).toEqual(largeData.normalized[i]);
+      expect(component.interactions.normalized[i]).toEqual(
+        largeData.normalized[i]
+      );
       expect(component.interactions.absolute[i]).toEqual(largeData.absolute[i]);
     }
 
     component.updateInteractions(smallData);
 
-    expect(component.interactions.raw).toHaveSize(4);
-    expect(component.interactions.absolute).toHaveSize(4);
-    expect(component.interactions.normalized).toHaveSize(4);
+    expect(component.interactions.raw).toHaveLength(4);
+    expect(component.interactions.absolute).toHaveLength(4);
+    expect(component.interactions.normalized).toHaveLength(4);
 
-    for(var i = 10; i < 4; i++) {
+    for (var i = 10; i < 4; i++) {
       expect(component.interactions.raw[i]).toEqual(smallData.raw[i]);
-      expect(component.interactions.normalized[i]).toEqual(smallData.normalized[i]);
+      expect(component.interactions.normalized[i]).toEqual(
+        smallData.normalized[i]
+      );
       expect(component.interactions.absolute[i]).toEqual(smallData.absolute[i]);
     }
 
     component.updateInteractions({
       raw: [],
       normalized: [],
-      absolute: []
+      absolute: [],
     });
 
-    expect(component.interactions.raw).toHaveSize(0);
-    expect(component.interactions.absolute).toHaveSize(0);
-    expect(component.interactions.normalized).toHaveSize(0);
+    expect(component.interactions.raw).toHaveLength(0);
+    expect(component.interactions.absolute).toHaveLength(0);
+    expect(component.interactions.normalized).toHaveLength(0);
   });
 
   it('should update isProcessing', () => {
-    expect(component.isProcessing).toBeFalse();
+    expect(component.isProcessing).toBe(false);
 
     component.isProcessing = true;
 
-    expect(component.isProcessing).toBeTrue();
+    expect(component.isProcessing).toBe(true);
 
     component.updateInteractions(largeData);
 
-    expect(component.interactions.raw).toHaveSize(10);
-    expect(component.interactions.absolute).toHaveSize(10);
-    expect(component.interactions.normalized).toHaveSize(10);
+    expect(component.interactions.raw).toHaveLength(10);
+    expect(component.interactions.absolute).toHaveLength(10);
+    expect(component.interactions.normalized).toHaveLength(10);
 
     component.isProcessing = false;
 
-    expect(component.interactions.raw).toHaveSize(0);
-    expect(component.interactions.absolute).toHaveSize(0);
-    expect(component.interactions.normalized).toHaveSize(0);
-
-
-  })
+    expect(component.interactions.raw).toHaveLength(0);
+    expect(component.interactions.absolute).toHaveLength(0);
+    expect(component.interactions.normalized).toHaveLength(0);
+  });
 });

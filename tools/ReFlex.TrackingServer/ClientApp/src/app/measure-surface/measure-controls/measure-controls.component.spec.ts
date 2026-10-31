@@ -4,21 +4,20 @@ import { MeasureControlsComponent } from './measure-controls.component';
 import { LogService } from 'src/app/log/log.service';
 import { MeasureService } from 'src/shared/services/measure.service';
 import { FormsModule } from '@angular/forms';
-import { interval, of, throwError, timer } from 'rxjs';
+import {  of, throwError, timer } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-const measureService = jasmine.createSpyObj<MeasureService>('fakeMeasureService',
-  [
-    'isCapturing',
-    'getCurrentSampleIdx',
-    'startCapture'
-  ]
-);
+const measureService = {
+  isCapturing: vi.fn().mockName('fakeMeasureService.isCapturing'),
+  getCurrentSampleIdx: vi
+    .fn()
+    .mockName('fakeMeasureService.getCurrentSampleIdx'),
+  startCapture: vi.fn().mockName('fakeMeasureService.startCapture'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
 describe('MeasureControlsComponent', () => {
   let component: MeasureControlsComponent;
@@ -26,41 +25,37 @@ describe('MeasureControlsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-        FormsModule,
-        MeasureControlsComponent
-    ],
-    providers: [
+      imports: [FormsModule, MeasureControlsComponent],
+      providers: [
         {
-            provide: MeasureService, useValue: measureService
+          provide: MeasureService,
+          useValue: measureService,
         },
         {
-            provide: LogService, useValue: logService
-        }
-    ]
-})
-    .compileComponents();
+          provide: LogService,
+          useValue: logService,
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MeasureControlsComponent);
-    measureService.isCapturing.and.returnValue(of(true));
-    measureService.getCurrentSampleIdx.and.returnValue(of(123));
-    measureService.startCapture.and.returnValue(of('#1234'));
+    measureService.isCapturing.mockReturnValue(of(true));
+    measureService.getCurrentSampleIdx.mockReturnValue(of(123));
+    measureService.startCapture.mockReturnValue(of('#1234'));
 
     component = fixture.componentInstance;
-
   });
 
   afterEach(() => {
-    measureService.isCapturing.calls.reset();
-    measureService.getCurrentSampleIdx.calls.reset();
-    measureService.startCapture.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    measureService.isCapturing.mockClear();
+    measureService.getCurrentSampleIdx.mockClear();
+    measureService.startCapture.mockClear();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should create', () => {
-
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -72,21 +67,14 @@ describe('MeasureControlsComponent', () => {
     expect(measureService.startCapture).toHaveBeenCalledTimes(0);
   });
 
-  it('should correctly subscribe to sample index', (done) => {
-
-    const sub = interval(50).subscribe(
-      () => {
-        component.ngOnDestroy();
-        expect(logService.sendErrorLog).not.toHaveBeenCalled();
-        expect(component.isCapturing).toBe(true);
-        expect(component.numFramesCaptured).toBe(123);
-        sub.unsubscribe();
-        done();
-     },
-     (error: unknown) => fail(error)
-    )
-
+  it('should correctly subscribe to sample index', async () => {
     fixture.detectChanges();
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    component.ngOnDestroy();
+    expect(logService.sendErrorLog).not.toHaveBeenCalled();
+    expect(component.isCapturing).toBe(true);
+    expect(component.numFramesCaptured).toBe(123);
   });
 
   it('should correctly start capture', () => {
@@ -97,48 +85,39 @@ describe('MeasureControlsComponent', () => {
     component.captureId = 12345;
 
     component.captureFrames();
-    expect(measureService.startCapture).toHaveBeenCalledOnceWith(12345);
+    expect(measureService.startCapture).toHaveBeenCalledTimes(1);
+    expect(measureService.startCapture).toHaveBeenCalledWith(12345);
   });
 
-  it('should handle errors correctly: IsCapturing', (done) => {
+  it('should handle errors correctly: IsCapturing', async () => {
     const errorCapturing = 'TestError: measureService.isCapturing';
-    measureService.isCapturing.and.returnValue(throwError(errorCapturing));
-
-    const sub = interval(50).subscribe(
-      () => {
-        component.ngOnDestroy();
-        expect(component.numFramesCaptured).toBe(0);
-        expect(logService.sendErrorLog).toHaveBeenCalledWith(errorCapturing);
-        sub.unsubscribe();
-        done();
-     },
-     (error: unknown) => fail(error)
-    )
+    measureService.isCapturing.mockReturnValue(throwError(errorCapturing));
 
     fixture.detectChanges();
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    component.ngOnDestroy();
+    expect(component.numFramesCaptured).toBe(0);
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorCapturing);
   });
 
-  it('should handle errors correctly: getCurrentSampleIdx', (done) => {
+  it('should handle errors correctly: getCurrentSampleIdx', async () => {
     const errorSampleIdx = 'TestError: measureService.getCurrentSampleIdx';
-    measureService.getCurrentSampleIdx.and.returnValue(throwError(errorSampleIdx));
-
-    const sub = interval(50).subscribe(
-      () => {
-        component.ngOnDestroy();
-        expect(component.isCapturing).toBe(true);
-        expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSampleIdx);
-        sub.unsubscribe();
-        done();
-     },
-     (error: unknown) => fail(error)
-    )
+    measureService.getCurrentSampleIdx.mockReturnValue(
+      throwError(errorSampleIdx)
+    );
 
     fixture.detectChanges();
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    component.ngOnDestroy();
+    expect(component.isCapturing).toBe(true);
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSampleIdx);
   });
 
   it('should handle errors correctly: StartCapture', () => {
     const errorStart = 'TestError: measureService.startCapture';
-    measureService.startCapture.and.returnValue(throwError(errorStart));
+    measureService.startCapture.mockReturnValue(throwError(errorStart));
 
     fixture.detectChanges();
 
@@ -146,7 +125,8 @@ describe('MeasureControlsComponent', () => {
 
     component.captureFrames();
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorStart);
-  });
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
 
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorStart);
+  });
 });

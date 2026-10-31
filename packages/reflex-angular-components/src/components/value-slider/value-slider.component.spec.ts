@@ -10,9 +10,8 @@ describe('ValueSliderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ValueSliderComponent ]
-    })
-    .compileComponents();
+      imports: [FormsModule, ValueSliderComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -25,75 +24,121 @@ describe('ValueSliderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it ('should assign default id', () => {
+  it('should assign default id', () => {
     const defaultId = 'customSlider';
 
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
-    expect(rangeElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-range`);
-    expect(rangeElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-range`)
+    expect(rangeElem.nativeElement.getAttribute('id')).toEqual(
+      `${defaultId}-range`
+    );
+    expect(rangeElem.nativeElement.getAttribute('name')).toEqual(
+      `${defaultId}-range`
+    );
 
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
-    expect(inputElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-input`);
-    expect(inputElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-input`);
+    expect(inputElem.nativeElement.getAttribute('id')).toEqual(
+      `${defaultId}-input`
+    );
+    expect(inputElem.nativeElement.getAttribute('name')).toEqual(
+      `${defaultId}-input`
+    );
 
-    const labelElem = fixture.debugElement.query(By.css('.settings__item--label'));
-    expect(labelElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-label`);
-    expect(labelElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-label`);
+    const labelElem = fixture.debugElement.query(
+      By.css('.settings__item--label')
+    );
+    expect(labelElem.nativeElement.getAttribute('id')).toEqual(
+      `${defaultId}-label`
+    );
+    expect(labelElem.nativeElement.getAttribute('name')).toEqual(
+      `${defaultId}-label`
+    );
   });
 
-  it ('should set id correctly', () => {
+  it('should set id correctly', () => {
     const testId = 'Value Slider TestId';
     fixture.componentRef.setInput('elementId', testId);
 
     fixture.detectChanges();
 
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
-    expect(rangeElem.nativeElement.getAttribute('id')).toEqual(`${testId}-range`);
-    expect(rangeElem.nativeElement.getAttribute('name')).toEqual(`${testId}-range`)
+    expect(rangeElem.nativeElement.getAttribute('id')).toEqual(
+      `${testId}-range`
+    );
+    expect(rangeElem.nativeElement.getAttribute('name')).toEqual(
+      `${testId}-range`
+    );
 
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
-    expect(inputElem.nativeElement.getAttribute('id')).toEqual(`${testId}-input`);
-    expect(inputElem.nativeElement.getAttribute('name')).toEqual(`${testId}-input`);
+    expect(inputElem.nativeElement.getAttribute('id')).toEqual(
+      `${testId}-input`
+    );
+    expect(inputElem.nativeElement.getAttribute('name')).toEqual(
+      `${testId}-input`
+    );
 
-    const labelElem = fixture.debugElement.query(By.css('.settings__item--label'));
-    expect(labelElem.nativeElement.getAttribute('id')).toEqual(`${testId}-label`);
-    expect(labelElem.nativeElement.getAttribute('name')).toEqual(`${testId}-label`);
+    const labelElem = fixture.debugElement.query(
+      By.css('.settings__item--label')
+    );
+    expect(labelElem.nativeElement.getAttribute('id')).toEqual(
+      `${testId}-label`
+    );
+    expect(labelElem.nativeElement.getAttribute('name')).toEqual(
+      `${testId}-label`
+    );
   });
 
-  it ('should assign default title', () => {
+  it('should assign default title', () => {
     const defaultTitle = 'Custom Value';
 
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
-    expect(rangeElem.nativeElement.getAttribute('title')).toContain(`${defaultTitle}`);
+    expect(rangeElem.nativeElement.getAttribute('title')).toContain(
+      `${defaultTitle}`
+    );
 
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
-    expect(inputElem.nativeElement.getAttribute('title')).toContain(`${defaultTitle}`);
+    expect(inputElem.nativeElement.getAttribute('title')).toContain(
+      `${defaultTitle}`
+    );
 
-    const labelElem = fixture.debugElement.query(By.css('.settings__item--label'));
+    const labelElem = fixture.debugElement.query(
+      By.css('.settings__item--label')
+    );
     expect(labelElem.nativeElement.textContent).toContain(`${defaultTitle}`);
   });
 
-  it ('should set title correctly', () => {
+  it('should set title correctly', () => {
     const testTitle = 'ValueSlider - TestTitle';
     fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
-    expect(rangeElem.nativeElement.getAttribute('title')).toContain(`${testTitle}`);
+    expect(rangeElem.nativeElement.getAttribute('title')).toContain(
+      `${testTitle}`
+    );
 
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
-    expect(inputElem.nativeElement.getAttribute('title')).toContain(`${testTitle}`);
+    expect(inputElem.nativeElement.getAttribute('title')).toContain(
+      `${testTitle}`
+    );
 
-    const labelElem = fixture.debugElement.query(By.css('.settings__item--label'));
+    const labelElem = fixture.debugElement.query(
+      By.css('.settings__item--label')
+    );
     expect(labelElem.nativeElement.textContent).toContain(`${testTitle}`);
   });
 
-  it ('should assign default range values', async () => {
+  it('should assign default range values', async () => {
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
-    const minElem = fixture.debugElement.query(By.css('.settings__item--valueMin'));
-    const maxElem = fixture.debugElement.query(By.css('.settings__item--valueMax'));
-    const unitElem = fixture.debugElement.query(By.css('.settings__item--unit'));
+    const minElem = fixture.debugElement.query(
+      By.css('.settings__item--valueMin')
+    );
+    const maxElem = fixture.debugElement.query(
+      By.css('.settings__item--valueMax')
+    );
+    const unitElem = fixture.debugElement.query(
+      By.css('.settings__item--unit')
+    );
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
 
     await fixture.whenStable();
@@ -104,19 +149,23 @@ describe('ValueSliderComponent', () => {
     expect(parseInt(rangeElem.nativeElement.value)).toEqual(0);
     expect(parseInt(inputElem.nativeElement.value)).toEqual(0);
 
-
     expect(minElem.nativeElement.textContent).toEqual(`${0}`);
     expect(maxElem.nativeElement.textContent).toEqual(`${10}`);
     expect(unitElem.nativeElement.textContent).toEqual(``);
   });
 
-  it ('should update range values', async () => {
+  it('should update range values', async () => {
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
-    const minElem = fixture.debugElement.query(By.css('.settings__item--valueMin'));
-    const maxElem = fixture.debugElement.query(By.css('.settings__item--valueMax'));
-    const unitElem = fixture.debugElement.query(By.css('.settings__item--unit'));
+    const minElem = fixture.debugElement.query(
+      By.css('.settings__item--valueMin')
+    );
+    const maxElem = fixture.debugElement.query(
+      By.css('.settings__item--valueMax')
+    );
+    const unitElem = fixture.debugElement.query(
+      By.css('.settings__item--unit')
+    );
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
-
 
     const min = -100;
     const max = 125;
@@ -145,11 +194,11 @@ describe('ValueSliderComponent', () => {
     expect(parseInt(inputElem.nativeElement.value)).toEqual(data);
   });
 
-  it ('should correctly update values when updating text input', async () => {
+  it('should correctly update values when updating text input', async () => {
     const updatedValue = 5;
 
-    const emitter = spyOn(component.dataChange, 'emit').and.callThrough();
-    const onModelChange = spyOn(component, 'update').and.callThrough();
+    const emitter = vi.spyOn(component.dataChange, 'emit');
+    const onModelChange = vi.spyOn(component, 'update');
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
 
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
@@ -162,15 +211,18 @@ describe('ValueSliderComponent', () => {
     expect(component.data).toEqual(updatedValue);
     expect(rangeElem.nativeElement.value).toEqual(`${updatedValue}`);
 
-    expect(onModelChange).toHaveBeenCalledOnceWith(updatedValue);
-    expect(emitter).toHaveBeenCalledOnceWith(updatedValue);
+    expect(onModelChange).toHaveBeenCalledTimes(1);
+
+    expect(onModelChange).toHaveBeenCalledWith(updatedValue);
+    expect(emitter).toHaveBeenCalledTimes(1);
+    expect(emitter).toHaveBeenCalledWith(updatedValue);
   });
 
-  it ('should correctly update values when updating range input', async () => {
+  it('should correctly update values when updating range input', async () => {
     const updatedValue = 8;
 
-    const emitter = spyOn(component.dataChange, 'emit').and.callThrough();
-    const onModelChange = spyOn(component, 'update').and.callThrough();
+    const emitter = vi.spyOn(component.dataChange, 'emit');
+    const onModelChange = vi.spyOn(component, 'update');
     const rangeElem = fixture.debugElement.query(By.css('.custom-range'));
 
     const inputElem = fixture.debugElement.query(By.css('.custom-input'));
@@ -183,7 +235,10 @@ describe('ValueSliderComponent', () => {
     expect(component.data).toEqual(8);
     expect(inputElem.nativeElement.value).toEqual(`${updatedValue}`);
 
-    expect(onModelChange).toHaveBeenCalledOnceWith(updatedValue);
-    expect(emitter).toHaveBeenCalledOnceWith(updatedValue);
+    expect(onModelChange).toHaveBeenCalledTimes(1);
+
+    expect(onModelChange).toHaveBeenCalledWith(updatedValue);
+    expect(emitter).toHaveBeenCalledTimes(1);
+    expect(emitter).toHaveBeenCalledWith(updatedValue);
   });
 });

@@ -17,14 +17,13 @@ import {
 import { MeasureControlsComponent } from './measure-controls/measure-controls.component';
 import { MockMeasureGridComponent } from './measure-grid/measure-grid.component.mock';
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>(
-  'fakeCalibrationService',
-  ['getFrameSize']
-);
+const calibrationService = {
+  getFrameSize: vi.fn().mockName('fakeCalibrationService.getFrameSize'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
 const customFrame: FrameSizeDefinition = {
   width: 500,
@@ -72,16 +71,16 @@ describe('MeasureSurfaceComponent', () => {
   });
 
   beforeEach(() => {
-    calibrationService.getFrameSize.and.returnValue(of(customFrame));
-    logService.sendErrorLog.and.returnValue();
+    calibrationService.getFrameSize.mockReturnValue(of(customFrame));
+    logService.sendErrorLog.mockReturnValue(undefined);
 
     fixture = TestBed.createComponent(MeasureSurfaceComponent);
     component = fixture.componentInstance;
   });
 
   afterEach(() => {
-    calibrationService.getFrameSize.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    calibrationService.getFrameSize.mockClear();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should create and initialize values correctly', () => {
@@ -91,22 +90,24 @@ describe('MeasureSurfaceComponent', () => {
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
     expect(component['frameSize']).toEqual(customFrame);
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
   });
 
   it('should handle errors correctly', () => {
     const errorFrameSize = 'Test Error: calibrationService.getFrameSize';
-    calibrationService.getFrameSize.and.returnValue(throwError(errorFrameSize));
+    calibrationService.getFrameSize.mockReturnValue(throwError(errorFrameSize));
 
     fixture.detectChanges();
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorFrameSize);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorFrameSize);
   });
 
   it('should correctly apply style', () => {
     fixture.detectChanges();
 
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
     const expected1 = {
       position: 'relative',

@@ -10,9 +10,8 @@ describe('PanelHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, PanelHeaderComponent ]
-    })
-    .compileComponents();
+      imports: [FormsModule, PanelHeaderComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -25,41 +24,61 @@ describe('PanelHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it ('should assign default id', () => {
+  it('should assign default id', () => {
     const defaultId = 'custom-header';
 
     const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-toggle`);
-    expect(inputElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-toggle`)
+    expect(inputElem.nativeElement.getAttribute('id')).toEqual(
+      `${defaultId}-toggle`
+    );
+    expect(inputElem.nativeElement.getAttribute('name')).toEqual(
+      `${defaultId}-toggle`
+    );
 
-    const labelElem = fixture.debugElement.query(By.css('.checkbox-toggle-label'));
-    expect(labelElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-label`);
-    expect(labelElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-label`);
+    const labelElem = fixture.debugElement.query(
+      By.css('.checkbox-toggle-label')
+    );
+    expect(labelElem.nativeElement.getAttribute('id')).toEqual(
+      `${defaultId}-label`
+    );
+    expect(labelElem.nativeElement.getAttribute('name')).toEqual(
+      `${defaultId}-label`
+    );
   });
 
-  it ('should set id correctly', () => {
+  it('should set id correctly', () => {
     const testId = 'PanelHeaderTestId';
     fixture.componentRef.setInput('elementId', testId);
 
     fixture.detectChanges();
 
     const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.getAttribute('id')).toEqual(`${testId}-toggle`);
-    expect(inputElem.nativeElement.getAttribute('name')).toEqual(`${testId}-toggle`)
+    expect(inputElem.nativeElement.getAttribute('id')).toEqual(
+      `${testId}-toggle`
+    );
+    expect(inputElem.nativeElement.getAttribute('name')).toEqual(
+      `${testId}-toggle`
+    );
 
-    const labelElem = fixture.debugElement.query(By.css('.checkbox-toggle-label'));
-    expect(labelElem.nativeElement.getAttribute('id')).toEqual(`${testId}-label`);
-    expect(labelElem.nativeElement.getAttribute('name')).toEqual(`${testId}-label`);
+    const labelElem = fixture.debugElement.query(
+      By.css('.checkbox-toggle-label')
+    );
+    expect(labelElem.nativeElement.getAttribute('id')).toEqual(
+      `${testId}-label`
+    );
+    expect(labelElem.nativeElement.getAttribute('name')).toEqual(
+      `${testId}-label`
+    );
   });
 
-  it ('should assign default title', () => {
+  it('should assign default title', () => {
     const defaultTitle = 'Custom Title';
 
     const inputElem = fixture.debugElement.query(By.css('.heading-secondary'));
     expect(inputElem.nativeElement.textContent).toEqual(`${defaultTitle}`);
   });
 
-  it ('should set title correctly', () => {
+  it('should set title correctly', () => {
     const testTitle = 'PanelHeaderComponent - TestTitle';
     fixture.componentRef.setInput('elementTitle', testTitle);
 
@@ -69,14 +88,14 @@ describe('PanelHeaderComponent', () => {
     expect(inputElem.nativeElement.textContent).toEqual(`${testTitle}`);
   });
 
-  it ('should assign default disabled state', () => {
+  it('should assign default disabled state', () => {
     const defaultState = false;
 
     const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
     expect(inputElem.nativeElement.disabled).toEqual(defaultState);
   });
 
-  it ('should correctly set disabled state', () => {
+  it('should correctly set disabled state', () => {
     const newState = true;
     fixture.componentRef.setInput('disabled', newState);
 
@@ -86,16 +105,16 @@ describe('PanelHeaderComponent', () => {
     expect(inputElem.nativeElement.disabled).toEqual(newState);
   });
 
-  it ('should assign default checked state', () => {
+  it('should assign default checked state', () => {
     const defaultState = false;
 
     const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
     expect(inputElem.nativeElement.checked).toEqual(defaultState);
   });
 
-  it ('should correctly set checked state', () => {
-    const emitter = spyOn(component.dataChange, 'emit').and.callThrough();
-    const onModelChange = spyOn(component, 'update').and.callThrough();
+  it('should correctly set checked state', () => {
+    const emitter = vi.spyOn(component.dataChange, 'emit');
+    const onModelChange = vi.spyOn(component, 'update');
 
     const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
     inputElem.nativeElement.click();
@@ -105,7 +124,10 @@ describe('PanelHeaderComponent', () => {
     expect(component.data).toEqual(true);
     expect(inputElem.nativeElement.checked).toBeTruthy();
 
-    expect(onModelChange).toHaveBeenCalledOnceWith(true);
-    expect(emitter).toHaveBeenCalledOnceWith(true);
+    expect(onModelChange).toHaveBeenCalledTimes(1);
+
+    expect(onModelChange).toHaveBeenCalledWith(true);
+    expect(emitter).toHaveBeenCalledTimes(1);
+    expect(emitter).toHaveBeenCalledWith(true);
   });
 });

@@ -21,35 +21,29 @@ import {
   withXhr,
 } from '@angular/common/http';
 
-const recordingService = jasmine.createSpyObj<RecordingService>(
-  'fakeRecordingService',
-  [
-    'getStatus',
-    'getRecordings',
-    'getRecordingState',
-    'startRecording',
-    'stopRecording',
-    'deleteRecording',
-    'clearRecordings',
-  ]
-);
+const recordingService = {
+  getStatus: vi.fn().mockName('fakeRecordingService.getStatus'),
+  getRecordings: vi.fn().mockName('fakeRecordingService.getRecordings'),
+  getRecordingState: vi.fn().mockName('fakeRecordingService.getRecordingState'),
+  startRecording: vi.fn().mockName('fakeRecordingService.startRecording'),
+  stopRecording: vi.fn().mockName('fakeRecordingService.stopRecording'),
+  deleteRecording: vi.fn().mockName('fakeRecordingService.deleteRecording'),
+  clearRecordings: vi.fn().mockName('fakeRecordingService.clearRecordings'),
+};
 
-const recordingService_error = jasmine.createSpyObj<RecordingService>(
-  'fakeRecordingService',
-  [
-    'getStatus',
-    'getRecordings',
-    'getRecordingState',
-    'startRecording',
-    'stopRecording',
-    'deleteRecording',
-    'clearRecordings',
-  ]
-);
+const recordingService_error = {
+  getStatus: vi.fn().mockName('fakeRecordingService.getStatus'),
+  getRecordings: vi.fn().mockName('fakeRecordingService.getRecordings'),
+  getRecordingState: vi.fn().mockName('fakeRecordingService.getRecordingState'),
+  startRecording: vi.fn().mockName('fakeRecordingService.startRecording'),
+  stopRecording: vi.fn().mockName('fakeRecordingService.stopRecording'),
+  deleteRecording: vi.fn().mockName('fakeRecordingService.deleteRecording'),
+  clearRecordings: vi.fn().mockName('fakeRecordingService.clearRecordings'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
 const testRecordingCam: CameraConfiguration = {
   name: 'RecordedTest',
@@ -58,7 +52,7 @@ const testRecordingCam: CameraConfiguration = {
   height: 480,
 };
 
-recordingService.getStatus.and.returnValue(
+recordingService.getStatus.mockReturnValue(
   of({
     isCameraSelected: true,
     depthCameraStateName: DepthCameraState[DepthCameraState.Streaming],
@@ -69,7 +63,7 @@ recordingService.getStatus.and.returnValue(
 
 const testRecordingPath = 'Path/to/TestRecording.xyz';
 
-recordingService.startRecording.and.returnValue(of(testRecordingPath));
+recordingService.startRecording.mockReturnValue(of(testRecordingPath));
 
 const testRecordingStateUpdate: RecordingStateUpdate = {
   state: RecordingState.Recording,
@@ -77,9 +71,9 @@ const testRecordingStateUpdate: RecordingStateUpdate = {
   sessionName: testRecordingCam.name,
 };
 
-recordingService.stopRecording.and.returnValue(of(testRecordingCam));
+recordingService.stopRecording.mockReturnValue(of(testRecordingCam));
 
-recordingService.getRecordingState.and.returnValue(
+recordingService.getRecordingState.mockReturnValue(
   of(testRecordingStateUpdate)
 );
 
@@ -98,40 +92,40 @@ const recordingList: Array<CameraConfiguration> = [
   },
 ];
 
-recordingService.getRecordings.and.returnValue(of(recordingList));
+recordingService.getRecordings.mockReturnValue(of(recordingList));
 
-recordingService.deleteRecording.and.returnValue(
+recordingService.deleteRecording.mockReturnValue(
   of('Successfully deleted recording')
 );
 
-recordingService.clearRecordings.and.returnValue(
+recordingService.clearRecordings.mockReturnValue(
   of('Successfully deleted all recordings')
 );
 
 const errorStatus = 'TestError: getStatus()';
-recordingService_error.getStatus.and.returnValue(throwError(errorStatus));
+recordingService_error.getStatus.mockReturnValue(throwError(errorStatus));
 
 const errorRecordings = 'TestError: getRecordings()';
-recordingService_error.getRecordings.and.returnValue(
+recordingService_error.getRecordings.mockReturnValue(
   throwError(errorRecordings)
 );
 
 const errorRecordingState = 'TestError: getRecordingState()';
-recordingService_error.getRecordingState.and.returnValue(
+recordingService_error.getRecordingState.mockReturnValue(
   throwError(errorRecordingState)
 );
 
 const errorStart = 'TestError: startRecording()';
-recordingService_error.startRecording.and.returnValue(throwError(errorStart));
+recordingService_error.startRecording.mockReturnValue(throwError(errorStart));
 
 const errorStop = 'TestError: stopRecording()';
-recordingService_error.stopRecording.and.returnValue(throwError(errorStop));
+recordingService_error.stopRecording.mockReturnValue(throwError(errorStop));
 
 const errorDelete = 'TestError: deleteRecording()';
-recordingService_error.deleteRecording.and.returnValue(throwError(errorDelete));
+recordingService_error.deleteRecording.mockReturnValue(throwError(errorDelete));
 
 const errorClear = 'TestError: clearRecordings()';
-recordingService_error.clearRecordings.and.returnValue(throwError(errorClear));
+recordingService_error.clearRecordings.mockReturnValue(throwError(errorClear));
 
 describe('RecordingComponent', () => {
   let component: RecordingComponent;
@@ -167,15 +161,15 @@ describe('RecordingComponent', () => {
   });
 
   afterEach(() => {
-    recordingService.getStatus.calls.reset();
-    recordingService.getRecordings.calls.reset();
-    recordingService.getRecordingState.calls.reset();
-    recordingService.startRecording.calls.reset();
-    recordingService.stopRecording.calls.reset();
-    recordingService.deleteRecording.calls.reset();
-    recordingService.clearRecordings.calls.reset();
+    recordingService.getStatus.mockClear();
+    recordingService.getRecordings.mockClear();
+    recordingService.getRecordingState.mockClear();
+    recordingService.startRecording.mockClear();
+    recordingService.stopRecording.mockClear();
+    recordingService.deleteRecording.mockClear();
+    recordingService.clearRecordings.mockClear();
 
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should create', async () => {
@@ -193,14 +187,16 @@ describe('RecordingComponent', () => {
   });
 
   it('should correctly start recording', async () => {
-    expect(component.recordingEnabled).toBeTrue();
-    expect(component.recordingName).not.toHaveSize(0);
+    expect(component.recordingEnabled).toBe(true);
+    expect(component.recordingName).not.toHaveLength(0);
 
     component.startRecording();
 
     await fixture.whenStable();
 
-    expect(recordingService.startRecording).toHaveBeenCalledOnceWith(
+    expect(recordingService.startRecording).toHaveBeenCalledTimes(1);
+
+    expect(recordingService.startRecording).toHaveBeenCalledWith(
       component.recordingName
     );
 
@@ -210,20 +206,20 @@ describe('RecordingComponent', () => {
 
     expect(component.recordingPath).toEqual(testRecordingPath);
 
-    expect(component.isRecording).toBeTrue();
+    expect(component.isRecording).toBe(true);
 
     expect(component.recordingState).toEqual(testRecordingStateUpdate);
   });
 
   it('should correctly stop recording', async () => {
-    expect(component.recordingEnabled).toBeTrue();
-    expect(component.recordingName).not.toHaveSize(0);
+    expect(component.recordingEnabled).toBe(true);
+    expect(component.recordingName).not.toHaveLength(0);
 
     component.startRecording();
 
     await fixture.whenStable();
 
-    expect(component.isRecording).toBeTrue();
+    expect(component.isRecording).toBe(true);
 
     expect(component.recordingState.state).toEqual(RecordingState.Recording);
 
@@ -231,7 +227,7 @@ describe('RecordingComponent', () => {
 
     await fixture.whenStable();
 
-    expect(component.isRecording).toBeFalse();
+    expect(component.isRecording).toBe(false);
     expect(component.recordingState).toBeDefined();
     expect(component.recordingState.state).toEqual(RecordingState.Stopped);
 
@@ -241,10 +237,10 @@ describe('RecordingComponent', () => {
   });
 
   it('should correctly delete recording', async () => {
-    recordingService.getRecordings.calls.reset();
+    recordingService.getRecordings.mockClear();
 
-    expect(component.recordingEnabled).toBeTrue();
-    expect(component.recordingName).not.toHaveSize(0);
+    expect(component.recordingEnabled).toBe(true);
+    expect(component.recordingName).not.toHaveLength(0);
 
     component.deleteRecording(testRecordingCam);
 
@@ -252,23 +248,25 @@ describe('RecordingComponent', () => {
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    expect(recordingService.deleteRecording).toHaveBeenCalledOnceWith(
+    expect(recordingService.deleteRecording).toHaveBeenCalledTimes(1);
+
+    expect(recordingService.deleteRecording).toHaveBeenCalledWith(
       testRecordingCam.name
     );
     expect(recordingService.getRecordings).toHaveBeenCalledTimes(1);
   });
 
   it('should not delete currently running recording', async () => {
-    expect(component.recordingEnabled).toBeTrue();
-    expect(component.recordingName).not.toHaveSize(0);
+    expect(component.recordingEnabled).toBe(true);
+    expect(component.recordingName).not.toHaveLength(0);
 
     component.startRecording();
 
     await fixture.whenStable();
 
-    recordingService.getRecordings.calls.reset();
+    recordingService.getRecordings.mockClear();
 
-    expect(component.isRecording).toBeTrue();
+    expect(component.isRecording).toBe(true);
     expect(component.recordingState.sessionName).toEqual(testRecordingCam.name);
 
     component.deleteRecording(testRecordingCam);
@@ -279,12 +277,12 @@ describe('RecordingComponent', () => {
   });
 
   it('should correctly clear recordings', async () => {
-    recordingService.getRecordings.calls.reset();
+    recordingService.getRecordings.mockClear();
 
-    expect(component.recordingEnabled).toBeTrue();
-    expect(component.recordingName).not.toHaveSize(0);
+    expect(component.recordingEnabled).toBe(true);
+    expect(component.recordingName).not.toHaveLength(0);
 
-    expect(component.isRecording).toBeFalse();
+    expect(component.isRecording).toBe(false);
 
     component.clearRecordings();
 
@@ -297,16 +295,16 @@ describe('RecordingComponent', () => {
   });
 
   it('should not clear recordings when currently recording', async () => {
-    expect(component.recordingEnabled).toBeTrue();
-    expect(component.recordingName).not.toHaveSize(0);
+    expect(component.recordingEnabled).toBe(true);
+    expect(component.recordingName).not.toHaveLength(0);
 
     component.startRecording();
 
     await fixture.whenStable();
 
-    recordingService.getRecordings.calls.reset();
+    recordingService.getRecordings.mockClear();
 
-    expect(component.isRecording).toBeTrue();
+    expect(component.isRecording).toBe(true);
 
     component.clearRecordings();
 
@@ -324,31 +322,31 @@ describe('RecordingComponent', () => {
     expect(
       component['recordingStateSubscription'] === undefined ||
         component['recordingStateSubscription'].closed
-    ).toBeTrue();
+    ).toBe(true);
   });
 
   it('should enable recording when correct name is passed', async () => {
-    expect(component.recordingName).toBeInstanceOf(String);
+    expect(typeof component.recordingName).toBe('string');
 
-    expect(component.recordingEnabled).toBeTrue();
+    expect(component.recordingEnabled).toBe(true);
 
     component.recordingName = '';
 
     component.recordingNameChanged();
 
-    expect(component.recordingEnabled).toBeFalse();
+    expect(component.recordingEnabled).toBe(false);
 
     component.recordingName = 'TEST2';
 
     component.recordingNameChanged();
 
-    expect(component.recordingEnabled).toBeTrue();
+    expect(component.recordingEnabled).toBe(true);
 
     component.recordingName = '   ';
 
     component.recordingNameChanged();
 
-    expect(component.recordingEnabled).toBeFalse();
+    expect(component.recordingEnabled).toBe(false);
   });
 });
 
@@ -381,15 +379,15 @@ describe('RecordingComponent: Error Handling', () => {
   });
 
   afterEach(() => {
-    recordingService_error.getStatus.calls.reset();
-    recordingService_error.getRecordings.calls.reset();
-    recordingService_error.getRecordingState.calls.reset();
-    recordingService_error.startRecording.calls.reset();
-    recordingService_error.stopRecording.calls.reset();
-    recordingService_error.deleteRecording.calls.reset();
-    recordingService_error.clearRecordings.calls.reset();
+    recordingService_error.getStatus.mockClear();
+    recordingService_error.getRecordings.mockClear();
+    recordingService_error.getRecordingState.mockClear();
+    recordingService_error.startRecording.mockClear();
+    recordingService_error.stopRecording.mockClear();
+    recordingService_error.deleteRecording.mockClear();
+    recordingService_error.clearRecordings.mockClear();
 
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should handle errors correctly', async () => {
@@ -405,7 +403,7 @@ describe('RecordingComponent: Error Handling', () => {
   it('should start recording only when enabled and correct name given', async () => {
     await fixture.whenStable();
 
-    expect(component.recordingEnabled).toBeFalse();
+    expect(component.recordingEnabled).toBe(false);
 
     component.startRecording();
 
@@ -437,7 +435,7 @@ describe('RecordingComponent: Error Handling', () => {
     expect(recordingService_error.getRecordingState).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorRecordingState);
 
-    expect(component.isRecording).toBeFalse();
+    expect(component.isRecording).toBe(false);
 
     expect(component.recordingState).toBeDefined();
     expect(component.recordingState.state).toEqual(RecordingState.Faulted);
@@ -451,7 +449,8 @@ describe('RecordingComponent: Error Handling', () => {
     component.deleteRecording(testRecordingCam);
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(8);
-    expect(recordingService_error.deleteRecording).toHaveBeenCalledOnceWith(
+    expect(recordingService_error.deleteRecording).toHaveBeenCalledTimes(1);
+    expect(recordingService_error.deleteRecording).toHaveBeenCalledWith(
       testRecordingCam.name
     );
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorDelete);

@@ -8,7 +8,7 @@
     "watch": "ng build shared-components-demo --watch --configuration development",
     "lint": "eslint .",
     "test": "ng test shared-components-demo --browsers Chrome",
-    "test-ci": "ng test shared-components-demo --no-watch --browsers=ChromeHeadless"
+    "test-ci": "ng test shared-components-demo --no-watch --coverage"
   },
   "dependencies": {
     "@reflex/angular-components": "file:../../packages/reflex-angular-components"
@@ -26,7 +26,7 @@
     "angular",
     "example"
   ],
-  "author": "Mathias Müller",
+  "author": "Mathias M\u00fcller",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/visualengineers/reflex/issues"

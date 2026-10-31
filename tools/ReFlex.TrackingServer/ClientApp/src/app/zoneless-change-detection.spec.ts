@@ -1,3 +1,4 @@
+import type { Mock, MockedObject } from 'vitest';
 import { NgZone, Type } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -70,7 +71,7 @@ import { MockInteractionsVisualizationComponent } from './processing/interaction
 import { MockHistoryComponent } from './processing/history/history.component.mock';
 
 /** No connections or real HTTP: each test controls the component's async boundary. */
-function mockService<T>(type: Type<T>): jasmine.SpyObj<T> {
+function mockService<T>(type: Type<T>): MockedObject<T> {
   const methods = new Set<string>();
   let prototype: object | null = type.prototype;
   while (prototype && prototype !== Object.prototype) {
@@ -84,11 +85,9 @@ function mockService<T>(type: Type<T>): jasmine.SpyObj<T> {
     }
     prototype = Object.getPrototypeOf(prototype) as object | null;
   }
-  const mock = jasmine.createSpyObj(type.name, [
-    ...methods,
-  ]) as jasmine.SpyObj<T>;
+  const mock = Object.fromEntries([...methods].map(name => [name, vi.fn()])) as MockedObject<T>;
   for (const method of methods)
-    (mock[method as keyof T] as jasmine.Spy).and.returnValue(NEVER);
+    (mock[method as keyof T] as Mock).mockReturnValue(NEVER);
   TestBed.overrideProvider(type, { useValue: mock });
   return mock;
 }
@@ -124,19 +123,19 @@ const interactionData = (): CompleteInteractionData => ({
 });
 
 describe('TrackingServer zoneless DOM updates', () => {
-  let settings: jasmine.SpyObj<SettingsService>;
-  let tracking: jasmine.SpyObj<TrackingService>;
-  let processing: jasmine.SpyObj<ProcessingService>;
-  let calibration: jasmine.SpyObj<CalibrationService>;
-  let network: jasmine.SpyObj<NetworkingService>;
-  let tuio: jasmine.SpyObj<TuioService>;
-  let performance: jasmine.SpyObj<PerformanceService>;
-  let recording: jasmine.SpyObj<RecordingService>;
-  let measure: jasmine.SpyObj<MeasureService>;
-  let log: jasmine.SpyObj<LogService>;
-  let version: jasmine.SpyObj<VersionInfoService>;
-  let websocket: jasmine.SpyObj<WebSocketService>;
-  let pointCloud: jasmine.SpyObj<PointCloudService>;
+  let settings: MockedObject<SettingsService>;
+  let tracking: MockedObject<TrackingService>;
+  let processing: MockedObject<ProcessingService>;
+  let calibration: MockedObject<CalibrationService>;
+  let network: MockedObject<NetworkingService>;
+  let tuio: MockedObject<TuioService>;
+  let performance: MockedObject<PerformanceService>;
+  let recording: MockedObject<RecordingService>;
+  let measure: MockedObject<MeasureService>;
+  let log: MockedObject<LogService>;
+  let version: MockedObject<VersionInfoService>;
+  let websocket: MockedObject<WebSocketService>;
+  let pointCloud: MockedObject<PointCloudService>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -178,13 +177,17 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('initializes the production application configuration without Zone.js', async () => {
     expect(
-      (globalThis as typeof globalThis & { Zone?: unknown }).Zone
+      (
+        globalThis as typeof globalThis & {
+          Zone?: unknown;
+        }
+      ).Zone
     ).toBeUndefined();
     const application = await createApplication(appConfig);
     try {
       expect(
         application.injector.get(NgZone).run(() => NgZone.isInAngularZone())
-      ).toBeFalse();
+      ).toBe(false);
     } finally {
       application.destroy();
     }
@@ -192,7 +195,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('renders HTTP version results through AsyncPipe', async () => {
     const response = new Subject<AppVersionInfo>();
-    version.getAppVersionInfo.and.returnValue(response);
+    version.getAppVersionInfo.mockReturnValue(response);
     const fixture = await mount(HomeComponent);
     response.next({ name: 'server', version: 'zoneless-version' });
     await fixture.whenStable();
@@ -223,7 +226,7 @@ describe('TrackingServer zoneless DOM updates', () => {
   it('renders a delayed camera-list HTTP response', async () => {
     isolateTracking();
     const response = new Subject<DepthCamera[]>();
-    tracking.getCameras.and.returnValue(response);
+    tracking.getCameras.mockReturnValue(response);
     const fixture = await mount(TrackingComponent);
     response.next([
       {
@@ -247,7 +250,7 @@ describe('TrackingServer zoneless DOM updates', () => {
   it('renders SignalR camera status without another UI event', async () => {
     isolateTracking();
     const status = new Subject<TrackingConfigState>();
-    tracking.getStatus.and.returnValue(status);
+    tracking.getStatus.mockReturnValue(status);
     const fixture = await mount(TrackingComponent);
     status.next(streaming);
     await fixture.whenStable();
@@ -256,7 +259,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('updates nested settings and form controls after a settings response', async () => {
     const response = new Subject<TrackingServerAppSettings>();
-    settings.getSettings.and.returnValue(response);
+    settings.getSettings.mockReturnValue(response);
     const fixture = await mount(SettingsComponent);
     const value = structuredClone(DEFAULT_SETTINGS);
     value.filterSettingValues.borderValue.left = 12;
@@ -271,9 +274,9 @@ describe('TrackingServer zoneless DOM updates', () => {
   it('renders performance stream updates in the filter table', async () => {
     const value = structuredClone(DEFAULT_SETTINGS);
     value.filterSettingValues.measurePerformance = true;
-    settings.getSettings.and.returnValue(of(value));
+    settings.getSettings.mockReturnValue(of(value));
     const response = new Subject<PerformanceData>();
-    performance.getData.and.returnValue(response);
+    performance.getData.mockReturnValue(response);
     const fixture = await mount(SettingsComponent);
     response.next({
       data: [
@@ -293,18 +296,21 @@ describe('TrackingServer zoneless DOM updates', () => {
   it('renders limitation-filter polling responses', async () => {
     const value = structuredClone(DEFAULT_SETTINGS);
     value.filterSettingValues.limitationFilterType = 1;
-    settings.getSettings.and.returnValue(of(value));
-    tracking.getStatus.and.returnValue(of(streaming));
-    const response = new Subject<{ name: string; value: boolean }>();
+    settings.getSettings.mockReturnValue(of(value));
+    tracking.getStatus.mockReturnValue(of(streaming));
+    const response = new Subject<{
+      name: string;
+      value: boolean;
+    }>();
     let pollStarted!: () => void;
     const started = new Promise<void>((resolve) => {
       pollStarted = resolve;
     });
-    settings.isLimitationFilterInitializing.and.callFake(() => {
+    settings.isLimitationFilterInitializing.mockImplementation(() => {
       pollStarted();
       return response;
     });
-    settings.isLimitationFilterInitialized.and.returnValue(
+    settings.isLimitationFilterInitialized.mockReturnValue(
       of({ name: 'initialized', value: false })
     );
     const fixture = await mount(SettingsComponent);
@@ -336,7 +342,7 @@ describe('TrackingServer zoneless DOM updates', () => {
       },
     });
     const response = new Subject<string>();
-    processing.getStatus.and.returnValue(response);
+    processing.getStatus.mockReturnValue(response);
     const fixture = await mount(ProcessingComponent);
     response.next('Active');
     await fixture.whenStable();
@@ -347,7 +353,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('renders asynchronous calibration borders', async () => {
     const response = new Subject<FrameSizeDefinition>();
-    calibration.getFrameSize.and.returnValue(response);
+    calibration.getFrameSize.mockReturnValue(response);
     const fixture = await mount(CalibrationComponent);
     response.next(frame);
     await fixture.whenStable();
@@ -359,27 +365,27 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('updates calibration enablement before the interaction stream emits', async () => {
     const response = new Subject<string>();
-    processing.getStatus.and.returnValue(response);
+    processing.getStatus.mockReturnValue(response);
     const fixture = await mount(CalibrationComponent);
     response.next('Active');
     await fixture.whenStable();
     expect(
       fixture.nativeElement.querySelector('#calibrations-interactions-toggle')
         .disabled
-    ).toBeFalse();
+    ).toBe(false);
     response.next('Inactive');
     await fixture.whenStable();
     expect(
       fixture.nativeElement.querySelector('#calibrations-interactions-toggle')
         .disabled
-    ).toBeTrue();
+    ).toBe(true);
   });
 
   it('renders calibrated interaction results after a live interaction arrives', async () => {
-    processing.getStatus.and.returnValue(of('Active'));
+    processing.getStatus.mockReturnValue(of('Active'));
     const response = new Subject<Interaction[]>();
-    processing.getInteractions.and.returnValue(response);
-    calibration.computeCalibratedAbsolutePosition.and.callFake(() =>
+    processing.getInteractions.mockReturnValue(response);
+    calibration.computeCalibratedAbsolutePosition.mockImplementation(() =>
       of(interactionData())
     );
     const fixture = await mount(CalibrationComponent);
@@ -398,9 +404,9 @@ describe('TrackingServer zoneless DOM updates', () => {
   });
 
   it('renders network SignalR updates', async () => {
-    settings.getSettings.and.returnValue(of(structuredClone(DEFAULT_SETTINGS)));
+    settings.getSettings.mockReturnValue(of(structuredClone(DEFAULT_SETTINGS)));
     const response = new Subject<string>();
-    network.getStatus.and.returnValue(response);
+    network.getStatus.mockReturnValue(response);
     const fixture = await mount(NetworkComponent);
     response.next('Async network status');
     await fixture.whenStable();
@@ -409,7 +415,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('renders TUIO SignalR updates', async () => {
     const response = new Subject<string>();
-    tuio.getStatus.and.returnValue(response);
+    tuio.getStatus.mockReturnValue(response);
     const fixture = await mount(TuioComponent);
     response.next('Async TUIO status');
     await fixture.whenStable();
@@ -418,7 +424,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('renders TUIO package payloads', async () => {
     const response = new Subject<TuioPackageDetails>();
-    tuio.getPackages.and.returnValue(response);
+    tuio.getPackages.mockReturnValue(response);
     const fixture = await mount(PackageDetailsComponent);
     response.next({
       sessionId: 42,
@@ -432,7 +438,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('renders log polling emissions and detaches on destruction', async () => {
     const response = new Subject<LogMessageDetail>();
-    log.getLogs.and.returnValue(response);
+    log.getLogs.mockReturnValue(response);
     const fixture = await mount(LogComponent);
     response.next({
       id: 42,
@@ -442,14 +448,14 @@ describe('TrackingServer zoneless DOM updates', () => {
     await fixture.whenStable();
     expect(text(fixture)).toContain('Async log message');
     fixture.destroy();
-    expect(response.observed).toBeFalse();
+    expect(response.observed).toBe(false);
   });
 
   it('renders capture-state and sample-index polling independently', async () => {
     const capturing = new Subject<boolean>();
     const index = new Subject<number>();
-    measure.isCapturing.and.returnValue(capturing);
-    measure.getCurrentSampleIdx.and.returnValue(index);
+    measure.isCapturing.mockReturnValue(capturing);
+    measure.getCurrentSampleIdx.mockReturnValue(index);
     const fixture = await mount(MeasureControlsComponent);
     await new Promise((resolve) => setTimeout(resolve, 0));
     capturing.next(true);
@@ -462,7 +468,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('updates the measurement viewport after frame-size responses', async () => {
     const response = new Subject<FrameSizeDefinition>();
-    calibration.getFrameSize.and.returnValue(response);
+    calibration.getFrameSize.mockReturnValue(response);
     const fixture = await mount(MeasureSurfaceComponent);
     (
       fixture.nativeElement.querySelector(
@@ -478,10 +484,10 @@ describe('TrackingServer zoneless DOM updates', () => {
   });
 
   it('renders recording progress delivered after the start request', async () => {
-    recording.getStatus.and.returnValue(of(streaming));
-    recording.startRecording.and.returnValue(of('/recordings/test'));
+    recording.getStatus.mockReturnValue(of(streaming));
+    recording.startRecording.mockReturnValue(of('/recordings/test'));
     const response = new Subject<RecordingStateUpdate>();
-    recording.getRecordingState.and.returnValue(response);
+    recording.getRecordingState.mockReturnValue(response);
     const fixture = await mount(RecordingComponent);
     (
       fixture.nativeElement.querySelector('.icon-radio-checked') as HTMLElement
@@ -496,15 +502,15 @@ describe('TrackingServer zoneless DOM updates', () => {
     expect(text(fixture)).toContain('Frames: 42');
     expect(fixture.nativeElement.querySelector('.icon-stop')).toBeTruthy();
     fixture.destroy();
-    expect(response.observed).toBeFalse();
+    expect(response.observed).toBe(false);
   });
 
   it('renders frame/history stream updates', async () => {
-    processing.getStatus.and.returnValue(of('Active'));
+    processing.getStatus.mockReturnValue(of('Active'));
     const frames = new Subject<InteractionFrame[]>();
     const history = new Subject<InteractionHistory[]>();
-    processing.getFrames.and.returnValue(frames);
-    processing.getHistory.and.returnValue(history);
+    processing.getFrames.mockReturnValue(frames);
+    processing.getHistory.mockReturnValue(history);
     const fixture = await mount(HistoryComponent);
     frames.next([
       { frameId: 8123, interactions: [structuredClone(interaction)] },
@@ -521,11 +527,11 @@ describe('TrackingServer zoneless DOM updates', () => {
   });
 
   it('renders a recording-stream failure after the start request', async () => {
-    spyOn(console, 'error');
-    recording.getStatus.and.returnValue(of(streaming));
-    recording.startRecording.and.returnValue(of('/recordings/test'));
+    vi.spyOn(console, 'error').mockReturnValue(undefined);
+    recording.getStatus.mockReturnValue(of(streaming));
+    recording.startRecording.mockReturnValue(of('/recordings/test'));
     const response = new Subject<RecordingStateUpdate>();
-    recording.getRecordingState.and.returnValue(response);
+    recording.getRecordingState.mockReturnValue(response);
     const fixture = await mount(RecordingComponent);
     (
       fixture.nativeElement.querySelector('.icon-radio-checked') as HTMLElement
@@ -540,9 +546,9 @@ describe('TrackingServer zoneless DOM updates', () => {
   });
 
   it('renders history stream emissions in SVG', async () => {
-    processing.getStatus.and.returnValue(of('Active'));
+    processing.getStatus.mockReturnValue(of('Active'));
     const response = new Subject<InteractionHistory[]>();
-    processing.getHistory.and.returnValue(response);
+    processing.getHistory.mockReturnValue(response);
     const fixture = await mount(HistoryVisualizationComponent);
     response.next([
       {
@@ -576,7 +582,7 @@ describe('TrackingServer zoneless DOM updates', () => {
 
   it('updates visualization frame geometry after HTTP responses', async () => {
     const response = new Subject<FrameSizeDefinition>();
-    calibration.getFrameSize.and.returnValue(response);
+    calibration.getFrameSize.mockReturnValue(response);
     const fixture = await mount(InteractionsVisualizationComponent);
     (
       fixture.nativeElement.querySelector(
@@ -593,11 +599,11 @@ describe('TrackingServer zoneless DOM updates', () => {
   });
 
   it('renders WebSocket image frames and their counters', async () => {
-    tracking.getStatus.and.returnValue(of(streaming));
-    tracking.setDepthImagePreviewState.and.returnValue(of(true));
+    tracking.getStatus.mockReturnValue(of(streaming));
+    tracking.setDepthImagePreviewState.mockReturnValue(of(true));
     const response = new Subject<MessageEvent>();
-    websocket.createSocket.and.returnValue(new Subject<MessageEvent>());
-    websocket.getResponseStream.and.returnValue(response);
+    websocket.createSocket.mockReturnValue(new Subject<MessageEvent>());
+    websocket.getResponseStream.mockReturnValue(response);
     const fixture = await mount(DepthImageComponent);
     fixture.componentRef.setInput('livePreviewEnabled', true);
     await fixture.whenStable();
@@ -620,10 +626,10 @@ describe('TrackingServer zoneless DOM updates', () => {
   it('renders point-cloud stream counters without depending on the WebGL loop', async () => {
     // This is a DOM scheduling test, not a GPU test. Exercise the component's
     // supported no-WebGL fallback so shader compilation cannot drive the test.
-    spyOn(HTMLCanvasElement.prototype, 'getContext').and.returnValue(null);
-    tracking.getStatus.and.returnValue(of(streaming));
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+    tracking.getStatus.mockReturnValue(of(streaming));
     const response = new Subject<Point3[]>();
-    pointCloud.getPointCloud.and.returnValue(response);
+    pointCloud.getPointCloud.mockReturnValue(response);
     const fixture = await mount(PointCloudComponent);
     fixture.componentRef.setInput('livePreviewEnabled', true);
     await fixture.whenStable();

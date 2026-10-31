@@ -10,6 +10,12 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  checks: write
+  pages: write
+  id-token: write
+
 jobs:
   test_python_grpc:
     name: test Python extraction, gRPC and notebooks
@@ -55,15 +61,28 @@ jobs:
         with:
           name: ${{ needs.generate_test-report_server.outputs.artifact_name }}
           path: ${{ github.workspace }}/docs/test/server/report/
+      - name: Verify collected reports
+        shell: bash
+        run: |
+          test -s docs/test/library/report/index.html
+          test -s docs/test/server/report/reflex-tracking-server/index.html
+      - name: Upload collected reports for this Pages deployment
+        uses: actions/upload-artifact@main
+        with:
+          name: pages-test-reports
+          path: docs/test
+          if-no-files-found: error
       - name: cache reports directory
         uses: actions/cache/save@main
         id: cache-reports
         with:
           path: ${{ github.workspace }}/docs/test
-          key: test-reports
+          key: test-reports-${{ github.run_id }}-${{ github.run_attempt }}
           enableCrossOsArchive: true
   update_pages:
     needs: [ collect-cache_data, test_python_grpc ]
     name: update pages
     uses: ./.github/workflows/pages-deploy.yml
+    with:
+      test_reports_artifact: pages-test-reports
 

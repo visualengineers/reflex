@@ -1,3 +1,4 @@
+import { mockReturnValueForArgs } from '../../test-utils/mock-return-value-for-args';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -35,33 +36,47 @@ import { DepthImageComponent } from './depth-image/depth-image.component';
 import { PointCloudComponent } from './point-cloud/point-cloud.component';
 import { RecordingComponent } from './recording/recording.component';
 
-const trackingService = jasmine.createSpyObj<TrackingService>(
-  'fakeTrackingService',
-  [
-    'getStatus',
-    'getCameras',
-    'queryAutostartEnabled',
-    'getSelectedCamera',
-    'getConfigurationsForCamera',
-    'getSelectedCameraConfig',
-    'toggleCamera',
-    'setAutostartEnabled',
-  ]
-);
+const trackingService = {
+  getStatus: vi.fn().mockName('fakeTrackingService.getStatus'),
+  getCameras: vi.fn().mockName('fakeTrackingService.getCameras'),
+  queryAutostartEnabled: vi
+    .fn()
+    .mockName('fakeTrackingService.queryAutostartEnabled'),
+  getSelectedCamera: vi.fn().mockName('fakeTrackingService.getSelectedCamera'),
+  getConfigurationsForCamera: vi
+    .fn()
+    .mockName('fakeTrackingService.getConfigurationsForCamera'),
+  getSelectedCameraConfig: vi
+    .fn()
+    .mockName('fakeTrackingService.getSelectedCameraConfig'),
+  toggleCamera: vi.fn().mockName('fakeTrackingService.toggleCamera'),
+  setAutostartEnabled: vi
+    .fn()
+    .mockName('fakeTrackingService.setAutostartEnabled'),
+};
 
-const trackingService_error = jasmine.createSpyObj<TrackingService>(
-  'fakeTrackingServiceThrowsErrors',
-  [
-    'getStatus',
-    'getCameras',
-    'queryAutostartEnabled',
-    'getSelectedCamera',
-    'getConfigurationsForCamera',
-    'getSelectedCameraConfig',
-    'toggleCamera',
-    'setAutostartEnabled',
-  ]
-);
+const trackingService_error = {
+  getStatus: vi.fn().mockName('fakeTrackingServiceThrowsErrors.getStatus'),
+  getCameras: vi.fn().mockName('fakeTrackingServiceThrowsErrors.getCameras'),
+  queryAutostartEnabled: vi
+    .fn()
+    .mockName('fakeTrackingServiceThrowsErrors.queryAutostartEnabled'),
+  getSelectedCamera: vi
+    .fn()
+    .mockName('fakeTrackingServiceThrowsErrors.getSelectedCamera'),
+  getConfigurationsForCamera: vi
+    .fn()
+    .mockName('fakeTrackingServiceThrowsErrors.getConfigurationsForCamera'),
+  getSelectedCameraConfig: vi
+    .fn()
+    .mockName('fakeTrackingServiceThrowsErrors.getSelectedCameraConfig'),
+  toggleCamera: vi
+    .fn()
+    .mockName('fakeTrackingServiceThrowsErrors.toggleCamera'),
+  setAutostartEnabled: vi
+    .fn()
+    .mockName('fakeTrackingServiceThrowsErrors.setAutostartEnabled'),
+};
 
 const camera0: DepthCamera = {
   id: '0',
@@ -113,69 +128,66 @@ const state2: TrackingConfigState = {
   depthCameraStateName: DepthCameraState[camera0.state],
 };
 
-trackingService.getCameras.and.returnValue(of([camera0, camera1, camera2]));
+trackingService.getCameras.mockReturnValue(of([camera0, camera1, camera2]));
 
-trackingService.queryAutostartEnabled.and.returnValue(of('true'));
+trackingService.queryAutostartEnabled.mockReturnValue(of('true'));
 
-trackingService.getStatus.and.returnValue(of(state));
+trackingService.getStatus.mockReturnValue(of(state));
 
-trackingService.getSelectedCamera.and.returnValue(of(camera1));
+trackingService.getSelectedCamera.mockReturnValue(of(camera1));
 
-trackingService.getConfigurationsForCamera
-  .withArgs(1)
-  .and.returnValue(of([camera1.streamParameter]));
-trackingService.getConfigurationsForCamera
-  .withArgs(0)
-  .and.returnValue(of([camera2.streamParameter, camera0.streamParameter]));
+mockReturnValueForArgs(trackingService.getConfigurationsForCamera, [1], of([camera1.streamParameter]));
+mockReturnValueForArgs(trackingService.getConfigurationsForCamera, [0], of([camera2.streamParameter, camera0.streamParameter]));
 
-trackingService.getSelectedCameraConfig.and.returnValue(
+trackingService.getSelectedCameraConfig.mockReturnValue(
   of(camera1.streamParameter)
 );
 
 const errorCam = 'TestError: getCameras()';
-trackingService_error.getCameras.and.returnValue(throwError(errorCam));
+trackingService_error.getCameras.mockReturnValue(throwError(errorCam));
 
 const errorAutostart = 'TestError: queryAutostartEnabled()';
-trackingService_error.queryAutostartEnabled.and.returnValue(
+trackingService_error.queryAutostartEnabled.mockReturnValue(
   throwError(errorAutostart)
 );
 
 const errorStatus = 'TestError: getStatus()';
-trackingService_error.getStatus.and.returnValue(throwError(errorStatus));
+trackingService_error.getStatus.mockReturnValue(throwError(errorStatus));
 
 const errorSelectCam = 'TestError: getSelectedCamera()';
-trackingService_error.getSelectedCamera.and.returnValue(
+trackingService_error.getSelectedCamera.mockReturnValue(
   throwError(errorSelectCam)
 );
 
 const errorConfigCam = 'TestError: getConfigurationsForCamera()';
-trackingService_error.getConfigurationsForCamera.and.returnValue(
+trackingService_error.getConfigurationsForCamera.mockReturnValue(
   throwError(errorConfigCam)
 );
 
 const errorSelectConfig = 'TestError: getSelectedCameraConfig()';
-trackingService_error.getSelectedCameraConfig.and.returnValue(
+trackingService_error.getSelectedCameraConfig.mockReturnValue(
   throwError(errorSelectConfig)
 );
 
 const errorToggle = 'TestError: toggleCamera()';
-trackingService_error.toggleCamera.and.returnValue(throwError(errorToggle));
+trackingService_error.toggleCamera.mockReturnValue(throwError(errorToggle));
 
 const errorSaveAutoStart = 'TestError: setAutostartEnabled()';
-trackingService_error.setAutostartEnabled.and.returnValue(
+trackingService_error.setAutostartEnabled.mockReturnValue(
   throwError(errorSaveAutoStart)
 );
 
-const settingsService = jasmine.createSpyObj<SettingsService>(
-  'fakeSettingsService',
-  ['getSettings', 'getCanRestore', 'update']
-);
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const settingsService = {
+  getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
+  getCanRestore: vi.fn().mockName('fakeSettingsService.getCanRestore'),
+  update: vi.fn().mockName('fakeSettingsService.update'),
+};
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
-settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
-settingsService.getCanRestore.and.returnValue(
+settingsService.getSettings.mockReturnValue(of(DEFAULT_SETTINGS));
+settingsService.getCanRestore.mockReturnValue(
   of({ name: 'canRestore', value: true })
 );
 
@@ -236,18 +248,18 @@ describe('TrackingComponent', () => {
     fixture.destroy();
     TestBed.resetTestingModule();
 
-    trackingService.getStatus.calls.reset();
-    trackingService.getCameras.calls.reset();
-    trackingService.queryAutostartEnabled.calls.reset();
-    trackingService.getSelectedCamera.calls.reset();
-    trackingService.getConfigurationsForCamera.calls.reset();
-    trackingService.getSelectedCameraConfig.calls.reset();
-    trackingService.toggleCamera.calls.reset();
-    trackingService.setAutostartEnabled.calls.reset();
+    trackingService.getStatus.mockClear();
+    trackingService.getCameras.mockClear();
+    trackingService.queryAutostartEnabled.mockClear();
+    trackingService.getSelectedCamera.mockClear();
+    trackingService.getConfigurationsForCamera.mockClear();
+    trackingService.getSelectedCameraConfig.mockClear();
+    trackingService.toggleCamera.mockClear();
+    trackingService.setAutostartEnabled.mockClear();
 
-    settingsService.update.calls.reset();
+    settingsService.update.mockClear();
 
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
   });
 
   afterAll(() => {
@@ -342,7 +354,7 @@ describe('TrackingComponent', () => {
 
     expect(component.canStart).toBeFalsy();
 
-    expect(component.configurations).toHaveSize(2);
+    expect(component.configurations).toHaveLength(2);
     expect(component.configurations).toContain(camera0.streamParameter);
     expect(component.configurations).toContain(camera2.streamParameter);
     expect(component.configurations).not.toContain(camera1.streamParameter);
@@ -393,13 +405,13 @@ describe('TrackingComponent', () => {
     expect(trackingService.getConfigurationsForCamera).toHaveBeenCalledWith(1);
     expect(trackingService.getSelectedCameraConfig).toHaveBeenCalledTimes(1);
 
-    trackingService.getSelectedCameraConfig.calls.reset();
+    trackingService.getSelectedCameraConfig.mockClear();
 
     component.selectedCameraIdx = -1;
     component.updateConfigurations();
 
     expect(component.configurations).toEqual([]);
-    expect(component.configurations).toHaveSize(0);
+    expect(component.configurations).toHaveLength(0);
 
     expect(trackingService.getSelectedCameraConfig).not.toHaveBeenCalled();
 
@@ -417,9 +429,9 @@ describe('TrackingComponent', () => {
     expect(component.selectedCameraIdx).toBe(1);
     expect(component.selectedConfigurationIdx).toBe(0);
 
-    trackingService.toggleCamera.and.returnValue(of(202));
+    trackingService.toggleCamera.mockReturnValue(of(202));
 
-    settingsService.update.calls.reset();
+    settingsService.update.mockClear();
 
     component.start();
 
@@ -437,9 +449,9 @@ describe('TrackingComponent', () => {
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    trackingService.setAutostartEnabled.and.returnValue(of(true));
+    trackingService.setAutostartEnabled.mockReturnValue(of(true));
 
-    settingsService.update.calls.reset();
+    settingsService.update.mockClear();
 
     component.saveAutoStart();
 
@@ -483,15 +495,15 @@ describe('TrackingComponent', () => {
     expect(
       component['configSubscription'] === undefined ||
         component['configSubscription'].closed
-    ).toBeTrue();
+    ).toBe(true);
     expect(
       component['selectedCamConfigSubscription'] === undefined ||
         component['selectedCamConfigSubscription'].closed
-    ).toBeTrue();
+    ).toBe(true);
     expect(
       component['cameraSubscription'] === undefined ||
         component['cameraSubscription'].closed
-    ).toBeTrue();
+    ).toBe(true);
   });
 });
 
@@ -557,18 +569,18 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
     fixture.destroy();
     TestBed.resetTestingModule();
 
-    trackingService_error.getStatus.calls.reset();
-    trackingService_error.getCameras.calls.reset();
-    trackingService_error.queryAutostartEnabled.calls.reset();
-    trackingService_error.getSelectedCamera.calls.reset();
-    trackingService_error.getConfigurationsForCamera.calls.reset();
-    trackingService_error.getSelectedCameraConfig.calls.reset();
-    trackingService_error.toggleCamera.calls.reset();
-    trackingService_error.setAutostartEnabled.calls.reset();
+    trackingService_error.getStatus.mockClear();
+    trackingService_error.getCameras.mockClear();
+    trackingService_error.queryAutostartEnabled.mockClear();
+    trackingService_error.getSelectedCamera.mockClear();
+    trackingService_error.getConfigurationsForCamera.mockClear();
+    trackingService_error.getSelectedCameraConfig.mockClear();
+    trackingService_error.toggleCamera.mockClear();
+    trackingService_error.setAutostartEnabled.mockClear();
 
-    settingsService.update.calls.reset();
+    settingsService.update.mockClear();
 
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
   });
 
   afterAll(() => {

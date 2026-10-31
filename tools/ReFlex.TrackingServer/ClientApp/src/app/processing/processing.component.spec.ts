@@ -13,66 +13,84 @@ import { InteractionsComponent } from './interactions/interactions.component';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { MockHistoryVisualizationComponent } from './history-visualization/history-visualization.component.mock';
 import { MockHistoryComponent } from './history/history.component.mock';
-import { CompleteInteractionData, DEFAULT_SETTINGS, FrameSizeDefinition, RemoteProcessingAlgorithm, RemoteProcessingServiceSettings } from '@reflex/shared-types';
-import { PanelHeaderComponent, ValueSelectionComponent, ValueSliderComponent, MockPanelHeaderComponent, MockValueSelectionComponent, MockValueSliderComponent } from '@reflex/angular-components/dist';
+import {
+  CompleteInteractionData,
+  DEFAULT_SETTINGS,
+  FrameSizeDefinition,
+  RemoteProcessingAlgorithm,
+  RemoteProcessingServiceSettings,
+} from '@reflex/shared-types';
+import {
+  PanelHeaderComponent,
+  ValueSelectionComponent,
+  ValueSliderComponent,
+  MockPanelHeaderComponent,
+  MockValueSelectionComponent,
+  MockValueSliderComponent,
+} from '@reflex/angular-components/dist';
 import { HistoryVisualizationComponent } from './history-visualization/history-visualization.component';
 import { HistoryComponent } from './history/history.component';
 import { MockInteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component.mock';
 import { MockInteractionsComponent } from './interactions/interactions.component.mock';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
-const settingsService = jasmine.createSpyObj<SettingsService>('fakeSettingsService',
-  [
-    'getSettings',
-    'saveSettings'
-  ]);
+const settingsService = {
+  getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
+  saveSettings: vi.fn().mockName('fakeSettingsService.saveSettings'),
+};
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>('fakeCalibrationService',
-  [
-     'computeCalibratedAbsolutePosition',
-     'getFrameSize'
-  ]
-);
+const calibrationService = {
+  computeCalibratedAbsolutePosition: vi
+    .fn()
+    .mockName('fakeCalibrationService.computeCalibratedAbsolutePosition'),
+  getFrameSize: vi.fn().mockName('fakeCalibrationService.getFrameSize'),
+};
 
-const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingService',
-  [
-    'getFrames',
-    'getStatus',
-    'getObserverTypes',
-    'getSelectedObserverType',
-    'getHistory',
-    'getInteractions',
-    'getInterval',
-    'getRemoteProcessorSettings',
-    'setRemoteProcessorSettings'
+const processingService = {
+  getFrames: vi.fn().mockName('fakeProcessingService.getFrames'),
+  getStatus: vi.fn().mockName('fakeProcessingService.getStatus'),
+  getObserverTypes: vi.fn().mockName('fakeProcessingService.getObserverTypes'),
+  getSelectedObserverType: vi
+    .fn()
+    .mockName('fakeProcessingService.getSelectedObserverType'),
+  getHistory: vi.fn().mockName('fakeProcessingService.getHistory'),
+  getInteractions: vi.fn().mockName('fakeProcessingService.getInteractions'),
+  getInterval: vi.fn().mockName('fakeProcessingService.getInterval'),
+  getRemoteProcessorSettings: vi
+    .fn()
+    .mockName('fakeProcessingService.getRemoteProcessorSettings'),
+  setRemoteProcessorSettings: vi
+    .fn()
+    .mockName('fakeProcessingService.setRemoteProcessorSettings'),
+};
 
-  ]
-);
+const customFrame: FrameSizeDefinition = {
+  width: 500,
+  height: 400,
+  left: 150,
+  top: 75,
+};
 
-const customFrame: FrameSizeDefinition =
-  { width: 500, height: 400, left: 150, top: 75 };
-
-const interactionData : CompleteInteractionData = {
+const interactionData: CompleteInteractionData = {
   raw: [],
   normalized: [],
-  absolute: []
-}
+  absolute: [],
+};
 
 const observerTypes = ['None', 'TestObserver', 'RealObserver'];
 
-const remoteObserver : RemoteProcessingServiceSettings = {
+const remoteObserver: RemoteProcessingServiceSettings = {
   address: 'http://localhost:50051',
   numSkipValues: 0,
   completeDataSet: false,
   useGzipCompression: true,
   cutOff: 0,
   factor: 0,
-  algorithm: RemoteProcessingAlgorithm.Default
-}
+  algorithm: RemoteProcessingAlgorithm.Default,
+};
 
 describe('ProcessingComponent', () => {
   let component: ProcessingComponent;
@@ -80,86 +98,100 @@ describe('ProcessingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [FormsModule,
-        ProcessingComponent
-    ],
-    providers: [
+      imports: [FormsModule, ProcessingComponent],
+      providers: [
         {
-            provide: CalibrationService, useValue: calibrationService
+          provide: CalibrationService,
+          useValue: calibrationService,
         },
         {
-            provide: ProcessingService, useValue: processingService
+          provide: ProcessingService,
+          useValue: processingService,
         },
         {
-            provide: SettingsService, useValue: settingsService
+          provide: SettingsService,
+          useValue: settingsService,
         },
         {
-            provide: LogService, useValue: logService
+          provide: LogService,
+          useValue: logService,
         },
         {
-            provide: BASE_URL, useValue: 'http://localhost'
-        }
-    ]
-    }).overrideComponent(ProcessingComponent, {
-      remove: { imports: [
-        PanelHeaderComponent,
-        ValueSelectionComponent,
-        ValueSliderComponent,
-        InteractionsComponent,
-        InteractionsVisualizationComponent,
-        HistoryVisualizationComponent,
-        HistoryComponent
-      ] },
-      add: { imports: [
-        MockPanelHeaderComponent,
-        MockValueSelectionComponent,
-        MockValueSliderComponent,
-        MockInteractionsComponent,
-        MockInteractionsVisualizationComponent,
-        MockHistoryVisualizationComponent,
-        MockHistoryComponent
-       ] }
+          provide: BASE_URL,
+          useValue: 'http://localhost',
+        },
+      ],
     })
-    .compileComponents();
+      .overrideComponent(ProcessingComponent, {
+        remove: {
+          imports: [
+            PanelHeaderComponent,
+            ValueSelectionComponent,
+            ValueSliderComponent,
+            InteractionsComponent,
+            InteractionsVisualizationComponent,
+            HistoryVisualizationComponent,
+            HistoryComponent,
+          ],
+        },
+        add: {
+          imports: [
+            MockPanelHeaderComponent,
+            MockValueSelectionComponent,
+            MockValueSliderComponent,
+            MockInteractionsComponent,
+            MockInteractionsVisualizationComponent,
+            MockHistoryVisualizationComponent,
+            MockHistoryComponent,
+          ],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
-    calibrationService.computeCalibratedAbsolutePosition.and.returnValue(of(interactionData));
-    calibrationService.getFrameSize.and.returnValue(of(customFrame));
+    calibrationService.computeCalibratedAbsolutePosition.mockReturnValue(
+      of(interactionData)
+    );
+    calibrationService.getFrameSize.mockReturnValue(of(customFrame));
 
-    processingService.getInteractions.and.returnValue(of([]));
-    processingService.getStatus.and.returnValue(of('Active'));
-    processingService.getObserverTypes.and.returnValue(of(observerTypes));
-    processingService.getSelectedObserverType.and.returnValue(of(0));
-    processingService.getInterval.and.returnValue(of(100));
-    processingService.getRemoteProcessorSettings.and.returnValue(of({ ...remoteObserver }));
-    processingService.setRemoteProcessorSettings.and.returnValue(of(new HttpResponse({ body: { ...remoteObserver } })));
+    processingService.getInteractions.mockReturnValue(of([]));
+    processingService.getStatus.mockReturnValue(of('Active'));
+    processingService.getObserverTypes.mockReturnValue(of(observerTypes));
+    processingService.getSelectedObserverType.mockReturnValue(of(0));
+    processingService.getInterval.mockReturnValue(of(100));
+    processingService.getRemoteProcessorSettings.mockReturnValue(
+      of({ ...remoteObserver })
+    );
+    processingService.setRemoteProcessorSettings.mockReturnValue(
+      of(new HttpResponse({ body: { ...remoteObserver } }))
+    );
 
-    settingsService.getSettings.and.returnValue(of({ ...DEFAULT_SETTINGS }));
-    settingsService.saveSettings.and.returnValue(of(DEFAULT_SETTINGS));
+    settingsService.getSettings.mockReturnValue(of({ ...DEFAULT_SETTINGS }));
+    settingsService.saveSettings.mockReturnValue(of(DEFAULT_SETTINGS));
 
-    logService.sendErrorLog.and.returnValue();
+    logService.sendErrorLog.mockReturnValue(undefined);
 
     fixture = TestBed.createComponent(ProcessingComponent);
     component = fixture.componentInstance;
   });
 
   afterEach(() => {
-    calibrationService.computeCalibratedAbsolutePosition.calls.reset();
-    calibrationService.getFrameSize.calls.reset();
+    calibrationService.computeCalibratedAbsolutePosition.mockClear();
+    calibrationService.getFrameSize.mockClear();
 
-    processingService.getInteractions.calls.reset();
-    processingService.getStatus.calls.reset();
-    processingService.getObserverTypes.calls.reset();
-    processingService.getSelectedObserverType.calls.reset();
-    processingService.getInterval.calls.reset();
-    processingService.getRemoteProcessorSettings.calls.reset();
-    processingService.setRemoteProcessorSettings.calls.reset();
+    processingService.getInteractions.mockClear();
+    processingService.getStatus.mockClear();
+    processingService.getObserverTypes.mockClear();
+    processingService.getSelectedObserverType.mockClear();
+    processingService.getInterval.mockClear();
+    processingService.getRemoteProcessorSettings.mockClear();
+    processingService.setRemoteProcessorSettings.mockClear();
 
-    settingsService.getSettings.calls.reset();
-    settingsService.saveSettings.calls.reset();
+    settingsService.getSettings.mockClear();
+    settingsService.saveSettings.mockClear();
 
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should create', () => {
@@ -167,7 +199,9 @@ describe('ProcessingComponent', () => {
 
     expect(component).toBeTruthy();
 
-    expect(calibrationService.computeCalibratedAbsolutePosition).toHaveBeenCalledTimes(1);
+    expect(
+      calibrationService.computeCalibratedAbsolutePosition
+    ).toHaveBeenCalledTimes(1);
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
     // BUG ?
@@ -176,7 +210,9 @@ describe('ProcessingComponent', () => {
     expect(processingService.getObserverTypes).toHaveBeenCalledTimes(1);
     expect(processingService.getSelectedObserverType).toHaveBeenCalledTimes(1);
     expect(processingService.getInterval).toHaveBeenCalledTimes(1);
-    expect(processingService.getRemoteProcessorSettings).toHaveBeenCalledTimes(1);
+    expect(processingService.getRemoteProcessorSettings).toHaveBeenCalledTimes(
+      1
+    );
 
     expect(settingsService.getSettings).toHaveBeenCalledTimes(1);
 
@@ -186,34 +222,45 @@ describe('ProcessingComponent', () => {
   });
 
   it('loads, updates and saves gzip compression through the shared checkbox', async () => {
-    processingService.getSelectedObserverType.and.returnValue(of(3));
+    processingService.getSelectedObserverType.mockReturnValue(of(3));
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector('#processing-remote-gzipCompression-checkbox');
-    expect(checkbox.checked).toBeTrue();
+    const checkbox: HTMLInputElement = fixture.nativeElement.querySelector(
+      '#processing-remote-gzipCompression-checkbox'
+    );
+    expect(checkbox.checked).toBe(true);
 
     checkbox.checked = false;
     checkbox.dispatchEvent(new Event('change'));
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(component.remoteSettings.useGzipCompression).toBeFalse();
-    expect(processingService.setRemoteProcessorSettings).toHaveBeenCalledWith(jasmine.objectContaining({
-      useGzipCompression: false,
-      address: remoteObserver.address,
-      factor: remoteObserver.factor
-    }));
+    expect(component.remoteSettings.useGzipCompression).toBe(false);
+    expect(processingService.setRemoteProcessorSettings).toHaveBeenCalledWith(
+      expect.objectContaining({
+        useGzipCompression: false,
+        address: remoteObserver.address,
+        factor: remoteObserver.factor,
+      })
+    );
 
     component.saveRemoteProcessingSettings();
-    expect(settingsService.saveSettings).toHaveBeenCalledWith(jasmine.objectContaining({
-      remoteProcessingServiceSettingsValues: jasmine.objectContaining({ useGzipCompression: false })
-    }));
+    expect(settingsService.saveSettings).toHaveBeenCalledWith(
+      expect.objectContaining({
+        remoteProcessingServiceSettingsValues: expect.objectContaining({
+          useGzipCompression: false,
+        }),
+      })
+    );
 
     checkbox.checked = true;
     checkbox.dispatchEvent(new Event('change'));
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(processingService.setRemoteProcessorSettings.calls.mostRecent().args[0].useGzipCompression).toBeTrue();
+    expect(
+      vi.mocked(processingService.setRemoteProcessorSettings).mock.lastCall![0]
+        .useGzipCompression
+    ).toBe(true);
   });
 });

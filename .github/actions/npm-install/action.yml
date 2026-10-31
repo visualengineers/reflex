@@ -14,3 +14,7 @@ runs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: npm ci --include=dev
+    - name: install Chromium for Angular Vitest browser tests
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: npx playwright install --with-deps chromium

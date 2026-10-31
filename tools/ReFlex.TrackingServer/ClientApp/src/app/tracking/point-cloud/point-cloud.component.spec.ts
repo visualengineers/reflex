@@ -35,29 +35,27 @@ import {
   MockValueSliderComponent,
 } from '@reflex/angular-components/dist';
 
-const trackingService = jasmine.createSpyObj<TrackingService>(
-  'fakeTrackingService',
-  ['getStatus']
-);
+const trackingService = {
+  getStatus: vi.fn().mockName('fakeTrackingService.getStatus'),
+};
 
-const pointCloudService = jasmine.createSpyObj<PointCloudService>(
-  'fakePointCloudService',
-  ['getPointCloud']
-);
+const pointCloudService = {
+  getPointCloud: vi.fn().mockName('fakePointCloudService.getPointCloud'),
+};
 
-const processingService = jasmine.createSpyObj<ProcessingService>(
-  'fakeProcessingCloudService',
-  ['getInteractions']
-);
+const processingService = {
+  getInteractions: vi
+    .fn()
+    .mockName('fakeProcessingCloudService.getInteractions'),
+};
 
-const settingsService = jasmine.createSpyObj<SettingsService>(
-  'fakeSettingsService',
-  ['getSettings']
-);
+const settingsService = {
+  getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
@@ -139,7 +137,7 @@ describe('PointCloudComponent', () => {
 
   beforeEach(() => {
     // These tests exercise geometry and service state, not native GPU rendering.
-    spyOn(HTMLCanvasElement.prototype, 'getContext').and.returnValue(null);
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -148,21 +146,21 @@ describe('PointCloudComponent', () => {
     component = fixture.componentInstance;
 
     // reset services
-    pointCloudService.getPointCloud.and.returnValue(of([]));
-    processingService.getInteractions.and.returnValue(of([]));
+    pointCloudService.getPointCloud.mockReturnValue(of([]));
+    processingService.getInteractions.mockReturnValue(of([]));
 
-    trackingService.getStatus.and.returnValue(of(state));
-    settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
+    trackingService.getStatus.mockReturnValue(of(state));
+    settingsService.getSettings.mockReturnValue(of(DEFAULT_SETTINGS));
 
-    logService.sendErrorLog.and.returnValue();
+    logService.sendErrorLog.mockReturnValue(undefined);
   });
 
   afterEach(() => {
-    pointCloudService.getPointCloud.calls.reset();
-    processingService.getInteractions.calls.reset();
-    trackingService.getStatus.calls.reset();
-    settingsService.getSettings.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    pointCloudService.getPointCloud.mockClear();
+    processingService.getInteractions.mockClear();
+    trackingService.getStatus.mockClear();
+    settingsService.getSettings.mockClear();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should create', async () => {
@@ -177,7 +175,7 @@ describe('PointCloudComponent', () => {
     fixture.detectChanges();
 
     if (window !== undefined) {
-      spyOn(window, 'requestAnimationFrame').and.callFake((cb) => 1);
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => 1);
 
       httpTestingController
         .expectOne('assets/shader/pointcloud_vertex.txt')
@@ -192,7 +190,7 @@ describe('PointCloudComponent', () => {
   });
 
   it('should create a point cloud with the given points', async () => {
-    pointCloudService.getPointCloud.and.returnValue(of(dummyPoints));
+    pointCloudService.getPointCloud.mockReturnValue(of(dummyPoints));
 
     component.livePreview = true;
     component.livePreviewChanged();
@@ -201,12 +199,12 @@ describe('PointCloudComponent', () => {
 
     expect(component.numFramesReceived).toBe(1);
 
-    expect(component['isPointCloudInitialized']).toBeTrue();
+    expect(component['isPointCloudInitialized']).toBe(true);
 
     expect(component['points'].geometry?.attributes?.position).toBeDefined();
     expect(
       component['points'].geometry?.attributes?.position?.array
-    ).toHaveSize(dummyPoints.length * 3);
+    ).toHaveLength(dummyPoints.length * 3);
 
     for (var i = 0; i < dummyPoints.length; i++) {
       let n = i * 3;
@@ -242,7 +240,7 @@ describe('PointCloudComponent', () => {
   });
 
   it('should update point cloud service emits new values', async () => {
-    pointCloudService.getPointCloud.and.returnValue(
+    pointCloudService.getPointCloud.mockReturnValue(
       of(
         [{ x: 1, y: 2, z: 3, isValid: true, isFiltered: false }],
         [
@@ -276,7 +274,7 @@ describe('PointCloudComponent', () => {
   it('should not update point cloud when preview is toggled off', async () => {
     let obs = new BehaviorSubject(new Array<Point3>());
 
-    pointCloudService.getPointCloud.and.returnValue(obs);
+    pointCloudService.getPointCloud.mockReturnValue(obs);
 
     fixture.detectChanges();
 
@@ -343,7 +341,7 @@ describe('PointCloudComponent', () => {
 
     expect(
       component['points'].geometry?.attributes?.position?.array
-    ).toHaveSize(6);
+    ).toHaveLength(6);
 
     expect(
       component['points'].geometry?.attributes?.position?.array[0]
@@ -371,7 +369,7 @@ describe('PointCloudComponent', () => {
   });
 
   it('should create interactions when service emits new values', async () => {
-    processingService.getInteractions.and.returnValue(
+    processingService.getInteractions.mockReturnValue(
       of([
         {
           touchId: 0,
@@ -410,7 +408,7 @@ describe('PointCloudComponent', () => {
     expect(component.numFramesReceived).toBe(0);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(2);
+    expect(component['interactions']).toHaveLength(2);
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
@@ -418,7 +416,7 @@ describe('PointCloudComponent', () => {
   it('should update interactions when service emits new values', async () => {
     let obs = new BehaviorSubject(new Array<Interaction>());
 
-    processingService.getInteractions.and.returnValue(obs);
+    processingService.getInteractions.mockReturnValue(obs);
 
     component.livePreview = true;
     component.livePreviewChanged();
@@ -457,12 +455,12 @@ describe('PointCloudComponent', () => {
     expect(component.numFramesReceived).toBe(0);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(2);
+    expect(component['interactions']).toHaveLength(2);
 
     obs.next([]);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(0);
+    expect(component['interactions']).toHaveLength(0);
 
     obs.next([
       {
@@ -480,7 +478,7 @@ describe('PointCloudComponent', () => {
     ]);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(1);
+    expect(component['interactions']).toHaveLength(1);
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
 
@@ -490,7 +488,7 @@ describe('PointCloudComponent', () => {
   it('should not update interactions when live preview is toggled off', async () => {
     let obs = new BehaviorSubject(new Array<Interaction>());
 
-    processingService.getInteractions.and.returnValue(obs);
+    processingService.getInteractions.mockReturnValue(obs);
 
     component.livePreview = true;
     component.livePreviewChanged();
@@ -529,13 +527,13 @@ describe('PointCloudComponent', () => {
     expect(component.numFramesReceived).toBe(0);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(2);
+    expect(component['interactions']).toHaveLength(2);
 
     component.livePreview = false;
     component.livePreviewChanged();
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(0);
+    expect(component['interactions']).toHaveLength(0);
 
     obs.next([
       {
@@ -553,7 +551,7 @@ describe('PointCloudComponent', () => {
     ]);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(0);
+    expect(component['interactions']).toHaveLength(0);
 
     component.livePreview = true;
     component.livePreviewChanged();
@@ -598,7 +596,7 @@ describe('PointCloudComponent', () => {
     ]);
 
     expect(component['interactions']).toBeDefined();
-    expect(component['interactions']).toHaveSize(3);
+    expect(component['interactions']).toHaveLength(3);
 
     expect(processingService.getInteractions).toHaveBeenCalledTimes(1);
 
@@ -608,7 +606,7 @@ describe('PointCloudComponent', () => {
   it('should update livePreviewEnabled correctly', () => {
     let obs = new BehaviorSubject(new Array<Point3>());
 
-    pointCloudService.getPointCloud.and.returnValue(obs);
+    pointCloudService.getPointCloud.mockReturnValue(obs);
 
     component.livePreview = true;
     component.livePreviewChanged();
@@ -660,15 +658,17 @@ describe('PointCloudComponent', () => {
   });
 
   it('should emit fullScreenChanged when fullscreen is toggled', () => {
-    spyOn(component.fullScreenChanged, 'emit').and.callThrough();
+    vi.spyOn(component.fullScreenChanged, 'emit');
 
     expect(component.fullScreenChanged.emit).not.toHaveBeenCalled();
 
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
     component.fullScreen = false;
 
-    expect(component.fullScreenChanged.emit).toHaveBeenCalledOnceWith(false);
+    expect(component.fullScreenChanged.emit).toHaveBeenCalledTimes(1);
+
+    expect(component.fullScreenChanged.emit).toHaveBeenCalledWith(false);
 
     component.fullScreen = true;
 
@@ -684,10 +684,10 @@ describe('PointCloudComponent', () => {
 
   it('should catch errors and log them correctly: status and settings', async () => {
     const errorSettings = 'TestError: settingsService.getSettings';
-    settingsService.getSettings.and.returnValue(throwError(errorSettings));
+    settingsService.getSettings.mockReturnValue(throwError(errorSettings));
 
     const errorStatus = 'TestError: trackingService.getStatus';
-    trackingService.getStatus.and.returnValue(throwError(errorStatus));
+    trackingService.getStatus.mockReturnValue(throwError(errorStatus));
 
     fixture.detectChanges();
 
@@ -699,12 +699,12 @@ describe('PointCloudComponent', () => {
 
   it('should catch errors and log them correctly: pointCloud and interactions', async () => {
     const errorPointCloud = 'TestError: pointCloudService.getPointCloud';
-    pointCloudService.getPointCloud.and.returnValue(
+    pointCloudService.getPointCloud.mockReturnValue(
       throwError(errorPointCloud)
     );
 
     const errorInteractions = 'TestError: processingService.getInteractions';
-    processingService.getInteractions.and.returnValue(
+    processingService.getInteractions.mockReturnValue(
       throwError(errorInteractions)
     );
 
@@ -721,32 +721,32 @@ describe('PointCloudComponent', () => {
   it('should update grid visibility', () => {
     fixture.detectChanges();
 
-    expect(component.showGrid).toBeTrue();
-    expect(component['grid'].visible).toBeTrue();
+    expect(component.showGrid).toBe(true);
+    expect(component['grid'].visible).toBe(true);
 
     component.showGrid = false;
     component.updateGridVisibility();
 
-    expect(component['grid'].visible).toBeFalse();
+    expect(component['grid'].visible).toBe(false);
   });
 
   it('should update planes visibility', () => {
     fixture.detectChanges();
 
-    expect(component.showDistancePlanes).toBeTrue();
-    expect(component['zeroPlane'].visible).toBeTrue();
-    expect(component['maxPlane1'].visible).toBeTrue();
-    expect(component['maxPlane2'].visible).toBeTrue();
-    expect(component['minPlane1'].visible).toBeTrue();
-    expect(component['minPlane2'].visible).toBeTrue();
+    expect(component.showDistancePlanes).toBe(true);
+    expect(component['zeroPlane'].visible).toBe(true);
+    expect(component['maxPlane1'].visible).toBe(true);
+    expect(component['maxPlane2'].visible).toBe(true);
+    expect(component['minPlane1'].visible).toBe(true);
+    expect(component['minPlane2'].visible).toBe(true);
 
     component.showDistancePlanes = false;
     component.updatePlanesVisibility();
 
-    expect(component['zeroPlane'].visible).toBeFalse();
-    expect(component['maxPlane1'].visible).toBeFalse();
-    expect(component['maxPlane2'].visible).toBeFalse();
-    expect(component['minPlane1'].visible).toBeFalse();
-    expect(component['minPlane2'].visible).toBeFalse();
+    expect(component['zeroPlane'].visible).toBe(false);
+    expect(component['maxPlane1'].visible).toBe(false);
+    expect(component['maxPlane2'].visible).toBe(false);
+    expect(component['minPlane1'].visible).toBe(false);
+    expect(component['minPlane2'].visible).toBe(false);
   });
 });

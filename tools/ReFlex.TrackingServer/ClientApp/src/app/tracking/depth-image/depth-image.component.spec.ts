@@ -16,10 +16,12 @@ import {
   withXhr,
 } from '@angular/common/http';
 
-const trackingService = jasmine.createSpyObj<TrackingService>(
-  'fakeTrackingService',
-  ['getStatus', 'setDepthImagePreviewState']
-);
+const trackingService = {
+  getStatus: vi.fn().mockName('fakeTrackingService.getStatus'),
+  setDepthImagePreviewState: vi
+    .fn()
+    .mockName('fakeTrackingService.setDepthImagePreviewState'),
+};
 
 const state: TrackingConfigState = {
   isCameraSelected: true,
@@ -28,8 +30,8 @@ const state: TrackingConfigState = {
   depthCameraStateName: DepthCameraState[DepthCameraState.Streaming],
 };
 
-trackingService.getStatus.and.returnValue(of(state));
-trackingService.setDepthImagePreviewState.and.returnValue(of(true));
+trackingService.getStatus.mockReturnValue(of(state));
+trackingService.setDepthImagePreviewState.mockReturnValue(of(true));
 
 const subject = new Subject<MessageEvent>();
 const wsMock = new WebSocketServiceMock(subject, 'mockedMessage');
@@ -67,7 +69,7 @@ describe('DepthImageComponent', () => {
   });
 
   afterEach(() => {
-    trackingService.getStatus.calls.reset();
+    trackingService.getStatus.mockClear();
   });
 
   it('should create', () => {
@@ -77,8 +79,8 @@ describe('DepthImageComponent', () => {
   it('should initialize correctly', async () => {
     expect(component).toBeTruthy();
 
-    expect(component.livePreview).toBeFalse();
-    expect(component.livePreviewEnabled).toBeFalse();
+    expect(component.livePreview).toBe(false);
+    expect(component.livePreviewEnabled).toBe(false);
     expect(component.numFramesReceived).toBe(0);
 
     expect(trackingService.getStatus).toHaveBeenCalledTimes(1);
@@ -88,42 +90,43 @@ describe('DepthImageComponent', () => {
   });
 
   it('should emit fullscreenChanged', () => {
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
-    const fullScreenChangedSpy = spyOn(
-      component.fullScreenChanged,
-      'emit'
-    ).and.callThrough();
+    const fullScreenChangedSpy = vi.spyOn(component.fullScreenChanged, 'emit');
 
     component.fullScreen = true;
 
-    expect(component.fullScreen).toBeTrue();
-    expect(fullScreenChangedSpy).toHaveBeenCalledOnceWith(true);
+    expect(component.fullScreen).toBe(true);
+    expect(fullScreenChangedSpy).toHaveBeenCalledTimes(1);
+    expect(fullScreenChangedSpy).toHaveBeenCalledWith(true);
   });
 
   it('should update livePreview value', async () => {
-    const livePreviewSpy = spyOn(
-      component,
-      'livePreviewChanged'
-    ).and.callThrough();
+    const livePreviewSpy = vi.spyOn(component, 'livePreviewChanged');
 
     expect(component).toBeTruthy();
 
-    expect(component.livePreview).toBeFalse();
+    expect(component.livePreview).toBe(false);
     expect(component.numFramesReceived).toBe(0);
 
-    component.livePreviewEnabled = true;
+    fixture.componentRef.setInput('livePreviewEnabled', true);
+    fixture.detectChanges();
+    await fixture.whenStable();
     component.livePreview = true;
 
-    expect(component.livePreview).toBeTrue();
+    expect(component.livePreview).toBe(true);
 
-    component.livePreviewEnabled = false;
+    fixture.componentRef.setInput('livePreviewEnabled', false);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    expect(component.livePreview).toBeFalse();
+    expect(component.livePreview).toBe(false);
 
     expect(livePreviewSpy).toHaveBeenCalled();
 
-    component.livePreviewEnabled = true;
+    fixture.componentRef.setInput('livePreviewEnabled', true);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
     let cbLivePreview = fixture.debugElement.query(
       By.css('#checkbox-livePreviewDepthImage')
@@ -135,18 +138,17 @@ describe('DepthImageComponent', () => {
 
     expect(livePreviewSpy).toHaveBeenCalledTimes(2);
 
-    expect(component.livePreview).toBeTrue();
+    expect(component.livePreview).toBe(true);
 
     expect(component.container).toBeTruthy();
   });
 
   it('should correctly subscribe to websocket', async () => {
-    const livePreviewSpy = spyOn(
-      component,
-      'livePreviewChanged'
-    ).and.callThrough();
+    const livePreviewSpy = vi.spyOn(component, 'livePreviewChanged');
 
-    component.livePreviewEnabled = true;
+    fixture.componentRef.setInput('livePreviewEnabled', true);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
     let cbLivePreview = fixture.debugElement.query(
       By.css('#checkbox-livePreviewDepthImage')
@@ -158,7 +160,7 @@ describe('DepthImageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(component.livePreview).toBeTrue();
+    expect(component.livePreview).toBe(true);
     cbLivePreview.checked = true;
 
     expect(component['socket']).toBeTruthy();
@@ -214,7 +216,7 @@ describe('DepthImageComponent', () => {
     await fixture.whenStable();
 
     expect(livePreviewSpy).toHaveBeenCalledTimes(2);
-    expect(component.livePreview).toBeFalse();
+    expect(component.livePreview).toBe(false);
 
     wsMock.requestSubject.next(
       new MessageEvent('mockedMessage', { data: 'image 7' })
@@ -252,7 +254,7 @@ describe('DepthImageComponent', () => {
     await fixture.whenStable();
 
     expect(livePreviewSpy).toHaveBeenCalledTimes(3);
-    expect(component.livePreview).toBeTrue();
+    expect(component.livePreview).toBe(true);
 
     wsMock.requestSubject.next(
       new MessageEvent('mockedMessage', { data: 'image 13' })
@@ -270,26 +272,30 @@ describe('DepthImageComponent', () => {
   });
 
   it('should toggle fullscreen', async () => {
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
-    expect(component.livePreview).toBeFalse();
-    expect(component.livePreviewEnabled).toBeFalse();
+    expect(component.livePreview).toBe(false);
+    expect(component.livePreviewEnabled).toBe(false);
     expect(component.numFramesReceived).toBe(0);
 
     // if livePreview is false, container should not be defined
     expect(component.container).toBeUndefined();
 
     component.updateSize();
+    fixture.changeDetectorRef.markForCheck();
 
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
-    component.livePreviewEnabled = true;
+    fixture.componentRef.setInput('livePreviewEnabled', true);
+    fixture.detectChanges();
+    await fixture.whenStable();
     component.livePreview = true;
 
     component.livePreviewChanged();
+    fixture.changeDetectorRef.markForCheck();
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -303,6 +309,7 @@ describe('DepthImageComponent', () => {
     component.fullScreen = true;
 
     component.updateSize();
+    fixture.changeDetectorRef.markForCheck();
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -314,6 +321,7 @@ describe('DepthImageComponent', () => {
     component.fullScreen = false;
 
     component.updateSize();
+    fixture.changeDetectorRef.markForCheck();
 
     fixture.detectChanges();
     await fixture.whenStable();

@@ -16,10 +16,6 @@
     "importHelpers": true,
     "target": "es2022",
     "module": "es2022",
-    "typeRoots": [
-      "node_modules/@types",
-      "../../../node_modules/@types"
-    ],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
@@ -31,10 +27,10 @@
   },
   "references": [
     {
-      "path": "./ClientApp/tsconfig.app.json"
+      "path": "./src/tsconfig.app.json"
     },
     {
-      "path": "./ClientApp/tsconfig.spec.json"
+      "path": "./src/tsconfig.spec.json"
     }
   ]
 }

@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/visualengineers/reflex#readme",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/debug": "^4.1.8",
     "@types/express-fileupload": "^1.4.1",
     "cross-env": "^7.0.3"

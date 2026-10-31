@@ -6,7 +6,7 @@
   "scripts": {
     "build": "ng build @reflex/angular-components",
     "test": "ng test @reflex/angular-components",
-    "test-ci": "ng test @reflex/angular-components --no-watch --code-coverage"
+    "test-ci": "ng test @reflex/angular-components --no-watch --coverage"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "typescript",
     "package"
   ],
-  "author": "Mathias Müller",
+  "author": "Mathias M\u00fcller",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/visualengineers/reflex/issues"

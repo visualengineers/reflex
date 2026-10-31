@@ -22,7 +22,7 @@ When serving the application, keep the .NET fallback to `index.html` for direct 
 
 ## Running unit tests
 
-Run `ng test TrackingServer` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test TrackingServer` to execute the unit tests with Vitest in headless Chromium. Install the browser once with `npx playwright install chromium` from the repository root.
 
 ## Zoneless change detection
 

@@ -16,8 +16,8 @@
     "build:electron-osx-arm64": "node ../../../scripts/build-electron.cjs server osx arm64",
     "build:electron-linux": "node ../../../scripts/build-electron.cjs server linux x64",
     "build:electron-linux-arm64": "node ../../../scripts/build-electron.cjs server linux arm64",
-    "test": "ng test TrackingServer --code-coverage",
-    "test-ci": "ng test TrackingServer --no-watch --code-coverage --browsers=ChromeHeadlessNoSandbox",
+    "test": "ng test TrackingServer --coverage",
+    "test-ci": "ng test TrackingServer --no-watch --coverage",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "e2e": "ng e2e TrackingServer",
@@ -27,7 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/visualengineers/reflex.git"
   },
-  "author": "Mathias Müller",
+  "author": "Mathias M\u00fcller",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/visualengineers/reflex/issues"

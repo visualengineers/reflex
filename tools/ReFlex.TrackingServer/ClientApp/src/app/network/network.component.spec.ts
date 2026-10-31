@@ -1,3 +1,4 @@
+import { mockReturnValueForArgs } from '../../test-utils/mock-return-value-for-args';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -32,28 +33,28 @@ import {
 } from '@reflex/angular-components/dist';
 import { TuioComponent } from './tuio/tuio.component';
 
-const settingsService = jasmine.createSpyObj<SettingsService>(
-  'fakeSettingsService',
-  ['getSettings', 'saveSettings', 'update']
-);
+const settingsService = {
+  getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
+  saveSettings: vi.fn().mockName('fakeSettingsService.saveSettings'),
+  update: vi.fn().mockName('fakeSettingsService.update'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
-const networkService = jasmine.createSpyObj<NetworkingService>(
-  'fakeNetworkService',
-  [
-    'getStatus',
-    'getStatusValues',
-    'toggleBroadcasting',
-    'setNetworkInterface',
-    'setAddress',
-    'setPort',
-    'setEndpoint',
-    'saveSettings',
-  ]
-);
+const networkService = {
+  getStatus: vi.fn().mockName('fakeNetworkService.getStatus'),
+  getStatusValues: vi.fn().mockName('fakeNetworkService.getStatusValues'),
+  toggleBroadcasting: vi.fn().mockName('fakeNetworkService.toggleBroadcasting'),
+  setNetworkInterface: vi
+    .fn()
+    .mockName('fakeNetworkService.setNetworkInterface'),
+  setAddress: vi.fn().mockName('fakeNetworkService.setAddress'),
+  setPort: vi.fn().mockName('fakeNetworkService.setPort'),
+  setEndpoint: vi.fn().mockName('fakeNetworkService.setEndpoint'),
+  saveSettings: vi.fn().mockName('fakeNetworkService.saveSettings'),
+};
 
 const networkSettings: NetworkAttributes = {
   isActive: true,
@@ -119,15 +120,15 @@ describe('NetworkComponent', () => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
 
-    settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
-    settingsService.saveSettings.and.returnValue(of(DEFAULT_SETTINGS));
+    settingsService.getSettings.mockReturnValue(of(DEFAULT_SETTINGS));
+    settingsService.saveSettings.mockReturnValue(of(DEFAULT_SETTINGS));
 
-    logService.sendErrorLog.and.returnValue();
+    logService.sendErrorLog.mockReturnValue(undefined);
 
-    networkService.getStatusValues.and.returnValue(of(networkSettings));
-    networkService.getStatus.and.returnValue(of('Connected to Testservice...'));
+    networkService.getStatusValues.mockReturnValue(of(networkSettings));
+    networkService.getStatus.mockReturnValue(of('Connected to Testservice...'));
 
-    networkService.saveSettings.and.returnValue(
+    networkService.saveSettings.mockReturnValue(
       of(
         new HttpResponse<JsonSimpleValue>({
           body: {
@@ -140,13 +141,13 @@ describe('NetworkComponent', () => {
   });
 
   afterEach(() => {
-    settingsService.getSettings.calls.reset();
-    settingsService.saveSettings.calls.reset();
+    settingsService.getSettings.mockClear();
+    settingsService.saveSettings.mockClear();
 
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
 
-    networkService.getStatusValues.calls.reset();
-    networkService.getStatus.calls.reset();
+    networkService.getStatusValues.mockClear();
+    networkService.getStatus.mockClear();
   });
 
   it('should create', () => {
@@ -190,11 +191,11 @@ describe('NetworkComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(component.isBroadcasting).toBeTrue();
+    expect(component.isBroadcasting).toBe(true);
 
     const on: JsonSimpleValue = { name: 'isActive', value: true };
     const off: JsonSimpleValue = { name: 'isActive', value: false };
-    networkService.toggleBroadcasting.and.returnValue(
+    networkService.toggleBroadcasting.mockReturnValue(
       of(new HttpResponse<JsonSimpleValue>({ body: off }))
     );
 
@@ -208,7 +209,7 @@ describe('NetworkComponent', () => {
     expect(networkService.toggleBroadcasting).toHaveBeenCalledTimes(2);
     expect(component.isBroadcasting).toBe(false);
 
-    networkService.toggleBroadcasting.and.returnValue(
+    networkService.toggleBroadcasting.mockReturnValue(
       of(new HttpResponse<JsonSimpleValue>({ body: on }))
     );
 
@@ -218,12 +219,13 @@ describe('NetworkComponent', () => {
     expect(component.isBroadcasting).toBe(true);
 
     const ErrorToggle = 'TestError: networkService.toggleBroadcasting';
-    networkService.toggleBroadcasting.and.returnValue(throwError(ErrorToggle));
+    networkService.toggleBroadcasting.mockReturnValue(throwError(ErrorToggle));
 
     component.isBroadcastingChanged();
 
     expect(networkService.toggleBroadcasting).toHaveBeenCalledTimes(4);
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(
       `${ErrorToggle} - ${JSON.stringify(ErrorToggle, null, 3)}`
     );
     expect(component.isBroadcasting).toBe(false);
@@ -242,20 +244,16 @@ describe('NetworkComponent', () => {
 
     const errorTcp = 'TestError: networkService.setNetworkInterface';
 
-    networkService.setNetworkInterface
-      .withArgs('None')
-      .and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: off })));
-    networkService.setNetworkInterface
-      .withArgs('Websockets')
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: websocket }))
-      );
+    mockReturnValueForArgs(networkService.setNetworkInterface, ['None'], of(new HttpResponse<JsonSimpleValue>({ body: off })));
+    mockReturnValueForArgs(networkService.setNetworkInterface, ['Websockets'], of(new HttpResponse<JsonSimpleValue>({ body: websocket })));
 
     component.selectedInterfaceIdx = 0;
 
     component.setNetworkInterface();
 
-    expect(networkService.setNetworkInterface).toHaveBeenCalledOnceWith('None');
+    expect(networkService.setNetworkInterface).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setNetworkInterface).toHaveBeenCalledWith('None');
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
     component.selectedInterfaceIdx = 1;
@@ -270,23 +268,23 @@ describe('NetworkComponent', () => {
 
     component.selectedInterfaceIdx = 2;
 
-    networkService.setNetworkInterface.and.returnValue(throwError(errorTcp));
+    networkService.setNetworkInterface.mockReturnValue(throwError(errorTcp));
     component.setNetworkInterface();
 
     expect(networkService.setNetworkInterface).toHaveBeenCalledTimes(3);
     expect(networkService.setNetworkInterface).toHaveBeenCalledWith('Tcp');
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorTcp);
 
-    networkService.setNetworkInterface.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    networkService.setNetworkInterface.mockClear();
+    logService.sendErrorLog.mockClear();
 
-    networkService.setNetworkInterface
-      .withArgs('Tcp')
-      .and.returnValue(of(new HttpResponse<JsonSimpleValue>({ body: tcp })));
+    mockReturnValueForArgs(networkService.setNetworkInterface, ['Tcp'], of(new HttpResponse<JsonSimpleValue>({ body: tcp })));
 
     component.setNetworkInterface();
 
-    expect(networkService.setNetworkInterface).toHaveBeenCalledOnceWith('Tcp');
+    expect(networkService.setNetworkInterface).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setNetworkInterface).toHaveBeenCalledWith('Tcp');
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
@@ -302,20 +300,18 @@ describe('NetworkComponent', () => {
 
     const errorAddress = 'TestError: networkService.setAddress';
 
-    networkService.setAddress
-      .withArgs(newAddress1)
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: update1 }))
-      );
+    mockReturnValueForArgs(networkService.setAddress, [newAddress1], of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
 
     component.networkSettings.address = newAddress1;
 
     component.setAddress();
 
-    expect(networkService.setAddress).toHaveBeenCalledOnceWith(newAddress1);
+    expect(networkService.setAddress).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setAddress).toHaveBeenCalledWith(newAddress1);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    networkService.setAddress.and.returnValue(throwError(errorAddress));
+    networkService.setAddress.mockReturnValue(throwError(errorAddress));
 
     component.networkSettings.address = newAddress2;
 
@@ -325,20 +321,18 @@ describe('NetworkComponent', () => {
     expect(networkService.setAddress).toHaveBeenCalledWith(newAddress2);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorAddress);
 
-    networkService.setAddress.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    networkService.setAddress.mockClear();
+    logService.sendErrorLog.mockClear();
 
     component.networkSettings.address = newAddress2;
 
-    networkService.setAddress
-      .withArgs(newAddress2)
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: update2 }))
-      );
+    mockReturnValueForArgs(networkService.setAddress, [newAddress2], of(new HttpResponse<JsonSimpleValue>({ body: update2 })));
 
     component.setAddress();
 
-    expect(networkService.setAddress).toHaveBeenCalledOnceWith(newAddress2);
+    expect(networkService.setAddress).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setAddress).toHaveBeenCalledWith(newAddress2);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
@@ -354,20 +348,18 @@ describe('NetworkComponent', () => {
 
     const errorPort = 'TestError: networkService.setPort';
 
-    networkService.setPort
-      .withArgs(newPort1)
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: update1 }))
-      );
+    mockReturnValueForArgs(networkService.setPort, [newPort1], of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
 
     component.networkSettings.port = newPort1;
 
     component.setPort();
 
-    expect(networkService.setPort).toHaveBeenCalledOnceWith(newPort1);
+    expect(networkService.setPort).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setPort).toHaveBeenCalledWith(newPort1);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    networkService.setPort.and.returnValue(throwError(errorPort));
+    networkService.setPort.mockReturnValue(throwError(errorPort));
 
     component.networkSettings.port = newPort2;
 
@@ -377,20 +369,18 @@ describe('NetworkComponent', () => {
     expect(networkService.setPort).toHaveBeenCalledWith(newPort2);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorPort);
 
-    networkService.setPort.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    networkService.setPort.mockClear();
+    logService.sendErrorLog.mockClear();
 
     component.networkSettings.port = newPort2;
 
-    networkService.setPort
-      .withArgs(newPort2)
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: update2 }))
-      );
+    mockReturnValueForArgs(networkService.setPort, [newPort2], of(new HttpResponse<JsonSimpleValue>({ body: update2 })));
 
     component.setPort();
 
-    expect(networkService.setPort).toHaveBeenCalledOnceWith(newPort2);
+    expect(networkService.setPort).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setPort).toHaveBeenCalledWith(newPort2);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
@@ -406,20 +396,18 @@ describe('NetworkComponent', () => {
 
     const errorEndpoint = 'TestError: networkService.setEndpoint';
 
-    networkService.setEndpoint
-      .withArgs(newEndpoint1)
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: update1 }))
-      );
+    mockReturnValueForArgs(networkService.setEndpoint, [newEndpoint1], of(new HttpResponse<JsonSimpleValue>({ body: update1 })));
 
     component.networkSettings.endpoint = newEndpoint1;
 
     component.setEndpoint();
 
-    expect(networkService.setEndpoint).toHaveBeenCalledOnceWith(newEndpoint1);
+    expect(networkService.setEndpoint).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setEndpoint).toHaveBeenCalledWith(newEndpoint1);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    networkService.setEndpoint.and.returnValue(throwError(errorEndpoint));
+    networkService.setEndpoint.mockReturnValue(throwError(errorEndpoint));
 
     component.networkSettings.endpoint = newEndpoint2;
 
@@ -429,20 +417,18 @@ describe('NetworkComponent', () => {
     expect(networkService.setEndpoint).toHaveBeenCalledWith(newEndpoint2);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorEndpoint);
 
-    networkService.setEndpoint.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    networkService.setEndpoint.mockClear();
+    logService.sendErrorLog.mockClear();
 
     component.networkSettings.endpoint = newEndpoint2;
 
-    networkService.setEndpoint
-      .withArgs(newEndpoint2)
-      .and.returnValue(
-        of(new HttpResponse<JsonSimpleValue>({ body: update2 }))
-      );
+    mockReturnValueForArgs(networkService.setEndpoint, [newEndpoint2], of(new HttpResponse<JsonSimpleValue>({ body: update2 })));
 
     component.setEndpoint();
 
-    expect(networkService.setEndpoint).toHaveBeenCalledOnceWith(newEndpoint2);
+    expect(networkService.setEndpoint).toHaveBeenCalledTimes(1);
+
+    expect(networkService.setEndpoint).toHaveBeenCalledWith(newEndpoint2);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
 
@@ -457,7 +443,7 @@ describe('NetworkComponent', () => {
     expect(networkService.saveSettings).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
 
-    networkService.saveSettings.and.returnValue(throwError(errorSave));
+    networkService.saveSettings.mockReturnValue(throwError(errorSave));
 
     component.saveNetworkSettings();
 
@@ -470,12 +456,12 @@ describe('NetworkComponent', () => {
       )}`
     );
 
-    networkService.saveSettings.calls.reset();
+    networkService.saveSettings.mockClear();
   });
 
   it('should handle errors correctly: Settings cannot be retrieved', async () => {
     const errorSettings = 'TesError: settingsService.getSettings';
-    settingsService.getSettings.and.returnValue(throwError(errorSettings));
+    settingsService.getSettings.mockReturnValue(throwError(errorSettings));
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -492,10 +478,10 @@ describe('NetworkComponent', () => {
 
   it('should handle errors correctly: Networking service not available', async () => {
     const errorValues = 'TesError: networkService.getStatusValues';
-    networkService.getStatusValues.and.returnValue(throwError(errorValues));
+    networkService.getStatusValues.mockReturnValue(throwError(errorValues));
 
     const errorStatus = 'TesError: networkService.getStatus';
-    networkService.getStatus.and.returnValue(throwError(errorStatus));
+    networkService.getStatus.mockReturnValue(throwError(errorStatus));
 
     fixture.detectChanges();
     await fixture.whenStable();

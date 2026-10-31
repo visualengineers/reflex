@@ -6,15 +6,16 @@ on:
   push:
     branches: 
       - pages
-      # this may be an issue, as it is not guaranteed that test reports are gernerated before this workflow runs 
-      # Therefore, this can cause an outdated version of test reports to be restored.
-      # merging a pr into main should alwas trigger a re-deployment of pages (see build-test-complete-with-pages.yml)
-      # - main
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   # allows to reuse this workflow
   workflow_call:
+    inputs:
+      test_reports_artifact:
+        description: Reports artifact from the current workflow run
+        type: string
+        default: ""
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -40,18 +41,38 @@ jobs:
       - name: Copy Existing Files
         working-directory: ./
         run: bash ${{ github.workspace }}/scripts/copy_docs.sh 
+      - name: Download test reports from this workflow run
+        if: inputs.test_reports_artifact != ''
+        uses: actions/download-artifact@main
+        with:
+          name: ${{ inputs.test_reports_artifact }}
+          path: docs/test
       - name: restore test reports cache
+        if: inputs.test_reports_artifact == ''
         uses: actions/cache/restore@main
         id: cache-reports
         with:
           path: ${{ github.workspace }}/docs/test
-          key: test-reports
+          key: test-reports-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            test-reports-
+            test-reports
           enableCrossOsArchive: true
+      - name: Verify test reports before publishing
+        shell: bash
+        run: |
+          test -s docs/test/library/report/index.html
+          test -s docs/test/server/report/reflex-tracking-server/index.html
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@main
         with:
           source: ./docs/
           destination: ./_site
+      - name: Verify reports in the generated site
+        shell: bash
+        run: |
+          test -s _site/test/library/report/index.html
+          test -s _site/test/server/report/reflex-tracking-server/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@main
 

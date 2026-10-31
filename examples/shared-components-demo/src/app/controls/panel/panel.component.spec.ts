@@ -10,9 +10,8 @@ describe('PanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PanelComponent, SettingsGroupComponent]
-    })
-    .compileComponents();
+      imports: [PanelComponent, SettingsGroupComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PanelComponent);
     component = fixture.componentInstance;
@@ -24,10 +23,12 @@ describe('PanelComponent', () => {
   });
 
   it('should assign the correct element name and id', () => {
-    const settingsGroup = fixture.debugElement.query(By.css('app-panel-header'));
+    const settingsGroup = fixture.debugElement.query(
+      By.css('app-panel-header')
+    );
     expect(settingsGroup).toBeTruthy();
 
-    const id = "testId-toggle"
+    const id = 'testId-toggle';
 
     const toggle = settingsGroup.query(By.css(`#${id}`));
     expect(toggle).toBeTruthy();
@@ -40,15 +41,16 @@ describe('PanelComponent', () => {
 
     const disabled = toggle.nativeElement.disabled;
     expect(disabled).toBeFalsy();
-
-  })
+  });
 
   it('should set correct attributes for input and label', () => {
-    const settingsGroup = fixture.debugElement.query(By.css('app-panel-header'));
+    const settingsGroup = fixture.debugElement.query(
+      By.css('app-panel-header')
+    );
     expect(settingsGroup).toBeTruthy();
 
-    const id = "testId-toggle";
-    const labelId = "testId-label";
+    const id = 'testId-toggle';
+    const labelId = 'testId-label';
 
     const toggle = settingsGroup.query(By.css(`#${id}`));
     expect(toggle).toBeTruthy();
@@ -76,13 +78,15 @@ describe('PanelComponent', () => {
 
     const disabled = toggle.nativeElement.disabled;
     expect(disabled).toBeFalsy();
-  })
+  });
 
   it('should correctly set data binding for toggle data', async () => {
     await fixture.whenStable();
-    const toggle: HTMLInputElement = fixture.nativeElement.querySelector('#testId-toggle');
-    const message: HTMLElement = fixture.nativeElement.querySelector('#toggleMessage');
-    expect(toggle.checked).toBeTrue();
+    const toggle: HTMLInputElement =
+      fixture.nativeElement.querySelector('#testId-toggle');
+    const message: HTMLElement =
+      fixture.nativeElement.querySelector('#toggleMessage');
+    expect(toggle.checked).toBe(true);
     expect(message.classList).toContain('bg-active');
 
     component.toggleHeaderActive = false;
@@ -90,41 +94,44 @@ describe('PanelComponent', () => {
     fixture.changeDetectorRef.markForCheck();
     await fixture.whenStable();
 
-    expect(toggle.checked).toBeFalse();
+    expect(toggle.checked).toBe(false);
     expect(message.classList).toContain('bg-inactive');
   });
 
   it('should correctly set data binding for disabled state', async () => {
     await fixture.whenStable();
-    const toggle: HTMLInputElement = fixture.nativeElement.querySelector('#testId-toggle');
-    expect(toggle.disabled).toBeFalse();
+    const toggle: HTMLInputElement =
+      fixture.nativeElement.querySelector('#testId-toggle');
+    expect(toggle.disabled).toBe(false);
 
     component.canToggleHeader = false;
     fixture.changeDetectorRef.markForCheck();
     await fixture.whenStable();
-    expect(toggle.disabled).toBeTrue();
+    expect(toggle.disabled).toBe(true);
 
     component.canToggleHeader = true;
     fixture.changeDetectorRef.markForCheck();
     await fixture.whenStable();
-    expect(toggle.disabled).toBeFalse();
+    expect(toggle.disabled).toBe(false);
   });
 
   it('should correctly update bound data when interacting', async () => {
     await fixture.whenStable();
-    const toggle: HTMLInputElement = fixture.nativeElement.querySelector('#testId-toggle');
-    const message: HTMLElement = fixture.nativeElement.querySelector('#toggleMessage');
+    const toggle: HTMLInputElement =
+      fixture.nativeElement.querySelector('#testId-toggle');
+    const message: HTMLElement =
+      fixture.nativeElement.querySelector('#toggleMessage');
 
     toggle.click();
     await fixture.whenStable();
-    expect(component.toggleHeaderActive).toBeFalse();
-    expect(toggle.checked).toBeFalse();
+    expect(component.toggleHeaderActive).toBe(false);
+    expect(toggle.checked).toBe(false);
     expect(message.classList).toContain('bg-inactive');
 
     toggle.click();
     await fixture.whenStable();
-    expect(component.toggleHeaderActive).toBeTrue();
-    expect(toggle.checked).toBeTrue();
+    expect(component.toggleHeaderActive).toBe(true);
+    expect(toggle.checked).toBe(true);
     expect(message.classList).toContain('bg-active');
   });
 });

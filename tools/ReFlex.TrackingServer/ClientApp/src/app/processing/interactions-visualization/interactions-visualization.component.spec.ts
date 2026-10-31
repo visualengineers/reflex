@@ -19,14 +19,13 @@ import {
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 
-const calibrationService = jasmine.createSpyObj<CalibrationService>(
-  'fakeCalibrationService',
-  ['getFrameSize']
-);
+const calibrationService = {
+  getFrameSize: vi.fn().mockName('fakeCalibrationService.getFrameSize'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
 const customFrame: FrameSizeDefinition = {
   width: 500,
@@ -186,13 +185,13 @@ describe('InteractionsVisualizationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(InteractionsVisualizationComponent);
     component = fixture.componentInstance;
-    logService.sendErrorLog.and.returnValue();
-    calibrationService.getFrameSize.and.returnValue(of(customFrame));
+    logService.sendErrorLog.mockReturnValue(undefined);
+    calibrationService.getFrameSize.mockReturnValue(of(customFrame));
   });
 
   afterEach(() => {
-    calibrationService.getFrameSize.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    calibrationService.getFrameSize.mockClear();
+    logService.sendErrorLog.mockClear();
   });
 
   it('should create', () => {
@@ -204,13 +203,13 @@ describe('InteractionsVisualizationComponent', () => {
     fixture.detectChanges();
 
     expect(component.container).toBeDefined();
-    expect(component.interactions.raw).toHaveSize(0);
-    expect(component.interactions.normalized).toHaveSize(0);
-    expect(component.interactions.absolute).toHaveSize(0);
+    expect(component.interactions.raw).toHaveLength(0);
+    expect(component.interactions.normalized).toHaveLength(0);
+    expect(component.interactions.absolute).toHaveLength(0);
 
-    expect(component.calibratedInteractions).toHaveSize(0);
+    expect(component.calibratedInteractions).toHaveLength(0);
 
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
   });
@@ -229,19 +228,21 @@ describe('InteractionsVisualizationComponent', () => {
 
   it('should handle errors appropriately', () => {
     const errorFrameSize = 'TestError: calibrationService.getFrameSize';
-    calibrationService.getFrameSize.and.returnValue(throwError(errorFrameSize));
+    calibrationService.getFrameSize.mockReturnValue(throwError(errorFrameSize));
 
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorFrameSize);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorFrameSize);
   });
 
   it('should update interactions', () => {
     fixture.detectChanges();
 
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
     component.updateCalibratedInteractions(testInteractionData);
 
@@ -264,7 +265,7 @@ describe('InteractionsVisualizationComponent', () => {
   it('should correctly apply style', () => {
     fixture.detectChanges();
 
-    expect(component.fullScreen).toBeFalse();
+    expect(component.fullScreen).toBe(false);
 
     const expected1 = {
       position: 'relative',

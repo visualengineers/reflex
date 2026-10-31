@@ -67,7 +67,7 @@ describe('LogService', () => {
     req.flush('');
   });
 
-  it('should correctly retrieve messages', (done) => {
+  it('should correctly retrieve messages', async () => {
     const logMessages = [
       { id: 0, level: LogLevel.Debug, formattedMessage: 'Lorem ipsum' },
       { id: 1, level: LogLevel.Debug, formattedMessage: 'Lorem ipsum' },
@@ -84,12 +84,11 @@ describe('LogService', () => {
       },
       (error) => {
         console.error(error);
-        fail();
+        expect.fail();
       },
       () => {
         expect(i).toBe(4);
         expect(service['index']).toBe(3);
-        done();
       }
     );
 
@@ -103,7 +102,7 @@ describe('LogService', () => {
     req.flush(logMessages);
   });
 
-  it('should correctly apply and reset index', (done) => {
+  it('should correctly apply and reset index', async () => {
     const logMessages = [
       { id: 0, level: LogLevel.Debug, formattedMessage: 'Lorem ipsum' },
       { id: 1, level: LogLevel.Debug, formattedMessage: 'Lorem ipsum' },
@@ -137,7 +136,7 @@ describe('LogService', () => {
       },
       (error) => {
         console.error(error);
-        fail();
+        expect.fail();
       },
       () => {
         expect(i).toBe(20);
@@ -145,8 +144,6 @@ describe('LogService', () => {
 
         service.reset();
         expect(service['index']).toBe(0);
-
-        done();
       }
     );
 

@@ -39,7 +39,7 @@ describe('Zoneless change detection', () => {
             gesture$: gestures,
             gesturePoints$: points,
             getGestureFileNames: () => fileNames,
-            addGestureTrackFrame: jasmine.createSpy(),
+            addGestureTrackFrame: vi.fn(),
             getGestureTrackFrames: () => [],
             getGestureNumFrames: 3,
           },
@@ -48,8 +48,8 @@ describe('Zoneless change detection', () => {
         {
           provide: ConnectionService,
           useValue: {
-            disconnect: jasmine.createSpy(),
-            sendMessage: jasmine.createSpy(),
+            disconnect: vi.fn(),
+            sendMessage: vi.fn(),
           },
         },
       ],
@@ -57,12 +57,18 @@ describe('Zoneless change detection', () => {
   });
 
   it('initializes the application without Zone.js', async () => {
-    expect((globalThis as { Zone?: unknown }).Zone).toBeUndefined();
+    expect(
+      (
+        globalThis as {
+          Zone?: unknown;
+        }
+      ).Zone
+    ).toBeUndefined();
     const app = await createApplication(appConfig);
     try {
-      expect(
-        app.injector.get(NgZone).run(() => NgZone.isInAngularZone())
-      ).toBeFalse();
+      expect(app.injector.get(NgZone).run(() => NgZone.isInAngularZone())).toBe(
+        false
+      );
     } finally {
       app.destroy();
     }
@@ -115,7 +121,7 @@ describe('Zoneless change detection', () => {
     expect(options.length).toBe(2);
     expect(options[0].textContent).toContain('new-gesture.json');
     fixture.destroy();
-    expect(fileNames.observed).toBeFalse();
+    expect(fileNames.observed).toBe(false);
   });
 
   it('renders a newly loaded gesture in the editable track table', async () => {
@@ -137,7 +143,7 @@ describe('Zoneless change detection', () => {
       '2',
     ]);
     fixture.destroy();
-    expect(gestures.observed).toBeFalse();
+    expect(gestures.observed).toBe(false);
   });
 
   it('passes asynchronous gesture and point updates to the actual Plotly view', async () => {
@@ -169,8 +175,8 @@ describe('Zoneless change detection', () => {
       fixture.nativeElement.querySelectorAll('.scatterlayer .point').length
     ).toBe(2);
     fixture.destroy();
-    expect(gestures.observed).toBeFalse();
-    expect(points.observed).toBeFalse();
+    expect(gestures.observed).toBe(false);
+    expect(points.observed).toBe(false);
   });
 
   it('updates the touch-area background after a service emission', async () => {
@@ -187,7 +193,7 @@ describe('Zoneless change detection', () => {
 
   it('updates hover-menu inputs and visibility after native canvas events', async () => {
     const area = TestBed.inject(TouchAreaService);
-    const hovered = spyOn(area, 'getHoveredCircles').and.returnValue([0]);
+    const hovered = vi.spyOn(area, 'getHoveredCircles').mockReturnValue([0]);
     const fixture = TestBed.createComponent(TouchAreaComponent);
     await fixture.whenStable();
     const config = TestBed.inject(ConfigurationService);
@@ -209,7 +215,7 @@ describe('Zoneless change detection', () => {
     ).toContain('Lösen');
     canvas.dispatchEvent(new MouseEvent('mousedown', { button: 1 }));
     await fixture.whenStable();
-    hovered.and.returnValue([]);
+    hovered.mockReturnValue([]);
     canvas.dispatchEvent(new MouseEvent('mousemove'));
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('.hover-menu')).toBeNull();

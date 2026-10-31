@@ -4,9 +4,8 @@
   "compilerOptions": {
     "moduleResolution": "bundler",
     "outDir": "../out-tsc/spec",
-    "types": ["jasmine"]
+    "types": ["vitest/globals"]
   },
-  "files": ["test.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"],
   "angularCompilerOptions": {
     "extendedDiagnostics": {

@@ -94,23 +94,23 @@ All ten npm workspaces have a build script. Their additional checks are:
 | Workspace | Lint | `test-ci` |
 | --- | --- | --- |
 | `packages/reflex-shared-types` | No script | No script |
-| `packages/reflex-angular-components` | No script | Karma/Jasmine, headless Chrome, coverage |
-| `tools/ReFlex.TrackingServer/ClientApp` | ESLint | Karma/Jasmine, `ChromeHeadlessNoSandbox`, coverage |
-| `tools/emulator` | Angular ESLint builder | Karma/Jasmine, headless Chrome, coverage |
-| `tools/gestenrecorder` | No script | Karma/Jasmine, headless Chrome |
+| `packages/reflex-angular-components` | No script | Vitest, headless Chromium, coverage |
+| `tools/ReFlex.TrackingServer/ClientApp` | ESLint | Vitest, headless Chromium, coverage |
+| `tools/emulator` | Angular ESLint builder | Vitest, headless Chromium, coverage |
+| `tools/gestenrecorder` | No script | Vitest, headless Chromium, coverage |
 | `tools/logging` | No script | No script |
-| `examples/basic-angular` | No script | Karma/Jasmine, headless Chrome |
+| `examples/basic-angular` | No script | Vitest, headless Chromium, coverage |
 | `examples/basic-react` | ESLint | No script |
 | `examples/basic-vue` | No script | Vitest with happy-dom |
-| `examples/shared-components-demo` | ESLint | Karma/Jasmine, headless Chrome |
+| `examples/shared-components-demo` | ESLint | Vitest, headless Chromium, coverage |
 
-The Angular CI commands disable watch mode; the Vue command uses `vitest run`. Gestenrecorder is included through its own `test-ci` script. Interactive `test` scripts are not used by `build-complete`. For local execution, Chrome must be installed or `CHROME_BIN` must point to a compatible executable.
+The Angular CI commands disable watch mode; the Vue command uses `vitest run`. Gestenrecorder is included through its own `test-ci` script. Interactive `test` scripts are not used by `build-complete`. Before local execution, run `npx playwright install chromium`. The shared npm-install action installs Chromium (including required OS dependencies) for CI.
 
 ESLint uses the workspace `eslint.config.js` files. TrackingServer's Angular CLI lint target and the emulator use `@angular-eslint/builder:lint`; the npm TrackingServer lint script invokes ESLint directly. The shared TypeScript rule adapter is `scripts/eslint/typescript.config.cjs`. AngularJS's `eslint-plugin-angular` is not required. Angular tests use the applications' zoneless scheduling, including the change-detection regression suites.
 
-Coverage is generated under `test/artifacts/coverage/` for the component library, TrackingServer and emulator. Their Karma configurations also enable JUnit output. However, `npm-build-all.yml` currently has no artifact-upload or test-report-publishing step, so its results are available in the job logs rather than as downloadable reports.
+All six Angular projects use `@angular/build:unit-test` with Vitest and Playwright Chromium. Application builds use `@angular/build:application`; the component library uses `@angular/build:ng-packagr`. The library has a separate `test-build` target to include its global SCSS in browser tests. Coverage (HTML, text summary, LCOV and Cobertura) is written to separate project folders under `test/artifacts/coverage/`. JUnit files under `test/artifacts/tests/` also have distinct names. `npm-build-all.yml` verifies these outputs with `scripts/verify-angular-reports.cjs` and uploads them as `angular-test-reports`, including available reports on failure.
 
-The separate reusable `server-test.yml` builds shared types and components, then runs `npm run test:server`. It uploads coverage as `Angular Test Report (ReFlex TrackingServer)` and publishes `test/artifacts/tests/junit-test-results.xml` through the JUnit report action. The JUnit publishing step runs on success or failure; the coverage upload is not unconditional. The complete workflow with Pages collects this server coverage artifact alongside the .NET library report; it does not collect all npm workspace reports.
+The separate reusable `server-test.yml` builds shared types and components, then runs `npm run test:server`. It uploads coverage as `Angular Test Report (ReFlex TrackingServer)` and publishes `test/artifacts/tests/junit-test-results.xml` through the JUnit report action. Report verification checks all coverage formats and a nonempty, successful JUnit report. Coverage upload and JUnit publishing run on success or failure. The complete workflow with Pages collects this server coverage artifact alongside the .NET library report; it does not collect all npm workspace reports.
 
 ### Electron startup smoke tests
 
@@ -169,9 +169,9 @@ See the [gRPC recipe]({{ site.baseurl }}/software/recipes/grpc-service.html) and
 
 ## Pages deployment
 
-`pages-deploy.yml` copies repository documentation using `scripts/copy_docs.sh`, restores cached library/server test reports under `docs/test`, builds the site with Jekyll and deploys the Pages artifact.
+`pages-deploy.yml` copies repository documentation using `scripts/copy_docs.sh`, downloads the `pages-test-reports` artifact from the current workflow run under `docs/test`, builds the site with Jekyll and deploys the Pages artifact. Both before and after Jekyll, it checks the library and server HTML entry points. The existing server URL `test/server/report/reflex-tracking-server/index.html` is preserved.
 
-In the complete workflow on `main`, report collection precedes deployment and the Python test job must succeed. A direct manual invocation of `pages-deploy.yml` or a push to `pages` does not run these tests or impose that dependency. Such a deployment uses whichever compatible `test-reports` cache is available; cached reports can be older than the source documentation. GitHub caches are scoped to branches, with access to eligible default-branch caches.
+In the complete workflow on `main`, report collection uploads a combined artifact and saves a cache with a unique run-specific key before deployment, and the Python test job must succeed. A direct manual invocation of `pages-deploy.yml` or a push to `pages` does not run these tests or impose that dependency. Such a deployment restores the latest compatible `test-reports-<run-id>-<attempt>` cache (with a legacy `test-reports` fallback); cached reports can be older than the source documentation. GitHub caches are scoped to branches, with access to eligible default-branch caches.
 
 The Pages dependency graph does not wait for the independent `npm-build-all.yml` or `electron-smoke.yml` workflows.
 

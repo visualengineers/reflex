@@ -30,14 +30,20 @@ class ControlsHost {
 
 describe('Zoneless component-library change detection', () => {
   it('runs fixtures without Zone.js', async () => {
-    expect((globalThis as { Zone?: unknown }).Zone).toBeUndefined();
+    expect(
+      (
+        globalThis as {
+          Zone?: unknown;
+        }
+      ).Zone
+    ).toBeUndefined();
     const fixture = TestBed.createComponent(SettingsGroupComponent);
     await fixture.whenStable();
     expect(
       fixture.debugElement.injector
         .get(NgZone)
         .run(() => NgZone.isInAngularZone())
-    ).toBeFalse();
+    ).toBe(false);
   });
 
   for (const type of [

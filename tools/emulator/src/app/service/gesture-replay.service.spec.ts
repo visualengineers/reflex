@@ -15,7 +15,6 @@ import { Gesture } from '../data/gesture';
 import { GestureTrack } from '../data/gesture-track';
 import { ConnectionService } from './connection.service';
 import { ConfigurationService } from './configuration.service';
-import { timer } from 'rxjs';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
 
 describe('GestureReplayService', () => {
@@ -45,6 +44,7 @@ describe('GestureReplayService', () => {
   };
 
   beforeEach(() => {
+    vi.useFakeTimers();
     TestBed.configureTestingModule({
       imports: [],
       providers: [
@@ -65,17 +65,17 @@ describe('GestureReplayService', () => {
   afterEach(() => {
     // After every test, assert that there are no more pending requests.
     httpTestingController.verify();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should load gesture from file and start replay', (done) => {
+  it('should load gesture from file and start replay', async () => {
     // just assert, that sendmessage is called at least once
-    spyOn(connectionService, 'sendMessage').and.callFake(() => {
-      done();
-    });
+    const sendSpy = vi.spyOn(connectionService, 'sendMessage').mockImplementation(() => {});
 
     const file = 'data/dat-file.json';
 
@@ -88,11 +88,15 @@ describe('GestureReplayService', () => {
     expect(req.request.responseType).toEqual('json');
 
     req.flush(data);
+    await vi.advanceTimersByTimeAsync(100);
+    expect(sendSpy).toHaveBeenCalled();
   });
 
-  it('should correctly set interval', (done) => {
+  it('should correctly set interval', async () => {
     // just assert, that sendmessage is called at least once
-    const sendSpy = spyOn(connectionService, 'sendMessage').and.stub();
+    const sendSpy = vi
+      .spyOn(connectionService, 'sendMessage')
+      .mockImplementation(() => {});
 
     configService.setSendInterval(1000);
 
@@ -108,19 +112,18 @@ describe('GestureReplayService', () => {
 
     req.flush(data);
 
-    timer(1200).subscribe(() => {
-      // 2 times speed, 1000ms send interval --> called after 500 & 1000ms
-      expect(sendSpy).toHaveBeenCalledTimes(2);
-      done();
-    });
+    await vi.advanceTimersByTimeAsync(1200);
+    // 2 times speed, 1000ms send interval --> called after 500 & 1000ms
+    expect(sendSpy).toHaveBeenCalledTimes(2);
   });
 
-  it('should send correct values and stop when not looping', (done) => {
+  it('should send correct values and stop when not looping', async () => {
     const receivedFrames: Array<GestureTrackFrame> = [];
 
     // just assert, that sendmessage is called at least once
-    const sendSpy = spyOn(connectionService, 'sendMessage').and.callFake(
-      (i) => {
+    const sendSpy = vi
+      .spyOn(connectionService, 'sendMessage')
+      .mockImplementation((i) => {
         if (i.length === 1) {
           receivedFrames.push({
             x: i[0].position.x,
@@ -128,8 +131,7 @@ describe('GestureReplayService', () => {
             z: i[0].position.z,
           });
         }
-      }
-    );
+      });
 
     configService.setSendInterval(100);
 
@@ -145,28 +147,26 @@ describe('GestureReplayService', () => {
 
     req.flush(data);
 
-    timer(325).subscribe(() => {
-      // 2 times speed, 100ms send interval --> finished after 200ms
-      expect(sendSpy).toHaveBeenCalledTimes(6);
-      expect(sendSpy).toHaveBeenCalledWith([]);
-
-      expect(receivedFrames).toHaveSize(4);
-      expect(receivedFrames[0]).toEqual(testData.tracks[0].frames[0]);
-      expect(receivedFrames[1]).toEqual(testData.tracks[0].frames[1]);
-      expect(receivedFrames[2]).toEqual(testData.tracks[0].frames[2]);
-      expect(receivedFrames[3]).toEqual(testData.tracks[0].frames[3]);
-      done();
-    });
+    await vi.advanceTimersByTimeAsync(325);
+    // 2 times speed, 100ms send interval --> finished after 200ms
+    expect(sendSpy).toHaveBeenCalledTimes(6);
+    expect(sendSpy).toHaveBeenCalledWith([]);
+    expect(receivedFrames).toHaveLength(4);
+    expect(receivedFrames[0]).toEqual(testData.tracks[0].frames[0]);
+    expect(receivedFrames[1]).toEqual(testData.tracks[0].frames[1]);
+    expect(receivedFrames[2]).toEqual(testData.tracks[0].frames[2]);
+    expect(receivedFrames[3]).toEqual(testData.tracks[0].frames[3]);
   });
 
-  it('should send correct values and loop properly', (done) => {
+  it('should send correct values and loop properly', async () => {
     const receivedFrames: Array<GestureTrackFrame> = [];
 
     service.loopGesture = true;
 
     // just assert, that sendmessage is called at least once
-    const sendSpy = spyOn(connectionService, 'sendMessage').and.callFake(
-      (i) => {
+    const sendSpy = vi
+      .spyOn(connectionService, 'sendMessage')
+      .mockImplementation((i) => {
         if (i.length === 1) {
           receivedFrames.push({
             x: i[0].position.x,
@@ -174,8 +174,7 @@ describe('GestureReplayService', () => {
             z: i[0].position.z,
           });
         }
-      }
-    );
+      });
 
     configService.setSendInterval(100);
 
@@ -191,23 +190,20 @@ describe('GestureReplayService', () => {
 
     req.flush(data);
 
-    timer(525).subscribe(() => {
-      // 2 times speed, 100ms send interval --> finished after 200ms
-      expect(sendSpy).toHaveBeenCalledTimes(10);
-      expect(sendSpy).not.toHaveBeenCalledWith([]);
-
-      expect(receivedFrames).toHaveSize(10);
-      expect(receivedFrames[0]).toEqual(testData.tracks[0].frames[0]);
-      expect(receivedFrames[1]).toEqual(testData.tracks[0].frames[1]);
-      expect(receivedFrames[2]).toEqual(testData.tracks[0].frames[2]);
-      expect(receivedFrames[3]).toEqual(testData.tracks[0].frames[3]);
-      expect(receivedFrames[4]).toEqual(testData.tracks[0].frames[0]);
-      expect(receivedFrames[5]).toEqual(testData.tracks[0].frames[1]);
-      expect(receivedFrames[6]).toEqual(testData.tracks[0].frames[2]);
-      expect(receivedFrames[7]).toEqual(testData.tracks[0].frames[3]);
-      expect(receivedFrames[8]).toEqual(testData.tracks[0].frames[0]);
-      expect(receivedFrames[9]).toEqual(testData.tracks[0].frames[1]);
-      done();
-    });
+    await vi.advanceTimersByTimeAsync(525);
+    // 2 times speed, 100ms send interval --> finished after 200ms
+    expect(sendSpy).toHaveBeenCalledTimes(10);
+    expect(sendSpy).not.toHaveBeenCalledWith([]);
+    expect(receivedFrames).toHaveLength(10);
+    expect(receivedFrames[0]).toEqual(testData.tracks[0].frames[0]);
+    expect(receivedFrames[1]).toEqual(testData.tracks[0].frames[1]);
+    expect(receivedFrames[2]).toEqual(testData.tracks[0].frames[2]);
+    expect(receivedFrames[3]).toEqual(testData.tracks[0].frames[3]);
+    expect(receivedFrames[4]).toEqual(testData.tracks[0].frames[0]);
+    expect(receivedFrames[5]).toEqual(testData.tracks[0].frames[1]);
+    expect(receivedFrames[6]).toEqual(testData.tracks[0].frames[2]);
+    expect(receivedFrames[7]).toEqual(testData.tracks[0].frames[3]);
+    expect(receivedFrames[8]).toEqual(testData.tracks[0].frames[0]);
+    expect(receivedFrames[9]).toEqual(testData.tracks[0].frames[1]);
   });
 });

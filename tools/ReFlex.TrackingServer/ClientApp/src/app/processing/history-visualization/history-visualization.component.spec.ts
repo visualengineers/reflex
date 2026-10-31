@@ -4,46 +4,51 @@ import { HistoryVisualizationComponent } from './history-visualization.component
 import { LogService } from 'src/app/log/log.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { of, throwError } from 'rxjs';
-import { Interaction, InteractionHistory, InteractionHistoryElement } from '@reflex/shared-types';
+import {
+  Interaction,
+  InteractionHistory,
+  InteractionHistoryElement,
+} from '@reflex/shared-types';
 
-const processingService = jasmine.createSpyObj<ProcessingService>('fakeProcessingService',
-  [
-    'getStatus',
-    'getHistory'
-  ]
-);
+const processingService = {
+  getStatus: vi.fn().mockName('fakeProcessingService.getStatus'),
+  getHistory: vi.fn().mockName('fakeProcessingService.getHistory'),
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]
-);
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog'),
+};
 
 let history = new Array<InteractionHistory>();
 
 for (var i = 0; i < 4; i++) {
-
-  let h : InteractionHistory = {
+  let h: InteractionHistory = {
     touchId: i,
-    items: []
-  }
+    items: [],
+  };
 
   for (var j = 0; j < 20; j++) {
-
     const x = Math.random();
     const y = Math.random();
     const z = Math.random();
 
-    let base: Interaction =
-      { time: 1234567, confidence: j, touchId: i, type: 1,
-        position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
-        extremumDescription:{ numFittingPoints: 10, percentageFittingPoints: 100, type: 1 }
-      }
+    let base: Interaction = {
+      time: 1234567,
+      confidence: j,
+      touchId: i,
+      type: 1,
+      position: { x: x, y: y, z: z, isFiltered: false, isValid: true },
+      extremumDescription: {
+        numFittingPoints: 10,
+        percentageFittingPoints: 100,
+        type: 1,
+      },
+    };
 
     let e: InteractionHistoryElement = {
       frameId: 0,
-      interaction: base
-    }
+      interaction: base,
+    };
     h.items.push(e);
   }
 
@@ -56,31 +61,32 @@ describe('HistoryVisualizationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [HistoryVisualizationComponent],
-    providers: [
+      imports: [HistoryVisualizationComponent],
+      providers: [
         {
-            provide: ProcessingService, useValue: processingService
+          provide: ProcessingService,
+          useValue: processingService,
         },
         {
-            provide: LogService, useValue: logService
-        }
-    ]
-})
-    .compileComponents();
+          provide: LogService,
+          useValue: logService,
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HistoryVisualizationComponent);
     component = fixture.componentInstance;
 
-    logService.sendErrorLog.and.returnValue();
-    processingService.getHistory.and.returnValue(of(history));
-    processingService.getStatus.and.returnValue(of('Active'));
+    logService.sendErrorLog.mockReturnValue(undefined);
+    processingService.getHistory.mockReturnValue(of(history));
+    processingService.getStatus.mockReturnValue(of('Active'));
   });
 
   afterEach(() => {
-    processingService.getHistory.calls.reset();
-    logService.sendErrorLog.calls.reset();
+    processingService.getHistory.mockClear();
+    logService.sendErrorLog.mockClear();
 
     component.history = [];
   });
@@ -100,35 +106,38 @@ describe('HistoryVisualizationComponent', () => {
   });
 
   it('should handle empty status', () => {
-    processingService.getStatus.and.returnValue(of(''));
+    processingService.getStatus.mockReturnValue(of(''));
 
     fixture.detectChanges();
 
     expect(component.history).toEqual([]);
 
     expect(logService.sendErrorLog).not.toHaveBeenCalled();
-
   });
 
   it('should handle errors correctly: status', () => {
     const errorStatus = 'TestError: processingService.getStatus';
-    processingService.getStatus.and.returnValue(throwError(errorStatus));
+    processingService.getStatus.mockReturnValue(throwError(errorStatus));
 
     fixture.detectChanges();
 
     expect(component.history).toEqual([]);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorStatus);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorStatus);
   });
 
   it('should handle errors correctly: history', () => {
     const errorHistory = 'TestError: processingService.getHistory';
-    processingService.getHistory.and.returnValue(throwError(errorHistory));
+    processingService.getHistory.mockReturnValue(throwError(errorHistory));
 
     fixture.detectChanges();
 
     expect(component.history).toEqual([]);
 
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(errorHistory);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(errorHistory);
   });
 });

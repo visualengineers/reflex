@@ -1,3 +1,4 @@
+import type { MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { TouchPointService } from 'src/services/touch-point.service';
@@ -6,33 +7,27 @@ import { HistoryComponent } from './history/history.component';
 import { of } from 'rxjs';
 import { RouterModule } from '@angular/router';
 
-const dummyTouchPointService: jasmine.SpyObj<TouchPointService> = jasmine.createSpyObj('TouchPointService', [
-  'getTouchPoints',
-  'getHistory',
-  'getAddress',
-  'getFrameNumber',
-  'isConnected'
-]
-);
+const dummyTouchPointService: MockedObject<Pick<TouchPointService, 'getTouchPoints' | 'getFrameNumber' | 'getHistory' | 'getAddress' | 'isConnected'>> = {
+  getTouchPoints: vi.fn().mockName('TouchPointService.getTouchPoints'),
+  getHistory: vi.fn().mockName('TouchPointService.getHistory'),
+  getAddress: vi.fn().mockName('TouchPointService.getAddress'),
+  getFrameNumber: vi.fn().mockName('TouchPointService.getFrameNumber'),
+  isConnected: vi.fn().mockName('TouchPointService.isConnected'),
+};
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterModule,
-        App,
-        StatusComponent,
-        HistoryComponent
-      ],
+      imports: [RouterModule, App, StatusComponent, HistoryComponent],
       providers: [
-        { provide: TouchPointService, useValue: dummyTouchPointService }
-      ]
+        { provide: TouchPointService, useValue: dummyTouchPointService },
+      ],
     }).compileComponents();
 
-    dummyTouchPointService.getTouchPoints.and.returnValue(of([]));
-    dummyTouchPointService.isConnected.and.returnValue(true);
-    dummyTouchPointService.getFrameNumber.and.returnValue(of(1));
-    dummyTouchPointService.getHistory.and.returnValue(of([]));
+    dummyTouchPointService.getTouchPoints.mockReturnValue(of([]));
+    dummyTouchPointService.isConnected.mockReturnValue(true);
+    dummyTouchPointService.getFrameNumber.mockReturnValue(of(1));
+    dummyTouchPointService.getHistory.mockReturnValue(of([]));
   });
 
   it('should create the app', () => {
@@ -51,7 +46,9 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.toolbar__title').textContent).toContain('Basic Angular App');
+    expect(compiled.querySelector('.toolbar__title').textContent).toContain(
+      'Basic Angular App'
+    );
   });
 
   it('should include status component', () => {
