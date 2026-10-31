@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <Home data-test="HomeComponent"></Home>
+    <Home data-test="HomeComponent" />
   </div>
 </template>
 
@@ -10,6 +10,33 @@ import Home from './views/Home.vue';
 
 export default {
     name: "App",
+    components: { Home },
+    provide() {
+        const touchData = {};
+        const rawData = {};
+        Object.defineProperty(touchData, "points", {
+            enumerable: true,
+            get: () => this.currentData.points,
+        });
+        Object.defineProperty(touchData, "webSocketAddress", {
+          get: () => this.currentData.webSocketAddress
+        });
+        Object.defineProperty(touchData, "frameNumber", {
+          get: () => this.currentData.frameNumber
+        });
+        Object.defineProperty(touchData, "isConnected", {
+          get: () => this.currentData.isConnected
+        });
+
+        Object.defineProperty(rawData, "frames", {
+          enumerable: true,
+          get: () => this.history,
+        })
+        return {
+            touchData,
+            rawData
+        };
+    },
     data() {
         return {
             connection: null,
@@ -20,6 +47,35 @@ export default {
                 isConnected: false
             },
             history: []
+        };
+    },
+    created: function () {
+        const address = "ws://localhost:40001/ReFlex";
+        var frameNumber = 0;
+        const that = this;
+        console.log("Starting connection to WebSocket Server");
+        this.connection = new WebSocket("ws://localhost:40001/ReFlex");
+        this.connection.onmessage = function (event) {
+            if (event.data != []) {
+                //console.log("new message detected");
+                //console.log(event.data);
+                var points = JSON.parse(event.data);
+                if (points.length < 0) {
+                    return;
+                }
+                frameNumber++;
+                that.updateData(points, address, frameNumber, true);
+            }
+        };
+        this.connection.onopen = function (event) {
+            console.log(event);
+            console.log("Successfully connected to the echo websocket server...");
+            that.updateData([], address, frameNumber, true);
+        };
+        this.connection.onclose = function (event) {
+            console.log(event);
+            console.log("Connection closed.");
+            that.updateData([], address, frameNumber, false);
         };
     },
     methods: {
@@ -54,62 +110,6 @@ export default {
           }
 
         }
-    },
-    provide() {
-        const touchData = {};
-        const rawData = {};
-        Object.defineProperty(touchData, "points", {
-            enumerable: true,
-            get: () => this.currentData.points,
-        });
-        Object.defineProperty(touchData, "webSocketAddress", {
-          get: () => this.currentData.webSocketAddress
-        });
-        Object.defineProperty(touchData, "frameNumber", {
-          get: () => this.currentData.frameNumber
-        });
-        Object.defineProperty(touchData, "isConnected", {
-          get: () => this.currentData.isConnected
-        });
-
-        Object.defineProperty(rawData, "frames", {
-          enumerable: true,
-          get: () => this.history,
-        })
-        return {
-            touchData,
-            rawData
-        };
-    },
-    created: function () {
-        const address = "ws://localhost:40001/ReFlex";
-        var frameNumber = 0;
-        const that = this;
-        console.log("Starting connection to WebSocket Server");
-        this.connection = new WebSocket("ws://localhost:40001/ReFlex");
-        this.connection.onmessage = function (event) {
-            if (event.data != []) {
-                //console.log("new message detected");
-                //console.log(event.data);
-                var points = JSON.parse(event.data);
-                if (points.length < 0) {
-                    return;
-                }
-                frameNumber++;
-                that.updateData(points, address, frameNumber, true);
-            }
-        };
-        this.connection.onopen = function (event) {
-            console.log(event);
-            console.log("Successfully connected to the echo websocket server...");
-            that.updateData([], address, frameNumber, true);
-        };
-        this.connection.onclose = function (event) {
-            console.log(event);
-            console.log("Connection closed.");
-            that.updateData([], address, frameNumber, false);
-        };
-    },
-    components: { Home }
+    }
 };
 </script>

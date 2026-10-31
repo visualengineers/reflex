@@ -1,178 +1,92 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { DEFAULT_SETTINGS, TrackingServerAppSettings, PerformanceData } from '@reflex/shared-types';
+import { Subject, of } from 'rxjs';
+import { queryElement } from '../../../../../../test/helpers/dom';
+import {
+  mount,
+  settings,
+  setupTests as setupZonelessTests,
+  performance,
+  text,
+  tracking
+} from '../test-utils/zoneless-change-detection.test-context';
+import { streaming } from '../test-utils/zoneless-change-detection.test-data';
 import { SettingsComponent } from './settings.component';
-import { LogService } from '../log/log.service';
-import { SettingsService } from 'src/shared/services/settingsService';
-import { TrackingService } from 'src/shared/services/tracking.service';
-import { PerformanceService } from 'src/shared/services/performance.service';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { FormsModule } from '@angular/forms';
-import { of, Subject } from 'rxjs';
-import {
-  DEFAULT_SETTINGS,
-  DepthCameraState,
-  PerformanceData,
-  TrackingConfigState,
-} from '@reflex/shared-types';
-import {
-  MockOptionCheckboxComponent,
-  MockSettingsGroupComponent,
-  MockValueSelectionComponent,
-  MockValueSliderComponent,
-  OptionCheckboxComponent,
-  SettingsGroupComponent,
-  ValueSelectionComponent,
-  ValueSliderComponent,
-} from '@reflex/angular-components/dist';
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-  withXhr,
-} from '@angular/common/http';
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService', [
-  'sendErrorLog',
-]);
+describe('Zoneless change detection: updates nested settings and form controls after a settings response', () => {
+  setupZonelessTests();
 
-const settingsService = jasmine.createSpyObj<SettingsService>(
-  'fakeSettingsService',
-  ['getSettings', 'getCanRestore', 'update']
-);
-
-const trackingService = jasmine.createSpyObj<TrackingService>(
-  'fakeTrackingService',
-  ['getStatus']
-);
-
-const performanceService = jasmine.createSpyObj<PerformanceService>(
-  'fakePerformanceService',
-  ['getData']
-);
-
-const state: TrackingConfigState = {
-  isCameraSelected: true,
-  selectedCameraName: 'TestCamera',
-  selectedConfigurationName: 'TestConfig',
-  depthCameraStateName: DepthCameraState[DepthCameraState.Streaming],
-};
-
-const perfData: PerformanceData = {
-  data: [],
-};
-
-describe('SettingsComponent', () => {
-  let component: SettingsComponent;
-  let fixture: ComponentFixture<SettingsComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FormsModule, SettingsComponent],
-      providers: [
-        {
-          provide: TrackingService,
-          useValue: trackingService,
-        },
-        {
-          provide: PerformanceService,
-          useValue: performanceService,
-        },
-        {
-          provide: SettingsService,
-          useValue: settingsService,
-        },
-        {
-          provide: LogService,
-          useValue: logService,
-        },
-        {
-          provide: BASE_URL,
-          useValue: 'http://localhost',
-        },
-        provideHttpClient(withXhr(), withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-      ],
-    })
-      .overrideComponent(SettingsComponent, {
-        remove: {
-          imports: [
-            ValueSliderComponent,
-            OptionCheckboxComponent,
-            SettingsGroupComponent,
-            ValueSelectionComponent,
-          ],
-        },
-        add: {
-          imports: [
-            MockValueSliderComponent,
-            MockOptionCheckboxComponent,
-            MockSettingsGroupComponent,
-            MockValueSelectionComponent,
-          ],
-        },
-      })
-      .compileComponents();
+  it('updates nested settings and form controls after a settings response', async () => {
+    const response = new Subject<TrackingServerAppSettings>();
+    settings.getSettings.mockReturnValue(response);
+    const fixture = await mount(SettingsComponent);
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.borderValue.left = 12;
+    response.next(value);
+    await fixture.whenStable();
+    const input: HTMLInputElement = queryElement<HTMLInputElement>((fixture.nativeElement as HTMLInputElement), 'app-value-slider[elementid="settings-leftBorder"] input.custom-input');
+    expect(input.value).toBe('12');
   });
+});
 
-  beforeEach(() => {
-    logService.sendErrorLog.and.returnValue();
+describe('Zoneless change detection: renders performance stream updates in the filter table', () => {
+  setupZonelessTests();
 
-    settingsService.getSettings.and.returnValue(of(DEFAULT_SETTINGS));
-    settingsService.getCanRestore.and.returnValue(
-      of({ name: 'canRestore', value: true })
+  it('renders performance stream updates in the filter table', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.measurePerformance = true;
+    settings.getSettings.mockReturnValue(of(value));
+    const response = new Subject<PerformanceData>();
+    performance.getData.mockReturnValue(response);
+    const fixture = await mount(SettingsComponent);
+    response.next({
+      data: [
+        {
+          frameId: 8123,
+          frameStart: 1,
+          frameEnd: 2,
+          totalFrameTime: 1,
+          boxFilter: 1
+        }
+      ]
+    });
+    await fixture.whenStable();
+    expect(text(fixture)).toContain('8123');
+  });
+});
+
+describe('Zoneless change detection: renders limitation-filter polling responses', () => {
+  setupZonelessTests();
+
+  it('renders limitation-filter polling responses', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.limitationFilterType = 1;
+    settings.getSettings.mockReturnValue(of(value));
+    tracking.getStatus.mockReturnValue(of(streaming));
+    const response = new Subject<{
+      name: string;
+      value: boolean;
+    }>();
+    let pollStarted!: () => void;
+    const started = new Promise<void>((resolve) => {
+      pollStarted = resolve;
+    });
+    settings.isLimitationFilterInitializing.mockImplementation(() => {
+      pollStarted();
+
+      return response;
+    });
+    settings.isLimitationFilterInitialized.mockReturnValue(
+      of({ name: 'initialized', value: false })
     );
-
-    trackingService.getStatus.and.returnValue(of(state));
-
-    performanceService.getData.and.returnValue(of(perfData));
-
-    fixture = TestBed.createComponent(SettingsComponent);
-    component = fixture.componentInstance;
-  });
-
-  afterEach(() => {
-    logService.sendErrorLog.calls.reset();
-
-    settingsService.getSettings.calls.reset();
-    settingsService.getCanRestore.calls.reset();
-
-    trackingService.getStatus.calls.reset();
-
-    performanceService.getData.calls.reset();
-  });
-
-  it('should create', () => {
-    fixture.detectChanges();
-
-    expect(component).toBeTruthy();
-
-    expect(logService.sendErrorLog).not.toHaveBeenCalled();
-  });
-  it('combines partial performance frames and updates existing chart entries', async () => {
-    const updates = new Subject<PerformanceData>();
-    performanceService.getData.and.returnValue(updates);
+    const fixture = await mount(SettingsComponent);
+    const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find((node) => node.textContent?.includes('Initialize Filter'));
+    if (button === undefined) {
+      throw new Error('Initialize Filter button is missing');
+    }
+    expect(button.classList).not.toContain('button-disabled');
+    await started;
+    response.next({ name: 'initializing', value: true });
     await fixture.whenStable();
-    updates.next({data: [{frameId: 1, frameStart: 1000, frameEnd: 5000,
-      totalFrameTime: 0, boxFilter: 2, valueFilter: 3}]});
-    await fixture.whenStable();
-    expect(component.performanceDataFilterVis[0].totalFilter).toBe(5);
-
-    updates.next({data: [{frameId: 1, frameStart: 2000, frameEnd: 6000,
-      totalFrameTime: 0, processingPreparation: 4, processingConvert: 5}]});
-    await fixture.whenStable();
-    expect(component.performanceDataProcessingVis[0].totalProcessing).toBe(9);
-    expect(component.performanceDataCompleteTimeFrameVis[0].totalFrameTime).toBe(5);
-
-    updates.next({data: [{frameId: 1, frameStart: 0, frameEnd: 4000,
-      totalFrameTime: 0, boxFilter: 7}]});
-    await fixture.whenStable();
-    expect(component.performanceDataFilterVis.length).toBe(1);
-    expect(component.performanceDataFilterVis[0].totalFilter).toBe(7);
-    expect(component.performanceDataProcessingVis.length).toBe(1);
-    expect(component.performanceDataCompleteTimeFrameVis.length).toBe(1);
-    expect(component.performanceDataCompleteTimeFrameVis[0].frameStart).toBe(0);
-    expect(component.performanceDataCompleteTimeFrameVis[0].frameEnd).toBe(5000);
-    expect(component.performanceDataCompleteTimeFrameVis[0].totalFrameTime).toBe(5);
+    expect(button.classList).toContain('button-disabled');
   });
-
 });

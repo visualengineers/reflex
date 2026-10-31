@@ -1,13 +1,13 @@
+import { AsyncPipe } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
 import { BehaviorSubject } from 'rxjs';
 import { DataService } from '../../services/data.service';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-introduction',

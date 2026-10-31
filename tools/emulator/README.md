@@ -19,7 +19,7 @@ Run `ng build reflex-emulator` to build the project. The build artifacts will be
 
 ## Running unit tests
 
-Run `ng test reflex-emulator` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test reflex-emulator` to execute the unit tests with Vitest in headless Chromium. Install the browser once with `npx playwright install chromium` from the repository root.
 
 ## Running end-to-end tests
 

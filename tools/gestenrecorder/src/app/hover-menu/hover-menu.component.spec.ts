@@ -10,8 +10,8 @@ describe('HoverMenuComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HoverMenuComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(HoverMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

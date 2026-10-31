@@ -1,9 +1,9 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { Inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { ImageByteArray } from '@reflex/shared-types';
 import { fromEventPattern, Observable, using } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
 @Injectable({
   providedIn: 'root'

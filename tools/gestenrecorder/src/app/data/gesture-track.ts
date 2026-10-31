@@ -1,6 +1,6 @@
-import { GestureTrackFrame } from "./gesture-track-frame";
+import { GestureTrackFrame } from './gesture-track-frame';
 
 export interface GestureTrack {
-    touchId: number,
-    frames: Array<GestureTrackFrame>
+  touchId: number;
+  frames: Array<GestureTrackFrame>;
 }

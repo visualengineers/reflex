@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  Output,
-  ChangeDetectionStrategy,
+  Output
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-panel-header',
   templateUrl: './panel-header.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule]
 })
 export class PanelHeaderComponent {
   @Input()

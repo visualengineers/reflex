@@ -13,16 +13,16 @@
   <tbody class="points__table--body">
     @for (entry of tableData; track entry; let i = $index) {
     <tr [class.selected]="i === selectedIndex" (click)="selectedIndex = i">
-      <td scope="row">
+      <td>
         <input type="text" [(ngModel)]="entry.id" />
       </td>
-      <td scope="row">
+      <td>
         <input type="text" [(ngModel)]="entry.name" />
       </td>
-      <td scope="row" class="text-column">
+      <td class="text-column">
         <input type="number" [(ngModel)]="entry.numFrames" />
       </td>
-      <td scope="row">
+      <td>
         <input type="number" [(ngModel)]="entry.speed" step="0.1" />
       </td>
     </tr>

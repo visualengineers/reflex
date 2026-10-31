@@ -7,7 +7,8 @@
     "build": "ng build basic-angular",
     "watch": "ng build basic-angular --watch --configuration development",
     "test": "ng test basic-angular",
-    "test-ci": "ng test basic-angular --no-watch --browsers=ChromeHeadless"
+    "test-ci": "ng test basic-angular --no-watch --coverage",
+    "lint": "eslint . --max-warnings 0"
   },
   "private": true,
   "description": "basic angular web app for visualizing touches",

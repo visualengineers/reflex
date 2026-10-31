@@ -1,10 +1,10 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { SignalRBaseService } from './signalR.base.service';
+import { Injectable, inject } from '@angular/core';
+import { JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
-import { JsonSimpleValue, NetworkAttributes } from '@reflex/shared-types';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { SignalRBaseService } from './signalR.base.service';
 
 @Injectable({
   providedIn: 'root'

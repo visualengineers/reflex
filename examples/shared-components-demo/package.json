@@ -6,9 +6,9 @@
     "start": "ng serve shared-components-demo --port 4203",
     "build": "ng build shared-components-demo",
     "watch": "ng build shared-components-demo --watch --configuration development",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "test": "ng test shared-components-demo --browsers Chrome",
-    "test-ci": "ng test shared-components-demo --no-watch --browsers=ChromeHeadless"
+    "test-ci": "ng test shared-components-demo --no-watch --coverage"
   },
   "dependencies": {
     "@reflex/angular-components": "file:../../packages/reflex-angular-components"

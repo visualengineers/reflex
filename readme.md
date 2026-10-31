@@ -104,7 +104,7 @@ templates. AngularJS's `eslint-plugin-angular` is not used.
 #### Zoneless change detection
 
 All Angular applications explicitly provide `provideZonelessChangeDetection()`.
-Their browser/SSR bootstraps and Karma environments do not load `zone.js` or
+Their browser/SSR bootstraps and Vitest environments do not load `zone.js` or
 `zone.js/testing`. The shared component library is also tested in zoneless mode;
 it leaves the scheduling provider to its consuming application.
 
@@ -121,16 +121,18 @@ Canvas drawing and playback operate directly on the canvas and do not trigger ap
 | `@reflex/angular-components` | Input updates for all six controls, checkbox/panel two-way bindings, debounced slider output |
 | `TrackingServer` | See its ClientApp README for the HTTP/SignalR/polling/ViewChild audit |
 
-Each project has a `zoneless-change-detection.spec.ts` regression suite. These tests
+Zoneless regression tests live in the corresponding component `*.spec.ts` files,
+with application startup checks in the app spec. Shared test contexts and data live
+in `test-utils` folders. These tests
 assert rendered output using `fixture.whenStable()` without test-side `detectChanges()`
 or `markForCheck()`. Native timers and Plotly's drawing are awaited separately.
 Owned timer/stream subscriptions are detached when the affected views are destroyed;
 components do not unsubscribe shared service subjects.
 
 To check all Angular projects, build the shared types and components first, then run
-`npm run ng -- test <project> --watch=false --browsers=ChromeHeadless` and
+`npm run ng -- test <project> --watch=false --coverage` and
 `npm run ng -- build <project> --configuration=production` for the projects above.
-`CHROME_BIN` can point to a locally installed Chrome or the Puppeteer executable.
+Install the browser first with `npx playwright install chromium`. Angular tests use Vitest with Playwright Chromium; no `CHROME_BIN` setting is needed.
 The shared-components demo production build also verifies SSR/prerendering.
 Angular dependency versions remain unchanged.
 
@@ -211,7 +213,7 @@ Angular dependency versions remain unchanged.
 ### Known issues (NPM commands)
 
 - Electron packaging uses isolated application files. See [Electron builds and startup checks](docs/software/electron-builds.md) for prerequisites, platform targets and CI smoke tests.
-- test and `build-complete` commands start a headless Chrome instance and therefore require Chrome to be installed and path to Chrome binary to be set in PATH.
+- Angular test and `build-complete` commands require Playwright Chromium: run `npx playwright install chromium` after `npm ci`.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -226,7 +228,6 @@ Angular dependency versions remain unchanged.
 
 ## Known issues
 
-- `Karma Test Explorer` Plugin for VS Code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
 - if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
   - `%AppData%` Folder (Windows)
   - `~/.config` Folder (Linux)

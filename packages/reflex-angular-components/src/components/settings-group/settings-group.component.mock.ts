@@ -1,14 +1,13 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { SettingsGroupComponent } from './settings-group.component';
 
 @Component({
   selector: 'app-settings-group',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockSettingsGroupComponent
-  implements Partial<SettingsGroupComponent>
-{
+implements Partial<SettingsGroupComponent> {
   @Input()
   public toggleId = 'custom';
 

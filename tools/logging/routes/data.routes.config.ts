@@ -1,112 +1,114 @@
-import * as express from 'express';
-var fs = require('fs');
 import debug from 'debug';
-import { CommonRoutesConfig } from "../common/common-routes.config";
+import * as express from 'express';
+import * as fs from 'node:fs';
+import { CommonRoutesConfig } from '../common/common-routes.config';
 
 const log: debug.IDebugger = debug('app:controller[PHOTOS]');
-const data_dir = 'data';
+const dataDir = 'data';
 
-export class DataRoutes extends CommonRoutesConfig { 
-    
-    constructor(app: express.Application) {
-        super(app, 'DataRoutes');
-    }
-    
-    configureRoutes(): express.Application {
-        this.app.route(`/data/:userId`)
-            .get(async (req, res) => {
-                try {
-                   const file = this.getFilePath(req.params.userId);
+export class DataRoutes extends CommonRoutesConfig {
 
-                   const fileExists = fs.existsSync(file);
+  public constructor(app: express.Application) {
+    super(app, 'DataRoutes');
+  }
 
-                   if (!fileExists) {
-                     res.status(404).send('{"error": "File not found" }');
-                     return;
-                   }
+  public configureRoutes(): express.Application {
+    this.app.route(`/data/:userId`)
+      .get((req, res) => {
+        try {
+          const file = this.getFilePath(req.params.userId);
 
-                   fs.readFile(file, 'utf8', (err:any, data:any) => {
-                    if (err) {
-                      log(err);
-                      res.status(500).send(err);
-                      return;
-                    }
-                    res.send(data);
-                  }); 
-                } catch (err) {
-                    res.status(500).send(err);
-                }
-            })
-            .post(async (req, res) => {
-                try {
-                    if(!req.body) {
-                        res.send({
-                            status: false,
-                            message: 'no body to save'
-                        });
-                    } else if (!req.params.userId){
-                        res.send({
-                            status: false,
-                            message: 'no userId provided'
-                        });
-                    }                    
-                    else {
-                        let data = req.body;
+          const fileExists = fs.existsSync(file);
 
-                        if (!fs.existsSync(data_dir)) {
-                            fs.mkdirSync(data_dir);
-                        }
+          if (!fileExists) {
+            res.status(404).send('{"error": "File not found" }');
 
-                        let file = this.getFilePath(req.params.userId);
+            return;
+          }
 
-                        fs.writeFile(file, JSON.stringify(data), (error: any) =>
-                        {   
-                            if (error) {
-                                log(error);
-                                res.status(404).send('{"error": "User not saved" }');
-                                return;
-                            }
-                            res.send(`{"file": "${file}" }`);
-                        })
-                    }
-                } catch (err) {
-                    res.status(500).send(err);
-                }
+          fs.readFile(file, 'utf8', (err, data) => {
+            if (err !== null) {
+              log(err);
+              res.status(500).send(err);
+
+              return;
+            }
+            res.send(data);
+          });
+        } catch (err) {
+          res.status(500).send(err);
+        }
+      })
+      .post((req, res) => {
+        try {
+          if (req.body === undefined || req.body === null) {
+            res.send({
+              status: false,
+              message: 'no body to save'
             });
-
-            this.app.route(`/data`)
-            .get(async (req, res) => {
-                try {
-
-                    let result : number[] = [];
-
-                    if (fs.existsSync(data_dir)) {
-
-                        fs.readdirSync(data_dir).forEach((file: { toString: () => any; }) => {
-
-                            let name = file.toString();
-                            if (name.length === 13) {
-                                const id = parseInt(name.substr(5,3));
-                                result.push(id);
-                            }
-                        });
-                    }
-
-                    const json = JSON.stringify(result)
-
-                    res.send(json);
-
-                } catch (err) {
-                    res.status(500).send(err);
-                }
+          } else if (!req.params.userId) {
+            res.send({
+              status: false,
+              message: 'no userId provided'
             });
+          } else {
+            const data: unknown = req.body;
 
-        return this.app;
-    }
+            if (!fs.existsSync(dataDir)) {
+              fs.mkdirSync(dataDir);
+            }
 
-    private getFilePath(userId: string): string {
+            const file = this.getFilePath(req.params.userId);
 
-        const user = userId.padStart(3, '0');
-        return `${data_dir}/data_${user}.json`;
-    }
+            fs.writeFile(file, JSON.stringify(data), (error) => {
+              if (error !== null) {
+                log(error);
+                res.status(404).send('{"error": "User not saved" }');
+
+                return;
+              }
+              res.send(`{"file": "${file}" }`);
+            });
+          }
+        } catch (err) {
+          res.status(500).send(err);
+        }
+      });
+
+    this.app.route(`/data`)
+      .get((req, res) => {
+        try {
+
+          const result: Array<number> = [];
+
+          if (fs.existsSync(dataDir)) {
+
+            fs.readdirSync(dataDir).forEach((file) => {
+
+              const name = file.toString();
+              if (name.length === 13) {
+                const id = parseInt(name.substr(5, 3));
+                result.push(id);
+              }
+            });
+          }
+
+          const json = JSON.stringify(result);
+
+          res.send(json);
+
+        } catch (err) {
+          res.status(500).send(err);
+        }
+      });
+
+    return this.app;
+  }
+
+  private getFilePath(userId: string): string {
+
+    const user = userId.padStart(3, '0');
+
+    return `${dataDir}/data_${user}.json`;
+  }
 }

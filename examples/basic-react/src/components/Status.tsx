@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { Component } from 'react';
 import { TouchPointState } from '../types/touch-point-state';
 
 // component for rendering point

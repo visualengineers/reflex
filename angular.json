@@ -10,7 +10,7 @@
       "prefix": "reflex",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "packages/reflex-angular-components/ng-package.json"
           },
@@ -25,15 +25,56 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "packages/reflex-angular-components/test.ts",
             "tsConfig": "packages/reflex-angular-components/tsconfig.spec.json",
-            "karmaConfig": "packages/reflex-angular-components/karma.conf.js",
+            "runner": "vitest",
+            "buildTarget": "@reflex/angular-components:test-build",
+            "runnerConfig": "packages/reflex-angular-components/vitest.config.mts",
+            "reporters": [
+              "default",
+              [
+                "junit",
+                {
+                  "outputFile": "test/artifacts/tests/junit-test-results-angular-components.xml"
+                }
+              ]
+            ],
+            "coverageReporters": [
+              "html",
+              [
+                "text-summary",
+                {
+                  "file": "text-summary.txt"
+                }
+              ],
+              "lcovonly",
+              "cobertura"
+            ],
+            "browsers": [
+              "chromium"
+            ],
+            "headless": true
+          }
+        },
+        "test-build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "tsConfig": "packages/reflex-angular-components/tsconfig.spec.json",
             "polyfills": [],
             "styles": [
               "packages/reflex-angular-components/src/scss/reflex.scss"
-            ]
+            ],
+            "outputPath": "dist/test-angular-components"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "packages/reflex-angular-components/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -74,7 +115,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "progress": false,
             "outputPath": {
@@ -146,7 +187,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "TrackingServer:build:production"
@@ -159,39 +200,51 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "TrackingServer:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "tools/ReFlex.TrackingServer/ClientApp/src/test.ts",
-            "polyfills": "tools/ReFlex.TrackingServer/ClientApp/src/polyfills.ts",
             "tsConfig": "tools/ReFlex.TrackingServer/ClientApp/src/tsconfig.spec.json",
-            "karmaConfig": "tools/ReFlex.TrackingServer/ClientApp/src/karma.conf.js",
-            "styles": [
-              "tools/ReFlex.TrackingServer/ClientApp/src/sass/main.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "tools/ReFlex.TrackingServer/ClientApp/src/sass",
-                "node_modules/@reflex/angular-components/src/scss"
+            "runner": "vitest",
+            "buildTarget": "TrackingServer:build:development",
+            "runnerConfig": "tools/ReFlex.TrackingServer/ClientApp/vitest.config.mts",
+            "reporters": [
+              "default",
+              [
+                "junit",
+                {
+                  "outputFile": "test/artifacts/tests/junit-test-results.xml"
+                }
               ]
-            },
-            "scripts": [],
-            "assets": [
-              "tools/ReFlex.TrackingServer/ClientApp/src/assets"
-            ]
+            ],
+            "coverageReporters": [
+              "html",
+              [
+                "text-summary",
+                {
+                  "file": "text-summary.txt"
+                }
+              ],
+              "lcovonly",
+              "cobertura"
+            ],
+            "browsers": [
+              "chromium"
+            ],
+            "headless": true
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "tools/ReFlex.TrackingServer/ClientApp/**/*.ts"
-            ]
+              "tools/ReFlex.TrackingServer/ClientApp/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -230,7 +283,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": {
               "base": "tools/emulator/dist"
@@ -283,12 +336,13 @@
                   "maximumError": "10kb"
                 }
               ]
-            }
+            },
+            "development": {}
           },
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "buildTarget": "reflex-emulator:build"
           },
@@ -299,51 +353,51 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "reflex-emulator:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "tools/emulator/src/test.ts",
-            "polyfills": "tools/emulator/src/polyfills.ts",
             "tsConfig": "tools/emulator/tsconfig.spec.json",
-            "karmaConfig": "tools/emulator/karma.conf.js",
-            "assets": [
-              "tools/emulator/src/assets"
-            ],
-            "styles": [
-              "tools/emulator/src/styles.sass"
-            ],
-            "scripts": [],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules"
+            "runner": "vitest",
+            "buildTarget": "reflex-emulator:build:development",
+            "runnerConfig": "tools/emulator/vitest.config.mts",
+            "reporters": [
+              "default",
+              [
+                "junit",
+                {
+                  "outputFile": "test/artifacts/tests/junit-test-results-emulator.xml"
+                }
               ]
-            }
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "tools/emulator/e2e/protractor.conf.js",
-            "devServerTarget": "reflex-emulator:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "reflex-emulator:serve:production"
-            }
+            ],
+            "coverageReporters": [
+              "html",
+              [
+                "text-summary",
+                {
+                  "file": "text-summary.txt"
+                }
+              ],
+              "lcovonly",
+              "cobertura"
+            ],
+            "browsers": [
+              "chromium"
+            ],
+            "headless": true
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "tools/emulator/src/**/*.ts",
-              "tools/emulator/src/**/*.html"
-            ]
+              "tools/emulator/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -382,7 +436,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": "tools/gestenrecorder/dist/gestenrecorder",
             "index": "tools/gestenrecorder/src/index.html",
@@ -437,7 +491,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "gestenrecorder:build:production"
@@ -449,31 +503,51 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "gestenrecorder:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [],
             "tsConfig": "tools/gestenrecorder/tsconfig.spec.json",
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules/@reflex/angular-components/src/scss"
+            "runner": "vitest",
+            "buildTarget": "gestenrecorder:build:development",
+            "runnerConfig": "tools/gestenrecorder/vitest.config.mts",
+            "reporters": [
+              "default",
+              [
+                "junit",
+                {
+                  "outputFile": "test/artifacts/tests/junit-test-results-gestenrecorder.xml"
+                }
               ]
-            },
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "tools/gestenrecorder/src/favicon.ico",
-              "tools/gestenrecorder/src/assets"
             ],
-            "styles": [
-              "tools/gestenrecorder/src/styles.scss"
+            "coverageReporters": [
+              "html",
+              [
+                "text-summary",
+                {
+                  "file": "text-summary.txt"
+                }
+              ],
+              "lcovonly",
+              "cobertura"
             ],
-            "scripts": [],
-            "main": "tools/gestenrecorder/src/test.ts"
+            "browsers": [
+              "chromium"
+            ],
+            "headless": true
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "tools/gestenrecorder/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -515,7 +589,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": {
               "base": "examples/basic-angular/dist/basic-angular"
@@ -568,7 +642,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "basic-angular:build:production"
@@ -580,27 +654,51 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "basic-angular:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "examples/basic-angular/src/test.ts",
-            "polyfills": "examples/basic-angular/src/polyfills.ts",
             "tsConfig": "examples/basic-angular/tsconfig.spec.json",
-            "karmaConfig": "examples/basic-angular/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "examples/basic-angular/src/favicon.ico",
-              "examples/basic-angular/src/assets"
+            "runner": "vitest",
+            "buildTarget": "basic-angular:build:development",
+            "runnerConfig": "examples/basic-angular/vitest.config.mts",
+            "reporters": [
+              "default",
+              [
+                "junit",
+                {
+                  "outputFile": "test/artifacts/tests/junit-test-results-basic-angular.xml"
+                }
+              ]
             ],
-            "styles": [
-              "examples/basic-angular/src/styles.scss"
+            "coverageReporters": [
+              "html",
+              [
+                "text-summary",
+                {
+                  "file": "text-summary.txt"
+                }
+              ],
+              "lcovonly",
+              "cobertura"
             ],
-            "scripts": []
+            "browsers": [
+              "chromium"
+            ],
+            "headless": true
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "examples/basic-angular/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
+            ],
+            "maxWarnings": 0
           }
         }
       }
@@ -639,7 +737,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": "examples/shared-components-demo/dist/shared-components-demo",
             "index": "examples/shared-components-demo/src/index.html",
@@ -696,7 +794,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "shared-components-demo:build:production"
@@ -708,48 +806,51 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "shared-components-demo:build"
           }
         },
-        "shared-components-demo": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "test": {
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [],
             "tsConfig": "examples/shared-components-demo/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "examples/shared-components-demo/src/favicon.ico",
-              "examples/shared-components-demo/src/assets"
+            "runner": "vitest",
+            "buildTarget": "shared-components-demo:build:development",
+            "runnerConfig": "examples/shared-components-demo/vitest.config.mts",
+            "reporters": [
+              "default",
+              [
+                "junit",
+                {
+                  "outputFile": "test/artifacts/tests/junit-test-results-shared-components-demo.xml"
+                }
+              ]
             ],
-            "styles": [
-              "examples/shared-components-demo/src/styles.scss"
+            "coverageReporters": [
+              "html",
+              [
+                "text-summary",
+                {
+                  "file": "text-summary.txt"
+                }
+              ],
+              "lcovonly",
+              "cobertura"
             ],
-            "scripts": []
+            "browsers": [
+              "chromium"
+            ],
+            "headless": true
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "main": "examples/shared-components-demo/src/test.ts",
-            "polyfills": "examples/shared-components-demo/src/polyfills.ts",
-            "tsConfig": "examples/shared-components-demo/tsconfig.spec.json",
-            "karmaConfig": "examples/shared-components-demo/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "examples/shared-components-demo/src/favicon.ico",
-              "examples/shared-components-demo/src/assets"
+            "lintFilePatterns": [
+              "examples/shared-components-demo/**/*.{ts,tsx,mts,cts,js,cjs,mjs,html}"
             ],
-            "styles": [
-              "examples/shared-components-demo/src/styles.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules/@reflex/angular-components/src/scss"
-              ]
-            },
-            "scripts": []
+            "maxWarnings": 0
           }
         }
       }

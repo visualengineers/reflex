@@ -1,12 +1,12 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
-  OnInit,
   inject,
-  ChangeDetectionStrategy
+  Input,
+  OnDestroy,
+  OnInit
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ValueTextComponent } from '@reflex/angular-components/dist';
@@ -21,6 +21,7 @@ import { of, Subscription } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 
 @Component({
   selector: 'app-recording',
@@ -29,7 +30,7 @@ import { RecordingService } from 'src/shared/services/recording.service';
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, FormsModule, ValueTextComponent]
 })
-export class RecordingComponent implements OnInit {
+export class RecordingComponent implements OnInit, OnDestroy {
 
   @Input()
   public recordingName = 'default';

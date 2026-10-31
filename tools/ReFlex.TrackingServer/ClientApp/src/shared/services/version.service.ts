@@ -1,9 +1,9 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
 interface ClientPackageInfo {
   name: string;

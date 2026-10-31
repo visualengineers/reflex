@@ -10,8 +10,8 @@ describe('ButtonsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ButtonsComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(ButtonsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,19 +1,19 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
   EventEmitter,
   inject,
-  ChangeDetectionStrategy,
+  Input,
+  Output
 } from '@angular/core';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
 
+import { FormsModule } from '@angular/forms';
 import {
   SettingsGroupComponent,
   ValueSelectionComponent,
-  ValueTextComponent,
+  ValueTextComponent
 } from '@reflex/angular-components/dist';
-import { FormsModule } from '@angular/forms';
 import { ConfigurationService } from '../service/configuration.service';
 
 @Component({
@@ -22,55 +22,55 @@ import { ConfigurationService } from '../service/configuration.service';
     SettingsGroupComponent,
     ValueSelectionComponent,
     ValueTextComponent,
-    FormsModule,
+    FormsModule
   ],
   templateUrl: './hover-menu.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrls: ['./hover-menu.component.scss'],
+  styleUrls: ['./hover-menu.component.scss']
 })
 export class HoverMenuComponent {
-  private configurationService = inject(ConfigurationService);
 
-  @Input() hoveredPoint: NormalizedPoint | null = null;
-  @Output() pointUpdated = new EventEmitter<NormalizedPoint>();
-  @Input() isFixed: boolean = false;
+  @Input() public hoveredPoint: NormalizedPoint | null = null;
+  @Output() public pointUpdated = new EventEmitter<NormalizedPoint>();
+  @Input() public isFixed = false;
+  private readonly configurationService = inject(ConfigurationService);
 
-  toggleFixed() {
+  public toggleFixed(): void {
     this.isFixed = !this.isFixed;
   }
 
-  getX(): string {
+  public getX(): string {
     return this.hoveredPoint && typeof this.hoveredPoint.x === 'number'
       ? this.hoveredPoint.x.toFixed(2)
       : 'N/A';
   }
 
-  getY(): string {
+  public getY(): string {
     return this.hoveredPoint && typeof this.hoveredPoint.y === 'number'
       ? this.hoveredPoint.y.toFixed(2)
       : 'N/A';
   }
 
-  getZ(): string {
+  public getZ(): string {
     return this.hoveredPoint && typeof this.hoveredPoint.z === 'number'
       ? this.hoveredPoint.z.toFixed(2)
       : 'N/A';
   }
 
-  getTime(): string {
-    return this.hoveredPoint && this.hoveredPoint.time
+  public getTime(): string {
+    return this.hoveredPoint?.time !== undefined
       ? new Date(this.hoveredPoint.time).toISOString()
       : 'N/A';
   }
 
-  getIndex(): string {
+  public getIndex(): string {
     return this.hoveredPoint && typeof this.hoveredPoint.index === 'number'
       ? this.hoveredPoint.index.toString()
       : 'N/A';
   }
 
-  updatePoint() {
-    if (this.hoveredPoint) {
+  public updatePoint(): void {
+    if (this.hoveredPoint !== null) {
       this.pointUpdated.emit(this.hoveredPoint);
     }
   }

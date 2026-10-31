@@ -1,10 +1,10 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ValueTextComponent } from './value-text.component';
 
 @Component({
   selector: 'app-value-text',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockValueTextComponent implements Partial<ValueTextComponent> {
   @Input()

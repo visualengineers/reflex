@@ -1,9 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
-  inject,
-  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 
 import { SettingsGroupComponent } from '@reflex/angular-components/dist';
@@ -16,38 +16,38 @@ import { SavingoptionsComponent } from '../savingoptions/savingoptions.component
     SettingsGroupComponent,
     RecorderoptionsComponent,
     GestureoptionsComponent,
-    SavingoptionsComponent,
+    SavingoptionsComponent
   ],
   templateUrl: './dropdown.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './dropdown.component.scss',
+  styleUrl: './dropdown.component.scss'
 })
 export class DropdownComponent {
-  private elementRef = inject(ElementRef);
 
-  isGestureDropdownOpen: boolean = false;
-  isRecorderDropdownOpen: boolean = false;
-  isSavingDropdownOpen: boolean = false;
+  public isGestureDropdownOpen = false;
+  public isRecorderDropdownOpen = false;
+  public isSavingDropdownOpen = false;
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  closeDropdown() {
+  @HostListener('document:click', ['$event'])
+  public onClickOutside(event: Event): void {
+    if (event.target instanceof Node && !this.elementRef.nativeElement.contains(event.target)) {
+      this.closeDropdown();
+    }
+  }
+
+  public closeDropdown(): void {
     this.isGestureDropdownOpen = false;
     this.isRecorderDropdownOpen = false;
     this.isSavingDropdownOpen = false;
     this.removeClickOutsideListener();
   }
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.closeDropdown();
-    }
-  }
-
-  addClickOutsideListener() {
+  public addClickOutsideListener(): void {
     document.addEventListener('click', this.onClickOutside.bind(this));
   }
 
-  removeClickOutsideListener() {
+  public removeClickOutsideListener(): void {
     document.removeEventListener('click', this.onClickOutside.bind(this));
   }
 }

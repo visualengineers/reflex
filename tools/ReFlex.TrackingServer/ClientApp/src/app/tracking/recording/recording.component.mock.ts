@@ -1,15 +1,14 @@
 import {
-  Component,
-  OnInit,
-  Input,
   ChangeDetectionStrategy,
+  Component,
+  Input
 } from '@angular/core';
 import { RecordingComponent } from './recording.component';
 
 @Component({
   selector: 'app-recording',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockRecordingComponent implements Partial<RecordingComponent> {
   @Input()

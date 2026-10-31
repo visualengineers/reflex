@@ -1,28 +1,26 @@
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnDestroy,
-  OnInit,
   inject,
-  ChangeDetectionStrategy
+  OnDestroy,
+  OnInit
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ValueSelectionComponent } from '@reflex/angular-components/dist';
+import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
 import { interval, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { LogService } from './log.service';
-import { LogLevel, LogMessageDetail } from '@reflex/shared-types';
-import { ValueSelectionComponent } from '@reflex/angular-components/dist';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-log',
   templateUrl: './log.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, ValueSelectionComponent]
+  imports: [FormsModule, ValueSelectionComponent]
 })
 export class LogComponent implements OnInit, OnDestroy {
-
   public messages = new Array<LogMessageDetail>();
   public filteredMessages = new Array<LogMessageDetail>();
 
@@ -87,8 +85,7 @@ export class LogComponent implements OnInit, OnDestroy {
 
   public filter(): void {
     this.filteredMessages
-      = this.filterLevel >= LogLevel.Trace
-      && this.filterLevel <= LogLevel.Off
+      = this.filterLevel >= LogLevel.Trace && this.filterLevel <= LogLevel.Off
         ? this.messages.filter(
           (msg) => LogLevel[msg.level] === LogLevel[this.filterLevel]
         )

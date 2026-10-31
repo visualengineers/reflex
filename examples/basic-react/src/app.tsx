@@ -1,10 +1,10 @@
-import { Component, ReactNode } from 'react';
-import { AppProps } from './types/app-props';
-import { TouchPoint } from './components/TouchPoint';
-import { TouchPointState } from './types/touch-point-state';
 import { Interaction } from '@reflex/shared-types';
-import { Status } from './components/Status';
+import { Component,ReactNode } from 'react';
 import { History } from './components/History';
+import { Status } from './components/Status';
+import { TouchPoint } from './components/TouchPoint';
+import { AppProps } from './types/app-props';
+import { TouchPointState } from './types/touch-point-state';
 
 export class ReFlexApp extends Component<AppProps, TouchPointState> {
   private readonly ws: WebSocket;

@@ -1,21 +1,20 @@
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
-  provideZonelessChangeDetection,
+  provideZonelessChangeDetection
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { WEBSOCKET_URL } from '../services/touch-point.service';
 
-import { routes } from './app.routes';
 import {
   provideClientHydration,
   withEventReplay,
-  withNoIncrementalHydration,
+  withNoIncrementalHydration
 } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
+import { routes } from './app.routes';
 
-const providers = [
-  { provide: 'WEBSOCKET_URL', useValue: environment.websocketUrl, deps: [] },
-];
+const providers = [{ provide: WEBSOCKET_URL, useValue: environment.websocketUrl, deps: [] }];
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +22,6 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
-  ],
+    provideClientHydration(withEventReplay(), withNoIncrementalHydration())
+  ]
 };

@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MeasureGridComponent } from './measure-grid.component';
 
 @Component({
   selector: 'app-measure-grid',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockMeasureGridComponent
-  implements Partial<MeasureGridComponent> {}
+implements Partial<MeasureGridComponent> {}

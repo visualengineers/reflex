@@ -1,14 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ColorComponent } from './color/color.component';
 
-import { IntroductionComponent } from './introduction/introduction.component';
+import { ButtonsComponent } from './controls/buttons/buttons.component';
 import { PanelComponent } from './controls/panel/panel.component';
-import { ToggleComponent } from './controls/toggle/toggle.component';
-import { TextBoxComponent } from './controls/text-box/text-box.component';
 import { SelectComponent } from './controls/select/select.component';
 import { SliderComponent } from './controls/slider/slider.component';
 import { TableComponent } from './controls/table/table.component';
-import { ButtonsComponent } from './controls/buttons/buttons.component';
+import { TextBoxComponent } from './controls/text-box/text-box.component';
+import { ToggleComponent } from './controls/toggle/toggle.component';
+import { IntroductionComponent } from './introduction/introduction.component';
 
 @Component({
   selector: 'app-root',

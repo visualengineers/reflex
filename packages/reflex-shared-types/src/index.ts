@@ -52,69 +52,32 @@ import { TrackingConfigState } from './tracking/tracking-config-state';
 import { Vector2 } from './tracking/vector2';
 import { ElementPosition } from './util/element-position';
 
-export { 
-    // Config
-    Border,
-    Calibration,
-    CalibrationPoint,
-    CalibrationTransform,
-    CameraConfiguration,
-    ConfidenceParameter,
-    Distance,
-    ExtremumDescriptionSettings,
-    ExtremumTypeCheckMethod,
-    FilterSettings,
-    FilterType,
-    FrameSizeDefinition,
-    LimitationFilterType,
-    NetworkInterface,
-    NetworkSettings,
-    ObserverType,
-    ProcessingSettings,
-    ProtocolVersion,
-    RemoteProcessingAlgorithm,
-    RemoteProcessingServiceSettings,
-    SmoothingParameter,
-    TransportProtocol,
-    TuioConfiguration,
-    TuioInterpretation,
+export {
 
-    // Data Formats
-    AppVersionInfo, 
-    ImageByteArray, 
-    JsonSimpleValue, 
-    NetworkAttributes, 
-    PerformanceDataItem, 
-    PerformanceData, 
-    ServerContent, 
-    TuioPackageDetails,
-    
-    // Log
-    LogLevel, 
-    LogMessageDetail,
-    
-    // Processing
-    CompleteInteractionData,
-    ExtremumDescription,
-    ExtremumType,
-    InteractionFrame,
-    InteractionHistoryElement,
-    InteractionHistory,
-    InteractionType,
-    Interaction,
-    
-    //Tracking
-    DepthCameraState,
-    DepthCamera,
-    Point3,
-    RecordingStateUpdate,
-    RecordingState,
-    TrackingConfigState,
-    Vector2,
-
-    // Util
-    ElementPosition,
-
-    TrackingServerAppSettings,
-    DEFAULT_SETTINGS
- }
+  // Data Formats
+  AppVersionInfo,
+  // Config
+  Border,
+  Calibration,
+  CalibrationPoint,
+  CalibrationTransform,
+  CameraConfiguration,
+  // Processing
+  CompleteInteractionData, ConfidenceParameter, DEFAULT_SETTINGS, DepthCamera,
+  // Tracking
+  DepthCameraState, Distance,
+  // Util
+  ElementPosition, ExtremumDescription, ExtremumDescriptionSettings, ExtremumType, ExtremumTypeCheckMethod,
+  FilterSettings,
+  FilterType,
+  FrameSizeDefinition, ImageByteArray, Interaction, InteractionFrame, InteractionHistory, InteractionHistoryElement, InteractionType, JsonSimpleValue, LimitationFilterType,
+  // Log
+  LogLevel,
+  LogMessageDetail, NetworkAttributes, NetworkInterface,
+  NetworkSettings,
+  ObserverType, PerformanceData, PerformanceDataItem, Point3, ProcessingSettings,
+  ProtocolVersion, RecordingState, RecordingStateUpdate, RemoteProcessingAlgorithm,
+  RemoteProcessingServiceSettings, ServerContent, SmoothingParameter, TrackingConfigState, TrackingServerAppSettings, TransportProtocol,
+  TuioConfiguration,
+  TuioInterpretation, TuioPackageDetails, Vector2
+};

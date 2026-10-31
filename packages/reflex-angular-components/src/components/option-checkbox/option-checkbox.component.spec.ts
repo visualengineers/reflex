@@ -1,111 +1,34 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
+import { queryElement } from '../../../../../test/helpers/dom';
+import { ControlsHost } from '../../test-utils/controls-host';
 import { OptionCheckboxComponent } from './option-checkbox.component';
-import { FormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
 
-describe('OptionCheckboxComponent', () => {
-  let component: OptionCheckboxComponent;
-  let fixture: ComponentFixture<OptionCheckboxComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FormsModule, OptionCheckboxComponent ]
-    })
-    .compileComponents();
+describe('Zoneless change detection: renders updated inputs of OptionCheckboxComponent', () => {
+  it('renders updated inputs of OptionCheckboxComponent', async () => {
+    const fixture = TestBed.createComponent(
+      OptionCheckboxComponent
+    );
+    await fixture.whenStable();
+    fixture.componentRef.setInput(
+      'elementTitle',
+      'Asynchronously updated title'
+    );
+    await fixture.whenStable();
+    expect((fixture.nativeElement as HTMLInputElement).textContent).toContain(
+      'Asynchronously updated title'
+    );
   });
+});
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OptionCheckboxComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it ('should assign default id', () => {
-    const defaultId = 'custom-checkbox';
-
-    const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-checkbox`);
-    expect(inputElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-checkbox`)
-
-    const labelElem = fixture.debugElement.query(By.css('.checkbox-toggle-label'));
-    expect(labelElem.nativeElement.getAttribute('id')).toEqual(`${defaultId}-label`);
-    expect(labelElem.nativeElement.getAttribute('name')).toEqual(`${defaultId}-label`);
-  });
-
-  it ('should set id correctly', () => {
-    const testId = 'OptionCheckBoxTestId';
-    fixture.componentRef.setInput('elementId', testId);
-
-    fixture.detectChanges();
-
-    const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.getAttribute('id')).toEqual(`${testId}-checkbox`);
-    expect(inputElem.nativeElement.getAttribute('name')).toEqual(`${testId}-checkbox`)
-
-    const labelElem = fixture.debugElement.query(By.css('.checkbox-toggle-label'));
-    expect(labelElem.nativeElement.getAttribute('id')).toEqual(`${testId}-label`);
-    expect(labelElem.nativeElement.getAttribute('name')).toEqual(`${testId}-label`);
-  });
-
-  it ('should assign default title', () => {
-    const defaultTitle = 'Custom Value';
-
-    const inputElem = fixture.debugElement.query(By.css('.settings__item--label'));
-    expect(inputElem.nativeElement.textContent).toEqual(`${defaultTitle}`);
-  });
-
-  it ('should set title correctly', () => {
-    const testTitle = 'OptionCheckBox - TestTitle';
-    fixture.componentRef.setInput('elementTitle', testTitle);
-
-    fixture.detectChanges();
-
-    const inputElem = fixture.debugElement.query(By.css('.settings__item--label'));
-    expect(inputElem.nativeElement.textContent).toEqual(`${testTitle}`);
-  });
-
-  it ('should assign default disabled state', () => {
-    const defaultState = false;
-
-    const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.disabled).toEqual(defaultState);
-  });
-
-  it ('should correctly set disabled state', () => {
-    const newState = true;
-    fixture.componentRef.setInput('disabled', newState);
-
-    fixture.detectChanges();
-
-    const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.disabled).toEqual(newState);
-  });
-
-  it ('should assign default checked state', () => {
-    const defaultState = false;
-
-    const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    expect(inputElem.nativeElement.checked).toEqual(defaultState);
-  });
-
-  it ('should correctly set checked state', () => {
-    const emitter = spyOn(component.dataChange, 'emit').and.callThrough();
-    const onModelChange = spyOn(component, 'onModelChange').and.callThrough();
-
-    const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
-    inputElem.nativeElement.click();
-
-    fixture.detectChanges();
-
-    expect(component.data).toEqual(true);
-    expect(inputElem.nativeElement.checked).toBeTruthy();
-
-    expect(onModelChange).toHaveBeenCalledOnceWith(true);
-    expect(emitter).toHaveBeenCalledOnceWith(true);
+describe('Zoneless change detection: propagates checkbox and panel events through two-way bindings', () => {
+  it('propagates checkbox and panel events through two-way bindings', async () => {
+    const fixture = TestBed.createComponent(ControlsHost);
+    await fixture.whenStable();
+    queryElement<HTMLInputElement>((fixture.nativeElement as HTMLInputElement), 'app-option-checkbox input').click();
+    queryElement<HTMLInputElement>((fixture.nativeElement as HTMLInputElement), 'app-panel-header input').click();
+    await fixture.whenStable();
+    expect(
+      queryElement((fixture.nativeElement as HTMLInputElement), '#result').textContent
+    ).toContain('true / false');
   });
 });

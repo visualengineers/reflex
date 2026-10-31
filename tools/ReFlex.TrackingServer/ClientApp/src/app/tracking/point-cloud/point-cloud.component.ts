@@ -1,20 +1,36 @@
 /* eslint-disable max-lines */
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
-  ChangeDetectorRef,
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostListener,
+  inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
-  inject,
-  ChangeDetectionStrategy
+  ViewChild
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  OptionCheckboxComponent,
+  PanelHeaderComponent,
+  SettingsGroupComponent,
+  ValueSliderComponent
+} from '@reflex/angular-components/dist';
+import {
+  DEFAULT_SETTINGS,
+  DepthCameraState,
+  Interaction,
+  Point3,
+  TrackingServerAppSettings
+} from '@reflex/shared-types';
 import {
   animationFrameScheduler,
   BehaviorSubject,
@@ -33,29 +49,13 @@ import {
   tap
 } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
-import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { TrackingService } from '../../../shared/services/tracking.service';
 import { PointCloudService } from '../../../shared/services/point-cloud.service';
-import { HttpClient } from '@angular/common/http';
-import {
-  DEFAULT_SETTINGS,
-  DepthCameraState,
-  Interaction,
-  Point3,
-  TrackingServerAppSettings
-} from '@reflex/shared-types';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  OptionCheckboxComponent,
-  PanelHeaderComponent,
-  SettingsGroupComponent,
-  ValueSliderComponent
-} from '@reflex/angular-components/dist';
+import { TrackingService } from '../../../shared/services/tracking.service';
 
 @Component({
   selector: 'app-point-cloud',

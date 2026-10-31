@@ -1,10 +1,10 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   input,
   OnChanges,
-  ViewChild,
-  ChangeDetectionStrategy
+  ViewChild
 } from '@angular/core';
 import { PerformanceDataItem } from '@reflex/shared-types';
 import * as d3 from 'd3';

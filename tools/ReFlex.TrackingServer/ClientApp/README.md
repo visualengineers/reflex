@@ -22,7 +22,7 @@ When serving the application, keep the .NET fallback to `index.html` for direct 
 
 ## Running unit tests
 
-Run `ng test TrackingServer` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng test TrackingServer` to execute the unit tests with Vitest in headless Chromium. Install the browser once with `npx playwright install chromium` from the repository root.
 
 ## Zoneless change detection
 
@@ -45,11 +45,12 @@ It does not call `detectChanges()` or introduce a global polling/change-detectio
 | Geometry and live frames | Measurement/interaction viewport sizing, history SVGs, WebSocket image frames and point-cloud counters notify Angular. Shader loads, scene-only changes and the WebGL animation loop do not schedule Angular checks per render frame. |
 | Existing Angular notifications | Home uses `AsyncPipe`; template/host events and input bindings continue to schedule change detection themselves. |
 
-[`zoneless-change-detection.spec.ts`](src/app/zoneless-change-detection.spec.ts)
-exercises these boundaries using the real templates, controlled asynchronous
-responses and `fixture.whenStable()`. It deliberately avoids manual
-`detectChanges()`/`markForCheck()` calls and verifies that Zone.js is absent.
-It also checks error-state rendering and subscription cleanup. GPU rendering is
+The component `*.spec.ts` files and [`app.component.spec.ts`](src/app/app.component.spec.ts)
+exercise these boundaries using the real templates, controlled asynchronous
+responses and `fixture.whenStable()`. Shared contexts and data live in
+[`test-utils`](src/app/test-utils). The tests deliberately avoid manual
+`detectChanges()`/`markForCheck()` calls and verify that Zone.js is absent.
+They also check error-state rendering and subscription cleanup. GPU rendering is
 excluded from the geometry/scheduling unit tests; they use the supported no-WebGL
 fallback. The existing browser/Electron smoke test checks application startup.
 

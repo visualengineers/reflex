@@ -1,9 +1,9 @@
-import { Injectable, OnDestroy, Inject } from "@angular/core";
-import { BACKGROUND_SOURCES } from "../data/backgroundSources";
-import { BackgroundSource } from "../model/BackgroundSource.model";
-import { CAMERAS } from "../data/cameras";
-import { NormalizedPoint } from "../model/NormalizedPoint.model";
-import { Observable, Subject, BehaviorSubject } from "rxjs";
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BACKGROUND_SOURCES } from '../data/backgroundSources';
+import { CAMERAS } from '../data/cameras';
+import { BackgroundSource } from '../model/BackgroundSource.model';
+import { NormalizedPoint } from '../model/NormalizedPoint.model';
 
 export interface Camera {
   model: string;
@@ -33,8 +33,24 @@ export interface ViewPort {
   height: number;
 }
 
+interface StoredSettings {
+  BACKUP_TIMESTAMP: string;
+  amountProjectionLayers: number;
+  amountTouchPoints: number;
+  backgroundImage: string;
+  backgroundSources: Array<BackgroundSource>;
+  camera: Camera;
+  circleSize: CircleSize;
+  layers: Layers;
+  normalizedPoints: Array<NormalizedPoint>;
+  sendInterval: number;
+  serverConnection: string;
+  viewOptions: Array<ViewOption>;
+  viewPort: ViewPort;
+}
+
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class ConfigurationService implements OnDestroy {
   public activePoint$ = new Subject<number>();
@@ -44,185 +60,187 @@ export class ConfigurationService implements OnDestroy {
   public layers$ = new BehaviorSubject<Layers>({
     up: 2,
     down: 7,
-    colorUp: "#0071B7",
-    colorDown: "#111722",
+    colorUp: '#0071B7',
+    colorDown: '#111722'
   });
-  public normalizedPoints$ = new BehaviorSubject<NormalizedPoint[]>([]);
+
+  public normalizedPoints$ = new BehaviorSubject<Array<NormalizedPoint>>([]);
 
   private amountProjectionLayers: number;
   private backgroundImage: string;
-  private backgroundSources: BackgroundSource[];
+  private backgroundSources: Array<BackgroundSource>;
   private camera: Camera;
   private circleSize: CircleSize;
   private sendInterval: number;
   private serverConnection: string;
-  private viewOptions: ViewOption[];
+  private viewOptions: Array<ViewOption>;
   private viewPort: ViewPort;
 
-  constructor() {
+  public constructor() {
     this.amountProjectionLayers = 7;
     this.backgroundImage = '';
     this.backgroundSources = BACKGROUND_SOURCES;
-    (this.camera = {
-      model: "Azure Kinect DK",
-      resolution: "640 × 576",
-    }),
-      (this.circleSize = {
-        min: 20,
-        max: 150,
-      });
+    this.camera = {
+      model: 'Azure Kinect DK',
+      resolution: '640 × 576'
+    };
+    this.circleSize = {
+      min: 20,
+      max: 150
+    };
     this.sendInterval = 100;
-    this.serverConnection = "ws://127.0.0.1:30000/Recorder";
+    this.serverConnection = 'ws://127.0.0.1:30000/Recorder';
     this.viewOptions = [
-      { option: "Contours", active: false },
-      { option: "Depth Image", active: false },
-      { option: "Extrema", active: true },
-      { option: "Vectors", active: false },
+      { option: 'Contours', active: false },
+      { option: 'Depth Image', active: false },
+      { option: 'Extrema', active: true },
+      { option: 'Vectors', active: false }
     ];
     this.viewPort = {
       width: 640,
-      height: 480,
+      height: 480
     };
 
     this.setBackupTimestamp();
   }
 
-  getActivePoint(): Observable<number> {
+  public getActivePoint(): Observable<number> {
     return this.activePoint$.asObservable();
   }
 
-  setActivePoint(point: number): void {
+  public setActivePoint(point: number): void {
     this.activePoint$.next(point);
   }
 
-  getAmountProjectionLayers(): number {
+  public getAmountProjectionLayers(): number {
     return this.amountProjectionLayers;
   }
 
-  setAmountProjectionLayers(amountProjectionLayers: number): void {
+  public setAmountProjectionLayers(amountProjectionLayers: number): void {
     this.amountProjectionLayers = amountProjectionLayers;
   }
 
-  getAmountTouchPoints(): Observable<number> {
+  public getAmountTouchPoints(): Observable<number> {
     return this.amountTouchPoints$.asObservable();
   }
 
-  setAmoutTouchPoints(amountTouchPoints: number): void {
+  public setAmoutTouchPoints(amountTouchPoints: number): void {
     this.amountTouchPoints$.next(amountTouchPoints);
   }
 
-  getBackgroundImage(): string {
+  public getBackgroundImage(): string {
     return this.backgroundImage;
   }
 
-  setBackgroundImage(backgroundImage: string): void {
+  public setBackgroundImage(backgroundImage: string): void {
     this.backgroundImage = backgroundImage;
-    console.log("BackgroundImage:",this.backgroundImage);
+    console.log('BackgroundImage:', this.backgroundImage);
     this.background$.next(this.backgroundImage);
-    console.log("Background:",this.background$);
+    console.log('Background:', this.background$);
   }
 
-  getBackgroundSources(): BackgroundSource[] {
+  public getBackgroundSources(): Array<BackgroundSource> {
     return this.backgroundSources;
   }
 
-  setBackgroundSources(paths: BackgroundSource[]): void {
+  public setBackgroundSources(paths: Array<BackgroundSource>): void {
     this.backgroundSources = paths;
   }
 
-  getBackupTimestamp(): Observable<Date | null> {
+  public getBackupTimestamp(): Observable<Date | null> {
     return this.backupTimestamp$.asObservable();
   }
 
-  setBackupTimestamp(): void {
+  public setBackupTimestamp(): void {
     let timestamp: Date | null = null;
-    const settings = localStorage.getItem("Gestenrecorder Settings");
+    const settings = localStorage.getItem('Gestenrecorder Settings');
 
     try {
       if (settings != null) {
-        timestamp = JSON.parse(settings)?.BACKUP_TIMESTAMP as Date;
+        const parsed = JSON.parse(settings) as Pick<StoredSettings, 'BACKUP_TIMESTAMP'>;
+        timestamp = new Date(parsed.BACKUP_TIMESTAMP);
       }
-    } catch (e) {
+    } catch {
       timestamp = null;
     }
 
     this.backupTimestamp$.next(timestamp);
   }
 
-  getCamera(): Camera {
+  public getCamera(): Camera {
     return this.camera;
   }
 
-  setCamera(camera: Camera): void {
+  public setCamera(camera: Camera): void {
     this.camera = camera;
   }
 
-  getCameraOptions(): Camera[] {
+  public getCameraOptions(): Array<Camera> {
     return CAMERAS;
   }
 
-  getCircleSize(): CircleSize {
+  public getCircleSize(): CircleSize {
     return this.circleSize;
   }
 
-  setCircleSize(circleSize: CircleSize): void {
+  public setCircleSize(circleSize: CircleSize): void {
     this.circleSize = circleSize;
   }
 
-  getLayers(): Observable<Layers> {
+  public getLayers(): Observable<Layers> {
     return this.layers$.asObservable();
   }
 
-  setLayers(layers: Layers): void {
+  public setLayers(layers: Layers): void {
     this.layers$.next(layers);
   }
 
-  getNormalizedPoints(): Observable<NormalizedPoint[]> {
+  public getNormalizedPoints(): Observable<Array<NormalizedPoint>> {
     return this.normalizedPoints$.asObservable();
   }
 
-  setNormalizedPoints(normalizedPoints: NormalizedPoint[]): void {
+  public setNormalizedPoints(normalizedPoints: Array<NormalizedPoint>): void {
     this.normalizedPoints$.next(normalizedPoints);
   }
 
-  getSendInterval(): number {
+  public getSendInterval(): number {
     return this.sendInterval;
   }
 
-  setSendInterval(sendInterval: number): void {
+  public setSendInterval(sendInterval: number): void {
     this.sendInterval = sendInterval;
   }
 
-  getServerConnection(): string {
+  public getServerConnection(): string {
     return this.serverConnection;
   }
 
-  setServerConnection(serverConnection: string): void {
+  public setServerConnection(serverConnection: string): void {
     this.serverConnection = serverConnection;
   }
 
-  getViewOptions(): ViewOption[] {
+  public getViewOptions(): Array<ViewOption> {
     return this.viewOptions;
   }
 
-  setViewOptions(viewOptions: ViewOption[]): void {
+  public setViewOptions(viewOptions: Array<ViewOption>): void {
     this.viewOptions = viewOptions;
   }
 
-  getViewPort(): ViewPort {
+  public getViewPort(): ViewPort {
     return this.viewPort;
   }
 
-  setViewPort(viewPort: ViewPort): void {
+  public setViewPort(viewPort: ViewPort): void {
     this.viewPort = viewPort;
   }
 
-  getLocalStorage(): void {
+  public getLocalStorage(): void {
     const storageSettings = localStorage.getItem('Gestenrecorder Settings');
     if (storageSettings === null) {
       return;
     }
-    const settings = JSON.parse(storageSettings);
+    const settings = JSON.parse(storageSettings) as StoredSettings;
 
     this.setAmountProjectionLayers(settings.amountProjectionLayers);
     this.setAmoutTouchPoints(settings.amountTouchPoints);
@@ -238,13 +256,13 @@ export class ConfigurationService implements OnDestroy {
     this.setViewPort(settings.viewPort);
   }
 
-  setLocalStorage(): void {
+  public setLocalStorage(): void {
     const amountTouchPoints = this.amountTouchPoints$.getValue();
     const layers = this.layers$.getValue();
     const normalizedPoints = this.normalizedPoints$.getValue();
 
     const settings = {
-      BACKUP_TIMESTAMP: new Date().toLocaleString("de-DE"),
+      BACKUP_TIMESTAMP: new Date().toLocaleString('de-DE'),
       amountProjectionLayers: this.amountProjectionLayers,
       amountTouchPoints,
       backgroundImage: this.backgroundImage,
@@ -256,21 +274,21 @@ export class ConfigurationService implements OnDestroy {
       sendInterval: this.sendInterval,
       serverConnection: this.serverConnection,
       viewOptions: this.viewOptions,
-      viewPort: this.viewPort,
+      viewPort: this.viewPort
     };
 
     localStorage.setItem(
-      "Gestenrecorder Settings",
-      JSON.stringify(settings),
+      'Gestenrecorder Settings',
+      JSON.stringify(settings)
     );
     this.setBackupTimestamp();
   }
 
-  clearLocalStorage(): void {
-    localStorage.clear;
+  public clearLocalStorage(): void {
+    localStorage.clear();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.amountTouchPoints$.unsubscribe();
     this.backupTimestamp$.unsubscribe();
     this.layers$.unsubscribe();

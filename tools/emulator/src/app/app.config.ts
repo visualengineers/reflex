@@ -1,19 +1,19 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
-  provideZonelessChangeDetection,
+  provideZonelessChangeDetection
 } from '@angular/core';
 
-import { GestureReplayService } from './service/gesture-replay.service';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
-  withXhr,
+  withXhr
 } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { FormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app-routing.module';
+import { GestureReplayService } from './service/gesture-replay.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +25,6 @@ export const appConfig: ApplicationConfig = {
       FormsModule
     ),
     GestureReplayService,
-    provideHttpClient(withXhr(), withInterceptorsFromDi()),
-  ],
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
+  ]
 };

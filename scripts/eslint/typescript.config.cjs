@@ -37,49 +37,62 @@ function migrateRules(rules) {
   }));
 }
 
-module.exports = function typescriptConfig(tsconfigRootDir) {
-  return [
-    {
-      name: 'reflex/generated-and-excluded-files',
-      ignores: [
-        '**/node_modules/**', '**/.angular/**', '**/dist/**', '**/e2e/**',
-        '**/obj/**', '**/artifacts/**', '**/documentation/**',
-        '**/app.js', '**/preload.js', '**/aspnetcore-https.js',
-        '**/*.conf.js', '**/eslint.config.js', '**/.*',
-        'src/**/*.spec.ts', 'src/**/*.mock.ts', 'src/polyfills.ts', 'src/test.ts',
-        '**/environment.prod.ts', '**/environment.test.ts'
-      ]
+// ESLint 8 recommended rules that newer presets remove or disable for TypeScript.
+// Keep the previous lint contract even where the compiler also checks the code.
+const historicalRules = Object.fromEntries([
+  'constructor-super', 'getter-return', 'no-class-assign', 'no-const-assign',
+  'no-dupe-args', 'no-dupe-keys', 'no-func-assign', 'no-import-assign',
+  'no-inner-declarations', 'no-mixed-spaces-and-tabs', 'no-new-symbol',
+  'no-obj-calls', 'no-redeclare', 'no-this-before-super', 'no-undef',
+  'no-unreachable', 'no-unsafe-negation', 'no-with'
+].map(rule => [rule, 'error']));
+
+module.exports = function typescriptConfig(project, isAngular) {
+  const angular = require('@angular-eslint/eslint-plugin');
+  const template = require('@angular-eslint/eslint-plugin-template');
+  return [{
+    name: `reflex/typescript/${project}`,
+    files: [`${project}/**/*.{ts,tsx,mts,cts}`],
+    languageOptions: {
+      parser,
+      parserOptions: { project: `${project}/tsconfig.eslint.json`, tsconfigRootDir: require('node:path').resolve(__dirname, '../..') },
+      globals: { ...globals.es2022, ...globals.browser, ...globals.node, ...globals.vitest }
     },
-    {
-      name: 'reflex/typescript',
-      files: ['**/*.ts'],
-      languageOptions: {
-        parser,
-        parserOptions: { project: './tsconfig.json', tsconfigRootDir },
-        globals: { ...globals.browser, ...globals.node, ...globals.jest }
-      },
-      plugins: { '@typescript-eslint': typescript, '@stylistic/ts': stylistic },
-      rules: {
-        ...js.configs.recommended.rules,
-        ...typescript.configs['eslint-recommended'].overrides[0].rules,
-        ...typescript.configs.recommended.rules,
-        ...typescript.configs['recommended-type-checked'].rules,
-        ...basePolicy.rules,
-        ...migrateRules(typescriptPolicy.rules),
-        '@typescript-eslint/explicit-member-accessibility': 'error',
-        'no-shadow': 'off',
-        '@typescript-eslint/no-shadow': 'error',
-        '@typescript-eslint/no-unused-vars': 'error',
-        'new-cap': ['error', {
-          capIsNew: true,
-          capIsNewExceptions: [
-            'Component', 'Directive', 'HostBinding', 'HostListener', 'Injectable',
-            'Input', 'NgModule', 'Output', 'Pipe', 'ViewChild', 'ViewChildren'
-          ],
-          newIsCap: true,
-          properties: true
-        }]
-      }
+    plugins: {
+      '@typescript-eslint': typescript,
+      '@stylistic/ts': stylistic,
+      ...(isAngular ? { '@angular-eslint': angular } : {})
+    },
+    ...(isAngular ? { processor: template.processors['extract-inline-html'] } : {}),
+    rules: {
+      ...js.configs.recommended.rules,
+      ...typescript.configs['eslint-recommended'].overrides[0].rules,
+      ...typescript.configs.recommended.rules,
+      ...typescript.configs['recommended-type-checked'].rules,
+      ...basePolicy.rules,
+      ...migrateRules(typescriptPolicy.rules),
+      ...historicalRules,
+      ...(project === 'tools/emulator' ? angular.configs.recommended.rules : {}),
+      // Decorated classes are valid Angular declarations in newly covered projects.
+      ...(!['tools/ReFlex.TrackingServer/ClientApp', 'examples/shared-components-demo'].includes(project)
+        ? { '@typescript-eslint/no-extraneous-class': ['error', { allowWithDecorator: true }] } : {}),
+      '@typescript-eslint/explicit-member-accessibility': 'error',
+      'no-shadow': 'off',
+      '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
+      'new-cap': ['error', {
+        capIsNew: true,
+        capIsNewExceptions: [
+          'Component', 'Directive', 'HostBinding', 'HostListener', 'Injectable',
+          'Input', 'NgModule', 'Output', 'Pipe', 'ViewChild', 'ViewChildren'
+        ],
+        newIsCap: true,
+        properties: true
+      }]
     }
-  ];
+  }, {
+    name: `reflex/angular-mocks/${project}`,
+    files: [`${project}/**/*.mock.ts`],
+    rules: { '@typescript-eslint/no-extraneous-class': ['error', { allowWithDecorator: true }] }
+  }];
 };

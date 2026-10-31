@@ -1,4 +1,3 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@reflex/shared-types';
 import { PointCloudSettings } from '@reflex/shared-types/dist/config/point-cloud-settings';
 import { Observable, Subject } from 'rxjs';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 
 @Injectable({
   providedIn: 'root'

@@ -1,22 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PackageDetailsComponent } from './package-details.component';
+import { TuioPackageDetails } from '@reflex/shared-types';
+import { of, throwError, Subject } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { TuioService } from 'src/shared/services/tuio.service';
-import { of, throwError } from 'rxjs';
-import { TuioPackageDetails } from '@reflex/shared-types';
+import {
+  mount,
+  setupTests as setupZonelessTests,
+  text,
+  tuio
+} from '../../../test-utils/zoneless-change-detection.test-context';
+import { PackageDetailsComponent } from './package-details.component';
 
+const logService = {
+  sendErrorLog: vi.fn().mockName('fakeLogService.sendErrorLog')
+};
 
-const logService = jasmine.createSpyObj<LogService>('fakeLogService',
-  [
-    'sendErrorLog'
-  ]);
-
-
-const tuioService = jasmine.createSpyObj<TuioService>('fakeTuioService',
-  [
-    'getPackages'
-  ]);
+const tuioService = {
+  getPackages: vi.fn().mockName('fakeTuioService.getPackages')
+};
 
 const details: TuioPackageDetails = {
   sessionId: 5,
@@ -30,33 +31,32 @@ describe('PackageDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
-      PackageDetailsComponent
-    ],
-    providers: [
+      imports: [PackageDetailsComponent],
+      providers: [
         {
-            provide: TuioService, useValue: tuioService
+          provide: TuioService,
+          useValue: tuioService
         },
         {
-            provide: LogService, useValue: logService
+          provide: LogService,
+          useValue: logService
         }
-    ]
-})
-    .compileComponents();
+      ]
+    }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PackageDetailsComponent);
     component = fixture.componentInstance;
 
-    logService.sendErrorLog.and.returnValue();
-    tuioService.getPackages.and.returnValue(of(details));
+    logService.sendErrorLog.mockReturnValue(undefined);
+    tuioService.getPackages.mockReturnValue(of(details));
   });
 
   afterEach(() => {
-    logService.sendErrorLog.calls.reset();
+    logService.sendErrorLog.mockClear();
 
-    tuioService.getPackages.calls.reset();
+    tuioService.getPackages.mockClear();
   });
 
   it('should create', () => {
@@ -71,16 +71,37 @@ describe('PackageDetailsComponent', () => {
 
   it('should handle errors correctly', () => {
     const errorPackages = 'TestError: tuioService.getPackages';
-    tuioService.getPackages.and.returnValue(throwError(errorPackages));
+    tuioService.getPackages.mockReturnValue(throwError(errorPackages));
 
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
 
-    const formattedMsg = `${errorPackages} - ${JSON.stringify(errorPackages, null, 3)}`
-    expect(logService.sendErrorLog).toHaveBeenCalledOnceWith(formattedMsg);
+    const formattedMsg = `${errorPackages} - ${JSON.stringify(
+      errorPackages,
+      null,
+      3
+    )}`;
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+    expect(logService.sendErrorLog).toHaveBeenCalledWith(formattedMsg);
     expect(tuioService.getPackages).toHaveBeenCalledTimes(1);
   });
+});
 
+describe('Zoneless change detection: renders TUIO package payloads', () => {
+  setupZonelessTests();
 
+  it('renders TUIO package payloads', async () => {
+    const response = new Subject<TuioPackageDetails>();
+    tuio.getPackages.mockReturnValue(response);
+    const fixture = await mount(PackageDetailsComponent);
+    response.next({
+      sessionId: 42,
+      frameId: 91,
+      packageContent: 'Async TUIO package'
+    });
+    await fixture.whenStable();
+    expect(text(fixture)).toContain('Async TUIO package');
+    expect(text(fixture)).toContain('Frame Id: 91');
+  });
 });

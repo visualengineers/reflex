@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ValueTextComponent } from './value-text.component';
 import { By } from '@angular/platform-browser';
+import { ValueTextComponent } from './value-text.component';
 
 describe('ValueTextComponent', () => {
   let component: ValueTextComponent;
@@ -9,9 +8,9 @@ describe('ValueTextComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ ValueTextComponent ]
+      imports: [ValueTextComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -24,20 +23,37 @@ describe('ValueTextComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it ('should assign default title', () => {
+  it('should assign default title', () => {
     const defaultTitle = '';
 
     const inputElem = fixture.debugElement.query(By.css('.settings__item--label'));
-    expect(inputElem.nativeElement.textContent).toEqual(`${defaultTitle}`);
+    expect((inputElem.nativeElement as HTMLInputElement).textContent).toEqual(`${defaultTitle}`);
   });
 
-  it ('should set title correctly', () => {
+  it('should set title correctly', () => {
     const testTitle = 'Value Text - TestTitle';
     fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 
     const inputElem = fixture.debugElement.query(By.css('.settings__item--label'));
-    expect(inputElem.nativeElement.textContent).toEqual(`${testTitle}`);
+    expect((inputElem.nativeElement as HTMLInputElement).textContent).toEqual(`${testTitle}`);
+  });
+});
+
+describe('Zoneless change detection: renders updated inputs of ValueTextComponent', () => {
+  it('renders updated inputs of ValueTextComponent', async () => {
+    const fixture = TestBed.createComponent(
+      ValueTextComponent
+    );
+    await fixture.whenStable();
+    fixture.componentRef.setInput(
+      'elementTitle',
+      'Asynchronously updated title'
+    );
+    await fixture.whenStable();
+    expect((fixture.nativeElement as HTMLInputElement).textContent).toContain(
+      'Asynchronously updated title'
+    );
   });
 });

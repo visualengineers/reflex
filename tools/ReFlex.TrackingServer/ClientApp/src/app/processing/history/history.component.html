@@ -1,38 +1,51 @@
-
-<div class="content" *ngIf="(frames?.length ?? 0) > 0">     
-    <div class="content__header">       
-        <h2 class="heading-secondary">Interactions History</h2>        
+@if ((frames?.length ?? 0) > 0) {
+<div class="content">
+  <div class="content__header">
+    <h2 class="heading-secondary">Interactions History</h2>
+  </div>
+  <app-settings-group toggleId="frames-toggle" elementTitle="Frames">
+    @for (frame of frames; track frame) {
+    <div class="history__item">
+      <h3 class="heading-tertiary history__item--id">{{ frame.frameId }}</h3>
+      @if ((frame.interactions?.length ?? 0) > 0) {
+      <table class="interactions__table history__item--interactions">
+        <tbody class="interactions__table--body">
+          @for (interaction of frame.interactions; track interaction) {
+          <tr>
+            <td>{{ interaction.touchId }}</td>
+            <td>{{ interaction.position.x.toFixed(2) }}</td>
+            <td>{{ interaction.position.y.toFixed(2) }}</td>
+            <td>{{ interaction.position.z.toFixed(2) }}</td>
+            <td>{{ interaction.confidence }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
     </div>
-    <app-settings-group toggleId="frames-toggle" elementTitle="Frames">
-        <div *ngFor="let frame of frames" class="history__item">
-            <h3 class="heading-tertiary history__item--id">{{frame.frameId}}</h3>
-            <table *ngIf="(frame.interactions?.length ?? 0) > 0" class="interactions__table history__item--interactions">
-                <tbody class="interactions__table--body">
-                    <tr *ngFor="let interaction of frame.interactions">
-                        <td>{{interaction.touchId}}</td>
-                        <td>{{interaction.position.x.toFixed(2)}}</td>
-                        <td>{{interaction.position.y.toFixed(2)}}</td>
-                        <td>{{interaction.position.z.toFixed(2)}}</td>
-                        <td>{{interaction.confidence}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </app-settings-group>
-    <app-settings-group toggleId="history-toggle" elementTitle="History">
-        <div *ngFor="let item of history" class="history__item">
-            <h3 class="heading-tertiary history__item--id">{{item.touchId}}</h3>
-            <table *ngIf="(item.items?.length ?? 0) > 0" class="interactions__table history__item--interactions">
-                <tbody class="interactions__table--body">
-                    <tr *ngFor="let element of item.items">
-                        <td>{{element.frameId}}</td>
-                        <td>{{element.interaction.position.x.toFixed(2)}}</td>
-                        <td>{{element.interaction.position.y.toFixed(2)}}</td>
-                        <td>{{element.interaction.position.z.toFixed(2)}}</td>
-                        <td>{{element.interaction.confidence}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </app-settings-group>
+    }
+  </app-settings-group>
+  <app-settings-group toggleId="history-toggle" elementTitle="History">
+    @for (item of history; track item) {
+    <div class="history__item">
+      <h3 class="heading-tertiary history__item--id">{{ item.touchId }}</h3>
+      @if ((item.items?.length ?? 0) > 0) {
+      <table class="interactions__table history__item--interactions">
+        <tbody class="interactions__table--body">
+          @for (element of item.items; track element) {
+          <tr>
+            <td>{{ element.frameId }}</td>
+            <td>{{ element.interaction.position.x.toFixed(2) }}</td>
+            <td>{{ element.interaction.position.y.toFixed(2) }}</td>
+            <td>{{ element.interaction.position.z.toFixed(2) }}</td>
+            <td>{{ element.interaction.confidence }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+    }
+  </app-settings-group>
 </div>
+}

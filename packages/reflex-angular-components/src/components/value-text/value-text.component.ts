@@ -1,10 +1,10 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-value-text',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.Eager,
-  templateUrl: './value-text.component.html',
+  templateUrl: './value-text.component.html'
 })
 export class ValueTextComponent {
   @Input()

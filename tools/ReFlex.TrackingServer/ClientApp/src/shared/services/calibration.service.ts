@@ -1,10 +1,5 @@
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { fromEventPattern, Observable, using } from 'rxjs';
-import { SignalRBaseService } from './signalR.base.service';
-import { concatMap, map } from 'rxjs/operators';
-import { LogService } from 'src/app/log/log.service';
+import { inject, Injectable } from '@angular/core';
 import {
   Calibration,
   CalibrationPoint,
@@ -14,6 +9,11 @@ import {
   Interaction,
   Point3
 } from '@reflex/shared-types';
+import { fromEventPattern, Observable, using } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
+import { LogService } from 'src/app/log/log.service';
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
+import { SignalRBaseService } from './signalR.base.service';
 
 @Injectable({
   providedIn: 'root'

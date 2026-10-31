@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
-  inject,
-  ChangeDetectionStrategy
+  inject
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-  SettingsGroupComponent,
-  PanelHeaderComponent
+  PanelHeaderComponent,
+  SettingsGroupComponent
 } from '@reflex/angular-components/dist';
 import { BehaviorSubject, Subscription, filter, timer } from 'rxjs';
 

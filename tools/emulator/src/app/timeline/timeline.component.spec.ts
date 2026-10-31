@@ -7,10 +7,10 @@ describe('TimelineComponent', () => {
   let fixture: ComponentFixture<TimelineComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
-    imports: [TimelineComponent]
-})
-    .compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [TimelineComponent]
+    })
+      .compileComponents();
   });
 
   beforeEach(() => {

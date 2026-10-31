@@ -1,20 +1,19 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  Output,
-  ChangeDetectionStrategy,
+  Output
 } from '@angular/core';
 import { OptionCheckboxComponent } from './option-checkbox.component';
 
 @Component({
   selector: 'app-option-checkbox',
   changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  template: ''
 })
 export class MockOptionCheckboxComponent
-  implements Partial<OptionCheckboxComponent>
-{
+implements Partial<OptionCheckboxComponent> {
   @Input()
   public data = false;
 

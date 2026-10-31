@@ -6,7 +6,8 @@
   "scripts": {
     "build": "ng build @reflex/angular-components",
     "test": "ng test @reflex/angular-components",
-    "test-ci": "ng test @reflex/angular-components --no-watch --code-coverage"
+    "test-ci": "ng test @reflex/angular-components --no-watch --coverage",
+    "lint": "eslint . --max-warnings 0"
   },
   "repository": {
     "type": "git",

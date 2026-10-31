@@ -1,9 +1,9 @@
 import { Border } from './border';
-import { Distance } from './distance';
 import { ConfidenceParameter } from './confidence-parameter';
-import { SmoothingParameter } from './smoothing-parameter';
+import { Distance } from './distance';
 import { ExtremumDescriptionSettings } from './extremum-description-settings';
 import { LimitationFilterType } from './limitation-flter-type';
+import { SmoothingParameter } from './smoothing-parameter';
 
 export interface FilterSettings {
 

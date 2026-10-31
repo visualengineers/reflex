@@ -10,7 +10,7 @@ describe('ValueSliderComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SliderComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SliderComponent);
     component = fixture.componentInstance;

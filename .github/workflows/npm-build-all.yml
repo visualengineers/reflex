@@ -20,3 +20,14 @@ jobs:
         uses: ./.github/actions/npm-install
       - name: build complete (build / lint / test-ci commands in each workspace)
         run: npm run build-complete
+      - name: Verify Angular test and coverage reports
+        run: node scripts/verify-angular-reports.cjs
+      - name: Attach Angular test and coverage reports
+        if: success() || failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: angular-test-reports
+          path: |
+            test/artifacts/coverage
+            test/artifacts/tests
+          if-no-files-found: error
