@@ -1,12 +1,21 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { debounceTime, skipWhile } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-value-slider',
-    templateUrl: './value-slider.component.html',
-    imports: [FormsModule]
+  selector: 'app-value-slider',
+  templateUrl: './value-slider.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule],
 })
 export class ValueSliderComponent implements OnInit, OnDestroy {
   @Input()
@@ -36,7 +45,9 @@ export class ValueSliderComponent implements OnInit, OnDestroy {
   @Output()
   public onChange = new EventEmitter();
 
-  private readonly currentValue: BehaviorSubject<number> = new BehaviorSubject(0);
+  private readonly currentValue: BehaviorSubject<number> = new BehaviorSubject(
+    0
+  );
   private readonly debounce$: Observable<number>;
   private debounceUpdate?: Subscription;
   private unchanged = true;
@@ -52,7 +63,7 @@ export class ValueSliderComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.debounceUpdate = this.debounce$.subscribe({
       next: () => this.onChange.emit(),
-      error: (error) => console.error(error)
+      error: (error) => console.error(error),
     });
   }
 

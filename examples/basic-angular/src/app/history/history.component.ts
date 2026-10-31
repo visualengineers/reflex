@@ -1,26 +1,37 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TouchPointService } from 'src/services/touch-point.service';
 import { InteractionFrame } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-history',
-    templateUrl: './history.component.html',
-    styleUrls: ['./history.component.scss'],
-    standalone: false
+  selector: 'app-history',
+  templateUrl: './history.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./history.component.scss'],
 })
-export class HistoryComponent  implements OnInit, OnDestroy {
+export class HistoryComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private _pointService = inject(TouchPointService);
+
   private _frames: Subscription | undefined;
 
   public Frames: Array<InteractionFrame> = [];
   public JSON: JSON;
 
-  constructor(private _pointService: TouchPointService) {
+  constructor() {
     this.JSON = JSON;
-   }
+  }
 
   ngOnInit(): void {
-    this._frames = this._pointService.getHistory().subscribe(res => {
+    this._frames = this._pointService.getHistory().subscribe((res) => {
+      this.changeDetector.markForCheck();
       this.Frames = res;
     });
   }
@@ -28,7 +39,6 @@ export class HistoryComponent  implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    this._frames?.unsubscribe();    
+    this._frames?.unsubscribe();
   }
-
 }

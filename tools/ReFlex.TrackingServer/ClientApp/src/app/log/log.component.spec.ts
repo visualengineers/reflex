@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LogComponent } from './log.component';
 import { LogService } from './log.service';
 import { of, throwError } from 'rxjs';
@@ -38,8 +38,8 @@ describe('LogComponent', () => {
   let component: LogComponent;
   let fixture: ComponentFixture<LogComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
     imports: [
       FormsModule,
       LogComponent
@@ -55,7 +55,7 @@ describe('LogComponent', () => {
       add: { imports: [ MockValueSelectionComponent ] }
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LogComponent);

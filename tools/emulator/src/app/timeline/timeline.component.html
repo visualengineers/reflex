@@ -1,7 +1,17 @@
-<div class="timeline__container" [ngClass]="{'h-auto': isCollapsed, 'h-25': !isCollapsed }">
-    <div class="timeline__header float-right sticky-top">
-        <span (click)="toggleTimeline()" class="fas {{isCollapsed ? 'fa-angle-up' : 'fa-angle-down'}}"></span>
-    </div>
-    <app-timeline-canvas id="timeline-wrapper" *ngIf="!isCollapsed"></app-timeline-canvas>
+<div
+  class="timeline__container"
+  [ngClass]="{ 'h-auto': isCollapsed, 'h-25': !isCollapsed }"
+>
+  <div class="timeline__header float-right sticky-top">
+    <button
+      type="button"
+      aria-label="Toggle timeline"
+      [attr.aria-expanded]="!isCollapsed"
+      (click)="toggleTimeline()"
+      class="p-0 border-0 bg-transparent text-reset fas {{ isCollapsed ? 'fa-angle-up' : 'fa-angle-down' }}"
+    ></button>
+  </div>
+  @if (!isCollapsed) {
+  <app-timeline-canvas id="timeline-wrapper"></app-timeline-canvas>
+  }
 </div>
-

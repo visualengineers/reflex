@@ -1,5 +1,13 @@
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription, timer } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -10,10 +18,8 @@ import { MeasureService } from 'src/shared/services/measure.service';
   selector: 'app-measure-controls',
   templateUrl: './measure-controls.component.html',
   styleUrls: ['./measure-controls.component.scss'],
-  imports: [
-    CommonModule,
-    FormsModule
-  ]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, FormsModule]
 })
 export class MeasureControlsComponent implements OnInit, OnDestroy {
 
@@ -22,32 +28,36 @@ export class MeasureControlsComponent implements OnInit, OnDestroy {
   public numFramesCaptured = 0;
 
   public isCapturing = false;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly measureService = inject(MeasureService);
+  private readonly logService = inject(LogService);
 
   private captureState?: Subscription;
 
-  public constructor(private readonly measureService: MeasureService, private readonly logService: LogService) { }
-
   public ngOnInit(): void {
-
     const isCapturing$ = this.measureService.isCapturing();
     const sampleIdx$ = this.measureService.getCurrentSampleIdx();
-    this.captureState = timer(0, 500).pipe(
-      concatMap(() => isCapturing$),
-      map((result) => {
-        this.isCapturing = result;
-        console.log(this.isCapturing);
-      }),
-      concatMap(() => sampleIdx$),
-      map((result) => {
-        this.numFramesCaptured = result;
-      }),
-      catchError((error: unknown, caught: Observable<void>) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
+    this.captureState = timer(0, 500)
+      .pipe(
+        concatMap(() => isCapturing$),
+        map((result) => {
+          this.isCapturing = result;
+          this.changeDetector.markForCheck();
+          console.log(this.isCapturing);
+        }),
+        concatMap(() => sampleIdx$),
+        map((result) => {
+          this.numFramesCaptured = result;
+        }),
+        catchError((error: unknown, caught: Observable<void>) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
 
-        return caught;
-      })
-    ).subscribe();
+          return caught;
+        })
+      )
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe();
   }
 
   public ngOnDestroy(): void {
@@ -55,12 +65,15 @@ export class MeasureControlsComponent implements OnInit, OnDestroy {
   }
 
   public captureFrames(): void {
-    this.measureService.startCapture(this.captureId).subscribe(
-      (result) => console.info(result),
-      (error: unknown) => {
-        console.error(error);
-        this.logService.sendErrorLog(`${error}`);
-      }
-    );
+    this.measureService
+      .startCapture(this.captureId)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => console.info(result),
+        (error: unknown) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 }

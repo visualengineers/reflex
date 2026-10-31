@@ -33,7 +33,7 @@ describe('ValueTextComponent', () => {
 
   it ('should set title correctly', () => {
     const testTitle = 'Value Text - TestTitle';
-    component.elementTitle = testTitle;
+    fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 

@@ -38,7 +38,7 @@ describe('SettingsGroupComponent', () => {
 
   it ('should set id correctly', () => {
     const testId = 'SettingsGroupTestId';
-    component.toggleId = testId;
+    fixture.componentRef.setInput('toggleId', testId);
 
     fixture.detectChanges();
 
@@ -60,7 +60,7 @@ describe('SettingsGroupComponent', () => {
 
   it ('should set title correctly', () => {
     const testTitle = 'SettingsGroup - TestTitle';
-    component.elementTitle = testTitle;
+    fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 

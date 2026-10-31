@@ -1,38 +1,39 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AppVersionInfo } from '@reflex/shared-types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+interface ClientPackageInfo {
+  name: string;
+  version: string;
+  dependencies: Record<string, string>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-
 export class VersionInfoService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(BASE_URL);
 
   private readonly packageFile = 'assets/data/package.json';
   private readonly versionAddress = `${this.baseUrl}api/versionInfo`;
-
-  // eslint-disable-next-line new-cap
-  public constructor(private readonly http: HttpClient, @Inject('BASE_URL') private readonly baseUrl: string) {
-
-  }
 
   public getServerVersionInfo(): Observable<Array<AppVersionInfo>> {
     return this.http.get<Array<AppVersionInfo>>(this.versionAddress);
   }
 
   public getClientVersionInfo(): Observable<Array<AppVersionInfo>> {
-    return this.http.get(this.packageFile).pipe(
-      map((result: any) => Object.keys(result['dependencies']).map((value) => ({ name: value, version: result['dependencies'][value] })))
+    return this.http.get<ClientPackageInfo>(this.packageFile).pipe(
+      map((result) => Object.entries(result.dependencies).map(([name, version]) => ({ name, version })))
     );
   }
 
   public getAppVersionInfo(): Observable<AppVersionInfo> {
-    return this.http.get(this.packageFile).pipe(
-      map((result: any) => ({ name: result['name'], version: result['version'] }))
+    return this.http.get<ClientPackageInfo>(this.packageFile).pipe(
+      map(({ name, version }) => ({ name, version }))
     );
   }
 }

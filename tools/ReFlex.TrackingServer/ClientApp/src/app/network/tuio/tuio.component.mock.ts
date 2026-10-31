@@ -1,9 +1,9 @@
-import { Component } from "@angular/core";
-import { TuioComponent } from "./tuio.component";
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { TuioComponent } from './tuio.component';
 
 @Component({
-    selector: 'app-tuio', template: ''
+  selector: 'app-tuio',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
 })
-export class MockTuioComponent implements Partial<TuioComponent> {
-
-}
+export class MockTuioComponent implements Partial<TuioComponent> {}

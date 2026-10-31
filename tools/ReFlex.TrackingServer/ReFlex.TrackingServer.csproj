@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <PackageId>ReFlex.TrackingServer</PackageId>
     <Authors>Mathias Müller</Authors>
     <Copyright>Copyright © 2021-2025</Copyright>
@@ -18,6 +18,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
+    <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../..'))</RepoRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
@@ -26,7 +27,6 @@
     <DefineAdditionalConstants/>
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
-    <LangVersion>10</LangVersion>
     <Configurations>Debug;Release;CI</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Platform)' == 'ARM64'">
@@ -36,10 +36,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <!--        <DefineConstants>TRACE;MS_AZURE_KINECT;INTEL_REALSENSE</DefineConstants>-->
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'CI' ">
-    <PlatformTarget>ARM64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' And '$(EnableDefaultSensors)' != 'false' And ('$(RuntimeIdentifier)' == 'win-x64' Or ('$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Windows')))) ">
     <DefineConstants>TRACE; MS_AZURE_KINECT</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
@@ -49,6 +46,8 @@
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
+    <!-- 2.83 fixes the Linux ARM64 protoc crash: grpc/grpc#38538. Build tooling only. -->
+    <PackageReference Include="Grpc.Tools" Version="2.83.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.15" />
@@ -88,22 +87,23 @@
     </Content>
   </ItemGroup>
 
-    <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(RepoRoot)/node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="npm ci" />
   </Target>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <Exec WorkingDirectory="$(SpaRoot)..\..\" Command="npm install" />
-    <Exec WorkingDirectory="$(SpaRoot)..\..\" Command="npm run build:shared-types" />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="npm ci" Condition=" '$(SkipSpaBuild)' != 'true' And !Exists('$(RepoRoot)/node_modules') " />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="npm run build:shared-types" Condition=" '$(SkipSpaBuild)' != 'true' " />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="npm run build:shared-components" Condition=" '$(SkipSpaBuild)' != 'true' " />
     <!-- <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" /> -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration production" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration production" Condition=" '$(SkipSpaBuild)' != 'true' " />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>

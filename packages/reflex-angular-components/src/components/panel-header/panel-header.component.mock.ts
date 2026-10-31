@@ -1,26 +1,33 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { PanelHeaderComponent } from './panel-header.component';
 
 @Component({
-    selector: 'app-panel-header', template: ''
+  selector: 'app-panel-header',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
 })
 export class MockPanelHeaderComponent implements Partial<PanelHeaderComponent> {
+  @Input()
+  public disabled = false;
 
-@Input()
-public disabled = false;
+  @Input()
+  public data = false;
 
-@Input()
-public data = false;
+  @Output()
+  public dataChange = new EventEmitter<boolean>();
 
-@Output()
-public dataChange = new EventEmitter<boolean>();
+  @Input()
+  public elementId = 'custom-header';
 
-@Input()
-public elementId = 'custom-header';
+  @Input()
+  public elementTitle = 'Custom Title';
 
-@Input()
-public elementTitle = 'Custom Title';
-
-@Output()
-public onChange = new EventEmitter();
+  @Output()
+  public onChange = new EventEmitter();
 }

@@ -1,11 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-panel-header',
-    templateUrl: './panel-header.component.html',
-    imports: [CommonModule, FormsModule]
+  selector: 'app-panel-header',
+  templateUrl: './panel-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CommonModule, FormsModule],
 })
 export class PanelHeaderComponent {
   @Input()
@@ -31,5 +38,4 @@ export class PanelHeaderComponent {
     this.dataChange.emit(this.data);
     this.onChange.emit();
   }
-
 }

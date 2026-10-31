@@ -27,10 +27,10 @@ jobs:
         source: ${{ steps.get_release.outputs.tag_name }}
         find: 'v'
         replace: ''
-    - name: install node v18
+    - name: install node v22
       uses: actions/setup-node@main
       with:
-        node-version: 18
+        node-version: 22
         cache: 'npm'
         cache-dependency-path: ./package.json  
     - name: cache node-modules

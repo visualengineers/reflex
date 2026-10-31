@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { LogService } from '../log/log.service';
@@ -12,6 +19,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-measure-surface',
   templateUrl: './measure-surface.component.html',
   styleUrls: ['./measure-surface.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     FormsModule,
@@ -22,19 +30,31 @@ import { FormsModule } from '@angular/forms';
 export class MeasureSurfaceComponent implements OnInit {
 
   public fullScreen = false;
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly calibrationService = inject(CalibrationService);
+  private readonly logService = inject(LogService);
 
   private frameSizeSubscription?: Subscription;
-  private frameSize: FrameSizeDefinition = { top: 0, left: 0, width: 500, height: 400 };
-
-  public constructor(private readonly calibrationService: CalibrationService, private readonly logService: LogService) { }
+  private frameSize: FrameSizeDefinition = {
+    top: 0,
+    left: 0,
+    width: 500,
+    height: 400
+  };
 
   public ngOnInit(): void {
-    this.frameSizeSubscription = this.calibrationService.getFrameSize().subscribe((result) => {
-      this.frameSize = result;
-    }, (error) => {
-      console.error(error);
-      this.logService.sendErrorLog(`${error}`);
-    });
+    this.frameSizeSubscription = this.calibrationService
+      .getFrameSize()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (result) => {
+          this.frameSize = result;
+        },
+        (error) => {
+          console.error(error);
+          this.logService.sendErrorLog(`${error}`);
+        }
+      );
   }
 
   public ngOnDestroy(): void {
@@ -60,5 +80,4 @@ export class MeasureSurfaceComponent implements OnInit {
       height: `40vh`
     };
   }
-
 }

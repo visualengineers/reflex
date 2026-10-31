@@ -1,9 +1,9 @@
 import * as bodyparser from 'body-parser';
-import * as express from 'express';
-import * as fileUpload from 'express-fileupload';
+import express from 'express';
+import fileUpload from 'express-fileupload';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
-import * as cors from 'cors';
+import cors from 'cors';
 import debug from 'debug';
 import { CommonRoutesConfig } from './common/common-routes.config';
 import { DataRoutes } from './routes/data.routes.config';

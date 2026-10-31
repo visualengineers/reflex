@@ -1,6 +1,15 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SettingsGroupComponent, OptionCheckboxComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+
+import {
+  SettingsGroupComponent,
+  OptionCheckboxComponent,
+  ValueTextComponent,
+} from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { ConfigurationService } from '../service/configuration.service';
 import { CircleSize } from '../service/configuration.service';
@@ -9,12 +18,22 @@ import { Subscription } from 'rxjs';
 import { OnInit, OnDestroy } from '@angular/core';
 
 @Component({
-    selector: 'app-recorderoptions',
-    imports: [CommonModule, FormsModule, SettingsGroupComponent, OptionCheckboxComponent, ValueTextComponent],
-    templateUrl: './recorderoptions.component.html',
-    styleUrl: './recorderoptions.component.scss'
+  selector: 'app-recorderoptions',
+  imports: [
+    FormsModule,
+    SettingsGroupComponent,
+    OptionCheckboxComponent,
+    ValueTextComponent,
+  ],
+  templateUrl: './recorderoptions.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './recorderoptions.component.scss',
 })
-export class RecorderoptionsComponent implements OnInit, OnDestroy{
+export class RecorderoptionsComponent implements OnInit, OnDestroy {
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private configurationService = inject(ConfigurationService);
+  private connectionService = inject(ConnectionService);
+
   public amountTouchPoints: number = 0;
   public circleSize: CircleSize = { min: 0, max: 0 };
   public sendInterval: number = 100;
@@ -22,18 +41,17 @@ export class RecorderoptionsComponent implements OnInit, OnDestroy{
 
   private amountTouchPointsSubscription?: Subscription;
 
-  constructor(
-    private configurationService: ConfigurationService,
-    private connectionService: ConnectionService,
-  ) {}
-
   ngOnInit(): void {
-      this.circleSize = this.configurationService.getCircleSize();
-      this.sendInterval = this.configurationService.getSendInterval();
-      this.serverConnection = this.configurationService.getServerConnection();
+    this.circleSize = this.configurationService.getCircleSize();
+    this.sendInterval = this.configurationService.getSendInterval();
+    this.serverConnection = this.configurationService.getServerConnection();
 
-      this.amountTouchPointsSubscription = this.configurationService.getAmountTouchPoints()
-        .subscribe(amount => this.amountTouchPoints = amount);
+    this.amountTouchPointsSubscription = this.configurationService
+      .getAmountTouchPoints()
+      .subscribe((amount) => {
+        this.amountTouchPoints = amount;
+        this.changeDetector.markForCheck();
+      });
   }
 
   saveConfiguration(): void {

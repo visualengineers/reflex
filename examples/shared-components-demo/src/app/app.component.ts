@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ColorComponent } from './color/color.component';
-import { CommonModule } from '@angular/common';
+
 import { IntroductionComponent } from './introduction/introduction.component';
 import { PanelComponent } from './controls/panel/panel.component';
 import { ToggleComponent } from './controls/toggle/toggle.component';
@@ -21,17 +21,14 @@ import { ButtonsComponent } from './controls/buttons/buttons.component';
     SliderComponent,
     TableComponent,
     ButtonsComponent,
-    CommonModule,
     ColorComponent
   ],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-
   public title = 'ReFlex Shared Components Demo';
 
   public version = '1.0.0';
-
-
 }

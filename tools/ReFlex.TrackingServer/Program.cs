@@ -93,13 +93,15 @@ namespace TrackingServer
                 {
                     webBuilder
                         .UseStartup<Startup>()
-                        .ConfigureKestrel(options =>
+                        .ConfigureKestrel((context, options) =>
                         {
-                            // use secure communication for port 5000
-                            options.ListenLocalhost(5000, configure => configure.Protocols = HttpProtocols.Http1);
+                            var electronPort = context.Configuration.GetValue<int?>("electronWebPort");
+                            options.ListenLocalhost(electronPort ?? 5000, configure => configure.Protocols = HttpProtocols.Http1);
 
-                            // use secure communication for port 8001
-                            options.ListenLocalhost(5001, configure => configure.UseHttps());
+                            // Packaged Electron apps use local HTTP and must not require
+                            // an ASP.NET development certificate on the user's machine.
+                            if (electronPort == null)
+                                options.ListenLocalhost(5001, configure => configure.UseHttps());
 
                             // setup port 5002 for insecure gRpc communication
                             options.ListenLocalhost(5002, o => o.Protocols =

@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  DestroyRef,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
-import { CommonModule } from '@angular/common';
+
 import { GestureDataService } from '../service/gesture-data.service';
 import { GestureReplayService } from '../service/gesture-replay.service';
 import { GestureTrackFrame } from '../data/gesture-track-frame';
@@ -10,13 +18,19 @@ import { GestureTrackFrame } from '../data/gesture-track-frame';
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @Component({
-    selector: 'app-timeline',
-    imports: [PlotlyModule,
-       CommonModule],
-    templateUrl: './timeline.component.html',
-    styleUrls: ['./timeline.component.scss']
+  selector: 'app-timeline',
+  imports: [PlotlyModule],
+  templateUrl: './timeline.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private http = inject(HttpClient);
+  private gestureService = inject(GestureDataService);
+  private readonly gestureReplayService = inject(GestureReplayService);
+
   public max_value_layer = 1;
   public min_value_layer = -1.2;
   public horizontalPosition = 0;
@@ -34,7 +48,7 @@ export class TimelineComponent implements OnInit {
         t: 20,
         b: 40,
         l: 60,
-        r: 20
+        r: 20,
       },
       yaxis: {
         range: [this.min_value_layer, this.max_value_layer],
@@ -43,7 +57,7 @@ export class TimelineComponent implements OnInit {
         showgrid: true,
         gridcolor: '#bdbdbd',
         gridwidth: 1,
-        title: 'Tiefe | Höhe'
+        title: 'Tiefe | Höhe',
       },
       xaxis: {
         title: 'Frame',
@@ -55,47 +69,46 @@ export class TimelineComponent implements OnInit {
         gridwidth: 1,
         titlefont: {
           size: 14,
-          color: '#333'
-        }
+          color: '#333',
+        },
       },
       shapes: [] as any,
       showlegend: false,
       paper_bgcolor: '#f9f9f9',
-      plot_bgcolor: '#fff'
+      plot_bgcolor: '#fff',
     },
     config: {
       displayModeBar: false,
-      staticPlot: true
-    }
+      staticPlot: true,
+    },
   };
 
-  constructor(
-    private http: HttpClient,
-    private gestureService: GestureDataService,
-    private readonly gestureReplayService: GestureReplayService
-  ) {}
-
   ngOnInit() {
-    this.gestureService.gesture$.subscribe(gesture => {
-      this.segmentsCount = gesture.numFrames;
-      this.segmentWidth = this.graph.layout.width / this.segmentsCount;
-      this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
+    this.gestureService.gesture$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((gesture) => {
+        this.segmentsCount = gesture.numFrames;
+        this.segmentWidth = this.graph.layout.width / this.segmentsCount;
+        this.segments = Array.from({ length: this.segmentsCount }, (_, i) => i);
 
-      // Update the xaxis.range property
-      this.graph.layout.xaxis.range = [0, this.segmentsCount];
+        // Update the xaxis.range property
+        this.graph.layout.xaxis.range = [0, this.segmentsCount];
 
-      // Update the graph with empty data
-      this.updateGraph([]);
-    });
+        // Update the graph with empty data
+        this.updateGraph([]);
+      });
 
-    this.gestureService.gesturePoints$.subscribe(points => {
-      this.updateGraph(points);
-    });
+    this.gestureService.gesturePoints$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((points) => {
+        this.updateGraph(points);
+      });
   }
 
   updateGraph(points: GestureTrackFrame[]) {
+    this.changeDetector.markForCheck();
     const frameValues = Array.from({ length: this.segmentsCount }, (_, i) => i);
-    const zValues = points.map(point => point.z);
+    const zValues = points.map((point) => point.z);
 
     // Set the xaxis.range property to start from 0
     this.graph.layout.xaxis.range = [-0.5, this.segmentsCount];
@@ -108,10 +121,12 @@ export class TimelineComponent implements OnInit {
         mode: 'markers',
         name: 'Z-Werte',
         marker: { color: 'blue', size: 10 },
-        customdata: points.map(point => `(${point.x}, ${point.y}, ${point.z})`),
+        customdata: points.map(
+          (point) => `(${point.x}, ${point.y}, ${point.z})`
+        ),
         hovertemplate: 'Koordinaten: %{customdata}<extra></extra>',
-        zindex: 2
-      }
+        zindex: 2,
+      },
     ];
 
     // Update the background color bands
@@ -128,16 +143,15 @@ export class TimelineComponent implements OnInit {
         fillcolor: i % 2 === 0 ? '#ffffff' : '#e6e6e6',
         opacity: 0.5,
         line: {
-          width: 0
+          width: 0,
         },
-        zindex: 1
+        zindex: 1,
       });
     }
   }
 
-
   updateHorizontalPosition(index: number) {
-    this.horizontalPosition = (index) * this.segmentWidth;
+    this.horizontalPosition = index * this.segmentWidth;
     this.updateVerticalLinePosition();
   }
 
@@ -147,7 +161,10 @@ export class TimelineComponent implements OnInit {
       const plotlyGraph = container.querySelector('.overlay');
       const verticalLine = container.querySelector('.vertical-line');
 
-      if (plotlyGraph instanceof HTMLElement && verticalLine instanceof HTMLElement) {
+      if (
+        plotlyGraph instanceof HTMLElement &&
+        verticalLine instanceof HTMLElement
+      ) {
         const plotlyGraphRect = plotlyGraph.getBoundingClientRect();
         const plotlyGraphLeft = plotlyGraphRect.left;
         const verticalLineLeft = plotlyGraphLeft + this.horizontalPosition - 3;

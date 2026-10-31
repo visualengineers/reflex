@@ -1,12 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SettingsGroupComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+import {
+  SettingsGroupComponent,
+  ValueTextComponent
+} from '@reflex/angular-components/dist';
 
 @Component({
   selector: 'app-text-box',
-  imports: [CommonModule, FormsModule, SettingsGroupComponent, ValueTextComponent],
+  imports: [FormsModule, SettingsGroupComponent, ValueTextComponent],
   templateUrl: './text-box.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './text-box.component.scss'
 })
 export class TextBoxComponent {

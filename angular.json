@@ -1,0 +1,764 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "@reflex/angular-components": {
+      "projectType": "library",
+      "root": "packages/reflex-angular-components",
+      "sourceRoot": "packages/reflex-angular-components/src",
+      "prefix": "reflex",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "packages/reflex-angular-components/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "packages/reflex-angular-components/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "packages/reflex-angular-components/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "packages/reflex-angular-components/test.ts",
+            "tsConfig": "packages/reflex-angular-components/tsconfig.spec.json",
+            "karmaConfig": "packages/reflex-angular-components/karma.conf.js",
+            "polyfills": [],
+            "styles": [
+              "packages/reflex-angular-components/src/scss/reflex.scss"
+            ]
+          }
+        }
+      }
+    },
+    "TrackingServer": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
+        },
+        "@schematics/angular:guard": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:interceptor": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:module": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:pipe": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:resolver": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "tools/ReFlex.TrackingServer/ClientApp",
+      "sourceRoot": "tools/ReFlex.TrackingServer/ClientApp/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "progress": false,
+            "outputPath": {
+              "base": "tools/ReFlex.TrackingServer/ClientApp/dist"
+            },
+            "index": "tools/ReFlex.TrackingServer/ClientApp/src/index.html",
+            "polyfills": [
+              "tools/ReFlex.TrackingServer/ClientApp/src/polyfills.ts"
+            ],
+            "tsConfig": "tools/ReFlex.TrackingServer/ClientApp/src/tsconfig.app.json",
+            "assets": [
+              "tools/ReFlex.TrackingServer/ClientApp/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@reflex/angular-components/src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "tools/ReFlex.TrackingServer/ClientApp/src/sass/main.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "tools/ReFlex.TrackingServer/ClientApp/src/sass",
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
+            "scripts": [],
+            "browser": "tools/ReFlex.TrackingServer/ClientApp/src/main.ts",
+            "security": {
+              "allowedHosts": []
+            },
+            "prerender": false,
+            "ssr": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "2mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "100kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "tools/ReFlex.TrackingServer/ClientApp/src/environments/environment.ts",
+                  "with": "tools/ReFlex.TrackingServer/ClientApp/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": {
+                "scripts": true,
+                "hidden": false,
+                "styles": true
+              },
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "TrackingServer:build:production"
+            },
+            "development": {
+              "proxyConfig": "tools/ReFlex.TrackingServer/ClientApp/proxy.conf.js",
+              "buildTarget": "TrackingServer:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "TrackingServer:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "tools/ReFlex.TrackingServer/ClientApp/src/test.ts",
+            "polyfills": "tools/ReFlex.TrackingServer/ClientApp/src/polyfills.ts",
+            "tsConfig": "tools/ReFlex.TrackingServer/ClientApp/src/tsconfig.spec.json",
+            "karmaConfig": "tools/ReFlex.TrackingServer/ClientApp/src/karma.conf.js",
+            "styles": [
+              "tools/ReFlex.TrackingServer/ClientApp/src/sass/main.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "tools/ReFlex.TrackingServer/ClientApp/src/sass",
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
+            "scripts": [],
+            "assets": [
+              "tools/ReFlex.TrackingServer/ClientApp/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "tools/ReFlex.TrackingServer/ClientApp/**/*.ts"
+            ]
+          }
+        }
+      }
+    },
+    "reflex-emulator": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "sass",
+          "type": "component"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
+        },
+        "@schematics/angular:guard": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:interceptor": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:module": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:pipe": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:resolver": {
+          "typeSeparator": "."
+        }
+      },
+      "root": "tools/emulator",
+      "sourceRoot": "tools/emulator/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": {
+              "base": "tools/emulator/dist"
+            },
+            "index": "tools/emulator/src/index.html",
+            "polyfills": [
+              "tools/emulator/src/polyfills.ts"
+            ],
+            "tsConfig": "tools/emulator/tsconfig.app.json",
+            "assets": [
+              "tools/emulator/src/assets"
+            ],
+            "styles": [
+              "tools/emulator/src/styles.sass"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            },
+            "scripts": [],
+            "extractLicenses": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true,
+            "browser": "tools/emulator/src/main.ts"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "tools/emulator/src/environments/environment.ts",
+                  "with": "tools/emulator/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": ""
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "reflex-emulator:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "reflex-emulator:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "reflex-emulator:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "tools/emulator/src/test.ts",
+            "polyfills": "tools/emulator/src/polyfills.ts",
+            "tsConfig": "tools/emulator/tsconfig.spec.json",
+            "karmaConfig": "tools/emulator/karma.conf.js",
+            "assets": [
+              "tools/emulator/src/assets"
+            ],
+            "styles": [
+              "tools/emulator/src/styles.sass"
+            ],
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            }
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "tools/emulator/e2e/protractor.conf.js",
+            "devServerTarget": "reflex-emulator:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "reflex-emulator:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "tools/emulator/src/**/*.ts",
+              "tools/emulator/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "gestenrecorder": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component",
+          "style": "scss"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
+        },
+        "@schematics/angular:guard": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:interceptor": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:module": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:pipe": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:resolver": {
+          "typeSeparator": "."
+        }
+      },
+      "root": "tools/gestenrecorder",
+      "sourceRoot": "tools/gestenrecorder/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "tools/gestenrecorder/dist/gestenrecorder",
+            "index": "tools/gestenrecorder/src/index.html",
+            "browser": "tools/gestenrecorder/src/main.ts",
+            "polyfills": [],
+            "tsConfig": "tools/gestenrecorder/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "tools/gestenrecorder/src/favicon.ico",
+              "tools/gestenrecorder/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@reflex/angular-components/src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "tools/gestenrecorder/src/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
+            "scripts": [],
+            "server": "tools/gestenrecorder/src/main.server.ts",
+            "prerender": false,
+            "ssr": false
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "6mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "300kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "gestenrecorder:build:production"
+            },
+            "development": {
+              "buildTarget": "gestenrecorder:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "gestenrecorder:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [],
+            "tsConfig": "tools/gestenrecorder/tsconfig.spec.json",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "tools/gestenrecorder/src/favicon.ico",
+              "tools/gestenrecorder/src/assets"
+            ],
+            "styles": [
+              "tools/gestenrecorder/src/styles.scss"
+            ],
+            "scripts": [],
+            "main": "tools/gestenrecorder/src/test.ts"
+          }
+        }
+      }
+    },
+    "basic-angular": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component",
+          "style": "scss"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
+        },
+        "@schematics/angular:guard": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:interceptor": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:module": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:pipe": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:resolver": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "examples/basic-angular",
+      "sourceRoot": "examples/basic-angular/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": {
+              "base": "examples/basic-angular/dist/basic-angular"
+            },
+            "index": "examples/basic-angular/src/index.html",
+            "polyfills": [
+              "examples/basic-angular/src/polyfills.ts"
+            ],
+            "tsConfig": "examples/basic-angular/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "examples/basic-angular/src/favicon.ico",
+              "examples/basic-angular/src/assets"
+            ],
+            "styles": [
+              "examples/basic-angular/src/styles.scss"
+            ],
+            "scripts": [],
+            "browser": "examples/basic-angular/src/main.ts"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "examples/basic-angular/src/environments/environment.ts",
+                  "with": "examples/basic-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "basic-angular:build:production"
+            },
+            "development": {
+              "buildTarget": "basic-angular:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "basic-angular:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "examples/basic-angular/src/test.ts",
+            "polyfills": "examples/basic-angular/src/polyfills.ts",
+            "tsConfig": "examples/basic-angular/tsconfig.spec.json",
+            "karmaConfig": "examples/basic-angular/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "examples/basic-angular/src/favicon.ico",
+              "examples/basic-angular/src/assets"
+            ],
+            "styles": [
+              "examples/basic-angular/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "shared-components-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component",
+          "style": "scss"
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
+        },
+        "@schematics/angular:guard": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:interceptor": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:module": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:pipe": {
+          "typeSeparator": "."
+        },
+        "@schematics/angular:resolver": {
+          "typeSeparator": "."
+        }
+      },
+      "root": "examples/shared-components-demo",
+      "sourceRoot": "examples/shared-components-demo/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "examples/shared-components-demo/dist/shared-components-demo",
+            "index": "examples/shared-components-demo/src/index.html",
+            "browser": "examples/shared-components-demo/src/main.ts",
+            "polyfills": [],
+            "tsConfig": "examples/shared-components-demo/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "examples/shared-components-demo/src/favicon.ico",
+              "examples/shared-components-demo/src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@reflex/angular-components/src/assets",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "examples/shared-components-demo/src/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
+            "scripts": [],
+            "server": "examples/shared-components-demo/src/main.server.ts",
+            "prerender": true,
+            "ssr": {
+              "entry": "examples/shared-components-demo/server.ts"
+            }
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "100kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "shared-components-demo:build:production"
+            },
+            "development": {
+              "buildTarget": "shared-components-demo:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "shared-components-demo:build"
+          }
+        },
+        "shared-components-demo": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [],
+            "tsConfig": "examples/shared-components-demo/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "examples/shared-components-demo/src/favicon.ico",
+              "examples/shared-components-demo/src/assets"
+            ],
+            "styles": [
+              "examples/shared-components-demo/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "examples/shared-components-demo/src/test.ts",
+            "polyfills": "examples/shared-components-demo/src/polyfills.ts",
+            "tsConfig": "examples/shared-components-demo/tsconfig.spec.json",
+            "karmaConfig": "examples/shared-components-demo/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "examples/shared-components-demo/src/favicon.ico",
+              "examples/shared-components-demo/src/assets"
+            ],
+            "styles": [
+              "examples/shared-components-demo/src/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/@reflex/angular-components/src/scss"
+              ]
+            },
+            "scripts": []
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
+  }
+}

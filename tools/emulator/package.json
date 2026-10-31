@@ -6,18 +6,18 @@
   "main": "main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4300",
-    "build": "ng build",
-    "test": "ng test",
-    "test-ci": "ng test --no-watch --code-coverage",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "electron": "ng build --base-href ./ && electron .",
-    "build:electron-win": "ng build --base-href ./ && electron-builder build --win",
-    "build:electron-osx": "ng build --base-href ./ && electron-builder build --mac --x64",
-    "build:electron-osx-arm64": "ng build --base-href ./ && electron-builder build --mac --arm64",
-    "build:electron-linux": "ng build --base-href ./ && electron-builder build --linux --x64",
-    "build:electron-linux-arm64": "ng build --base-href ./ && electron-builder build --linux --arm64"
+    "start": "ng serve reflex-emulator --port 4300",
+    "build": "ng build reflex-emulator",
+    "test": "ng test reflex-emulator",
+    "test-ci": "ng test reflex-emulator --no-watch --code-coverage --browsers=ChromeHeadless",
+    "lint": "ng lint reflex-emulator",
+    "e2e": "ng e2e reflex-emulator",
+    "electron": "ng build reflex-emulator --base-href ./ && electron .",
+    "build:electron-win": "node ../../scripts/build-electron.cjs emulator win x64",
+    "build:electron-osx": "node ../../scripts/build-electron.cjs emulator osx x64",
+    "build:electron-osx-arm64": "node ../../scripts/build-electron.cjs emulator osx arm64",
+    "build:electron-linux": "node ../../scripts/build-electron.cjs emulator linux x64",
+    "build:electron-linux-arm64": "node ../../scripts/build-electron.cjs emulator linux arm64"
   },
   "build": {
     "appId": "reflex.emulator",
@@ -32,12 +32,20 @@
       "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     },
     "files": [
-      "node_modules/**/*",
-      "**/*"
+      "main.js",
+      "dist/**/*",
+      "package.json"
     ],
     "directories": {
       "output": "release",
       "buildResources": "assets"
+    },
+    "npmRebuild": false,
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "dist/browser/assets/icon/app_icon_inverted.png"
     }
   },
   "private": true,
@@ -61,7 +69,7 @@
     "defaults"
   ],
   "dependencies": {
-    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/angular-fontawesome": "^4.0.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",

@@ -1,8 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ValueSliderComponent } from './value-slider.component';
 
 @Component({
-    selector: 'app-value-slider', template: ''
+  selector: 'app-value-slider',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
 })
 export class MockValueSliderComponent implements Partial<ValueSliderComponent> {
   @Input()

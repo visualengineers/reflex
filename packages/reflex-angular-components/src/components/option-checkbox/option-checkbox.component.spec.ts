@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OptionCheckboxComponent } from './option-checkbox.component';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +39,7 @@ describe('OptionCheckboxComponent', () => {
 
   it ('should set id correctly', () => {
     const testId = 'OptionCheckBoxTestId';
-    component.elementId = testId;
+    fixture.componentRef.setInput('elementId', testId);
 
     fixture.detectChanges();
 
@@ -61,7 +61,7 @@ describe('OptionCheckboxComponent', () => {
 
   it ('should set title correctly', () => {
     const testTitle = 'OptionCheckBox - TestTitle';
-    component.elementTitle = testTitle;
+    fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 
@@ -78,7 +78,7 @@ describe('OptionCheckboxComponent', () => {
 
   it ('should correctly set disabled state', () => {
     const newState = true;
-    component.disabled = newState;
+    fixture.componentRef.setInput('disabled', newState);
 
     fixture.detectChanges();
 

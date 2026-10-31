@@ -1,0 +1,73 @@
+name: Electron startup smoke tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: electron-smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  electron-smoke:
+    name: ${{ matrix.application }} / ${{ matrix.target }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        application: [emulator, server]
+        target: [win, osx, osx-arm64, linux, linux-arm64]
+        include:
+          - runner: windows-latest
+            target: win
+          - runner: macos-15-intel
+            target: osx
+          - runner: macos-15
+            target: osx-arm64
+          - runner: ubuntu-24.04
+            target: linux
+          - runner: ubuntu-24.04-arm
+            target: linux-arm64
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      DOTNET_ROLL_FORWARD: Major
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-dotnet@v4
+        if: matrix.application == 'server'
+        with:
+          global-json-file: global.json
+      - name: Install Linux display dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgtk-3-0 libnss3 libasound2t64 libgbm1
+      - run: npm ci
+      - name: Build native unpacked application
+        run: npm run build:${{ matrix.application }}:electron-${{ matrix.target }} -- --dir
+      - name: Start packaged application and verify UI and backend
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            xvfb-run -a npm run smoke:electron -- ${{ matrix.application }}
+          else
+            npm run smoke:electron -- ${{ matrix.application }}
+          fi
+      - name: Upload startup diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-smoke-${{ matrix.application }}-${{ matrix.target }}
+          path: test/artifacts/electron/${{ matrix.application }}/
+          if-no-files-found: ignore

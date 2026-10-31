@@ -1,22 +1,39 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NormalizedPoint } from '../model/NormalizedPoint.model';
-import { CommonModule } from '@angular/common';
-import { SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
+
+import {
+  SettingsGroupComponent,
+  ValueSelectionComponent,
+  ValueTextComponent,
+} from '@reflex/angular-components/dist';
 import { FormsModule } from '@angular/forms';
 import { ConfigurationService } from '../service/configuration.service';
 
 @Component({
-    selector: 'app-hover-menu',
-    imports: [CommonModule, SettingsGroupComponent, ValueSelectionComponent, ValueTextComponent, FormsModule],
-    templateUrl: './hover-menu.component.html',
-    styleUrls: ['./hover-menu.component.scss']
+  selector: 'app-hover-menu',
+  imports: [
+    SettingsGroupComponent,
+    ValueSelectionComponent,
+    ValueTextComponent,
+    FormsModule,
+  ],
+  templateUrl: './hover-menu.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./hover-menu.component.scss'],
 })
 export class HoverMenuComponent {
+  private configurationService = inject(ConfigurationService);
+
   @Input() hoveredPoint: NormalizedPoint | null = null;
   @Output() pointUpdated = new EventEmitter<NormalizedPoint>();
   @Input() isFixed: boolean = false;
-
-  constructor(private configurationService: ConfigurationService) {}
 
   toggleFixed() {
     this.isFixed = !this.isFixed;

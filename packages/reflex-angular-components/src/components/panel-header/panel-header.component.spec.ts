@@ -39,7 +39,7 @@ describe('PanelHeaderComponent', () => {
 
   it ('should set id correctly', () => {
     const testId = 'PanelHeaderTestId';
-    component.elementId = testId;
+    fixture.componentRef.setInput('elementId', testId);
 
     fixture.detectChanges();
 
@@ -61,7 +61,7 @@ describe('PanelHeaderComponent', () => {
 
   it ('should set title correctly', () => {
     const testTitle = 'PanelHeaderComponent - TestTitle';
-    component.elementTitle = testTitle;
+    fixture.componentRef.setInput('elementTitle', testTitle);
 
     fixture.detectChanges();
 
@@ -78,7 +78,7 @@ describe('PanelHeaderComponent', () => {
 
   it ('should correctly set disabled state', () => {
     const newState = true;
-    component.disabled = newState;
+    fixture.componentRef.setInput('disabled', newState);
 
     fixture.detectChanges();
 

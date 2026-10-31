@@ -5,23 +5,23 @@
   "main": "app.js",
   "scripts": {
     "ng": "ng",
-    "start:windows": "ng serve --ssl --ssl-cert %APPDATA%\\ASP.NET\\https\\%npm_package_name%.pem --ssl-key %APPDATA%\\ASP.NET\\https\\%npm_package_name%.key",
-    "start:default": "ng serve --ssl --ssl-cert $HOME/.aspnet/https/${npm_package_name}.pem --ssl-key $HOME/.aspnet/https/${npm_package_name}.key",
+    "start:windows": "ng serve TrackingServer --ssl --ssl-cert %APPDATA%\\ASP.NET\\https\\%npm_package_name%.pem --ssl-key %APPDATA%\\ASP.NET\\https\\%npm_package_name%.key",
+    "start:default": "ng serve TrackingServer --ssl --ssl-cert $HOME/.aspnet/https/${npm_package_name}.pem --ssl-key $HOME/.aspnet/https/${npm_package_name}.key",
     "prestart": "node aspnetcore-https",
-    "start": "ng serve -c development",
+    "start": "ng serve TrackingServer -c development",
     "start:electron": "electron .",
-    "build": "ng build --base-href ./",
-    "build:ssr": "ng run TrackingServer:server:dev",
-    "build:electron-win": "cd .. & electronize build .\\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target win",
-    "build:electron-osx": "cd .. && electronize build .\\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target mac",
-    "build:electron-osx-arm64": "cd .. && electronize build .\\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom \"osx-arm64;\" /electron-arch arm64",
-    "build:electron-linux": "cd .. && electronize build ./ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=x64 /target win",
-    "build:electron-linux-arm64": "cd .. && electronize build .\\ReFlex.TrackingServer.csproj /PublishSingleFile false /PublishReadyToRun false /p:Configuration=Release /p:Platform=ARM64 /target custom \"linux-arm64;\" /electron-arch arm64",
-    "test": "ng test --code-coverage",
-    "test-ci": "ng test --no-watch --code-coverage --browsers=ChromeHeadlessNoSandbox",
+    "build": "ng build TrackingServer --base-href ./",
+    "build:electron-win": "node ../../../scripts/build-electron.cjs server win x64",
+    "build:electron-osx": "node ../../../scripts/build-electron.cjs server osx x64",
+    "build:electron-osx-arm64": "node ../../../scripts/build-electron.cjs server osx arm64",
+    "build:electron-linux": "node ../../../scripts/build-electron.cjs server linux x64",
+    "build:electron-linux-arm64": "node ../../../scripts/build-electron.cjs server linux arm64",
+    "test": "ng test TrackingServer --code-coverage",
+    "test-ci": "ng test TrackingServer --no-watch --code-coverage --browsers=ChromeHeadlessNoSandbox",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e TrackingServer",
+    "serve:ssr:TrackingServer": "node dist/server/server.mjs"
   },
   "repository": {
     "type": "git",
@@ -49,10 +49,12 @@
     "@reflex/angular-components": "file:../../../packages/reflex-angular-components",
     "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
     "d3": "^7.9.0",
+    "express": "^5.1.0",
     "three": "^0.175.0"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
+    "@types/express": "^5.0.1",
     "@types/three": "^0.175.0",
     "@types/webxr": "^0.5.22"
   }

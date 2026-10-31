@@ -1,14 +1,16 @@
-import { Injectable } from "@angular/core";
-import { WebSocketSubject } from "rxjs/webSocket";
-import { interval, Observable, Subject, Subscription } from "rxjs";
-import { ConfigurationService } from "./configuration.service";
-import { delay, tap } from "rxjs/operators";
-import { Interaction } from "@reflex/shared-types";
+import { Injectable, inject } from '@angular/core';
+import { WebSocketSubject } from 'rxjs/webSocket';
+import { interval, Observable, Subject, Subscription } from 'rxjs';
+import { ConfigurationService } from './configuration.service';
+import { delay, tap } from 'rxjs/operators';
+import { Interaction } from '@reflex/shared-types';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ConnectionService {
+  private configurationService = inject(ConfigurationService);
+
   private socket?: WebSocketSubject<Array<Interaction>>;
   private sendInterval$?: Observable<number>;
   private touchPoints: Array<Interaction> = [];
@@ -20,7 +22,7 @@ export class ConnectionService {
 
   public doReconnect = true;
 
-  constructor(private configurationService: ConfigurationService) {
+  constructor() {
     this.connectionSuccessful = new Subject();
   }
 
@@ -39,7 +41,7 @@ export class ConnectionService {
             this.doReconnect = false;
             this.connect();
           }
-        }),
+        })
       )
       .subscribe();
 
@@ -73,7 +75,7 @@ export class ConnectionService {
   private connect(): void {
     if (!this.socket || this.socket.closed) {
       this.socket = new WebSocketSubject(
-        this.configurationService.getServerConnection(),
+        this.configurationService.getServerConnection()
       );
     }
 
@@ -81,7 +83,7 @@ export class ConnectionService {
 
     this.socket.subscribe(
       (result) => {
-        console.log("websocket says: " + result);
+        console.log('websocket says: ' + result);
       },
       (error) => {
         this.disconnect();
@@ -89,12 +91,12 @@ export class ConnectionService {
       },
       () => {
         this.disconnect();
-        console.log("websocket subscription Completed");
-      },
+        console.log('websocket subscription Completed');
+      }
     );
     this.sendInterval$ = interval(this.configurationService.getSendInterval());
     this.sendIntervalSubscription = this.sendInterval$.subscribe(() =>
-      this.doSend(this.touchPoints),
+      this.doSend(this.touchPoints)
     );
   }
 

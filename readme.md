@@ -61,13 +61,86 @@ The repository uses NPM workspaces for better management of dependencies
 
 Therefore, the repository should be initialized in the root folder by running the command `npm install` and not in the sub directories (although there are package.json files, but these files are just handling the local dependencies)
 
+### Angular workspace
+
+All Angular applications and the shared component library are registered in the root `angular.json`.
+Their source directories and build output directories remain inside their existing npm workspaces.
+Angular dependencies are maintained only in the root `package.json`; do not add a separate
+`angular.json` to an application directory.
+
+The existing npm scripts work both from the repository root and from each package directory.
+Direct Angular CLI commands should specify the project explicitly, for example:
+
+```bash
+npm run ng -- build reflex-emulator
+npm run ng -- serve TrackingServer --configuration development
+npm run ng -- test basic-angular --watch=false
+npm run ng -- generate component example --project=shared-components-demo
+```
+
+To update Angular, run `npm run ng -- update @angular/cli@^<next-major> @angular/core@^<next-major>`
+from the repository root, replacing `<next-major>` with the target major version.
+Update one major version at a time, include other packages with their own migrations as needed,
+and review the generated changes. Dependencies no longer need to be copied into individual packages.
+After an update, build shared types and components first, then the applications, and run their tests.
+Paths in `angular.json` are relative to the repository root; paths in `tsconfig` and `ng-package.json`
+remain relative to their respective configuration files.
+
+#### ESLint flat configuration
+
+The existing lint targets use `eslint.config.js` in TrackingServer, emulator,
+shared-components-demo, and basic-react. They work through the workspace npm scripts
+(`npm run lint:server`, `npm run lint:emulator`, or `npm run lint -w <workspace>`).
+TrackingServer's Angular CLI lint target also uses the ESLint builder.
+
+TrackingServer and the demo share `scripts/eslint/typescript.config.cjs`. It reads
+rule definitions from the existing GTV TypeScript policy, registers the current
+parser/plugins directly, and maps removed TypeScript formatting rules to `@stylistic/ts`.
+Type-aware rules resolve `tsconfig.json` relative to each workspace, including when
+ESLint is launched from the repository root. Existing generated-file and test-file
+exclusions are retained. The emulator additionally checks external and inline Angular
+templates. AngularJS's `eslint-plugin-angular` is not used.
+
+#### Zoneless change detection
+
+All Angular applications explicitly provide `provideZonelessChangeDetection()`.
+Their browser/SSR bootstraps and Karma environments do not load `zone.js` or
+`zone.js/testing`. The shared component library is also tested in zoneless mode;
+it leaves the scheduling provider to its consuming application.
+
+Imperative subscriptions that change template state call `ChangeDetectorRef.markForCheck()`.
+AsyncPipe, template events, HostListeners, and bound input updates already notify Angular.
+Canvas drawing and playback operate directly on the canvas and do not trigger application-wide checks.
+
+| Project | Change-detection boundaries covered by regression tests |
+| --- | --- |
+| `basic-angular` | WebSocket counts/frame numbers/history, connection polling, native resize and touch positions |
+| `reflex-emulator` | Touch count, backup timestamp, nested layer values, connection indicator, canvas background |
+| `gestenrecorder` | Loaded files/gesture table, recorder/layer forms, Plotly updates, canvas background, native hover/fix events, document clicks |
+| `shared-components-demo` | HTTP responses via AsyncPipe, timed toast dismissal, projected panel state |
+| `@reflex/angular-components` | Input updates for all six controls, checkbox/panel two-way bindings, debounced slider output |
+| `TrackingServer` | See its ClientApp README for the HTTP/SignalR/polling/ViewChild audit |
+
+Each project has a `zoneless-change-detection.spec.ts` regression suite. These tests
+assert rendered output using `fixture.whenStable()` without test-side `detectChanges()`
+or `markForCheck()`. Native timers and Plotly's drawing are awaited separately.
+Owned timer/stream subscriptions are detached when the affected views are destroyed;
+components do not unsubscribe shared service subjects.
+
+To check all Angular projects, build the shared types and components first, then run
+`npm run ng -- test <project> --watch=false --browsers=ChromeHeadless` and
+`npm run ng -- build <project> --configuration=production` for the projects above.
+`CHROME_BIN` can point to a locally installed Chrome or the Puppeteer executable.
+The shared-components demo production build also verifies SSR/prerendering.
+Angular dependency versions remain unchanged.
+
 **[⬆ back to top](#table-of-contents)**
 
 ### Repository initialization
 
 - run `npm run build:shared-types` to build shared types library
 - run `npm install` in root directory
-- if building with electron: Install Electron-Builder globally by running: `npm install electron -g`
+- for desktop builds, follow [Electron builds and startup checks](docs/software/electron-builds.md); no global Electron installation is required
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -113,11 +186,11 @@ Therefore, the repository should be initialized in the root folder by running th
 | `npm run build:server:electron-linux`         | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (x64)                                                          |                                                                                                     |
 | `npm run build:server:electron-linux-arm64`   | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (ARM64)                                                        |                                                                                                     |
 | `npm run build:emulator`                      | builds Emulator Angular App                                                                                                      |                                                                                                     |
-| `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:emulator:electron-osx`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
-| `npm run build:emulator:electron-osx-arm64`   | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
-| `npm run build:emulator:electron-linux`       | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:emulator:electron-linux-arm64` | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
+| `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    |                            |
+| `npm run build:emulator:electron-osx`         | builds *Emulator* as Electron app packaged for macOS (x64) | needs to be run on macOS |
+| `npm run build:emulator:electron-osx-arm64`   | builds *Emulator* as Electron app packaged for macOS (ARM64) | needs to be run on macOS |
+| `npm run build:emulator:electron-linux`       | builds *Emulator* as  Electron app packaged for Linux (x64)                                                                    |                            |
+| `npm run build:emulator:electron-linux-arm64` | builds *Emulator* as  Electron app packaged for Linux (ARM64)                                                                    |                            |
 | `npm run build:example-angular`               | builds Angular Template                                                                                                          |                                                                                                     |
 | `npm run build:example-react`                 | builds React Template                                                                                                            |                                                                                                     |
 | `npm run build:example-vue`                   | builds Vue.js Template                                                                                                           |                                                                                                     |
@@ -137,10 +210,7 @@ Therefore, the repository should be initialized in the root folder by running th
 
 ### Known issues (NPM commands)
 
-- Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
-  Therefore, `electron-builder` needs to be installed globally before executing a `build:emulator:electron-xxx` script
-- Additionally, `npm install` is executed after packaging to restore the dev dependencies
-- if a command `build:emulator:electron-xxx` is executed from within the emulator project, `npm install` has to be executed manually afterwards
+- Electron packaging uses isolated application files. See [Electron builds and startup checks](docs/software/electron-builds.md) for prerequisites, platform targets and CI smoke tests.
 - test and `build-complete` commands start a headless Chrome instance and therefore require Chrome to be installed and path to Chrome binary to be set in PATH.
 
 **[⬆ back to top](#table-of-contents)**
