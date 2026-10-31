@@ -73,7 +73,7 @@ flowchart TD
 
 ### npm and Angular
 
-`npm-build-all.yml` uses `.github/actions/npm-install`, which selects Node.js 22 and restores dependency caches. On a cache miss, the action installs dependencies at the repository root with `npm ci --include=dev`. The workflow then executes:
+`npm-build-all.yml` uses `.github/actions/npm-install`, which selects Node.js 22 and caches npm downloads using the root lockfile. Every run installs the locked workspace dependencies at the repository root with `npm ci --include=dev`; cached `node_modules` directories do not bypass installation. The workflow then executes:
 
 ```shell
 npm run build-complete

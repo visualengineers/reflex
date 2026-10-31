@@ -8,10 +8,10 @@ runs:
     - name: install .NET
       uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '8.0.x'
+        global-json-file: global.json
     - name: Restore workloads
       shell: pwsh
-      run: dotnet workload restore
+      run: dotnet workload restore ReFlex.sln
     - name: Restore dependencies (ReFlex.sln)
       shell: pwsh
-      run: dotnet restore
+      run: dotnet restore ReFlex.sln
