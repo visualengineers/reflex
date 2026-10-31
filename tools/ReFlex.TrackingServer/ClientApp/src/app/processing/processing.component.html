@@ -5,11 +5,11 @@
             elementId="processing-interactionProcessing"
             [(data)]="isInteractionProcessingActive"
             (onChange)="isInteractionProcessingActiveChanged()"
-            [disabled]="selectedProcessorIdx < 1">         
+            [disabled]="selectedProcessorIdx < 1">
         </app-panel-header>
         <h3 class="heading-tertiary" [ngClass]="{success: isInteractionProcessingActive, error: !isInteractionProcessingActive}">{{statusText}}</h3>
         <div class="content__body">
-            <app-value-selection elementTitle="Processor" elementId="processing-processor-select" 
+            <app-value-selection elementTitle="Processor" elementId="processing-processor-select"
                 class="settings__item margin-bottom-default">
                 <select selection [(ngModel)]="selectedProcessorIdx" class="custom-select" data-enpassusermodified="yes"
                     name="processing-processor-select" id="processing-processor-select" (change)="setProcessor()"
@@ -17,12 +17,12 @@
                     <option *ngFor="let proc of processors; let i = index" [ngValue]="i">{{proc}}</option>
                 </select>
                 <div description>
-                    <p>Specify the type of processing.</p> 
+                    <p>Specify the type of processing.</p>
                     <p><em>SingleTouch</em> simply extracts the depth value with the largest absolute distance to the zero plane.</p>
                     <p><em>Multi touch</em> detects all extrema from the point cloud.</p>
                     <p><em>None</em> is only available for backwards compatibility.</p>
                 </div>
-            </app-value-selection> 
+            </app-value-selection>
 
             <app-value-slider
                 class="settings__item"
@@ -39,8 +39,8 @@
             <!-- Address -->
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-address-text" elementTitle="Address">
-                <input inputField class="form-control form-control-sm" type="text" 
-                    placeholder="http://127.0.0.1" [(ngModel)]="this.remoteAddress" 
+                <input inputField class="form-control form-control-sm" type="text"
+                    placeholder="http://127.0.0.1" [(ngModel)]="this.remoteAddress"
                     name="processing-remote--address-text" id="processing-remote--address-text" (change)="setAddress()">
                 <p description>Specifies the IP Address for the gRPC service processing the depth image.</p>
             </app-value-text>
@@ -48,8 +48,8 @@
             <!-- Port -->
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-port-text" elementTitle="Port">
-                <input inputField class="form-control form-control-sm" type="number" 
-                    placeholder="50051" [(ngModel)]="this.remotePort" 
+                <input inputField class="form-control form-control-sm" type="number"
+                    placeholder="50051" [(ngModel)]="this.remotePort"
                     name="processing-remote--port-text" id="processing-remote--port-text" (change)="setPort()">
                 <p description>Specifies the Port on which the gRPC server operates.</p>
             </app-value-text>
@@ -57,29 +57,29 @@
             <!-- CutOff -->
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-cutOff-text" elementTitle="CutOff">
-                <input inputField class="form-control form-control-sm" type="number" 
-                    placeholder="0.1" [(ngModel)]="this.remoteSettings.cutOff" 
+                <input inputField class="form-control form-control-sm" type="number"
+                    placeholder="2" [(ngModel)]="this.remoteSettings.cutOff"
                     step="0.1" min="0"
                     name="processing-remote-cutOff-text" id="processing-remote-cutOff-text" (change)="updateSettings()">
-                   <p description>Frequency cutoff for filtering the depth image. Default: 0.1</p>
+                   <p description>Frequency cutoff for filtering the depth image. Default: 2</p>
             </app-value-text>
 
             <!-- Factor -->
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-factor-text" elementTitle="Factor">
-                <input inputField class="form-control form-control-sm" type="number" 
-                    placeholder="1200" [(ngModel)]="this.remoteSettings.factor" 
+                <input inputField class="form-control form-control-sm" type="number"
+                    placeholder="100" [(ngModel)]="this.remoteSettings.factor"
                     name="processing-remote-factor-text" id="processing-remote-factor-text" (change)="updateSettings()">
-                   <p description>Filter factor for interpolating the depth image. Default: 1200</p>
+                   <p description>Filter factor for interpolating the depth image. Default: 100</p>
             </app-value-text>
 
             <!-- NumSkipValues -->
             <app-value-text class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}"
                 elementId="processing-remote-numSkipValues-text" elementTitle="Num Skip Values">
-                <input inputField class="form-control form-control-sm" type="number" 
-                    placeholder="0" min="0" [(ngModel)]="this.remoteSettings.numSkipValues" 
+                <input inputField class="form-control form-control-sm" type="number"
+                    placeholder="0" min="0" [(ngModel)]="this.remoteSettings.numSkipValues"
                     name="processing-remote-numSkipValues-text" id="processing-remote-numSkipValues-text" (change)="updateSettings()">
-                   <p description>Specify the number of values to skip between two points when transferring the data.</p>
+                   <p description>Skip this many sensor pixels between samples on both axes (1 keeps approximately one quarter).</p>
             </app-value-text>
 
             <!-- Toggle Complete Data -->
@@ -88,20 +88,28 @@
                 elementId="processing-remote-factor-limitationFilter"
                 [(data)]="this.remoteSettings.completeDataSet"
                 (onChange)="updateSettings()">
-                Specify whether to send complete data set or only valid depth values.
+                Include finite filtered/invalid points. When disabled, preserve their raster positions as missing values.
+            </app-option-checkbox>
+
+            <app-option-checkbox class="settings__item" [ngStyle]="{'visibility' : (selectedProcessorIdx != 3 ? 'collapse' : 'visible')}"
+                elementTitle="gzip Compression"
+                elementId="processing-remote-gzipCompression"
+                [(data)]="remoteSettings.useGzipCompression"
+                (onChange)="updateSettings()">
+                Use lossless compression for large depth frames. Reduces transferred data and uses additional CPU time.
             </app-option-checkbox>
 
             <a class="button" (click)="saveRemoteProcessingSettings()"  [ngStyle]="{'visibility' : (selectedProcessorIdx != 3  ? 'collapse' : 'visible')}">Save</a>
-           
-        <div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">            
+
+        <div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">
             <app-interactions #interactionsList [isProcessing]="isInteractionProcessingActive"></app-interactions>
             <app-history #interactionHistory></app-history>
-        </div>        
+        </div>
     </div>
 </div>
 
-<div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">  
-    <app-interactions-visualization #visualizationContainer [eventId]="eventId"></app-interactions-visualization>     
+<div class="content__element" [ngStyle]="{'visibility': (isInteractionProcessingActive ? 'visible':'collapse')}">
+    <app-interactions-visualization #visualizationContainer [eventId]="eventId"></app-interactions-visualization>
     <div class="content__header">
         <h2 class="heading-secondary">Legend</h2>
     </div>

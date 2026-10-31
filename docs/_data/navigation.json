@@ -16,7 +16,7 @@
             "content":
             [
                 {
-                    "name": "Repository",
+                    "name": "Developer Documentation",
                     "type": "subcategory",
                     "content": [
                         {
@@ -26,15 +26,21 @@
                             "type": "page"
                         },
                         {
-                            "name": "Architecture",
-                            "path": "/software/repo/",
-                            "file": "architecture.html",
-                            "type": "page"
-                        },
-                        {
                             "name": "ReFlex Library (.NET)",
                             "path": "/software/repo/",
                             "file": "library.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Requirements Analysis",
+                            "path": "/software/repo/",
+                            "file": "requirements.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "Architecture",
+                            "path": "/software/repo/",
+                            "file": "architecture.html",
                             "type": "page"
                         },
                         {
@@ -44,9 +50,9 @@
                             "type": "page"
                         },
                         {
-                            "name": "Interactions",
+                            "name": "Touch Detection",
                             "path": "/software/repo/",
-                            "file": "interactions.html",
+                            "file": "touch-detection.html",
                             "type": "page"
                         },
                         {
@@ -56,15 +62,39 @@
                             "type": "page"
                         },
                         {
-                            "name": "github CI",
+                            "name": "Interactions Format",
                             "path": "/software/repo/",
-                            "file": "ci.html",
+                            "file": "interactions.html",
                             "type": "page"
                         },
                         {
-                            "name": "Development Documentation",
+                            "name": "Server Configuration",
                             "path": "/software/repo/",
-                            "file": "dev.html",
+                            "file": "config-file.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "REST API",
+                            "path": "/software/apps/server/",
+                            "file": "rest-api.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "SignalR",
+                            "path": "/software/apps/server/",
+                            "file": "signal-r.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "TUIO",
+                            "path": "/software/repo/",
+                            "file": "tuio.html",
+                            "type": "page"
+                        },
+                        {
+                            "name": "github CI",
+                            "path": "/software/repo/",
+                            "file": "ci.html",
                             "type": "page"
                         },
                         {
@@ -87,6 +117,12 @@
                             "type": "page",
                             "content":
                             [
+                                {
+                                    "name": "Overview",
+                                    "path": "/software/apps/server/",
+                                    "file": "server-overview.html",
+                                    "type": "page"
+                                },
                                 {
                                     "name": "Tracking view",
                                     "path": "/software/apps/server/",
@@ -123,7 +159,6 @@
                                     "file": "video-tutorial.html",
                                     "type": "page"
                                 }
-
                             ]
                         },
                         {
@@ -176,6 +211,12 @@
                             "type": "page"
                         },
                         {
+                            "name": "gRPC and Jupyter",
+                            "path": "/software/templates/",
+                            "file": "grpc-service.html",
+                            "type": "page"
+                        },
+                        {
                             "name": "Unity",
                             "path": "/software/templates/",
                             "file": "unity.html",
@@ -213,15 +254,15 @@
                             "type": "page"
                         },
                         {
-                            "name": "Client: Stream depth image",
+                            "name": "Client: Stream sensor data",
                             "path": "/software/recipes/",
-                            "file": "icons.html",
+                            "file": "stream-sensor-data.html",
                             "type": "page"
                         },
                         {
                             "name": "Client: Configure Server using REST API",
-                            "path": "/software/design/",
-                            "file": "icons.html",
+                            "path": "/software/recipes/",
+                            "file": "configure-server-rest-api.html",
                             "type": "page"
                         },
                         {
@@ -397,6 +438,81 @@
                               "name": "Societal Issues",
                               "path": "/knowledge/scientific/",
                               "file": "challenges_societal.html",
+                              "type": "page"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Case Studies",
+                          "path": "/knowledge/case-studies/",
+                          "file": "overview.html",
+                          "type": "page",
+                          "content":
+                          [
+                            {
+                              "name": "DepthTouch",
+                              "path": "/knowledge/case-studies/",
+                              "file": "depthtouch.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "FlexiWall",
+                              "path": "/knowledge/case-studies/",
+                              "file": "flexiwall.html",
+                              "type": "page"
+                            },
+                            {
+                                "name": "DEEP",
+                                "path": "/knowledge/case-studies/",
+                                "file": "deep.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Interactive Animations",
+                              "path": "/knowledge/case-studies/",
+                              "file": "interactive-animations.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "Zoomable Product Browser",
+                              "path": "/knowledge/case-studies/",
+                              "file": "zoomable-product-browser.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "Glyphboard",
+                              "path": "/knowledge/case-studies/",
+                              "file": "glyphboard.html",
+                              "type": "page"
+                            },
+                            {
+                                "name": "DeepZoom",
+                                "path": "/knowledge/case-studies/",
+                                "file": "deep-zoom.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "DisPlay",
+                              "path": "/knowledge/case-studies/",
+                              "file": "display.html",
+                              "type": "page"
+                            },
+                            {
+                              "name": "Construction Progress Visualization",
+                              "path": "/knowledge/case-studies/",
+                              "file": "bim.html",
+                              "type": "page"
+                            },
+                            {
+                                "name": "Layers",
+                                "path": "/knowledge/case-studies/",
+                                "file": "layers.html",
+                                "type": "page"
+                            },
+                            {
+                              "name": "Other Prototypes",
+                              "path": "/knowledge/case-studies/",
+                              "file": "other-prototypes.html",
                               "type": "page"
                             }
                           ]

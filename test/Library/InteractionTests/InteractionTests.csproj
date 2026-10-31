@@ -39,6 +39,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\library\src\Core\Interactivity\Interactivity.csproj" />
+      <ProjectReference Include="..\..\..\library\src\Core\Implementation\Implementation.csproj" />
     </ItemGroup>
 
 </Project>

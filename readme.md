@@ -5,7 +5,7 @@ Software Development SDK for **Elastic Displays** as open source mono repo
 Complete Documentation as github pages available at [https://visual-engineers.org/reflex/](https://visual-engineers.org/reflex/)
 
 - .NET Core library as framework for different depth sensors, calibration, depth image filtering and reconstruction of interactions
-- APS.NET Core / Angular server application as frontend for library
+- ASP.NET Core / Angular server application as frontend for library
 - can be packaged as electron app for desktop
 - Example client applications for Plain HTML, Angular, React, Vue.js, Plugins for Unity, Unreal Engine 5
 - Emulator as Development Tool
@@ -20,9 +20,10 @@ Complete Documentation as github pages available at [https://visual-engineers.or
 4. [use shared code](#use-shared-code)
 5. [NPM commands](#npm-commands)
 6. [Python gRPC Processing service](#python-grpc-processing-service)
-7. [Known issues / Troubleshooting](#known-issues-troubleshooting)
+7. [Known issues](#known-issues)
 8. [Updating .NET](#updating-net)
 9. [Documentation (github pages)](#documentation-github-pages)
+
 
 ## Build status
 
@@ -100,40 +101,41 @@ Therefore, the repository should be initialized in the root folder by running th
 
 ## NPM commands
 
-| Command                                       | Description                                                                                | Remarks                                                                                             |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| `npm run build`                               | runs `build` command in all subrepos of workspace                                          |                                                                                                     |
-| `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test-ci` and `lint` commands |                                                                                                     |
-| `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                            |                                                                                                     |
-| `npm run build:shared-components`             | builds Shared Angular Components(#use-shared-code)                                         |                                                                                                     |
-| `npm run build:server:electron-win`                  | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                     |                                                                                                     |
-| `npm run build:server:electron-osx`                  | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)             | needs to be run on macOS                                                                            |
-| `npm run build:server:electron-osx-arm64`            | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (ARM64)                 | needs to be run on macOS                                                                            |
-| `npm run build:server:electron-linux`                | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (x64)                 |                                                                                                     |
-| `npm run build:server:electron-linux-arm64`          | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (ARM64)               |                                                                                                     |
-| `npm run build:emulator`                      | builds Emulator Angular App                                                             |                                                                                                     |
-| `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:emulator:electron-osx`         | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
-| `npm run build:emulator:electron-osx-arm64`   | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
-| `npm run build:emulator:electron-linux`       | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:emulator:electron-linux-arm64` | builds *Emulator* as  Electron app packaged for Windows (x64)                           | `npm install` is executed after packaging to restore the dev dependencies                           |
-| `npm run build:example-angular`               | builds Angular Template                                                                 |                                                                                                     |
-| `npm run build:example-react`                 | builds React Template                                                                   |                                                                                                     |
-| `npm run build:example-vue`                   | builds Vue.js Template                                                                  |                                                                                                     |
-| `npm run build:logging`                       | builds *Logging* tool                                                                   |                                                                                                     |
-| `npm run start:emulator`                       | build and start *Emulator* Angular app on `localhost:4300` |  |
-| `npm run start:example-angular`                       | build and start Angular Template on `localhost:4201` |  |
-| `npm run start:example-react`                       | build and start React Template on `localhost:3000` |  |
-| `npm run start:example-vue`                       | build and start Vue.js Template on `localhost:8080` |  |
-| `npm run start:logging`                       | build and start *Logging* tool on `localhost:4302` |  |
-| `npm run start:server`                       | build and start *ReFlex.TrackingServer* tool (only Angular frontend) on `localhost:4200` | Server backend must be started separately |
-| `npm run lint:emulator`                       | executes linter on *Emulator* project |  |
-| `npm run lint:server`                       | executes linter on *ReFlex.TrackingServer* project |  |
-| `npm run test:emulator`                       | executes tests on *Emulator* project |  |
-| `npm run test:net-with-report`                       | executes .NET tests on .NET Solution *ReFlex.sln* and generates report for tests  | Currently only compatible with Windows  |
-| `npm run test:server`                       | executes tests on *ReFlex.TrackingServer* project |  |
+| Command                                       | Description                                                                                                                      | Remarks                                                                                             |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `npm run build`                               | runs `build` command in all subrepos of workspace                                                                                |                                                                                                     |
+| `npm run build-complete`                      | runs `build` command in all subrepos of workspace, including `test-ci` and `lint` commands                                       |                                                                                                     |
+| `npm run build:shared-types`                  | builds package [Shared Types](#use-shared-code)                                                                                  |                                                                                                     |
+| `npm run build:shared-components`             | builds Shared Angular Components(#use-shared-code)                                                                               |                                                                                                     |
+| `npm run build:server:electron-win`           | builds *ReFlex.TrackingServer* as Electron app packaged for Windows                                                              |                                                                                                     |
+| `npm run build:server:electron-osx`           | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (Intel x64)                                                      | needs to be run on macOS                                                                            |
+| `npm run build:server:electron-osx-arm64`     | builds *ReFlex.TrackingServer* as Electron app packaged for OSX (ARM64)                                                          | needs to be run on macOS                                                                            |
+| `npm run build:server:electron-linux`         | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (x64)                                                          |                                                                                                     |
+| `npm run build:server:electron-linux-arm64`   | builds *ReFlex.TrackingServer* as Electron app packaged for Linux (ARM64)                                                        |                                                                                                     |
+| `npm run build:emulator`                      | builds Emulator Angular App                                                                                                      |                                                                                                     |
+| `npm run build:emulator:electron-win`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
+| `npm run build:emulator:electron-osx`         | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
+| `npm run build:emulator:electron-osx-arm64`   | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies, needs to be run on macOS |
+| `npm run build:emulator:electron-linux`       | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
+| `npm run build:emulator:electron-linux-arm64` | builds *Emulator* as  Electron app packaged for Windows (x64)                                                                    | `npm install` is executed after packaging to restore the dev dependencies                           |
+| `npm run build:example-angular`               | builds Angular Template                                                                                                          |                                                                                                     |
+| `npm run build:example-react`                 | builds React Template                                                                                                            |                                                                                                     |
+| `npm run build:example-vue`                   | builds Vue.js Template                                                                                                           |                                                                                                     |
+| `npm run build:logging`                       | builds *Logging* tool                                                                                                            |                                                                                                     |
+| `npm run start:emulator`                      | build and start *Emulator* Angular app on `localhost:4300`                                                                       |                                                                                                     |
+| `npm run start:example-angular`               | build and start Angular Template on `localhost:4201`                                                                             |                                                                                                     |
+| `npm run start:example-react`                 | build and start React Template on `localhost:3000`                                                                               |                                                                                                     |
+| `npm run start:example-vue`                   | build and start Vue.js Template on `localhost:8080`                                                                              |                                                                                                     |
+| `npm run start:logging`                       | build and start *Logging* tool on `localhost:4302`                                                                               |                                                                                                     |
+| `npm run start:server`                        | build and start *ReFlex.TrackingServer* tool (only Angular frontend) on `localhost:4200`                                         | Server backend must be started separately                                                           |
+| `npm run lint:emulator`                       | executes linter on *Emulator* project                                                                                            |                                                                                                     |
+| `npm run lint:server`                         | executes linter on *ReFlex.TrackingServer* project                                                                               |                                                                                                     |
+| `npm run test:emulator`                       | executes tests on *Emulator* project                                                                                             |                                                                                                     |
+| `npm run test:net-with-report`                | executes .NET tests on .NET Solution *ReFlex.sln* and generates report for tests                                                 | Currently only compatible with Windows                                                              |
+| `npm run test:server`                         | executes tests on *ReFlex.TrackingServer* project                                                                                |                                                                                                     |
+| `npm run update:server:dependencies`.         | updates `tools/ReFlex.TrackingServer/ClientApp/src/assets/data/package.json` with current npm dependicies and their version info |
 
-### Known issues
+### Known issues (NPM commands)
 
 - Electron seems not to be perfectly suitable to be used in monorepos, as building the app in the package process removes all dev dependencies, including the `electron-builder` package if installed locally  
   Therefore, `electron-builder` needs to be installed globally before executing a `build:emulator:electron-xxx` script
@@ -152,9 +154,9 @@ Therefore, the repository should be initialized in the root folder by running th
 
 **[⬆ back to top](#table-of-contents)**
 
-## Known issues / Troubleshooting
+## Known issues
 
-- `Karma Test Explorer` Plugin for vs code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
+- `Karma Test Explorer` Plugin for VS Code does not work well with the current npm workspace setup, as it does not identify the correct angular path. In order to use the plugin, the global angular installation is used as fallback.
 - if an application behaves different when executing the packaged electron version (either installed using the setup or the executable in the `win-unpacked directory)`), this may be caused by outdated Electron Cache. In this case, open
   - `%AppData%` Folder (Windows)
   - `~/.config` Folder (Linux)

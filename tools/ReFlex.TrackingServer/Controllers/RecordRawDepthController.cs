@@ -1,4 +1,4 @@
-﻿using Implementation.Interfaces;
+using Implementation.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using ReFlex.Core.Common.Components;
 using ServiceStack;
@@ -119,7 +119,7 @@ namespace TrackingServer.Controllers
             }
         }
 
-        private static async Task<string> Save(int id, int idx, IList<Point3Indexed> rawDepthPoints)
+        private static async Task<string> Save(int id, int idx, IEnumerable<Point3Indexed> rawDepthPoints)
         {
             var serialized = rawDepthPoints.ToCsv();
 

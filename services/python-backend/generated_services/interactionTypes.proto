@@ -28,13 +28,23 @@ message DepthValues1d {
   float zero_plane = 1;              // distance to map depth values to 0
   float min_depth = 2;               // minimum distance (zero_plane - max amplitude) - maps to -1
   float max_depth = 3;               // minimum distance (zero_plane + max amplitude) - maps to 1
-  repeated float z = 4;              // z-values (unprocessed)
+  repeated float z = 4;              // row-major depths; NaN marks missing samples
+  int32 width = 5;                   // transmitted raster width
+  int32 height = 6;                  // transmitted raster height
+  int32 sample_step = 7;             // original sensor pixels per sample, on both axes
+  bytes z_float32_le = 8;           // optional row-major IEEE754 float32, little-endian; mutually exclusive with z
 }
 
 enum InteractionType {
   NONE = 0;
   PUSH = 1;
   PULL = 2;
+}
+
+enum ExtremumKind {
+  UNSPECIFIED = 0;
+  MINIMUM = 1;
+  MAXIMUM = 2;
 }
 
 message Interaction {
@@ -44,11 +54,13 @@ message Interaction {
 
   InteractionType type = 4;
   int64 time = 5;
+  ExtremumKind extremum_kind = 6;
 }
 
 message InteractionFrame {
   int32 frame_id = 1;
   repeated Interaction interactions = 2;
+  TimingSample timing = 3;
 }
 
 message StateRequest {
@@ -57,6 +69,8 @@ message StateRequest {
 message StateResponse {
   bool isReady = 1;
   int32 frame_id = 2;
+  int32 protocol_version = 3;         // version 2 requires a regular 2D raster
+  bool supports_float32_payload = 4; // capability; older protocol-v2 peers use repeated z
 }
 
 message SaveRequest {
@@ -77,3 +91,19 @@ message ConfigRequest {
 message ConfigResponse {
   bool success = 1;
 }
+
+// Monotonic durations in milliseconds; totals overlap their component stages.
+message TimingSample {
+  int64 sequence = 1;
+  int32 frame_id = 2;
+  int64 recorded_at_unix_ms = 3;
+  map<string, double> milliseconds = 4;
+}
+message TimingRequest { int64 after_sequence = 1; }
+message TimingResponse {
+  repeated TimingSample samples = 1;
+  int64 latest_sequence = 2;
+  int64 oldest_sequence = 3;
+  string session_id = 4;
+}
+message TimingAck {}

@@ -1,4 +1,4 @@
-﻿namespace ReFlex.Server.Data.Config;
+namespace ReFlex.Server.Data.Config;
 
 public class RemoteProcessingServiceSettings
 {
@@ -8,9 +8,11 @@ public class RemoteProcessingServiceSettings
 
     public bool CompleteDataSet { get; set; } = true;
 
-    public double CutOff { get; set; } = 0.1;
+    public bool UseGzipCompression { get; set; } = true;
 
-    public double Factor { get; set; } = 1200;
+    public double CutOff { get; set; } = 2.0;
+
+    public double Factor { get; set; } = 100;
 
     public RemoteProcessingAlgorithm Algorithm { get; set; } = RemoteProcessingAlgorithm.Default;
 
@@ -20,6 +22,7 @@ public class RemoteProcessingServiceSettings
         result += $"  {nameof(Address)}: {Address} | ";
         result += $"{nameof(NumSkipValues)}: {NumSkipValues} | ";
         result += $"{nameof(CompleteDataSet)}: {CompleteDataSet}{Environment.NewLine}";
+        result += $"{nameof(UseGzipCompression)}: {UseGzipCompression} | ";
         result += $"{nameof(Algorithm)}: {Enum.GetName(typeof(RemoteProcessingAlgorithm), Algorithm)} | ";
         result += $"{nameof(CutOff)}: {CutOff} | {nameof(Factor)}: {Factor}{Environment.NewLine}";
         return result;

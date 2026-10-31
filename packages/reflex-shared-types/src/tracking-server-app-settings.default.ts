@@ -84,8 +84,9 @@ const _defaultRemoteProcessingSettings: RemoteProcessingServiceSettings = {
   address: 'http://localhost:50051',
   numSkipValues: 0,
   completeDataSet: false,
-  cutOff: 0.1,
-  factor: 1200,
+  useGzipCompression: true,
+  cutOff: 2,
+  factor: 100,
   algorithm: RemoteProcessingAlgorithm.Default
 };
 

@@ -11,6 +11,11 @@ updates:
       interval: "weekly"
     versioning-strategy: increase
     open-pull-requests-limit: 20
+    cooldown:
+      default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
   - package-ecosystem: "nuget"
     directory: "/library/src/Core/Calibration" # Library: Core.Calibration
     schedule:

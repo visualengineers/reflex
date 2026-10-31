@@ -31,10 +31,10 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 
 | Library                  | Version | Description                                                      |
 | ------------------------ | ------- | ---------------------------------------------------------------- |
-| __Prism.Core__           | 8.1.97  | Dedpendency Injection / Commanding / Event Aggregation utilities |
-| __Newtonsoft.Json__      | 13.0.3  | JSON-Serializer                                                  |
-| __NLog__                 | 5.1.3   | Universal logging framework for .NET                             |
-| __SixLabors.ImageSharp__ | 2.1.3   | platform-independent graphics library                            |
+| __Prism.Core__           | 9.0.537 | Dedpendency Injection / Commanding / Event Aggregation utilities |
+| __Newtonsoft.Json__      | 13.0.4  | JSON-Serializer                                                  |
+| __NLog__                 | 6.1.0   | Universal logging framework for .NET                             |
+| __SixLabors.ImageSharp__ | 3.1.12  | platform-independent graphics library                            |
 | __MathNet.Filtering__    | 0.7.0   | filter algorithms                                                |
 | __MathNet.Numerics__     | 5.0.0   | matrix operations                                                |
 
@@ -42,10 +42,10 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 
 | Library                 | Version | Description                                 |
 | ----------------------- | ------- | ------------------------------------------- |
-| __websocketsharp.core__ | 1.0.0   | .net standard library for using web sockets |
+| __websocketsharp.core__ | 1.0.1   | .net standard library for using web sockets |
 | __CoreOSC__             | 1.0.0   | .net Core library for OSC messages (TUIO)   |
 | __Grpc.AspNetCore__     | 2.52.0  | ASP.NET plugin for gRPC Calls               |
-| __WatsonTcp__           | 5.0.11  | Library for Tcp communication               |
+| __WatsonTcp__           | 6.0.12  | Library for Tcp communication               |
 
 ### Development
 
@@ -55,7 +55,7 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 | __Moq__                    | 4.18.4  | .NET mocking library                                         |
 | __NUnit__                  | 3.13.3  | .NET Testing framework                                       |
 | __coverlet.collector__     | 6.0.0   | necessary for generating test reports (platform independent) |
-| __Microsoft.CodeCoverage__ | 17.8.0  | Code coverage                                                |
+| __Microsoft.CodeCoverage__ | 18.0.1  | Code coverage                                                |
 
 ## Project Structure
 

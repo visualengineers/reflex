@@ -1,14 +1,17 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
+using System.IO.Compression;
+using Google.Protobuf;
+using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Compression;
 using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Interactivity.Interfaces;
 using ReFlex.gRpc;
-using ServiceStack;
+using ReFlex.Core.Interactivity.Components;
 using ReFlex.Server.Data.Config;
 using TrackingServer.Events;
-using static System.Enum;
 using ConfigurationManager = TrackingServer.Model.ConfigurationManager;
 using Interaction = ReFlex.Core.Common.Components.Interaction;
 using Math = System.Math;
@@ -18,10 +21,19 @@ namespace TrackingServer.Services;
 public class RemoteInteractionProcessingService : IRemoteInteractionProcessorService, IDisposable
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    private readonly Stopwatch _stopWatch = new();
+    private static readonly Metadata GzipRequestHeaders = new()
+    {
+        { "grpc-internal-encoding-request", "gzip" }
+    };
+    private const int CompressionThresholdBytes = 64 * 1024;
 
     private InteractionProcessing.InteractionProcessingClient? _client;
     private GrpcChannel? _channel;
+    private bool _supportsFloat32Payload;
+    private readonly bool _requestCompressionAllowed = !string.Equals(
+        Environment.GetEnvironmentVariable("REFLEX_GRPC_REQUEST_COMPRESSION"), "identity",
+        StringComparison.OrdinalIgnoreCase);
+    private bool _peerSupportsGzip = true;
     private readonly ConfigurationManager _configMgr;
     private RemoteProcessingServiceSettings _config  = new();
     private readonly IEventAggregator? _eventAggregator;
@@ -74,10 +86,26 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsBusy = true;
 
             // The port number must match the port of the gRPC server.
-            _channel = GrpcChannel.ForAddress(_config.Address);
+            _channel = GrpcChannel.ForAddress(_config.Address, new GrpcChannelOptions
+            {
+                CompressionProviders = new ICompressionProvider[]
+                {
+                    new GzipCompressionProvider(CompressionLevel.Fastest)
+                }
+            });
             _client = new InteractionProcessing.InteractionProcessingClient(_channel);
             var status = await _client.GetStateAsync(new StateRequest());
-            IsConnected = status.IsReady;
+            if (status.ProtocolVersion != 2)
+                throw new InvalidOperationException($"Remote processor protocol {status.ProtocolVersion} is incompatible; expected version 2 (2D raster). Update the Python backend.");
+            if (!status.IsReady) throw new InvalidOperationException("Remote processor is not ready.");
+            _supportsFloat32Payload = status.SupportsFloat32Payload;
+            _peerSupportsGzip = true;
+            var configured = await _client.ConfigureAsync(new ConfigRequest
+            {
+                Cutoff = (float)_config.CutOff, Factor = (float)_config.Factor
+            });
+            IsConnected = configured.Success;
+            Logger.Info($"Remote request compression: {(_config.UseGzipCompression && _requestCompressionAllowed ? "gzip (Fastest), payloads >= 64 KiB" : "identity")}.");
             IsBusy = false;
         }
         catch (Exception exc)
@@ -111,70 +139,111 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsConnected = false;
             IsBusy = false;
             _client = null;
+            _supportsFloat32Payload = false;
             _channel?.Dispose();
         }
 
         return IsConnected;
     }
 
-    public async Task<Tuple<IList<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, ProcessPerformance performance, bool doMeasure)
+    public async Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Update(PointCloud3 pointCloud, float zeroPlane, ProcessPerformance performance, bool doMeasure)
     {
         var result = new List<Interaction>();
 
         if (_client == null)
         {
           Logger.Warn($"{nameof(RemoteInteractionProcessingService)} not correctly initialized, {nameof(_client)} is null");
-          return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+          return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
         }
 
         if (IsBusy)
         {
             Logger.Warn("Processor is busy: skipping request.");
-            return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+            return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
         }
 
         IsBusy = true;
 
         try
         {
-            if (doMeasure)
+            var timer = doMeasure ? Stopwatch.StartNew() : null;
+            var timings = doMeasure ? new Dictionary<string, double>() : null;
+
+            var raster = new RemoteDepthRaster(pointCloud, _config.NumSkipValues, SendCompleteDataset);
+            if (timer != null)
             {
-                _stopWatch.Start();
+                timings!["client_raster_conversion"] = timer.Elapsed.TotalMilliseconds;
+                timer.Restart();
+            }
+            var values = new DepthValues1d
+            {
+                Width = raster.Width, Height = raster.Height, SampleStep = raster.SampleStep,
+                ZeroPlane = zeroPlane
+            };
+            if (_supportsFloat32Payload)
+                values.ZFloat32Le = ByteString.CopyFrom(raster.ToLittleEndianBytes());
+            else
+                values.Z.AddRange(raster.Depths);
+
+
+            if (timer != null)
+            {
+                timings!["client_request_construction"] = timer.Elapsed.TotalMilliseconds;
+                performance.Preparation = TimeSpan.FromMilliseconds(
+                    timings["client_raster_conversion"] + timings["client_request_construction"]);
+                timer.Restart();
             }
 
-            var points = pointCloud.AsArray();
-
-            var values = new DepthValues1d();
-
-            var mapping = SendCompleteDataset ? ExtractDepthValues(points, ref values) : ExtractDepthValuesForCleanedUpDataset(points, ref values);
-
-
-            if (doMeasure)
+            var compress = _config.UseGzipCompression && _requestCompressionAllowed && _peerSupportsGzip &&
+                values.ZFloat32Le.Length + values.Z.Count * sizeof(float) >= CompressionThresholdBytes;
+            ReFlex.gRpc.InteractionFrame reply;
+            try
             {
-                _stopWatch.Stop();
-                performance.Preparation = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                // Compression stays inside the measured RPC duration, including its CPU cost.
+                reply = await _client.ComputeInteractionsAsync(values, headers: compress ? GzipRequestHeaders : null);
+            }
+            catch (RpcException error) when (compress && error.StatusCode == StatusCode.Unimplemented &&
+                error.Status.Detail.Contains("compression", StringComparison.OrdinalIgnoreCase))
+            {
+                // An unsupported encoding is rejected before application processing.
+                _peerSupportsGzip = false;
+                Logger.Warn(error, "Remote peer does not support gzip; retrying with identity encoding.");
+                reply = await _client.ComputeInteractionsAsync(values);
             }
 
-            if (doMeasure)
+            if (timer != null)
             {
-                _stopWatch.Start();
-            }
-
-            var reply = await _client.ComputeInteractionsAsync(values);
-
-            if (doMeasure)
-            {
-                _stopWatch.Stop();
-                performance.Update = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                performance.Update = timer.Elapsed;
+                timings!["client_rpc_roundtrip"] = timer.Elapsed.TotalMilliseconds;
+                if (reply.Timing != null && reply.Timing.Milliseconds.TryGetValue("server_total", out var serverMs))
+                {
+                    foreach (var stage in reply.Timing.Milliseconds)
+                        timings[stage.Key] = stage.Value;
+                    timings["client_transport_serialization_overhead"] = Math.Max(0,
+                        timings["client_rpc_roundtrip"] - serverMs);
+                }
+                performance.RemoteFrameId = reply.FrameId;
+                performance.RemoteTimingsMs = timings;
+                timer.Restart();
             }
 
             Logger.Info($"Received Interactions from gRPC client on address: {_config.Address}");
 
-            result = reply.Interactions.ToList().ConvertAll(i => ConvertInteraction(points, i, mapping));
+            foreach (var candidate in reply.Interactions)
+            {
+                try
+                {
+                    result.Add(raster.CreateCandidate(candidate.PointIdx, candidate.Z, candidate.TouchId, candidate.Time));
+                }
+                catch (ArgumentException error)
+                {
+                    Logger.Warn(error, "Ignoring invalid remote candidate.");
+                }
+            }
 
             Logger.Info($"Interactions: {result}");
+            if (timer != null)
+                timings!["client_response_conversion"] = timer.Elapsed.TotalMilliseconds;
         }
         catch (Exception e)
         {
@@ -186,7 +255,26 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
             IsBusy = false;
         }
 
-        return new Tuple<IList<Interaction>, ProcessPerformance>(result, performance);
+        return new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result, performance);
+    }
+
+    public async Task ReportPerformance(ProcessPerformance measurement)
+    {
+        if (_client == null || measurement.RemoteTimingsMs == null) return;
+        var sample = new TimingSample { FrameId = measurement.RemoteFrameId };
+        foreach (var stage in measurement.RemoteTimingsMs)
+            if (stage.Key.StartsWith("client_", StringComparison.Ordinal))
+                sample.Milliseconds.Add(stage.Key, stage.Value);
+        try
+        {
+            // Diagnostic reporting is excluded from the measured pipeline stages.
+            await _client.ReportTimingAsync(sample, deadline: DateTime.UtcNow.AddSeconds(1));
+        }
+        catch (Grpc.Core.RpcException error)
+        {
+            // Older protocol-v2 backends may not implement the optional timing RPC.
+            Logger.Debug(error, "Could not report remote performance diagnostics.");
+        }
     }
 
     public async Task StartService()
@@ -209,87 +297,6 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
     //         _logger.Info($"Data Saved: {response.File}");
     //     }
     // }
-
-    private int[] ExtractDepthValues(Point3[] points, ref DepthValues1d depthValues)
-    {
-        depthValues.Z.AddRange(points.Select(p => p.Z));
-        return Array.Empty<int>();
-    }
-
-    private int[] ExtractDepthValuesForCleanedUpDataset(Point3[] points, ref DepthValues1d depthValues)
-    {
-        var values = new int[points.Length];
-        var cleanedIdx = 0;
-        for (var i = 0; i < points.Length; i++)
-        {
-            var p = points[i];
-            if (p.IsFiltered || !p.IsValid)
-                continue;
-
-            values[cleanedIdx] = i;
-            depthValues.Z.Add(p.Z);
-            cleanedIdx++;
-        }
-
-        return values;
-    }
-
-    private PointCloud3d ConvertPointCloud(Point3[][] data)
-    {
-        var result = new PointCloud3d();
-
-        for (var x = 0; x < data.Length; x++)
-        {
-            for (var y = 0; y < data[x].Length; y++)
-            {
-                var p3 = data[x][y];
-                if (!SendCompleteDataset && (p3.IsFiltered || !p3.IsValid))
-                    continue;
-
-                var p3d = new Point3d
-                {
-                    IsFiltered = p3.IsFiltered,
-                    IsValid = p3.IsFiltered,
-                    X = p3.X,
-                    Y = p3.Y,
-                    Z = p3.Z,
-                    IX = x,
-                    IY = y
-                };
-
-                result.Points.Add(p3d);
-            }
-        }
-        result.SizeZ = result.Points.Count;
-
-        return result;
-    }
-
-    private Interaction ConvertInteraction(Point3[] points, ReFlex.gRpc.Interaction interaction, int[] mapping) {
-        var success = TryParse<ReFlex.Core.Common.Util.InteractionType>(interaction.Type.ToString(), out var type);
-
-        if (success)
-        {
-            type = (ReFlex.Core.Common.Util.InteractionType) interaction.Type.ConvertTo<int>();
-        }
-
-        var reconstructedIndex = SendCompleteDataset || mapping.Length <= interaction.PointIdx
-            ? interaction.PointIdx
-            // reconstruct former index from saved mapping
-            : mapping[interaction.PointIdx];
-
-        var point = points[reconstructedIndex];
-        point.Z = interaction.Z;
-
-        return new Interaction
-        {
-            TouchId = interaction.TouchId,
-            Confidence = 1,
-            Position = point,
-            Time = interaction.Time,
-            Type = type
-        };
-    }
 
     private async void ResetState()
     {
@@ -332,7 +339,7 @@ public class RemoteInteractionProcessingService : IRemoteInteractionProcessorSer
 
           var changesDetected =
             (Math.Abs(_config.CutOff - cfg.CutOff) > float.Epsilon ||
-             Math.Abs(_config.Factor - cfg.CutOff) > float.Epsilon);
+             Math.Abs(_config.Factor - cfg.Factor) > float.Epsilon);
 
           if (changesDetected)
           {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,6 +32,10 @@ namespace Implementation.Components
         private int _maxNumEmptyFramesBetween;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
+        private int _extremumTypeCheckNumSamples;
+        private int _extremumTypeCheckRadius;
+        private float _extremumTypeCheckFittingPercentage;
+        private ExtremumTypeCheckMethod _extremumTypeCheckMethod;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
 
@@ -95,6 +99,10 @@ namespace Implementation.Components
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
             observer.DepthScale = _depthScale;
+            observer.ExtremumTypeCheckRadius = _extremumTypeCheckRadius;
+            observer.ExtremumTypeCheckNumSamples = _extremumTypeCheckNumSamples;
+            observer.ExtremumTypeCheckFittingPercentage = _extremumTypeCheckFittingPercentage;
+            observer.ExtremumTypeCheckMethod = _extremumTypeCheckMethod;
             _interactionObserver = observer;
 
             _interactionObserver.NewInteractions += OnNewInteractions;
@@ -250,41 +258,45 @@ namespace Implementation.Components
 
         public int ExtremumTypeCheckNumSamples
         {
-            get => _interactionObserver?.ExtremumTypeCheckNumSamples ?? 0;
+            get => _interactionObserver?.ExtremumTypeCheckNumSamples ?? _extremumTypeCheckNumSamples;
             set
             {
                 if (_interactionObserver != null)
                     _interactionObserver.ExtremumTypeCheckNumSamples = value;
+                _extremumTypeCheckNumSamples = value;
             }
         }
 
         public int ExtremumTypeCheckRadius
         {
-            get => _interactionObserver?.ExtremumTypeCheckRadius ?? 0;
+            get => _interactionObserver?.ExtremumTypeCheckRadius ?? _extremumTypeCheckRadius;
             set
             {
                 if (_interactionObserver != null)
                     _interactionObserver.ExtremumTypeCheckRadius = value;
+                _extremumTypeCheckRadius = value;
             }
         }
 
         public float ExtremumTypeCheckFittingPercentage
         {
-            get => _interactionObserver?.ExtremumTypeCheckFittingPercentage ?? 0f;
+            get => _interactionObserver?.ExtremumTypeCheckFittingPercentage ?? _extremumTypeCheckFittingPercentage;
             set
             {
                 if (_interactionObserver != null)
                     _interactionObserver.ExtremumTypeCheckFittingPercentage = value;
+                _extremumTypeCheckFittingPercentage = value;
             }
         }
 
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod
         {
-            get => _interactionObserver?.ExtremumTypeCheckMethod ?? ExtremumTypeCheckMethod.Global;
+            get => _interactionObserver?.ExtremumTypeCheckMethod ?? _extremumTypeCheckMethod;
             set
             {
                 if (_interactionObserver != null)
                     _interactionObserver.ExtremumTypeCheckMethod = value;
+                _extremumTypeCheckMethod = value;
             }
         }
 

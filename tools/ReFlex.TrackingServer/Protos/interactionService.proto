@@ -1,4 +1,4 @@
-﻿syntax = "proto3";
+syntax = "proto3";
 
 import "Protos/interactionTypes.proto";
 
@@ -12,4 +12,8 @@ service InteractionProcessing {
   rpc GetState(StateRequest) returns (StateResponse);
 
   rpc Configure(ConfigRequest) returns (ConfigResponse);
+
+  // Bounded diagnostic history, and client-side measurements for a returned frame.
+  rpc GetTimings(TimingRequest) returns (TimingResponse);
+  rpc ReportTiming(TimingSample) returns (TimingAck);
 }

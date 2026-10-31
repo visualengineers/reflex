@@ -24,7 +24,8 @@ const testTrack: GestureTrack = {
     { x: 250, y: 25, z: -0.3 },
     { x: 0, y: 200, z: -0.2 },
     { x: 568, y: 750, z: 0.5 }
-  ]
+  ],
+  startFrame: 0
 }
 
   const testData: Gesture = {

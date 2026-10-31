@@ -96,7 +96,7 @@ __[⬆ back to top](#table-of-contents)__
 
 Detected extrema are classified (local minimum, local maximum or undefined) based on the depth values of the neighboring pixels. There are different algorithms available:
 
-* __Global__: basically disable the check: depth value below 0.5 means minimum, above maximum.
+* __Global__: skip neighbourhood checking and compare absolute sensor depth with the configured zero plane: below means Minimum, above means Maximum; equal or non-finite depth means Undefined.
 * __FixedRadius__: check a predefined number of positions in a given radius
 * __StochasticStatic__: check random positions (determined on program start)
 * __StochasticDynamic__: check random positions (determined for each frame on each extremum)
