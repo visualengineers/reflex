@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
@@ -69,18 +69,20 @@ namespace ReFlex.Core.Interactivity.Interfaces
         float MaxDistance { get; set; }
         
         /// <summary>
-        /// Number of Frames for tracking movement of touch points. If set to 0, every extremum point gets a unique id (in every frame).
+        /// Number of frames retained for tracking. Negative values are clamped to zero.
+        /// Zero publishes current measurements with fresh IDs in every frame and disables smoothing.
         /// </summary>
         int InteractionHistorySize { get; set; }
         
         /// <summary>
-        /// Number of Frames for smoothing. If set to 0, no smoothing is applied.
+        /// Number of frames for smoothing, clamped to [0, InteractionHistorySize]. Zero disables smoothing.
         /// </summary>
         int NumSmoothingFrames { get; set; }
         
         /// <summary>
-        /// Threshold number of frames for displaying interactions from history when no touch is registered
-        /// must be smaller than <see cref="InteractionHistorySize"/> 
+        /// Number of consecutive missing measurements tolerated before a track ends.
+        /// Clamped to [0, max(0, InteractionHistorySize - 1)]. Lost outputs keep their measurement
+        /// timestamp; after expiry a returning contact receives a new ID.
         /// </summary>
         int MaxNumEmptyFramesBetween { get; set; }
         

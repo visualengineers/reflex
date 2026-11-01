@@ -102,13 +102,13 @@ namespace ReFlex.Core.Interactivity.Components
 
         public int InteractionHistorySize
         {
-            get => _historySize;
+            get => _smoothingBehaviour?.NumFramesHistory ?? _historySize;
             set
             {
-                _historySize = value;
+                _historySize = Math.Max(0, value);
                 if (_smoothingBehaviour != null)
                 {
-                    _smoothingBehaviour.NumFramesHistory = value;
+                    _smoothingBehaviour.NumFramesHistory = _historySize;
                     // update depending smoothing/filter values
                     NumSmoothingFrames = _numSmoothingFrames;
                     MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
@@ -118,28 +118,23 @@ namespace ReFlex.Core.Interactivity.Components
 
         public int NumSmoothingFrames
         {
-            get => _numSmoothingFrames;
+            get => _smoothingBehaviour?.NumFramesSmoothing ?? _numSmoothingFrames;
             set
             {
-                _numSmoothingFrames = value;
+                _numSmoothingFrames = Math.Clamp(value, 0, InteractionHistorySize);
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.NumFramesSmoothing = value < _smoothingBehaviour.NumFramesHistory
-                        ? _smoothingBehaviour.NumFramesHistory
-                        : value;
+                    _smoothingBehaviour.NumFramesSmoothing = _numSmoothingFrames;
             }
         }
 
-        // TODO: write tests for negative (!) values and values larger than history
         public int MaxNumEmptyFramesBetween
         {
-            get => _maxNumEmptyFramesBetween;
+            get => _smoothingBehaviour?.MaxNumEmptyFramesBetween ?? _maxNumEmptyFramesBetween;
             set
             {
-                _maxNumEmptyFramesBetween = value;
+                _maxNumEmptyFramesBetween = Math.Clamp(value, 0, Math.Max(0, InteractionHistorySize - 1));
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.MaxNumEmptyFramesBetween = value < _smoothingBehaviour.NumFramesHistory
-                        ? _smoothingBehaviour.NumFramesHistory
-                        : value;
+                    _smoothingBehaviour.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
             }
         }
 
@@ -159,9 +154,9 @@ namespace ReFlex.Core.Interactivity.Components
             get => _depthScale;
             set
             {
-                _depthScale = value;
                 if (_smoothingBehaviour != null)
                     _smoothingBehaviour.DepthScale = value;
+                _depthScale = value;
             }
         }
 
@@ -233,6 +228,12 @@ namespace ReFlex.Core.Interactivity.Components
         protected InteractionObserverBase()
         {
             _smoothingBehaviour = new InteractionSmoothingBehaviour(InteractionHistorySize);
+            NumSmoothingFrames = _numSmoothingFrames;
+            MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+            TouchMergeDistance2D = _touchMergeDistance2d;
+            DepthScale = _depthScale;
+            MaxConfidence = _maxConfidence;
+            FilterType = _filterType;
         }
 
         #endregion

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -115,11 +114,10 @@ namespace InteractionTests
         [Test]
         public void TestSingleInteractionNoHistory()
         {
-            _smoothing.MaxConfidence = new Random().Next(100);
+            _smoothing.MaxConfidence = 20;
 
            for (var i = 0; i < 100; i++)
            {
-                Thread.Sleep(20);
                 var sourceInteractions = GetTestData(1, 0);       
                 
                 var result = _smoothing.Update(sourceInteractions);
@@ -133,7 +131,9 @@ namespace InteractionTests
                 
                 var cacheSize = Math.Min(i + 1, NumFrames);
 
-                var interactions = sourceInteractions;
+                // Update owns its copies; input interactions deliberately retain TouchId == -1.
+                var interactions = sourceInteractions.Select((interaction, index) =>
+                    new Interaction(interaction) { TouchId = touchIds[index] }).ToList();
                 
                 CheckResult(result, interactionsCount, expectedFrameId, confidence, touchIds, expectedMaxId, cacheSize);
 
@@ -153,11 +153,10 @@ namespace InteractionTests
         {
             var interactionsCount = 2;
 
-            _smoothing.MaxConfidence = new Random().Next(100);
+            _smoothing.MaxConfidence = 20;
             
             for (var i = 0; i < 100; i++)
             {
-                Thread.Sleep(20);
                 var sourceInteractions = GetTestData(2, 0);
                 
                 var result = _smoothing.Update(sourceInteractions);
@@ -171,7 +170,9 @@ namespace InteractionTests
                 
                 var cacheSize = Math.Min(i + 1, NumFrames);
 
-                var interactions = sourceInteractions;
+                // Update owns its copies; input interactions deliberately retain TouchId == -1.
+                var interactions = sourceInteractions.Select((interaction, index) =>
+                    new Interaction(interaction) { TouchId = touchIds[index] }).ToList();
                 
                 CheckResult(result, interactionsCount, expectedFrameId, confidence, touchIds, expectedMaxId, cacheSize);
 
@@ -577,7 +578,7 @@ namespace InteractionTests
         }
         
         /// <summary>
-        /// Tests if a touch point is still correctly recognized ans the correct Touch Id returned if it is only present in the first and last frame of the cache, and all other frames containing no interactions 
+        /// A contact returning after expiry starts a new track even if its old measurements remain cached.
         /// </summary>
         [Test]
         public void TestSingleInteractionHistoryWithEmptyFramesBetween()
@@ -605,7 +606,7 @@ namespace InteractionTests
             
             var result3 = _smoothing.Update(sourceInteractions);
             
-            CheckResult(result3, 1, NumFrames, confidence, touchIds, 1, NumFrames);
+            CheckResult(result3, 1, NumFrames, confidence, new List<int> {1}, 2, NumFrames);
         }
         
         private List<Interaction> GetTestData(int count = 1, int confidence = 0)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -137,7 +137,7 @@ namespace ReFlex.Core.Interactivity.Components
 
                     var angleX = vectorX.AngleBetween(vectorX2);
                     var angleY = vectorY.AngleBetween(vectorY2);
-                    var angle = angleX + angleY / 2f;
+                    var angle = (angleX + angleY) / 2f;
 
                     var confidence = _confidenceMat[x][y];
                     if (float.IsNaN(angle) || angle > MinAngle)
