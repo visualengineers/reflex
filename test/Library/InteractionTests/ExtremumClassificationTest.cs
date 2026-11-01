@@ -117,6 +117,12 @@ public class ExtremumClassificationTest
     {
         var performance = new Performance();
         using var manager = new InteractionManager(new Depth(), new Service(), performance);
+        manager.InteractionHistorySize = 50;
+        manager.NumSmoothingFrames = 40;
+        manager.UseVelocityPrediction = true;
+        manager.NumFramesForPrediction = 4;
+        manager.UseSecondDerivation = true;
+        manager.SecondDerivationMagnitude = .5f;
         manager.ExtremumTypeCheckRadius = 6;
         manager.ExtremumTypeCheckNumSamples = 12;
         manager.ExtremumTypeCheckFittingPercentage = .8f;
@@ -125,6 +131,11 @@ public class ExtremumClassificationTest
         {
             manager.Type = type;
             var observer = (InteractionObserverBase)performance.Current;
+            Assert.That(observer.NumSmoothingFrames, Is.EqualTo(40));
+            Assert.That(observer.UseVelocityPrediction, Is.True);
+            Assert.That(observer.NumFramesForPrediction, Is.EqualTo(4));
+            Assert.That(observer.UseSecondDerivation, Is.True);
+            Assert.That(observer.SecondDerivationMagnitude, Is.EqualTo(.5f));
             Assert.That(observer.ExtremumTypeCheckMethod, Is.EqualTo(ExtremumTypeCheckMethod.FixedRadius));
             Assert.That(observer.ExtremumTypeCheckRadius, Is.EqualTo(6));
             Assert.That(observer.ExtremumTypeCheckNumSamples, Is.EqualTo(12));

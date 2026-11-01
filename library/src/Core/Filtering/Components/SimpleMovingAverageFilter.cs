@@ -1,49 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+using System;
+using Math = System.Math;
+using System.Collections.Generic;
 using ReFlex.Core.Common.Components;
 
 namespace ReFlex.Core.Filtering.Components
 {
+    /// <summary>Causal moving average. Output i uses at most windowSize samples ending at i.</summary>
     public class SimpleMovingAverageFilter : IPointFilter
     {
         private readonly int _size;
-        
-        public SimpleMovingAverageFilter(int windowSize)
-        {
-            _size = windowSize;
-        }
-        
+        public SimpleMovingAverageFilter(int windowSize) => _size = Math.Max(1, windowSize);
+
         public List<Point3> Process(List<Point3> samples)
         {
-            if (samples == null || samples.Count < _size)
-                return samples;
-
-            var result = new List<Point3>();
-            for (var index = 0; index < samples.Count; index++)
+            if (samples == null) return null;
+            var result = new List<Point3>(samples.Count);
+            var sum = new Point3();
+            for (var i = 0; i < samples.Count; i++)
             {
-                // compute (initial) average
-                if (index < _size)
-                {
-                    var avg = ComputeAverage(result, samples[index]);
-                    result.Add(avg);
-                }
-                // compute online moving average (cf. https://de.wikipedia.org/wiki/Gleitender_Mittelwert#Online-Berechnung)
-                else if(result.Count > index && samples.Count > index)
-                {
-                    var avg = result[index - 1] + (samples[index] - samples[index - _size]) / index;
-                    result.Add(avg);
-
-                }
+                sum += samples[i];
+                if (i >= _size) sum -= samples[i - _size];
+                result.Add(sum / Math.Min(i + 1, _size));
             }
-
             return result;
-        }
-
-        private static Point3 ComputeAverage(IReadOnlyCollection<Point3> prev, Point3 currentPoint)
-        {
-            currentPoint = prev.Aggregate(currentPoint, (current, p) => current + p);
-
-            return currentPoint / (prev.Count + 1);
         }
     }
 }

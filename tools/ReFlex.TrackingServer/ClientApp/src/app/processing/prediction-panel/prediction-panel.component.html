@@ -1,0 +1,18 @@
+<section class="content__element" aria-label="Motion prediction">
+  <button type="button" class="button prediction-button" (click)="togglePrediction()" [attr.aria-expanded]="showPrediction">
+    {{ showPrediction ? 'Hide prediction diagnostics' : 'Show prediction diagnostics' }}
+  </button>
+  @if (showPrediction) {
+    <fieldset class="prediction-settings">
+      <legend>Motion model</legend>
+      <label><input type="checkbox" [(ngModel)]="predictionSettings.useVelocityPrediction" /> Use prediction for contact assignment</label>
+      <label>Measured samples <input type="number" min="2" max="100" step="1" [(ngModel)]="predictionSettings.numFramesForPrediction" /></label>
+      <label><input type="checkbox" [(ngModel)]="predictionSettings.useSecondDerivation" /> Include acceleration (requires at least 3 samples)</label>
+      <label>Acceleration weight <input type="number" min="0" max="1" step="0.1" [(ngModel)]="predictionSettings.secondDerivationMagnitude" /></label>
+      <p>0.5 models constant acceleration. The sample count is limited by the tracking history.</p>
+      <button type="button" class="button prediction-button" (click)="savePrediction()">Apply and save prediction</button>
+      <p role="status">{{ predictionMessage }}</p>
+    </fieldset>
+    <app-interactions-velocity-visualization [data]="predictionData" />
+  }
+</section>

@@ -1,0 +1,21 @@
+.prediction-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  margin-block: 1rem;
+}
+.prediction-settings input[type="number"] { width: 6rem; margin-inline-start: .5rem; }
+:host { display: block; min-width: 0; }
+.prediction-button {
+  width: auto;
+  height: auto;
+  min-height: 3.5rem;
+  padding: .7rem 1.2rem;
+  white-space: normal;
+  line-height: 1.4;
+}
+@media (max-width: 750px) {
+  :host { max-width: calc(100vw - 4rem); }
+}

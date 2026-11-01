@@ -100,6 +100,27 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        public bool UseVelocityPrediction
+        {
+            get => _smoothingBehaviour.UseVelocityForMapping;
+            set => _smoothingBehaviour.UseVelocityForMapping = value;
+        }
+        public int NumFramesForPrediction
+        {
+            get => _smoothingBehaviour.NumFramesForPrediction;
+            set => _smoothingBehaviour.NumFramesForPrediction = value;
+        }
+        public bool UseSecondDerivation
+        {
+            get => _smoothingBehaviour.UseSecondDerivation;
+            set => _smoothingBehaviour.UseSecondDerivation = value;
+        }
+        public float SecondDerivationMagnitude
+        {
+            get => _smoothingBehaviour.SecondDerivationMagnitude;
+            set => _smoothingBehaviour.SecondDerivationMagnitude = value;
+        }
+
         public int InteractionHistorySize
         {
             get => _smoothingBehaviour?.NumFramesHistory ?? _historySize;
@@ -216,6 +237,7 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract VectorField2 VectorField { get; set; }
 
         public event EventHandler<IList<Interaction>> NewInteractions;
+        public event EventHandler<IList<InteractionVelocity>> NewVelocities;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -335,7 +357,15 @@ namespace ReFlex.Core.Interactivity.Components
             processResult.PerformanceMeasurement = perfItem;
             UpdatePerformanceMetrics(perfItem, processingDateTime);
 
-            OnNewInteractions(confidentInteractions.ToList());
+            var published = confidentInteractions.ToList();
+            OnNewInteractions(published);
+            var velocities = _smoothingBehaviour.GetVelocities(new InteractionFrame(frame.FrameId, published));
+            foreach (var velocity in velocities)
+            {
+                velocity.Width = PointCloud.SizeX;
+                velocity.Height = PointCloud.SizeY;
+            }
+            NewVelocities?.Invoke(this, velocities);
 
             await reportTask;
 

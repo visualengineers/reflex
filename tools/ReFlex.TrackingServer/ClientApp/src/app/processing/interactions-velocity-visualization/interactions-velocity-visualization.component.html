@@ -1,0 +1,60 @@
+<section class="prediction" aria-label="Motion prediction diagnostics">
+  <div class="prediction__intro">
+    <h3>Position prediction</h3>
+    <p>Sensor raster · X/Y in pixels · velocity in pixels per processed frame. No display calibration.</p>
+    @if (data.length) {
+      <p class="prediction__frame">Current frame {{ data[0].frameId }} → forecast frame {{ data[0].predictionFrameId }}</p>
+    }
+  </div>
+  <div class="prediction__legend">
+    <span class="measured-key">● Measured</span>
+    <span class="smoothed-key">■ Smoothed</span>
+    <label><input type="checkbox" [(ngModel)]="showMatching" /> <span class="matching-key">◇ Matching target (current frame)</span></label>
+    <label><input type="checkbox" [(ngModel)]="showLinear" /> <span class="linear-key">○ Linear forecast (next frame)</span></label>
+    <label><input type="checkbox" [(ngModel)]="showAccelerated" /> <span class="accelerated-key">○ Acceleration forecast (next frame)</span></label>
+  </div>
+  @if (!data.length) {
+    <p class="prediction__empty" role="status">No prediction data. Enable prediction and processing, then move a contact. History must contain at least two measurements.</p>
+  }
+  <svg class="prediction__canvas" [attr.viewBox]="viewBox" role="img" aria-label="Measured trajectories, smoothed positions and forecasts">
+    @for (item of data; track item.touchId) {
+      <g [attr.data-touch-id]="item.touchId" [class.lost]="item.isPredicted">
+        <title>Touch {{ item.touchId }} — {{ item.isPredicted ? 'temporarily lost' : 'measured' }} — {{ item.sampleCount }} samples</title>
+        <polyline class="trail" [attr.points]="path(item.touchId)" />
+        @if (showMatching) {
+          <line class="matching-error" [attr.x1]="item.matchingPosition.x" [attr.y1]="item.matchingPosition.y" [attr.x2]="item.measuredPosition.x" [attr.y2]="item.measuredPosition.y" />
+          <path class="matching" [attr.d]="'M ' + item.matchingPosition.x + ' ' + (item.matchingPosition.y - 5) + ' l 5 5 -5 5 -5 -5 Z'" />
+        }
+        @if (showLinear) {
+          <line class="linear" [attr.x1]="item.measuredPosition.x" [attr.y1]="item.measuredPosition.y" [attr.x2]="item.predictedPositionBasic.x" [attr.y2]="item.predictedPositionBasic.y" />
+          <circle class="linear forecast" [attr.cx]="item.predictedPositionBasic.x" [attr.cy]="item.predictedPositionBasic.y" r="6" />
+        }
+        @if (showAccelerated) {
+          <line class="accelerated" [attr.x1]="item.measuredPosition.x" [attr.y1]="item.measuredPosition.y" [attr.x2]="item.predictedPositionAdvanced.x" [attr.y2]="item.predictedPositionAdvanced.y" />
+          <circle class="accelerated forecast" [attr.cx]="item.predictedPositionAdvanced.x" [attr.cy]="item.predictedPositionAdvanced.y" r="9" />
+        }
+        <rect class="smoothed" [attr.x]="item.smoothedPosition.x - 3" [attr.y]="item.smoothedPosition.y - 3" width="6" height="6" />
+        <circle class="measured" [attr.cx]="item.measuredPosition.x" [attr.cy]="item.measuredPosition.y" r="3" />
+        <text [attr.x]="item.measuredPosition.x + 12" [attr.y]="item.measuredPosition.y - 12">#{{ item.touchId }}{{ item.isPredicted ? ' · lost' : '' }}</text>
+      </g>
+    }
+  </svg>
+  @if (data.length) {
+    <div class="prediction__table">
+      <table>
+        <caption>Forecast values in sensor coordinates; dashed traces indicate missing measurements.</caption>
+        <thead><tr><th>ID / state</th><th>Samples</th><th>Measured X/Y</th><th>Velocity X/Y</th><th>Matching target X/Y</th><th>Next X/Y</th></tr></thead>
+        <tbody>
+          @for (item of data; track item.touchId) {
+            <tr><td>#{{ item.touchId }} · {{ item.isPredicted ? 'lost' : 'measured' }}</td><td>{{ item.sampleCount }}</td>
+              <td>{{ item.measuredPosition.x | number:'1.1-1' }} / {{ item.measuredPosition.y | number:'1.1-1' }}</td>
+              <td>{{ item.firstDerivation.x | number:'1.1-1' }} / {{ item.firstDerivation.y | number:'1.1-1' }}</td>
+              <td>{{ item.matchingPosition.x | number:'1.1-1' }} / {{ item.matchingPosition.y | number:'1.1-1' }}</td>
+              <td>{{ (item.useSecondDerivation ? item.predictedPositionAdvanced.x : item.predictedPositionBasic.x) | number:'1.1-1' }} / {{ (item.useSecondDerivation ? item.predictedPositionAdvanced.y : item.predictedPositionBasic.y) | number:'1.1-1' }} ({{ item.useSecondDerivation ? 'acceleration' : 'linear' }})</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

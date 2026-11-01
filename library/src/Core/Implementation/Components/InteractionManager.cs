@@ -16,6 +16,10 @@ namespace Implementation.Components
     {
         private IInteractionObserver _interactionObserver;
         private IList<Interaction> _interactions;
+        private bool _useVelocityPrediction;
+        private int _numFramesForPrediction = 3;
+        private bool _useSecondDerivation;
+        private float _secondDerivationMagnitude = .5f;
         private readonly IDepthImageManager _depthImageManager;
         private readonly IPerformanceAggregator _performanceAggregator;
 
@@ -38,6 +42,46 @@ namespace Implementation.Components
         private ExtremumTypeCheckMethod _extremumTypeCheckMethod;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
+
+        public bool UseVelocityPrediction
+        {
+            get => _interactionObserver?.UseVelocityPrediction ?? _useVelocityPrediction;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseVelocityPrediction = value;
+                _useVelocityPrediction = value;
+            }
+        }
+
+        public int NumFramesForPrediction
+        {
+            get => _interactionObserver?.NumFramesForPrediction ?? _numFramesForPrediction;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.NumFramesForPrediction = value;
+                _numFramesForPrediction = value;
+            }
+        }
+
+        public bool UseSecondDerivation
+        {
+            get => _interactionObserver?.UseSecondDerivation ?? _useSecondDerivation;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseSecondDerivation = value;
+                _useSecondDerivation = value;
+            }
+        }
+
+        public float SecondDerivationMagnitude
+        {
+            get => _interactionObserver?.SecondDerivationMagnitude ?? _secondDerivationMagnitude;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.SecondDerivationMagnitude = value;
+                _secondDerivationMagnitude = value;
+            }
+        }
 
         public ObserverType Type
         {
@@ -79,6 +123,7 @@ namespace Implementation.Components
             if (_interactionObserver != null)
             {
                 _interactionObserver.NewInteractions -= OnNewInteractions;
+                _interactionObserver.NewVelocities -= OnNewVelocities;
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
                 _performanceAggregator.UnregisterReporter(observer as IPerformanceReporter);
             }
@@ -94,11 +139,15 @@ namespace Implementation.Components
             observer.MinAngle = _minAngle;
             observer.PointCloud = _depthImageManager.PointCloud;
             observer.VectorField = _depthImageManager.VectorField;
-            observer.NumSmoothingFrames = _numSmoothFrames;
             observer.InteractionHistorySize = _interactionHistorySize;
+            observer.NumSmoothingFrames = _numSmoothFrames;
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
             observer.DepthScale = _depthScale;
+            observer.UseVelocityPrediction = _useVelocityPrediction;
+            observer.NumFramesForPrediction = _numFramesForPrediction;
+            observer.UseSecondDerivation = _useSecondDerivation;
+            observer.SecondDerivationMagnitude = _secondDerivationMagnitude;
             observer.ExtremumTypeCheckRadius = _extremumTypeCheckRadius;
             observer.ExtremumTypeCheckNumSamples = _extremumTypeCheckNumSamples;
             observer.ExtremumTypeCheckFittingPercentage = _extremumTypeCheckFittingPercentage;
@@ -106,6 +155,7 @@ namespace Implementation.Components
             _interactionObserver = observer;
 
             _interactionObserver.NewInteractions += OnNewInteractions;
+            _interactionObserver.NewVelocities += OnNewVelocities;
             _interactionObserver.InteractionHistoryUpdated += OnHistoryUpdated;
             _performanceAggregator.RegisterReporter(_interactionObserver as IPerformanceReporter);
         }
@@ -338,6 +388,10 @@ namespace Implementation.Components
         }
 
         public event EventHandler<IList<Interaction>> InteractionsUpdated;
+        public event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
+
+        private void OnNewVelocities(object sender, IList<InteractionVelocity> velocities)
+            => VelocitiesUpdated?.Invoke(this, velocities);
         
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
@@ -352,6 +406,7 @@ namespace Implementation.Components
             if (_interactionObserver != null)
             {
                 _interactionObserver.NewInteractions -= OnNewInteractions;
+                _interactionObserver.NewVelocities -= OnNewVelocities;
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
 
                 _performanceAggregator.UnregisterReporter(_interactionObserver as IPerformanceReporter);

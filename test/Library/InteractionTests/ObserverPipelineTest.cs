@@ -205,6 +205,39 @@ public class ObserverPipelineTest
         }
     }
 
+    [Test]
+    public async Task PredictionDiagnosticsDescribePublishedFrameInSensorCoordinates()
+    {
+        var service = new Service();
+        var observer = new RemoteInteractionProcessor(service);
+        Configure(observer);
+        observer.UseVelocityPrediction = true;
+        observer.NumFramesForPrediction = 2;
+        observer.ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
+        observer.PointCloud[12,10].Z = .75f;
+        IList<InteractionVelocity> diagnostics = null;
+        IList<Interaction> published = null;
+        observer.NewVelocities += (_, data) => diagnostics = data;
+        observer.NewInteractions += (_, data) => published = data;
+        await observer.Update();
+        service.Candidates = () => new[] { new Interaction(new Point3(12,10,.75f), InteractionType.Push, 1) };
+        await observer.Update();
+        var motion = diagnostics.Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(motion.TouchId, Is.EqualTo(published.Single().TouchId));
+            Assert.That(motion.FrameId, Is.EqualTo(2));
+            Assert.That(motion.PredictionFrameId, Is.EqualTo(3));
+            Assert.That(motion.Width, Is.EqualTo(50));
+            Assert.That(motion.Height, Is.EqualTo(30));
+            Assert.That(motion.MeasuredPosition.X, Is.EqualTo(12));
+            Assert.That(motion.PredictedPositionBasic.X, Is.EqualTo(14).Within(.0001));
+        });
+        observer.UseVelocityPrediction = false;
+        await observer.Update();
+        Assert.That(diagnostics, Is.Empty);
+    }
+
     private sealed class Conversion : SingleInteractionObserver
     {
         public List<Interaction> Convert(params float[] depths) => ConvertDepthValue(depths.Select(z =>

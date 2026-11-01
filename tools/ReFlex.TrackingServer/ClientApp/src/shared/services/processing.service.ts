@@ -2,12 +2,14 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   Interaction,
+  InteractionVelocity,
+  PredictionSettings,
   InteractionFrame,
   InteractionHistory,
   JsonSimpleValue,
   RemoteProcessingServiceSettings
 } from '@reflex/shared-types';
-import { fromEventPattern, Observable, using } from 'rxjs';
+import { filter, fromEventPattern, Observable, switchMap, take, using } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { SignalRBaseService } from './signalR.base.service';
@@ -135,6 +137,30 @@ export class ProcessingService extends SignalRBaseService<string> {
       },
       () => interactions$
     );
+  }
+
+  public setPredictionSettings(settings: PredictionSettings): Observable<PredictionSettings> {
+    return this.http.post<PredictionSettings>(`${this.baseUrl}api/Settings/Prediction`, settings);
+  }
+
+  public getVelocities(): Observable<Array<InteractionVelocity>> {
+    const velocities$ = fromEventPattern<Array<InteractionVelocity>>(
+      (handler) => this.connection.on('velocities', handler),
+      (handler) => this.connection.off('velocities', handler)
+    );
+
+    return this.isConnected.pipe(filter(Boolean), take(1), switchMap(() => using(
+      () => {
+        this.connection.send('StartVelocities').catch((error) => this.logService.sendErrorLog(`${error}`));
+
+        return {
+          unsubscribe: (): void => {
+            this.connection.send('StopVelocities').catch((error) => this.logService.sendErrorLog(`${error}`));
+          }
+        };
+      },
+      () => velocities$
+    )));
   }
 
   public getFrames(): Observable<Array<InteractionFrame>> {

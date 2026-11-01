@@ -4,7 +4,7 @@
 
 One call to `InteractionSmoothingBehaviour.Update` represents one **processed frame**.
 Empty input is a processed frame without detections. Skipped observer updates do not
-advance this clock. Sensor timestamps and velocity prediction are not part of this tracker.
+advance this clock. Sensor timestamps are not the clock. Optional velocity prediction is documented in POSITION_PREDICTION_REVIEW.md.
 
 Configuration is clamped identically at the observer and standalone tracker:
 
@@ -40,13 +40,13 @@ confirmation; tentative contacts are not automatically hidden by this new state.
 
 ## Assignment
 
-Pairs are ranked by distance to each track's **last measurement**, not its oldest cached
-position. Matching is greedy and one-to-one: a track and a measurement are each used at most
+With prediction disabled, pairs are ranked by distance to each track's **last measurement**, not its oldest cached
+position. With prediction enabled, the target is its forecast at the current frame. Matching is greedy and one-to-one: a track and a measurement are each used at most
 once. Unassigned measurements receive fresh IDs rather than being discarded. Equal-cost
 pairs use track ID, candidate X/Y and input index as tie breakers. The existing strict distance
 threshold and Manhattan-distance implementation of `Squared2DDistance` are unchanged.
 
-This is not a globally optimal assignment or a motion predictor. Exact/ambiguous crossings
+Greedy assignment is not globally optimal. With prediction disabled, there is no motion model. Exact/ambiguous crossings
 can exchange physical finger identities. The crossing test explicitly documents that limitation;
 it tests distinct observations and proximity semantics, not impossible identity recovery from
 identical position-only observations. The pre-existing 20-candidate cap also remains in place.
@@ -73,9 +73,9 @@ use `Scenario.Tracker.Update` with explicit `Interaction` instances. Keep each t
 one behavior and explain why its coordinates exercise the failure. Prefer parameterized tests
 for boundary values and input-order permutations.
 
-Snapshot tests exercise both filter pass-through (too few samples) and an active moving-average
-path. They assert immutable inputs/cache contents and correct depth scaling, not the unrelated
-known temporal-window and filter-mathematics issues. Those remain separate work.
+Snapshot tests exercise filter pass-through (too few samples) and an active moving-average
+path. They assert immutable inputs/cache contents and correct depth scaling. Latest-window
+selection, complete filter output and motion models are additionally covered by PositionPredictionTest.
 
 Run from the repository root:
 

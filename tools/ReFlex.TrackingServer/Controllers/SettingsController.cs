@@ -1,4 +1,4 @@
-﻿using Implementation.Interfaces;
+using Implementation.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ReFlex.Core.Common.Interfaces;
@@ -64,6 +64,21 @@ namespace TrackingServer.Controllers
             UpdateConfig();
 
             Logger.Info($"Updated {nameof(TrackingServerAppSettings)}. Updated value: {value}.");
+        }
+
+        [HttpPost("Prediction")]
+        public ActionResult<PredictionSettings> SetPrediction([FromBody] PredictionSettings value)
+        {
+            if (value.NumFramesForPrediction < 2 || !float.IsFinite(value.SecondDerivationMagnitude) ||
+                value.SecondDerivationMagnitude < 0 || value.SecondDerivationMagnitude > 1)
+                return BadRequest("Use at least two samples and an acceleration weight between 0 and 1.");
+            _interactionManager.UseVelocityPrediction = value.UseVelocityPrediction;
+            _interactionManager.NumFramesForPrediction = value.NumFramesForPrediction;
+            _interactionManager.UseSecondDerivation = value.UseSecondDerivation;
+            _interactionManager.SecondDerivationMagnitude = value.SecondDerivationMagnitude;
+            _configManager.Settings.PredictionSettings = value;
+            _configManager.Update(_configManager.Settings);
+            return value;
         }
 
         // GET: api/Settings/CanRestore

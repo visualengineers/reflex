@@ -73,6 +73,11 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// Zero publishes current measurements with fresh IDs in every frame and disables smoothing.
         /// </summary>
         int InteractionHistorySize { get; set; }
+        bool UseVelocityPrediction { get; set; }
+        int NumFramesForPrediction { get; set; }
+        bool UseSecondDerivation { get; set; }
+        float SecondDerivationMagnitude { get; set; }
+        event EventHandler<IList<InteractionVelocity>> NewVelocities;
         
         /// <summary>
         /// Number of frames for smoothing, clamped to [0, InteractionHistorySize]. Zero disables smoothing.

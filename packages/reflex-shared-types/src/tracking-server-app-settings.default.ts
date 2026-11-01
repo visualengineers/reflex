@@ -102,6 +102,7 @@ const values: TrackingServerAppSettings = {
   cameraConfigurationValues: defaultCameraConfig,
   networkSettingValues: defaultNetworkSettings,
   pointCloudSettingValues: defaultPointCloudSettingValues,
+  predictionSettings: { useVelocityPrediction: true, numFramesForPrediction: 3, useSecondDerivation: false, secondDerivationMagnitude: 0.5 },
   processingSettingValues: defaultProcessingSettings,
   remoteProcessingServiceSettingsValues: defaultRemoteProcessingSettings,
   tuioSettingValues: defaultTuioSettings,

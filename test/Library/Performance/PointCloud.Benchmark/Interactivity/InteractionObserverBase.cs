@@ -1,4 +1,4 @@
-﻿using ReFlex.Core.Common.Components;
+using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Interactivity.Components;
@@ -93,6 +93,27 @@ namespace PointCloud.Benchmark.Interactivity
         /// Defines how neighboring the points are sampled for determining the type of extremum.
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
+
+        public bool UseVelocityPrediction
+        {
+            get => _smoothingBehaviour.UseVelocityForMapping;
+            set => _smoothingBehaviour.UseVelocityForMapping = value;
+        }
+        public int NumFramesForPrediction
+        {
+            get => _smoothingBehaviour.NumFramesForPrediction;
+            set => _smoothingBehaviour.NumFramesForPrediction = value;
+        }
+        public bool UseSecondDerivation
+        {
+            get => _smoothingBehaviour.UseSecondDerivation;
+            set => _smoothingBehaviour.UseSecondDerivation = value;
+        }
+        public float SecondDerivationMagnitude
+        {
+            get => _smoothingBehaviour.SecondDerivationMagnitude;
+            set => _smoothingBehaviour.SecondDerivationMagnitude = value;
+        }
 
         public int InteractionHistorySize
         {
@@ -215,6 +236,7 @@ namespace PointCloud.Benchmark.Interactivity
         public abstract VectorField2 VectorField { get; set; }
 
         public abstract event EventHandler<IList<Interaction>> NewInteractions;
+        public event EventHandler<IList<InteractionVelocity>> NewVelocities;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -243,6 +265,7 @@ namespace PointCloud.Benchmark.Interactivity
         protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
         {
             var result = _smoothingBehaviour.Update(rawInteractions);
+            NewVelocities?.Invoke(this, _smoothingBehaviour.GetVelocities(result));
             InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
 
             return result;
