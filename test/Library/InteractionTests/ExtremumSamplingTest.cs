@@ -102,6 +102,77 @@ public class ExtremumSamplingTest
         Assert.That(result.NumFittingPoints, Is.InRange(2048, 3072));
     }
 
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 2)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 3)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 8)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 9)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 2)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 3)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 8)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 9)]
+    public void StochasticOffsetsKeepTheConfiguredMagnitudeRange(ExtremumTypeCheckMethod method, int radius)
+    {
+        var observer = Create(method, samples: 4096, radius: radius);
+        var min = radius / 2;
+        foreach (var point in observer.PointCloud.AsArray())
+        {
+            var dx = Math.Abs(point.X - 20);
+            var dy = Math.Abs(point.Y - 20);
+            point.Z = dx >= min && dx < radius && dy >= min && dy < radius ? 3 : 1;
+        }
+        observer.PointCloud[20, 20].Z = 2;
+
+        var result = observer.Classify();
+
+        Assert.That(result.Type, Is.EqualTo(ExtremumType.Minimum));
+        Assert.That(result.NumFittingPoints, Is.EqualTo(4096));
+        Assert.That(result.PercentageFittingPoints, Is.EqualTo(1));
+    }
+
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 0)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 1)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 0)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 1)]
+    public void SmallStochasticRadiiSampleTheCenter(ExtremumTypeCheckMethod method, int radius)
+    {
+        var observer = Create(method, radius: radius);
+        observer.PointCloud[20, 20].Z = 1;
+
+        var result = observer.Classify();
+
+        // Equal depths retain the existing classification as closer samples.
+        Assert.That(result.Type, Is.EqualTo(ExtremumType.Maximum));
+        Assert.That(result.NumFittingPoints, Is.EqualTo(8));
+        Assert.That(result.PercentageFittingPoints, Is.EqualTo(1));
+    }
+
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 0)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 1)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 2)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticStatic, 3)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 0)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 1)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 2)]
+    [TestCase(ExtremumTypeCheckMethod.StochasticDynamic, 3)]
+    public void StochasticSamplesCoverAllFourQuadrants(ExtremumTypeCheckMethod method, int quadrant)
+    {
+        var observer = Create(method, samples: 4096);
+        observer.ExtremumTypeCheckFittingPercentage = .9f;
+        foreach (var point in observer.PointCloud.AsArray())
+        {
+            var pointQuadrant = (point.X < 20 ? 1 : 0) + (point.Y < 20 ? 2 : 0);
+            point.Z = pointQuadrant == quadrant ? 3 : 1;
+        }
+        observer.PointCloud[20, 20].Z = 2;
+
+        var result = observer.Classify();
+
+        Assert.That(result.Type, Is.EqualTo(ExtremumType.Undefined));
+        // Approximately one quarter of samples is farther away. This also catches
+        // correlated signs that axis-only checks would miss; broad statistical bounds.
+        Assert.That(result.PercentageFittingPoints, Is.InRange(.65f, .85f));
+    }
+
     [TestCase(.75f, ExtremumType.Undefined)]
     [TestCase(.74f, ExtremumType.Maximum)]
     public void FittingRatioMustExceedThreshold(float threshold, ExtremumType expected)

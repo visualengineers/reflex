@@ -667,16 +667,19 @@ namespace ReFlex.Core.Interactivity.Components
 
             var min = (int)Math.Floor(0.5f * ExtremumTypeCheckRadius);
             var max = ExtremumTypeCheckRadius;
+            var range = max - min;
 
             for (var i = 0; i < ExtremumTypeCheckNumSamples; i++)
             {
-                var xStochastic = rnd.Next(min, max);
-                var yStochastic = rnd.Next(min, max);
-                // Sample all quadrants while preserving the configured offset range.
-                if (rnd.Next(2) == 0)
-                    xStochastic = -xStochastic;
-                if (rnd.Next(2) == 0)
-                    yStochastic = -yStochastic;
+                // One draw per axis encodes both magnitude and sign. Map [-range, -1]
+                // to [-(max - 1), -min] and [0, range - 1] to [min, max - 1].
+                var x = rnd.Next(-range, range);
+                var y = rnd.Next(-range, range);
+                // A 0/-1 sign mask avoids an unpredictable branch for each axis.
+                var xSign = x >> 31;
+                var ySign = y >> 31;
+                var xStochastic = x + (min ^ xSign) - 2 * xSign;
+                var yStochastic = y + (min ^ ySign) - 2 * ySign;
 
                 result.Add(new Tuple<int, int>(xStochastic, yStochastic));
             }
