@@ -15,7 +15,7 @@ namespace ReFlex.Core.Common.Components
         public int TouchId { get; set; } = -1;
 
         /// <summary>
-        /// Tracking status. Lost outputs retain the last measurement's timestamp and confidence;
+        /// Tracking status. Lost outputs retain the last measurement's timestamp but have decaying confidence;
         /// they are not new measurements. Ended contacts are omitted from subsequent frames.
         /// </summary>
         public InteractionTrackingState TrackingState { get; set; } = InteractionTrackingState.Tentative;

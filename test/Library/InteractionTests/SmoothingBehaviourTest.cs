@@ -14,6 +14,8 @@ namespace InteractionTests
     public class SmoothingBehaviourTest
     {
         private InteractionSmoothingBehaviour _smoothing;
+        private double _time;
+        private InteractionFrame Step(IEnumerable<Interaction> values) => _smoothing.Update(values.ToList(), ++_time);
         private const int NumFrames = 10;
         private const float SquaredDistance = 64f;
         // private SimpleMovingAverageFilter _movingAverageFilter = new SimpleMovingAverageFilter(5);
@@ -29,15 +31,16 @@ namespace InteractionTests
         [SetUp]
         public void Setup()
         {
+            _time = 0;
             _smoothing = new InteractionSmoothingBehaviour(NumFrames);
             _smoothing.TouchMergeDistance2D = SquaredDistance;
             _smoothing.NumFramesSmoothing = 0;
-            _smoothing.MaxNumEmptyFramesBetween = 3;
+            _smoothing.ContactRetentionSeconds = 3;
             _smoothing.UpdateFilterType(FilterType.None);
         }
 
         /// <summary>
-        /// Add different interactions that are not merged into one and check if they are removed correctly base on their "life span" (cf. <see cref="InteractionSmoothingBehaviour.MaxNumEmptyFramesBetween"/>
+        /// Add different interactions that are not merged into one and check if they are removed correctly base on their "life span" (cf. <see cref="InteractionSmoothingBehaviour.ContactRetentionSeconds"/>
         /// </summary>
         [Test]
         public void TestDifferentWidePointsAndReset()
@@ -60,12 +63,12 @@ namespace InteractionTests
                 Assert.That(_smoothing.InteractionsFramesCache.Length, Is.EqualTo(cache.Count));
                 ValidateCache(cache);
                 
-                var result = _smoothing.Update(sourceInteractions);
+                var result = Step(sourceInteractions);
 
                 var expectedFrameId = i + 1;
                 var expectedMaxId = i + 1;
 
-                var interactionsCount = Math.Min(Math.Min(i + 1, NumFrames), _smoothing.MaxNumEmptyFramesBetween + 1);
+                var interactionsCount = Math.Min(Math.Min(i + 1, NumFrames), (int)_smoothing.ContactRetentionSeconds + 1);
                 
                 confidence.Add(0);
                 if (interactionsCount < expectedFrameId)
@@ -120,7 +123,7 @@ namespace InteractionTests
            {
                 var sourceInteractions = GetTestData(1, 0);       
                 
-                var result = _smoothing.Update(sourceInteractions);
+                var result = Step(sourceInteractions);
 
                 var expectedFrameId = i + 1;
                 var expectedMaxId = 1;
@@ -159,7 +162,7 @@ namespace InteractionTests
             {
                 var sourceInteractions = GetTestData(2, 0);
                 
-                var result = _smoothing.Update(sourceInteractions);
+                var result = Step(sourceInteractions);
 
                 var expectedFrameId = i + 1;
                 var expectedMaxId = 2;
@@ -228,7 +231,7 @@ namespace InteractionTests
 
             // interactions should be acknowledged as two !
             var sourceInteractions = new List<Interaction> {interaction1, interaction2};
-            var result = _smoothing.Update(sourceInteractions);
+            var result = Step(sourceInteractions);
             
             var confidence = new List<int> {0, 0};
             var touchIds = new List<int> {0, 1};
@@ -260,7 +263,7 @@ namespace InteractionTests
                 Assert.That(ValidateInteractionMapping(check2.Item1, check2.Item2), Is.True);
             });
 
-            var result2 = _smoothing.Update(new List<Interaction>());
+            var result2 = Step(new List<Interaction>());
             
             CheckResult(result2, 2, 2, confidence, touchIds, 2, 2);
             
@@ -300,12 +303,12 @@ namespace InteractionTests
         {
             _smoothing.TouchMergeDistance2D = 45f;
             _smoothing.MaxConfidence = 100;
-            _smoothing.MaxNumEmptyFramesBetween = 2;
+            _smoothing.ContactRetentionSeconds = 2;
 
             var data1 = GetTestData(new[]{1});
             var interaction1 = data1[0];
            
-            var result = _smoothing.Update(data1);
+            var result = Step(data1);
             
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
@@ -318,7 +321,7 @@ namespace InteractionTests
 
             var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
 
-            result = _smoothing.Update(data2);            
+            result = Step(data2);
 
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
@@ -334,7 +337,7 @@ namespace InteractionTests
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
             
-            result = _smoothing.Update(data3);
+            result = Step(data3);
             
             confidence = new List<int> {0 ,0, 0};
             touchIds = new List<int> {0, 1, 2};
@@ -362,12 +365,12 @@ namespace InteractionTests
         {
             _smoothing.TouchMergeDistance2D = 45f;
             _smoothing.MaxConfidence = 100;
-            _smoothing.MaxNumEmptyFramesBetween = 1;
+            _smoothing.ContactRetentionSeconds = 1;
 
             var data1 = GetTestData(new[]{1});
             var interaction1 = data1[0];
            
-            var result = _smoothing.Update(data1);
+            var result = Step(data1);
             
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
@@ -380,7 +383,7 @@ namespace InteractionTests
 
             var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
 
-            result = _smoothing.Update(data2);            
+            result = Step(data2);
 
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
@@ -396,9 +399,9 @@ namespace InteractionTests
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
             
-            result = _smoothing.Update(data3);
+            result = Step(data3);
             
-            // MaxNumEmptyFramesBetween = 1 --> remove first touch
+            // ContactRetentionSeconds = 1 --> remove first touch
             confidence = new List<int> {0 ,0};
             touchIds = new List<int> {1, 2};
             
@@ -424,12 +427,12 @@ namespace InteractionTests
         {
             _smoothing.TouchMergeDistance2D = 65f;
             _smoothing.MaxConfidence = 100;
-            _smoothing.MaxNumEmptyFramesBetween = 2;
+            _smoothing.ContactRetentionSeconds = 2;
 
             var data1 = GetTestData(new[]{1});
             var interaction1 = data1[0];
            
-            var result = _smoothing.Update(data1);
+            var result = Step(data1);
             
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
@@ -442,7 +445,7 @@ namespace InteractionTests
 
             var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
 
-            result = _smoothing.Update(data2);            
+            result = Step(data2);
 
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
@@ -458,7 +461,7 @@ namespace InteractionTests
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
             
-            result = _smoothing.Update(data3);
+            result = Step(data3);
             
             // Touch mergeDistance = 65 -> third touch is mapped to touchId 1 (with position of touch 3)
             confidence = new List<int> {0 , 1};
@@ -486,12 +489,12 @@ namespace InteractionTests
         {
             _smoothing.TouchMergeDistance2D = 65f;
             _smoothing.MaxConfidence = 100;
-            _smoothing.MaxNumEmptyFramesBetween = 1;
+            _smoothing.ContactRetentionSeconds = 1;
 
             var data1 = GetTestData(new[]{1});
             var interaction1 = data1[0];
            
-            var result = _smoothing.Update(data1);
+            var result = Step(data1);
             
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
@@ -504,7 +507,7 @@ namespace InteractionTests
 
             var interaction2 = new Interaction(data2[0]); //ApplyFilter(new List<Interaction> {data2[0], data1[0]});
 
-            result = _smoothing.Update(data2);            
+            result = Step(data2);
 
             confidence = new List<int> {0,0};
             touchIds = new List<int> {0,1};
@@ -520,7 +523,7 @@ namespace InteractionTests
             var data3 = GetTestData(new[]{2});
             var interaction3 = new Interaction(data3[0]); // ApplyFilter(new List<Interaction> {data3[0], data2[0], data1[0]});
             
-            result = _smoothing.Update(data3);
+            result = Step(data3);
             
             // TouchMergeDistance = 65 -> third touch is mapped to touchId 1 (with position of touch 3)
             // MaxNumTouchesBetween = 1 -> first touch is also removed
@@ -540,13 +543,13 @@ namespace InteractionTests
         {
            
             var sourceInteractions = GetTestData();
-            var result = _smoothing.Update(sourceInteractions);
+            var result = Step(sourceInteractions);
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
             
             CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
 
-            var result2 = _smoothing.Update(new List<Interaction>());
+            var result2 = Step(new List<Interaction>());
             
             CheckResult(result2, 1, 2, confidence, touchIds, 1, 2);
         }
@@ -558,13 +561,13 @@ namespace InteractionTests
         public void TestSingleInteractionHistoryWithEmptyFrameBetween()
         {
             var sourceInteractions = GetTestData();
-            var result = _smoothing.Update(sourceInteractions);
+            var result = Step(sourceInteractions);
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
             
             CheckResult(result, 1, 1, confidence, touchIds, 1, 1);
             
-            var result2 = _smoothing.Update(new List<Interaction>());
+            var result2 = Step(new List<Interaction>());
             
             CheckResult(result2, 1, 2, confidence, touchIds, 1, 2);
 
@@ -572,7 +575,7 @@ namespace InteractionTests
 
             Assert.That(sourceInteractions[0].TouchId, Is.EqualTo(-1));
             
-            var result3 = _smoothing.Update(sourceInteractions);
+            var result3 = Step(sourceInteractions);
             
             CheckResult(result3, 1, 3, confidence, touchIds, 1, 3);
         }
@@ -584,7 +587,7 @@ namespace InteractionTests
         public void TestSingleInteractionHistoryWithEmptyFramesBetween()
         {
             var sourceInteractions = GetTestData();
-            var result = _smoothing.Update(sourceInteractions);
+            var result = Step(sourceInteractions);
             var confidence = new List<int> {0};
             var touchIds = new List<int> {0};
             
@@ -592,9 +595,9 @@ namespace InteractionTests
             
             for (var i = 1; i < NumFrames-1; i++)
             {
-                 var result2 = _smoothing.Update(new List<Interaction>());
+                 var result2 = Step(new List<Interaction>());
                  
-                 if (result2.FrameId - 1 <= _smoothing.MaxNumEmptyFramesBetween)
+                 if (result2.FrameId - 1 <= _smoothing.ContactRetentionSeconds)
                      CheckResult(result2, 1, i+1, confidence, touchIds, 1, i+1);
                  else
                      CheckResult(result2, 0, i+1, new List<int>(), new List<int>(), 1, i+1);
@@ -604,7 +607,7 @@ namespace InteractionTests
 
             Assert.That(sourceInteractions[0].TouchId, Is.EqualTo(-1));
             
-            var result3 = _smoothing.Update(sourceInteractions);
+            var result3 = Step(sourceInteractions);
             
             CheckResult(result3, 1, NumFrames, confidence, new List<int> {1}, 2, NumFrames);
         }

@@ -21,7 +21,7 @@ namespace ReFlex.Core.Interactivity.Components
         private readonly InteractionSmoothingBehaviour _smoothingBehaviour;
         private int _numSmoothingFrames = 5;
         private int _historySize = 25;
-        private int _maxNumEmptyFramesBetween = 3;
+        private double _contactRetentionSeconds = .1;
         private float _touchMergeDistance2d = 64f;
         private float _depthScale = 100.0f;
         private FilterType _filterType;
@@ -100,6 +100,12 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        public double PredictionHorizonSeconds
+        {
+            get => _smoothingBehaviour.PredictionHorizonSeconds;
+            set => _smoothingBehaviour.PredictionHorizonSeconds = value;
+        }
+
         public bool UseVelocityPrediction
         {
             get => _smoothingBehaviour.UseVelocityForMapping;
@@ -132,7 +138,6 @@ namespace ReFlex.Core.Interactivity.Components
                     _smoothingBehaviour.NumFramesHistory = _historySize;
                     // update depending smoothing/filter values
                     NumSmoothingFrames = _numSmoothingFrames;
-                    MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
                 }
             }
         }
@@ -148,14 +153,18 @@ namespace ReFlex.Core.Interactivity.Components
             }
         }
 
-        public int MaxNumEmptyFramesBetween
+        private static double ValidateContactRetention(double value) =>
+            double.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
+
+        public double ContactRetentionSeconds
         {
-            get => _smoothingBehaviour?.MaxNumEmptyFramesBetween ?? _maxNumEmptyFramesBetween;
+            get => _smoothingBehaviour?.ContactRetentionSeconds ?? _contactRetentionSeconds;
             set
             {
-                _maxNumEmptyFramesBetween = Math.Clamp(value, 0, Math.Max(0, InteractionHistorySize - 1));
+                _contactRetentionSeconds = ValidateContactRetention(value);
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+                    _smoothingBehaviour.ContactRetentionSeconds = _contactRetentionSeconds;
             }
         }
 
@@ -251,7 +260,7 @@ namespace ReFlex.Core.Interactivity.Components
         {
             _smoothingBehaviour = new InteractionSmoothingBehaviour(InteractionHistorySize);
             NumSmoothingFrames = _numSmoothingFrames;
-            MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+            ContactRetentionSeconds = _contactRetentionSeconds;
             TouchMergeDistance2D = _touchMergeDistance2d;
             DepthScale = _depthScale;
             MaxConfidence = _maxConfidence;
@@ -286,6 +295,7 @@ namespace ReFlex.Core.Interactivity.Components
               return processResult;
             }
 
+            var timestampSeconds = GetTimestampSeconds();
             var processingDateTime = DateTime.Now.Ticks;
 
             if (MeasurePerformance)
@@ -341,7 +351,7 @@ namespace ReFlex.Core.Interactivity.Components
                 _stopWatch.Start();
             }
 
-            var frame = ComputeSmoothingValue(cleanedUpInteractions);
+            var frame = ComputeSmoothingValue(cleanedUpInteractions, timestampSeconds);
 
             if (MeasurePerformance)
             {
@@ -376,9 +386,12 @@ namespace ReFlex.Core.Interactivity.Components
         protected virtual IEnumerable<Interaction> SelectSmoothedInteractions(IEnumerable<Interaction> interactions)
             => interactions;
 
-        protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
+        /// <summary>Monotonic observation time captured before Analyze, including remote work.</summary>
+        protected virtual double GetTimestampSeconds() => (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+
+        protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions, double? timestampSeconds = null)
         {
-            var result = _smoothingBehaviour.Update(rawInteractions);
+            var result = _smoothingBehaviour.Update(rawInteractions, timestampSeconds ?? GetTimestampSeconds());
             InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
 
             return result;

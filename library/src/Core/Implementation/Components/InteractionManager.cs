@@ -17,6 +17,7 @@ namespace Implementation.Components
         private IInteractionObserver _interactionObserver;
         private IList<Interaction> _interactions;
         private bool _useVelocityPrediction;
+        private double _predictionHorizonSeconds = .05;
         private int _numFramesForPrediction = 3;
         private bool _useSecondDerivation;
         private float _secondDerivationMagnitude = .5f;
@@ -33,7 +34,7 @@ namespace Implementation.Components
         private int _maxConfidence;
         private int _numSmoothFrames;
         private int _interactionHistorySize;
-        private int _maxNumEmptyFramesBetween;
+        private double _contactRetentionSeconds = .1;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
         private int _extremumTypeCheckNumSamples;
@@ -42,6 +43,16 @@ namespace Implementation.Components
         private ExtremumTypeCheckMethod _extremumTypeCheckMethod;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
+
+        public double PredictionHorizonSeconds
+        {
+            get => _interactionObserver?.PredictionHorizonSeconds ?? _predictionHorizonSeconds;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.PredictionHorizonSeconds = value;
+                _predictionHorizonSeconds = value;
+            }
+        }
 
         public bool UseVelocityPrediction
         {
@@ -142,8 +153,9 @@ namespace Implementation.Components
             observer.InteractionHistorySize = _interactionHistorySize;
             observer.NumSmoothingFrames = _numSmoothFrames;
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
-            observer.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+            observer.ContactRetentionSeconds = _contactRetentionSeconds;
             observer.DepthScale = _depthScale;
+            observer.PredictionHorizonSeconds = _predictionHorizonSeconds;
             observer.UseVelocityPrediction = _useVelocityPrediction;
             observer.NumFramesForPrediction = _numFramesForPrediction;
             observer.UseSecondDerivation = _useSecondDerivation;
@@ -261,15 +273,16 @@ namespace Implementation.Components
             }
         }
         
-        public int MaxNumEmptyFramesBetween
+        public double ContactRetentionSeconds
         {
-            get => _interactionObserver?.MaxNumEmptyFramesBetween ?? 0;
+            get => _interactionObserver?.ContactRetentionSeconds ?? _contactRetentionSeconds;
             set
             {
                 if (_interactionObserver != null)
-                    _interactionObserver.MaxNumEmptyFramesBetween = value;
+                    _interactionObserver.ContactRetentionSeconds = value;
             
-                _maxNumEmptyFramesBetween = value;
+                _contactRetentionSeconds = double.IsFinite(value) && value >= 0 ? value :
+                    throw new ArgumentOutOfRangeException(nameof(value));
             }
         }
         

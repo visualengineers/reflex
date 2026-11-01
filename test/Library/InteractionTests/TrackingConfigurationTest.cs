@@ -18,65 +18,50 @@ public class TrackingConfigurationTest
     private static Interaction Contact() => new(new Point3(10, 10, -.5f), InteractionType.Push, 0);
 
     [Test]
-    public void DefaultsReachTrackerAndEmptyFramesAreBounded()
+    public void DefaultRetentionIsIndependentOfHistorySize()
     {
         var observer = new Observer();
-        Assert.Multiple(() =>
-        {
-            Assert.That(observer.InteractionHistorySize, Is.EqualTo(25));
-            Assert.That(observer.NumSmoothingFrames, Is.EqualTo(5));
-            Assert.That(observer.MaxNumEmptyFramesBetween, Is.EqualTo(3));
-            Assert.That(observer.DepthScale, Is.EqualTo(100));
-        });
-        observer.Step(Contact());
-        for (var i = 0; i < 3; i++) Assert.That(observer.Step().Interactions, Has.Count.EqualTo(1));
-        Assert.That(observer.Step().Interactions, Is.Empty);
+        Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.1));
+        observer.ContactRetentionSeconds = .25;
+        observer.InteractionHistorySize = 1;
+        Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.25));
+        var tracker = new InteractionSmoothingBehaviour(25) { ContactRetentionSeconds = .25 };
+        tracker.NumFramesHistory = 1;
+        Assert.That(tracker.ContactRetentionSeconds, Is.EqualTo(.25));
     }
 
-    [TestCase(-1, 0, 0)]
+    [TestCase(-1)]
+    [TestCase(double.NaN)]
+    [TestCase(double.PositiveInfinity)]
+    public void InvalidRetentionIsRejected(double duration)
+    {
+        var observer = new Observer();
+        var tracker = new InteractionSmoothingBehaviour(25);
+        Assert.Throws<ArgumentOutOfRangeException>(() => observer.ContactRetentionSeconds = duration);
+        Assert.Throws<ArgumentOutOfRangeException>(() => tracker.ContactRetentionSeconds = duration);
+        Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.1));
+    }
+
+    [TestCase(-1, 0)]
+    [TestCase(0, 0)]
+    [TestCase(1, 1)]
+    [TestCase(100, 25)]
+    public void SmoothingRemainsBoundedByHistory(int requested, int expected)
+    {
+        var observer = new Observer { NumSmoothingFrames = requested };
+        Assert.That(observer.NumSmoothingFrames, Is.EqualTo(expected));
+    }
+
+    [TestCase(-5, 0, 0)]
     [TestCase(0, 0, 0)]
     [TestCase(1, 1, 1)]
-    [TestCase(5, 5, 5)]
-    [TestCase(25, 25, 24)]
-    [TestCase(100, 25, 24)]
-    public void ValuesAreClampedToDocumentedRanges(int requested, int smoothing, int gap)
-    {
-        var observer = new Observer { NumSmoothingFrames = requested, MaxNumEmptyFramesBetween = requested };
-        var tracker = new InteractionSmoothingBehaviour(25)
-        {
-            NumFramesSmoothing = requested, MaxNumEmptyFramesBetween = requested
-        };
-        Assert.Multiple(() =>
-        {
-            Assert.That(observer.NumSmoothingFrames, Is.EqualTo(smoothing));
-            Assert.That(observer.MaxNumEmptyFramesBetween, Is.EqualTo(gap));
-            Assert.That(tracker.NumFramesSmoothing, Is.EqualTo(smoothing));
-            Assert.That(tracker.MaxNumEmptyFramesBetween, Is.EqualTo(gap));
-        });
-    }
-
-    [TestCase(-5, 0, 0, 0)]
-    [TestCase(0, 0, 0, 0)]
-    [TestCase(1, 1, 1, 0)]
-    [TestCase(3, 3, 3, 2)]
-    public void ReducingHistoryReclampsDependentParameters(int requested, int history, int smoothing, int gap)
+    [TestCase(3, 3, 3)]
+    public void ReducingHistoryStillClampsSmoothing(int requested, int history, int smoothing)
     {
         var observer = new Observer { InteractionHistorySize = requested };
-        Assert.Multiple(() =>
-        {
-            Assert.That(observer.InteractionHistorySize, Is.EqualTo(history));
-            Assert.That(observer.NumSmoothingFrames, Is.EqualTo(smoothing));
-            Assert.That(observer.MaxNumEmptyFramesBetween, Is.EqualTo(gap));
-        });
-    }
-
-    [Test]
-    public void ConfiguredGapIsNotRaisedToHistorySize()
-    {
-        var observer = new Observer { InteractionHistorySize = 25, MaxNumEmptyFramesBetween = 1 };
-        observer.Step(Contact());
-        Assert.That(observer.Step().Interactions, Has.Count.EqualTo(1));
-        Assert.That(observer.Step().Interactions, Is.Empty);
+        Assert.That(observer.InteractionHistorySize, Is.EqualTo(history));
+        Assert.That(observer.NumSmoothingFrames, Is.EqualTo(smoothing));
+        Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.1));
     }
 
     [TestCase(FilterType.MovingAverage)]

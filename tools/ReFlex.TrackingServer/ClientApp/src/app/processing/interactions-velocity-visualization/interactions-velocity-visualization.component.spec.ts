@@ -7,7 +7,11 @@ const snapshot = (frame = 3): InteractionVelocity => ({
   touchId: 42,
   frameId: frame,
   lastMeasuredFrameId: frame,
-  predictionFrameId: frame + 1,
+  timestampSeconds: frame / 10,
+  lastMeasuredTimestampSeconds: frame / 10,
+  predictionTimestampSeconds: frame / 10 + 0.05,
+  predictionHorizonSeconds: 0.05,
+  confidence: 7.5,
   sampleCount: 3,
   isPredicted: false,
   useSecondDerivation: true,
@@ -44,7 +48,8 @@ describe('Prediction diagnostics in sensor coordinates', () => {
     expect(element().querySelector('.smoothed')?.getAttribute('x')).toBe('92');
     expect(element().querySelector('.linear.forecast')?.getAttribute('cx')).toBe('105');
     expect(element().querySelector('.accelerated.forecast')?.getAttribute('cx')).toBe('106');
-    expect(element().textContent).toContain('forecast frame 4');
+    expect(element().textContent).toContain('forecast +50 ms');
+    expect(element().textContent).toContain('target t=0.350 s');
     expect(element().textContent).toContain('#42');
     expect(data).toEqual(before);
   });
@@ -59,9 +64,12 @@ describe('Prediction diagnostics in sensor coordinates', () => {
 
   it('marks missing measurements and does not append synthetic trail points', async () => {
     await show([snapshot()]);
-    await show([{ ...snapshot(4), lastMeasuredFrameId: 3, isPredicted: true }]);
+    await show([{ ...snapshot(4), lastMeasuredFrameId: 3, lastMeasuredTimestampSeconds: 0.325, confidence: 4.5, isPredicted: true }]);
     expect(element().querySelector('g.lost')).not.toBeNull();
     expect(element().textContent).toContain('lost');
+    expect(element().querySelectorAll('tbody td')[3].textContent?.trim()).toBe('75');
+    expect(element().querySelectorAll('tbody td')[2].textContent?.trim()).toBe('4.5');
+    expect(element().textContent).toContain('(px/s²)');
     expect(fixture.componentInstance.trails.get(42)).toHaveLength(1);
   });
 

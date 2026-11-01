@@ -3,17 +3,21 @@ using System;
 namespace ReFlex.Core.Common.Components;
 
 /// <summary>
-/// Motion in raster coordinates per processed frame (Z is normalized depth).
-/// Both forecasts target PredictionFrameId. MeasuredPosition and SmoothedPosition belong
+/// Motion in raster coordinates per second (Z is normalized depth); acceleration is units/s².
+/// Both forecasts target PredictionTimestampSeconds. MeasuredPosition and SmoothedPosition belong
 /// to FrameId; a Lost contact retains its last real measurement. Diagnostics are never fed
-/// back as measurements. Derivatives are evaluated at the last measured frame.
+/// back as measurements. Derivatives are evaluated at the last measurement time.
 /// </summary>
 public class InteractionVelocity
 {
     public int TouchId { get; set; }
     public int FrameId { get; set; }
     public int LastMeasuredFrameId { get; set; }
-    public int PredictionFrameId { get; set; }
+    public double TimestampSeconds { get; set; }
+    public double LastMeasuredTimestampSeconds { get; set; }
+    public double PredictionTimestampSeconds { get; set; }
+    public double PredictionHorizonSeconds { get; set; }
+    public float Confidence { get; set; }
     public int SampleCount { get; set; }
     public bool IsPredicted { get; set; }
     public bool UseSecondDerivation { get; set; }
@@ -36,7 +40,7 @@ public class InteractionVelocity
         Update(position, firstDerivation ?? new Point3(), secondDerivation ?? new Point3(), secondDerivationMagnitude);
     }
 
-    /// <summary>p(t+h) = p(t) + v(t) h + magnitude a(t) h²; .5 gives constant acceleration.</summary>
+    /// <summary>h is seconds. p(t+h) = p(t) + v(t) h + magnitude a(t) h²; .5 gives constant acceleration.</summary>
     public void Update(Point3 position, Point3 firstDerivation, Point3 secondDerivation,
         float secondDerivationMagnitude = .5f, float horizon = 1)
     {

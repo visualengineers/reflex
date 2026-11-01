@@ -20,6 +20,7 @@ export class PredictionPanelComponent implements OnChanges, OnDestroy {
   public showPrediction = false;
   public predictionData: Array<InteractionVelocity> = [];
   public predictionSettings: PredictionSettings = {
+    predictionHorizonSeconds: 0.05,
     useVelocityPrediction: true,
     numFramesForPrediction: 3,
     useSecondDerivation: false,
@@ -33,6 +34,14 @@ export class PredictionPanelComponent implements OnChanges, OnDestroy {
   private predictionSubscription?: Subscription;
   private predictionSettingsSubscription?: Subscription;
   private predictionSaveSubscription?: Subscription;
+
+  public get forecastMilliseconds(): number {
+    return this.predictionSettings.predictionHorizonSeconds * 1000;
+  }
+
+  public set forecastMilliseconds(value: number) {
+    this.predictionSettings.predictionHorizonSeconds = value / 1000;
+  }
 
   public ngOnChanges(): void {
     if (!this.isProcessing) {
@@ -87,7 +96,7 @@ export class PredictionPanelComponent implements OnChanges, OnDestroy {
           }
         },
         error: () => {
-          this.predictionMessage = 'Could not save. Use at least 2 samples and an acceleration weight from 0 to 1.';
+          this.predictionMessage = 'Could not save. Use at least 2 samples, a horizon of 0–1000 ms and an acceleration weight from 0 to 1.';
         }
       });
   }

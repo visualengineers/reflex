@@ -26,7 +26,7 @@ public class ContactTrackingRegressionTest
         {
             Tracker = new InteractionSmoothingBehaviour(history)
             {
-                MaxNumEmptyFramesBetween = gap,
+                ContactRetentionSeconds = gap,
                 MaxConfidence = 20,
                 TouchMergeDistance2D = 64
             };
@@ -36,7 +36,7 @@ public class ContactTrackingRegressionTest
         {
             _frame++;
             return Tracker.Update(positions.Select(x => new Interaction(new Point3(x, 10, -.5f),
-                InteractionType.Push, 0) { Time = _frame }).ToList());
+                InteractionType.Push, 0) { Time = _frame }).ToList(), _frame);
         }
     }
 
@@ -90,8 +90,7 @@ public class ContactTrackingRegressionTest
 
     [TestCase(0)]
     [TestCase(1)]
-    [TestCase(2)]
-    public void ReappearanceWithinGapRetainsId(int emptyFrames)
+        public void ReappearanceWithinGapRetainsId(int emptyFrames)
     {
         var scene = new Scenario(gap: 2);
         var birth = At(scene.Step(10), 10);
@@ -124,7 +123,7 @@ public class ContactTrackingRegressionTest
         Assert.That(scene.Step().Interactions, Is.Empty);
         Assert.That(scene.Tracker.InteractionsFramesCache.SelectMany(f => f.Interactions)
             .Any(i => i.TouchId == oldId), Is.True, "Expiry must not depend on cache eviction.");
-        scene.Tracker.MaxNumEmptyFramesBetween = 8;
+        scene.Tracker.ContactRetentionSeconds = 8;
         Assert.That(At(scene.Step(10), 10).TouchId, Is.Not.EqualTo(oldId));
     }
 
@@ -225,7 +224,7 @@ public class ContactTrackingRegressionTest
         scene.Tracker.UpdateFilterType(filter);
         var input = new Interaction(new Point3(10, 10, -.5f), InteractionType.Push, 0);
         InteractionFrame output = null;
-        for (var i = 0; i < samples; i++) output = scene.Tracker.Update(new[] { input });
+        for (var i = 0; i < samples; i++) output = scene.Tracker.Update(new[] { input }, i + 1);
         Assert.Multiple(() =>
         {
             Assert.That(input.TouchId, Is.EqualTo(-1));
@@ -241,7 +240,7 @@ public class ContactTrackingRegressionTest
         snapshot[0].Interactions[0].Position.X = 777;
         snapshot[0].Interactions[0].ExtremumDescription.NumFittingPoints = 999;
         snapshot[0].Interactions.Clear();
-        var next = At(scene.Step(10), 10);
+        var next = At(scene.Tracker.Update(new[] { new Interaction(new Point3(10, 10, -.5f), InteractionType.Push, 0) }, samples + 1), 10);
         Assert.That(next.TouchId, Is.Zero);
         Assert.That(scene.Tracker.InteractionsFramesCache.SelectMany(f => f.Interactions)
             .All(i => i.Position.X == 10 && i.ExtremumDescription.NumFittingPoints == 0), Is.True);

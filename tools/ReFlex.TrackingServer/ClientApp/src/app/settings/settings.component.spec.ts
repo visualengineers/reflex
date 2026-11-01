@@ -90,3 +90,31 @@ describe('Zoneless change detection: renders limitation-filter polling responses
     expect(button.classList).toContain('button-disabled');
   });
 });
+
+
+describe('Contact retention settings', () => {
+  setupZonelessTests();
+
+  it('displays fractional seconds independently of history capacity and saves the duration', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.smoothingValues.contactRetentionSeconds = 0.25;
+    value.filterSettingValues.smoothingValues.interactionHistorySize = 1;
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setSmoothingValues.mockReturnValue(of(value.filterSettingValues.smoothingValues));
+    const fixture = await mount(SettingsComponent);
+    const control = queryElement(
+      fixture.nativeElement as HTMLElement,
+      'app-value-slider[elementid="settings-contactRetention"]'
+    );
+    const input = queryElement<HTMLInputElement>(control, 'input.custom-input');
+    expect(input.value).toBe('0.25');
+    expect(control.textContent).toContain('Contact retention');
+    expect(control.textContent).toContain('independent');
+    input.value = '0.35';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    fixture.componentInstance.saveSmoothingValues();
+    expect(settings.setSmoothingValues.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ contactRetentionSeconds: 0.35 }));
+  });
+});

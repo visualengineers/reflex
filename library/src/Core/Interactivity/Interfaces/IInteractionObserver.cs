@@ -73,6 +73,7 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// Zero publishes current measurements with fresh IDs in every frame and disables smoothing.
         /// </summary>
         int InteractionHistorySize { get; set; }
+        double PredictionHorizonSeconds { get; set; }
         bool UseVelocityPrediction { get; set; }
         int NumFramesForPrediction { get; set; }
         bool UseSecondDerivation { get; set; }
@@ -85,11 +86,10 @@ namespace ReFlex.Core.Interactivity.Interfaces
         int NumSmoothingFrames { get; set; }
         
         /// <summary>
-        /// Number of consecutive missing measurements tolerated before a track ends.
-        /// Clamped to [0, max(0, InteractionHistorySize - 1)]. Lost outputs keep their measurement
-        /// timestamp; after expiry a returning contact receives a new ID.
+        /// Maximum elapsed seconds since the last measurement (inclusive), finite and non-negative.
+        /// Independent of history capacity. After expiry a returning contact receives a new ID.
         /// </summary>
-        int MaxNumEmptyFramesBetween { get; set; }
+        double ContactRetentionSeconds { get; set; }
         
         /// <summary>
         /// defines the squared distance to closest points to be recognized as same point

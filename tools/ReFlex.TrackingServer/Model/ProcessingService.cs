@@ -190,7 +190,7 @@ namespace TrackingServer.Model
         private InteractionHistory[] RetrieveHistory(IEnumerable<InteractionFrame> frames)
         {
             var calibratedFrames = frames.Select(rawFrame => new InteractionFrame(rawFrame.FrameId,
-                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList()));
+                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList(), rawFrame.TimestampSeconds));
 
             return InteractionHistory.RetrieveHistoryFromInteractionFrames(calibratedFrames).ToArray();
 

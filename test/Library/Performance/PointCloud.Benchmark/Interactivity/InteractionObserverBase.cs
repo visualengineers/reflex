@@ -15,7 +15,7 @@ namespace PointCloud.Benchmark.Interactivity
         private readonly InteractionSmoothingBehaviour _smoothingBehaviour;
         private int _numSmoothingFrames = 5;
         private int _historySize = 25;
-        private int _maxNumEmptyFramesBetween = 3;
+        private double _contactRetentionSeconds = .1;
         private float _touchMergeDistance2d = 64f;
         private float _depthScale = 100.0f;
         private FilterType _filterType;
@@ -94,6 +94,12 @@ namespace PointCloud.Benchmark.Interactivity
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        public double PredictionHorizonSeconds
+        {
+            get => _smoothingBehaviour.PredictionHorizonSeconds;
+            set => _smoothingBehaviour.PredictionHorizonSeconds = value;
+        }
+
         public bool UseVelocityPrediction
         {
             get => _smoothingBehaviour.UseVelocityForMapping;
@@ -126,7 +132,7 @@ namespace PointCloud.Benchmark.Interactivity
                     _smoothingBehaviour.NumFramesHistory = value;
                     // update depending smoothing/filter values
                     NumSmoothingFrames = _numSmoothingFrames;
-                    MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+                    ContactRetentionSeconds = _contactRetentionSeconds;
                 }
             }
         }
@@ -145,16 +151,14 @@ namespace PointCloud.Benchmark.Interactivity
         }
 
         // TODO: write tests for negative (!) values and values larger than history
-        public int MaxNumEmptyFramesBetween
+        public double ContactRetentionSeconds
         {
-            get => _maxNumEmptyFramesBetween;
+            get => _contactRetentionSeconds;
             set
             {
-                _maxNumEmptyFramesBetween = value;
+                _contactRetentionSeconds = value;
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.MaxNumEmptyFramesBetween = value < _smoothingBehaviour.NumFramesHistory
-                        ? _smoothingBehaviour.NumFramesHistory
-                        : value;
+                    _smoothingBehaviour.ContactRetentionSeconds = value;
             }
         }
 

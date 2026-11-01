@@ -1,75 +1,60 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using ReFlex.Core.Common.Components;
 
 namespace ReFlex.Core.Filtering.Components
 {
-    public abstract class Base2DFilter : IPointFilter 
+    /// <summary>Temporal filter base. The tracker always passes monotonic measurement times in seconds.</summary>
+    public abstract class Base2DFilter : IPointFilter
     {
-        
         protected double[] XData { get; private set; }
-             
         protected double[] YData { get; private set; }
-             
         protected double[] ZData { get; private set; }
-        
-        protected double[] Ticks { get; private set; }
-        
-        
-        protected double[] PolyX { get; set;}
-        
-        protected double[] PolyY { get; set;}
-        
-        protected double[] PolyZ { get; set; }
 
-        
+        /// <summary>Actual elapsed seconds, centered at the newest measurement.</summary>
+        protected double[] TimesSeconds { get; private set; }
+
+        /// <summary>Time coordinates normalized to [-1,0] for stable polynomial fitting.</summary>
+        protected double[] Ticks { get; private set; }
+        protected double[] PolyX { get; set; }
+        protected double[] PolyY { get; set; }
+        protected double[] PolyZ { get; set; }
         protected int NumSamplesMin;
 
-        protected Base2DFilter(int numSamplesMin)
+        protected Base2DFilter(int numSamplesMin) => NumSamplesMin = numSamplesMin;
+
+        /// <summary>
+        /// Compatibility API for untimed callers: assumes 30 Hz. For real observations use the
+        /// timestamp overload; sample indices alone cannot reconstruct elapsed time.
+        /// </summary>
+        public List<Point3> Process(List<Point3> samples) => samples == null ? null :
+            Process(samples, samples.Select((_, index) => index / 30d).ToArray());
+
+        public List<Point3> Process(List<Point3> samples, IReadOnlyList<double> timestampsSeconds)
         {
-            NumSamplesMin = numSamplesMin;
-        }
+            ArgumentNullException.ThrowIfNull(samples);
+            ArgumentNullException.ThrowIfNull(timestampsSeconds);
+            if (samples.Count != timestampsSeconds.Count)
+                throw new ArgumentException("Every sample needs a timestamp.", nameof(timestampsSeconds));
+            for (var i = 0; i < timestampsSeconds.Count; i++)
+                if (!double.IsFinite(timestampsSeconds[i]) || (i > 0 && timestampsSeconds[i] <= timestampsSeconds[i - 1]))
+                    throw new ArgumentException("Timestamps must be finite and strictly increasing.", nameof(timestampsSeconds));
+            if (samples.Count < NumSamplesMin || samples.Count < 2)
+                return samples.Select(point => (Point3)point.Copy()).ToList();
 
-
-        public List<Point3> Process(List<Point3> samples)
-        {
-            
-            if (samples == null || samples.Count < NumSamplesMin)
-                return samples;
-
-            // todo: could be scaled by time interval between frames?
-            Ticks = samples.Select((p, index) => (double) index).ToArray();
-            
-            XData = samples.Select(p => (double) p.X).ToArray();
-            YData = samples.Select(p => (double) p.Y).ToArray();
-            ZData = samples.Select(p => (double) p.Z).ToArray();
-    
+            TimesSeconds = timestampsSeconds.Select(time => time - timestampsSeconds[^1]).ToArray();
+            var span = -TimesSeconds[0];
+            Ticks = TimesSeconds.Select(time => time / span).ToArray();
+            XData = samples.Select(point => (double)point.X).ToArray();
+            YData = samples.Select(point => (double)point.Y).ToArray();
+            ZData = samples.Select(point => (double)point.Z).ToArray();
             ComputeFit();
-            
-            var result = new List<Point3>();
-
-            for (var i = 0; i < samples.Count; i++)
-            {
-                var p = Evaluate(i);
-                result.Add(p);
-            }
-
-            return result;
+            return Enumerable.Range(0, samples.Count).Select(Evaluate).ToList();
         }
 
-        /// <summary>
-        /// the evaluation of the generated polynomial at the given index
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns>smoothed point</returns>
+        /// <summary>Evaluate at the sample's actual time (Ticks[index]), or return its filtered state.</summary>
         protected abstract Point3 Evaluate(int index);
-
-        /// <summary>
-        /// specifies the algorithm for point fitting, fills PolyX / PolyY / polyZ
-        /// </summary>
-        /// <param name="order">order of the fitting polynomial</param>
         protected abstract void ComputeFit();
-        
     }
 }
-

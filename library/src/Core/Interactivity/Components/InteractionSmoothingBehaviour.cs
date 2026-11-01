@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using System.Diagnostics;
 using MathNet.Numerics;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -23,6 +24,9 @@ namespace ReFlex.Core.Interactivity.Components
         {
             public Interaction LastMeasurement { get; set; }
             public int LastSeenFrame { get; set; }
+            public double LastSeenTime { get; set; }
+            public double ConfidenceUpdatedAt { get; set; }
+            public float Confidence { get; set; }
             public Point3 MatchingPosition { get; set; }
         }
 
@@ -31,8 +35,11 @@ namespace ReFlex.Core.Interactivity.Components
         private int _numFramesSmoothing;
         private int _numFramesForPrediction = 3;
         private float _secondDerivationMagnitude = .5f;
-        private int _maxNumEmptyFramesBetween;
+        private double _contactRetentionSeconds = .1;
 
+        private double? _timestampSeconds;
+        private double _predictionHorizonSeconds = .05;
+        private float _confidenceDecayPerSecond = 30;
         private int _frameId = 0;
         private int _maxTouchId = 0;
         private FilterType _type = FilterType.None;
@@ -55,7 +62,6 @@ namespace ReFlex.Core.Interactivity.Components
                 _numFramesHistory = Math.Max(0, value);
                 NumFramesSmoothing = _numFramesSmoothing;
                 NumFramesForPrediction = _numFramesForPrediction;
-                MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
                 UpdateInteractionFramesList();
                 if (_numFramesHistory == 0)
                     _tracks.Clear();
@@ -73,11 +79,15 @@ namespace ReFlex.Core.Interactivity.Components
             }
         }
 
-        /// <summary>Number of consecutive missing measurements tolerated before a track ends.</summary>
-        public int MaxNumEmptyFramesBetween
+        private static double ValidateContactRetention(double value) =>
+            double.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
+
+        /// <summary>Maximum elapsed seconds since the last measurement, inclusive; independent of history capacity.</summary>
+        public double ContactRetentionSeconds
         {
-            get => _maxNumEmptyFramesBetween;
-            set => _maxNumEmptyFramesBetween = Math.Clamp(value, 0, Math.Max(0, NumFramesHistory - 1));
+            get => _contactRetentionSeconds;
+            set => _contactRetentionSeconds = ValidateContactRetention(value);
         }
 
         public bool UseVelocityForMapping { get; set; }
@@ -91,6 +101,22 @@ namespace ReFlex.Core.Interactivity.Components
         {
             get => _secondDerivationMagnitude;
             set => _secondDerivationMagnitude = float.IsFinite(value) && value >= 0 && value <= 1
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        /// <summary>Explicit diagnostic forecast horizon; matching always uses the actual frame time.</summary>
+        public double PredictionHorizonSeconds
+        {
+            get => _predictionHorizonSeconds;
+            set => _predictionHorizonSeconds = double.IsFinite(value) && value >= 0 && value <= 1
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        /// <summary>Loss of confidence per second without measurements; zero disables decay.</summary>
+        public float ConfidenceDecayPerSecond
+        {
+            get => _confidenceDecayPerSecond;
+            set => _confidenceDecayPerSecond = float.IsFinite(value) && value >= 0
                 ? value : throw new ArgumentOutOfRangeException(nameof(value));
         }
 
@@ -108,7 +134,7 @@ namespace ReFlex.Core.Interactivity.Components
 
         public InteractionFrame[] InteractionsFramesCache => _interactionFrames
             .Select(frame => new InteractionFrame(frame.FrameId,
-                frame.Interactions.Select(interaction => new Interaction(interaction)).ToList())).ToArray();
+                frame.Interactions.Select(interaction => new Interaction(interaction)).ToList(), frame.TimestampSeconds)).ToArray();
 
         #endregion
 
@@ -126,6 +152,7 @@ namespace ReFlex.Core.Interactivity.Components
         public void Reset()
         {
             _frameId = 0;
+            _timestampSeconds = null;
             _maxTouchId = 0;
             _interactionFrames.Clear();
             _tracks.Clear();
@@ -167,14 +194,26 @@ namespace ReFlex.Core.Interactivity.Components
             Logger.Info($"switched Interaction Processing Smoothing Filter to {_filter?.GetType().FullName ?? "None\""}");
         }
 
-        public InteractionFrame Update(IList<Interaction> rawInteractions)
+        public InteractionFrame Update(IList<Interaction> rawInteractions) =>
+            Update(rawInteractions, (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency);
+
+        /// <summary>
+        /// Process one observation frame at a strictly increasing monotonic timestamp in seconds.
+        /// Callers with capture timestamps may supply them here. Invalid times are rejected before
+        /// mutating tracking state; Interaction.Time remains the legacy wall-clock field.
+        /// </summary>
+        public InteractionFrame Update(IList<Interaction> rawInteractions, double timestampSeconds)
         {
+            if (!double.IsFinite(timestampSeconds) ||
+                (_timestampSeconds.HasValue && timestampSeconds <= _timestampSeconds.Value))
+                throw new ArgumentOutOfRangeException(nameof(timestampSeconds), "Frame times must be finite and strictly increasing.");
+            _timestampSeconds = timestampSeconds;
             _frameId++;
 
             // Only internal copies are assigned IDs or retained in the tracking history.
             var candidates = rawInteractions.Take(20).Select(item => new Interaction(item)).ToList();
             var mappedInteractionIds = MapClosestInteraction(candidates);
-            var newFrame = new InteractionFrame(_frameId, mappedInteractionIds);
+            var newFrame = new InteractionFrame(_frameId, mappedInteractionIds, timestampSeconds);
 
             // With history disabled, still publish current measurements, using fresh IDs each frame.
             if (NumFramesHistory == 0)
@@ -185,11 +224,11 @@ namespace ReFlex.Core.Interactivity.Components
 
             _interactionFrames.Add(newFrame);
             UpdateInteractionFramesList();
-            var result = new InteractionFrame(_frameId);
+            var result = new InteractionFrame(_frameId, timestampSeconds);
             foreach (var pair in _tracks.OrderBy(pair => pair.Key).ToArray())
             {
                 var missingFrames = _frameId - pair.Value.LastSeenFrame;
-                if (missingFrames > MaxNumEmptyFramesBetween)
+                if (timestampSeconds > pair.Value.LastSeenTime + ContactRetentionSeconds)
                 {
                     // Ended tracks are removed permanently, even while their measurements remain cached.
                     _tracks.Remove(pair.Key);
@@ -200,7 +239,11 @@ namespace ReFlex.Core.Interactivity.Components
                 if (smoothed == null)
                     continue;
                 if (missingFrames > 0)
+                {
+                    DecayConfidence(pair.Value, timestampSeconds);
                     smoothed.TrackingState = InteractionTrackingState.Lost;
+                }
+                smoothed.Confidence = pair.Value.Confidence;
                 result.Interactions.Add(smoothed);
             }
 
@@ -247,6 +290,8 @@ namespace ReFlex.Core.Interactivity.Components
             if (updatedInteraction != null)
             {
               interaction.Confidence = updatedInteraction.Confidence;
+              if (_tracks.TryGetValue(interaction.TouchId, out var track) && track.LastSeenFrame == updatedFrame.FrameId)
+                  track.Confidence = Math.Clamp(updatedInteraction.Confidence, 0, Math.Max(0, MaxConfidence));
               interaction.ExtremumDescription = new Interaction(updatedInteraction).ExtremumDescription;
 
             }
@@ -275,7 +320,7 @@ namespace ReFlex.Core.Interactivity.Components
                 interactionsHistory.Add(new Interaction(lastTouch));
             });
 
-            var smooth = interactionsHistory.LastOrDefault();
+            var smooth = interactionsHistory.LastOrDefault() ?? new Interaction(_tracks[touchId].LastMeasurement);
 
             var raw = interactionsHistory.Select(interaction => interaction.Position).ToList();
 
@@ -285,7 +330,12 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 var framesForSmoothing = raw.TakeLast(NumFramesSmoothing).Select(point => new Point3(point)).ToList();
                 framesForSmoothing.ForEach(p => p.Z *= _depthScale);
-                smooth.Position = new Point3(_filter.Process(framesForSmoothing).Last());
+                var timestamps = frames.Where(frame => frame.Interactions.Any(i => i.TouchId == touchId))
+                    .Select(frame => frame.TimestampSeconds).TakeLast(NumFramesSmoothing).ToArray();
+                var filtered = _filter is Base2DFilter temporalFilter
+                    ? temporalFilter.Process(framesForSmoothing, timestamps)
+                    : _filter.Process(framesForSmoothing);
+                smooth.Position = new Point3(filtered.Last());
                 smooth.Position.Z /= _depthScale;
             }
 
@@ -297,14 +347,14 @@ namespace ReFlex.Core.Interactivity.Components
         /// <summary>
         /// Greedy one-to-one assignment, ordered by distance to the forecast at this frame.
         /// A candidate and a track may each participate in only one pair. Unmatched candidates
-        /// start new tracks; unmatched tracks may bridge the configured number of empty frames.
+        /// start new tracks; unmatched tracks may bridge the configured elapsed time.
         /// With prediction disabled or insufficient samples, falls back to the last measurement.
         /// </summary>
         private List<Interaction> MapClosestInteraction(List<Interaction> candidates)
         {
-            // The current frame may contain a measurement, so only preceding empty frames count here.
+            // Expire before association, including updates after an interval with no processed frames.
             foreach (var id in _tracks.Where(pair =>
-                         _frameId - pair.Value.LastSeenFrame - 1 > MaxNumEmptyFramesBetween)
+                         _timestampSeconds.Value > pair.Value.LastSeenTime + ContactRetentionSeconds)
                      .Select(pair => pair.Key).ToArray())
                 _tracks.Remove(id);
 
@@ -312,7 +362,7 @@ namespace ReFlex.Core.Interactivity.Components
                 candidate.TouchId = -1;
 
             foreach (var track in _tracks.Values)
-                track.MatchingPosition = Predict(track, _frameId);
+                track.MatchingPosition = Predict(track, _timestampSeconds.Value);
 
             var pairs = candidates.SelectMany((candidate, index) => _tracks.Select(track => new
                 {
@@ -335,8 +385,12 @@ namespace ReFlex.Core.Interactivity.Components
                     continue;
                 candidate.TouchId = pair.TouchId;
                 candidate.TrackingState = InteractionTrackingState.Confirmed;
-                candidate.Confidence = Math.Min(Math.Max(candidate.Confidence,
-                    _tracks[pair.TouchId].LastMeasurement.Confidence) + 1, MaxConfidence);
+                var track = _tracks[pair.TouchId];
+                // Continue decay through the last lost interval before recovering. A new detection
+                // adds one confirmation; a high raw/spatial confidence cannot restore an old maximum.
+                if (track.LastSeenFrame < _frameId - 1)
+                    DecayConfidence(track, _timestampSeconds.Value);
+                candidate.Confidence = Math.Min(track.Confidence + 1, Math.Max(0, MaxConfidence));
             }
 
             foreach (var candidate in candidates)
@@ -345,6 +399,7 @@ namespace ReFlex.Core.Interactivity.Components
                 {
                     AssignMaxId(candidate);
                     candidate.TrackingState = InteractionTrackingState.Tentative;
+                    candidate.Confidence = Math.Clamp(candidate.Confidence, 0, Math.Max(0, MaxConfidence));
                 }
                 var matchingPosition = _tracks.TryGetValue(candidate.TouchId, out var previous)
                     ? previous.MatchingPosition : candidate.Position;
@@ -352,47 +407,59 @@ namespace ReFlex.Core.Interactivity.Components
                 {
                     LastMeasurement = candidate,
                     LastSeenFrame = _frameId,
+                    LastSeenTime = _timestampSeconds.Value,
+                    Confidence = candidate.Confidence,
+                    ConfidenceUpdatedAt = _timestampSeconds.Value,
                     MatchingPosition = (Point3)matchingPosition.Copy()
                 };
             }
             return candidates.OrderBy(candidate => candidate.TouchId).ToList();
         }
 
+        private void DecayConfidence(Track track, double timestampSeconds)
+        {
+            track.Confidence = Math.Max(0, track.Confidence - (float)(ConfidenceDecayPerSecond *
+                (timestampSeconds - track.ConfidenceUpdatedAt)));
+            track.ConfidenceUpdatedAt = timestampSeconds;
+        }
+
         private (Point3 Velocity, Point3 Acceleration, int Count) EstimateMotion(Track track)
         {
             var samples = _interactionFrames.OrderBy(frame => frame.FrameId)
                 .SelectMany(frame => frame.Interactions.Where(i => i.TouchId == track.LastMeasurement.TouchId)
-                    .Select(i => (Frame: frame.FrameId, Position: i.Position)))
+                    .Select(i => (Time: frame.TimestampSeconds, Position: i.Position)))
                 .TakeLast(NumFramesForPrediction).ToArray();
             if (samples.Length < 2)
                 return (new Point3(), new Point3(), samples.Length);
 
             // Center times at the newest measurement: the fitted linear coefficient is v(now),
             // not the average velocity half-way between measurements. Gaps retain their duration.
-            var times = samples.Select(sample => (double)(sample.Frame - track.LastSeenFrame)).ToArray();
+            var span = track.LastSeenTime - samples[0].Time;
+            // Normalize the independent variable for well-conditioned fits, then recover derivatives per second.
+            var times = samples.Select(sample => (sample.Time - track.LastSeenTime) / span).ToArray();
             var order = UseSecondDerivation && samples.Length >= 3 ? 2 : 1;
             var x = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.X).ToArray(), order);
             var y = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Y).ToArray(), order);
             var z = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Z).ToArray(), order);
-            var velocity = new Point3((float)x[1], (float)y[1], (float)z[1]);
-            var acceleration = order == 2 ? new Point3((float)(2*x[2]), (float)(2*y[2]), (float)(2*z[2])) : new Point3();
+            var velocity = new Point3((float)(x[1]/span), (float)(y[1]/span), (float)(z[1]/span));
+            var acceleration = order == 2 ? new Point3((float)(2*x[2]/(span*span)), (float)(2*y[2]/(span*span)), (float)(2*z[2]/(span*span))) : new Point3();
             return (velocity, acceleration, samples.Length);
         }
 
-        private Point3 Predict(Track track, int targetFrame)
+        private Point3 Predict(Track track, double targetTime)
         {
             if (!UseVelocityForMapping)
                 return (Point3)track.LastMeasurement.Position.Copy();
             var motion = EstimateMotion(track);
             var forecast = new InteractionVelocity();
             forecast.Update(track.LastMeasurement.Position, motion.Velocity, motion.Acceleration,
-                SecondDerivationMagnitude, targetFrame - track.LastSeenFrame);
+                SecondDerivationMagnitude, (float)(targetTime - track.LastSeenTime));
             return UseSecondDerivation ? forecast.PredictedPositionAdvanced : forecast.PredictedPositionBasic;
         }
 
         /// <summary>
         /// Atomic diagnostics for this output frame. Positions use the uncalibrated sensor raster;
-        /// forecasts are for the NEXT processed frame, matching positions were used for THIS frame.
+        /// forecasts have an explicit time horizon, matching positions were used at this frame timestamp.
         /// Never combines asynchronously delivered interaction/velocity messages in the frontend.
         /// </summary>
         public List<InteractionVelocity> GetVelocities(InteractionFrame output)
@@ -407,17 +474,21 @@ namespace ReFlex.Core.Interactivity.Components
                 var motion = EstimateMotion(track);
                 var item = new InteractionVelocity();
                 item.Update(track.LastMeasurement.Position, motion.Velocity, motion.Acceleration,
-                    SecondDerivationMagnitude, _frameId + 1 - track.LastSeenFrame);
+                    SecondDerivationMagnitude, (float)(_timestampSeconds.Value + PredictionHorizonSeconds - track.LastSeenTime));
                 item.TouchId = interaction.TouchId;
                 item.FrameId = _frameId;
                 item.LastMeasuredFrameId = track.LastSeenFrame;
-                item.PredictionFrameId = _frameId + 1;
+                item.TimestampSeconds = _timestampSeconds.Value;
+                item.LastMeasuredTimestampSeconds = track.LastSeenTime;
+                item.PredictionTimestampSeconds = _timestampSeconds.Value + PredictionHorizonSeconds;
+                item.PredictionHorizonSeconds = PredictionHorizonSeconds;
+                item.Confidence = track.Confidence;
                 item.SampleCount = motion.Count;
                 item.IsPredicted = track.LastSeenFrame != _frameId;
                 item.UseSecondDerivation = UseSecondDerivation;
                 item.SmoothedPosition = (Point3)interaction.Position.Copy();
                 item.MatchingPosition = track.LastSeenFrame == _frameId
-                    ? (Point3)track.MatchingPosition.Copy() : Predict(track, _frameId);
+                    ? (Point3)track.MatchingPosition.Copy() : Predict(track, _timestampSeconds.Value);
                 result.Add(item);
             }
             return result;

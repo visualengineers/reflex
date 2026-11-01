@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics;
+using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using ReFlex.Core.Common.Components;
 
@@ -16,9 +16,9 @@ namespace ReFlex.Core.Filtering.Components
         protected override Point3 Evaluate(int index)
         {
             return new Point3(
-                (float) Polynomial.Evaluate(index, PolyX), 
-                (float) Polynomial.Evaluate(index, PolyY),
-                (float) Polynomial.Evaluate(index, PolyZ));
+                (float) Polynomial.Evaluate(Ticks[index], PolyX),
+                (float) Polynomial.Evaluate(Ticks[index], PolyY),
+                (float) Polynomial.Evaluate(Ticks[index], PolyZ));
         }
 
         protected override void ComputeFit()

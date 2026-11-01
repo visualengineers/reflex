@@ -427,7 +427,8 @@
     elementTitle="Smoothing"
     elementId="settings-smoothing-numFrames"
     [min]="0"
-    [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [max]="2"
+    [step]="0.01"
     [(data)]="settings.filterSettingValues.smoothingValues.numSmoothingSamples"
     (onChange)="saveSmoothingValues()"
     unit="Frames"
@@ -454,23 +455,23 @@
     touch points (based on positional change between frames).
   </app-value-slider>
 
-  <!-- Empty Frames Threshold -->
+  <!-- Contact retention -->
   <app-value-slider
     class="settings__item"
-    elementTitle="Empty frames"
-    elementId="settings-maxEmptyFrames"
+    elementTitle="Contact retention"
+    elementId="settings-contactRetention"
     [min]="0"
-    [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [max]="2"
+    [step]="0.01"
     [(data)]="
-      settings.filterSettingValues.smoothingValues.maxNumEmptyFramesBetween
+      settings.filterSettingValues.smoothingValues.contactRetentionSeconds
     "
     (onChange)="saveSmoothingValues()"
-    unit="Frames"
+    unit="s"
   >
-    The number of frames a touch id is reconstructed before being filtered from
-    interactions list. Prevents flickering if measurements are unstable, however
-    higher values add significant lag, so that touches remain active after the
-    user has released the surface.
+    Maximum time since the last measurement for retaining a touch ID, independent
+    of frame rate and history size. Zero disables retention. Longer durations
+    bridge gaps but keep lost contacts visible longer after release.
   </app-value-slider>
 
   <!-- Merge Distance -->

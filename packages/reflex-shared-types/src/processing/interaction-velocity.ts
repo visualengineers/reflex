@@ -1,11 +1,15 @@
 import { Point3 } from '../tracking/point3';
 
-/** Atomic snapshot in raw raster coordinates. Derivatives are per processed frame. */
+/** Atomic snapshot in raw raster coordinates. Velocity is units/s; acceleration is units/s². Times are monotonic seconds. */
 export interface InteractionVelocity {
   touchId: number;
   frameId: number;
   lastMeasuredFrameId: number;
-  predictionFrameId: number;
+  timestampSeconds: number;
+  lastMeasuredTimestampSeconds: number;
+  predictionTimestampSeconds: number;
+  predictionHorizonSeconds: number;
+  confidence: number;
   sampleCount: number;
   isPredicted: boolean;
   useSecondDerivation: boolean;

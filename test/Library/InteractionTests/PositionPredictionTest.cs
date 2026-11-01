@@ -10,7 +10,7 @@ using ReFlex.Core.Interactivity.Util;
 namespace InteractionTests;
 
 /// <summary>
-/// Analytic trajectories in raster units per processed frame. No clock, sleeps or random data:
+/// Analytic trajectories in raster units per second. No clock, sleeps or random data:
 /// constant motion p(t)=10+2t, accelerated motion p(t)=10+t² and crossings have exact solutions.
 /// Missing frames advance time but must never become observations in the derivative fit.
 /// </summary>
@@ -19,12 +19,12 @@ public class PositionPredictionTest
     private static InteractionSmoothingBehaviour Tracker(bool acceleration = false, int samples = 3) => new(12)
     {
         UseVelocityForMapping = true, UseSecondDerivation = acceleration,
-        NumFramesForPrediction = samples, MaxNumEmptyFramesBetween = 3,
-        TouchMergeDistance2D = 64, MaxConfidence = 20
+        NumFramesForPrediction = samples, ContactRetentionSeconds = 3,
+        TouchMergeDistance2D = 64, MaxConfidence = 20, PredictionHorizonSeconds = 1
     };
 
     private static InteractionFrame Step(InteractionSmoothingBehaviour tracker, params float[] x) =>
-        tracker.Update(x.Select(value => new Interaction(new Point3(value, 10, -.5f), InteractionType.Push, 1)).ToList());
+        tracker.Update(x.Select(value => new Interaction(new Point3(value, 10, -.5f), InteractionType.Push, 1)).ToList(), tracker.CurrentFrameId);
 
     [TestCase(2f)]
     [TestCase(-2f)]
@@ -42,7 +42,7 @@ public class PositionPredictionTest
             Assert.That(velocity.PredictedPositionBasic.X, Is.EqualTo(10 + 3*speed).Within(.0001));
             Assert.That(velocity.PredictedPositionAdvanced.X, Is.EqualTo(velocity.PredictedPositionBasic.X).Within(.0001));
             Assert.That(velocity.FrameId, Is.EqualTo(3));
-            Assert.That(velocity.PredictionFrameId, Is.EqualTo(4));
+            Assert.That(velocity.PredictionTimestampSeconds, Is.EqualTo(3));
         });
     }
 
@@ -144,7 +144,7 @@ public class PositionPredictionTest
     public void ExpiryAndResetDiscardMotionOfPreviousContacts()
     {
         var tracker = Tracker();
-        tracker.MaxNumEmptyFramesBetween = 0;
+        tracker.ContactRetentionSeconds = 0;
         Step(tracker, 0);
         Step(tracker, 10);
         Assert.That(tracker.GetVelocities(Step(tracker)), Is.Empty);

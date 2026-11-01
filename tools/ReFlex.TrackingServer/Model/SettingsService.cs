@@ -125,6 +125,7 @@ public class SettingsService
       }
 
       var prediction = _configManager.Settings.PredictionSettings ?? new PredictionSettings();
+      _interactionManager.PredictionHorizonSeconds = prediction.PredictionHorizonSeconds;
       _interactionManager.UseVelocityPrediction = prediction.UseVelocityPrediction;
       _interactionManager.UseSecondDerivation = prediction.UseSecondDerivation;
       _interactionManager.SecondDerivationMagnitude = prediction.SecondDerivationMagnitude;
@@ -145,7 +146,7 @@ public class SettingsService
         _interactionManager.NumSmoothingFrames = smooth.NumSmoothingSamples;
         _interactionManager.TouchMergeDistance2D = smooth.TouchMergeDistance2D;
         _interactionManager.DepthScale = smooth.DepthScale;
-        _interactionManager.MaxNumEmptyFramesBetween = smooth.MaxNumEmptyFramesBetween;
+        _interactionManager.ContactRetentionSeconds = smooth.ContactRetentionSeconds;
         _interactionManager.FilterType = smooth.Type;
       }
 

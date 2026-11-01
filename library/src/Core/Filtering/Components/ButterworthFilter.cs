@@ -1,16 +1,23 @@
 using System;
-using Math = System.Math;
 using ReFlex.Core.Common.Components;
+using Math = System.Math;
 
 namespace ReFlex.Core.Filtering.Components
 {
     /// <summary>
-    /// Causal second-order Butterworth low-pass, cutoff in cycles per processed sample.
-    /// Seeded with the first measurement to preserve constant signals during warm-up.
+    /// Second-order continuous-time Butterworth low-pass with a cutoff in Hz. The exact state
+    /// transition assumes linear input between real samples; arbitrary gaps remain stable.
+    /// Unlike fixed biquad coefficients, this does not change cutoff when the cadence changes.
     /// </summary>
     public class ButterworthFilter : Base2DFilter
     {
-        public ButterworthFilter(int numSamplesMin = 3) : base(numSamplesMin) { }
+        private readonly double _cutoffHz;
+        public ButterworthFilter(int numSamplesMin = 3, double cutoffHz = 3) : base(numSamplesMin)
+        {
+            if (!double.IsFinite(cutoffHz) || cutoffHz <= 0)
+                throw new ArgumentOutOfRangeException(nameof(cutoffHz));
+            _cutoffHz = cutoffHz;
+        }
 
         protected override void ComputeFit()
         {
@@ -22,27 +29,28 @@ namespace ReFlex.Core.Filtering.Components
         protected override Point3 Evaluate(int index) =>
             new((float)PolyX[index], (float)PolyY[index], (float)PolyZ[index]);
 
-        private static double[] Smooth(double[] input)
+        private double[] Smooth(double[] input)
         {
-            const double cutoff = .1;
-            var k = Math.Tan(Math.PI * cutoff);
-            var norm = 1 / (1 + Math.Sqrt(2) * k + k * k);
-            var b0 = k * k * norm;
-            var b1 = 2 * b0;
-            var a1 = 2 * (k * k - 1) * norm;
-            var a2 = (1 - Math.Sqrt(2) * k + k * k) * norm;
+            var omega = 2 * Math.PI * _cutoffHz;
+            var alpha = omega / Math.Sqrt(2);
+            var beta = alpha;
             var result = new double[input.Length];
-            var x1 = input[0];
-            var x2 = x1;
-            var y1 = x1;
-            var y2 = x1;
-            for (var i = 0; i < input.Length; i++)
+            result[0] = input[0];
+            var derivative = 0d;
+            for (var i = 1; i < input.Length; i++)
             {
-                result[i] = b0 * input[i] + b1 * x1 + b0 * x2 - a1 * y1 - a2 * y2;
-                x2 = x1;
-                x1 = input[i];
-                y2 = y1;
-                y1 = result[i];
+                var dt = TimesSeconds[i] - TimesSeconds[i - 1];
+                var slope = (input[i] - input[i - 1]) / dt;
+                // Particular solution for a linear input plus the exact damped homogeneous state.
+                var offset = 2 * alpha * slope / (omega * omega);
+                var error = result[i - 1] - input[i - 1] + offset;
+                var errorDerivative = derivative - slope;
+                var decay = Math.Exp(-alpha * dt);
+                var cos = Math.Cos(beta * dt);
+                var sin = Math.Sin(beta * dt);
+                result[i] = input[i] - offset + decay * (error * cos + (errorDerivative + alpha * error) / beta * sin);
+                derivative = slope + decay * (errorDerivative * cos -
+                    (alpha * errorDerivative + omega * omega * error) / beta * sin);
             }
             return result;
         }

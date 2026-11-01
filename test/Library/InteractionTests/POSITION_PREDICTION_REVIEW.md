@@ -1,93 +1,134 @@
-# Position prediction: integration of PR #1233
+# Position prediction: PR #1233 integration and temporal model
 
 Source: `feature/#412_velocity-based-prediction`, commit
 `454e46c4db043ebe624f362c9ec1c34d35bcf1ad` ([PR #1233](https://github.com/visualengineers/reflex/pull/1233)).
-The merge retains the current observer pipeline, calibration API and Angular architecture.
-Existing interaction events keep their public signatures. Prediction diagnostics are additive.
+The integration retains the current observer pipeline, calibration API and Angular architecture.
+Existing interaction event signatures are preserved; prediction diagnostics are separate.
 
-## Assessment of the original implementation
+## Assessment and corrections
 
-| Finding | Integrated correction |
+| Original problem | Current behavior |
 | --- | --- |
-| `old - current` points backwards; no division by elapsed samples | Fit measured positions against processed frame IDs, centered at the newest measurement |
-| Acceleration forecast averages velocity and acceleration | `p + v h + weight a h²`; weight `.5` models constant acceleration |
-| `InteractionVelocity.Update` leaves derivative properties stale | Refresh derivatives and clone mutable points on every update |
-| First contact without enough history breaks the whole loop | Each contact gets its own warm-up/fallback and diagnostic sample |
-| Predicted synthetic frame is appended but oldest positions are searched first | One forecast per live track for the current frame is the primary matching target |
-| Velocity validation computes a discarded list and compares signed ratios | Remove dead validation; use a bounded measured-sample fit and the existing spatial gate |
-| History cleanup compares frame IDs to touch IDs and deletes nearby tracks across frames | Preserve measured history; explicit track expiry and one-to-one assignment own lifecycle |
-| Smoothing takes oldest samples and first filtered output | Latest sample window, final output, filter window follows smoothing configuration |
-| Moving-average output stops before the latest sample; Butterworth has a trailing zero | Correct causal moving averages and a causal Butterworth implementation with valid normalized cutoff |
-| Frontend combines independently arriving interactions and velocities, transforms derivatives as positions and depends on measured DOM size | Atomic diagnostic snapshots, raw raster SVG `viewBox`, no calibration/DOM scaling of vectors |
-| UI lacks a clear distinction between current assignment and next forecast | Measured, smoothed, matching target and both forecasts have different shapes/colors, legends, IDs and numeric values |
+| Backwards `old - current`, no elapsed-time normalization | Fit positions against monotonic measurement times; velocity in units/s |
+| Acceleration forecast averages velocity and acceleration | `p + v h + weight a h²`; `.5` gives constant acceleration |
+| Updating predictions leaves derivative properties stale | Refresh derivatives and deep-copy their mutable values |
+| First contact without enough history breaks the loop | Independent warm-up/fallback per contact |
+| Synthetic prediction is searched after oldest positions | Current-time forecast is the primary matching target |
+| Discarded velocity-validation results and destructive history cleanup | Explicit track lifecycle and one-to-one assignment; no synthetic history samples |
+| Oldest smoothing window and first filtered result | Latest measurements and final filter output |
+| Incomplete moving-average output and trailing Butterworth zero | Complete causal averages and a time-aware continuous Butterworth model |
+| Independently delivered interactions/velocities and incorrect coordinate transformations | Atomic diagnostic snapshots in a raster SVG viewBox |
+| No confidence decay; past maximum restored on recovery | Independent live confidence, time-proportional decay, incremental recovery |
 
-The original unrelated calibration API changes, benchmark rewrites and whitespace changes
-are not needed for raster-space diagnostics and are not carried into the current architecture.
-The original unused destructive velocity/history-cleanup options are not exposed as settings.
+## Clock and units
 
-## Mathematical and temporal contract
+`InteractionSmoothingBehaviour.Update(measurements, timestampSeconds)` accepts a finite,
+strictly increasing monotonic timestamp in **seconds** for the whole observation frame.
+Duplicate/reversed/non-finite times are rejected before tracking state changes. Reset starts
+a new clock domain. The overload without a timestamp uses `Stopwatch.GetTimestamp/Frequency`.
 
-- Time is **processed-frame index**, not milliseconds or sensor capture time. X/Y velocity
-  is pixels/frame; Z velocity is normalized depth/frame. Acceleration is units/frame².
-- Fit the last `NumFramesForPrediction` real measurements (default 3), retaining their frame
-  IDs. Missing frames create a gap in the independent variable, not a fabricated measurement.
-- With two samples, use linear motion. With acceleration enabled and at least three samples,
-  use a quadratic least-squares fit. Center time at the latest measurement, so coefficient 1
-  is current velocity and twice coefficient 2 is acceleration at that measurement.
-- Anchor extrapolation at the latest raw measured position. Smoothed output never feeds back
-  into the fit or matching. Smoothing may legitimately lag, and the visualization shows it.
-- Match at `h = currentFrame - lastMeasuredFrame`; publish diagnostics for
-  `h = currentFrame + 1 - lastMeasuredFrame`. This avoids a one-frame offset, including gaps.
-- Each ID and candidate can be assigned once. Ended tracks never participate again. With
-  prediction disabled or fewer than two samples, use the last measured position.
-- New and Lost lifecycle behavior from `CONTACT_TRACKING_TESTS.md` remains intact. Lost
-  points keep the last measurement time; predictions are separate diagnostic fields.
-- Preserve the existing Manhattan distance gate despite its historical `Squared2DDistance`
-  name. Greedy association is not a globally optimal assignment. Identical observations,
-  abrupt changes after occlusion and motion outside the gate remain intrinsically ambiguous.
-- Variable sensor cadence/skipped processing is not wall-clock compensated. A future timestamp
-  model needs a consistent capture-time contract; `Interaction.Time` currently comes from object
-  creation and is not reliable enough to silently reinterpret as sensor time.
+`InteractionObserverBase` captures this monotonic time **before Analyze**, including before
+remote analysis begins. RPC/computation duration therefore does not shift the timestamp to
+response completion. The present point-cloud API does not carry sensor capture timestamps:
+this is an observation/analysis-start timestamp, not a claim of sensor acquisition time.
+Callers with reliable capture timestamps can supply them to the tracker; all times in a track
+must belong to one clock domain. Do not mix sensor and host clocks without synchronization.
 
-`SecondDerivationMagnitude` accepts finite values in [0,1]. Prediction sample count is limited
-by history size (minimum 2 where history allows it). History 0 disables tracking. Parameter
-application configures history before its dependent windows, also when observers are replaced.
+`InteractionFrame.TimestampSeconds` carries this time through cache snapshots. The legacy
+`Interaction.Time` remains a wall-clock metadata field and is deliberately NOT the model clock.
+Frame IDs identify/order frames but no longer determine velocity or forecast duration.
 
-## Frontend and server
+X/Y velocity is pixels/s, Z velocity is normalized depth/s, and acceleration is units/s².
+The model fits the latest `NumFramesForPrediction` actual observations. Time is centered at
+the last measurement and normalized to [-1,0] for numerical conditioning; derivatives are
+converted back to seconds. Two samples give linear motion; at least three with acceleration
+enabled give a quadratic least-squares fit. Smoothed positions never feed back into the fit.
 
-Processing → **Show prediction diagnostics** opens a separately subscribed panel. Settings
-can enable/disable prediction, choose measured sample count, enable acceleration and set its
-weight. **Apply and save prediction** updates both the active observer and persistent settings.
+Matching uses `h = current timestamp - last measured timestamp`. This handles both explicit
+empty updates and frames omitted entirely between observations. Skipped work must not insert
+fabricated measurements. Abrupt motion/long occlusions can still make extrapolation ambiguous;
+association remains greedy with the existing Manhattan-distance gate.
 
-The `velocities` SignalR stream contains atomic `InteractionVelocity` snapshots with raster
-width/height, current/target frame IDs, last measured frame, measured/smoothed/matching positions,
-derivatives and both forecasts. No asynchronous join with the calibrated interaction stream is
-required. Streams are released on panel close, component destruction and hub disconnect.
+The diagnostic horizon is explicit: `PredictionHorizonSeconds` (default .05, allowed [0,1]).
+The target is `current timestamp + horizon`, NOT a presumed next frame. Lost tracks include
+elapsed time since the last measurement as well as this horizon. Diagnostics expose current,
+last-measured and target timestamps, the horizon, live confidence and actual sample count.
+`PredictionFrameId` has been replaced by `PredictionTimestampSeconds`; consumers of the new
+prediction diagnostic API must use the time fields.
 
-The responsive SVG keeps raster geometry consistent when resized. Layer toggles distinguish
-linear and acceleration forecasts. Trails only append actual measurements, retain at most 20
-points, and disappear when tracks end. Lost tracks are labeled and dashed. A table exposes exact
-X/Y values and the selected model. No data/disabled prediction has an explicit empty state.
+## Temporal filters
 
-## Verification and extension
+`Base2DFilter.Process(points, timestampsSeconds)` validates the same one-time-per-sample,
+finite/strictly-increasing contract, including during warm-up. It passes real relative time
+spacing to fits (normalized for numerical stability). Polynomial filters evaluate at those
+same time coordinates, rather than integer sample indices. The smoothing pipeline passes
+actual cached measurement timestamps for its latest window; missing observations are omitted
+without compressing the elapsed intervals.
 
-`PositionPredictionTest` uses analytic trajectories instead of recorded/random data:
+Butterworth is a continuous second-order low-pass with a cutoff in **Hz** (default 3 Hz).
+Its exact damped-state transition assumes linear input between samples and uses each actual
+interval. It therefore has the same ramp response at different sampling cadences and stays
+stable across long gaps. Warm-up is initialized at the first sample with zero derivative.
 
-- stationary and positive/negative constant velocity;
-- constant acceleration, linear warm-up, unequal measurement intervals;
-- prediction across missing frames without synthetic fit samples;
-- crossing contacts with reversed input order and matching outside the old-position gate;
-- independent multi-contact warm-up, expiry, reset, prediction disabled;
-- latest smoothing window, all filter endpoints, unchanged raw history;
-- owned diagnostic values and refreshed derivatives.
+The original `Process(points)` overload is retained for untimed callers and explicitly assumes
+30 Hz. It cannot infer real time from positions alone. The tracker always uses the timed overload.
+Moving-average, weighted-moving-average and Savitzky–Golay filters are not Base2D subclasses;
+they remain sample-window filters. They are not advertised as fixed-Hz filters for irregular data.
 
-`ObserverPipelineTest` verifies publication, matching frame IDs and sensor dimensions.
-`ExtremumClassificationTest` verifies settings survive observer replacement and that smoothing
-still respects extremum classification. Frontend browser tests cover geometry, resize behavior,
-input immutability, lost/expired trails, layer toggles, lazy subscriptions and saved settings.
-The UI was also inspected at desktop and narrow widths with explicitly synthetic diagnostic data;
-no live-camera accuracy is implied by that visual review.
+## Confidence and lifecycle
 
-To extend: choose an analytic p(t), feed one frame per step (including empty steps), then assert
-both identity and the numeric forecast. Distinguish the target for this frame from the next-frame
-forecast. Keep shape/render tests separate from transport/configuration tests.
+Live confidence belongs to the track, not to its immutable historical measurements.
+
+- Birth clamps raw confidence to `[0, MaxConfidence]`.
+- A successful association adds one confirmation, capped at MaxConfidence. Higher raw spatial
+  confidence cannot restore a historical maximum.
+- Missing observations decay confidence by `ConfidenceDecayPerSecond * elapsed seconds`
+  (tracker default 30 units/s). Several short missing updates and one long missing update give
+  the same decay for the same missing duration. The rate is nonnegative; zero disables decay.
+- A returning lost contact first decays through the remaining lost interval, then gains one
+  confirmation. Continuous successful observations do not decay merely because their cadence
+  is slower. An omitted update alone cannot prove a missing detection.
+- Confidence saturates at zero. Zero does not itself delete a track: the existing strict
+  `Confidence > MinConfidence` publication filter hides it, and it can recover within its lifetime.
+- Raw cached confidence is not rewritten by loss; output/diagnostic confidence reflects live state.
+
+`ContactRetentionSeconds` defines the inclusive maximum age of the last real measurement.
+Expiry is checked before matching, including dropped-update intervals, independently of cache
+capacity. Default `.1` seconds; legacy JSON frame counts migrate at 30 Hz. Returning after
+expiry creates a new ID with no inherited motion/confidence. See CONTACT_TRACKING_TESTS.md
+for boundary, zero-duration and migration semantics.
+
+## Frontend
+
+Processing → Show prediction diagnostics exposes the model settings, including forecast
+horizon in milliseconds. Apply/save converts ms to seconds for the server and persists it.
+The atomic `velocities` stream contains measured, smoothed, matching and forecast positions,
+sensor dimensions, timestamps, derivatives and confidence. Rendering needs no asynchronous
+join or calibration transform. SVG geometry remains unchanged on viewport resize.
+
+Legend/table explicitly distinguish current matching targets from the configured forecast
+horizon. Velocity/acceleration labels show px/s and px/s²; the table shows measurement age in
+milliseconds and current confidence. Lost tracks remain dashed/labeled; actual-only trails
+are bounded to 20 samples and clear at expiry/reset. Empty data has an explanatory state.
+
+## Tests and extension
+
+`TemporalTrackingTest` adds deterministic, explicitly timed scenarios:
+
+- equal analytic motion at different irregular cadences and a large clock origin;
+- acceleration with unequal intervals, skipped frames and explicit empty frames;
+- crossing identity after a longer interval;
+- duplicate/reversed/non-finite times, reset and invalid horizon;
+- time-equivalent confidence loss, lower bound and recovery without historical maxima;
+- timed smoothing pipeline, polynomial evaluation at real timestamps, Butterworth cadence
+  invariance/long-gap stability and invalid filter input/isolation.
+
+`PositionPredictionTest` retains the original trajectory regression cases using explicit
+one-second observations, not sleeps or machine speed. `ObserverPipelineTest` verifies diagnostic
+times, units, dimensions and confidence-based hiding/recovery. `ExtremumClassificationTest`
+verifies prediction settings survive observer changes. Browser tests cover ms/seconds conversion,
+time labels, confidence/age, SVG geometry, lost trails, immutable input and panel subscriptions.
+
+Extend with an analytic p(t): feed one observation per explicit timestamp, optionally omit
+updates or insert empty observations, and assert identity, derivatives, target time and position.
+Do not substitute frame number for time. Use tolerance appropriate to the float point storage.

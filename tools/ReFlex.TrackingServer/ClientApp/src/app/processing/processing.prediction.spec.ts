@@ -23,9 +23,11 @@ describe('Prediction panel integration', () => {
 
   it('saves the selected model and clears diagnostics when prediction is disabled', async () => {
     const fixture = await mount(PredictionPanelComponent);
-    const config = { useVelocityPrediction: false, numFramesForPrediction: 4, useSecondDerivation: true, secondDerivationMagnitude: 0.5 };
+    const config = { predictionHorizonSeconds: 0.12, useVelocityPrediction: false, numFramesForPrediction: 4, useSecondDerivation: true, secondDerivationMagnitude: 0.5 };
     processing.setPredictionSettings.mockReturnValue(of(config));
-    fixture.componentInstance.predictionSettings = config;
+    fixture.componentInstance.predictionSettings = { ...config, predictionHorizonSeconds: 0.05 };
+    fixture.componentInstance.forecastMilliseconds = 120;
+    expect(fixture.componentInstance.forecastMilliseconds).toBe(120);
     fixture.componentInstance.savePrediction();
     await fixture.whenStable();
     expect(processing.setPredictionSettings.mock.calls).toEqual([[config]]);

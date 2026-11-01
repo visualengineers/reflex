@@ -121,6 +121,8 @@ public class ExtremumClassificationTest
         manager.NumSmoothingFrames = 40;
         manager.UseVelocityPrediction = true;
         manager.NumFramesForPrediction = 4;
+        manager.PredictionHorizonSeconds = .12;
+        manager.ContactRetentionSeconds = .25;
         manager.UseSecondDerivation = true;
         manager.SecondDerivationMagnitude = .5f;
         manager.ExtremumTypeCheckRadius = 6;
@@ -134,6 +136,8 @@ public class ExtremumClassificationTest
             Assert.That(observer.NumSmoothingFrames, Is.EqualTo(40));
             Assert.That(observer.UseVelocityPrediction, Is.True);
             Assert.That(observer.NumFramesForPrediction, Is.EqualTo(4));
+            Assert.That(observer.PredictionHorizonSeconds, Is.EqualTo(.12));
+            Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.25));
             Assert.That(observer.UseSecondDerivation, Is.True);
             Assert.That(observer.SecondDerivationMagnitude, Is.EqualTo(.5f));
             Assert.That(observer.ExtremumTypeCheckMethod, Is.EqualTo(ExtremumTypeCheckMethod.FixedRadius));
