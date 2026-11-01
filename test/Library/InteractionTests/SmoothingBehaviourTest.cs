@@ -36,6 +36,7 @@ namespace InteractionTests
             _smoothing.TouchMergeDistance2D = SquaredDistance;
             _smoothing.NumFramesSmoothing = 0;
             _smoothing.ContactRetentionSeconds = 3;
+            _smoothing.ConfidenceGainPerSecond = 1; // This fixture advances one second per measurement.
             _smoothing.UpdateFilterType(FilterType.None);
         }
 

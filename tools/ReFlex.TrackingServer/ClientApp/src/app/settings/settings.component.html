@@ -474,6 +474,17 @@
     bridge gaps but keep lost contacts visible longer after release.
   </app-value-slider>
 
+  <app-value-slider class="settings__item" elementTitle="Confidence gain" elementId="settings-confidenceGain"
+    [min]="0" [max]="100" [step]="1" unit="/s"
+    [(data)]="settings.filterSettingValues.smoothingValues.confidenceGainPerSecond" (onChange)="saveSmoothingValues()">
+    Confidence gained per second between consecutive measurements. Missing observations earn no confidence.
+  </app-value-slider>
+  <app-value-slider class="settings__item" elementTitle="Confidence decay" elementId="settings-confidenceDecay"
+    [min]="0" [max]="100" [step]="1" unit="/s"
+    [(data)]="settings.filterSettingValues.smoothingValues.confidenceDecayPerSecond" (onChange)="saveSmoothingValues()">
+    Confidence lost per second without measurements. Zero disables decay.
+  </app-value-slider>
+
   <!-- Merge Distance -->
   <app-value-slider
     class="settings__item"

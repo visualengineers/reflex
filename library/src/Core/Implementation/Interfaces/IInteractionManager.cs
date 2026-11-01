@@ -38,6 +38,8 @@ namespace Implementation.Interfaces
         int NumSmoothingFrames { get; set; }
         
         double ContactRetentionSeconds { get; set; }
+        float ConfidenceGainPerSecond { get; set; }
+        float ConfidenceDecayPerSecond { get; set; }
         
         float TouchMergeDistance2D { get; set; }
         
@@ -56,6 +58,8 @@ namespace Implementation.Interfaces
         void Init(ObserverType type);
 
         Task<ProcessServiceStatus> Update();
+
+        void AdvanceTime();
 
         float ComputeZeroPlaneDistance();
 

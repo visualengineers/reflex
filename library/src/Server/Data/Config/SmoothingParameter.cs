@@ -23,6 +23,21 @@ namespace ReFlex.Server.Data.Config
         /// Explicit seconds take precedence regardless of JSON property order. Never serialized.</summary>
         public int MaxNumEmptyFramesBetween { set => _legacyRetentionSeconds = Math.Max(0, value) / 30.0; }
 
+        private float? _confidenceGainPerSecond;
+        private float? _confidenceDecayPerSecond;
+        public float ConfidenceGainPerSecond
+        {
+            get => _confidenceGainPerSecond ?? 30;
+            set => _confidenceGainPerSecond = float.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value));
+        }
+        public float ConfidenceDecayPerSecond
+        {
+            get => _confidenceDecayPerSecond ?? 30;
+            set => _confidenceDecayPerSecond = float.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
         public float TouchMergeDistance2D { get; set; }
 
         public float DepthScale { get; set; }

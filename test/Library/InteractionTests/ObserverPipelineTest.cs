@@ -104,13 +104,16 @@ public class ObserverPipelineTest
     public async Task RemoteConfidenceAndEventsFollowTheSharedPipeline()
     {
         var service = new Service();
-        var observer = new RemoteInteractionProcessor(service);
+        var observer = new TimedRemote(service);
         Configure(observer);
         observer.MinConfidence = 2;
         var publications = new List<IList<Interaction>>();
         observer.NewInteractions += (_, data) => publications.Add(data);
         for (var i = 0; i < 3; i++)
+        {
+            observer.Timestamp = i / 30d;
             Assert.That((await observer.Update()).ServiceStatus, Is.EqualTo(ProcessServiceStatus.Available));
+        }
         Assert.That(publications.Count, Is.EqualTo(3));
         Assert.That(publications[0], Is.Empty);
         Assert.That(publications[1], Is.Empty);
@@ -176,7 +179,7 @@ public class ObserverPipelineTest
     [TestCase(false, true, true, ProcessServiceStatus.Error)]
     [TestCase(true, true, true, ProcessServiceStatus.Skipped)]
     [TestCase(true, false, false, ProcessServiceStatus.Error)]
-    public async Task RemoteFailureAndBusyStatesDoNotAnalyzeOrPublish(bool cloud, bool busy, bool connects, ProcessServiceStatus expected)
+    public async Task RemoteFailureAndBusyStatesAgePublicationWithoutAnalysis(bool cloud, bool busy, bool connects, ProcessServiceStatus expected)
     {
         var service = new Service { IsBusy = busy, IsConnected = false, ConnectSucceeds = connects };
         var observer = new RemoteInteractionProcessor(service);
@@ -186,12 +189,12 @@ public class ObserverPipelineTest
         observer.NewInteractions += (_, _) => events++;
         Assert.That((await observer.Update()).ServiceStatus, Is.EqualTo(expected));
         Assert.That(service.Calls, Is.Zero);
-        Assert.That(events, Is.Zero);
+        Assert.That(events, Is.EqualTo(1));
         if (!cloud || busy) Assert.That(service.ConnectCalls, Is.Zero);
     }
 
     [Test]
-    public async Task NoObserverAndMissingLocalInputsDoNotPublish()
+    public async Task NoObserverAndMissingLocalInputsPublishEmptyState()
     {
         foreach (var observer in new InteractionObserverBase[]
                  { new NoInteractionObserver(), new SingleInteractionObserver(), new MultiInteractionObserver() })
@@ -201,7 +204,7 @@ public class ObserverPipelineTest
             var result = await observer.Update();
             Assert.That(result.ServiceStatus, Is.EqualTo(observer is NoInteractionObserver
                 ? ProcessServiceStatus.Skipped : ProcessServiceStatus.Error));
-            Assert.That(events, Is.Zero);
+            Assert.That(events, Is.EqualTo(1));
         }
     }
 
@@ -302,8 +305,11 @@ public class ObserverPipelineTest
         service.Candidates = () => new[] { new Interaction(new Point3(10,10,.75f), InteractionType.Push, 100) };
         observer.Timestamp = .12;
         await observer.Update();
+        Assert.That(published, Is.Empty, "Recovery earns no confidence for the missing interval.");
+        observer.Timestamp = .16;
+        await observer.Update();
         Assert.That(published.Single().TouchId, Is.EqualTo(id));
-        Assert.That(published.Single().Confidence, Is.EqualTo(2.4f).Within(.0001));
+        Assert.That(published.Single().Confidence, Is.EqualTo(2.6f).Within(.0001));
     }
 
     private sealed class Conversion : SingleInteractionObserver

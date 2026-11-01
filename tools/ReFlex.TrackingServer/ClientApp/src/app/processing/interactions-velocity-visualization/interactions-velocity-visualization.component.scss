@@ -32,3 +32,5 @@ th, td { text-align: left; padding: .7rem; border-bottom: 1px solid #40536c; whi
 caption { text-align: left; padding-block: .8rem; }
 .prediction__table tbody tr { background: #101c2c; color: #edf3fa; }
 .prediction__table tbody tr:nth-child(even) { background: #1d3047; }
+
+.prediction__canvas .suppressed { opacity: 0.55; }

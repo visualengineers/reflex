@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +17,11 @@ namespace Implementation.Components
     public class InteractionManager : IInteractionManager, IDisposable
     {
         private IInteractionObserver _interactionObserver;
+        private TrackingObservation _pendingObservation;
+        private readonly SemaphoreSlim _updateGate = new(1, 1);
+        private long _lastSequence = -1;
+        private double _lastObservationTime = double.NegativeInfinity;
+        protected virtual double GetTimestampSeconds() => (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
         private IList<Interaction> _interactions;
         private bool _useVelocityPrediction;
         private double _predictionHorizonSeconds = .05;
@@ -35,6 +42,8 @@ namespace Implementation.Components
         private int _numSmoothFrames;
         private int _interactionHistorySize;
         private double _contactRetentionSeconds = .1;
+        private float _confidenceGainPerSecond = 30;
+        private float _confidenceDecayPerSecond = 30;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
         private int _extremumTypeCheckNumSamples;
@@ -97,29 +106,17 @@ namespace Implementation.Components
         public ObserverType Type
         {
             get => _interactionObserver?.Type ?? ObserverType.None;
-            set
-            {
-                switch (value)
-                {
-                    case ObserverType.Remote:
-                        UpdateObserver(new RemoteInteractionProcessor(_service));
-                        break;
-                    case ObserverType.MultiTouch:
-                        UpdateObserver(new MultiInteractionObserver());
-
-                        break;
-                    case ObserverType.SingleTouch:
-                        UpdateObserver(new SingleInteractionObserver());
-
-                        break;
-                    case ObserverType.None:
-                        UpdateObserver(new NoInteractionObserver());
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(value), value, null);
-                }
-            }
+            set => UpdateObserver(CreateObserver(value));
         }
+
+        protected virtual IInteractionObserver CreateObserver(ObserverType type) => type switch
+        {
+            ObserverType.Remote => new RemoteInteractionProcessor(_service),
+            ObserverType.MultiTouch => new MultiInteractionObserver(),
+            ObserverType.SingleTouch => new SingleInteractionObserver(),
+            ObserverType.None => new NoInteractionObserver(),
+            _ => throw new ArgumentOutOfRangeException(nameof(type))
+        };
 
         public float ComputeZeroPlaneDistance()
         {
@@ -136,7 +133,7 @@ namespace Implementation.Components
                 _interactionObserver.NewInteractions -= OnNewInteractions;
                 _interactionObserver.NewVelocities -= OnNewVelocities;
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
-                _performanceAggregator.UnregisterReporter(observer as IPerformanceReporter);
+                _performanceAggregator.UnregisterReporter(_interactionObserver as IPerformanceReporter);
             }
             
             if (observer == null)
@@ -154,6 +151,8 @@ namespace Implementation.Components
             observer.NumSmoothingFrames = _numSmoothFrames;
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.ContactRetentionSeconds = _contactRetentionSeconds;
+            observer.ConfidenceGainPerSecond = _confidenceGainPerSecond;
+            observer.ConfidenceDecayPerSecond = _confidenceDecayPerSecond;
             observer.DepthScale = _depthScale;
             observer.PredictionHorizonSeconds = _predictionHorizonSeconds;
             observer.UseVelocityPrediction = _useVelocityPrediction;
@@ -273,6 +272,28 @@ namespace Implementation.Components
             }
         }
         
+        public float ConfidenceGainPerSecond
+        {
+            get => _confidenceGainPerSecond;
+            set
+            {
+                if (!float.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.ConfidenceGainPerSecond = value;
+                _confidenceGainPerSecond = value;
+            }
+        }
+
+        public float ConfidenceDecayPerSecond
+        {
+            get => _confidenceDecayPerSecond;
+            set
+            {
+                if (!float.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.ConfidenceDecayPerSecond = value;
+                _confidenceDecayPerSecond = value;
+            }
+        }
+
         public double ContactRetentionSeconds
         {
             get => _interactionObserver?.ContactRetentionSeconds ?? _contactRetentionSeconds;
@@ -383,8 +404,7 @@ namespace Implementation.Components
             _service = service;
             _performanceAggregator = performanceAggregator;
 
-            depthImageManager.PointcloudFiltered += OnPointcloudChanged;
-            depthImageManager.VectorfieldChanged += OnVectorfieldChanged;
+            depthImageManager.ObservationReady += OnObservationReady;
         }
 
         public void Init(ObserverType type)
@@ -392,19 +412,59 @@ namespace Implementation.Components
             Type = type;
         }
 
+        public void AdvanceTime() => _interactionObserver?.AdvanceTime(GetTimestampSeconds());
+
         public async Task<ProcessServiceStatus> Update()
         {
-            if (_interactionObserver == null)
-                return ProcessServiceStatus.Error;
-            
-            return (await _interactionObserver.Update())?.ServiceStatus ?? ProcessServiceStatus.Error;
+            await _updateGate.WaitAsync();
+            try
+            {
+                var observer = _interactionObserver;
+                if (observer == null) return ProcessServiceStatus.Error;
+                var observation = Interlocked.Exchange(ref _pendingObservation, null);
+                if (observation == null || observation.Sequence <= _lastSequence ||
+                    observation.TimestampSeconds <= _lastObservationTime)
+                {
+                    observer.AdvanceTime(GetTimestampSeconds());
+                    return ProcessServiceStatus.Skipped;
+                }
+                _lastSequence = observation.Sequence;
+                _lastObservationTime = observation.TimestampSeconds;
+                try { return (await observer.Update(observation)).ServiceStatus; }
+                catch (Exception exception)
+                {
+                    NLog.LogManager.GetCurrentClassLogger().Warn(exception, "Interaction analysis failed; aging active tracks.");
+                    // Transport/analysis failures must age the published list, not leave stale contacts.
+                    observer.AdvanceTime(GetTimestampSeconds());
+                    return ProcessServiceStatus.Error;
+                }
+            }
+            finally { _updateGate.Release(); }
+        }
+
+        private void OnObservationReady(object sender, TrackingObservation observation)
+        {
+            // The producer emits completed pairs in order. Keep only the newest unprocessed pair.
+            Interlocked.Exchange(ref _pendingObservation, observation);
         }
 
         public event EventHandler<IList<Interaction>> InteractionsUpdated;
         public event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
 
         private void OnNewVelocities(object sender, IList<InteractionVelocity> velocities)
-            => VelocitiesUpdated?.Invoke(this, velocities);
+        {
+            if (!ReferenceEquals(sender, _interactionObserver)) return;
+            var publishedIds = Interactions.Select(item => item.TouchId).ToHashSet();
+            foreach (var item in velocities)
+            {
+                if (item.IsPublished && !publishedIds.Contains(item.TouchId))
+                {
+                    item.IsPublished = false;
+                    item.SuppressionReason = "cluster";
+                }
+            }
+            VelocitiesUpdated?.Invoke(this, velocities);
+        }
         
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
@@ -412,8 +472,7 @@ namespace Implementation.Components
         {
             if (_depthImageManager != null)
             {
-                _depthImageManager.PointcloudFiltered -= OnPointcloudChanged;
-                _depthImageManager.VectorfieldChanged -= OnVectorfieldChanged;
+                _depthImageManager.ObservationReady -= OnObservationReady;
             }
 
             if (_interactionObserver != null)
@@ -426,20 +485,9 @@ namespace Implementation.Components
             }
         }
 
-        private void OnPointcloudChanged(object sender, PointCloud3 source)
-        {
-            if (_interactionObserver != null)
-                _interactionObserver.PointCloud = source;
-        }
-
-        private void OnVectorfieldChanged(object sender, VectorField2 source)
-        {
-            if (_interactionObserver != null)
-                _interactionObserver.VectorField = source;
-        }
-
         private void OnNewInteractions(object sender, IList<Interaction> interactions)
         {
+            if (!ReferenceEquals(sender, _interactionObserver)) return;
             lock (interactions)
             {
                 var copy = interactions.Select(interaction => new Interaction(interaction)).ToList();
@@ -452,7 +500,8 @@ namespace Implementation.Components
         private IList<Interaction> RemoveClusteredInteractions(IList<Interaction> rawInteractions)
         {
             var filteredCopy = new List<Interaction>();
-            
+            rawInteractions = rawInteractions.OrderBy(item => item.TrackingState == InteractionTrackingState.Lost)
+                .ThenByDescending(item => item.Confidence).ThenBy(item => item.TouchId).ToList();
             for (var i = 0; i < rawInteractions.Count; i++)
             {
                 var currPt = rawInteractions[i];

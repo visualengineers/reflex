@@ -117,4 +117,25 @@ describe('Contact retention settings', () => {
     fixture.componentInstance.saveSmoothingValues();
     expect(settings.setSmoothingValues.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ contactRetentionSeconds: 0.35 }));
   });
+  it('saves confidence rates in units per second', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setSmoothingValues.mockReturnValue(of(value.filterSettingValues.smoothingValues));
+    const fixture = await mount(SettingsComponent);
+    for (const [id, rate] of [['confidenceGain', '12'], ['confidenceDecay', '18']]) {
+      const input = queryElement<HTMLInputElement>(
+        fixture.nativeElement as HTMLElement,
+        `app-value-slider[elementid="settings-${id}"] input.custom-input`
+      );
+      input.value = rate;
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('change'));
+    }
+    await fixture.whenStable();
+    fixture.componentInstance.saveSmoothingValues();
+    expect(settings.setSmoothingValues.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({
+      confidenceGainPerSecond: 12, confidenceDecayPerSecond: 18
+    }));
+  });
+
 });

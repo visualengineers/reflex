@@ -157,6 +157,17 @@ namespace ReFlex.Core.Interactivity.Components
             double.IsFinite(value) && value >= 0 ? value :
                 throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
 
+        public float ConfidenceGainPerSecond
+        {
+            get => _smoothingBehaviour.ConfidenceGainPerSecond;
+            set => _smoothingBehaviour.ConfidenceGainPerSecond = value;
+        }
+        public float ConfidenceDecayPerSecond
+        {
+            get => _smoothingBehaviour.ConfidenceDecayPerSecond;
+            set => _smoothingBehaviour.ConfidenceDecayPerSecond = value;
+        }
+
         public double ContactRetentionSeconds
         {
             get => _smoothingBehaviour?.ContactRetentionSeconds ?? _contactRetentionSeconds;
@@ -285,17 +296,56 @@ namespace ReFlex.Core.Interactivity.Components
           return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Available));
         }
 
+        private double? _observationTime;
+        private readonly object _trackingSync = new();
+
+        public async Task<ProcessingResult> Update(TrackingObservation observation)
+        {
+            PointCloud = observation.PointCloud;
+            VectorField = observation.VectorField;
+            _observationTime = observation.TimestampSeconds;
+            try { return await Update(); }
+            finally { _observationTime = null; }
+        }
+
+        public void AdvanceTime(double timestampSeconds)
+        {
+            lock (_trackingSync) Publish(_smoothingBehaviour.OutputAt(timestampSeconds));
+        }
+
+        private void Publish(InteractionFrame frame)
+        {
+            var selected = SelectSmoothedInteractions(frame.Interactions).ToList();
+            var published = ApplyConfidenceFilter(selected).ToList();
+            var publishedIds = published.Select(item => item.TouchId).ToHashSet();
+            var selectedIds = selected.Select(item => item.TouchId).ToHashSet();
+            // Diagnostics include hidden tracks and are captured before any external callbacks.
+            var velocities = _smoothingBehaviour.GetVelocities(frame);
+            foreach (var velocity in velocities)
+            {
+                velocity.Width = PointCloud?.SizeX ?? 0;
+                velocity.Height = PointCloud?.SizeY ?? 0;
+                velocity.IsPublished = publishedIds.Contains(velocity.TouchId);
+                velocity.SuppressionReason = velocity.IsPublished ? "" :
+                    selectedIds.Contains(velocity.TouchId) ? "confidence" : "observer-selection";
+            }
+            OnNewInteractions(published);
+            NewVelocities?.Invoke(this, velocities);
+        }
+
         public virtual async Task<ProcessingResult> Update()
         {
             var processResult = await CheckInitialState();
 
             if (processResult.ServiceStatus != ProcessServiceStatus.Available)
             {
+              AdvanceTime(GetTimestampSeconds());
               UpdatePerformanceMetrics(new ProcessPerformance(), DateTime.Now.Ticks);
               return processResult;
             }
 
-            var timestampSeconds = GetTimestampSeconds();
+            var timestampSeconds = _observationTime ?? GetTimestampSeconds();
+            var observationCloud = PointCloud;
             var processingDateTime = DateTime.Now.Ticks;
 
             if (MeasurePerformance)
@@ -334,7 +384,7 @@ namespace ReFlex.Core.Interactivity.Components
               _stopWatch.Start();
             }
 
-            var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
+            var processedInteractions = ComputeExtremumType(interactions, observationCloud.AsJaggedArray());
 
             var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
 
@@ -351,31 +401,29 @@ namespace ReFlex.Core.Interactivity.Components
                 _stopWatch.Start();
             }
 
-            var frame = ComputeSmoothingValue(cleanedUpInteractions, timestampSeconds);
-
-            if (MeasurePerformance)
+            Task reportTask;
+            lock (_trackingSync)
             {
-                _stopWatch.Stop();
-                perfItem.Smoothing = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                var frame = ComputeSmoothingValue(cleanedUpInteractions, timestampSeconds);
+
+                if (MeasurePerformance)
+                {
+                    _stopWatch.Stop();
+                    perfItem.Smoothing = _stopWatch.Elapsed;
+                    _stopWatch.Reset();
+                }
+
+                // Remote latency must not publish a contact after its observation deadline.
+                if (_observationTime.HasValue && InteractionHistorySize > 0)
+                    frame = _smoothingBehaviour.OutputAt(Math.Max(timestampSeconds, GetTimestampSeconds()), false);
+
+                // Populate optional remote stage timings before publishing the shared dictionary.
+                reportTask = MeasurePerformance ? ReportPerformance(perfItem) : Task.CompletedTask;
+                processResult.PerformanceMeasurement = perfItem;
+                UpdatePerformanceMetrics(perfItem, processingDateTime);
+
+                Publish(frame);
             }
-
-            var confidentInteractions = ApplyConfidenceFilter(SelectSmoothedInteractions(frame.Interactions));
-
-            // Populate optional remote stage timings before publishing the shared dictionary.
-            var reportTask = MeasurePerformance ? ReportPerformance(perfItem) : Task.CompletedTask;
-            processResult.PerformanceMeasurement = perfItem;
-            UpdatePerformanceMetrics(perfItem, processingDateTime);
-
-            var published = confidentInteractions.ToList();
-            OnNewInteractions(published);
-            var velocities = _smoothingBehaviour.GetVelocities(new InteractionFrame(frame.FrameId, published));
-            foreach (var velocity in velocities)
-            {
-                velocity.Width = PointCloud.SizeX;
-                velocity.Height = PointCloud.SizeY;
-            }
-            NewVelocities?.Invoke(this, velocities);
 
             await reportTask;
 
@@ -569,23 +617,6 @@ namespace ReFlex.Core.Interactivity.Components
             };
 
             PerformanceDataUpdated?.Invoke(this, pData);
-        }
-
-        protected void UpdateInteractionFrames(List<Interaction> cleanedUpInteractions, InteractionFrame currentFrame)
-        {
-          currentFrame.Interactions.ForEach((interaction) =>
-          {
-            if (cleanedUpInteractions.FirstOrDefault((i) => i.TouchId == interaction.TouchId) == null)
-            {
-              if (interaction.Confidence > 0)
-                interaction.Confidence--;
-            }
-          });
-
-          currentFrame.Interactions.RemoveAll((interaction) => interaction.Confidence <= 0);
-
-          _smoothingBehaviour.UpdateCachedFrame(currentFrame);
-          InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
         }
 
         protected void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);

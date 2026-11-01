@@ -20,6 +20,8 @@ public class InteractionVelocity
     public float Confidence { get; set; }
     public int SampleCount { get; set; }
     public bool IsPredicted { get; set; }
+    public bool IsPublished { get; set; }
+    public string SuppressionReason { get; set; } = "";
     public bool UseSecondDerivation { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }

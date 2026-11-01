@@ -151,6 +151,17 @@ namespace PointCloud.Benchmark.Interactivity
         }
 
         // TODO: write tests for negative (!) values and values larger than history
+        public float ConfidenceGainPerSecond
+        {
+            get => _smoothingBehaviour.ConfidenceGainPerSecond;
+            set => _smoothingBehaviour.ConfidenceGainPerSecond = value;
+        }
+        public float ConfidenceDecayPerSecond
+        {
+            get => _smoothingBehaviour.ConfidenceDecayPerSecond;
+            set => _smoothingBehaviour.ConfidenceDecayPerSecond = value;
+        }
+
         public double ContactRetentionSeconds
         {
             get => _contactRetentionSeconds;

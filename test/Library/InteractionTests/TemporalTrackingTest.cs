@@ -115,6 +115,22 @@ public class TemporalTrackingTest
         Assert.DoesNotThrow(() => Step(tracker, 0, 5));
     }
 
+    [TestCase(10)]
+    [TestCase(100)]
+    public void ConfidenceGainUsesObservedDurationAndIgnoresTimerPolling(int frequency)
+    {
+        var tracker = Tracker();
+        tracker.MaxConfidence = 100;
+        Step(tracker, 0, 10);
+        InteractionFrame output = null;
+        for (var i = 1; i <= frequency; i++)
+        {
+            tracker.OutputAt((i - .5) / frequency); // A timer tick is not a missing sensor observation.
+            output = Step(tracker, (double)i / frequency, 10);
+        }
+        Assert.That(output.Interactions.Single().Confidence, Is.EqualTo(35).Within(.0001));
+    }
+
     [Test]
     public void ConfidenceDecayDependsOnMissingDurationNotNumberOfEmptyUpdates()
     {
@@ -137,13 +153,13 @@ public class TemporalTrackingTest
         var tracker = Tracker();
         Step(tracker, 0, 10); // 5
         Step(tracker, .1); // 4
-        var recovered = Step(tracker, .3, 10).Interactions.Single(); // 2 + 1, raw confidence still 5
+        var recovered = Step(tracker, .3, 10).Interactions.Single(); // 2, recovery does not earn confidence for the lost interval
         Assert.That(recovered.TouchId, Is.Zero);
-        Assert.That(recovered.Confidence, Is.EqualTo(3).Within(.0001));
+        Assert.That(recovered.Confidence, Is.EqualTo(2).Within(.0001));
         var lost = Step(tracker, 2).Interactions.Single();
         Assert.That(lost.Confidence, Is.Zero);
         Assert.That(lost.TrackingState, Is.EqualTo(InteractionTrackingState.Lost));
-        Assert.That(Step(tracker, 2.1, 10).Interactions.Single().Confidence, Is.EqualTo(1));
+        Assert.That(Step(tracker, 2.1, 10).Interactions.Single().Confidence, Is.Zero);
     }
 
     [Test]
@@ -151,8 +167,8 @@ public class TemporalTrackingTest
     {
         var tracker = Tracker();
         Step(tracker, 0, 10);
-        Assert.That(Step(tracker, 2, 10).Interactions.Single().Confidence, Is.EqualTo(6));
-        Assert.That(Step(tracker, 2.01, 10).Interactions.Single().Confidence, Is.EqualTo(7));
+        Assert.That(Step(tracker, 2, 10).Interactions.Single().Confidence, Is.EqualTo(20));
+        Assert.That(Step(tracker, 2.01, 10).Interactions.Single().Confidence, Is.EqualTo(20));
     }
 
     [TestCase(-.1)]

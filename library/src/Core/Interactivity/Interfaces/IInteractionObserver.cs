@@ -90,6 +90,8 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// Independent of history capacity. After expiry a returning contact receives a new ID.
         /// </summary>
         double ContactRetentionSeconds { get; set; }
+        float ConfidenceGainPerSecond { get; set; }
+        float ConfidenceDecayPerSecond { get; set; }
         
         /// <summary>
         /// defines the squared distance to closest points to be recognized as same point
@@ -156,6 +158,11 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// Updates the observer to generate a new interaction.
         /// </summary>
         Task<ProcessingResult> Update();
+
+        Task<ProcessingResult> Update(TrackingObservation observation) => Update();
+
+        void AdvanceTime(double timestampSeconds) { }
+
 
         /// <summary>
         /// Calculates the average distance of al valid and not filtered points to

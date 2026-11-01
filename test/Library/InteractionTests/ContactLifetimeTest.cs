@@ -91,6 +91,8 @@ public class ContactLifetimeTest
         Assert.That(Newtonsoft.Json.JsonConvert.SerializeObject(migrated), Does.Not.Contain("MaxNumEmptyFramesBetween"));
         var settings = JsonSerializer.Deserialize<SmoothingParameter>(json);
         Assert.That(settings.ContactRetentionSeconds, Is.EqualTo(expected));
+        Assert.That(settings.ConfidenceGainPerSecond, Is.EqualTo(30));
+        Assert.That(settings.ConfidenceDecayPerSecond, Is.EqualTo(30));
         var saved = JsonSerializer.Serialize(settings);
         Assert.That(saved, Does.Not.Contain("MaxNumEmptyFramesBetween"));
         Assert.That(JsonSerializer.Deserialize<SmoothingParameter>(saved).ContactRetentionSeconds, Is.EqualTo(expected));

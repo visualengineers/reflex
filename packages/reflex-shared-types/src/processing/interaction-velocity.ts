@@ -12,6 +12,8 @@ export interface InteractionVelocity {
   confidence: number;
   sampleCount: number;
   isPredicted: boolean;
+  isPublished: boolean;
+  suppressionReason: string;
   useSecondDerivation: boolean;
   width: number;
   height: number;

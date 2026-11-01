@@ -9,11 +9,13 @@ const snapshot = (frame = 3): InteractionVelocity => ({
   lastMeasuredFrameId: frame,
   timestampSeconds: frame / 10,
   lastMeasuredTimestampSeconds: frame / 10,
-  predictionTimestampSeconds: frame / 10 + 0.05,
+  predictionTimestampSeconds: (frame / 10) + 0.05,
   predictionHorizonSeconds: 0.05,
   confidence: 7.5,
   sampleCount: 3,
   isPredicted: false,
+  isPublished: true,
+  suppressionReason: '',
   useSecondDerivation: true,
   width: 320,
   height: 240,
@@ -93,4 +95,17 @@ describe('Prediction diagnostics in sensor coordinates', () => {
     expect(element().querySelector('.linear.forecast')).toBeNull();
     expect(element().querySelector('.accelerated.forecast')).not.toBeNull();
   });
+  it('keeps hidden tracks and their trails visible with the publication reason', async () => {
+    const hidden = { ...snapshot(), isPublished: false, suppressionReason: 'confidence' };
+    await show([hidden]);
+    expect(element().textContent).toContain('hidden: confidence');
+    expect(element().querySelector('g.suppressed')).not.toBeNull();
+    expect(fixture.componentInstance.path(42)).toBe('100,40');
+    await show([{ ...hidden, frameId: 4, isPredicted: true, suppressionReason: 'cluster' }]);
+    expect(element().textContent).toContain('hidden: cluster');
+    expect(fixture.componentInstance.path(42)).toBe('100,40');
+    await show([]);
+    expect(fixture.componentInstance.path(42)).toBe('');
+  });
+
 });

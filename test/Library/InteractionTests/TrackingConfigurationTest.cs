@@ -64,6 +64,18 @@ public class TrackingConfigurationTest
         Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.1));
     }
 
+    [TestCase(-1f)]
+    [TestCase(float.NaN)]
+    [TestCase(float.PositiveInfinity)]
+    public void InvalidConfidenceRatesAreRejected(float value)
+    {
+        var observer = new Observer();
+        Assert.Throws<ArgumentOutOfRangeException>(() => observer.ConfidenceGainPerSecond = value);
+        Assert.Throws<ArgumentOutOfRangeException>(() => observer.ConfidenceDecayPerSecond = value);
+        Assert.That(observer.ConfidenceGainPerSecond, Is.EqualTo(30));
+        Assert.That(observer.ConfidenceDecayPerSecond, Is.EqualTo(30));
+    }
+
     [TestCase(FilterType.MovingAverage)]
     [TestCase(FilterType.WeightedMovingAverage)]
     [TestCase(FilterType.SavitzkyGolay)]

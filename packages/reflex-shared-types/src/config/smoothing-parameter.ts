@@ -5,6 +5,8 @@ export interface SmoothingParameter {
   numSmoothingSamples: number;
   /** Inclusive maximum age of the last measurement in seconds; independent of history capacity. */
   contactRetentionSeconds: number;
+  confidenceGainPerSecond: number;
+  confidenceDecayPerSecond: number;
   touchMergeDistance2D: number;
   depthScale: number;
   type: FilterType;

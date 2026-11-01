@@ -147,6 +147,8 @@ public class SettingsService
         _interactionManager.TouchMergeDistance2D = smooth.TouchMergeDistance2D;
         _interactionManager.DepthScale = smooth.DepthScale;
         _interactionManager.ContactRetentionSeconds = smooth.ContactRetentionSeconds;
+        _interactionManager.ConfidenceGainPerSecond = smooth.ConfidenceGainPerSecond;
+        _interactionManager.ConfidenceDecayPerSecond = smooth.ConfidenceDecayPerSecond;
         _interactionManager.FilterType = smooth.Type;
       }
 

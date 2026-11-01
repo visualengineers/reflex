@@ -3,7 +3,7 @@
 ## Contract
 
 Each update carries a strictly increasing monotonic observation timestamp in seconds.
-Lifecycle and confidence decay use elapsed time. Frame IDs only order snapshots, and history
+Lifecycle and confidence gain/decay use elapsed time. Frame IDs only order snapshots, and history
 capacity/smoothing windows still count samples. Tests pass explicit timestamps; no sleeps.
 
 | Parameter | Valid range | Zero behavior |
@@ -25,7 +25,10 @@ capacity/smoothing windows still count samples. Tests pass explicit timestamps; 
   After the deadline the track is removed permanently; increasing retention cannot resurrect it.
 - Only an associated real measurement renews the deadline. A `Lost` output does not.
 - Zero retention gives every later measurement a fresh ID. History size zero disables tracking.
-- Expiry becomes visible on the next update; there is no background timer or terminal event.
+- Expiry becomes visible on the next measurement or timer aging tick. No terminal event is emitted.
+  Timer aging continues even while a remote request is pending; it never creates measured samples.
+- Track-owned measurement history and held smoothing survive eviction from the diagnostic frame cache.
+- Type changes start a new smoothing segment, keeping Push/Pull consistent with signed depth.
 
 With retention `.1`, a measurement at `10.0` may be reassociated at `10.1`, but a measurement
 at `10.1001` starts a new ID. This holds at every frame rate and with any number of empty updates.
@@ -47,6 +50,15 @@ that serialize public properties). No terminal sample/event is emitted: ending i
 by absence from the next output. Existing confidence filtering remains separate from lifecycle
 confirmation; tentative contacts are not automatically hidden by this new state.
 
+## Confidence and sensor gaps
+
+Gain/decay rates default to 30 units/s and are configurable independently. Confidence increases
+only between consecutive measured observations; an explicit empty sensor frame commits decay.
+Recovery does not earn a per-frame bonus. Timer ticks without a new sensor frame only project
+uncertainty for publication; they never create confirmations or count as empty sensor observations.
+A later timely measurement can restore projected uncertainty, but never resurrect an expired ID.
+See POSITION_PREDICTION_REVIEW.md for the clock and state contract.
+
 ## Assignment
 
 With prediction disabled, pairs are ranked by distance to each track's **last measurement**, not its oldest cached
@@ -59,9 +71,13 @@ Greedy assignment is not globally optimal. With prediction disabled, there is no
 can exchange physical finger identities. The crossing test explicitly documents that limitation;
 it tests distinct observations and proximity semantics, not impossible identity recovery from
 identical position-only observations. The pre-existing 20-candidate cap also remains in place.
+The final cluster filter prefers real measurements over Lost contacts and reports suppression in diagnostics.
 
 ## Test organization and extensions
 
+- `PipelineConsistencyTest`: the five reproducible pipeline audit regressions.
+- `SensorPipelineTest`: atomic sensor snapshots, duplicate sequences, remote awaits/failures,
+  timer-only expiry and diagnostic visibility/suppression.
 - `ContactLifetimeTest`: cadence invariance, exact deadline/recovery, dropped updates, cache eviction,
   renewal, zero retention and JSON migration/round trips.
 - `ContactTrackingRegressionTest`: deterministic one-second observation sequences, competing candidates,
