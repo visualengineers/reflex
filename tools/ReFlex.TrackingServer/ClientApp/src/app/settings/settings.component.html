@@ -428,6 +428,7 @@
     elementId="settings-smoothing-numFrames"
     [min]="0"
     [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [step]="1"
     [(data)]="settings.filterSettingValues.smoothingValues.numSmoothingSamples"
     (onChange)="saveSmoothingValues()"
     unit="Frames"
@@ -454,23 +455,34 @@
     touch points (based on positional change between frames).
   </app-value-slider>
 
-  <!-- Empty Frames Threshold -->
+  <!-- Contact retention -->
   <app-value-slider
     class="settings__item"
-    elementTitle="Empty frames"
-    elementId="settings-maxEmptyFrames"
+    elementTitle="Contact retention"
+    elementId="settings-contactRetention"
     [min]="0"
-    [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [max]="2"
+    [step]="0.01"
     [(data)]="
-      settings.filterSettingValues.smoothingValues.maxNumEmptyFramesBetween
+      settings.filterSettingValues.smoothingValues.contactRetentionSeconds
     "
     (onChange)="saveSmoothingValues()"
-    unit="Frames"
+    unit="s"
   >
-    The number of frames a touch id is reconstructed before being filtered from
-    interactions list. Prevents flickering if measurements are unstable, however
-    higher values add significant lag, so that touches remain active after the
-    user has released the surface.
+    Maximum time since the last measurement for retaining a touch ID, independent
+    of frame rate and history size. Zero disables retention. Longer durations
+    bridge gaps but keep lost contacts visible longer after release.
+  </app-value-slider>
+
+  <app-value-slider class="settings__item" elementTitle="Confidence gain" elementId="settings-confidenceGain"
+    [min]="0" [max]="100" [step]="1" unit="/s"
+    [(data)]="settings.filterSettingValues.smoothingValues.confidenceGainPerSecond" (onChange)="saveSmoothingValues()">
+    Confidence gained per second between consecutive measurements. Missing observations earn no confidence.
+  </app-value-slider>
+  <app-value-slider class="settings__item" elementTitle="Confidence decay" elementId="settings-confidenceDecay"
+    [min]="0" [max]="100" [step]="1" unit="/s"
+    [(data)]="settings.filterSettingValues.smoothingValues.confidenceDecayPerSecond" (onChange)="saveSmoothingValues()">
+    Confidence lost per second without measurements. Zero disables decay.
   </app-value-slider>
 
   <!-- Merge Distance -->

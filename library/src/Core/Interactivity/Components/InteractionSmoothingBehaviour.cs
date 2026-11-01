@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using System.Diagnostics;
+using MathNet.Numerics;
 using ReFlex.Core.Common.Components;
+using ReFlex.Core.Common.Util;
 using ReFlex.Core.Filtering.Components;
 using ReFlex.Core.Interactivity.Util;
 using Math = System.Math;
@@ -17,6 +20,30 @@ namespace ReFlex.Core.Interactivity.Components
 
         private List<InteractionFrame> _interactionFrames = new List<InteractionFrame>();
 
+        private sealed class Track
+        {
+            public Interaction LastMeasurement { get; set; }
+            public List<(double Time, Interaction Measurement)> Samples { get; } = new();
+            public Interaction Smoothed { get; set; }
+            public ButterworthFilter Butterworth { get; set; }
+            public int LastSeenFrame { get; set; }
+            public double LastSeenTime { get; set; }
+            public double ConfidenceUpdatedAt { get; set; }
+            public float Confidence { get; set; }
+            public Point3 MatchingPosition { get; set; }
+        }
+
+        private readonly Dictionary<int, Track> _tracks = new();
+        private int _numFramesHistory;
+        private int _numFramesSmoothing;
+        private int _numFramesForPrediction = 3;
+        private float _secondDerivationMagnitude = .5f;
+        private double _contactRetentionSeconds = .1;
+
+        private double? _timestampSeconds;
+        private double _predictionHorizonSeconds = .05;
+        private float _confidenceDecayPerSecond = 30;
+        private float _confidenceGainPerSecond = 30;
         private int _frameId = 0;
         private int _maxTouchId = 0;
         private FilterType _type = FilterType.None;
@@ -30,11 +57,83 @@ namespace ReFlex.Core.Interactivity.Components
 
         public float TouchMergeDistance2D { get; set; } = 64f;
 
-        public  int NumFramesHistory { get; set; }
+        /// <summary>Maximum stored frames; zero disables tracking and smoothing.</summary>
+        public int NumFramesHistory
+        {
+            get => _numFramesHistory;
+            set
+            {
+                _numFramesHistory = Math.Max(0, value);
+                NumFramesSmoothing = _numFramesSmoothing;
+                NumFramesForPrediction = _numFramesForPrediction;
+                UpdateInteractionFramesList();
+                if (_numFramesHistory == 0)
+                    _tracks.Clear();
+                UpdateFilterType(_type);
+            }
+        }
 
-        public  int NumFramesSmoothing { get; set; }
+        public int NumFramesSmoothing
+        {
+            get => _numFramesSmoothing;
+            set
+            {
+                var bounded = Math.Clamp(value, 0, NumFramesHistory);
+                if (_numFramesSmoothing != bounded)
+                    foreach (var track in _tracks.Values) track.Butterworth = null;
+                _numFramesSmoothing = bounded;
+                UpdateFilterType(_type);
+            }
+        }
 
-        public int MaxNumEmptyFramesBetween { get; set; }
+        private static double ValidateContactRetention(double value) =>
+            double.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
+
+        /// <summary>Maximum elapsed seconds since the last measurement, inclusive; independent of history capacity.</summary>
+        public double ContactRetentionSeconds
+        {
+            get => _contactRetentionSeconds;
+            set => _contactRetentionSeconds = ValidateContactRetention(value);
+        }
+
+        public bool UseVelocityForMapping { get; set; }
+        public bool UseSecondDerivation { get; set; }
+        public int NumFramesForPrediction
+        {
+            get => _numFramesForPrediction;
+            set => _numFramesForPrediction = Math.Clamp(value, Math.Min(2, NumFramesHistory), NumFramesHistory);
+        }
+        public float SecondDerivationMagnitude
+        {
+            get => _secondDerivationMagnitude;
+            set => _secondDerivationMagnitude = float.IsFinite(value) && value >= 0 && value <= 1
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        /// <summary>Explicit diagnostic forecast horizon; matching always uses the actual frame time.</summary>
+        public double PredictionHorizonSeconds
+        {
+            get => _predictionHorizonSeconds;
+            set => _predictionHorizonSeconds = double.IsFinite(value) && value >= 0 && value <= 1
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        /// <summary>Loss of confidence per second without measurements; zero disables decay.</summary>
+        public float ConfidenceDecayPerSecond
+        {
+            get => _confidenceDecayPerSecond;
+            set => _confidenceDecayPerSecond = float.IsFinite(value) && value >= 0
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        /// <summary>Confirmation gained per observed second; missing intervals never earn confidence.</summary>
+        public float ConfidenceGainPerSecond
+        {
+            get => _confidenceGainPerSecond;
+            set => _confidenceGainPerSecond = float.IsFinite(value) && value >= 0
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
 
         public int CurrentFrameId => _frameId;
         public int CurrentMaxId => _maxTouchId;
@@ -44,10 +143,13 @@ namespace ReFlex.Core.Interactivity.Components
         public float DepthScale
         {
             get => _depthScale;
-            set => _depthScale = value;
+            set => _depthScale = float.IsFinite(value) && value > 0
+                ? value : throw new ArgumentOutOfRangeException(nameof(value), "Depth scale must be finite and positive.");
         }
 
-        public InteractionFrame[] InteractionsFramesCache => _interactionFrames.ToArray();
+        public InteractionFrame[] InteractionsFramesCache => _interactionFrames
+            .Select(frame => new InteractionFrame(frame.FrameId,
+                frame.Interactions.Select(interaction => new Interaction(interaction)).ToList(), frame.TimestampSeconds)).ToArray();
 
         #endregion
 
@@ -56,7 +158,6 @@ namespace ReFlex.Core.Interactivity.Components
         public InteractionSmoothingBehaviour(int numFramesHistory)
         {
             NumFramesHistory = numFramesHistory;
-            _filter = new SimpleMovingAverageFilter((int) Math.Floor(NumFramesHistory / 2d));
         }
 
         #endregion
@@ -66,21 +167,25 @@ namespace ReFlex.Core.Interactivity.Components
         public void Reset()
         {
             _frameId = 0;
+            _timestampSeconds = null;
             _maxTouchId = 0;
             _interactionFrames.Clear();
+            _tracks.Clear();
         }
 
         public void UpdateFilterType(FilterType type)
         {
+            if (_type != type)
+                foreach (var track in _tracks.Values) track.Butterworth = null;
             _type = type;
 
             switch (type)
             {
                 case FilterType.MovingAverage:
-                    _filter = new SimpleMovingAverageFilter((int) Math.Floor(NumFramesHistory / 2d));
+                    _filter = new SimpleMovingAverageFilter(Math.Max(1, NumFramesSmoothing));
                     break;
                 case FilterType.WeightedMovingAverage:
-                    _filter = new WeightedMovingAverageFilter((int) Math.Floor(NumFramesHistory / 2d));
+                    _filter = new WeightedMovingAverageFilter(Math.Max(1, NumFramesSmoothing));
                     break;
                 case FilterType.PolynomialFit:
                     _filter = new PolynomialFitFilter();
@@ -90,7 +195,7 @@ namespace ReFlex.Core.Interactivity.Components
                     break;
                 case FilterType.SavitzkyGolay:
                 {
-                    var sidePoints = NumFramesHistory / 2 - 1;
+                    var sidePoints = Math.Max(0, (NumFramesSmoothing - 1) / 2);
                     var order = Math.Min(sidePoints, 3);
                     _filter = new SavitzkyGolayFilter(sidePoints, order);
                     break;
@@ -106,47 +211,90 @@ namespace ReFlex.Core.Interactivity.Components
             Logger.Info($"switched Interaction Processing Smoothing Filter to {_filter?.GetType().FullName ?? "None\""}");
         }
 
-        public InteractionFrame Update(IList<Interaction> rawInteractions)
+        public InteractionFrame Update(IList<Interaction> rawInteractions) =>
+            Update(rawInteractions, (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency);
+
+        /// <summary>
+        /// Process one observation frame at a strictly increasing monotonic timestamp in seconds.
+        /// Callers with capture timestamps may supply them here. Invalid times are rejected before
+        /// mutating tracking state; Interaction.Time remains the legacy wall-clock field.
+        /// </summary>
+        public InteractionFrame Update(IList<Interaction> rawInteractions, double timestampSeconds)
         {
+            if (!double.IsFinite(timestampSeconds) ||
+                (_timestampSeconds.HasValue && timestampSeconds <= _timestampSeconds.Value))
+                throw new ArgumentOutOfRangeException(nameof(timestampSeconds), "Frame times must be finite and strictly increasing.");
+            _timestampSeconds = timestampSeconds;
             _frameId++;
 
-            // reconstruct ids by mapping touches in history
-            var mappedInteractionIds = MapClosestInteraction(rawInteractions.Take(20).ToList());
+            // Only internal copies are assigned IDs or retained in the tracking history.
+            var candidates = rawInteractions.Take(20).Select(item => new Interaction(item)).ToList();
+            var mappedInteractionIds = MapClosestInteraction(candidates);
+            var newFrame = new InteractionFrame(_frameId, mappedInteractionIds, timestampSeconds);
 
-            // store raw interactions with associated ids
-            var newFrame = new InteractionFrame(_frameId, mappedInteractionIds);
+            // With history disabled, still publish current measurements, using fresh IDs each frame.
+            if (NumFramesHistory == 0)
+            {
+                _tracks.Clear();
+                return newFrame;
+            }
 
             _interactionFrames.Add(newFrame);
-
-            // remove old entries / update when _numFrames has changed
             UpdateInteractionFramesList();
-
-            // create new Frame for smoothed values
-            var result = new InteractionFrame(_frameId);
-
-            var frames = _interactionFrames.ToArray();
-
-            var allInteractionIds = frames
-                .SelectMany(frame => frame.Interactions.Select(interaction => interaction.TouchId)).Distinct().ToList();
-
-            allInteractionIds.ForEach(id =>
+            var result = new InteractionFrame(_frameId, timestampSeconds);
+            foreach (var pair in _tracks.OrderBy(pair => pair.Key).ToArray())
             {
-                var lastFrameId = frames.OrderByDescending(frame => frame.FrameId).FirstOrDefault(frame =>
-                        frame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id)) != null)
-                    ?.FrameId ?? -1;
+                var missingFrames = _frameId - pair.Value.LastSeenFrame;
+                if (timestampSeconds > pair.Value.LastSeenTime + ContactRetentionSeconds)
+                {
+                    // Ended tracks are removed permanently, even while their measurements remain cached.
+                    _tracks.Remove(pair.Key);
+                    continue;
+                }
 
-                // remove touch ids that are "too old" --> prevent touch from being still displayed after the finger left the table
-                // if touch id "returns" after a while, do not filter it out
-                if (_frameId - lastFrameId > MaxNumEmptyFramesBetween && newFrame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, id)) == null)
-                    return;
-
-                var smoothed = SmoothInteraction(id);
-                if (smoothed != null)
-                    result.Interactions.Add(smoothed);
-            });
-
+                var smoothed = missingFrames == 0 ? SmoothInteraction(pair.Key)
+                    : new Interaction(pair.Value.Smoothed ?? pair.Value.LastMeasurement);
+                if (missingFrames == 0) pair.Value.Smoothed = new Interaction(smoothed);
+                if (smoothed == null)
+                    continue;
+                if (missingFrames > 0)
+                {
+                    DecayConfidence(pair.Value, timestampSeconds);
+                    smoothed.TrackingState = InteractionTrackingState.Lost;
+                }
+                smoothed.Confidence = pair.Value.Confidence;
+                result.Interactions.Add(smoothed);
+            }
 
             return result;
+        }
+
+        /// <summary>Age publication without inventing a sensor observation or changing the measured
+        /// sample clock. Expiry is permanent; confidence during sensor gaps is projected from live state.</summary>
+        public InteractionFrame OutputAt(double timestampSeconds, bool markLost = true)
+        {
+            if (!double.IsFinite(timestampSeconds) || (_timestampSeconds.HasValue && timestampSeconds < _timestampSeconds))
+                throw new ArgumentOutOfRangeException(nameof(timestampSeconds));
+            var output = new InteractionFrame(_frameId, timestampSeconds);
+            foreach (var pair in _tracks.OrderBy(pair => pair.Key).ToArray())
+            {
+                var track = pair.Value;
+                if (timestampSeconds > track.LastSeenTime + ContactRetentionSeconds)
+                {
+                    _tracks.Remove(pair.Key);
+                    continue;
+                }
+                var item = new Interaction(track.Smoothed ?? track.LastMeasurement);
+                if (markLost || track.LastSeenFrame != _frameId)
+                {
+                    item.TrackingState = InteractionTrackingState.Lost;
+                    item.Confidence = Math.Max(0, track.Confidence - (float)(ConfidenceDecayPerSecond *
+                        (timestampSeconds - track.ConfidenceUpdatedAt)));
+                }
+                else item.Confidence = track.Confidence;
+                output.Interactions.Add(item);
+            }
+            return output;
         }
 
         #endregion
@@ -189,7 +337,9 @@ namespace ReFlex.Core.Interactivity.Components
             if (updatedInteraction != null)
             {
               interaction.Confidence = updatedInteraction.Confidence;
-              interaction.ExtremumDescription = updatedInteraction.ExtremumDescription;
+              if (_tracks.TryGetValue(interaction.TouchId, out var track) && track.LastSeenFrame == updatedFrame.FrameId)
+                  track.Confidence = Math.Clamp(updatedInteraction.Confidence, 0, Math.Max(0, MaxConfidence));
+              interaction.ExtremumDescription = new Interaction(updatedInteraction).ExtremumDescription;
 
             }
           });
@@ -203,21 +353,20 @@ namespace ReFlex.Core.Interactivity.Components
         /// <returns>Interaction (last entry in history) with smoothed position</returns>
         private Interaction SmoothInteraction(int touchId)
         {
-            var interactionsHistory = new List<Interaction>();
-
-            var frames = new List<InteractionFrame>(_interactionFrames.OrderBy(frame => frame.FrameId));
-
-            frames.ForEach(frame =>
+            var track = _tracks[touchId];
+            // A type transition starts a new smoothing segment; motion in XY may remain continuous.
+            var samples = track.Samples.AsEnumerable().Reverse()
+                .TakeWhile(sample => sample.Measurement.Type == track.LastMeasurement.Type).Reverse().ToArray();
+            var interactionsHistory = samples.Select(sample => new Interaction(sample.Measurement)).ToList();
+            var smooth = new Interaction(track.LastMeasurement);
+            if (_type == FilterType.Butterworth && NumFramesSmoothing > 0)
             {
-                var lastTouch =
-                    frame.Interactions.FirstOrDefault(interaction => Equals(interaction.TouchId, touchId));
-                if (lastTouch == null)
-                    return;
-
-                interactionsHistory.Add(new Interaction(lastTouch));
-            });
-
-            var smooth = interactionsHistory.LastOrDefault();
+                track.Butterworth ??= new ButterworthFilter();
+                smooth.Position = track.Butterworth.ProcessSample(track.LastMeasurement.Position, track.LastSeenTime);
+                if (Math.Sign(smooth.Position.Z) != Math.Sign(track.LastMeasurement.Position.Z))
+                    smooth.Position.Z = track.LastMeasurement.Position.Z;
+                return smooth;
+            }
 
             var raw = interactionsHistory.Select(interaction => interaction.Position).ToList();
 
@@ -225,11 +374,16 @@ namespace ReFlex.Core.Interactivity.Components
                 smooth != null && raw.Count >= NumFramesSmoothing &&
                 _type != FilterType.None && _filter != null)
             {
-                var framesForSmoothing = raw.Take(NumFramesSmoothing).ToList();
+                var framesForSmoothing = raw.TakeLast(NumFramesSmoothing).Select(point => new Point3(point)).ToList();
                 framesForSmoothing.ForEach(p => p.Z *= _depthScale);
-                smooth.Position = _filter.Process(framesForSmoothing).First();
+                var timestamps = samples.Select(sample => sample.Time).TakeLast(NumFramesSmoothing).ToArray();
+                var filtered = _filter is Base2DFilter temporalFilter
+                    ? temporalFilter.Process(framesForSmoothing, timestamps)
+                    : _filter.Process(framesForSmoothing);
+                smooth.Position = new Point3(filtered.Last());
                 smooth.Position.Z /= _depthScale;
-                framesForSmoothing.ForEach(p => p.Z /= _depthScale);
+                if (Math.Sign(smooth.Position.Z) != Math.Sign(track.LastMeasurement.Position.Z))
+                    smooth.Position.Z = track.LastMeasurement.Position.Z;
             }
 
             return smooth;
@@ -238,125 +392,158 @@ namespace ReFlex.Core.Interactivity.Components
 
 
         /// <summary>
-        /// Try to identify an interaction that can be associated with the given interaction (from another frame, or smoothed ?) in the given frame
-        /// returns null, if no interaction can be found which is within the <see cref="TouchMergeDistance2D"/>.
+        /// Greedy one-to-one assignment, ordered by distance to the forecast at this frame.
+        /// A candidate and a track may each participate in only one pair. Unmatched candidates
+        /// start new tracks; unmatched tracks may bridge the configured elapsed time.
+        /// With prediction disabled or insufficient samples, falls back to the last measurement.
         /// </summary>
-        /// <param name="frameToSearch"></param>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        private List<Interaction> MapClosestInteraction(List<Interaction> rawInteractions)
+        private List<Interaction> MapClosestInteraction(List<Interaction> candidates)
         {
-            // no past interactions: assign Ids
-            if (_interactionFrames.Count == 0)
+            // Expire before association, including updates after an interval with no processed frames.
+            foreach (var id in _tracks.Where(pair =>
+                         _timestampSeconds.Value > pair.Value.LastSeenTime + ContactRetentionSeconds)
+                     .Select(pair => pair.Key).ToArray())
+                _tracks.Remove(id);
+
+            foreach (var candidate in candidates)
+                candidate.TouchId = -1;
+
+            foreach (var track in _tracks.Values)
+                track.MatchingPosition = Predict(track, _timestampSeconds.Value);
+
+            var pairs = candidates.SelectMany((candidate, index) => _tracks.Select(track => new
+                {
+                    CandidateIndex = index,
+                    TouchId = track.Key,
+                    Distance = Point3.Squared2DDistance(candidate.Position, track.Value.MatchingPosition)
+                }))
+                .Where(pair => pair.Distance < TouchMergeDistance2D)
+                .OrderBy(pair => pair.Distance)
+                .ThenBy(pair => pair.TouchId)
+                .ThenBy(pair => candidates[pair.CandidateIndex].Position.X)
+                .ThenBy(pair => candidates[pair.CandidateIndex].Position.Y)
+                .ThenBy(pair => pair.CandidateIndex).ToList();
+
+            var assignedTracks = new HashSet<int>();
+            foreach (var pair in pairs)
             {
-                rawInteractions.ForEach(AssignMaxId);
-                return rawInteractions;
+                var candidate = candidates[pair.CandidateIndex];
+                if (candidate.TouchId >= 0 || !assignedTracks.Add(pair.TouchId))
+                    continue;
+                candidate.TouchId = pair.TouchId;
+                candidate.TrackingState = InteractionTrackingState.Confirmed;
+                var track = _tracks[pair.TouchId];
+                // Continue decay through the last lost interval before recovering. A new detection
+                // gains confidence only over continuously observed intervals, never over a lost interval.
+                if (track.LastSeenFrame < _frameId - 1)
+                    DecayConfidence(track, _timestampSeconds.Value);
+                var gain = track.LastSeenFrame == _frameId - 1
+                    ? ConfidenceGainPerSecond * (_timestampSeconds.Value - track.LastSeenTime) : 0;
+                candidate.Confidence = (float)Math.Min(track.Confidence + gain, Math.Max(0, MaxConfidence));
             }
 
-            // reset touch id to negative value
-            rawInteractions.ForEach(Interaction => Interaction.TouchId = -1);
-
-            // step 1: look in past frames for
-
-            var pastFrames = _interactionFrames.Where(frame => frame.Interactions.Count > 0).OrderByDescending(frame => frame.FrameId).ToArray();
-
-            var result = new List<Interaction>();
-
-            var candidates = rawInteractions.ToArray();
-
-            var i = pastFrames.Length - 1;
-
-            while (candidates.Length != 0 && i >= 0)
+            foreach (var candidate in candidates)
             {
-             // List : candidateIdx, Array<touchId, distances> (ordered by distance desc))
-                var distances =
-                    candidates.Select((interaction, idx) => Tuple.Create(idx,
-                        pastFrames[i].Interactions
-                            .Select(otherInteraction => Tuple.Create(otherInteraction, Point3.Squared2DDistance(interaction.Position, otherInteraction.Position)))
-                            .OrderBy(tpl => tpl.Item2)
-                            .ToList()))
-                        .ToList();
-
-                var duplicateCount = distances.Count;
-
-                while (duplicateCount != 0)
+                if (candidate.TouchId < 0)
                 {
-                    // // if a point has no corresponding point
-                    // distances.Where(dist => dist.Item2.Count == 0).ToList().ForEach(tpl =>
-                    //    {
-                    //        var interaction = new Interaction(candidates[tpl.Item1]);
-                    //         AssignMaxId(interaction);
-                    //         result.Add(interaction);
-                    //     }
-                    // );
-
-                    // remove all points which have no next point
-                    distances.RemoveAll(dist => dist.Item2.Count == 0);
-
-                    var duplicates = distances.Where(dist => dist.Item2.Count != 0).GroupBy(tpl => tpl.Item1).Where(group => group.Count() > 1).ToList();
-
-                    duplicateCount = duplicateCount > 0 ? duplicates.Count : duplicateCount;
-
-                    duplicates.ForEach(
-                        duplicate =>
-                        {
-                            var ordered = duplicate.ToList().OrderBy(elem => elem.Item2[0].Item2).ToList();
-                            for (var n = 1; n < ordered.Count; n++)
-                            {
-                                // remove duplicate distance
-                                ordered[n].Item2
-                                    .RemoveAt(0);
-                            }
-                        });
+                    AssignMaxId(candidate);
+                    candidate.TrackingState = InteractionTrackingState.Tentative;
+                    candidate.Confidence = Math.Clamp(candidate.Confidence, 0, Math.Max(0, MaxConfidence));
                 }
-
-                distances.ForEach(dist =>
-                {
-                    if (dist.Item2[0].Item2 < TouchMergeDistance2D)
-                    {
-                        var interaction = new Interaction(candidates[dist.Item1]);
-                        interaction.TouchId = dist.Item2[0].Item1.TouchId;
-
-                        interaction.Confidence = ComputeConfidence(interaction.TouchId, interaction.Confidence, pastFrames);
-                        candidates[dist.Item1].TouchId = dist.Item2[0].Item1.TouchId;
-
-                        // prevent adding duplicate id's
-                        var alreadyAdded = result.FirstOrDefault(inter => Equals(inter.TouchId, interaction.TouchId));
-
-                        // id does not exist - add point
-                        if (alreadyAdded == null)
-                        {
-                            result.Add(interaction);
-                        }
-                        else
-                        {
-                            // TODO: find better selection of associated point (distance and time)
-                            if (alreadyAdded.Confidence < interaction.Confidence)
-                            {
-                                result.Remove(alreadyAdded);
-                                interaction.Confidence++;
-                                result.Add(interaction);
-                            }
-                            else
-                            {
-                               alreadyAdded.Confidence = interaction.Confidence;
-                            }
-
-                        }
-                    }
-                });
-
-                candidates = candidates.Where(interaction => interaction.TouchId < 0).ToArray();
-
-                i--;
+                var matchingPosition = _tracks.TryGetValue(candidate.TouchId, out var previous)
+                    ? previous.MatchingPosition : candidate.Position;
+                var current = previous ?? new Track();
+                if (previous != null && previous.LastMeasurement.Type != candidate.Type)
+                    current.Butterworth = null;
+                current.LastMeasurement = candidate;
+                current.LastSeenFrame = _frameId;
+                current.LastSeenTime = _timestampSeconds.Value;
+                current.Confidence = candidate.Confidence;
+                current.ConfidenceUpdatedAt = _timestampSeconds.Value;
+                current.MatchingPosition = (Point3)matchingPosition.Copy();
+                current.Samples.Add((_timestampSeconds.Value, new Interaction(candidate)));
+                var capacity = Math.Max(1, Math.Max(NumFramesSmoothing, NumFramesForPrediction));
+                if (current.Samples.Count > capacity)
+                    current.Samples.RemoveRange(0, current.Samples.Count - capacity);
+                _tracks[candidate.TouchId] = current;
             }
+            return candidates.OrderBy(candidate => candidate.TouchId).ToList();
+        }
 
-            var newInteractions =  candidates.ToList();
-            newInteractions.ForEach(AssignMaxId);
+        private void DecayConfidence(Track track, double timestampSeconds)
+        {
+            track.Confidence = Math.Max(0, track.Confidence - (float)(ConfidenceDecayPerSecond *
+                (timestampSeconds - track.ConfidenceUpdatedAt)));
+            track.ConfidenceUpdatedAt = timestampSeconds;
+        }
 
-            result.AddRange(newInteractions);
+        private (Point3 Velocity, Point3 Acceleration, int Count) EstimateMotion(Track track)
+        {
+            var samples = track.Samples.TakeLast(NumFramesForPrediction)
+                .Select(sample => (sample.Time, Position: sample.Measurement.Position)).ToArray();
+            if (samples.Length < 2)
+                return (new Point3(), new Point3(), samples.Length);
 
-            return result.OrderBy(interaction => interaction.TouchId).ToList();
+            // Center times at the newest measurement: the fitted linear coefficient is v(now),
+            // not the average velocity half-way between measurements. Gaps retain their duration.
+            var span = track.LastSeenTime - samples[0].Time;
+            // Normalize the independent variable for well-conditioned fits, then recover derivatives per second.
+            var times = samples.Select(sample => (sample.Time - track.LastSeenTime) / span).ToArray();
+            var order = UseSecondDerivation && samples.Length >= 3 ? 2 : 1;
+            var x = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.X).ToArray(), order);
+            var y = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Y).ToArray(), order);
+            var z = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Z).ToArray(), order);
+            var velocity = new Point3((float)(x[1]/span), (float)(y[1]/span), (float)(z[1]/span));
+            var acceleration = order == 2 ? new Point3((float)(2*x[2]/(span*span)), (float)(2*y[2]/(span*span)), (float)(2*z[2]/(span*span))) : new Point3();
+            return (velocity, acceleration, samples.Length);
+        }
+
+        private Point3 Predict(Track track, double targetTime)
+        {
+            if (!UseVelocityForMapping)
+                return (Point3)track.LastMeasurement.Position.Copy();
+            var motion = EstimateMotion(track);
+            var forecast = new InteractionVelocity();
+            forecast.Update(track.LastMeasurement.Position, motion.Velocity, motion.Acceleration,
+                SecondDerivationMagnitude, (float)(targetTime - track.LastSeenTime));
+            return UseSecondDerivation ? forecast.PredictedPositionAdvanced : forecast.PredictedPositionBasic;
+        }
+
+        /// <summary>
+        /// Atomic diagnostics for this output frame. Positions use the uncalibrated sensor raster;
+        /// forecasts have an explicit time horizon, matching positions were used at this frame timestamp.
+        /// Never combines asynchronously delivered interaction/velocity messages in the frontend.
+        /// </summary>
+        public List<InteractionVelocity> GetVelocities(InteractionFrame output)
+        {
+            var result = new List<InteractionVelocity>();
+            if (!UseVelocityForMapping)
+                return result;
+            foreach (var interaction in output.Interactions)
+            {
+                if (!_tracks.TryGetValue(interaction.TouchId, out var track))
+                    continue;
+                var motion = EstimateMotion(track);
+                var item = new InteractionVelocity();
+                item.Update(track.LastMeasurement.Position, motion.Velocity, motion.Acceleration,
+                    SecondDerivationMagnitude, (float)(output.TimestampSeconds + PredictionHorizonSeconds - track.LastSeenTime));
+                item.TouchId = interaction.TouchId;
+                item.FrameId = _frameId;
+                item.LastMeasuredFrameId = track.LastSeenFrame;
+                item.TimestampSeconds = output.TimestampSeconds;
+                item.LastMeasuredTimestampSeconds = track.LastSeenTime;
+                item.PredictionTimestampSeconds = output.TimestampSeconds + PredictionHorizonSeconds;
+                item.PredictionHorizonSeconds = PredictionHorizonSeconds;
+                item.Confidence = interaction.Confidence;
+                item.SampleCount = motion.Count;
+                item.IsPredicted = interaction.TrackingState == InteractionTrackingState.Lost;
+                item.UseSecondDerivation = UseSecondDerivation;
+                item.SmoothedPosition = (Point3)interaction.Position.Copy();
+                item.MatchingPosition = !item.IsPredicted
+                    ? (Point3)track.MatchingPosition.Copy() : Predict(track, output.TimestampSeconds);
+                result.Add(item);
+            }
+            return result;
         }
 
         /// <summary>
@@ -369,14 +556,5 @@ namespace ReFlex.Core.Interactivity.Components
             _maxTouchId++;
         }
 
-        private int ComputeConfidence(int touchId, float currentConfidence, InteractionFrame[] pastFrames)
-        {
-            // find maximum confidence in history for touch id
-            var maxExistingConfidence = pastFrames.SelectMany(frames => frames.Interactions)
-                .Where(inter => Equals(inter.TouchId, touchId)).Max(inter => inter.Confidence);
-
-            // increment and clamp to max value
-            return (int) Math.Min(Math.Max(currentConfidence, maxExistingConfidence) + 1, MaxConfidence);
-        }
     }
 }

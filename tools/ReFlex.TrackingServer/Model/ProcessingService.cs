@@ -1,4 +1,4 @@
-﻿using Implementation.Interfaces;
+using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using ReFlex.Core.Common.Components;
@@ -20,6 +20,8 @@ namespace TrackingServer.Model
         private readonly ITimerLoop _timerLoop;
         private readonly IInteractionManager _interactionManager;
         private readonly CalibrationService _calibrationService;
+
+        private readonly HubGroupSubscriptionManager<IList<InteractionVelocity>> _velocitySubscriptions;
 
         private readonly HubGroupSubscriptionManager<IList<Interaction>>
             _interactionSubscriptions;
@@ -58,6 +60,8 @@ namespace TrackingServer.Model
             set => _interactionManager.Type = value;
         }
 
+        public IHubGroupSubscriptionManager InteractionVelocitySubscriptionManager => _velocitySubscriptions;
+
         public IHubGroupSubscriptionManager InteractionSubscriptionManager => _interactionSubscriptions;
 
         public IHubGroupSubscriptionManager InteractionFrameSubscriptionManager => _interactionFrameSubscriptions;
@@ -93,6 +97,12 @@ namespace TrackingServer.Model
                 hubContext,
                 ProcessingHub.InteractionsGroup
                 );
+
+            _velocitySubscriptions = new HubGroupSubscriptionManager<IList<InteractionVelocity>>("velocities");
+            _velocitySubscriptions.Setup(
+                handler => _interactionManager.VelocitiesUpdated += handler,
+                handler => _interactionManager.VelocitiesUpdated -= handler,
+                hubContext, ProcessingHub.InteractionVelocitiesGroup);
 
             _interactionFrameSubscriptions = new HubGroupSubscriptionManager<IList<InteractionFrame>>("frames");
             _interactionFrameSubscriptions.Setup<ProcessingHub, IList<InteractionFrame>>(
@@ -180,7 +190,7 @@ namespace TrackingServer.Model
         private InteractionHistory[] RetrieveHistory(IEnumerable<InteractionFrame> frames)
         {
             var calibratedFrames = frames.Select(rawFrame => new InteractionFrame(rawFrame.FrameId,
-                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList()));
+                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList(), rawFrame.TimestampSeconds));
 
             return InteractionHistory.RetrieveHistoryFromInteractionFrames(calibratedFrames).ToArray();
 

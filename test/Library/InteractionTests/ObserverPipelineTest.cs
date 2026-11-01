@@ -104,13 +104,16 @@ public class ObserverPipelineTest
     public async Task RemoteConfidenceAndEventsFollowTheSharedPipeline()
     {
         var service = new Service();
-        var observer = new RemoteInteractionProcessor(service);
+        var observer = new TimedRemote(service);
         Configure(observer);
         observer.MinConfidence = 2;
         var publications = new List<IList<Interaction>>();
         observer.NewInteractions += (_, data) => publications.Add(data);
         for (var i = 0; i < 3; i++)
+        {
+            observer.Timestamp = i / 30d;
             Assert.That((await observer.Update()).ServiceStatus, Is.EqualTo(ProcessServiceStatus.Available));
+        }
         Assert.That(publications.Count, Is.EqualTo(3));
         Assert.That(publications[0], Is.Empty);
         Assert.That(publications[1], Is.Empty);
@@ -176,7 +179,7 @@ public class ObserverPipelineTest
     [TestCase(false, true, true, ProcessServiceStatus.Error)]
     [TestCase(true, true, true, ProcessServiceStatus.Skipped)]
     [TestCase(true, false, false, ProcessServiceStatus.Error)]
-    public async Task RemoteFailureAndBusyStatesDoNotAnalyzeOrPublish(bool cloud, bool busy, bool connects, ProcessServiceStatus expected)
+    public async Task RemoteFailureAndBusyStatesAgePublicationWithoutAnalysis(bool cloud, bool busy, bool connects, ProcessServiceStatus expected)
     {
         var service = new Service { IsBusy = busy, IsConnected = false, ConnectSucceeds = connects };
         var observer = new RemoteInteractionProcessor(service);
@@ -186,12 +189,12 @@ public class ObserverPipelineTest
         observer.NewInteractions += (_, _) => events++;
         Assert.That((await observer.Update()).ServiceStatus, Is.EqualTo(expected));
         Assert.That(service.Calls, Is.Zero);
-        Assert.That(events, Is.Zero);
+        Assert.That(events, Is.EqualTo(1));
         if (!cloud || busy) Assert.That(service.ConnectCalls, Is.Zero);
     }
 
     [Test]
-    public async Task NoObserverAndMissingLocalInputsDoNotPublish()
+    public async Task NoObserverAndMissingLocalInputsPublishEmptyState()
     {
         foreach (var observer in new InteractionObserverBase[]
                  { new NoInteractionObserver(), new SingleInteractionObserver(), new MultiInteractionObserver() })
@@ -201,8 +204,112 @@ public class ObserverPipelineTest
             var result = await observer.Update();
             Assert.That(result.ServiceStatus, Is.EqualTo(observer is NoInteractionObserver
                 ? ProcessServiceStatus.Skipped : ProcessServiceStatus.Error));
-            Assert.That(events, Is.Zero);
+            Assert.That(events, Is.EqualTo(1));
         }
+    }
+
+    private sealed class TimedRemote(Service service) : RemoteInteractionProcessor(service)
+    {
+        public double Timestamp { get; set; }
+        protected override double GetTimestampSeconds() => Timestamp;
+    }
+
+    [Test]
+    public async Task PredictionDiagnosticsDescribePublishedFrameInSensorCoordinates()
+    {
+        var service = new Service();
+        var observer = new TimedRemote(service);
+        Configure(observer);
+        observer.ContactRetentionSeconds = 2;
+        observer.UseVelocityPrediction = true;
+        observer.NumFramesForPrediction = 2;
+        observer.ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
+        observer.PointCloud[12,10].Z = .75f;
+        IList<InteractionVelocity> diagnostics = null;
+        IList<Interaction> published = null;
+        observer.NewVelocities += (_, data) => diagnostics = data;
+        observer.NewInteractions += (_, data) => published = data;
+        await observer.Update();
+        service.Candidates = () => new[] { new Interaction(new Point3(12,10,.75f), InteractionType.Push, 1) };
+        observer.Timestamp = 1;
+        await observer.Update();
+        var motion = diagnostics.Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(motion.TouchId, Is.EqualTo(published.Single().TouchId));
+            Assert.That(motion.FrameId, Is.EqualTo(2));
+            Assert.That(motion.PredictionTimestampSeconds, Is.EqualTo(1.05).Within(.0001));
+            Assert.That(motion.Width, Is.EqualTo(50));
+            Assert.That(motion.Height, Is.EqualTo(30));
+            Assert.That(motion.MeasuredPosition.X, Is.EqualTo(12));
+            Assert.That(motion.PredictedPositionBasic.X, Is.EqualTo(12.1).Within(.0001));
+        });
+        observer.UseVelocityPrediction = false;
+        observer.Timestamp = 2;
+        await observer.Update();
+        Assert.That(diagnostics, Is.Empty);
+    }
+
+    [Test]
+    public async Task ObservationTimeIsCapturedBeforeRemoteAnalysis()
+    {
+        var service = new Service();
+        var observer = new TimedRemote(service) { Timestamp = 10 };
+        Configure(observer);
+        observer.UseVelocityPrediction = true;
+        observer.ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global;
+        observer.PointCloud[12,10].Z = .75f;
+        IList<InteractionVelocity> diagnostics = null;
+        observer.NewVelocities += (_, data) => diagnostics = data;
+        service.Candidates = () =>
+        {
+            observer.Timestamp = 20; // Simulate variable remote processing latency, without sleeping.
+            return new[] { new Interaction(new Point3(10,10,.75f), InteractionType.Push, 1) };
+        };
+        await observer.Update();
+        observer.Timestamp = 10.1;
+        service.Candidates = () =>
+        {
+            observer.Timestamp = 30;
+            return new[] { new Interaction(new Point3(12,10,.75f), InteractionType.Push, 1) };
+        };
+        await observer.Update();
+        Assert.That(diagnostics.Single().TimestampSeconds, Is.EqualTo(10.1).Within(1e-9));
+        Assert.That(diagnostics.Single().FirstDerivation.X, Is.EqualTo(20).Within(.001));
+        Assert.That(diagnostics.Single().PredictedPositionBasic.X, Is.EqualTo(13).Within(.001));
+    }
+
+    [Test]
+    public async Task LostConfidenceFallsBelowPublicationThresholdAndRecoversGradually()
+    {
+        var service = new Service
+        {
+            Candidates = () => new[] { new Interaction(new Point3(10,10,.75f), InteractionType.Push, 5) }
+        };
+        var observer = new TimedRemote(service);
+        Configure(observer);
+        observer.MinConfidence = 2;
+        observer.ContactRetentionSeconds = 3;
+        IList<Interaction> published = null;
+        observer.NewInteractions += (_, data) => published = data;
+        await observer.Update();
+        var id = published.Single().TouchId;
+        service.Candidates = () => Array.Empty<Interaction>();
+        observer.Timestamp = .05;
+        await observer.Update();
+        Assert.That(published.Single().Confidence, Is.EqualTo(3.5f).Within(.0001));
+        observer.Timestamp = .11;
+        await observer.Update();
+        Assert.That(published, Is.Empty);
+        // A high spatial confidence must not resurrect the old confidence maximum.
+        service.Candidates = () => new[] { new Interaction(new Point3(10,10,.75f), InteractionType.Push, 100) };
+        observer.Timestamp = .12;
+        await observer.Update();
+        Assert.That(published, Is.Empty, "Recovery earns no confidence for the missing interval.");
+        observer.Timestamp = .16;
+        await observer.Update();
+        Assert.That(published.Single().TouchId, Is.EqualTo(id));
+        Assert.That(published.Single().Confidence, Is.EqualTo(2.6f).Within(.0001));
     }
 
     private sealed class Conversion : SingleInteractionObserver

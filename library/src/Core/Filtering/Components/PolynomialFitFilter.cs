@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics;
+using System;
+using MathNet.Numerics;
 using ReFlex.Core.Common.Components;
 
 namespace ReFlex.Core.Filtering.Components
@@ -7,7 +8,7 @@ namespace ReFlex.Core.Filtering.Components
     {
         private readonly int _order;
 
-        public PolynomialFitFilter(int order = 3) : base(order + 1)
+        public PolynomialFitFilter(int order = 3) : base(order >= 0 && order < int.MaxValue ? order + 1 : throw new ArgumentOutOfRangeException(nameof(order)))
         {
             _order = order;
         }
@@ -15,9 +16,9 @@ namespace ReFlex.Core.Filtering.Components
         protected override Point3 Evaluate(int index)
         {
             return new Point3(
-                (float) Polynomial.Evaluate(index, PolyX), 
-                (float) Polynomial.Evaluate(index, PolyY),
-                (float) Polynomial.Evaluate(index, PolyZ));
+                (float) Polynomial.Evaluate(Ticks[index], PolyX),
+                (float) Polynomial.Evaluate(Ticks[index], PolyY),
+                (float) Polynomial.Evaluate(Ticks[index], PolyZ));
         }
 
         protected override void ComputeFit()

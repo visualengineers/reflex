@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Diagnostics;
+using System.Threading;
 using Implementation.Interfaces;
 using NLog;
 using ReFlex.Core.Common.Components;
@@ -25,7 +27,9 @@ namespace Implementation.Components
 
         public int ImageHeight { get; private set; }
 
-        private bool _isUpdating;
+        private int _isUpdating;
+        private long _sequence;
+        public event EventHandler<TrackingObservation> ObservationReady;
 
         public DepthImageManager(IFilterManager filterManager)
         {
@@ -46,30 +50,25 @@ namespace Implementation.Components
 
         public void Update(DepthCameraFrame frame)
         {
-            // skip current frame if pointcloud is still being processed...
-            if (_isUpdating)
-                return;
-
-            _isUpdating = true;
-
-            var depthData = frame.Depth;
-
-            // send raw data
-            RawDepthFrameReceived?.Invoke(this, frame);
-
-            _filterManager.FilterAndUpdate(depthData, PointCloud);
+            if (Interlocked.CompareExchange(ref _isUpdating, 1, 0) != 0) return;
+            var timestamp = (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
             try
             {
+                RawDepthFrameReceived?.Invoke(this, frame);
+                _filterManager.FilterAndUpdate(frame.Depth, PointCloud);
+                VectorField.Populate(PointCloud);
+                // Build the pair before publishing either legacy raster event. The next sensor
+                // frame cannot mutate these owned copies while remote analysis is awaiting a reply.
+                var observation = new TrackingObservation(++_sequence, timestamp, PointCloud, VectorField);
+                ObservationReady?.Invoke(this, observation);
                 OnPointcloudFiltered(this, PointCloud);
+                OnVectorfieldChanged(this, VectorField);
             }
             catch (Exception exc)
             {
                 Logger.Error(exc);
             }
-
-            PopulateVectorfield();
-
-            _isUpdating = false;
+            finally { Volatile.Write(ref _isUpdating, 0); }
         }
 
         public void Update(ImageByteArray depthImage)
@@ -84,17 +83,5 @@ namespace Implementation.Components
         protected virtual void OnVectorfieldChanged(object sender, VectorField2 vectorfield) =>
             VectorfieldChanged?.Invoke(sender, vectorfield);
 
-        private void PopulateVectorfield()
-        {
-            try
-            {
-                VectorField?.Populate(PointCloud);
-                OnVectorfieldChanged(this, VectorField);
-            }
-            catch (Exception exc)
-            {
-                Logger.Error(exc);
-            }
-        }
     }
 }

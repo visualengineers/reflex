@@ -1,4 +1,4 @@
-﻿using ReFlex.Core.Common.Components;
+using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Interactivity.Components;
@@ -15,7 +15,7 @@ namespace PointCloud.Benchmark.Interactivity
         private readonly InteractionSmoothingBehaviour _smoothingBehaviour;
         private int _numSmoothingFrames = 5;
         private int _historySize = 25;
-        private int _maxNumEmptyFramesBetween = 3;
+        private double _contactRetentionSeconds = .1;
         private float _touchMergeDistance2d = 64f;
         private float _depthScale = 100.0f;
         private FilterType _filterType;
@@ -94,6 +94,33 @@ namespace PointCloud.Benchmark.Interactivity
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        public double PredictionHorizonSeconds
+        {
+            get => _smoothingBehaviour.PredictionHorizonSeconds;
+            set => _smoothingBehaviour.PredictionHorizonSeconds = value;
+        }
+
+        public bool UseVelocityPrediction
+        {
+            get => _smoothingBehaviour.UseVelocityForMapping;
+            set => _smoothingBehaviour.UseVelocityForMapping = value;
+        }
+        public int NumFramesForPrediction
+        {
+            get => _smoothingBehaviour.NumFramesForPrediction;
+            set => _smoothingBehaviour.NumFramesForPrediction = value;
+        }
+        public bool UseSecondDerivation
+        {
+            get => _smoothingBehaviour.UseSecondDerivation;
+            set => _smoothingBehaviour.UseSecondDerivation = value;
+        }
+        public float SecondDerivationMagnitude
+        {
+            get => _smoothingBehaviour.SecondDerivationMagnitude;
+            set => _smoothingBehaviour.SecondDerivationMagnitude = value;
+        }
+
         public int InteractionHistorySize
         {
             get => _historySize;
@@ -105,7 +132,7 @@ namespace PointCloud.Benchmark.Interactivity
                     _smoothingBehaviour.NumFramesHistory = value;
                     // update depending smoothing/filter values
                     NumSmoothingFrames = _numSmoothingFrames;
-                    MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+                    ContactRetentionSeconds = _contactRetentionSeconds;
                 }
             }
         }
@@ -124,16 +151,25 @@ namespace PointCloud.Benchmark.Interactivity
         }
 
         // TODO: write tests for negative (!) values and values larger than history
-        public int MaxNumEmptyFramesBetween
+        public float ConfidenceGainPerSecond
         {
-            get => _maxNumEmptyFramesBetween;
+            get => _smoothingBehaviour.ConfidenceGainPerSecond;
+            set => _smoothingBehaviour.ConfidenceGainPerSecond = value;
+        }
+        public float ConfidenceDecayPerSecond
+        {
+            get => _smoothingBehaviour.ConfidenceDecayPerSecond;
+            set => _smoothingBehaviour.ConfidenceDecayPerSecond = value;
+        }
+
+        public double ContactRetentionSeconds
+        {
+            get => _contactRetentionSeconds;
             set
             {
-                _maxNumEmptyFramesBetween = value;
+                _contactRetentionSeconds = value;
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.MaxNumEmptyFramesBetween = value < _smoothingBehaviour.NumFramesHistory
-                        ? _smoothingBehaviour.NumFramesHistory
-                        : value;
+                    _smoothingBehaviour.ContactRetentionSeconds = value;
             }
         }
 
@@ -215,6 +251,7 @@ namespace PointCloud.Benchmark.Interactivity
         public abstract VectorField2 VectorField { get; set; }
 
         public abstract event EventHandler<IList<Interaction>> NewInteractions;
+        public event EventHandler<IList<InteractionVelocity>> NewVelocities;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -243,6 +280,7 @@ namespace PointCloud.Benchmark.Interactivity
         protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
         {
             var result = _smoothingBehaviour.Update(rawInteractions);
+            NewVelocities?.Invoke(this, _smoothingBehaviour.GetVelocities(result));
             InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
 
             return result;

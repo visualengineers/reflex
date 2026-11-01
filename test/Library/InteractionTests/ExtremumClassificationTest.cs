@@ -117,6 +117,16 @@ public class ExtremumClassificationTest
     {
         var performance = new Performance();
         using var manager = new InteractionManager(new Depth(), new Service(), performance);
+        manager.InteractionHistorySize = 50;
+        manager.NumSmoothingFrames = 40;
+        manager.UseVelocityPrediction = true;
+        manager.NumFramesForPrediction = 4;
+        manager.PredictionHorizonSeconds = .12;
+        manager.ContactRetentionSeconds = .25;
+        manager.ConfidenceGainPerSecond = 12;
+        manager.ConfidenceDecayPerSecond = 18;
+        manager.UseSecondDerivation = true;
+        manager.SecondDerivationMagnitude = .5f;
         manager.ExtremumTypeCheckRadius = 6;
         manager.ExtremumTypeCheckNumSamples = 12;
         manager.ExtremumTypeCheckFittingPercentage = .8f;
@@ -125,6 +135,15 @@ public class ExtremumClassificationTest
         {
             manager.Type = type;
             var observer = (InteractionObserverBase)performance.Current;
+            Assert.That(observer.NumSmoothingFrames, Is.EqualTo(40));
+            Assert.That(observer.UseVelocityPrediction, Is.True);
+            Assert.That(observer.NumFramesForPrediction, Is.EqualTo(4));
+            Assert.That(observer.PredictionHorizonSeconds, Is.EqualTo(.12));
+            Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.25));
+            Assert.That(observer.ConfidenceGainPerSecond, Is.EqualTo(12));
+            Assert.That(observer.ConfidenceDecayPerSecond, Is.EqualTo(18));
+            Assert.That(observer.UseSecondDerivation, Is.True);
+            Assert.That(observer.SecondDerivationMagnitude, Is.EqualTo(.5f));
             Assert.That(observer.ExtremumTypeCheckMethod, Is.EqualTo(ExtremumTypeCheckMethod.FixedRadius));
             Assert.That(observer.ExtremumTypeCheckRadius, Is.EqualTo(6));
             Assert.That(observer.ExtremumTypeCheckNumSamples, Is.EqualTo(12));
@@ -152,6 +171,7 @@ public class ExtremumClassificationTest
 
     private sealed class Depth : IDepthImageManager
     {
+        public event EventHandler<TrackingObservation> ObservationReady { add { } remove { } }
         public PointCloud3 PointCloud { get; } = Scene();
         public VectorField2 VectorField => null;
         public int ImageWidth => 80;

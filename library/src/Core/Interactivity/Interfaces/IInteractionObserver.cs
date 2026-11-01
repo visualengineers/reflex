@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
@@ -69,20 +69,29 @@ namespace ReFlex.Core.Interactivity.Interfaces
         float MaxDistance { get; set; }
         
         /// <summary>
-        /// Number of Frames for tracking movement of touch points. If set to 0, every extremum point gets a unique id (in every frame).
+        /// Number of frames retained for tracking. Negative values are clamped to zero.
+        /// Zero publishes current measurements with fresh IDs in every frame and disables smoothing.
         /// </summary>
         int InteractionHistorySize { get; set; }
+        double PredictionHorizonSeconds { get; set; }
+        bool UseVelocityPrediction { get; set; }
+        int NumFramesForPrediction { get; set; }
+        bool UseSecondDerivation { get; set; }
+        float SecondDerivationMagnitude { get; set; }
+        event EventHandler<IList<InteractionVelocity>> NewVelocities;
         
         /// <summary>
-        /// Number of Frames for smoothing. If set to 0, no smoothing is applied.
+        /// Number of frames for smoothing, clamped to [0, InteractionHistorySize]. Zero disables smoothing.
         /// </summary>
         int NumSmoothingFrames { get; set; }
         
         /// <summary>
-        /// Threshold number of frames for displaying interactions from history when no touch is registered
-        /// must be smaller than <see cref="InteractionHistorySize"/> 
+        /// Maximum elapsed seconds since the last measurement (inclusive), finite and non-negative.
+        /// Independent of history capacity. After expiry a returning contact receives a new ID.
         /// </summary>
-        int MaxNumEmptyFramesBetween { get; set; }
+        double ContactRetentionSeconds { get; set; }
+        float ConfidenceGainPerSecond { get; set; }
+        float ConfidenceDecayPerSecond { get; set; }
         
         /// <summary>
         /// defines the squared distance to closest points to be recognized as same point
@@ -149,6 +158,11 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// Updates the observer to generate a new interaction.
         /// </summary>
         Task<ProcessingResult> Update();
+
+        Task<ProcessingResult> Update(TrackingObservation observation) => Update();
+
+        void AdvanceTime(double timestampSeconds) { }
+
 
         /// <summary>
         /// Calculates the average distance of al valid and not filtered points to

@@ -1,4 +1,4 @@
-﻿using TrackingServer.Model;
+using TrackingServer.Model;
 
 namespace TrackingServer.Hubs
 {
@@ -11,6 +11,7 @@ namespace TrackingServer.Hubs
         public static readonly string ProcessingStateGroup = "ProcessingState";
         
         public static readonly string InteractionsGroup = "Interactions";
+        public static readonly string InteractionVelocitiesGroup = "InteractionVelocities";
         public static readonly string InteractionFramesGroup = "InteractionFrames";
         public static readonly string InteractionHistoryGroup = "InteractionHistory";
 
@@ -40,6 +41,24 @@ namespace TrackingServer.Hubs
             _processingService.InteractionSubscriptionManager.Unsubscribe(Context.ConnectionId);
         }
         
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            _processingService.InteractionVelocitySubscriptionManager.Unsubscribe(Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task StartVelocities()
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, InteractionVelocitiesGroup);
+            _processingService.InteractionVelocitySubscriptionManager.Subscribe(Context.ConnectionId);
+        }
+
+        public async Task StopVelocities()
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, InteractionVelocitiesGroup);
+            _processingService.InteractionVelocitySubscriptionManager.Unsubscribe(Context.ConnectionId);
+        }
+
         public async Task StartInteractionFrames() 
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, InteractionFramesGroup);

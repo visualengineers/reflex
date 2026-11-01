@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
@@ -28,10 +28,18 @@ namespace Implementation.Interfaces
         float InputDistance { get; set; } // @todo könnte int sein
         
         int InteractionHistorySize { get; set; }
+        double PredictionHorizonSeconds { get; set; }
+        bool UseVelocityPrediction { get; set; }
+        int NumFramesForPrediction { get; set; }
+        bool UseSecondDerivation { get; set; }
+        float SecondDerivationMagnitude { get; set; }
+        event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
         
         int NumSmoothingFrames { get; set; }
         
-        int MaxNumEmptyFramesBetween { get; set; }
+        double ContactRetentionSeconds { get; set; }
+        float ConfidenceGainPerSecond { get; set; }
+        float ConfidenceDecayPerSecond { get; set; }
         
         float TouchMergeDistance2D { get; set; }
         
@@ -50,6 +58,8 @@ namespace Implementation.Interfaces
         void Init(ObserverType type);
 
         Task<ProcessServiceStatus> Update();
+
+        void AdvanceTime();
 
         float ComputeZeroPlaneDistance();
 

@@ -36,7 +36,7 @@ const defaultFilter: FilterSettings = {
   distanceValue: { default: 0, inputDistance: 0, max: 0, min: 0 },
   confidence: { min: 0, max: 30 },
   minAngle: 0,
-  smoothingValues: { depthScale: 0, interactionHistorySize: 0, maxNumEmptyFramesBetween: 0, numSmoothingSamples: 0, touchMergeDistance2D: 0, type: FilterType.None },
+  smoothingValues: { depthScale: 0, interactionHistorySize: 0, contactRetentionSeconds: 0.1, confidenceGainPerSecond: 30, confidenceDecayPerSecond: 30, numSmoothingSamples: 0, touchMergeDistance2D: 0, type: FilterType.None },
   extremumSettings: { checkMethod: ExtremumTypeCheckMethod.FixedRadius, checkRadius: 0, fitPercentage: 0, numSamples: 0 }
 };
 
@@ -102,6 +102,7 @@ const values: TrackingServerAppSettings = {
   cameraConfigurationValues: defaultCameraConfig,
   networkSettingValues: defaultNetworkSettings,
   pointCloudSettingValues: defaultPointCloudSettingValues,
+  predictionSettings: { predictionHorizonSeconds: 0.05, useVelocityPrediction: true, numFramesForPrediction: 3, useSecondDerivation: false, secondDerivationMagnitude: 0.5 },
   processingSettingValues: defaultProcessingSettings,
   remoteProcessingServiceSettingsValues: defaultRemoteProcessingSettings,
   tuioSettingValues: defaultTuioSettings,

@@ -33,6 +33,7 @@ import { SettingsService } from 'src/shared/services/settingsService';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { LogService } from '../log/log.service';
+import { PredictionPanelComponent } from './prediction-panel/prediction-panel.component';
 import { HistoryComponent } from './history/history.component';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { InteractionsComponent } from './interactions/interactions.component';
@@ -52,7 +53,8 @@ import { InteractionsComponent } from './interactions/interactions.component';
     OptionCheckboxComponent,
     InteractionsComponent,
     HistoryComponent,
-    InteractionsVisualizationComponent
+    InteractionsVisualizationComponent,
+    PredictionPanelComponent
   ]
 })
 export class ProcessingComponent implements OnInit, OnDestroy {

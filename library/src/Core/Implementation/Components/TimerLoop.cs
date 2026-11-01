@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
@@ -13,9 +14,9 @@ namespace Implementation.Components
         private readonly INetworkManager _networkManager;
         private readonly IInteractionManager _interactionManager;
         private readonly ICalibrationManager _calibrationManager;
-        private readonly Timer _timer;
+        private readonly System.Timers.Timer _timer;
 
-        private bool _interactionsProcessing = false;
+        private int _interactionsProcessing;
 
         public event EventHandler<bool> IsLoopRunningChanged;
 
@@ -39,59 +40,57 @@ namespace Implementation.Components
             _networkManager = networkManager;
             _interactionManager = interactionManager;
             _calibrationManager = calibrationManager;
-            _timer = new Timer(IntervalLength);
-            _interactionsProcessing = false;
+            _timer = new System.Timers.Timer(IntervalLength);
+
         }
 
         public void Run()
         {
-            _interactionsProcessing = false;
-            
-            if (_networkManager is null)
+            if (_networkManager is null || _timer.Enabled)
                 return;
 
             _timer.Interval = IntervalLength;
             _timer.AutoReset = true;
             _timer.Elapsed += OnTimerTick;
             _timer.Start();
+            IsLoopRunningChanged?.Invoke(this, true);
         }
 
         public void Stop()
         {
-            _interactionsProcessing = false;
-            if (_timer is null)
+            if (_timer is null || !_timer.Enabled)
                 return;
 
             _timer.Stop();
             _timer.Elapsed -= OnTimerTick;
+            IsLoopRunningChanged?.Invoke(this, false);
         }
 
         private async void OnTimerTick(object sender, EventArgs args)
         {
-            if (_interactionManager == null || _interactionsProcessing)
+            if (_interactionManager == null) return;
+            if (Interlocked.CompareExchange(ref _interactionsProcessing, 1, 0) != 0)
+            {
+                // A stalled remote request must not stall expiry or keep broadcasting stale touches.
+                try { _interactionManager.AdvanceTime(); BroadcastCurrent(); }
+                catch (Exception exception) { NLog.LogManager.GetCurrentClassLogger().Error(exception); }
                 return;
-
-            _interactionsProcessing = true;
-
-            var updateStatus = await _interactionManager.Update();
-            _interactionsProcessing = false;
-            if (updateStatus == ProcessServiceStatus.Error)
-            {
-                
-                Stop();
-                IsLoopRunningChanged?.Invoke(this, IsLoopRunning);
             }
-
-            var stream = _interactionManager?.Interactions?.ToList();
-
-
-            if (stream != null)
+            try
             {
-                for (var i = 0; i < stream.Count; i++)
-                    stream[i] = _calibrationManager?.Calibrate(stream[i]);
+                await _interactionManager.Update();
+                BroadcastCurrent();
             }
+            catch (Exception exception) { NLog.LogManager.GetCurrentClassLogger().Error(exception); }
+            finally { Volatile.Write(ref _interactionsProcessing, 0); }
+        }
 
-            _networkManager?.Broadcast(stream ?? new List<Interaction>());
+        private void BroadcastCurrent()
+        {
+            var stream = _interactionManager.Interactions.Select(item => new Interaction(item)).ToList();
+            for (var i = 0; i < stream.Count; i++)
+                stream[i] = _calibrationManager?.Calibrate(stream[i]) ?? stream[i];
+            _networkManager?.Broadcast(stream);
         }
     }
 }

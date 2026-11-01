@@ -1,4 +1,4 @@
-﻿using Implementation.Interfaces;
+using Implementation.Interfaces;
 using NLog;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Events;
@@ -124,6 +124,12 @@ public class SettingsService
         _interactionManager.InputDistance = distance.InputDistance;
       }
 
+      var prediction = _configManager.Settings.PredictionSettings ?? new PredictionSettings();
+      _interactionManager.PredictionHorizonSeconds = prediction.PredictionHorizonSeconds;
+      _interactionManager.UseVelocityPrediction = prediction.UseVelocityPrediction;
+      _interactionManager.UseSecondDerivation = prediction.UseSecondDerivation;
+      _interactionManager.SecondDerivationMagnitude = prediction.SecondDerivationMagnitude;
+
       _interactionManager.MinAngle = _configManager.Settings.FilterSettingValues?.MinAngle ?? 0.0f;
 
       if (_configManager.Settings.FilterSettingValues?.Confidence != null)
@@ -140,7 +146,9 @@ public class SettingsService
         _interactionManager.NumSmoothingFrames = smooth.NumSmoothingSamples;
         _interactionManager.TouchMergeDistance2D = smooth.TouchMergeDistance2D;
         _interactionManager.DepthScale = smooth.DepthScale;
-        _interactionManager.MaxNumEmptyFramesBetween = smooth.MaxNumEmptyFramesBetween;
+        _interactionManager.ContactRetentionSeconds = smooth.ContactRetentionSeconds;
+        _interactionManager.ConfidenceGainPerSecond = smooth.ConfidenceGainPerSecond;
+        _interactionManager.ConfidenceDecayPerSecond = smooth.ConfidenceDecayPerSecond;
         _interactionManager.FilterType = smooth.Type;
       }
 
@@ -153,9 +161,10 @@ public class SettingsService
         _interactionManager.ExtremumTypeCheckFittingPercentage = extrema.FitPercentage;
       }
 
+      _interactionManager.NumFramesForPrediction = prediction.NumFramesForPrediction;
       _eventAggregator.GetEvent<ServerSettingsUpdatedEvent>().Publish(_configManager.Settings);
 
-        if (restartServices)
+      if (restartServices)
             _eventAggregator.GetEvent<RequestServiceRestart>().Publish();
     }
 }
