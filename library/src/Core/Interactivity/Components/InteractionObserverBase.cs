@@ -672,6 +672,11 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 var xStochastic = rnd.Next(min, max);
                 var yStochastic = rnd.Next(min, max);
+                // Sample all quadrants while preserving the configured offset range.
+                if (rnd.Next(2) == 0)
+                    xStochastic = -xStochastic;
+                if (rnd.Next(2) == 0)
+                    yStochastic = -yStochastic;
 
                 result.Add(new Tuple<int, int>(xStochastic, yStochastic));
             }
@@ -685,7 +690,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             for (var i = 0; i < ExtremumTypeCheckNumSamples; i++)
             {
-                var p = (float)i / ExtremumTypeCheckRadius;
+                var p = (double)i / ExtremumTypeCheckNumSamples;
                 var xFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Cos(p * 2 * Math.PI));
                 var yFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Sin(p * 2 * Math.PI));
 
