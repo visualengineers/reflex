@@ -169,3 +169,6 @@ and Butterworth's end-to-end cadence dependence. `SensorPipelineTest` adds compl
 pairs, duplicate sequences, no-frame expiry, busy/failed/late remote calls, mutation of source
 rasters during an await, in-flight expiry, and publication reasons. Use its explicit clock and
 TaskCompletionSource helpers for new asynchronous cases; do not use sleeps.
+
+Filter-specific constant/ramp/step contracts, numerical corrections and reference formulas are
+documented in [SIGNAL_FILTER_TESTS.md](SIGNAL_FILTER_TESTS.md), with regressions in `SignalFilterTest`.

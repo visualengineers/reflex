@@ -1,3 +1,4 @@
+using System;
 using MathNet.Numerics;
 using ReFlex.Core.Common.Components;
 
@@ -7,7 +8,7 @@ namespace ReFlex.Core.Filtering.Components
     {
         private readonly int _order;
 
-        public PolynomialFitFilter(int order = 3) : base(order + 1)
+        public PolynomialFitFilter(int order = 3) : base(order >= 0 && order < int.MaxValue ? order + 1 : throw new ArgumentOutOfRangeException(nameof(order)))
         {
             _order = order;
         }

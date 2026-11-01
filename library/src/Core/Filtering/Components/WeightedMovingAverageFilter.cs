@@ -18,9 +18,17 @@ namespace ReFlex.Core.Filtering.Components
             for (var i = 0; i < samples.Count; i++)
             {
                 var count = Math.Min(i + 1, _size);
-                var sum = new Point3();
-                for (var j = 0; j < count; j++) sum += samples[i - count + 1 + j] * (j + 1);
-                result.Add(sum / (count * (count + 1) / 2f));
+                double x = 0, y = 0, z = 0;
+                for (var j = 0; j < count; j++)
+                {
+                    var point = samples[i - count + 1 + j];
+                    var weight = (double)j + 1;
+                    x += point.X * weight;
+                    y += point.Y * weight;
+                    z += point.Z * weight;
+                }
+                var totalWeight = (double)count * (count + 1d) / 2;
+                result.Add(new Point3((float)(x / totalWeight), (float)(y / totalWeight), (float)(z / totalWeight)));
             }
             return result;
         }

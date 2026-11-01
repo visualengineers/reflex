@@ -22,7 +22,8 @@ namespace ReFlex.Core.Filtering.Components
         protected double[] PolyZ { get; set; }
         protected int NumSamplesMin;
 
-        protected Base2DFilter(int numSamplesMin) => NumSamplesMin = numSamplesMin;
+        protected Base2DFilter(int numSamplesMin) => NumSamplesMin = numSamplesMin >= 1
+            ? numSamplesMin : throw new ArgumentOutOfRangeException(nameof(numSamplesMin));
 
         /// <summary>
         /// Compatibility API for untimed callers: assumes 30 Hz. For real observations use the
