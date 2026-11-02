@@ -7,6 +7,7 @@ import {
 import { BehaviorSubject, defer, of, throwError } from 'rxjs';
 
 export const recordingService = {
+  usePng: false,
   getStatus: vi.fn().mockName('fakeRecordingService.getStatus'),
   getRecordings: vi.fn().mockName('fakeRecordingService.getRecordings'),
   getRecordingState: vi.fn().mockName('fakeRecordingService.getRecordingState'),
@@ -17,6 +18,7 @@ export const recordingService = {
 };
 
 export const recordingServiceError = {
+  usePng: false,
   getStatus: vi.fn().mockName('fakeRecordingService.getStatus'),
   getRecordings: vi.fn().mockName('fakeRecordingService.getRecordings'),
   getRecordingState: vi.fn().mockName('fakeRecordingService.getRecordingState'),

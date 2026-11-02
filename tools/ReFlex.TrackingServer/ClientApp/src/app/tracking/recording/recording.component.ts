@@ -34,8 +34,6 @@ export class RecordingComponent implements OnInit, OnDestroy {
   @Input()
   public recordingName = 'default';
 
-  public usePng = false;
-
   public recordingEnabled = false;
   public recordingPath = '';
   public isRecording = false;
@@ -60,6 +58,14 @@ export class RecordingComponent implements OnInit, OnDestroy {
     return this.recordingState != null
       ? RecordingState[this.recordingState.state]
       : RecordingState[RecordingState.Stopped];
+  }
+
+  public get usePng(): boolean {
+    return this.recordingService.usePng;
+  }
+
+  public set usePng(value: boolean) {
+    this.recordingService.usePng = value;
   }
 
   public ngOnInit(): void {

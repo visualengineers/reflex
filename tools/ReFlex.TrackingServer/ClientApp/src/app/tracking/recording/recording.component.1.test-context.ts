@@ -44,6 +44,7 @@ export function setupTests(): void {
   });
 
   beforeEach(() => {
+    recordingService.usePng = false;
     recordingStateUpdates.next(stoppedRecordingState);
     fixture = TestBed.createComponent(RecordingComponent);
     component = fixture.componentInstance;

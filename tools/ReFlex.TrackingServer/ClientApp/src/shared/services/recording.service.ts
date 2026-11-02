@@ -15,6 +15,8 @@ import { SignalRBaseService } from './signalR.base.service';
   providedIn: 'root'
 })
 export class RecordingService extends SignalRBaseService<TrackingConfigState> {
+  public usePng = false;
+
   private readonly http = inject(HttpClient);
   private readonly baseUrl: string;
 
