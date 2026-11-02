@@ -137,7 +137,7 @@ namespace TrackingServer.Controllers
 
         // Put: api/Tracking/StartRecording/
         [HttpPut("StartRecording")]
-        public ActionResult<string> StartRecording([FromBody] string name)
+        public ActionResult<string> StartRecording([FromBody] string name, [FromQuery] bool usePng = false)
         {
             if (!_trackingService.GetStatus()?.IsCameraSelected ?? false)
             {
@@ -151,7 +151,7 @@ namespace TrackingServer.Controllers
                 return Forbid("");
             }
 
-            var result = _recorder.StartRecording(_trackingService.GetSelectedCamera(), name);
+            var result = _recorder.StartRecording(_trackingService.GetSelectedCamera(), name, usePng);
 
             return Ok(result);
         }

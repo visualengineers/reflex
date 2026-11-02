@@ -31,9 +31,7 @@ describe('RecordingComponent', () => {
 
     expect(recordingService.startRecording).toHaveBeenCalledTimes(1);
 
-    expect(recordingService.startRecording).toHaveBeenCalledWith(
-      component.recordingName
-    );
+    expect(recordingService.startRecording).toHaveBeenCalledWith(component.recordingName, false);
 
     expect(recordingService.getRecordingState).toHaveBeenCalledTimes(1);
 

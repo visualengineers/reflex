@@ -13,7 +13,7 @@ import {
 import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { RecordingComponent } from './recording.component';
-import { logService, recordingService } from './recording.component.test-data';
+import { logService, recordingService, recordingStateUpdates, stoppedRecordingState } from './recording.component.test-data';
 
 export let component: RecordingComponent;
 
@@ -44,6 +44,7 @@ export function setupTests(): void {
   });
 
   beforeEach(() => {
+    recordingStateUpdates.next(stoppedRecordingState);
     fixture = TestBed.createComponent(RecordingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

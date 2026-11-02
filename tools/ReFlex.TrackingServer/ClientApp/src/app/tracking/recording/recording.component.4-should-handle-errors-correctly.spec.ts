@@ -12,7 +12,7 @@ describe('RecordingComponent: Error Handling', () => {
 
     expect(component).toBeTruthy();
 
-    expect(logService.sendErrorLog).toHaveBeenCalledTimes(2);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(3);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorStatus);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorRecordings);
   });
@@ -27,7 +27,7 @@ describe('RecordingComponent: Error Handling', () => {
     await fixture.whenStable();
 
     expect(recordingServiceError.startRecording).not.toHaveBeenCalled();
-    expect(logService.sendErrorLog).toHaveBeenCalledTimes(3);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(4);
 
     component.recordingEnabled = true;
     component.recordingName = '';
@@ -37,7 +37,7 @@ describe('RecordingComponent: Error Handling', () => {
     await fixture.whenStable();
 
     expect(recordingServiceError.startRecording).not.toHaveBeenCalled();
-    expect(logService.sendErrorLog).toHaveBeenCalledTimes(4);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(5);
 
     component.recordingName = 'Test';
 
