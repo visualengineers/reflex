@@ -21,7 +21,7 @@ namespace ReFlex.Sensor.EmulatorModule
 
         private StreamParameter _sessionParams;
 
-        private string _extension;
+        private bool _usePng;
 
         public string SessionName { get; private set; }
 
@@ -31,7 +31,7 @@ namespace ReFlex.Sensor.EmulatorModule
 
         public event EventHandler<RecordingStateUpdate> RecordingStateUpdated;
 
-        public string StartRecording(IDepthCamera camera, string name)
+        public string StartRecording(IDepthCamera camera, string name, bool usePng = false)
         {
             if (IsRecording)
             {
@@ -40,6 +40,7 @@ namespace ReFlex.Sensor.EmulatorModule
             }
 
             _recordingCamera = camera;
+            _usePng = usePng;
 
             // delete recording with existing name
             if (RecordingUtils.DeleteRecording(name))
@@ -51,7 +52,6 @@ namespace ReFlex.Sensor.EmulatorModule
 
             _sessionDir = dir.FullName;
             _sessionParams = new StreamParameter(_recordingCamera.StreamParameter.Width, _recordingCamera.StreamParameter.Height, _recordingCamera.StreamParameter.Framerate, _recordingCamera.StreamParameter.Format, name);
-            _extension = DepthImageFormatTools.GetFileExtension(_recordingCamera.StreamParameter.Format);
 
             _recordingCamera.DepthImageReady += SaveImage;
 
@@ -67,7 +67,7 @@ namespace ReFlex.Sensor.EmulatorModule
 
             using (var writer = File.CreateText($"{_sessionDir}/{RecordingUtils.ConfigFile}"))
             {
-                writer.WriteAsync(result);
+                writer.Write(result);
             }
 
             return _sessionDir;
@@ -104,7 +104,8 @@ namespace ReFlex.Sensor.EmulatorModule
 
             FrameId += 1;
 
-            var fileName = $"{_sessionDir}/{id}.{_extension}";
+            var extension = _usePng ? "png" : "jpg";
+            var fileName = $"{_sessionDir}/{id}.{extension}";
 
 
 
@@ -135,7 +136,7 @@ namespace ReFlex.Sensor.EmulatorModule
                 {
                     await Task.Run(() => {
 
-                        if (fileName.EndsWith(".png"))
+                        if (fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                             image.SaveAsPng(fileName);
                         else
                             image.SaveAsJpeg(fileName);

@@ -13,20 +13,23 @@ import {
 import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { RecordingComponent } from './recording.component';
-import { logService, recordingService } from './recording.component.test-data';
+import { logService, recordingService, recordingServiceError, recordingStateUpdates, stoppedRecordingState } from './recording.component.test-data';
 
 export let component: RecordingComponent;
 
 export let fixture: ComponentFixture<RecordingComponent>;
 
-export function setupTests(): void {
+// Error suites exercise the same component setup with failing service responses.
+export function setupTests(mode: 'success' | 'error' = 'success'): void {
+  const serviceMock = mode === 'error' ? recordingServiceError : recordingService;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule, RecordingComponent],
       providers: [
         {
           provide: RecordingService,
-          useValue: recordingService
+          useValue: serviceMock
         },
         {
           provide: LogService,
@@ -44,19 +47,21 @@ export function setupTests(): void {
   });
 
   beforeEach(() => {
+    serviceMock.usePng = false;
+    recordingStateUpdates.next(stoppedRecordingState);
     fixture = TestBed.createComponent(RecordingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   afterEach(() => {
-    recordingService.getStatus.mockClear();
-    recordingService.getRecordings.mockClear();
-    recordingService.getRecordingState.mockClear();
-    recordingService.startRecording.mockClear();
-    recordingService.stopRecording.mockClear();
-    recordingService.deleteRecording.mockClear();
-    recordingService.clearRecordings.mockClear();
+    serviceMock.getStatus.mockClear();
+    serviceMock.getRecordings.mockClear();
+    serviceMock.getRecordingState.mockClear();
+    serviceMock.startRecording.mockClear();
+    serviceMock.stopRecording.mockClear();
+    serviceMock.deleteRecording.mockClear();
+    serviceMock.clearRecordings.mockClear();
 
     logService.sendErrorLog.mockClear();
   });

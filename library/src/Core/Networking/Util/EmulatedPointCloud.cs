@@ -20,7 +20,7 @@ namespace ReFlex.Core.Networking.Util
 
         private uint _numChannels;
         private uint _bytesPerChannel;
-        public uint MaxDepthImageValue { get => 255 * _bytesPerChannel; }
+        public uint MaxDepthImageValue { get => (1u << (int)(8 * _bytesPerChannel)) - 1; }
 
         public Point3[] Points { get; private set; }
 
@@ -91,7 +91,6 @@ namespace ReFlex.Core.Networking.Util
         public void UpdateFromInteractions(List<Interaction> interactions)
         {
             var squaredRadius = _emulatorParameters.Radius * _emulatorParameters.Radius;
-            var depthImageDefaultValue = GetImageDefaultValue();
 
             for (var i = 0; i < interactions.Count; ++i)
             {
@@ -101,8 +100,6 @@ namespace ReFlex.Core.Networking.Util
                 var centerY = (int)interaction.Position.Y;
 
                 var offset = interaction.Position.Z < 0 ? interaction.Position.Z * _pushRange : interaction.Position.Z * _pullRange;
-
-                var depthImageValuePeak = interaction.Position.Z < 0 ? 0 : MaxDepthImageValue;                
 
                 var radius = (int) Math.Abs(Math.Round(_emulatorParameters.Radius * offset));
 
@@ -117,7 +114,7 @@ namespace ReFlex.Core.Networking.Util
                             Points[idx].Z = _emulatorParameters.PlaneDistanceInMeter + offset;
 
                             if (GenerateDepthImage)
-                                SetDepthImageValue(depthImageValuePeak, idx);
+                                SetDepthImageValueFromDepth(Points[idx].Z, idx);
                             continue;
                         }
 
@@ -135,11 +132,8 @@ namespace ReFlex.Core.Networking.Util
 
                             Points[idx].Z = centerZ;
 
-                            if (GenerateDepthImage) {
-                                var factorDepthImage = factor * depthImageDefaultValue;
-                                var depthImageValue = interaction.Position.Z < 0 ? (byte) (depthImageDefaultValue - factorDepthImage) : (byte) (depthImageDefaultValue + factorDepthImage);
-                                SetDepthImageValue(depthImageValue, idx);
-                            }
+                            if (GenerateDepthImage)
+                                SetDepthImageValueFromDepth(centerZ, idx);
                         }
                     }
                 }
@@ -177,7 +171,7 @@ namespace ReFlex.Core.Networking.Util
                     dist = Combine(imageData.ImageData[zIdx], imageData.ImageData[zIdx + 1]);
                 }
 
-                // skip all values that are on the normal plane (== 127)
+                // The midpoint encodes the undeformed plane.
                 if (dist == defaultDepth)
                     continue;
 
@@ -191,15 +185,16 @@ namespace ReFlex.Core.Networking.Util
                 var x = xMin + (xPx * pxOffsetX);
                 var y = yMin + (yPx * pxOffsetY);
 
-                var valueRange = 127f * _bytesPerChannel;
+                var pushValueRange = (float)defaultDepth;
+                var pullValueRange = (float)(MaxDepthImageValue - defaultDepth);
 
                 var z = dist < defaultDepth
 
                     // push: normalized depth * push range + min depth
-                    ? (dist / (valueRange)) * _pushRange + _emulatorParameters.MinDepthInMeter
+                    ? (dist / pushValueRange) * _pushRange + _emulatorParameters.MinDepthInMeter
 
                     // pull: subtract push range, normalize depth behind plane * pull range + plane distance 
-                    : ((dist - valueRange) / valueRange) * _pullRange + _emulatorParameters.PlaneDistanceInMeter;
+                    : ((dist - defaultDepth) / pullValueRange) * _pullRange + _emulatorParameters.PlaneDistanceInMeter;
 
                     
                 Points[pos] = new Point3(x, y, z);
@@ -218,24 +213,33 @@ namespace ReFlex.Core.Networking.Util
         {
             return _image == null 
                 ? new ImageByteArray(new byte[1],1,1, 1, 1, DepthImageFormat.Greyscale8bpp) 
-                : new ImageByteArray(_image, _currentParams.Width, _currentParams.Height, _bytesPerChannel, _numChannels);
+                : new ImageByteArray(_image, _currentParams.Width, _currentParams.Height, _bytesPerChannel, _numChannels, _currentParams.Format);
         }
 
         private uint GetImageDefaultValue()
         {
             // divide by 2: shifting bytes to the right
-            return (MaxDepthImageValue >> 1) * _bytesPerChannel;
+            return MaxDepthImageValue >> 1;
+        }
+
+        private void SetDepthImageValueFromDepth(float depth, int index)
+        {
+            var midpoint = GetImageDefaultValue();
+            var offset = depth - _emulatorParameters.PlaneDistanceInMeter;
+            var value = offset < 0
+                ? midpoint + offset / _pushRange * midpoint
+                : midpoint + offset / _pullRange * (MaxDepthImageValue - midpoint);
+
+            SetDepthImageValue((uint)Math.Round(Math.Clamp(value, 0, MaxDepthImageValue)), index);
         }
 
         private void SetDepthImageValue(uint value, int index)
         {
-            var bytes = BitConverter.GetBytes(value);
-
-            for (var n = 0; n < _numChannels; n++)
+            for (var channel = 0; channel < _numChannels; channel++)
                 for (var b = 0; b < _bytesPerChannel; b++)
-                    _image[index * _numChannels + n + b] = bytes[0];
+                    _image[(index * _numChannels + channel) * _bytesPerChannel + b] = (byte)(value >> (8 * b));
         }
-        
+
         private static int Combine(byte b1, byte b2)
         {
             // return b1 << 8 | b2;
