@@ -43,6 +43,8 @@
 
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' != 'CI' ">
+    <!-- Parallel builds share this export directory; create it before XCOPY. -->
+    <MakeDir Directories="$(ProjectDir)..\..\..\export\Modules" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec Command="XCOPY &quot;$(OutDir)*.*&quot; &quot;$(ProjectDir)..\..\..\export\Modules&quot; /S /Y /I" Condition=" '$(OS)' == 'Windows_NT' " />
     <Exec Command="mkdir -p ../../../export/Modules %26%26 cp -r $(OutDir) ../../../export/Modules" Condition=" '$(OS)' != 'Windows_NT' " />
   </Target>
