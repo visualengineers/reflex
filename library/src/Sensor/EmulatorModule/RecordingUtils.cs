@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -105,10 +105,17 @@ namespace ReFlex.Sensor.EmulatorModule
             if (settings?.Item2 == null || selectedRecordingsDir == null || !Directory.Exists(selectedRecordingsDir))
                 return new string[0];
 
-           return Directory.GetFiles(selectedRecordingsDir, $"*.{DepthImageFormatTools.GetFileExtension(settings.Item2.Format)}");
+            // File-system enumeration order is unspecified. The recorder names frames
+            // by their sequence number; sort numerically, including beyond seven digits.
+            // Storage format is independent of pixel format. Support both PNG
+            // and JPEG, including 16-bit streams recorded as lossy JPEG.
+            var frames = Directory.GetFiles(selectedRecordingsDir, "*.png");
+            if (frames.Length == 0)
+                frames = Directory.GetFiles(selectedRecordingsDir, "*.jpg");
 
-            
-
+            return frames
+                .OrderBy(file => ulong.Parse(Path.GetFileNameWithoutExtension(file), System.Globalization.CultureInfo.InvariantCulture))
+                .ToArray();
         }
 
         private static bool DeleteRecordingDirectory(string directory)

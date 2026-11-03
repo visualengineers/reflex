@@ -36,6 +36,10 @@ namespace TrackingServer.Model
 
         public IObservable<TrackingConfigState?> State { get => CurrentState; }
 
+        public RecordingStateUpdate CurrentRecordingState => new RecordingStateUpdate(
+            _recorder.IsRecording ? RecordingState.Recording : RecordingState.Stopped,
+            (int)_recorder.FrameId, _recorder.SessionName);
+
         public IHubGroupSubscriptionManager RecordingStateManager => _recordingStateSubscriptions;
 
         #endregion

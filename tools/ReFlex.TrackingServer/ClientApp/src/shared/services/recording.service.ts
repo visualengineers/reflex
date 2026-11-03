@@ -5,7 +5,8 @@ import {
   RecordingStateUpdate,
   TrackingConfigState
 } from '@reflex/shared-types';
-import { fromEventPattern, Observable, using } from 'rxjs';
+import { Observable } from 'rxjs';
+import { filter, share, take } from 'rxjs/operators';
 import { LogService } from 'src/app/log/log.service';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { SignalRBaseService } from './signalR.base.service';
@@ -14,6 +15,8 @@ import { SignalRBaseService } from './signalR.base.service';
   providedIn: 'root'
 })
 export class RecordingService extends SignalRBaseService<TrackingConfigState> {
+  public usePng = false;
+
   private readonly http = inject(HttpClient);
   private readonly baseUrl: string;
 
@@ -28,6 +31,31 @@ export class RecordingService extends SignalRBaseService<TrackingConfigState> {
 
   private readonly clearRecordingsRoute = `${this.baseRoute}ClearRecordings`;
   private readonly deleteRecordingRoute = `${this.baseRoute}DeleteRecording`;
+
+  private readonly recordingState$ = new Observable<RecordingStateUpdate>((subscriber) => {
+    const handler = (status: RecordingStateUpdate): void => subscriber.next(status);
+    this.connection.on('recordingState', handler);
+
+    let started = false;
+    const start = this.isConnected.pipe(filter(Boolean), take(1)).subscribe(() => {
+      started = true;
+      this.connection.send('StartRecordingState').catch((error) => {
+        this.logService.sendErrorLog(`${error}`);
+        subscriber.error(error);
+      });
+    });
+
+    return (): void => {
+      start.unsubscribe();
+      this.connection.off('recordingState', handler);
+      if (started) {
+        this.connection.send('StopRecordingState').catch((error) => {
+          this.logService.sendErrorLog(`${error}`);
+        });
+      }
+    };
+  }).pipe(share());
+
 
   public constructor() {
     const baseUrl = inject(BASE_URL);
@@ -44,8 +72,9 @@ export class RecordingService extends SignalRBaseService<TrackingConfigState> {
     );
   }
 
-  public startRecording(name: string): Observable<string> {
-    return this.http.put(this.baseUrl + this.startRecordingRoute, `"${name}"`, {
+  public startRecording(name: string, usePng = false): Observable<string> {
+    return this.http.put(this.baseUrl + this.startRecordingRoute, JSON.stringify(name), {
+      params: { usePng },
       headers: this.headers,
       responseType: 'text'
     });
@@ -84,30 +113,8 @@ export class RecordingService extends SignalRBaseService<TrackingConfigState> {
     );
   }
 
+
   public getRecordingState(): Observable<RecordingStateUpdate> {
-    const recordingState$ = fromEventPattern<RecordingStateUpdate>(
-      (handler) => this.connection.on('recordingState', handler),
-      (handler) => this.connection.off('recordingState', handler)
-    );
-
-    return using(
-      () => {
-        this.connection.send('StartRecordingState').catch((error) => {
-          console.error(error);
-          this.logService.sendErrorLog(`${error}`);
-        });
-
-        return {
-          // @todo: check if this is correct
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          unsubscribe: async () =>
-            this.connection.send('StopRecordingState').catch((error) => {
-              console.error(error);
-              this.logService.sendErrorLog(`${error}`);
-            })
-        };
-      },
-      () => recordingState$
-    );
+    return this.recordingState$;
   }
 }

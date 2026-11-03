@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -110,7 +110,7 @@ namespace ReFlex.Sensor.EmulatorModule
             _stopRequested = true;
         }
 
-        private void Stream(IReadOnlyList<string> frames, int delay, int width, int height, DepthImageFormat format)
+        private async Task Stream(IReadOnlyList<string> frames, int delay, int width, int height, DepthImageFormat format)
         {
             var i = 0;
 
@@ -130,7 +130,7 @@ namespace ReFlex.Sensor.EmulatorModule
                         break;
                 }
 
-                Task.Delay(TimeSpan.FromMilliseconds(delay));
+                await Task.Delay(TimeSpan.FromMilliseconds(delay));
 
                 i = i < frames?.Count - 1 ? i + 1 : 0;
                 
@@ -145,7 +145,7 @@ namespace ReFlex.Sensor.EmulatorModule
         
         private void ConvertImage<T>(string file, int width, int height, DepthImageFormat format) where T : unmanaged, IPixel<T> {
 
-            var img = Image.Load<T>(file);
+            using var img = Image.Load<T>(file);
 
             var size = GetSizePerPixel(format);
 

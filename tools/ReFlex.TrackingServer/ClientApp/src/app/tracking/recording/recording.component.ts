@@ -9,7 +9,7 @@ import {
   OnInit
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ValueTextComponent } from '@reflex/angular-components/dist';
+import { ValueSelectionComponent, ValueTextComponent } from '@reflex/angular-components/dist';
 import {
   CameraConfiguration,
   DepthCameraState,
@@ -17,8 +17,7 @@ import {
   RecordingStateUpdate,
   TrackingConfigState
 } from '@reflex/shared-types';
-import { of, Subscription } from 'rxjs';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { RecordingService } from 'src/shared/services/recording.service';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
@@ -28,7 +27,7 @@ import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
   templateUrl: './recording.component.html',
   styleUrls: ['./recording.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, ValueTextComponent]
+  imports: [CommonModule, FormsModule, ValueTextComponent, ValueSelectionComponent]
 })
 export class RecordingComponent implements OnInit, OnDestroy {
 
@@ -61,6 +60,14 @@ export class RecordingComponent implements OnInit, OnDestroy {
       : RecordingState[RecordingState.Stopped];
   }
 
+  public get usePng(): boolean {
+    return this.recordingService.usePng;
+  }
+
+  public set usePng(value: boolean) {
+    this.recordingService.usePng = value;
+  }
+
   public ngOnInit(): void {
     this.trackingStateSubscription = this.recordingService
       .getStatus()
@@ -70,6 +77,22 @@ export class RecordingComponent implements OnInit, OnDestroy {
         (error) => {
           console.error(error);
           this.loggingService.sendErrorLog(`${error}`);
+        }
+      );
+
+    this.recordingStateSubscription = this.recordingService
+      .getRecordingState()
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe(
+        (status) => this.updateRecordingState(status),
+        (error) => {
+          console.error(error);
+          this.loggingService.sendErrorLog(`${error}`);
+          this.updateRecordingState({
+            state: RecordingState.Faulted,
+            framesRecorded: 0,
+            sessionName: ''
+          });
         }
       );
 
@@ -96,40 +119,13 @@ export class RecordingComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const start = this.recordingService.startRecording(this.recordingName).pipe(
-      tap((recordingPath) => {
-        this.recordingPath = recordingPath;
-      }),
-      tap(() => {
-        this.updateRecordingsList();
-      }),
-      catchError((error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-
-        return of('');
-      })
-    );
-
-    const update = this.recordingService.getRecordingState().pipe(
-      catchError((error) => {
-        console.error(error);
-        this.loggingService.sendErrorLog(`${error}`);
-
-        return of({
-          state: RecordingState.Faulted,
-          framesRecorded: 0,
-          sessionName: ''
-        });
-      })
-    );
-
-    this.recordingStateSubscription?.unsubscribe();
-    this.recordingStateSubscription = start
-      .pipe(mergeMap(() => update))
+    this.recordingService.startRecording(this.recordingName, this.usePng)
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
-        (recordingState) => this.updateRecordingState(recordingState),
+        (recordingPath) => {
+          this.recordingPath = recordingPath;
+          this.updateRecordingsList();
+        },
         (error) => {
           console.error(error);
           this.loggingService.sendErrorLog(`${error}`);
@@ -144,7 +140,6 @@ export class RecordingComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {
           this.updateRecordingsList();
-          this.recordingStateSubscription?.unsubscribe();
           this.recordingState = {
             state: RecordingState.Stopped,
             framesRecorded: 0,

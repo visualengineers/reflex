@@ -4,9 +4,10 @@ import {
   RecordingState,
   RecordingStateUpdate
 } from '@reflex/shared-types';
-import { of, throwError } from 'rxjs';
+import { BehaviorSubject, defer, of, throwError } from 'rxjs';
 
 export const recordingService = {
+  usePng: false,
   getStatus: vi.fn().mockName('fakeRecordingService.getStatus'),
   getRecordings: vi.fn().mockName('fakeRecordingService.getRecordings'),
   getRecordingState: vi.fn().mockName('fakeRecordingService.getRecordingState'),
@@ -17,6 +18,7 @@ export const recordingService = {
 };
 
 export const recordingServiceError = {
+  usePng: false,
   getStatus: vi.fn().mockName('fakeRecordingService.getStatus'),
   getRecordings: vi.fn().mockName('fakeRecordingService.getRecordings'),
   getRecordingState: vi.fn().mockName('fakeRecordingService.getRecordingState'),
@@ -58,9 +60,19 @@ export const testRecordingStateUpdate: RecordingStateUpdate = {
 
 recordingService.stopRecording.mockReturnValue(of(testRecordingCam));
 
-recordingService.getRecordingState.mockReturnValue(
-  of(testRecordingStateUpdate)
-);
+export const stoppedRecordingState: RecordingStateUpdate = {
+  state: RecordingState.Stopped,
+  framesRecorded: 0,
+  sessionName: ''
+};
+
+export const recordingStateUpdates = new BehaviorSubject<RecordingStateUpdate>(stoppedRecordingState);
+recordingService.getRecordingState.mockReturnValue(recordingStateUpdates);
+recordingService.startRecording.mockReturnValue(defer(() => {
+  recordingStateUpdates.next(testRecordingStateUpdate);
+
+  return of(testRecordingPath);
+}));
 
 export const recordingList: Array<CameraConfiguration> = [
   {

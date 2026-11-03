@@ -1,16 +1,18 @@
-import { DEFAULT_SETTINGS, TrackingServerAppSettings, PerformanceData } from '@reflex/shared-types';
+import { DEFAULT_SETTINGS, PerformanceData, TrackingServerAppSettings } from '@reflex/shared-types';
 import { Subject, of } from 'rxjs';
 import { queryElement } from '../../../../../../test/helpers/dom';
 import {
   mount,
+  performance,
   settings,
   setupTests as setupZonelessTests,
-  performance,
   text,
   tracking
 } from '../test-utils/zoneless-change-detection.test-context';
 import { streaming } from '../test-utils/zoneless-change-detection.test-data';
 import { SettingsComponent } from './settings.component';
+import { component as testComponent, fixture as testFixture, setupTests } from './settings.component.test-context';
+import { logService, performanceService } from './settings.component.test-data';
 
 describe('Zoneless change detection: updates nested settings and form controls after a settings response', () => {
   setupZonelessTests();
@@ -138,4 +140,78 @@ describe('Contact retention settings', () => {
     }));
   });
 
+});
+
+describe('SettingsComponent', () => {
+  setupTests();
+
+  it('should create', () => {
+    testFixture.detectChanges();
+
+    expect(testComponent).toBeTruthy();
+
+    expect(logService.sendErrorLog).not.toHaveBeenCalled();
+  });
+
+  it('combines partial performance frames and updates existing chart entries', async () => {
+    const updates = new Subject<PerformanceData>();
+    performanceService.getData.mockReturnValue(updates);
+    await testFixture.whenStable();
+    updates.next({
+      data: [
+        {
+          frameId: 1,
+          frameStart: 1000,
+          frameEnd: 5000,
+          totalFrameTime: 0,
+          boxFilter: 2,
+          valueFilter: 3
+        }
+      ]
+    });
+    await testFixture.whenStable();
+    expect(testComponent.performanceDataFilterVis[0].totalFilter).toBe(5);
+
+    updates.next({
+      data: [
+        {
+          frameId: 1,
+          frameStart: 2000,
+          frameEnd: 6000,
+          totalFrameTime: 0,
+          processingPreparation: 4,
+          processingConvert: 5
+        }
+      ]
+    });
+    await testFixture.whenStable();
+    expect(testComponent.performanceDataProcessingVis[0].totalProcessing).toBe(9);
+    expect(
+      testComponent.performanceDataCompleteTimeFrameVis[0].totalFrameTime
+    ).toBe(5);
+
+    updates.next({
+      data: [
+        {
+          frameId: 1,
+          frameStart: 0,
+          frameEnd: 4000,
+          totalFrameTime: 0,
+          boxFilter: 7
+        }
+      ]
+    });
+    await testFixture.whenStable();
+    expect(testComponent.performanceDataFilterVis.length).toBe(1);
+    expect(testComponent.performanceDataFilterVis[0].totalFilter).toBe(7);
+    expect(testComponent.performanceDataProcessingVis.length).toBe(1);
+    expect(testComponent.performanceDataCompleteTimeFrameVis.length).toBe(1);
+    expect(testComponent.performanceDataCompleteTimeFrameVis[0].frameStart).toBe(0);
+    expect(testComponent.performanceDataCompleteTimeFrameVis[0].frameEnd).toBe(
+      5000
+    );
+    expect(
+      testComponent.performanceDataCompleteTimeFrameVis[0].totalFrameTime
+    ).toBe(5);
+  });
 });

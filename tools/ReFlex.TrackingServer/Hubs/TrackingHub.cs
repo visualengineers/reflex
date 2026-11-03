@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using ReFlex.Server.Data.Tracking;
 using TrackingServer.Model;
 
@@ -20,6 +21,7 @@ namespace TrackingServer.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, RecordingGroup);
             _trackingService.RecordingStateManager.Subscribe(Context.ConnectionId);
+            await Clients.Caller.SendAsync("recordingState", _trackingService.CurrentRecordingState);
         }
 
         public async Task StopRecordingState()

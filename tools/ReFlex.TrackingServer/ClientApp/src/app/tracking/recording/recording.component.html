@@ -49,6 +49,29 @@
   </p>
 </app-value-text>
 
+<app-value-selection
+  class="settings__item"
+  elementId="recording-format-select"
+  elementTitle="Storage format"
+>
+  <select
+    selection
+    id="recording-format-select"
+    name="recording-format-select"
+    class="custom-select"
+    [(ngModel)]="usePng"
+    [disabled]="isRecording"
+  >
+    <option [ngValue]="false">JPG (default)</option>
+    <option [ngValue]="true">PNG (lossless)</option>
+  </select>
+  <p description>
+    JPG uses less storage with lossy compression. Choose PNG to preserve depth
+    samples exactly; files can be larger and recording can take longer.
+    The selected format applies to the next recording.
+  </p>
+</app-value-selection>
+
 <div class="content__header">
   <h2 class="heading-secondary">Existing Recordings</h2>
   <div>
