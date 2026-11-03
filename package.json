@@ -83,7 +83,7 @@
     "@angular/language-service": "22.2.3",
     "@eslint/eslintrc": "^3.3.7",
     "@eslint/js": "^10.0.1",
-    "@gtvmbh/eslint-config": "^1.1.7",
+    "@gtvmbh/eslint-config": "^2.0.0",
     "@stylistic/eslint-plugin-ts": "^2.13.0",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^22.13.1",
