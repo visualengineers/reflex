@@ -28,6 +28,7 @@ namespace ReFlex.Core.Interactivity.Components
             public ButterworthFilter Butterworth { get; set; }
             public int LastSeenFrame { get; set; }
             public double LastSeenTime { get; set; }
+            public double LastDetectedAt { get; set; }
             public double ConfidenceUpdatedAt { get; set; }
             public float Confidence { get; set; }
             public Point3 MatchingPosition { get; set; }
@@ -41,6 +42,8 @@ namespace ReFlex.Core.Interactivity.Components
         private double _contactRetentionSeconds = .1;
 
         private double? _timestampSeconds;
+        private double? _processedTimestampSeconds;
+        private double? _observationTimeoutSeconds;
         private double _predictionHorizonSeconds = .05;
         private float _confidenceDecayPerSecond = 30;
         private float _confidenceGainPerSecond = 30;
@@ -97,6 +100,14 @@ namespace ReFlex.Core.Interactivity.Components
             set => _contactRetentionSeconds = ValidateContactRetention(value);
         }
 
+        /// <summary>Timeout without a completed sensor observation. Standalone callers retain the
+        /// legacy retention deadline unless they explicitly configure a separate observation timeout.</summary>
+        public double ObservationTimeoutSeconds
+        {
+            get => _observationTimeoutSeconds ?? ContactRetentionSeconds;
+            set => _observationTimeoutSeconds = ValidateContactRetention(value);
+        }
+
         public bool UseVelocityForMapping { get; set; }
         public bool UseSecondDerivation { get; set; }
         public int NumFramesForPrediction
@@ -138,6 +149,7 @@ namespace ReFlex.Core.Interactivity.Components
         public int CurrentFrameId => _frameId;
         public int CurrentMaxId => _maxTouchId;
 
+        /// <summary>Saturation ceiling only. Reaching it never ends a measured contact.</summary>
         public int MaxConfidence { get; set; }
 
         public float DepthScale
@@ -168,6 +180,7 @@ namespace ReFlex.Core.Interactivity.Components
         {
             _frameId = 0;
             _timestampSeconds = null;
+            _processedTimestampSeconds = null;
             _maxTouchId = 0;
             _interactionFrames.Clear();
             _tracks.Clear();
@@ -220,11 +233,20 @@ namespace ReFlex.Core.Interactivity.Components
         /// mutating tracking state; Interaction.Time remains the legacy wall-clock field.
         /// </summary>
         public InteractionFrame Update(IList<Interaction> rawInteractions, double timestampSeconds)
+            => Update(rawInteractions, timestampSeconds, timestampSeconds);
+
+        /// <summary>Motion uses capture time; liveness and confidence decay use completion time.
+        /// Slow but continuously successful observations must not look like missing detections.</summary>
+        public InteractionFrame Update(IList<Interaction> rawInteractions, double timestampSeconds, double processedTimestampSeconds)
         {
             if (!double.IsFinite(timestampSeconds) ||
                 (_timestampSeconds.HasValue && timestampSeconds <= _timestampSeconds.Value))
                 throw new ArgumentOutOfRangeException(nameof(timestampSeconds), "Frame times must be finite and strictly increasing.");
+            if (!double.IsFinite(processedTimestampSeconds) || processedTimestampSeconds < timestampSeconds ||
+                (_processedTimestampSeconds.HasValue && processedTimestampSeconds < _processedTimestampSeconds.Value))
+                throw new ArgumentOutOfRangeException(nameof(processedTimestampSeconds));
             _timestampSeconds = timestampSeconds;
+            _processedTimestampSeconds = processedTimestampSeconds;
             _frameId++;
 
             // Only internal copies are assigned IDs or retained in the tracking history.
@@ -245,7 +267,7 @@ namespace ReFlex.Core.Interactivity.Components
             foreach (var pair in _tracks.OrderBy(pair => pair.Key).ToArray())
             {
                 var missingFrames = _frameId - pair.Value.LastSeenFrame;
-                if (timestampSeconds > pair.Value.LastSeenTime + ContactRetentionSeconds)
+                if (IsExpired(pair.Value, processedTimestampSeconds, _frameId))
                 {
                     // Ended tracks are removed permanently, even while their measurements remain cached.
                     _tracks.Remove(pair.Key);
@@ -259,7 +281,7 @@ namespace ReFlex.Core.Interactivity.Components
                     continue;
                 if (missingFrames > 0)
                 {
-                    DecayConfidence(pair.Value, timestampSeconds);
+                    DecayConfidence(pair.Value, processedTimestampSeconds);
                     smoothed.TrackingState = InteractionTrackingState.Lost;
                 }
                 smoothed.Confidence = pair.Value.Confidence;
@@ -273,13 +295,13 @@ namespace ReFlex.Core.Interactivity.Components
         /// sample clock. Expiry is permanent; confidence during sensor gaps is projected from live state.</summary>
         public InteractionFrame OutputAt(double timestampSeconds, bool markLost = true)
         {
-            if (!double.IsFinite(timestampSeconds) || (_timestampSeconds.HasValue && timestampSeconds < _timestampSeconds))
+            if (!double.IsFinite(timestampSeconds) || (_processedTimestampSeconds.HasValue && timestampSeconds < _processedTimestampSeconds))
                 throw new ArgumentOutOfRangeException(nameof(timestampSeconds));
             var output = new InteractionFrame(_frameId, timestampSeconds);
             foreach (var pair in _tracks.OrderBy(pair => pair.Key).ToArray())
             {
                 var track = pair.Value;
-                if (timestampSeconds > track.LastSeenTime + ContactRetentionSeconds)
+                if (IsExpired(track, timestampSeconds, _frameId))
                 {
                     _tracks.Remove(pair.Key);
                     continue;
@@ -399,9 +421,10 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         private List<Interaction> MapClosestInteraction(List<Interaction> candidates)
         {
-            // Expire before association, including updates after an interval with no processed frames.
+            // Explicitly missing detections use contact retention. A sensor/processing gap uses
+            // its separate timeout, measured since the last successful completion, not capture.
             foreach (var id in _tracks.Where(pair =>
-                         _timestampSeconds.Value > pair.Value.LastSeenTime + ContactRetentionSeconds)
+                         IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId - 1))
                      .Select(pair => pair.Key).ToArray())
                 _tracks.Remove(id);
 
@@ -436,7 +459,7 @@ namespace ReFlex.Core.Interactivity.Components
                 // Continue decay through the last lost interval before recovering. A new detection
                 // gains confidence only over continuously observed intervals, never over a lost interval.
                 if (track.LastSeenFrame < _frameId - 1)
-                    DecayConfidence(track, _timestampSeconds.Value);
+                    DecayConfidence(track, _processedTimestampSeconds.Value);
                 var gain = track.LastSeenFrame == _frameId - 1
                     ? ConfidenceGainPerSecond * (_timestampSeconds.Value - track.LastSeenTime) : 0;
                 candidate.Confidence = (float)Math.Min(track.Confidence + gain, Math.Max(0, MaxConfidence));
@@ -458,8 +481,9 @@ namespace ReFlex.Core.Interactivity.Components
                 current.LastMeasurement = candidate;
                 current.LastSeenFrame = _frameId;
                 current.LastSeenTime = _timestampSeconds.Value;
+                current.LastDetectedAt = _processedTimestampSeconds.Value;
                 current.Confidence = candidate.Confidence;
-                current.ConfidenceUpdatedAt = _timestampSeconds.Value;
+                current.ConfidenceUpdatedAt = _processedTimestampSeconds.Value;
                 current.MatchingPosition = (Point3)matchingPosition.Copy();
                 current.Samples.Add((_timestampSeconds.Value, new Interaction(candidate)));
                 var capacity = Math.Max(1, Math.Max(NumFramesSmoothing, NumFramesForPrediction));
@@ -469,6 +493,10 @@ namespace ReFlex.Core.Interactivity.Components
             }
             return candidates.OrderBy(candidate => candidate.TouchId).ToList();
         }
+
+        private bool IsExpired(Track track, double now, int latestObservationFrame)
+            => now > track.LastDetectedAt + (track.LastSeenFrame == latestObservationFrame
+                ? ObservationTimeoutSeconds : ContactRetentionSeconds);
 
         private void DecayConfidence(Track track, double timestampSeconds)
         {

@@ -30,6 +30,9 @@ namespace PointCloud.Benchmark.Interactivity
 
         #region Properties
 
+        public float ExtremumMergeRadius { get; set; } = ExtremumConsolidator.DefaultRadius;
+        public double ObservationTimeoutSeconds { get; set; } = 1;
+
         /// <summary>
         /// Gets or sets the distance.
         /// </summary>

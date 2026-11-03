@@ -90,6 +90,7 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// Independent of history capacity. After expiry a returning contact receives a new ID.
         /// </summary>
         double ContactRetentionSeconds { get; set; }
+        double ObservationTimeoutSeconds { get; set; }
         float ConfidenceGainPerSecond { get; set; }
         float ConfidenceDecayPerSecond { get; set; }
         
@@ -133,6 +134,8 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// The pixel radius in which the points are sampled for deriving the type of the local extremum  
         /// </summary>
         int ExtremumTypeCheckRadius { get; set; }
+
+        float ExtremumMergeRadius { get; set; }
         
         /// <summary>
         /// Which ratio of "correctly aligned" points should match to distinguish between Undefined or Minimum/Maximum ?

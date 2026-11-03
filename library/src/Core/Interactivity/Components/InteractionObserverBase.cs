@@ -26,6 +26,7 @@ namespace ReFlex.Core.Interactivity.Components
         private float _depthScale = 100.0f;
         private FilterType _filterType;
         private float _maxConfidence;
+        private float _extremumMergeRadius = ExtremumConsolidator.DefaultRadius;
         private int _extremumTypeCheckRadius;
         private int _extremumTypeCheckNumSamples;
 
@@ -99,6 +100,13 @@ namespace ReFlex.Core.Interactivity.Components
         /// Defines how neighboring the points are sampled for determining the type of extremum.
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
+
+        /// <summary>Euclidean radius in sensor pixels for consolidating same-type extrema before ID assignment; zero disables it.</summary>
+        public float ExtremumMergeRadius
+        {
+            get => _extremumMergeRadius;
+            set => _extremumMergeRadius = ExtremumConsolidator.ValidateRadius(value);
+        }
 
         public double PredictionHorizonSeconds
         {
@@ -177,6 +185,13 @@ namespace ReFlex.Core.Interactivity.Components
                 if (_smoothingBehaviour != null)
                     _smoothingBehaviour.ContactRetentionSeconds = _contactRetentionSeconds;
             }
+        }
+
+        /// <summary>Maximum sensor/processing silence and acceptable observation age, in seconds.</summary>
+        public double ObservationTimeoutSeconds
+        {
+            get => _smoothingBehaviour.ObservationTimeoutSeconds;
+            set => _smoothingBehaviour.ObservationTimeoutSeconds = value;
         }
 
         public float TouchMergeDistance2D
@@ -270,6 +285,7 @@ namespace ReFlex.Core.Interactivity.Components
         protected InteractionObserverBase()
         {
             _smoothingBehaviour = new InteractionSmoothingBehaviour(InteractionHistorySize);
+            ObservationTimeoutSeconds = 1;
             NumSmoothingFrames = _numSmoothingFrames;
             ContactRetentionSeconds = _contactRetentionSeconds;
             TouchMergeDistance2D = _touchMergeDistance2d;
@@ -404,7 +420,12 @@ namespace ReFlex.Core.Interactivity.Components
             Task reportTask;
             lock (_trackingSync)
             {
-                var frame = ComputeSmoothingValue(cleanedUpInteractions, timestampSeconds);
+                var measurements = ConsolidateExtrema(cleanedUpInteractions);
+                var processedAt = Math.Max(timestampSeconds, GetTimestampSeconds());
+                // Reject an actually late result before it can mutate or revive tracking state.
+                var frame = _observationTime.HasValue && processedAt > timestampSeconds + ObservationTimeoutSeconds
+                    ? _smoothingBehaviour.OutputAt(processedAt)
+                    : ComputeSmoothingValue(measurements, timestampSeconds, processedAt);
 
                 if (MeasurePerformance)
                 {
@@ -412,10 +433,6 @@ namespace ReFlex.Core.Interactivity.Components
                     perfItem.Smoothing = _stopWatch.Elapsed;
                     _stopWatch.Reset();
                 }
-
-                // Remote latency must not publish a contact after its observation deadline.
-                if (_observationTime.HasValue && InteractionHistorySize > 0)
-                    frame = _smoothingBehaviour.OutputAt(Math.Max(timestampSeconds, GetTimestampSeconds()), false);
 
                 // Populate optional remote stage timings before publishing the shared dictionary.
                 reportTask = MeasurePerformance ? ReportPerformance(perfItem) : Task.CompletedTask;
@@ -434,12 +451,17 @@ namespace ReFlex.Core.Interactivity.Components
         protected virtual IEnumerable<Interaction> SelectSmoothedInteractions(IEnumerable<Interaction> interactions)
             => interactions;
 
+        protected virtual IList<Interaction> ConsolidateExtrema(IList<Interaction> interactions)
+            => ExtremumConsolidator.Consolidate(interactions, ExtremumMergeRadius);
+
         /// <summary>Monotonic observation time captured before Analyze, including remote work.</summary>
         protected virtual double GetTimestampSeconds() => (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
 
-        protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions, double? timestampSeconds = null)
+        protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions, double? timestampSeconds = null,
+            double? processedTimestampSeconds = null)
         {
-            var result = _smoothingBehaviour.Update(rawInteractions, timestampSeconds ?? GetTimestampSeconds());
+            var capturedAt = timestampSeconds ?? GetTimestampSeconds();
+            var result = _smoothingBehaviour.Update(rawInteractions, capturedAt, processedTimestampSeconds ?? capturedAt);
             InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
 
             return result;

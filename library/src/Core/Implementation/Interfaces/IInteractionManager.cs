@@ -38,6 +38,7 @@ namespace Implementation.Interfaces
         int NumSmoothingFrames { get; set; }
         
         double ContactRetentionSeconds { get; set; }
+        double ObservationTimeoutSeconds { get; set; }
         float ConfidenceGainPerSecond { get; set; }
         float ConfidenceDecayPerSecond { get; set; }
         
@@ -48,6 +49,8 @@ namespace Implementation.Interfaces
        int ExtremumTypeCheckNumSamples { get; set; }
         
         int ExtremumTypeCheckRadius{ get; set; }
+
+        float ExtremumMergeRadius { get; set; }
 
         float ExtremumTypeCheckFittingPercentage{ get; set; }
 

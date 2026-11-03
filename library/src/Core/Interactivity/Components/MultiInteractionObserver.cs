@@ -103,7 +103,11 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         private void InitializeConfidenceMatrix()
         {
-            if (VectorField != null && !_isProcessing)
+            // Observations own fresh raster snapshots. Reference changes do not invalidate
+            // accumulated evidence; only a different raster size requires a new matrix.
+            if (VectorField != null && !_isProcessing &&
+                (_confidenceMat == null || _confidenceMat.Length != VectorField.SizeX ||
+                 (_confidenceMat.Length > 0 && _confidenceMat[0].Length != VectorField.SizeY)))
                 ArrayUtils.InitializeArray(out _confidenceMat, VectorField.SizeX, VectorField.SizeY);
         }
 
@@ -153,6 +157,7 @@ namespace ReFlex.Core.Interactivity.Components
                                 confidence));
                         }
 
+                        // Saturation only caps growth; the measurement above is emitted even at the cap.
                         if (confidence < MaxConfidence)
                             _confidenceMat[x][y]++;
                     }

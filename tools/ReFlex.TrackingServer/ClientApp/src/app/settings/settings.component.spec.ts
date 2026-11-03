@@ -142,6 +142,29 @@ describe('Contact retention settings', () => {
 
 });
 
+describe('Extremum consolidation settings', () => {
+  setupZonelessTests();
+
+  it.each([undefined, 0, 5])('loads a legacy or explicit merge radius: %s', async (radius) => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.extremumSettings.mergeRadius = radius;
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setExtremumSettings.mockReturnValue(of(value.filterSettingValues.extremumSettings));
+    const fixture = await mount(SettingsComponent);
+    const input = queryElement<HTMLInputElement>(
+      fixture.nativeElement as HTMLElement,
+      'app-value-slider[elementid="settings-extremum-mergeRadius"] input.custom-input'
+    );
+    expect(input.value).toBe(String(radius ?? 3));
+    input.value = '4';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    fixture.componentInstance.saveExtremumValues();
+    expect(settings.setExtremumSettings.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ mergeRadius: 4 }));
+  });
+});
+
 describe('SettingsComponent', () => {
   setupTests();
 

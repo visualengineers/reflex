@@ -3,6 +3,8 @@
 Stand: 3. November 2026, Commit `dd00d29d`. Analyse und Diagnosewerkzeug; keine Änderung am Tracking-Verhalten.
 Die [Beschreibung von PR #3512](https://github.com/visualengineers/reflex/pull/3512) wurde über die GitHub-API gelesen.
 
+Die anschließende Implementierung und der Replay-Vergleich stehen in [implementation.md](implementation.md).
+
 ## Ergebnis
 
 Die Implementierung ordnet IDs einzelnen Extremum-Kandidaten zu. Ein physischer Druckbereich kann mehrere benachbarte Kandidaten und damit mehrere konkurrierende Tracks erzeugen. Erst **nach** der Zuordnung und dem Confidence-Filter wird die Ausgabe räumlich ausgedünnt. Verschwindet eines dieser benachbarten Extrema, kann der übrig bleibende Kandidat einem bisher unsichtbaren Track zugeordnet werden. Die veröffentlichte ID wechselt, obwohl die Druckbewegung kontinuierlich ist.

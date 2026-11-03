@@ -43,7 +43,7 @@ public class SensorPipelineTest
             {
                 Distance = 1, MinDistance = .125f, MaxDistance = .5f,
                 MaxConfidence = 100, MinConfidence = 0, InteractionHistorySize = 4,
-                NumSmoothingFrames = 0, ContactRetentionSeconds = .25,
+                NumSmoothingFrames = 0, ContactRetentionSeconds = .25, ObservationTimeoutSeconds = .25,
                 UseVelocityPrediction = true, TouchMergeDistance2D = 64,
                 ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global,
                 ExtremumTypeCheckNumSamples = 8, ExtremumTypeCheckRadius = 2

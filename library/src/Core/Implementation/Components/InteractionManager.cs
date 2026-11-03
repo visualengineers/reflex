@@ -42,12 +42,14 @@ namespace Implementation.Components
         private int _numSmoothFrames;
         private int _interactionHistorySize;
         private double _contactRetentionSeconds = .1;
+        private double _observationTimeoutSeconds = 1;
         private float _confidenceGainPerSecond = 30;
         private float _confidenceDecayPerSecond = 30;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
         private int _extremumTypeCheckNumSamples;
         private int _extremumTypeCheckRadius;
+        private float _extremumMergeRadius = ExtremumConsolidator.DefaultRadius;
         private float _extremumTypeCheckFittingPercentage;
         private ExtremumTypeCheckMethod _extremumTypeCheckMethod;
 
@@ -151,6 +153,7 @@ namespace Implementation.Components
             observer.NumSmoothingFrames = _numSmoothFrames;
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.ContactRetentionSeconds = _contactRetentionSeconds;
+            observer.ObservationTimeoutSeconds = _observationTimeoutSeconds;
             observer.ConfidenceGainPerSecond = _confidenceGainPerSecond;
             observer.ConfidenceDecayPerSecond = _confidenceDecayPerSecond;
             observer.DepthScale = _depthScale;
@@ -160,6 +163,7 @@ namespace Implementation.Components
             observer.UseSecondDerivation = _useSecondDerivation;
             observer.SecondDerivationMagnitude = _secondDerivationMagnitude;
             observer.ExtremumTypeCheckRadius = _extremumTypeCheckRadius;
+            observer.ExtremumMergeRadius = _extremumMergeRadius;
             observer.ExtremumTypeCheckNumSamples = _extremumTypeCheckNumSamples;
             observer.ExtremumTypeCheckFittingPercentage = _extremumTypeCheckFittingPercentage;
             observer.ExtremumTypeCheckMethod = _extremumTypeCheckMethod;
@@ -307,6 +311,17 @@ namespace Implementation.Components
             }
         }
         
+        public double ObservationTimeoutSeconds
+        {
+            get => _interactionObserver?.ObservationTimeoutSeconds ?? _observationTimeoutSeconds;
+            set
+            {
+                if (!double.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.ObservationTimeoutSeconds = value;
+                _observationTimeoutSeconds = value;
+            }
+        }
+
         public float TouchMergeDistance2D
         {
             get => _interactionObserver?.TouchMergeDistance2D ?? 0f;
@@ -348,6 +363,17 @@ namespace Implementation.Components
                 if (_interactionObserver != null)
                     _interactionObserver.ExtremumTypeCheckNumSamples = value;
                 _extremumTypeCheckNumSamples = value;
+            }
+        }
+
+        public float ExtremumMergeRadius
+        {
+            get => _interactionObserver?.ExtremumMergeRadius ?? _extremumMergeRadius;
+            set
+            {
+                ExtremumConsolidator.ValidateRadius(value);
+                if (_interactionObserver != null) _interactionObserver.ExtremumMergeRadius = value;
+                _extremumMergeRadius = value;
             }
         }
 

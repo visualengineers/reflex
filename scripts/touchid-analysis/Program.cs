@@ -17,7 +17,7 @@ using ReFlex.Server.Data.Config;
 if (args.FirstOrDefault() == "--inputs") { InputAnalysis.Run(args[1]); return; }
 if (args.FirstOrDefault() == "--analyze") { Analysis.Run(args[1]); return; }
 var root = Directory.GetCurrentDirectory();
-var output = args.FirstOrDefault() ?? Path.Combine(root, "artifacts/touchid-analysis");
+var output = Path.GetFullPath(args.FirstOrDefault() ?? Path.Combine(root, "artifacts/touchid-analysis"));
 Directory.CreateDirectory(output);
 var settingsPath = Path.Combine(root, "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json");
 var settings = JsonConvert.DeserializeObject<SettingsEnvelope>(File.ReadAllText(settingsPath)).FilterSettingValues;
@@ -52,10 +52,10 @@ foreach (var name in new[] { "Half-Circle", "Line", "Circle" })
             multi.Update().GetAwaiter().GetResult();
             if (Environment.GetEnvironmentVariable("REFLEX_WALL_CLOCK") != "1")
                 single.Update().GetAwaiter().GetResult();
-            frames.Add(new { frame = captured - 1, time = observedAt, processingMs = processingClock.Elapsed.TotalMilliseconds, extreme,
+            frames.Add(new { frame = captured - 1, time = observedAt, observationTimeoutSeconds = multi.ObservationTimeoutSeconds, processingMs = processingClock.Elapsed.TotalMilliseconds, extreme,
                 rawCount = multi.Probe.RawCount,
                 rawConfidenceRange = new[] { multi.Probe.MinRawConfidence, multi.Probe.MaxRawConfidence },
-                clean = multi.Clean, tracks = multi.Diagnostics,
+                measurements = multi.Probe.Measurements, clean = multi.Clean, tracks = multi.Diagnostics,
                 published = multi.Interactions, single = single.Interactions });
             if (captured % 100 == 0) Console.WriteLine($"{name}: {captured}/{count}");
             if (captured == count) { camera.StopStream(); completion.TrySetResult(); }
@@ -99,6 +99,7 @@ class Probe : MultiInteractionObserver
     private readonly Clock clock;
     public int RawCount;
     public float MinRawConfidence, MaxRawConfidence;
+    public IList<Interaction> Measurements;
     public Probe(Clock clock) => this.clock = clock;
     protected override double GetTimestampSeconds() => clock.Now;
     protected override async Task<Tuple<IEnumerable<Interaction>, ProcessPerformance>> Analyze(ProcessPerformance p)
@@ -108,6 +109,12 @@ class Probe : MultiInteractionObserver
         MinRawConfidence = r.Item1.Select(i => i.Confidence).DefaultIfEmpty().Min();
         MaxRawConfidence = r.Item1.Select(i => i.Confidence).DefaultIfEmpty().Max();
         return r;
+    }
+    protected override IList<Interaction> ConsolidateExtrema(IList<Interaction> interactions)
+    {
+        var measurements = base.ConsolidateExtrema(interactions);
+        Measurements = measurements.Select(i => new Interaction(i)).ToList();
+        return measurements;
     }
 }
 class Single(Clock clock) : SingleInteractionObserver
@@ -128,10 +135,14 @@ class Manager : InteractionManager
         InputDistance = s.DistanceValue.InputDistance; MinConfidence = s.Confidence.Min; MaxConfidence = s.Confidence.Max;
         MinAngle = s.MinAngle;
         InteractionHistorySize = s.SmoothingValues.InteractionHistorySize; NumSmoothingFrames = s.SmoothingValues.NumSmoothingSamples;
+        ObservationTimeoutSeconds = s.SmoothingValues.ObservationTimeoutSeconds;
         ContactRetentionSeconds = s.SmoothingValues.ContactRetentionSeconds; TouchMergeDistance2D = s.SmoothingValues.TouchMergeDistance2D;
         DepthScale = s.SmoothingValues.DepthScale; UseVelocityPrediction = true; NumFramesForPrediction = 3;
         ExtremumTypeCheckMethod = s.ExtremumSettings.CheckMethod; ExtremumTypeCheckRadius = s.ExtremumSettings.CheckRadius;
         ExtremumTypeCheckNumSamples = s.ExtremumSettings.NumSamples; ExtremumTypeCheckFittingPercentage = s.ExtremumSettings.FitPercentage;
+        ExtremumMergeRadius = float.TryParse(Environment.GetEnvironmentVariable("REFLEX_MERGE_RADIUS"),
+            System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var radius)
+            ? radius : s.ExtremumSettings.MergeRadius;
         Type = single ? ObserverType.SingleTouch : ObserverType.MultiTouch;
         FilterType = s.SmoothingValues.Type;
         InteractionHistoryUpdated += (_, history) => Clean = history.MaxBy(f => f.FrameId).Interactions;

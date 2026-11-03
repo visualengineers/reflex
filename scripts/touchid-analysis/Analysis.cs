@@ -14,10 +14,11 @@ static class Analysis
         foreach (var path in Directory.GetFiles(directory, "*.json").Where(p => new[] {"Half-Circle", "Line", "Circle"}.Contains(Path.GetFileNameWithoutExtension(p))))
         {
             var data = JArray.Parse(File.ReadAllText(path));
-            foreach (var mode in new[] { "off", "linear3", "linear9", "quadratic3", "linear3-wide", "linear3-min2", "linear3-every2" })
+            foreach (var mode in new[] { "off", "linear3", "linear9", "quadratic3", "linear3-wide", "linear3-min2", "linear3-every2", "linear3-merge3" })
             {
                 var tracker = new InteractionSmoothingBehaviour(15) {
                     MaxConfidence = 30, TouchMergeDistance2D = mode.EndsWith("wide") ? 400 : 81,
+                    ObservationTimeoutSeconds = data[0]["observationTimeoutSeconds"]?.Value<double>() ?? .1,
                     ContactRetentionSeconds = .1, UseVelocityForMapping = mode != "off",
                     NumFramesForPrediction = mode == "linear9" ? 9 : 3,
                     UseSecondDerivation = mode == "quadratic3", NumFramesSmoothing = 3 };
@@ -29,8 +30,15 @@ static class Analysis
                 {
                     var index = (int)f["frame"];
                     if (mode.EndsWith("every2") && index % 2 != 0) continue;
-                    var candidates = f["clean"].ToObject<List<Interaction>>();
-                    foreach (var c in candidates) c.Confidence = 0; // Snapshot matrix reset in production MultiTouch.
+                    // New captures retain pre-assignment measurements, including detector confidence.
+                    // Historical captures predate this field and had a per-snapshot confidence reset.
+                    var candidates = (f["measurements"] ?? f["clean"]).ToObject<List<Interaction>>();
+                    if (f["measurements"] == null)
+                    {
+                        foreach (var c in candidates) c.Confidence = 0;
+                        if (mode == "linear3-merge3")
+                            candidates = ExtremumConsolidator.Consolidate(candidates, 3).ToList();
+                    }
                     var result = tracker.Update(candidates, (double)f["time"]);
                     var measured = result.Interactions.Where(i => i.TrackingState != InteractionTrackingState.Lost).ToList();
                     born += measured.Count(i => i.TrackingState == InteractionTrackingState.Tentative);

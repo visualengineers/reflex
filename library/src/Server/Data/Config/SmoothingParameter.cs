@@ -11,11 +11,20 @@ namespace ReFlex.Server.Data.Config
         private double? _contactRetentionSeconds;
         private double? _legacyRetentionSeconds;
 
-        /// <summary>Maximum measurement age in seconds, inclusive. Zero disables retention.</summary>
+        /// <summary>Retention after a completed observation no longer detects a contact.</summary>
         public double ContactRetentionSeconds
         {
             get => _contactRetentionSeconds ?? _legacyRetentionSeconds ?? .1;
             set => _contactRetentionSeconds = double.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        private double? _observationTimeoutSeconds;
+        /// <summary>Maximum sensor/processing silence and acceptable observation age. Separate from missing-contact retention.</summary>
+        public double ObservationTimeoutSeconds
+        {
+            get => _observationTimeoutSeconds ?? 1;
+            set => _observationTimeoutSeconds = double.IsFinite(value) && value >= 0 ? value :
                 throw new ArgumentOutOfRangeException(nameof(value));
         }
 
@@ -62,6 +71,7 @@ namespace ReFlex.Server.Data.Config
             result += $"  {nameof(NumSmoothingSamples)}: {NumSmoothingSamples} | ";
             result += $"  {nameof(TouchMergeDistance2D)}: {TouchMergeDistance2D} | ";
             result += $"  {nameof(ContactRetentionSeconds)}: {ContactRetentionSeconds} | ";
+            result += $"  {nameof(ObservationTimeoutSeconds)}: {ObservationTimeoutSeconds} | ";
             result += $"  {nameof(DepthScale)}: {DepthScale} | ";
             result += $"  {nameof(Type)}: {Type}{Environment.NewLine}";
             return result;

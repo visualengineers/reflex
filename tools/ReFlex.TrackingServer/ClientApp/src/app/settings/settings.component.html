@@ -469,9 +469,17 @@
     (onChange)="saveSmoothingValues()"
     unit="s"
   >
-    Maximum time since the last measurement for retaining a touch ID, independent
-    of frame rate and history size. Zero disables retention. Longer durations
-    bridge gaps but keep lost contacts visible longer after release.
+    Retain a contact after a completed sensor observation no longer detects it.
+    Zero disables bridging of missing detections. This is separate from the sensor timeout.
+  </app-value-slider>
+
+  <app-value-slider class="settings__item" elementTitle="Observation timeout" elementId="settings-observationTimeout"
+    [min]="0" [max]="5" [step]="0.05" unit="s"
+    [data]="settings.filterSettingValues.smoothingValues.observationTimeoutSeconds ?? 1"
+    (dataChange)="settings.filterSettingValues.smoothingValues.observationTimeoutSeconds = $event"
+    (onChange)="saveSmoothingValues()">
+    Maximum wait for sensor processing or the next successful observation.
+    Slow frames within this timeout keep the contact ID. Older results are discarded.
   </app-value-slider>
 
   <app-value-slider class="settings__item" elementTitle="Confidence gain" elementId="settings-confidenceGain"
@@ -583,6 +591,22 @@
   >
     The pixel radius in which points are sampled to check the type of the
     extremum.
+  </app-value-slider>
+
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Extremum Merge Radius"
+    elementId="settings-extremum-mergeRadius"
+    [min]="0"
+    [max]="32"
+    [step]="1"
+    [data]="settings.filterSettingValues.extremumSettings.mergeRadius ?? 3"
+    (dataChange)="settings.filterSettingValues.extremumSettings.mergeRadius = $event"
+    (onChange)="saveExtremumValues()"
+    unit="px"
+  >
+    Combine nearby extrema of the same pressure type before assigning touch IDs.
+    This is a Euclidean radius in sensor pixels. 0 disables consolidation.
   </app-value-slider>
 
   <!-- FitPercentage -->

@@ -829,6 +829,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
     settings.filterSettingValues ??= DEFAULT_SETTINGS.filterSettingValues;
+    settings.filterSettingValues.extremumSettings ??= { ...DEFAULT_SETTINGS.filterSettingValues.extremumSettings };
+    settings.filterSettingValues.extremumSettings.mergeRadius ??= 3;
+    settings.filterSettingValues.smoothingValues.observationTimeoutSeconds ??= 1;
 
     settings.calibrationValues ??= DEFAULT_SETTINGS.calibrationValues;
 

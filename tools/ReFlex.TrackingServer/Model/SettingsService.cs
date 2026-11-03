@@ -147,6 +147,7 @@ public class SettingsService
         _interactionManager.TouchMergeDistance2D = smooth.TouchMergeDistance2D;
         _interactionManager.DepthScale = smooth.DepthScale;
         _interactionManager.ContactRetentionSeconds = smooth.ContactRetentionSeconds;
+        _interactionManager.ObservationTimeoutSeconds = smooth.ObservationTimeoutSeconds;
         _interactionManager.ConfidenceGainPerSecond = smooth.ConfidenceGainPerSecond;
         _interactionManager.ConfidenceDecayPerSecond = smooth.ConfidenceDecayPerSecond;
         _interactionManager.FilterType = smooth.Type;
@@ -157,6 +158,7 @@ public class SettingsService
         var extrema = _configManager.Settings.FilterSettingValues.ExtremumSettings;
         _interactionManager.ExtremumTypeCheckNumSamples = extrema.NumSamples;
         _interactionManager.ExtremumTypeCheckRadius = extrema.CheckRadius;
+        _interactionManager.ExtremumMergeRadius = extrema.MergeRadius;
         _interactionManager.ExtremumTypeCheckMethod = extrema.CheckMethod;
         _interactionManager.ExtremumTypeCheckFittingPercentage = extrema.FitPercentage;
       }

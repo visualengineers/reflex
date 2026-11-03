@@ -123,11 +123,13 @@ public class ExtremumClassificationTest
         manager.NumFramesForPrediction = 4;
         manager.PredictionHorizonSeconds = .12;
         manager.ContactRetentionSeconds = .25;
+        manager.ObservationTimeoutSeconds = .75;
         manager.ConfidenceGainPerSecond = 12;
         manager.ConfidenceDecayPerSecond = 18;
         manager.UseSecondDerivation = true;
         manager.SecondDerivationMagnitude = .5f;
         manager.ExtremumTypeCheckRadius = 6;
+        manager.ExtremumMergeRadius = 4;
         manager.ExtremumTypeCheckNumSamples = 12;
         manager.ExtremumTypeCheckFittingPercentage = .8f;
         manager.ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.FixedRadius;
@@ -140,12 +142,14 @@ public class ExtremumClassificationTest
             Assert.That(observer.NumFramesForPrediction, Is.EqualTo(4));
             Assert.That(observer.PredictionHorizonSeconds, Is.EqualTo(.12));
             Assert.That(observer.ContactRetentionSeconds, Is.EqualTo(.25));
+            Assert.That(observer.ObservationTimeoutSeconds, Is.EqualTo(.75));
             Assert.That(observer.ConfidenceGainPerSecond, Is.EqualTo(12));
             Assert.That(observer.ConfidenceDecayPerSecond, Is.EqualTo(18));
             Assert.That(observer.UseSecondDerivation, Is.True);
             Assert.That(observer.SecondDerivationMagnitude, Is.EqualTo(.5f));
             Assert.That(observer.ExtremumTypeCheckMethod, Is.EqualTo(ExtremumTypeCheckMethod.FixedRadius));
             Assert.That(observer.ExtremumTypeCheckRadius, Is.EqualTo(6));
+            Assert.That(observer.ExtremumMergeRadius, Is.EqualTo(4));
             Assert.That(observer.ExtremumTypeCheckNumSamples, Is.EqualTo(12));
             Assert.That(observer.ExtremumTypeCheckFittingPercentage, Is.EqualTo(.8f));
         }
