@@ -1,6 +1,6 @@
 {
     "name": "@reflex/trackingserver",
-    "version": "0.9.10",
+    "version": "0.9.11",
     "description": "Platform-independent server application using ASP.NET Core as backend and Angular as frontend.",
     "main": "app.js",
     "repository": {
@@ -8,26 +8,26 @@
       "url": "git+https://github.com/visualengineers/reflex.git"
     },
   "dependencies": {
-    "@angular/animations": "19.1.4",
-    "@angular/common": "19.1.4",
-    "@angular/compiler": "19.1.4",
-    "@angular/core": "19.1.4",
-    "@angular/forms": "19.1.4",
-    "@angular/platform-browser": "19.1.4",
-    "@angular/platform-browser-dynamic": "19.1.4",
-    "@angular/platform-server": "19.1.4",
-    "@angular/router": "19.1.4",
-    "@angular/ssr": "19.2.26",
-    "@microsoft/signalr": "^10.0.11",
-    "@reflex/angular-components": "0.9.10",
-    "@reflex/shared-types": "0.9.10",
+    "@angular/animations": "22.2.3",
+    "@angular/common": "22.2.3",
+    "@angular/compiler": "22.2.3",
+    "@angular/core": "22.2.3",
+    "@angular/forms": "22.2.3",
+    "@angular/platform-browser": "22.2.3",
+    "@angular/platform-browser-dynamic": "22.2.3",
+    "@angular/platform-server": "22.2.3",
+    "@angular/router": "22.2.3",
+    "@angular/ssr": "22.2.5",
     "angular-plotly.js": "^5.2.2",
     "d3": "^7.9.0",
+    "express": "^5.1.0",
     "file-saver": "^2.0.5",
     "happy-dom": "17.4.4",
+    "@microsoft/signalr": "^10.0.11",
     "plotly.js-dist-min": "^2.33.0",
+    "@reflex/angular-components": "file:../../../packages/reflex-angular-components",
+    "@reflex/shared-types": "file:../../../packages/reflex-shared-types",
     "rxjs": "^7.8.1",
-    "three": "^0.175.0",
-    "zone.js": "^0.15.0"
+    "three": "^0.175.0"
   }
 }
