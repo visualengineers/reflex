@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DepthCamera, DepthCameraState, TrackingConfigState } from '@reflex/shared-types';
 import { Subject, of } from 'rxjs';
@@ -12,12 +11,7 @@ import {
 } from '../test-utils/zoneless-change-detection.test-context';
 import { streaming } from '../test-utils/zoneless-change-detection.test-data';
 import { TrackingComponent } from './tracking.component';
-import { component as testComponent, fixture as testFixture, setupTests } from './tracking.component.1.test-context';
-import {
-  component as errorComponent,
-  fixture as errorFixture,
-  setupTests as setupErrorTests
-} from './tracking.component.2.test-context';
+import { component as testComponent, fixture as testFixture, setupTests } from './tracking.component.test-context';
 import {
   camera0,
   camera1,
@@ -334,11 +328,11 @@ describe('TrackingComponent', () => {
 });
 
 describe('TrackingComponent: Test Service throwing Errors', () => {
-  setupErrorTests();
+  setupTests('error');
 
   it('should handle errors correctly', async () => {
-    errorFixture.detectChanges();
-    await errorFixture.whenStable();
+    testFixture.detectChanges();
+    await testFixture.whenStable();
 
     // handle errors when initializing
 
@@ -355,13 +349,13 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorCam);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSelectCam);
 
-    expect(errorComponent).toBeTruthy();
-    expect(errorComponent.canStart).toBeFalsy();
-    expect(errorComponent.selectedCameraIdx).toBe(-1);
-    expect(errorComponent.selectedConfigurationIdx).toBe(-1);
+    expect(testComponent).toBeTruthy();
+    expect(testComponent.canStart).toBeFalsy();
+    expect(testComponent.selectedCameraIdx).toBe(-1);
+    expect(testComponent.selectedConfigurationIdx).toBe(-1);
 
-    errorComponent.selectedCameraIdx = 1;
-    errorComponent.updateConfigurations();
+    testComponent.selectedCameraIdx = 1;
+    testComponent.updateConfigurations();
 
     expect(
       trackingServiceError.getConfigurationsForCamera
@@ -369,19 +363,17 @@ describe('TrackingComponent: Test Service throwing Errors', () => {
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(5);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorConfigCam);
 
-    errorComponent.start();
+    testComponent.start();
 
     expect(trackingServiceError.toggleCamera).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(6);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorToggle);
 
-    errorComponent.saveAutoStart();
+    testComponent.saveAutoStart();
 
     expect(trackingServiceError.setAutostartEnabled).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(7);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorSaveAutoStart);
 
-    errorFixture.destroy();
-    TestBed.resetTestingModule();
   });
 });

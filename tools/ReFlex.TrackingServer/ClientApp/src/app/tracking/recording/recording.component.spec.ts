@@ -11,12 +11,7 @@ import {
 } from '../../test-utils/zoneless-change-detection.test-context';
 import { streaming } from '../../test-utils/zoneless-change-detection.test-data';
 import { RecordingComponent } from './recording.component';
-import { component as testComponent, fixture as testFixture, setupTests } from './recording.component.1.test-context';
-import {
-  component as errorComponent,
-  fixture as errorFixture,
-  setupTests as setupErrorTests
-} from './recording.component.2.test-context';
+import { component as testComponent, fixture as testFixture, setupTests } from './recording.component.test-context';
 import {
   errorClear,
   errorDelete,
@@ -272,12 +267,12 @@ describe('RecordingComponent', () => {
 });
 
 describe('RecordingComponent: Error Handling', () => {
-  setupErrorTests();
+  setupTests('error');
 
   it('should handle errors correctly', async () => {
-    await await errorFixture.whenStable();
+    await await testFixture.whenStable();
 
-    expect(errorComponent).toBeTruthy();
+    expect(testComponent).toBeTruthy();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(3);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorStatus);
@@ -285,32 +280,32 @@ describe('RecordingComponent: Error Handling', () => {
   });
 
   it('should start recording only when enabled and correct name given', async () => {
-    await errorFixture.whenStable();
+    await testFixture.whenStable();
 
-    expect(errorComponent.recordingEnabled).toBe(false);
+    expect(testComponent.recordingEnabled).toBe(false);
 
-    errorComponent.startRecording();
+    testComponent.startRecording();
 
-    await errorFixture.whenStable();
+    await testFixture.whenStable();
 
     expect(recordingServiceError.startRecording).not.toHaveBeenCalled();
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(4);
 
-    errorComponent.recordingEnabled = true;
-    errorComponent.recordingName = '';
+    testComponent.recordingEnabled = true;
+    testComponent.recordingName = '';
 
-    errorComponent.startRecording();
+    testComponent.startRecording();
 
-    await errorFixture.whenStable();
+    await testFixture.whenStable();
 
     expect(recordingServiceError.startRecording).not.toHaveBeenCalled();
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(5);
 
-    errorComponent.recordingName = 'Test';
+    testComponent.recordingName = 'Test';
 
-    errorComponent.startRecording();
+    testComponent.startRecording();
 
-    await errorFixture.whenStable();
+    await testFixture.whenStable();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(6);
     expect(recordingServiceError.startRecording).toHaveBeenCalledTimes(1);
@@ -319,18 +314,18 @@ describe('RecordingComponent: Error Handling', () => {
     expect(recordingServiceError.getRecordingState).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorRecordingState);
 
-    expect(errorComponent.isRecording).toBe(false);
+    expect(testComponent.isRecording).toBe(false);
 
-    expect(errorComponent.recordingState).toBeDefined();
-    expect(errorComponent.recordingState.state).toEqual(RecordingState.Faulted);
+    expect(testComponent.recordingState).toBeDefined();
+    expect(testComponent.recordingState.state).toEqual(RecordingState.Faulted);
 
-    errorComponent.stopRecording();
+    testComponent.stopRecording();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(7);
     expect(recordingServiceError.stopRecording).toHaveBeenCalledTimes(1);
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorStop);
 
-    errorComponent.deleteRecording(testRecordingCam);
+    testComponent.deleteRecording(testRecordingCam);
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(8);
     expect(recordingServiceError.deleteRecording).toHaveBeenCalledTimes(1);
@@ -339,7 +334,7 @@ describe('RecordingComponent: Error Handling', () => {
     );
     expect(logService.sendErrorLog).toHaveBeenCalledWith(errorDelete);
 
-    errorComponent.clearRecordings();
+    testComponent.clearRecordings();
 
     expect(logService.sendErrorLog).toHaveBeenCalledTimes(9);
     expect(recordingServiceError.clearRecordings).toHaveBeenCalledTimes(1);

@@ -24,21 +24,24 @@ import { MockPointCloudComponent } from './point-cloud/point-cloud.component.moc
 import { RecordingComponent } from './recording/recording.component';
 import { MockRecordingComponent } from './recording/recording.component.mock';
 import { TrackingComponent } from './tracking.component';
-import { logService, settingsService, trackingService } from './tracking.component.test-data';
+import { logService, settingsService, trackingService, trackingServiceError } from './tracking.component.test-data';
 
 export let component: TrackingComponent;
 
 export let fixture: ComponentFixture<TrackingComponent>;
 
-export function setupTests(): void {
+// Error suites exercise the same component setup with failing service responses.
+export function setupTests(mode: 'success' | 'error' = 'success'): void {
+  const serviceMock = mode === 'error' ? trackingServiceError : trackingService;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CommonModule, FormsModule, TrackingComponent],
       providers: [
-        { provide: BASE_URL, useValue: '', deps: [] },
+        { provide: BASE_URL, useValue: 'http://localhost/' },
         {
           provide: TrackingService,
-          useValue: trackingService
+          useValue: serviceMock
         },
         {
           provide: SettingsService,
@@ -84,22 +87,18 @@ export function setupTests(): void {
     fixture.destroy();
     TestBed.resetTestingModule();
 
-    trackingService.getStatus.mockClear();
-    trackingService.getCameras.mockClear();
-    trackingService.queryAutostartEnabled.mockClear();
-    trackingService.getSelectedCamera.mockClear();
-    trackingService.getConfigurationsForCamera.mockClear();
-    trackingService.getSelectedCameraConfig.mockClear();
-    trackingService.toggleCamera.mockClear();
-    trackingService.setAutostartEnabled.mockClear();
+    serviceMock.getStatus.mockClear();
+    serviceMock.getCameras.mockClear();
+    serviceMock.queryAutostartEnabled.mockClear();
+    serviceMock.getSelectedCamera.mockClear();
+    serviceMock.getConfigurationsForCamera.mockClear();
+    serviceMock.getSelectedCameraConfig.mockClear();
+    serviceMock.toggleCamera.mockClear();
+    serviceMock.setAutostartEnabled.mockClear();
 
     settingsService.update.mockClear();
 
     logService.sendErrorLog.mockClear();
   });
 
-  afterAll(() => {
-    fixture.destroy();
-    TestBed.resetTestingModule();
-  });
 }
