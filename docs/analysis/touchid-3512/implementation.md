@@ -58,6 +58,8 @@ Daten: [merge-only-comparison.json](after-consolidation/merge-only-comparison.js
 
 ## Reale Uhr und verbleibende Grenze
 
+Der separate [Performance-Vergleich mit `main`](pipeline-performance.md) erfasst die lokale Verarbeitung mit vier vollständigen Recordings und nominellen Beobachtungszeitpunkten.
+
 Ein zusätzlicher Release-Kontrolllauf mit den ersten 30 Frames jeder Aufnahme verwendet reale monotone Beobachtungszeiten und ausschließlich MultiTouch im Verarbeitungspfad. Auch nach der Änderung überschreitet die Pipeline auf diesem Rechner die unveränderte Haltezeit von 100 ms:
 
 | Aufnahme | Verarbeitung min / Median / max | Leere Ausgaben |
