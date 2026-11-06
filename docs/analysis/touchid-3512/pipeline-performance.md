@@ -155,7 +155,9 @@ Die zusätzliche Lebensdauer der Snapshot-Objekte erklärt den p95-Abstand in di
 
 Zwei separate Verifikationsläufe verglichen den objektbasierten PR-Stand mit der produktiven Skalarrechnung. In allen **1.257 Frames** stimmten die SHA-256-Prüfsummen der nach Rasterposition sortierten Rohkandidaten überein. Verglichen wurden die Bitmuster für X, Y, Z und Konfidenz vor Tiefenumrechnung und Klassifikation. Auch die nach Touch-ID sortierten veröffentlichten Kontakte stimmten in allen Frames überein, einschließlich Position, Konfidenz, Touch-ID, Interaktionstyp, Tracking-Zustand und Extremumsbeschreibung. Der systemzeitabhängige Legacy-Zeitstempel wurde aus dem Vergleich ausgelassen. Die Verifikationsläufe verwendeten dieselben nominellen Zeitstempel und übersprangen die Replay-Wartezeit. Ihre Laufzeiten gingen nicht in die Performance-Auswertung ein.
 
-Die drei zusätzlichen Grenzfalltests prüfen Gleichheit am Grenzwert sowie Nullvektoren und unendliche Komponenten. In der InteractionTests-Suite bestanden 259 von 260 Tests. Der bereits im Ausgangsstand reproduzierte Fehler in `ObservationTimeIsCapturedBeforeRemoteAnalysis` trat erneut auf.
+Die drei zusätzlichen Grenzfalltests prüfen Gleichheit am Grenzwert sowie Nullvektoren und unendliche Komponenten. Der zunächst verbleibende Fehler in `ObservationTimeIsCapturedBeforeRemoteAnalysis` wurde in `f2d2fea4` behoben. Die simulierte Uhr sprang nach dem ersten Remote-Aufruf von 20 s auf 10,1 s zurück. Zwischen den simulierten Abschlüssen lagen 10 s, wodurch der erste Kontakt nach dem Beobachtungs-Timeout von 1 s aus der Zuordnung fiel. Für die Geschwindigkeitsberechnung blieb damit nur eine Messung übrig.
+
+Der korrigierte Test verwendet monotone Aufnahme- und Abschlusszeiten mit unterschiedlichen Latenzen innerhalb des Timeouts. Er prüft die Zuordnung beider Messungen zum selben Kontakt sowie die aus dem Aufnahmeintervall von 100 ms berechnete Geschwindigkeit von 20 Pixeln pro Sekunde. Im vollständigen Release-Lauf bestanden **alle 260 InteractionTests**.
 
 ### Release-Replay gegen main
 
