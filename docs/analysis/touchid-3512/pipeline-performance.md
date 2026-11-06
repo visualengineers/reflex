@@ -43,7 +43,42 @@ Das 30-Hz-Zeitbudget von 33,33 ms überschritten auf `main` 298 von 1.177 Frames
 | ↳ Extremumsklassifikation | < 0,01 | < 0,01 |
 | ↳ Glättung inklusive Konsolidierung im PR | 0,03 | 0,06 |
 
-Die größte Zunahme liegt im Tiefenbildpfad außerhalb der Filterung. Dieser Rest wird pro Frame als `depth_ms - filter_ms` berechnet und enthält die Vektorfeldberechnung, Ereignisse und im PR-Branch zusätzlich die Kopie von Punktwolke und Vektorfeld in `TrackingObservation`. Der Anteil der Kopie wurde nicht separat gestoppt. Im Observer liegt fast die gesamte Mehrzeit in der Extremumsuche. Die Messung vergleicht die Branches als Ganzes und trennt die Kosten einzelner Codeänderungen nicht auf. Die absoluten Zeiten und Prozentwerte stammen aus je einem Lauf auf demselben Rechner.
+Die größte Zunahme liegt im Tiefenbildpfad außerhalb der Filterung. Dieser Rest wird pro Frame als `depth_ms - filter_ms` berechnet und enthält die Vektorfeldberechnung, Ereignisse und im PR-Branch zusätzlich die Kopie von Punktwolke und Vektorfeld in `TrackingObservation`. Im Observer liegt fast die gesamte Mehrzeit in der Extremumsuche. Die absoluten Zeiten und Prozentwerte stammen aus je einem Lauf auf demselben Rechner.
+
+## Nachmessung der Rasterkopien und Extremumsuche
+
+Die Nachmessung verwendet dieselben Release-Stände, Einstellungen, Recordings und nominellen Zeitstempel. Pro Variante wurden die ersten 72 Frames jeder Aufnahme in einem eigenen Prozess abgespielt. Die ersten 20 Frames je Aufnahme dienen zum Aufwärmen. Damit gehen 208 Frames pro Variante in die Auswertung ein.
+
+Die Stoppuhr in `TrackingObservation` erfasst je Raster die Anlage des Zielrasters und das Kopieren der Werte und Gültigkeitsflags. Die Extremumsuche verwendet weiterhin die eingebaute Metrik `ProcessPerformance.Update`. Zusätzliche Zähler erfassen die Rohkandidaten vor Klassifikation und Konsolidierung, die im Tiefenbildpfad auf dem Replay-Thread und in der parallelen Suche prozessweit allozierten Bytes sowie Änderungen des kumulativen GC-Pausenzählers. Die GC-Werte dienen zum Vergleich der Varianten. Eine Pause lässt sich aus diesem Zähler keiner einzelnen Allokation zuordnen.
+
+Im PR-Build wurden drei Rastermodi verwendet. **Frisch** erzeugt pro Beobachtung neue Raster wie im PR. **Wiederverwendet** kopiert dieselben Werte in bereits angelegte Zielraster. **Direkt** reicht die beiden Quellraster im synchronen Replay durch. Die beiden Kontrollmodi setzen voraus, dass die Analyse vor dem nächsten Frame fertig ist. Die alte Winkelformel `angleX + angleY / 2f` wurde zusätzlich zur korrigierten Formel `(angleX + angleY) / 2f` getestet. Die Instrumentierung und Kontrollmodi lagen in temporären Builds.
+
+### Kosten der Rasterkopien
+
+| Raster | Frisch Median (ms) | Frisch p95 (ms) | Wiederverwendet Median (ms) | Wiederverwendet p95 (ms) |
+| --- | ---: | ---: | ---: | ---: |
+| Punktwolke | 24,51 | 47,30 | 1,56 | 1,95 |
+| Vektorfeld | 47,31 | 81,84 | 1,37 | 1,50 |
+| **Beide Raster pro Frame** | **73,16** | **108,15** | **2,97** | **3,25** |
+
+Die Gesamtzeile verwendet die Summe beider Kopierzeiten je Frame. Mit frischen Rastern alloziert der Tiefenbildpfad im Median 61,49 MB pro Frame auf dem Replay-Thread, mit wiederverwendeten Rastern rund 2,38 kB. Die Konstruktoren erklären den Unterschied. Bei 640 × 480 initialisieren sie zwei Bestände von `Point3` und drei Bestände von `Vector2`. Das sind insgesamt rund 1,54 Millionen Objekte pro Frame. Ein Teil der Objekte wird beim Verknüpfen der flachen und gezackten Arrays direkt durch Referenzen auf die flachen Arrays ersetzt. Das Vektorfeld legt außerdem sein separates Interpolationsraster an.
+
+### Ursache der langsameren Extremumsuche
+
+| Build | Raster | Winkelformel | Suche Median (ms) | Suche p95 (ms) | GC-Pause während der Suche, Median (ms) | Rohkandidaten, Median |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| PR | Frisch | Korrigiert | 42,99 | 65,92 | 35,61 | 10.298,5 |
+| PR | Frisch | Alt | 42,31 | 67,58 | 34,75 | 9.828,5 |
+| PR | Wiederverwendet | Korrigiert | 10,45 | 42,45 | 6,71 | 10.298,5 |
+| PR | Direkt | Korrigiert | 11,44 | 31,35 | 6,93 | 10.298,5 |
+| PR | Direkt | Alt | 10,86 | 30,80 | 6,90 | 9.828,5 |
+| `main` | Direkt | Alt | 10,69 | 30,77 | 6,84 | 9.828,5 |
+
+Mit wiederverwendeten Rastern sinkt die mediane Suchzeit um rund 32,5 ms und die während der Suche erfasste mediane GC-Pause um rund 28,9 ms. Bei gleicher Formel sind die Rohkandidatenzahlen für jeden einzelnen Frame über alle Rastermodi hinweg identisch. Die Suche alloziert selbst in allen Varianten rund 41 MB pro Frame. Der innere Scan erzeugt mit seinen vier `Vector2.Add`-Aufrufen temporäre Vektoren pro gültiger Rasterposition und legt für Treffer Kandidaten an. Die frischen Snapshots erhöhen die Allokationslast vor dieser ohnehin allokationsintensiven Phase. Die Kontrollläufe identifizieren den dadurch erhöhten GC-Aufwand als Haupttreiber der Suchregression.
+
+Die korrigierte Winkelformel erhöht die mediane Rohkandidatenzahl in der Stichprobe um 4,8 %. Mit frischen Rastern liegt die mediane Suchzeit mit der alten Formel nur 0,68 ms niedriger. Mit direkter Rasterübergabe und alter Formel liegen PR und `main` innerhalb von 0,18 ms und liefern pro Frame dieselbe Rohkandidatenzahl. Die Kontrollläufe umfassen je einen Durchlauf pro Variante. Die kleineren Zeitunterschiede sind entsprechend nur als Größenordnung zu lesen.
+
+[Einzelbilddaten der Nachmessung](pipeline-performance-diagnostics.csv)
 
 ## Rohdaten
 
