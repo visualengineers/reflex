@@ -113,6 +113,66 @@ Alle acht Sensorpipeline-Tests bestanden, einschließlich des neuen Tests für e
 
 [Erneuter Lauf auf main](pipeline-performance-reuse-main.csv) · [PR mit Wiederverwendung](pipeline-performance-reuse-pr.csv)
 
+## Ursachenanalyse der verbleibenden p95-Latenz
+
+In den Einzelbilddaten des Wiederverwendungslaufs steigt p95 der **Extremumsuche** von 33,33 auf 53,55 ms. Der Anstieg um 20,22 ms liegt nahe am Anstieg der gesamten Pipeline um 20,81 ms. Die p95-Werte der Tiefenbildstufe liegen bei 14,14 und 15,37 ms, die der Glättung bei 0,05 und 0,15 ms. Unter den jeweils 59 langsamsten Frames steigt der Median der Extremumsuche von 36,76 auf 56,08 ms. Die Tiefenbildstufe liegt in diesen Frames im Median bei 12,51 bzw. 13,03 ms. Die langsamen Suchläufe treten in allen vier Aufnahmen auf.
+
+### Instrumentierter Replay und Vektor-Kontrolllauf
+
+Drei getrennte Release-Prozesse spielten dieselben vier Recordings vollständig ab. Die Stände waren `main` bei `139a1b4e` und der PR mit Wiederverwendung bei `f7b41e35`. Einstellungen und Zeitgrenzen entsprechen der vorherigen Messung, einschließlich 20 Aufwärmframes je Aufnahme und 1.177 ausgewerteter Frames je Variante. Die Diagnose erfasst innerhalb des parallelen Extremumscans die Änderungen der prozessweiten .NET-Zähler für allozierte Bytes, GC-Pausen, Collections und Lock-Konflikte. Die Suchzeit selbst stammt aus der eingebauten Observer-Metrik.
+
+| Variante | Pipeline Median (ms) | Pipeline p95 (ms) | Suche p95 (ms) | GC-Pause in der Suche p95 (ms) | Suchallokation Median (MB/Frame) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `main` | 25,34 | 49,29 | 34,58 | 24,10 | 41,01 |
+| PR mit Wiederverwendung | 25,71 | 70,34 | 56,15 | 34,77 | 41,12 |
+| PR mit Wiederverwendung, skalare Vektorrechnung | 16,25 | 38,54 | 23,95 | 15,99 | 2,09 |
+
+Der instrumentierte Lauf reproduziert die p95-Lücke mit **21,05 ms**. Die Suchallokation im Median ist bei beiden Branches nahezu gleich. Im PR dauert die Suche in den 59 langsamsten Pipeline-Frames im Median 62,31 ms gegenüber 38,87 ms auf `main`. Gleichzeitig steigt die erfasste GC-Pause in diesen Frames von 23,46 auf 38,71 ms. Im PR korreliert die Suchzeit stärker mit dem GC-Pausenzähler (Pearson *r* = 0,94) als mit Rohkandidatenzahl (*r* = 0,32) oder Lock-Konflikten (*r* = 0,36). Die prozessweiten Zähler erfassen Pausen, die während der Suche verbucht wurden. Sie trennen gleichzeitig laufende GC-Arbeit und Thread-Scheduling nicht auf. Die Differenzen der p95-Werte lassen sich daher nicht als additive Aufteilung der Lücke lesen.
+
+Die skalare Kontrollvariante berechnet dieselben Vektorsummen und normierten Skalarprodukte mit lokalen `float`-Werten. Sie behält Winkelformel, parallelen Scan, Kandidatenliste und deren Sperre bei. So entfallen die bis zu vier temporären `Vector2`-Objekte je gültiger Rasterposition. Die Suchallokation sinkt um rund 95 %. Rohkandidatenzahl und Zahl veröffentlichter Kontakte stimmen für alle 1.257 Frames mit dem instrumentierten PR überein. In dieser Kontrollvariante liegt der Pipeline-p95 unter dem gemessenen `main`.
+
+### Kontrolle der im Speicher gehaltenen Raster
+
+Drei weitere PR-Prozesse spielten jeweils die ersten 100 Frames jeder Aufnahme ab. Nach dem Aufwärmen blieben 320 Frames je Variante. Alle drei verwendeten den ursprünglichen objektbasierten Scan. Die erste Variante verwendet die produktive Wiederverwendung. Die zweite reicht das Quellrasterpaar im synchronen Replay direkt durch. Die dritte reicht es ebenso direkt durch und hält zusätzlich zwei ungenutzte Snapshot-Paare im Heap. Damit lässt sich der Einfluss der dauerhaft erreichbaren Raster von der Kopierarbeit und dem Rasterzugriff in der Suche trennen.
+
+| PR-Kontrolle | Pipeline p95 (ms) | Suche p95 (ms) | GC-Pause in der Suche p95 (ms) | Suche Median bei Gen2-Collection (ms) |
+| --- | ---: | ---: | ---: | ---: |
+| Produktive Wiederverwendung | 66,65 | 53,40 | 28,39 | 51,41 |
+| Direkte Rasterübergabe | 44,69 | 32,67 | 23,64 | 27,79 |
+| Direkte Übergabe, zwei zusätzliche Rasterpaare im Heap | 66,73 | 54,13 | 30,72 | 51,67 |
+
+Alle drei Varianten erzeugen pro Frame dieselbe Kandidaten- und Kontaktzahl. Ohne registrierte Gen2-Collection liegt der Median der Suche in allen drei Varianten zwischen 10,11 und 10,38 ms. Bei produktiver Wiederverwendung fällt in jeden der 16 langsamsten Pipeline-Frames mindestens eine Gen2-Collection während der Suche. Die direkte Rasterübergabe ohne zusätzliche Raster hatte insgesamt sogar mehr Suchfenster mit registrierter Gen2-Collection (100 von 320 gegenüber 48 von 320 mit produktiver Wiederverwendung). Diese Fenster waren jedoch deutlich kürzer.
+
+Die zusätzliche Lebensdauer der Snapshot-Objekte erklärt den p95-Abstand in diesem Replay. Bereits zwei im Heap gehaltene Rasterpaare bringen die Latenzspitzen zurück, obwohl der Scan weiterhin dieselben Quellraster liest und keine Kopierarbeit hinzukommt. Die temporären Vektorobjekte sorgen in beiden Branches für rund 41 MB Suchallokation pro Frame. Zusammen mit den dauerhaft erreichbaren Rasterobjekten wird die Speicherbereinigung auf dem PR in den langsamen Frames teurer. Die skalare Kontrolle zeigt, dass sich die Spitzen auch bei beibehaltenen Snapshots stark reduzieren lassen. Die Diagnosevarianten liefen je einmal in temporären Builds. Direkte Rasterübergabe setzt einen synchronen Replay voraus.
+
+[Einzelbilddaten der p95-Analyse](pipeline-performance-tail.csv)
+
+## Produktive skalare Extremumsuche
+
+`MultiInteractionObserver` berechnet die beiden normierten Skalarprodukte direkt aus den `float`-Komponenten. Pro gültiger Rasterposition entfallen die vier temporären Vektorsummen. Reihenfolge der Rechenoperationen, Mittelwertbildung und Behandlung undefinierter Kosinuswerte entsprechen dem bisherigen PR-Stand. Der parallele Scan und der Snapshot-Pfad bleiben Teil der Messung.
+
+### Vergleich der Erkennung
+
+Zwei separate Verifikationsläufe verglichen den objektbasierten PR-Stand mit der produktiven Skalarrechnung. In allen **1.257 Frames** stimmten die SHA-256-Prüfsummen der nach Rasterposition sortierten Rohkandidaten überein. Verglichen wurden die Bitmuster für X, Y, Z und Konfidenz vor Tiefenumrechnung und Klassifikation. Auch die nach Touch-ID sortierten veröffentlichten Kontakte stimmten in allen Frames überein, einschließlich Position, Konfidenz, Touch-ID, Interaktionstyp, Tracking-Zustand und Extremumsbeschreibung. Der systemzeitabhängige Legacy-Zeitstempel wurde aus dem Vergleich ausgelassen. Die Verifikationsläufe verwendeten dieselben nominellen Zeitstempel und übersprangen die Replay-Wartezeit. Ihre Laufzeiten gingen nicht in die Performance-Auswertung ein.
+
+Die drei zusätzlichen Grenzfalltests prüfen Gleichheit am Grenzwert sowie Nullvektoren und unendliche Komponenten. In der InteractionTests-Suite bestanden 259 von 260 Tests. Der bereits im Ausgangsstand reproduzierte Fehler in `ObservationTimeIsCapturedBeforeRemoteAnalysis` trat erneut auf.
+
+### Release-Replay gegen main
+
+Erneut wurden `main` bei `139a1b4e` und der PR bei `f7b41e35` mit der produktiven skalaren Rechnung auf demselben Rechner gemessen. Die vier vollständigen Aufnahmen, Settings, nominellen Zeitstempel und Messgrenzen entsprechen dem ursprünglichen Replay. Beide Builds meldeten für alle 1.257 Frames `Available`. Die Auswertung enthält 1.177 Frames pro Build nach dem Aufwärmen. Die folgenden Werte stammen aus je einem vollständigen Lauf.
+
+| Aufnahme | Frames | Median main (ms) | Median PR (ms) | Δ Median | p95 main (ms) | p95 PR (ms) | Δ p95 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Half-Circle | 238 | 22,42 | 15,85 | −29,3 % | 45,22 | 26,75 | −40,9 % |
+| Line | 320 | 24,80 | 16,18 | −34,7 % | 48,04 | 38,06 | −20,8 % |
+| Circle | 209 | 25,66 | 16,38 | −36,2 % | 49,45 | 42,21 | −14,6 % |
+| Multi-Touch | 410 | 25,36 | 15,85 | −37,5 % | 46,39 | 36,32 | −21,7 % |
+| **Gesamt** | **1.177** | **24,92** | **16,07** | **−35,5 %** | **47,21** | **37,61** | **−20,3 %** |
+
+Die Extremumsuche benötigt im Median 2,46 ms gegenüber 12,58 ms auf `main`. Ihr p95 liegt bei 22,42 statt 33,85 ms. Gegenüber dem früheren PR-Lauf mit Rasterwiederverwendung sinkt der Pipeline-p95 von 66,67 auf 37,61 ms. Das 30-Hz-Budget von 33,33 ms überschritten 313 von 1.177 Frames auf `main` und 83 auf dem skalaren PR.
+
+[Neuer Lauf auf main](pipeline-performance-scalar-main.csv) · [PR mit produktiver Skalarrechnung](pipeline-performance-scalar-pr.csv)
+
 ## Rohdaten
 
 - [Frames auf main](pipeline-performance-main.csv)

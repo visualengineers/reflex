@@ -39,4 +39,21 @@ public class MultiInteractionAngleTest
         Assert.That(contacts[0].Position.X, Is.EqualTo(2));
         Assert.That(contacts[0].Position.Y, Is.EqualTo(2));
     }
+
+    [TestCase(1f, 1)]
+    [TestCase(0f, 0)]
+    [TestCase(float.PositiveInfinity, 0)]
+    public async Task DetectionKeepsThresholdEqualityAndRejectsUndefinedCosines(float centerX, int count)
+    {
+        var field = new VectorField2(5, 5);
+        foreach (var vector in field.AsArray()) vector.IsValid = false;
+        field[2, 2].Set(centerX, 0);
+        field[2, 2].IsValid = true;
+        var detector = new Detector
+        {
+            PointCloud = new PointCloud3(5, 5), VectorField = field, MinAngle = 1
+        };
+
+        Assert.That(await detector.Detect(), Has.Length.EqualTo(count));
+    }
 }
