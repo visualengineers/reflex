@@ -263,18 +263,19 @@ public class ObserverPipelineTest
         observer.NewVelocities += (_, data) => diagnostics = data;
         service.Candidates = () =>
         {
-            observer.Timestamp = 20; // Simulate variable remote processing latency, without sleeping.
+            observer.Timestamp = 10.03; // Simulate latency without crossing the next capture or expiring the track.
             return new[] { new Interaction(new Point3(10,10,.75f), InteractionType.Push, 1) };
         };
         await observer.Update();
         observer.Timestamp = 10.1;
         service.Candidates = () =>
         {
-            observer.Timestamp = 30;
+            observer.Timestamp = 10.25; // A different latency makes completion times unsuitable for motion estimation.
             return new[] { new Interaction(new Point3(12,10,.75f), InteractionType.Push, 1) };
         };
         await observer.Update();
         Assert.That(diagnostics.Single().TimestampSeconds, Is.EqualTo(10.1).Within(1e-9));
+        Assert.That(diagnostics.Single().SampleCount, Is.EqualTo(2));
         Assert.That(diagnostics.Single().FirstDerivation.X, Is.EqualTo(20).Within(.001));
         Assert.That(diagnostics.Single().PredictedPositionBasic.X, Is.EqualTo(13).Within(.001));
     }
