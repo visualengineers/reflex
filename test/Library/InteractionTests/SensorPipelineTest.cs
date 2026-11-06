@@ -108,6 +108,73 @@ public class SensorPipelineTest
     }
 
     [Test]
+    public async Task ProductionSnapshotsStayStableAcrossPendingReplacementAndResize()
+    {
+        var depth = new DepthImageManager(new FilterManager { MeasurePerformance = false });
+        depth.Initialize(30, 30);
+        var service = new Service();
+        using var manager = new InteractionManager(depth, service, new Performance())
+        {
+            Distance = 1, MinDistance = .125f, MaxDistance = .5f, MaxConfidence = 100,
+            InteractionHistorySize = 4, ObservationTimeoutSeconds = 30,
+            ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global
+        };
+        manager.Init(ObserverType.Remote);
+
+        void Emit(int size, float value)
+        {
+            var points = Enumerable.Range(0, size * size)
+                .Select(i => new Point3(i % size, i / size, i % size == 10 && i / size == 10 ? value : 1))
+                .ToArray();
+            depth.Update(new DepthCameraFrame { Depth = points });
+        }
+
+        TrackingObservation published = null;
+        depth.ObservationReady += (_, observation) => published ??= observation;
+        var release = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        service.Wait = release.Task;
+        Emit(30, .75f);
+        var processing = manager.Update();
+        Assert.That(service.Calls, Is.EqualTo(1));
+        var firstCloud = service.InFlight;
+        var firstVector = manager.VectorField[9, 10];
+
+        try
+        {
+            Emit(30, .5f);
+            Emit(30, .6f);
+            depth.Initialize(32, 32);
+            Emit(32, .7f);
+            Assert.That(firstCloud[10, 10].Z, Is.EqualTo(.75f));
+            Assert.That(manager.VectorField[9, 10].X, Is.EqualTo(firstVector.X));
+        }
+        finally
+        {
+            release.SetResult(true);
+            await processing;
+        }
+
+        service.Wait = Task.CompletedTask;
+        Assert.That(await manager.Update(), Is.EqualTo(ProcessServiceStatus.Available));
+        Assert.That(service.Calls, Is.EqualTo(2));
+        Assert.That(service.Received.SizeX, Is.EqualTo(32));
+        Assert.That(service.Received[10, 10].Z, Is.EqualTo(.7f));
+
+        // A same-size spare can be used again, while the public observation is independent.
+        Emit(32, .65f);
+        await manager.Update();
+        var reusable = service.Received;
+        Emit(32, .8f);
+        await manager.Update();
+        Emit(32, .9f);
+        await manager.Update();
+        Assert.That(service.Received, Is.SameAs(reusable));
+        Assert.That(service.Received[10, 10].Z, Is.EqualTo(.9f));
+        Assert.That(published.PointCloud[10, 10].Z, Is.EqualTo(.75f));
+        Assert.That(published.VectorField[9, 10].X, Is.EqualTo(firstVector.X));
+    }
+
+    [Test]
     public async Task InFlightRemoteRequestDoesNotBlockExpiryOrReviveLateContacts()
     {
         using var scene = new Scene();
@@ -206,6 +273,7 @@ public class SensorPipelineTest
         public int Calls;
         public int X = 10;
         public Task Wait = Task.CompletedTask;
+        public PointCloud3 InFlight;
         public PointCloud3 Received;
         public Task<bool> Connect() => Task.FromResult(true);
         public Task<bool> Disconnect() => Task.FromResult(true);
@@ -216,6 +284,7 @@ public class SensorPipelineTest
             if (Fail) throw new InvalidOperationException("simulated transport failure");
             // Keep the actual passed cloud so the test detects mutations, not a copy made by this service.
             var depth = cloud[X, 10].Z;
+            InFlight = cloud;
             await Wait;
             Received = cloud;
             return Tuple.Create<IEnumerable<Interaction>, ProcessPerformance>(new[]

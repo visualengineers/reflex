@@ -27,8 +27,11 @@ namespace Implementation.Components
 
         public int ImageHeight { get; private set; }
 
+        private readonly object _rasterSync = new();
         private int _isUpdating;
         private long _sequence;
+        // Internal consumers must finish copying the source rasters before returning.
+        internal event Action<long, double, PointCloud3, VectorField2> SnapshotSourceReady;
         public event EventHandler<TrackingObservation> ObservationReady;
 
         public DepthImageManager(IFilterManager filterManager)
@@ -38,14 +41,17 @@ namespace Implementation.Components
 
         public void Initialize(int sizeX, int sizeY)
         {
-            PointCloud = new PointCloud3(sizeX, sizeY);
-            OnPointcloudFiltered(this, PointCloud);
-
-            VectorField = new VectorField2(sizeX, sizeY);
-            OnVectorfieldChanged(this, VectorField);
-
-            ImageWidth = sizeX;
-            ImageHeight = sizeY;
+            var cloud = new PointCloud3(sizeX, sizeY);
+            var vectors = new VectorField2(sizeX, sizeY);
+            lock (_rasterSync)
+            {
+                PointCloud = cloud;
+                VectorField = vectors;
+                ImageWidth = sizeX;
+                ImageHeight = sizeY;
+            }
+            OnPointcloudFiltered(this, cloud);
+            OnVectorfieldChanged(this, vectors);
         }
 
         public void Update(DepthCameraFrame frame)
@@ -55,14 +61,22 @@ namespace Implementation.Components
             try
             {
                 RawDepthFrameReceived?.Invoke(this, frame);
-                _filterManager.FilterAndUpdate(frame.Depth, PointCloud);
-                VectorField.Populate(PointCloud);
-                // Build the pair before publishing either legacy raster event. The next sensor
-                // frame cannot mutate these owned copies while remote analysis is awaiting a reply.
-                var observation = new TrackingObservation(++_sequence, timestamp, PointCloud, VectorField);
-                ObservationReady?.Invoke(this, observation);
-                OnPointcloudFiltered(this, PointCloud);
-                OnVectorfieldChanged(this, VectorField);
+                PointCloud3 cloud;
+                VectorField2 vectors;
+                lock (_rasterSync)
+                {
+                    cloud = PointCloud;
+                    vectors = VectorField;
+                }
+                _filterManager.FilterAndUpdate(frame.Depth, cloud);
+                vectors.Populate(cloud);
+                var sequence = ++_sequence;
+                SnapshotSourceReady?.Invoke(sequence, timestamp, cloud, vectors);
+                var handlers = ObservationReady;
+                if (handlers != null)
+                    handlers(this, new TrackingObservation(sequence, timestamp, cloud, vectors));
+                OnPointcloudFiltered(this, cloud);
+                OnVectorfieldChanged(this, vectors);
             }
             catch (Exception exc)
             {

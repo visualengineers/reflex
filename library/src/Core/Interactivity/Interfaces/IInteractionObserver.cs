@@ -162,6 +162,8 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// </summary>
         Task<ProcessingResult> Update();
 
+        /// <summary>Processes the observation while its rasters are reserved for this update.</summary>
+        /// <remarks>Finish reading the input before the task completes. Copy data needed by later work.</remarks>
         Task<ProcessingResult> Update(TrackingObservation observation) => Update();
 
         void AdvanceTime(double timestampSeconds) { }

@@ -17,7 +17,12 @@ namespace Implementation.Components
     public class InteractionManager : IInteractionManager, IDisposable
     {
         private IInteractionObserver _interactionObserver;
+        private readonly object _snapshotSync = new();
+        private readonly Stack<TrackingObservation> _spareSnapshots = new(2);
+        private readonly DepthImageManager _snapshotSource;
         private TrackingObservation _pendingObservation;
+        private TrackingObservation _lastSnapshot;
+        private bool _disposed;
         private readonly SemaphoreSlim _updateGate = new(1, 1);
         private long _lastSequence = -1;
         private double _lastObservationTime = double.NegativeInfinity;
@@ -125,7 +130,8 @@ namespace Implementation.Components
             if (_interactionObserver == null)
                 return 0;
 
-            return _interactionObserver.CalculateAverageDistance();
+            lock (_snapshotSync)
+                return _interactionObserver.CalculateAverageDistance();
         }
 
         private void UpdateObserver(IInteractionObserver observer)
@@ -412,13 +418,27 @@ namespace Implementation.Components
 
         public PointCloud3 PointCloud
         {
-            get => _interactionObserver?.PointCloud;
+            get
+            {
+                lock (_snapshotSync)
+                {
+                    var cloud = _interactionObserver?.PointCloud;
+                    return _snapshotSource == null ? cloud : TrackingObservation.CopyCloud(cloud);
+                }
+            }
             set => _interactionObserver.PointCloud = value;
         }
 
         public VectorField2 VectorField
         {
-            get => _interactionObserver?.VectorField;
+            get
+            {
+                lock (_snapshotSync)
+                {
+                    var vectors = _interactionObserver?.VectorField;
+                    return _snapshotSource == null ? vectors : TrackingObservation.CopyVectors(vectors);
+                }
+            }
             set => _interactionObserver.VectorField = value;
         }
 
@@ -430,7 +450,11 @@ namespace Implementation.Components
             _service = service;
             _performanceAggregator = performanceAggregator;
 
-            depthImageManager.ObservationReady += OnObservationReady;
+            _snapshotSource = depthImageManager as DepthImageManager;
+            if (_snapshotSource != null)
+                _snapshotSource.SnapshotSourceReady += OnSnapshotSourceReady;
+            else
+                depthImageManager.ObservationReady += OnObservationReady;
         }
 
         public void Init(ObserverType type)
@@ -447,10 +471,17 @@ namespace Implementation.Components
             {
                 var observer = _interactionObserver;
                 if (observer == null) return ProcessServiceStatus.Error;
-                var observation = Interlocked.Exchange(ref _pendingObservation, null);
+                TrackingObservation observation;
+                lock (_snapshotSync)
+                {
+                    if (_disposed) return ProcessServiceStatus.Skipped;
+                    observation = _pendingObservation;
+                    _pendingObservation = null;
+                }
                 if (observation == null || observation.Sequence <= _lastSequence ||
                     observation.TimestampSeconds <= _lastObservationTime)
                 {
+                    lock (_snapshotSync) RecycleSnapshot(observation);
                     observer.AdvanceTime(GetTimestampSeconds());
                     return ProcessServiceStatus.Skipped;
                 }
@@ -464,14 +495,46 @@ namespace Implementation.Components
                     observer.AdvanceTime(GetTimestampSeconds());
                     return ProcessServiceStatus.Error;
                 }
+                finally
+                {
+                    // The observer retains its input for diagnostics and distance calculation.
+                    // Release the previous pair only after the new update has finished.
+                    lock (_snapshotSync)
+                    {
+                        RecycleSnapshot(_lastSnapshot);
+                        _lastSnapshot = _disposed || _snapshotSource == null ? null : observation;
+                    }
+                }
             }
             finally { _updateGate.Release(); }
         }
 
         private void OnObservationReady(object sender, TrackingObservation observation)
         {
-            // The producer emits completed pairs in order. Keep only the newest unprocessed pair.
-            Interlocked.Exchange(ref _pendingObservation, observation);
+            lock (_snapshotSync)
+            {
+                if (!_disposed) _pendingObservation = observation;
+            }
+        }
+
+        private void OnSnapshotSourceReady(long sequence, double timestamp, PointCloud3 cloud, VectorField2 vectors)
+        {
+            lock (_snapshotSync)
+            {
+                if (_disposed) return;
+                // A pending pair has no reader. Prefer overwriting it when the consumer lags.
+                var spare = _pendingObservation;
+                _pendingObservation = null;
+                if (spare == null) _spareSnapshots.TryPop(out spare);
+                _pendingObservation = new TrackingObservation(sequence, timestamp, cloud, vectors, spare);
+            }
+        }
+
+        // Called under _snapshotSync. Public event observations are never recycled.
+        private void RecycleSnapshot(TrackingObservation observation)
+        {
+            if (!_disposed && _snapshotSource != null && observation != null && _spareSnapshots.Count < 2)
+                _spareSnapshots.Push(observation);
         }
 
         public event EventHandler<IList<Interaction>> InteractionsUpdated;
@@ -496,10 +559,19 @@ namespace Implementation.Components
 
         public void Dispose()
         {
-            if (_depthImageManager != null)
+            lock (_snapshotSync)
             {
-                _depthImageManager.ObservationReady -= OnObservationReady;
+                if (_disposed) return;
+                _disposed = true;
+                _pendingObservation = null;
+                _lastSnapshot = null;
+                _spareSnapshots.Clear();
             }
+
+            if (_snapshotSource != null)
+                _snapshotSource.SnapshotSourceReady -= OnSnapshotSourceReady;
+            else
+                _depthImageManager.ObservationReady -= OnObservationReady;
 
             if (_interactionObserver != null)
             {

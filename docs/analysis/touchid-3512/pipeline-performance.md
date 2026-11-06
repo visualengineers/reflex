@@ -80,6 +80,39 @@ Die korrigierte Winkelformel erhöht die mediane Rohkandidatenzahl in der Stichp
 
 [Einzelbilddaten der Nachmessung](pipeline-performance-diagnostics.csv)
 
+## Erneute Messung mit sicherer Wiederverwendung
+
+Im produktiven Pfad kopiert der `InteractionManager` das fertig berechnete Rasterpaar in eigene Puffer. Solange eine Beobachtung wartet, darf der nächste Sensorframe dieses Paar überschreiben. Sobald ein Update sie übernimmt, bleiben die Raster bis zum Abschluss der asynchronen Verarbeitung geschützt. Das zuletzt verarbeitete Paar bleibt für die Distanzberechnung und Diagnostik verfügbar, bis der Observer ein neues verarbeitet hat. Danach kann es als Reserve dienen. Bei geänderter Rastergröße oder Schrittweite wird ein passender Puffer angelegt. Abonnenten des öffentlichen `ObservationReady`-Ereignisses behalten eine unabhängige Kopie.
+
+Für den Vergleich wurden `main` am oben angegebenen Commit und der aktuelle Branch mit der produktiven Wiederverwendung erneut als Release gebaut und nacheinander auf demselben Rechner abgespielt. Einstellungen, nominelle Beobachtungszeitpunkte, vollständige Aufnahmen, Messgrenzen und 20 Aufwärmframes pro Aufnahme entsprechen der ersten Messung. Die Laufzeitmessung verwendet lokales MultiTouch. Die asynchrone Sicherheit wurde separat mit einem angehaltenen Remote-Aufruf, überschriebenen wartenden Frames und einem Wechsel der Rastergröße getestet.
+
+Beide Builds meldeten für alle 1.257 Frames den Status `Available`. Die Tabelle verwendet die 1.177 Frames pro Build nach dem Aufwärmen.
+
+| Aufnahme | Frames | Median main (ms) | Median PR (ms) | Δ Median | p95 main (ms) | p95 PR (ms) | Δ p95 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Half-Circle | 238 | 21,78 | 22,82 | +4,8 % | 41,80 | 65,81 | +57,4 % |
+| Line | 320 | 24,59 | 24,68 | +0,4 % | 46,17 | 65,15 | +41,1 % |
+| Circle | 209 | 25,77 | 25,74 | −0,1 % | 48,56 | 67,97 | +40,0 % |
+| Multi-Touch | 410 | 26,36 | 25,43 | −3,5 % | 46,96 | 67,31 | +43,3 % |
+| **Gesamt** | **1.177** | **25,14** | **25,04** | **−0,4 %** | **45,86** | **66,67** | **+45,4 %** |
+
+Gegenüber dem ursprünglichen PR-Lauf sinkt der Median von 134,73 auf 25,04 ms und p95 von 174,84 auf 66,67 ms. Im direkten Vergleich mit dem erneut gemessenen `main` liegen die Mediane nahe beieinander, während der PR beim p95 noch 20,81 ms darüber liegt. Das 30-Hz-Budget von 33,33 ms überschreiten 212 Frames (18,0 %) mit Wiederverwendung und 294 Frames (25,0 %) auf `main`. Der höhere p95 des PR zeigt, dass seine langsamsten Frames trotz der geringeren Zahl von Budgetüberschreitungen länger dauern.
+
+| Stufe | Median main (ms) | Median PR (ms) |
+| --- | ---: | ---: |
+| Tiefenbildverarbeitung | 12,10 | 12,87 |
+| ↳ Filterung inklusive Punktwolken-Update | 7,63 | 7,35 |
+| ↳ Rest der Tiefenbildverarbeitung | 4,47 | 5,52 |
+| Observer insgesamt | 12,89 | 12,02 |
+| ↳ Extremumsuche | 12,79 | 11,87 |
+| ↳ Glättung inklusive Konsolidierung im PR | 0,03 | 0,06 |
+
+Die Zahl veröffentlichter Kontakte stimmt für alle 1.257 Frames mit dem ursprünglichen PR-Lauf überein. Die neuen Zeitwerte stammen aus je einem vollständigen Lauf pro Build.
+
+Alle acht Sensorpipeline-Tests bestanden, einschließlich des neuen Tests für einen laufenden Remote-Aufruf, überholte Frames und den Wechsel der Rastergröße. In der gesamten InteractionTests-Suite bestanden 256 von 257 Tests. Der Fehler in `ObservationTimeIsCapturedBeforeRemoteAnalysis` ließ sich mit demselben Ergebnis im unveränderten Ausgangsstand reproduzieren.
+
+[Erneuter Lauf auf main](pipeline-performance-reuse-main.csv) · [PR mit Wiederverwendung](pipeline-performance-reuse-pr.csv)
+
 ## Rohdaten
 
 - [Frames auf main](pipeline-performance-main.csv)
