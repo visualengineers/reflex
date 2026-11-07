@@ -56,6 +56,29 @@ describe('Zoneless change detection: renders performance stream updates in the f
   });
 });
 
+describe('Observation snapshot settings', () => {
+  setupZonelessTests();
+
+  it('enables snapshots for older settings and submits an explicit false when switched off', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    Reflect.deleteProperty(value.processingSettingValues, 'useObservationSnapshots');
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setUseObservationSnapshots.mockReturnValue(of(false));
+    const fixture = await mount(SettingsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const checkbox = queryElement<HTMLInputElement>(
+      fixture.nativeElement as HTMLElement,
+      '#settings-observation-snapshots-checkbox'
+    );
+    expect(checkbox.checked).toBe(true);
+    checkbox.click();
+    await fixture.whenStable();
+    expect(settings.setUseObservationSnapshots).toHaveBeenCalledWith(false);
+    expect(fixture.componentInstance.settings.processingSettingValues.useObservationSnapshots).toBe(false);
+  });
+});
+
 describe('Zoneless change detection: renders limitation-filter polling responses', () => {
   setupZonelessTests();
 
@@ -111,7 +134,7 @@ describe('Contact retention settings', () => {
     const input = queryElement<HTMLInputElement>(control, 'input.custom-input');
     expect(input.value).toBe('0.25');
     expect(control.textContent).toContain('Contact retention');
-    expect(control.textContent).toContain('independent');
+    expect(control.textContent).toContain('separate from the sensor timeout');
     input.value = '0.35';
     input.dispatchEvent(new Event('input'));
     input.dispatchEvent(new Event('change'));

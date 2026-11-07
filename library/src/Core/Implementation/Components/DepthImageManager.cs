@@ -30,7 +30,18 @@ namespace Implementation.Components
         private readonly object _rasterSync = new();
         private int _isUpdating;
         private long _sequence;
-        // Internal consumers must finish copying the source rasters before returning.
+        internal volatile bool UseObservationSnapshots = true;
+        internal long RasterSequence => _sequence;
+
+        // Live readers share the producer gate and keep it until their async analysis finishes.
+        internal bool TryReserveRasters() => Interlocked.CompareExchange(ref _isUpdating, 1, 0) == 0;
+        internal void ReleaseRasters() => Volatile.Write(ref _isUpdating, 0);
+        internal T ReadRasters<T>(Func<T> read)
+        {
+            lock (_rasterSync) return read();
+        }
+
+        // Internal consumers may copy now or reserve the live rasters before reading them later.
         internal event Action<long, double, PointCloud3, VectorField2> SnapshotSourceReady;
         public event EventHandler<TrackingObservation> ObservationReady;
 
@@ -56,7 +67,8 @@ namespace Implementation.Components
 
         public void Update(DepthCameraFrame frame)
         {
-            if (Interlocked.CompareExchange(ref _isUpdating, 1, 0) != 0) return;
+            if (!TryReserveRasters()) return;
+            var sequence = ++_sequence;
             var timestamp = (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
             try
             {
@@ -67,13 +79,12 @@ namespace Implementation.Components
                 {
                     cloud = PointCloud;
                     vectors = VectorField;
+                    _filterManager.FilterAndUpdate(frame.Depth, cloud);
+                    vectors.Populate(cloud);
                 }
-                _filterManager.FilterAndUpdate(frame.Depth, cloud);
-                vectors.Populate(cloud);
-                var sequence = ++_sequence;
                 SnapshotSourceReady?.Invoke(sequence, timestamp, cloud, vectors);
                 var handlers = ObservationReady;
-                if (handlers != null)
+                if (UseObservationSnapshots && handlers != null)
                     handlers(this, new TrackingObservation(sequence, timestamp, cloud, vectors));
                 OnPointcloudFiltered(this, cloud);
                 OnVectorfieldChanged(this, vectors);
@@ -82,7 +93,7 @@ namespace Implementation.Components
             {
                 Logger.Error(exc);
             }
-            finally { Volatile.Write(ref _isUpdating, 0); }
+            finally { ReleaseRasters(); }
         }
 
         public void Update(ImageByteArray depthImage)

@@ -64,6 +64,8 @@ namespace Implementation.Interfaces
 
         void AdvanceTime();
 
+        bool UseObservationSnapshots { get; set; }
+
         float ComputeZeroPlaneDistance();
 
         event EventHandler<IList<Interaction>> InteractionsUpdated;

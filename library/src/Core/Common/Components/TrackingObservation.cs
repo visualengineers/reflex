@@ -5,9 +5,11 @@ using System.Runtime.CompilerServices;
 
 namespace ReFlex.Core.Common.Components
 {
-    /// <summary>A completed sensor observation with its own point cloud and vector field.</summary>
+    /// <summary>A completed sensor observation with a paired point cloud and vector field.</summary>
     public sealed class TrackingObservation
     {
+        internal bool OwnsRasters { get; }
+
         public long Sequence { get; }
         public double TimestampSeconds { get; }
         public PointCloud3 PointCloud { get; }
@@ -20,14 +22,14 @@ namespace ReFlex.Core.Common.Components
 
         // The caller owns the spare and may reuse it only after all readers have finished.
         internal TrackingObservation(long sequence, double timestampSeconds, PointCloud3 cloud, VectorField2 vectors,
-            TrackingObservation spare)
+            TrackingObservation spare, bool copyRasters = true)
         {
             if (!double.IsFinite(timestampSeconds)) throw new ArgumentOutOfRangeException(nameof(timestampSeconds));
             Sequence = sequence;
             TimestampSeconds = timestampSeconds;
-            var cloudBuffer = spare?.PointCloud;
-            PointCloud = CopyCloud(cloud, cloudBuffer);
-            VectorField = CopyVectors(vectors, spare?.VectorField);
+            OwnsRasters = copyRasters;
+            PointCloud = copyRasters ? CopyCloud(cloud, spare?.PointCloud) : cloud;
+            VectorField = copyRasters ? CopyVectors(vectors, spare?.VectorField) : vectors;
         }
 
         internal static PointCloud3 CopyCloud(PointCloud3 cloud, PointCloud3 buffer = null)

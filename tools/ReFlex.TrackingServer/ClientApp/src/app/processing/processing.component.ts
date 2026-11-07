@@ -82,10 +82,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   public remoteAddress = '';
   public remotePort = 0;
 
-  public processingSettings: ProcessingSettings = {
-    interactionType: ObserverType.None,
-    intervalDuration: 0
-  };
+  public processingSettings: ProcessingSettings = { ...DEFAULT_SETTINGS.processingSettingValues };
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly baseUrl = inject(BASE_URL);

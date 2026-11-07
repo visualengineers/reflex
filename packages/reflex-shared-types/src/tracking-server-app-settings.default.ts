@@ -65,7 +65,8 @@ const defaultNetworkSettings: NetworkSettings = {
 
 const defaultProcessingSettings: ProcessingSettings = {
   interactionType: ObserverType.None,
-  intervalDuration: 0
+  intervalDuration: 0,
+  useObservationSnapshots: true
 };
 
 const defaultTuioSettings: TuioConfiguration = {

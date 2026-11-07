@@ -125,13 +125,16 @@ namespace Implementation.Components
             _ => throw new ArgumentOutOfRangeException(nameof(type))
         };
 
-        public float ComputeZeroPlaneDistance()
-        {
-            if (_interactionObserver == null)
-                return 0;
+        public float ComputeZeroPlaneDistance() =>
+            ReadObserverRasters(() => _interactionObserver?.CalculateAverageDistance() ?? 0);
 
-            lock (_snapshotSync)
-                return _interactionObserver.CalculateAverageDistance();
+        private T ReadObserverRasters<T>(Func<T> read)
+        {
+            if (_snapshotSource == null) return read();
+            return _snapshotSource.ReadRasters(() =>
+            {
+                lock (_snapshotSync) return read();
+            });
         }
 
         private void UpdateObserver(IInteractionObserver observer)
@@ -418,27 +421,21 @@ namespace Implementation.Components
 
         public PointCloud3 PointCloud
         {
-            get
+            get => ReadObserverRasters(() =>
             {
-                lock (_snapshotSync)
-                {
-                    var cloud = _interactionObserver?.PointCloud;
-                    return _snapshotSource == null ? cloud : TrackingObservation.CopyCloud(cloud);
-                }
-            }
+                var cloud = _interactionObserver?.PointCloud;
+                return _snapshotSource == null ? cloud : TrackingObservation.CopyCloud(cloud);
+            });
             set => _interactionObserver.PointCloud = value;
         }
 
         public VectorField2 VectorField
         {
-            get
+            get => ReadObserverRasters(() =>
             {
-                lock (_snapshotSync)
-                {
-                    var vectors = _interactionObserver?.VectorField;
-                    return _snapshotSource == null ? vectors : TrackingObservation.CopyVectors(vectors);
-                }
-            }
+                var vectors = _interactionObserver?.VectorField;
+                return _snapshotSource == null ? vectors : TrackingObservation.CopyVectors(vectors);
+            });
             set => _interactionObserver.VectorField = value;
         }
 
@@ -457,6 +454,21 @@ namespace Implementation.Components
                 depthImageManager.ObservationReady += OnObservationReady;
         }
 
+        public bool UseObservationSnapshots
+        {
+            get => _snapshotSource?.UseObservationSnapshots ?? true;
+            set
+            {
+                lock (_snapshotSync)
+                {
+                    if (_snapshotSource == null || _snapshotSource.UseObservationSnapshots == value) return;
+                    _snapshotSource.UseObservationSnapshots = value;
+                    _pendingObservation = null;
+                    _spareSnapshots.Clear();
+                }
+            }
+        }
+
         public void Init(ObserverType type)
         {
             Type = type;
@@ -467,6 +479,7 @@ namespace Implementation.Components
         public async Task<ProcessServiceStatus> Update()
         {
             await _updateGate.WaitAsync();
+            var reservedRasters = false;
             try
             {
                 var observer = _interactionObserver;
@@ -476,7 +489,19 @@ namespace Implementation.Components
                 {
                     if (_disposed) return ProcessServiceStatus.Skipped;
                     observation = _pendingObservation;
-                    _pendingObservation = null;
+                    if (observation is { OwnsRasters: false } &&
+                        !(reservedRasters = _snapshotSource.TryReserveRasters()))
+                    {
+                        // Retry on the next tick. Age existing contacts while the producer is busy.
+                        observation = null;
+                    }
+                    else
+                    {
+                        _pendingObservation = null;
+                        // A failed producer update may have already modified the last live pair.
+                        if (reservedRasters && observation.Sequence != _snapshotSource.RasterSequence)
+                            observation = null;
+                    }
                 }
                 if (observation == null || observation.Sequence <= _lastSequence ||
                     observation.TimestampSeconds <= _lastObservationTime)
@@ -502,11 +527,15 @@ namespace Implementation.Components
                     lock (_snapshotSync)
                     {
                         RecycleSnapshot(_lastSnapshot);
-                        _lastSnapshot = _disposed || _snapshotSource == null ? null : observation;
+                        _lastSnapshot = _disposed || _snapshotSource == null || !observation.OwnsRasters ? null : observation;
                     }
                 }
             }
-            finally { _updateGate.Release(); }
+            finally
+            {
+                if (reservedRasters) _snapshotSource.ReleaseRasters();
+                _updateGate.Release();
+            }
         }
 
         private void OnObservationReady(object sender, TrackingObservation observation)
@@ -522,6 +551,12 @@ namespace Implementation.Components
             lock (_snapshotSync)
             {
                 if (_disposed) return;
+                if (!_snapshotSource.UseObservationSnapshots)
+                {
+                    _pendingObservation = new TrackingObservation(sequence, timestamp, cloud, vectors, null, copyRasters: false);
+                    return;
+                }
+
                 // A pending pair has no reader. Prefer overwriting it when the consumer lags.
                 var spare = _pendingObservation;
                 _pendingObservation = null;
@@ -533,7 +568,8 @@ namespace Implementation.Components
         // Called under _snapshotSync. Public event observations are never recycled.
         private void RecycleSnapshot(TrackingObservation observation)
         {
-            if (!_disposed && _snapshotSource != null && observation != null && _spareSnapshots.Count < 2)
+            if (!_disposed && _snapshotSource is { UseObservationSnapshots: true } &&
+                observation is { OwnsRasters: true } && _spareSnapshots.Count < 2)
                 _spareSnapshots.Push(observation);
         }
 

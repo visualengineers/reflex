@@ -20,6 +20,7 @@ namespace TrackingServer.Model
         private readonly ITimerLoop _timerLoop;
         private readonly IInteractionManager _interactionManager;
         private readonly CalibrationService _calibrationService;
+        private readonly object _snapshotSettingsSync = new();
 
         private readonly HubGroupSubscriptionManager<IList<InteractionVelocity>> _velocitySubscriptions;
 
@@ -54,6 +55,19 @@ namespace TrackingServer.Model
             get => _timerLoop.IntervalLength;
             set => _timerLoop.IntervalLength = value;
         }
+        public bool UseObservationSnapshots
+        {
+            get => _interactionManager.UseObservationSnapshots;
+            set
+            {
+                lock (_snapshotSettingsSync)
+                {
+                    _interactionManager.UseObservationSnapshots = value;
+                    _configManager.Settings.ProcessingSettingValues.UseObservationSnapshots = value;
+                }
+            }
+        }
+
         public ObserverType ObserverType
         {
             get => _interactionManager.Type;
@@ -163,6 +177,7 @@ namespace TrackingServer.Model
         {
             _timerLoop.IntervalLength = _configManager.Settings.ProcessingSettingValues.IntervalDuration;
             ObserverType = _configManager.Settings.ProcessingSettingValues.InteractionType;
+            UseObservationSnapshots = _configManager.Settings.ProcessingSettingValues.UseObservationSnapshots;
 
             if (_configManager?.Settings?.FilterSettingValues != null)
             {

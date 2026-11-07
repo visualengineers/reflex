@@ -175,6 +175,58 @@ Die Extremumsuche benötigt im Median 2,46 ms gegenüber 12,58 ms auf `main`. Ih
 
 [Neuer Lauf auf main](pipeline-performance-scalar-main.csv) · [PR mit produktiver Skalarrechnung](pipeline-performance-scalar-pr.csv)
 
+## Vergleich mit aktiviertem und deaktiviertem Snapshot-Schalter
+
+Gemessen wurde der lokale Release-Stand mit dem produktiven Schalter `UseObservationSnapshots` auf Basis von `57cb8907`. Beide Modi verwenden die skalare Extremumsuche, dieselben Einstellungen und die vier vollständigen Recordings. Jeder Modus lief je einmal pro Messaufbau in einem eigenen Prozess auf dem oben beschriebenen Rechner.
+
+- **Synchron** verarbeitet jeder Sensor-Callback seinen Frame vollständig. Nominelle Aufnahmezeitpunkte erlauben den direkten Vergleich mit den bisherigen Laufzeitmessungen. Die gemessene Latenz reicht vom Eintritt in den Sensor-Callback bis zum Abschluss der Analyse. JPEG-Dekodierung und Replay-Wartezeit liegen außerhalb dieses Intervalls.
+- **Getrennte Takte** liefert der Replay-Emulator die Frames mit einer Zielrate von 30 Hz. Ein unabhängiger 30-ms-Takt ruft den produktiven `InteractionManager.Update` auf und holt nach dem letzten Sensorframe eine gegebenenfalls noch wartende Beobachtung ab. Die Latenz verwendet die reale monotone Uhr und umfasst die Wartezeit bis zur Verarbeitung. Netzwerk und Server-Broadcast sind in beiden Aufbauten ausgeschlossen.
+
+Median und p95 berücksichtigen nur verarbeitete Frames ab Index 20 jeder Aufnahme. Bei den Ausfällen wird zwischen am Eingang verworfenen und aufbereiteten, aber nicht konsumierten Frames unterschieden. Ein Analyseaufruf ohne neuen Frame zählt dabei nicht als zusätzlicher Frameverlust.
+
+### Synchroner Replay
+
+| Aufnahme | Median an (ms) | Median aus (ms) | p95 an (ms) | p95 aus (ms) | Übersprungen an / aus |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Half-Circle | 15,68 | 15,24 | 23,19 | 22,44 | 0 / 0 |
+| Line | 17,23 | 15,52 | 54,53 | 30,64 | 0 / 0 |
+| Circle | 17,24 | 15,72 | 54,91 | 32,78 | 0 / 0 |
+| Multi-Touch | 16,17 | 15,29 | 33,90 | 31,35 | 0 / 0 |
+| **Gesamt** | **16,30** | **15,43** | **39,77** | **30,75** | **0 / 0** |
+
+Beide Varianten verarbeiteten alle 1.257 Eingangsframes. Mit ausgeschaltetem Snapshot sinkt der Median um rund 0,87 ms und p95 um rund 9,03 ms. Die mediane Tiefenbildstufe sinkt von 13,70 auf 12,64 ms. Der Median der Extremumsuche liegt in beiden Fällen bei rund 2,5 ms. Von den 1.177 Frames nach dem Aufwärmen überschritten 93 mit Snapshot und 33 ohne Snapshot das 30-Hz-Budget von 33,33 ms.
+
+### Replay mit getrennten Takten
+
+Die Latenzen in der Tabelle gelten für verarbeitete Frames nach dem Aufwärmen. Die Framezahlen erfassen die vollständigen Aufnahmen.
+
+| Aufnahme | Median an (ms) | Median aus (ms) | p95 an (ms) | p95 aus (ms) | Übersprungen an / aus |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Half-Circle | 31,45 | 25,66 | 49,71 | 38,50 | 18 / 103 |
+| Line | 31,49 | 26,59 | 57,42 | 44,68 | 25 / 128 |
+| Circle | 31,93 | 25,49 | 63,03 | 42,66 | 15 / 81 |
+| Multi-Touch | 29,05 | 25,51 | 59,99 | 42,80 | 24 / 157 |
+| **Gesamt** | **30,65** | **26,00** | **55,13** | **42,80** | **82 / 469** |
+
+| Status der 1.257 Eingangsframes | Snapshots an | Snapshots aus |
+| --- | ---: | ---: |
+| Analysiert | 1.175 | 788 |
+| Am Sensoreingang verworfen | 0 | 126 |
+| Aufbereitet, aber nicht analysiert | 82 | 343 |
+| **Übersprungen gesamt** | **82 (6,5 %)** | **469 (37,3 %)** |
+
+Ohne Snapshot reserviert die Analyse das Live-Rasterpaar und der Produzent verwirft währenddessen ankommende Frames. Ist umgekehrt der Produzent beschäftigt, kann der Analyse-Takt kein Live-Raster übernehmen. Bis zum nächsten Takt kann eine neuere Beobachtung die wartende ersetzen. Mit Snapshots können beide Stufen gleichzeitig auf getrennten Rastern arbeiten. Die Pipeline hält jeweils nur die neueste wartende Beobachtung.
+
+Die Latenz ohne Snapshots ist auch auf den 688 nach dem Aufwärmen in beiden Modi verarbeiteten Frames geringer. Median und p95 liegen mit Snapshots bei 28,05 und 50,14 ms, ohne Snapshots bei 26,18 und 43,00 ms. Der niedrigere p95 geht in diesem Lauf mit einer deutlich geringeren Abdeckung der Eingangsframes einher. Die Ausfallquoten hängen vom Takt und der Laufzeitverteilung ab. Die tatsächliche mittlere Eingangstaktrate lag je Aufnahme und Modus zwischen 30,0 und 30,3 Hz.
+
+### Vergleich der Erkennung
+
+Zwei separate synchrone Prüfläufe mit identischen nominellen Aufnahmezeitpunkten lieferten in **allen 1.257 Frames** dieselben SHA-256-Prüfsummen für die Rohkandidaten und veröffentlichten Kontakte. Der Vergleich verwendet dieselben Felder und dieselbe Sortierung wie bei der Prüfung der skalaren Extremumsuche. Der systemzeitabhängige Legacy-Zeitstempel bleibt außen vor. Die Prüfsummen wurden außerhalb der Laufzeitmessungen berechnet.
+
+Bei getrennten Takten unterscheiden sich die verarbeiteten Framefolgen und die tatsächlichen Zeitstempel. Unter den 736 in beiden Modi analysierten Eingangsframes wich die Zahl veröffentlichter Kontakte in 48 Frames ab. In 17 Frames veröffentlichte nur der Snapshot-Modus Kontakte, in 3 nur der Live-Modus. Das sind Unterschiede der zeitabhängigen Pipeline-Ausgabe unter diesem Takt. Der synchrone Vergleich isoliert die Erkennung bei identischer Framefolge.
+
+[Einzelbilddaten zum Snapshot-Schalter](pipeline-performance-snapshot-switch.csv). In der CSV kennzeichnet `SensorDropped` am Eingang verworfene Frames und `NotConsumed` aufbereitete Frames ohne Analyse. Die Analyselatenzen sind für diese Zeilen mit 0 belegt und gehen nicht in die Perzentile ein.
+
 ## Rohdaten
 
 - [Frames auf main](pipeline-performance-main.csv)

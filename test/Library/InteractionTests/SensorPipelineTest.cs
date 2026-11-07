@@ -175,6 +175,55 @@ public class SensorPipelineTest
     }
 
     [Test]
+    public async Task LiveRastersStayReservedUntilRemoteAnalysisCompletes()
+    {
+        var depth = new DepthImageManager(new FilterManager { MeasurePerformance = false });
+        depth.Initialize(30, 30);
+        var service = new Service();
+        using var manager = new InteractionManager(depth, service, new Performance())
+        {
+            Distance = 1, MinDistance = .125f, MaxDistance = .5f, MaxConfidence = 100,
+            ObservationTimeoutSeconds = 30, UseObservationSnapshots = false
+        };
+        manager.Init(ObserverType.Remote);
+        var snapshots = 0;
+        depth.ObservationReady += (_, _) => snapshots++;
+
+        void Emit(float value)
+        {
+            var points = Enumerable.Range(0, 900)
+                .Select(i => new Point3(i % 30, i / 30, i == 310 ? value : 1))
+                .ToArray();
+            depth.Update(new DepthCameraFrame { Depth = points });
+        }
+
+        var release = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        service.Wait = release.Task;
+        Emit(.75f);
+        var processing = manager.Update();
+        try
+        {
+            Assert.That(service.InFlight, Is.SameAs(depth.PointCloud));
+            Assert.That(snapshots, Is.Zero);
+            manager.UseObservationSnapshots = true;
+            Emit(.5f);
+            Assert.That(depth.PointCloud[10, 10].Z, Is.EqualTo(.75f));
+        }
+        finally
+        {
+            release.SetResult(true);
+            await processing;
+        }
+
+        service.Wait = Task.CompletedTask;
+        Emit(.7f);
+        Assert.That(await manager.Update(), Is.EqualTo(ProcessServiceStatus.Available));
+        Assert.That(service.Received, Is.Not.SameAs(depth.PointCloud));
+        Assert.That(service.Received[10, 10].Z, Is.EqualTo(.7f));
+        Assert.That(snapshots, Is.EqualTo(1));
+    }
+
+    [Test]
     public async Task InFlightRemoteRequestDoesNotBlockExpiryOrReviveLateContacts()
     {
         using var scene = new Scene();

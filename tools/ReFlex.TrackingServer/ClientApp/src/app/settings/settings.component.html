@@ -421,6 +421,33 @@
     </p>
   </app-value-selection>
 
+  <div class="settings__item">
+    <div class="settings__item--content">
+      <label class="settings__item--label" for="settings-observation-snapshots-checkbox">
+        Observation Snapshots
+      </label>
+      <div class="slider checkbox">
+        <input
+          #observationSnapshots
+          type="checkbox"
+          id="settings-observation-snapshots-checkbox"
+          class="checkbox-toggle"
+          aria-describedby="settings-observation-snapshots-description"
+          [checked]="settings.processingSettingValues.useObservationSnapshots"
+          [disabled]="savingObservationSnapshots"
+          (change)="saveUseObservationSnapshots(observationSnapshots.checked)"
+        />
+        <label class="checkbox-toggle-label" for="settings-observation-snapshots-checkbox"
+          aria-hidden="true"><span class="on">ON</span><span class="off">OFF</span></label>
+      </div>
+    </div>
+    <div class="settings__item--info" id="settings-observation-snapshots-description">
+      Copy the point cloud and vector field for interaction processing.
+      When disabled, processing reads the live rasters and skips incoming
+      sensor frames while those rasters are in use.
+    </div>
+  </div>
+
   <!-- NumSamples -->
   <app-value-slider
     class="settings__item"
