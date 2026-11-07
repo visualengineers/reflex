@@ -61,6 +61,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public settings: TrackingServerAppSettings = DEFAULT_SETTINGS;
 
   public canRestore = false;
+  public savingObservationSnapshots = false;
   public isTrackingActive = false;
   public isCurrentlyInitializingLimitationFilter = false;
   public isLimitationFilterInitialized = false;
@@ -426,6 +427,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.logService.sendErrorLog(`${error}`);
         }
       );
+  }
+
+  public saveUseObservationSnapshots(enabled: boolean): void {
+    const previous = this.settings.processingSettingValues.useObservationSnapshots;
+    this.settings.processingSettingValues.useObservationSnapshots = enabled;
+    this.savingObservationSnapshots = true;
+    this.settingsService
+      .setUseObservationSnapshots(enabled)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe({
+        next: (value) => {
+          this.settings.processingSettingValues.useObservationSnapshots = value;
+          this.savingObservationSnapshots = false;
+        },
+        error: (error) => {
+          this.settings.processingSettingValues.useObservationSnapshots = previous;
+          this.savingObservationSnapshots = false;
+          this.logService.sendErrorLog(`${error}`);
+        }
+      });
   }
 
   public saveExtremumValues(): void {
@@ -829,6 +850,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
     settings.filterSettingValues ??= DEFAULT_SETTINGS.filterSettingValues;
+    settings.filterSettingValues.extremumSettings ??= { ...DEFAULT_SETTINGS.filterSettingValues.extremumSettings };
+    settings.filterSettingValues.extremumSettings.mergeRadius ??= 3;
+    settings.filterSettingValues.smoothingValues.observationTimeoutSeconds ??= 1;
 
     settings.calibrationValues ??= DEFAULT_SETTINGS.calibrationValues;
 
@@ -836,7 +860,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     settings.networkSettingValues ??= DEFAULT_SETTINGS.networkSettingValues;
 
-    settings.processingSettingValues ??= DEFAULT_SETTINGS.processingSettingValues;
+    settings.processingSettingValues ??= { ...DEFAULT_SETTINGS.processingSettingValues };
+    settings.processingSettingValues.useObservationSnapshots ??= true;
 
     settings.remoteProcessingServiceSettingsValues ??= DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
 

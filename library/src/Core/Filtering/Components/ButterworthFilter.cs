@@ -1,84 +1,97 @@
-﻿
+using System;
 using ReFlex.Core.Common.Components;
 using Math = System.Math;
 
 namespace ReFlex.Core.Filtering.Components
 {
     /// <summary>
-    /// Butterworth filter implementation according to https://apps.dtic.mil/sti/pdfs/AD1060538.pdf
+    /// Second-order continuous-time Butterworth low-pass with a cutoff in Hz. The exact state
+    /// transition assumes linear input between real samples; arbitrary gaps remain stable.
+    /// Unlike fixed biquad coefficients, this does not change cutoff when the cadence changes.
     /// </summary>
     public class ButterworthFilter : Base2DFilter
     {
-        private static readonly double Sqrt2 = Math.Sqrt(2);
-        
-        public ButterworthFilter(int numSamplesMin = 3) : base(numSamplesMin)
+        private readonly double _cutoffHz;
+        public ButterworthFilter(int numSamplesMin = 3, double cutoffHz = 3) : base(numSamplesMin)
         {
+            if (!double.IsFinite(cutoffHz) || cutoffHz <= 0)
+                throw new ArgumentOutOfRangeException(nameof(cutoffHz));
+            _cutoffHz = cutoffHz;
+        }
+
+        private double? _lastTime;
+        private Point3 _lastInput;
+        private readonly double[] _state = new double[3];
+        private readonly double[] _derivative = new double[3];
+
+        /// <summary>Advance one track's persistent filter state using a new real measurement only.</summary>
+        public Point3 ProcessSample(Point3 input, double timestampSeconds)
+        {
+            if (!double.IsFinite(timestampSeconds) || (_lastTime.HasValue && timestampSeconds <= _lastTime.Value))
+                throw new ArgumentOutOfRangeException(nameof(timestampSeconds));
+            var values = new[] { (double)input.X, input.Y, input.Z };
+            if (!_lastTime.HasValue)
+                Array.Copy(values, _state, 3);
+            else
+            {
+                var previous = new[] { (double)_lastInput.X, _lastInput.Y, _lastInput.Z };
+                var dt = timestampSeconds - _lastTime.Value;
+                var omega = 2 * Math.PI * _cutoffHz;
+                var alpha = omega / Math.Sqrt(2);
+                var decay = Math.Exp(-alpha * dt);
+                var cos = Math.Cos(alpha * dt);
+                var sin = Math.Sin(alpha * dt);
+                for (var axis = 0; axis < 3; axis++)
+                {
+                    var slope = (values[axis] - previous[axis]) / dt;
+                    var offset = 2 * alpha * slope / (omega * omega);
+                    var error = _state[axis] - previous[axis] + offset;
+                    var errorDerivative = _derivative[axis] - slope;
+                    _state[axis] = values[axis] - offset + decay *
+                        (error * cos + (errorDerivative + alpha * error) / alpha * sin);
+                    _derivative[axis] = slope + decay * (errorDerivative * cos -
+                        (alpha * errorDerivative + omega * omega * error) / alpha * sin);
+                }
+            }
+            _lastInput = new Point3(input);
+            _lastTime = timestampSeconds;
+            return new Point3((float)_state[0], (float)_state[1], (float)_state[2]);
         }
 
         protected override void ComputeFit()
         {
-            PolyX = ComputeSmoothValues(XData, 1, 640);
-            PolyY = ComputeSmoothValues(YData, 1, 480);
-            PolyZ = ComputeSmoothValues(ZData, 1, 1);
+            PolyX = Smooth(XData);
+            PolyY = Smooth(YData);
+            PolyZ = Smooth(ZData);
         }
 
-        protected override Point3 Evaluate(int index)
+        protected override Point3 Evaluate(int index) =>
+            new((float)PolyX[index], (float)PolyY[index], (float)PolyZ[index]);
+
+        private double[] Smooth(double[] input)
         {
-            return new Point3(
-                (float) PolyX[index], 
-                (float) PolyY[index],
-                (float) PolyZ[index]);
-        }
-        
-        private static double[] ComputeSmoothValues(double[] raw, double deltaTimeSec, double cutOff) {
-            if (raw == null) 
-                return null;
-            if (cutOff == 0) 
-                return raw;
-            
-            var samplingRate = 1 / deltaTimeSec;
-            var dF2 = raw.Length - 1; // The data range is set with dF2
-            var dat2 = new double[dF2 + 4]; // Array with 4 extra points front and back
-            var data = new double[raw.Length]; // empty result array
-            
-            for (var r = 0; r < dF2; r++) {
-                dat2[2 + r] = raw[r];
+            var omega = 2 * Math.PI * _cutoffHz;
+            var alpha = omega / Math.Sqrt(2);
+            var beta = alpha;
+            var result = new double[input.Length];
+            result[0] = input[0];
+            var derivative = 0d;
+            for (var i = 1; i < input.Length; i++)
+            {
+                var dt = TimesSeconds[i] - TimesSeconds[i - 1];
+                var slope = (input[i] - input[i - 1]) / dt;
+                // Particular solution for a linear input plus the exact damped homogeneous state.
+                var offset = 2 * alpha * slope / (omega * omega);
+                var error = result[i - 1] - input[i - 1] + offset;
+                var errorDerivative = derivative - slope;
+                var decay = Math.Exp(-alpha * dt);
+                var cos = Math.Cos(beta * dt);
+                var sin = Math.Sin(beta * dt);
+                result[i] = input[i] - offset + decay * (error * cos + (errorDerivative + alpha * error) / beta * sin);
+                derivative = slope + decay * (errorDerivative * cos -
+                    (alpha * errorDerivative + omega * omega * error) / beta * sin);
             }
-            dat2[1] = dat2[0] = raw[0];
-            dat2[dF2 + 3] = dat2[dF2 + 2] = raw[dF2];
-            
-            var wc = Math.Tan(cutOff * Math.PI / samplingRate);
-            var k1 = Sqrt2 * wc;
-            var k2 = wc * wc;
-            var a = k2 / (1 + k1 + k2);
-            var b = 2 * a;
-            var c = a;
-            var k3 = b / k2;
-            var d = -2 * a + k3;
-            var e = 1 - (2 * a) - k3;
-            
-            // RECURSIVE TRIGGERS - ENABLE filter is performed (first, last points constant)
-            var datYt = new double[dF2 + 4];
-            datYt[1] = datYt[0] = raw[0];
-            for (var s = 2; s < dF2 + 2; s++) {
-                datYt[s] =   a * dat2[s] + b * dat2[s - 1] + c * dat2[s - 2]
-                           + d * datYt[s - 1] + e * datYt[s - 2];
-            }
-            datYt[dF2 + 3] = datYt[dF2 + 2] = datYt[dF2 + 1];
-            
-            // FORWARD filter
-            var datZt = new double[dF2 + 2];
-            datZt[dF2] = datYt[dF2 + 2];
-            datZt[dF2 + 1] = datYt[dF2 + 3];
-            for (var t = -dF2 + 1; t <= 0; t++) {
-                datZt[-t] =   a * datYt[-t + 2] + b * datYt[-t + 3] + c * datYt[-t + 4]
-                            + d * datZt[-t + 1] + e * datZt[-t + 2];
-            }
-            // Calculated points are written
-            for (var p = 0; p < dF2; p++) {
-                data[p] = datZt[p];
-            }
-            return data;
+            return result;
         }
     }
 }

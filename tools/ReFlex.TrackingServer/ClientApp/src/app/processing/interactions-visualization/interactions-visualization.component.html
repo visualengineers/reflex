@@ -97,3 +97,13 @@
     [ngStyle]="{ visibility: fullScreen ? 'visible' : 'collapse' }"
   ></div>
 </div>
+
+@if (showPrediction) {
+  <app-interactions-velocity-visualization
+    [data]="predictionData"
+    [showMatching]="showMatching"
+    [showLinear]="showLinear"
+    [showAccelerated]="showAccelerated"
+  />
+  <p role="status">{{ predictionMessage }}</p>
+}

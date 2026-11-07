@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using BenchmarkDotNet.Reports;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using PointCloud.Benchmark.Benchmarks.Filter;
 using PointCloud.Benchmark.Benchmarks.Interactivity;
@@ -13,6 +15,15 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        if (args.Contains("--observer-comparison"))
+        {
+            BenchmarkSwitcher.FromTypes(new[] { typeof(ObserverExtremumComparison), typeof(ObserverSmoothingComparison) })
+                .Run(args.Where(arg => arg != "--observer-comparison").ToArray(),
+                    BenchmarkDotNet.Configs.DefaultConfig.Instance.AddJob(
+                        BenchmarkDotNet.Jobs.Job.ShortRun.WithToolchain(
+                            BenchmarkDotNet.Toolchains.InProcess.Emit.InProcessEmitToolchain.Instance)));
+            return;
+        }
         // var summary1 = BenchmarkBoxFilter();
         //
         // var summary2 = BenchmarkIteration1();

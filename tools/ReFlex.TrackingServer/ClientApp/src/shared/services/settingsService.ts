@@ -65,6 +65,10 @@ export class SettingsService {
       .subscribe((result) => this.settingsSubject.next(result));
   }
 
+  public setUseObservationSnapshots(enabled: boolean): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}api/Processing/UseObservationSnapshots`, enabled);
+  }
+
   public setBorder(border: Border): Observable<Border> {
     return this.http.post<Border>(this.setBorderRoute, border);
   }
