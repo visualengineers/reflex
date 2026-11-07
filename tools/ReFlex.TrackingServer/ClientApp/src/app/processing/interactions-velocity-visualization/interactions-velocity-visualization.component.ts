@@ -1,20 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { InteractionVelocity, Point3 } from '@reflex/shared-types';
 
 @Component({
   selector: 'app-interactions-velocity-visualization',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './interactions-velocity-visualization.component.html',
   styleUrl: './interactions-velocity-visualization.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InteractionsVelocityVisualizationComponent implements OnChanges {
   @Input() public data: Array<InteractionVelocity> = [];
-  public showLinear = true;
-  public showAccelerated = true;
-  public showMatching = true;
+  @Input() public showLinear = true;
+  @Input() public showAccelerated = true;
+  @Input() public showMatching = true;
   public trails = new Map<number, Array<Point3>>();
   private readonly lastFrames = new Map<number, number>();
 

@@ -20,8 +20,8 @@ import {
   CompleteInteractionData,
   DEFAULT_SETTINGS,
   Interaction,
-  ObserverType,
   ProcessingSettings,
+  PredictionSettings,
   RemoteProcessingServiceSettings,
   TrackingServerAppSettings
 } from '@reflex/shared-types';
@@ -30,10 +30,8 @@ import { concatMap, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
-import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { LogService } from '../log/log.service';
-import { PredictionPanelComponent } from './prediction-panel/prediction-panel.component';
 import { HistoryComponent } from './history/history.component';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { InteractionsComponent } from './interactions/interactions.component';
@@ -53,8 +51,7 @@ import { InteractionsComponent } from './interactions/interactions.component';
     OptionCheckboxComponent,
     InteractionsComponent,
     HistoryComponent,
-    InteractionsVisualizationComponent,
-    PredictionPanelComponent
+    InteractionsVisualizationComponent
   ]
 })
 export class ProcessingComponent implements OnInit, OnDestroy {
@@ -65,40 +62,49 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   @ViewChild('interactionsList')
   public interactionsList?: InteractionsComponent;
 
+  public showPrediction = true;
+  public showMatching = true;
+  public showLinear = true;
+  public showAccelerated = true;
+  public predictionSettings: PredictionSettings = {
+    predictionHorizonSeconds: 0.05,
+    useVelocityPrediction: true,
+    numFramesForPrediction: 3,
+    useSecondDerivation: false,
+    secondDerivationMagnitude: 0.5,
+    ...DEFAULT_SETTINGS.predictionSettings
+  };
+
+  public predictionMessage = '';
+
   public statusText = '';
   public eventId = 0;
-
   public selectedProcessorIdx = -1;
   public interval = 0;
-
   public processors: Array<string> = [];
-
   public isInteractionProcessingActive = false;
-
   public remoteSettings: RemoteProcessingServiceSettings = {
     ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues
   };
 
   public remoteAddress = '';
   public remotePort = 0;
-
   public processingSettings: ProcessingSettings = { ...DEFAULT_SETTINGS.processingSettingValues };
 
   private readonly changeDetector = inject(ChangeDetectorRef);
-  private readonly baseUrl = inject(BASE_URL);
   private readonly settingsService = inject(SettingsService);
   private readonly processingService = inject(ProcessingService);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
 
+  private predictionSettingsSubscription?: Subscription;
+  private predictionSaveSubscription?: Subscription;
   private selectedProcessorSubscription?: Subscription;
   private intervalSubscription?: Subscription;
   private interactionsSubscription?: Subscription;
   private observerSubscription?: Subscription;
   private remoteSettingsSubscription?: Subscription;
   private saveSettingsSubscription?: Subscription;
-
-  // private readonly settingsSubscription?: Subscription;
   private statusSubscription?: Subscription;
 
   private readonly saveSettings$: Observable<TrackingServerAppSettings>;
@@ -106,10 +112,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   public constructor() {
     this.saveSettings$ = this.settingsService.getSettings().pipe(
       map((result) => {
-        const settings = result;
         result.remoteProcessingServiceSettingsValues = this.remoteSettings;
 
-        return settings;
+        return result;
       }),
       tap((updatedSettings: TrackingServerAppSettings) => {
         this.settingsService.saveSettings(updatedSettings);
@@ -117,7 +122,16 @@ export class ProcessingComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get forecastMilliseconds(): number {
+    return this.predictionSettings.predictionHorizonSeconds * 1000;
+  }
+
+  public set forecastMilliseconds(value: number) {
+    this.predictionSettings.predictionHorizonSeconds = value / 1000;
+  }
+
   public ngOnInit(): void {
+    this.loadPredictionSettings();
     this.statusSubscription = this.processingService
       .getStatus()
       .pipe(markViewForCheck(this.changeDetector))
@@ -209,6 +223,8 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.predictionSettingsSubscription?.unsubscribe();
+    this.predictionSaveSubscription?.unsubscribe();
     this.statusSubscription?.unsubscribe();
     this.selectedProcessorSubscription?.unsubscribe();
     this.intervalSubscription?.unsubscribe();
@@ -218,15 +234,27 @@ export class ProcessingComponent implements OnInit, OnDestroy {
     this.saveSettingsSubscription?.unsubscribe();
   }
 
+  public savePrediction(): void {
+    this.predictionSaveSubscription?.unsubscribe();
+    this.predictionSaveSubscription = this.processingService.setPredictionSettings(this.predictionSettings)
+      .pipe(markViewForCheck(this.changeDetector)).subscribe({
+        next: (settings) => {
+          this.predictionSettings = settings;
+          this.predictionMessage = 'Prediction settings saved.';
+        },
+        error: () => {
+          this.predictionMessage = 'Could not save. Use at least 2 samples, a horizon of 0–1000 ms and an acceleration weight from 0 to 1.';
+        }
+      });
+  }
+
   public isInteractionProcessingActiveChanged(): void {
     this.processingService
       .toggleProcessing()
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          console.log(
-            `Processing status toggle - result:  ${result.status} - ${result.body?.value}`
-          );
+          console.log(`Processing status toggle - result:  ${result.status} - ${result.body?.value}`);
           this.isInteractionProcessingActive = result.body?.value as boolean;
         },
         (error) => {
@@ -242,9 +270,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          console.log(
-            `response to change Observer Type: ${result.status} - ${result.body?.value}`
-          );
+          console.log(`response to change Observer Type: ${result.status} - ${result.body?.value}`);
         },
         (error) => {
           console.error(error);
@@ -259,9 +285,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          console.log(
-            `Response to change interval request: ' + ${result.status} - Value: ${result.body?.value}`
-          );
+          console.log(`Response to change interval request: ' + ${result.status} - Value: ${result.body?.value}`);
         },
         (error) => {
           console.error(error);
@@ -296,11 +320,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          console.log(
-            `Response to set remote processing settings request: ' + ${
-              result.status
-            } - Value: ${JSON.stringify(result.body)}`
-          );
+          console.log(`Response to set remote processing settings request: ' + ${
+            result.status
+          } - Value: ${JSON.stringify(result.body)}`);
         },
         (error) => {
           console.error(error);
@@ -321,6 +343,19 @@ export class ProcessingComponent implements OnInit, OnDestroy {
           this.logService.sendErrorLog(`${error}`);
         }
       );
+  }
+
+  private loadPredictionSettings(): void {
+    this.predictionSettingsSubscription = this.settingsService.getSettings()
+      .pipe(markViewForCheck(this.changeDetector)).subscribe({
+        next: (settings) => {
+          this.predictionSettings = { ...this.predictionSettings, ...settings.predictionSettings };
+        },
+        error: () => {
+          this.predictionMessage = 'Could not load prediction settings.';
+        }
+      });
+    this.settingsService.update();
   }
 
   private updateStatusText(): void {

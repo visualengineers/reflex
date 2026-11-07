@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -17,12 +18,15 @@ import {
   ExtremumDescription,
   ExtremumType,
   FrameSizeDefinition,
-  Interaction
+  Interaction,
+  InteractionVelocity
 } from '@reflex/shared-types';
 import { Subscription } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
+import { ProcessingService } from 'src/shared/services/processing.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { InteractionsVelocityVisualizationComponent } from '../interactions-velocity-visualization/interactions-velocity-visualization.component';
 import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 
 @Component({
@@ -30,12 +34,20 @@ import { HistoryVisualizationComponent } from '../history-visualization/history-
   templateUrl: './interactions-visualization.component.html',
   styleUrls: ['./interactions-visualization.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, HistoryVisualizationComponent]
+  imports: [CommonModule, FormsModule, HistoryVisualizationComponent, InteractionsVelocityVisualizationComponent]
 })
-export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
+export class InteractionsVisualizationComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('interactionVis')
   public container?: ElementRef<HTMLDivElement>;
+
+  @Input() public isProcessing = false;
+  @Input() public showPrediction = true;
+  @Input() public showMatching = true;
+  @Input() public showLinear = true;
+  @Input() public showAccelerated = true;
+  public predictionData: Array<InteractionVelocity> = [];
+  public predictionMessage = '';
 
   public interactions: CompleteInteractionData = {
     raw: [],
@@ -47,6 +59,8 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
   public fullScreen = false;
   public maxConfidence = 30;
+  private predictionSubscription?: Subscription;
+  private readonly processingService = inject(ProcessingService);
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
@@ -70,6 +84,30 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     this.pEventId = value;
   }
 
+  public ngOnChanges(): void {
+    if (!this.isProcessing || !this.showPrediction) {
+      this.predictionSubscription?.unsubscribe();
+      this.predictionSubscription = undefined;
+      this.predictionData = [];
+
+      return;
+    }
+    if (this.predictionSubscription && !this.predictionSubscription.closed) {
+      return;
+    }
+    this.predictionMessage = '';
+    this.predictionSubscription = this.processingService.getVelocities()
+      .pipe(markViewForCheck(this.changeDetector)).subscribe({
+        next: (data) => {
+          this.predictionData = data;
+        },
+        error: () => {
+          this.predictionMessage = 'Prediction stream disconnected.';
+          this.predictionData = [];
+        }
+      });
+  }
+
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService
       .getFrameSize()
@@ -86,6 +124,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.predictionSubscription?.unsubscribe();
     this.frameSizeSubscription?.unsubscribe();
   }
 

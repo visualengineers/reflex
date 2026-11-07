@@ -247,6 +247,11 @@
     <app-interactions-visualization
       #visualizationContainer
       [eventId]="eventId"
+      [isProcessing]="isInteractionProcessingActive"
+      [showPrediction]="showPrediction"
+      [showMatching]="showMatching"
+      [showLinear]="showLinear"
+      [showAccelerated]="showAccelerated"
     ></app-interactions-visualization>
     <div class="content__header">
       <h2 class="heading-secondary">Legend</h2>
@@ -269,9 +274,116 @@
           <div class="legend-interaction-circle interaction-invalid"></div>
           <div class="legend-interaction-label">Invalid Type</div>
         </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #fff">●</div>
+          <div class="legend-interaction-label">Measured</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #ffcd66">■</div>
+          <div class="legend-interaction-label">Smoothed</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #d9a6ff">◇</div>
+          <div class="legend-interaction-label">Matching target (current time)</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #61dbea">○</div>
+          <div class="legend-interaction-label">Linear forecast</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #ff95b9">○</div>
+          <div class="legend-interaction-label">Acceleration forecast</div>
+        </div>
       </div>
+    </div>
+    <div class="content__header">
+      <h2 class="heading-secondary">Motion prediction</h2>
+    </div>
+    <div class="content__body">
+      <app-option-checkbox
+        class="settings__item"
+        elementTitle="Show prediction"
+        elementId="processing-showPrediction"
+        [(data)]="showPrediction"
+      >
+        Show measured trajectories, smoothed positions and forecasts in sensor coordinates.
+      </app-option-checkbox>
+      <app-option-checkbox
+        class="settings__item"
+        elementTitle="Matching target (current time)"
+        elementId="processing-showMatching"
+        [(data)]="showMatching"
+      >
+        Show this prediction layer.
+      </app-option-checkbox>
+      <app-option-checkbox
+        class="settings__item"
+        elementTitle="Linear forecast"
+        elementId="processing-showLinear"
+        [(data)]="showLinear"
+      >
+        Show this prediction layer.
+      </app-option-checkbox>
+      <app-option-checkbox
+        class="settings__item"
+        elementTitle="Acceleration forecast"
+        elementId="processing-showAccelerated"
+        [(data)]="showAccelerated"
+      >
+        Show this prediction layer.
+      </app-option-checkbox>
+      <app-option-checkbox
+        class="settings__item"
+        elementTitle="Use prediction for contact assignment"
+        elementId="processing-useVelocityPrediction"
+        [(data)]="predictionSettings.useVelocityPrediction"
+      >
+        Use the motion model to assign contacts independently of visualization visibility.
+      </app-option-checkbox>
+      <app-value-slider
+        class="settings__item"
+        elementTitle="Forecast horizon"
+        elementId="processing-forecastHorizon"
+        [min]="0"
+        [max]="1000"
+        [step]="10"
+        [(data)]="forecastMilliseconds"
+        unit="ms"
+      >
+        Time horizon for position forecasts.
+      </app-value-slider>
+      <app-value-slider
+        class="settings__item"
+        elementTitle="Measured samples"
+        elementId="processing-predictionSamples"
+        [min]="2"
+        [max]="100"
+        [step]="1"
+        [(data)]="predictionSettings.numFramesForPrediction"
+      >
+        The sample count is limited by the tracking history.
+      </app-value-slider>
+      <app-option-checkbox
+        class="settings__item"
+        elementTitle="Include acceleration"
+        elementId="processing-useSecondDerivation"
+        [(data)]="predictionSettings.useSecondDerivation"
+      >
+        Requires at least 3 samples.
+      </app-option-checkbox>
+      <app-value-slider
+        class="settings__item"
+        elementTitle="Acceleration weight"
+        elementId="processing-accelerationWeight"
+        [min]="0"
+        [max]="1"
+        [step]="0.1"
+        [(data)]="predictionSettings.secondDerivationMagnitude"
+      >
+        0.5 models constant acceleration.
+      </app-value-slider>
+      <button type="button" class="button" (click)="savePrediction()">Apply and save prediction</button>
+      <p role="status">{{ predictionMessage }}</p>
     </div>
   </div>
 </div>
-
-<app-prediction-panel [isProcessing]="isInteractionProcessingActive" />

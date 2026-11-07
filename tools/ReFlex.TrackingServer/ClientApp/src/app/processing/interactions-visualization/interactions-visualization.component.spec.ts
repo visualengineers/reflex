@@ -1,13 +1,15 @@
-import { FrameSizeDefinition } from '@reflex/shared-types';
+import { FrameSizeDefinition, InteractionVelocity } from '@reflex/shared-types';
 import { Subject, throwError } from 'rxjs';
 import { queryElement } from '../../../../../../../test/helpers/dom';
 import {
   calibration,
   mount,
+  processing,
   setupTests as setupZonelessTests,
   text
 } from '../../test-utils/zoneless-change-detection.test-context';
 import { frame, interactionData } from '../../test-utils/zoneless-change-detection.test-data';
+import { predictionSnapshot } from '../interactions-velocity-visualization/interactions-velocity-visualization.component.test-data';
 import { InteractionsVisualizationComponent } from './interactions-visualization.component';
 import {
   component as testComponent,
@@ -181,5 +183,73 @@ describe('InteractionsVisualizationComponent', () => {
     expect(class0).toEqual(exp0);
     expect(class1).toEqual(exp1);
     expect(class2).toEqual(exp2);
+  });
+});
+
+
+describe('Integrated prediction visualization', () => {
+  setupZonelessTests();
+
+  it('starts enabled, renders stream updates and forwards independent layer options', async () => {
+    const stream = new Subject<Array<InteractionVelocity>>();
+    processing.getVelocities.mockReturnValue(stream);
+    const fixture = await mount(InteractionsVisualizationComponent);
+    expect(fixture.componentInstance.showPrediction).toBe(true);
+    expect(processing.getVelocities.mock.calls).toHaveLength(0);
+    fixture.componentRef.setInput('isProcessing', true);
+    await fixture.whenStable();
+    stream.next([predictionSnapshot()]);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.prediction__canvas .measured')?.getAttribute('cx')).toBe('100');
+    fixture.componentRef.setInput('showLinear', false);
+    fixture.componentRef.setInput('showMatching', false);
+    await fixture.whenStable();
+    expect(root.querySelector('.linear.forecast')).toBeNull();
+    expect(root.querySelector('.matching')).toBeNull();
+    expect(root.querySelector('.accelerated.forecast')).not.toBeNull();
+    expect(processing.getVelocities.mock.calls).toHaveLength(1);
+  });
+
+  it('clears stale predictions and releases the stream on hiding, stopping and destruction', async () => {
+    const stream = new Subject<Array<InteractionVelocity>>();
+    processing.getVelocities.mockReturnValue(stream);
+    const fixture = await mount(InteractionsVisualizationComponent);
+    fixture.componentRef.setInput('isProcessing', true);
+    await fixture.whenStable();
+    stream.next([predictionSnapshot()]);
+    await fixture.whenStable();
+    fixture.componentRef.setInput('showPrediction', false);
+    await fixture.whenStable();
+    expect(stream.observed).toBe(false);
+    expect(fixture.componentInstance.predictionData).toEqual([]);
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-interactions-velocity-visualization')).toBeNull();
+    fixture.componentRef.setInput('showPrediction', true);
+    await fixture.whenStable();
+    expect(stream.observed).toBe(true);
+    expect(fixture.componentInstance.predictionData).toEqual([]);
+    stream.next([predictionSnapshot()]);
+    fixture.componentRef.setInput('isProcessing', false);
+    await fixture.whenStable();
+    expect(stream.observed).toBe(false);
+    expect(fixture.componentInstance.predictionData).toEqual([]);
+    fixture.componentRef.setInput('isProcessing', true);
+    await fixture.whenStable();
+    expect(stream.observed).toBe(true);
+    fixture.destroy();
+    expect(stream.observed).toBe(false);
+  });
+
+  it('clears predictions and displays a stream failure', async () => {
+    const stream = new Subject<Array<InteractionVelocity>>();
+    processing.getVelocities.mockReturnValue(stream);
+    const fixture = await mount(InteractionsVisualizationComponent);
+    fixture.componentRef.setInput('isProcessing', true);
+    await fixture.whenStable();
+    stream.next([predictionSnapshot()]);
+    stream.error(new Error('disconnected'));
+    await fixture.whenStable();
+    expect(fixture.componentInstance.predictionData).toEqual([]);
+    expect(text(fixture)).toContain('Prediction stream disconnected.');
   });
 });

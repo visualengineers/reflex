@@ -8,6 +8,12 @@ import { InteractionsVisualizationComponent } from './interactions-visualization
 })
 export class MockInteractionsVisualizationComponent
 implements Partial<InteractionsVisualizationComponent> {
+  @Input() public isProcessing = false;
+  @Input() public showPrediction = true;
+  @Input() public showMatching = true;
+  @Input() public showLinear = true;
+  @Input() public showAccelerated = true;
+
   public get eventId(): number {
     return 0;
   }
