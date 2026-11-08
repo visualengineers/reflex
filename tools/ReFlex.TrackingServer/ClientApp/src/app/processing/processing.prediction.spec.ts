@@ -5,6 +5,7 @@ import { Subject, of, throwError } from 'rxjs';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { MockInteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component.mock';
 import { component as testComponent, fixture as testFixture, setupTests } from './processing.component.test-context';
+import { predictionSnapshot } from './interactions-velocity-visualization/interactions-velocity-visualization.component.test-data';
 import { processingService, settingsService } from './processing.component.test-data';
 
 describe('Prediction options in ProcessingComponent', () => {
@@ -32,6 +33,22 @@ describe('Prediction options in ProcessingComponent', () => {
     expect(processingService.setPredictionSettings).not.toHaveBeenCalled();
     expect(root.querySelector('app-prediction-panel')).toBeNull();
     expect(root.textContent).toContain('Matching target (current time)');
+  });
+
+  it('places prediction settings and the collapsible forecast table in the left column and receives forecast snapshots', async () => {
+    testFixture.detectChanges();
+    await testFixture.whenStable();
+    const root = testFixture.nativeElement as HTMLElement;
+    const columns = root.querySelectorAll('.processing > .content__element');
+    expect(columns[0].querySelector('#processing-showPrediction-checkbox')).not.toBeNull();
+    expect(columns[0].querySelector('app-history + app-forecast-values')).not.toBeNull();
+    expect(columns[1].querySelector('app-forecast-values')).toBeNull();
+    const visualization = testFixture.debugElement.query(By.directive(MockInteractionsVisualizationComponent))
+      .componentInstance as InteractionsVisualizationComponent;
+    visualization.predictionDataChange.emit([predictionSnapshot()]);
+    await testFixture.whenStable();
+    expect(columns[0].querySelector('app-forecast-values')?.textContent).toContain('#42');
+    expect(columns[0].querySelectorAll('app-forecast-values tbody tr')).toHaveLength(10);
   });
 
   it('converts the forecast horizon to seconds and saves all prediction options', async () => {

@@ -20,6 +20,7 @@ import {
   CompleteInteractionData,
   DEFAULT_SETTINGS,
   Interaction,
+  InteractionVelocity,
   ProcessingSettings,
   PredictionSettings,
   RemoteProcessingServiceSettings,
@@ -32,6 +33,7 @@ import { ProcessingService } from 'src/shared/services/processing.service';
 import { SettingsService } from 'src/shared/services/settingsService';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { LogService } from '../log/log.service';
+import { ForecastValuesComponent } from './forecast-values/forecast-values.component';
 import { HistoryComponent } from './history/history.component';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { InteractionsComponent } from './interactions/interactions.component';
@@ -51,6 +53,7 @@ import { InteractionsComponent } from './interactions/interactions.component';
     OptionCheckboxComponent,
     InteractionsComponent,
     HistoryComponent,
+    ForecastValuesComponent,
     InteractionsVisualizationComponent
   ]
 })
@@ -62,6 +65,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   @ViewChild('interactionsList')
   public interactionsList?: InteractionsComponent;
 
+  public predictionData: Array<InteractionVelocity> = [];
   public showPrediction = true;
   public showMatching = true;
   public showLinear = true;
@@ -76,7 +80,6 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   };
 
   public predictionMessage = '';
-
   public statusText = '';
   public eventId = 0;
   public selectedProcessorIdx = -1;
@@ -106,7 +109,6 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   private remoteSettingsSubscription?: Subscription;
   private saveSettingsSubscription?: Subscription;
   private statusSubscription?: Subscription;
-
   private readonly saveSettings$: Observable<TrackingServerAppSettings>;
 
   public constructor() {
@@ -320,9 +322,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector))
       .subscribe(
         (result) => {
-          console.log(`Response to set remote processing settings request: ' + ${
-            result.status
-          } - Value: ${JSON.stringify(result.body)}`);
+          console.log(`Response to set remote processing settings request: ' + ${result.status} - Value: ${JSON.stringify(result.body)}`);
         },
         (error) => {
           console.error(error);

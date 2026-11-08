@@ -223,78 +223,6 @@
         }"
         >Save</button>
 
-      <div
-        class="content__element"
-        [ngStyle]="{
-          visibility: isInteractionProcessingActive ? 'visible' : 'collapse'
-        }"
-      >
-        <app-interactions
-          #interactionsList
-          [isProcessing]="isInteractionProcessingActive"
-        ></app-interactions>
-        <app-history #interactionHistory></app-history>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="content__element"
-    [ngStyle]="{
-      visibility: isInteractionProcessingActive ? 'visible' : 'collapse'
-    }"
-  >
-    <app-interactions-visualization
-      #visualizationContainer
-      [eventId]="eventId"
-      [isProcessing]="isInteractionProcessingActive"
-      [showPrediction]="showPrediction"
-      [showMatching]="showMatching"
-      [showLinear]="showLinear"
-      [showAccelerated]="showAccelerated"
-    ></app-interactions-visualization>
-    <div class="content__header">
-      <h2 class="heading-secondary">Legend</h2>
-    </div>
-    <div class="content__body">
-      <div class="legend-interaction">
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-maximum"></div>
-          <div class="legend-interaction-label">Maximum</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-minimum"></div>
-          <div class="legend-interaction-label">Minimum</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-undefined"></div>
-          <div class="legend-interaction-label">Undefined</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-invalid"></div>
-          <div class="legend-interaction-label">Invalid Type</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol" style="color: #fff">●</div>
-          <div class="legend-interaction-label">Measured</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol" style="color: #ffcd66">■</div>
-          <div class="legend-interaction-label">Smoothed</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol" style="color: #d9a6ff">◇</div>
-          <div class="legend-interaction-label">Matching target (current time)</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol" style="color: #61dbea">○</div>
-          <div class="legend-interaction-label">Linear forecast</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol" style="color: #ff95b9">○</div>
-          <div class="legend-interaction-label">Acceleration forecast</div>
-        </div>
-      </div>
     </div>
     <div class="content__header">
       <h2 class="heading-secondary">Motion prediction</h2>
@@ -306,7 +234,7 @@
         elementId="processing-showPrediction"
         [(data)]="showPrediction"
       >
-        Show measured trajectories, smoothed positions and forecasts in sensor coordinates.
+        Show measured trajectories, smoothed positions and forecasts in calibrated interaction coordinates.
       </app-option-checkbox>
       <app-option-checkbox
         class="settings__item"
@@ -384,6 +312,81 @@
       </app-value-slider>
       <button type="button" class="button" (click)="savePrediction()">Apply and save prediction</button>
       <p role="status">{{ predictionMessage }}</p>
+    </div>
+
+    <div
+      class="content__element"
+      [ngStyle]="{
+        visibility: isInteractionProcessingActive ? 'visible' : 'collapse'
+      }"
+    >
+      <app-interactions
+        #interactionsList
+        [isProcessing]="isInteractionProcessingActive"
+      ></app-interactions>
+      <app-history #interactionHistory></app-history>
+      <app-forecast-values [data]="predictionData" />
+    </div>
+  </div>
+
+  <div
+    class="content__element"
+    [ngStyle]="{
+      visibility: isInteractionProcessingActive ? 'visible' : 'collapse'
+    }"
+  >
+    <app-interactions-visualization
+      #visualizationContainer
+      [eventId]="eventId"
+      (predictionDataChange)="predictionData = $event"
+      [isProcessing]="isInteractionProcessingActive"
+      [showPrediction]="showPrediction"
+      [showMatching]="showMatching"
+      [showLinear]="showLinear"
+      [showAccelerated]="showAccelerated"
+    ></app-interactions-visualization>
+    <div class="content__header">
+      <h2 class="heading-secondary">Legend</h2>
+    </div>
+    <div class="content__body">
+      <div class="legend-interaction">
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-circle interaction-maximum"></div>
+          <div class="legend-interaction-label">Maximum</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-circle interaction-minimum"></div>
+          <div class="legend-interaction-label">Minimum</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-circle interaction-undefined"></div>
+          <div class="legend-interaction-label">Undefined</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-circle interaction-invalid"></div>
+          <div class="legend-interaction-label">Invalid Type</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #24364b">●</div>
+          <div class="legend-interaction-label">Measured</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #a65d00">■</div>
+          <div class="legend-interaction-label">Smoothed</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #7138a8">◇</div>
+          <div class="legend-interaction-label">Matching target (current time)</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #007d8a">○</div>
+          <div class="legend-interaction-label">Linear forecast</div>
+        </div>
+        <div class="legend-interaction-item">
+          <div class="legend-interaction-label legend-prediction-symbol" style="color: #bf285b">○</div>
+          <div class="legend-interaction-label">Acceleration forecast</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

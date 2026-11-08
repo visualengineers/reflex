@@ -14,11 +14,24 @@ export class InteractionsVelocityVisualizationComponent implements OnChanges {
   @Input() public showLinear = true;
   @Input() public showAccelerated = true;
   @Input() public showMatching = true;
+  @Input() public width = 500;
+  @Input() public height = 400;
   public trails = new Map<number, Array<Point3>>();
   private readonly lastFrames = new Map<number, number>();
 
   public get viewBox(): string {
-    return `0 0 ${Math.max(1, this.data[0]?.width || 640)} ${Math.max(1, this.data[0]?.height || 480)}`;
+    return `0 0 ${this.width} ${this.height}`;
+  }
+
+  public get displayData(): Array<InteractionVelocity> {
+    return this.data.map((item) => ({
+      ...item,
+      measuredPosition: this.scale(item.measuredPosition),
+      smoothedPosition: this.scale(item.smoothedPosition),
+      matchingPosition: this.scale(item.matchingPosition),
+      predictedPositionBasic: this.scale(item.predictedPositionBasic),
+      predictedPositionAdvanced: this.scale(item.predictedPositionAdvanced)
+    }));
   }
 
   public ngOnChanges(): void {
@@ -43,6 +56,10 @@ export class InteractionsVelocityVisualizationComponent implements OnChanges {
   }
 
   public path(id: number): string {
-    return (this.trails.get(id) ?? []).map((point) => `${point.x},${point.y}`).join(' ');
+    return (this.trails.get(id) ?? []).map((point) => this.scale(point)).map((point) => `${point.x},${point.y}`).join(' ');
+  }
+
+  private scale(point: Point3): Point3 {
+    return { ...point, x: point.x * this.width, y: point.y * this.height };
   }
 }

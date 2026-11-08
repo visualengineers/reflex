@@ -14,6 +14,7 @@
       class="fullscreen__checkbox"
       id="visualization-toggle"
       [(ngModel)]="fullScreen"
+      (ngModelChange)="updateCalibratedInteractions(interactions)"
       title="toggle fullscreen"
     />
     <label for="visualization-toggle" class="fullscreen__button">
@@ -91,6 +92,16 @@
       </div>
     </div>
     }
+    @if (showPrediction) {
+      <app-interactions-velocity-visualization
+        [data]="predictionData"
+        [width]="viewportWidth"
+        [height]="viewportHeight"
+        [showMatching]="showMatching"
+        [showLinear]="showLinear"
+        [showAccelerated]="showAccelerated"
+      />
+    }
   </div>
   <div
     class="clearBg"
@@ -98,12 +109,4 @@
   ></div>
 </div>
 
-@if (showPrediction) {
-  <app-interactions-velocity-visualization
-    [data]="predictionData"
-    [showMatching]="showMatching"
-    [showLinear]="showLinear"
-    [showAccelerated]="showAccelerated"
-  />
-  <p role="status">{{ predictionMessage }}</p>
-}
+<p role="status">{{ predictionMessage }}</p>
