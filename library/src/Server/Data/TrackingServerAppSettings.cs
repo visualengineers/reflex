@@ -1,4 +1,4 @@
-﻿using ReFlex.Core.Tuio.Util;
+using ReFlex.Core.Tuio.Util;
 using ReFlex.Server.Data.Config;
 
 namespace ReFlex.Server.Data
@@ -20,6 +20,8 @@ namespace ReFlex.Server.Data
         public NetworkSettings NetworkSettingValues { get; set; } = new();
 
         public PointCloudSettings PointCloudSettingValues { get; set; } = new();
+
+        public PredictionSettings PredictionSettings { get; set; } = new();
 
         public ProcessingSettings ProcessingSettingValues { get; set; } = new();
 

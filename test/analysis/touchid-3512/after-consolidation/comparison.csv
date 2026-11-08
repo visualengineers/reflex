@@ -1,0 +1,13 @@
+recording,metric,before,after
+Half-Circle,id_changes_consecutive_active_outputs,26,0
+Half-Circle,active_without_output,12,10
+Half-Circle,published_target_ids,14,3
+Half-Circle,created_tracks,33,4
+Line,id_changes_consecutive_active_outputs,22,0
+Line,active_without_output,29,25
+Line,published_target_ids,15,7
+Line,created_tracks,32,9
+Circle,id_changes_consecutive_active_outputs,40,0
+Circle,active_without_output,1,1
+Circle,published_target_ids,21,1
+Circle,created_tracks,50,1

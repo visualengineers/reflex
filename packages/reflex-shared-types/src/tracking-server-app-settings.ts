@@ -1,3 +1,4 @@
+import { PredictionSettings } from './config/prediction-settings';
 import { Calibration } from './config/calibration';
 import { CameraConfiguration } from './config/camera-configuration';
 import { FilterSettings } from './config/filter-settings';
@@ -14,6 +15,7 @@ export interface TrackingServerAppSettings {
   cameraConfigurationValues: CameraConfiguration;
   networkSettingValues: NetworkSettings;
   pointCloudSettingValues: PointCloudSettings;
+  predictionSettings?: PredictionSettings;
   processingSettingValues: ProcessingSettings;
   remoteProcessingServiceSettingsValues: RemoteProcessingServiceSettings;
   tuioSettingValues: TuioConfiguration;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ReFlex.Core.Common.Components
 {
@@ -12,6 +12,9 @@ namespace ReFlex.Core.Common.Components
         /// </summary>
         public int FrameId { get; private set; }
 
+        /// <summary>Monotonic seconds in the producer's clock domain; not a UTC date.</summary>
+        public double TimestampSeconds { get; private set; }
+
         /// <summary>
         /// Interactions register4ed in the given frame
         /// </summary>
@@ -21,9 +24,10 @@ namespace ReFlex.Core.Common.Components
         /// Initializes the data class with an empty List of <see cref="Interaction"/>
         /// </summary>
         /// <param name="id">Id of the frame</param>
-        public InteractionFrame(int id)
+        public InteractionFrame(int id, double timestampSeconds = 0)
         {
             FrameId = id;
+            TimestampSeconds = timestampSeconds;
         }
 
         /// <summary>
@@ -31,7 +35,7 @@ namespace ReFlex.Core.Common.Components
         /// </summary>
         /// <param name="id">Id of the frame</param>
         /// <param name="interactions">The Interactions that have been registered in this frame</param>
-        public InteractionFrame(int id, List<Interaction> interactions) : this(id)
+        public InteractionFrame(int id, List<Interaction> interactions, double timestampSeconds = 0) : this(id, timestampSeconds)
         {
             Interactions = interactions;
         }

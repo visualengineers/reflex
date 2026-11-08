@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +17,22 @@ namespace Implementation.Components
     public class InteractionManager : IInteractionManager, IDisposable
     {
         private IInteractionObserver _interactionObserver;
+        private readonly object _snapshotSync = new();
+        private readonly Stack<TrackingObservation> _spareSnapshots = new(2);
+        private readonly DepthImageManager _snapshotSource;
+        private TrackingObservation _pendingObservation;
+        private TrackingObservation _lastSnapshot;
+        private bool _disposed;
+        private readonly SemaphoreSlim _updateGate = new(1, 1);
+        private long _lastSequence = -1;
+        private double _lastObservationTime = double.NegativeInfinity;
+        protected virtual double GetTimestampSeconds() => (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
         private IList<Interaction> _interactions;
+        private bool _useVelocityPrediction;
+        private double _predictionHorizonSeconds = .05;
+        private int _numFramesForPrediction = 3;
+        private bool _useSecondDerivation;
+        private float _secondDerivationMagnitude = .5f;
         private readonly IDepthImageManager _depthImageManager;
         private readonly IPerformanceAggregator _performanceAggregator;
 
@@ -29,49 +46,95 @@ namespace Implementation.Components
         private int _maxConfidence;
         private int _numSmoothFrames;
         private int _interactionHistorySize;
-        private int _maxNumEmptyFramesBetween;
+        private double _contactRetentionSeconds = .1;
+        private double _observationTimeoutSeconds = 1;
+        private float _confidenceGainPerSecond = 30;
+        private float _confidenceDecayPerSecond = 30;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
         private int _extremumTypeCheckNumSamples;
         private int _extremumTypeCheckRadius;
+        private float _extremumMergeRadius = ExtremumConsolidator.DefaultRadius;
         private float _extremumTypeCheckFittingPercentage;
         private ExtremumTypeCheckMethod _extremumTypeCheckMethod;
 
         public IList<Interaction> Interactions => _interactions ?? new List<Interaction>();
 
-        public ObserverType Type
+        public double PredictionHorizonSeconds
         {
-            get => _interactionObserver?.Type ?? ObserverType.None;
+            get => _interactionObserver?.PredictionHorizonSeconds ?? _predictionHorizonSeconds;
             set
             {
-                switch (value)
-                {
-                    case ObserverType.Remote:
-                        UpdateObserver(new RemoteInteractionProcessor(_service));
-                        break;
-                    case ObserverType.MultiTouch:
-                        UpdateObserver(new MultiInteractionObserver());
-
-                        break;
-                    case ObserverType.SingleTouch:
-                        UpdateObserver(new SingleInteractionObserver());
-
-                        break;
-                    case ObserverType.None:
-                        UpdateObserver(new NoInteractionObserver());
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(value), value, null);
-                }
+                if (_interactionObserver != null) _interactionObserver.PredictionHorizonSeconds = value;
+                _predictionHorizonSeconds = value;
             }
         }
 
-        public float ComputeZeroPlaneDistance()
+        public bool UseVelocityPrediction
         {
-            if (_interactionObserver == null)
-                return 0;
+            get => _interactionObserver?.UseVelocityPrediction ?? _useVelocityPrediction;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseVelocityPrediction = value;
+                _useVelocityPrediction = value;
+            }
+        }
 
-            return _interactionObserver.CalculateAverageDistance();
+        public int NumFramesForPrediction
+        {
+            get => _interactionObserver?.NumFramesForPrediction ?? _numFramesForPrediction;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.NumFramesForPrediction = value;
+                _numFramesForPrediction = value;
+            }
+        }
+
+        public bool UseSecondDerivation
+        {
+            get => _interactionObserver?.UseSecondDerivation ?? _useSecondDerivation;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseSecondDerivation = value;
+                _useSecondDerivation = value;
+            }
+        }
+
+        public float SecondDerivationMagnitude
+        {
+            get => _interactionObserver?.SecondDerivationMagnitude ?? _secondDerivationMagnitude;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.SecondDerivationMagnitude = value;
+                _secondDerivationMagnitude = value;
+            }
+        }
+
+        public ObserverType Type
+        {
+            get => _interactionObserver?.Type ?? ObserverType.None;
+            set => UpdateObserver(CreateObserver(value));
+        }
+
+        protected virtual IInteractionObserver CreateObserver(ObserverType type) => type switch
+        {
+            ObserverType.Remote => new RemoteInteractionProcessor(_service),
+            ObserverType.MultiTouch => new MultiInteractionObserver(),
+            ObserverType.SingleTouch => new SingleInteractionObserver(),
+            ObserverType.None => new NoInteractionObserver(),
+            _ => throw new ArgumentOutOfRangeException(nameof(type))
+        };
+
+        public float ComputeZeroPlaneDistance() =>
+            ReadObserverRasters(() => _interactionObserver?.CalculateAverageDistance() ?? 0);
+
+        private T ReadObserverRasters<T>(Func<T> read)
+        {
+            if (_snapshotSource == null) return read();
+            return _snapshotSource.ReadRasters(() =>
+            {
+                lock (_snapshotSync) return read();
+            });
         }
 
         private void UpdateObserver(IInteractionObserver observer)
@@ -79,8 +142,9 @@ namespace Implementation.Components
             if (_interactionObserver != null)
             {
                 _interactionObserver.NewInteractions -= OnNewInteractions;
+                _interactionObserver.NewVelocities -= OnNewVelocities;
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
-                _performanceAggregator.UnregisterReporter(observer as IPerformanceReporter);
+                _performanceAggregator.UnregisterReporter(_interactionObserver as IPerformanceReporter);
             }
             
             if (observer == null)
@@ -94,18 +158,28 @@ namespace Implementation.Components
             observer.MinAngle = _minAngle;
             observer.PointCloud = _depthImageManager.PointCloud;
             observer.VectorField = _depthImageManager.VectorField;
-            observer.NumSmoothingFrames = _numSmoothFrames;
             observer.InteractionHistorySize = _interactionHistorySize;
+            observer.NumSmoothingFrames = _numSmoothFrames;
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
-            observer.MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
+            observer.ContactRetentionSeconds = _contactRetentionSeconds;
+            observer.ObservationTimeoutSeconds = _observationTimeoutSeconds;
+            observer.ConfidenceGainPerSecond = _confidenceGainPerSecond;
+            observer.ConfidenceDecayPerSecond = _confidenceDecayPerSecond;
             observer.DepthScale = _depthScale;
+            observer.PredictionHorizonSeconds = _predictionHorizonSeconds;
+            observer.UseVelocityPrediction = _useVelocityPrediction;
+            observer.NumFramesForPrediction = _numFramesForPrediction;
+            observer.UseSecondDerivation = _useSecondDerivation;
+            observer.SecondDerivationMagnitude = _secondDerivationMagnitude;
             observer.ExtremumTypeCheckRadius = _extremumTypeCheckRadius;
+            observer.ExtremumMergeRadius = _extremumMergeRadius;
             observer.ExtremumTypeCheckNumSamples = _extremumTypeCheckNumSamples;
             observer.ExtremumTypeCheckFittingPercentage = _extremumTypeCheckFittingPercentage;
             observer.ExtremumTypeCheckMethod = _extremumTypeCheckMethod;
             _interactionObserver = observer;
 
             _interactionObserver.NewInteractions += OnNewInteractions;
+            _interactionObserver.NewVelocities += OnNewVelocities;
             _interactionObserver.InteractionHistoryUpdated += OnHistoryUpdated;
             _performanceAggregator.RegisterReporter(_interactionObserver as IPerformanceReporter);
         }
@@ -211,18 +285,52 @@ namespace Implementation.Components
             }
         }
         
-        public int MaxNumEmptyFramesBetween
+        public float ConfidenceGainPerSecond
         {
-            get => _interactionObserver?.MaxNumEmptyFramesBetween ?? 0;
+            get => _confidenceGainPerSecond;
+            set
+            {
+                if (!float.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.ConfidenceGainPerSecond = value;
+                _confidenceGainPerSecond = value;
+            }
+        }
+
+        public float ConfidenceDecayPerSecond
+        {
+            get => _confidenceDecayPerSecond;
+            set
+            {
+                if (!float.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.ConfidenceDecayPerSecond = value;
+                _confidenceDecayPerSecond = value;
+            }
+        }
+
+        public double ContactRetentionSeconds
+        {
+            get => _interactionObserver?.ContactRetentionSeconds ?? _contactRetentionSeconds;
             set
             {
                 if (_interactionObserver != null)
-                    _interactionObserver.MaxNumEmptyFramesBetween = value;
+                    _interactionObserver.ContactRetentionSeconds = value;
             
-                _maxNumEmptyFramesBetween = value;
+                _contactRetentionSeconds = double.IsFinite(value) && value >= 0 ? value :
+                    throw new ArgumentOutOfRangeException(nameof(value));
             }
         }
         
+        public double ObservationTimeoutSeconds
+        {
+            get => _interactionObserver?.ObservationTimeoutSeconds ?? _observationTimeoutSeconds;
+            set
+            {
+                if (!double.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.ObservationTimeoutSeconds = value;
+                _observationTimeoutSeconds = value;
+            }
+        }
+
         public float TouchMergeDistance2D
         {
             get => _interactionObserver?.TouchMergeDistance2D ?? 0f;
@@ -267,6 +375,17 @@ namespace Implementation.Components
             }
         }
 
+        public float ExtremumMergeRadius
+        {
+            get => _interactionObserver?.ExtremumMergeRadius ?? _extremumMergeRadius;
+            set
+            {
+                ExtremumConsolidator.ValidateRadius(value);
+                if (_interactionObserver != null) _interactionObserver.ExtremumMergeRadius = value;
+                _extremumMergeRadius = value;
+            }
+        }
+
         public int ExtremumTypeCheckRadius
         {
             get => _interactionObserver?.ExtremumTypeCheckRadius ?? _extremumTypeCheckRadius;
@@ -302,13 +421,21 @@ namespace Implementation.Components
 
         public PointCloud3 PointCloud
         {
-            get => _interactionObserver?.PointCloud;
+            get => ReadObserverRasters(() =>
+            {
+                var cloud = _interactionObserver?.PointCloud;
+                return _snapshotSource == null ? cloud : TrackingObservation.CopyCloud(cloud);
+            });
             set => _interactionObserver.PointCloud = value;
         }
 
         public VectorField2 VectorField
         {
-            get => _interactionObserver?.VectorField;
+            get => ReadObserverRasters(() =>
+            {
+                var vectors = _interactionObserver?.VectorField;
+                return _snapshotSource == null ? vectors : TrackingObservation.CopyVectors(vectors);
+            });
             set => _interactionObserver.VectorField = value;
         }
 
@@ -320,8 +447,26 @@ namespace Implementation.Components
             _service = service;
             _performanceAggregator = performanceAggregator;
 
-            depthImageManager.PointcloudFiltered += OnPointcloudChanged;
-            depthImageManager.VectorfieldChanged += OnVectorfieldChanged;
+            _snapshotSource = depthImageManager as DepthImageManager;
+            if (_snapshotSource != null)
+                _snapshotSource.SnapshotSourceReady += OnSnapshotSourceReady;
+            else
+                depthImageManager.ObservationReady += OnObservationReady;
+        }
+
+        public bool UseObservationSnapshots
+        {
+            get => _snapshotSource?.UseObservationSnapshots ?? true;
+            set
+            {
+                lock (_snapshotSync)
+                {
+                    if (_snapshotSource == null || _snapshotSource.UseObservationSnapshots == value) return;
+                    _snapshotSource.UseObservationSnapshots = value;
+                    _pendingObservation = null;
+                    _spareSnapshots.Clear();
+                }
+            }
         }
 
         public void Init(ObserverType type)
@@ -329,49 +474,154 @@ namespace Implementation.Components
             Type = type;
         }
 
+        public void AdvanceTime() => _interactionObserver?.AdvanceTime(GetTimestampSeconds());
+
         public async Task<ProcessServiceStatus> Update()
         {
-            if (_interactionObserver == null)
-                return ProcessServiceStatus.Error;
-            
-            return (await _interactionObserver.Update())?.ServiceStatus ?? ProcessServiceStatus.Error;
+            await _updateGate.WaitAsync();
+            var reservedRasters = false;
+            try
+            {
+                var observer = _interactionObserver;
+                if (observer == null) return ProcessServiceStatus.Error;
+                TrackingObservation observation;
+                lock (_snapshotSync)
+                {
+                    if (_disposed) return ProcessServiceStatus.Skipped;
+                    observation = _pendingObservation;
+                    if (observation is { OwnsRasters: false } &&
+                        !(reservedRasters = _snapshotSource.TryReserveRasters()))
+                    {
+                        // Retry on the next tick. Age existing contacts while the producer is busy.
+                        observation = null;
+                    }
+                    else
+                    {
+                        _pendingObservation = null;
+                        // A failed producer update may have already modified the last live pair.
+                        if (reservedRasters && observation.Sequence != _snapshotSource.RasterSequence)
+                            observation = null;
+                    }
+                }
+                if (observation == null || observation.Sequence <= _lastSequence ||
+                    observation.TimestampSeconds <= _lastObservationTime)
+                {
+                    lock (_snapshotSync) RecycleSnapshot(observation);
+                    observer.AdvanceTime(GetTimestampSeconds());
+                    return ProcessServiceStatus.Skipped;
+                }
+                _lastSequence = observation.Sequence;
+                _lastObservationTime = observation.TimestampSeconds;
+                try { return (await observer.Update(observation)).ServiceStatus; }
+                catch (Exception exception)
+                {
+                    NLog.LogManager.GetCurrentClassLogger().Warn(exception, "Interaction analysis failed; aging active tracks.");
+                    // Transport/analysis failures must age the published list, not leave stale contacts.
+                    observer.AdvanceTime(GetTimestampSeconds());
+                    return ProcessServiceStatus.Error;
+                }
+                finally
+                {
+                    // The observer retains its input for diagnostics and distance calculation.
+                    // Release the previous pair only after the new update has finished.
+                    lock (_snapshotSync)
+                    {
+                        RecycleSnapshot(_lastSnapshot);
+                        _lastSnapshot = _disposed || _snapshotSource == null || !observation.OwnsRasters ? null : observation;
+                    }
+                }
+            }
+            finally
+            {
+                if (reservedRasters) _snapshotSource.ReleaseRasters();
+                _updateGate.Release();
+            }
+        }
+
+        private void OnObservationReady(object sender, TrackingObservation observation)
+        {
+            lock (_snapshotSync)
+            {
+                if (!_disposed) _pendingObservation = observation;
+            }
+        }
+
+        private void OnSnapshotSourceReady(long sequence, double timestamp, PointCloud3 cloud, VectorField2 vectors)
+        {
+            lock (_snapshotSync)
+            {
+                if (_disposed) return;
+                if (!_snapshotSource.UseObservationSnapshots)
+                {
+                    _pendingObservation = new TrackingObservation(sequence, timestamp, cloud, vectors, null, copyRasters: false);
+                    return;
+                }
+
+                // A pending pair has no reader. Prefer overwriting it when the consumer lags.
+                var spare = _pendingObservation;
+                _pendingObservation = null;
+                if (spare == null) _spareSnapshots.TryPop(out spare);
+                _pendingObservation = new TrackingObservation(sequence, timestamp, cloud, vectors, spare);
+            }
+        }
+
+        // Called under _snapshotSync. Public event observations are never recycled.
+        private void RecycleSnapshot(TrackingObservation observation)
+        {
+            if (!_disposed && _snapshotSource is { UseObservationSnapshots: true } &&
+                observation is { OwnsRasters: true } && _spareSnapshots.Count < 2)
+                _spareSnapshots.Push(observation);
         }
 
         public event EventHandler<IList<Interaction>> InteractionsUpdated;
+        public event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
+
+        private void OnNewVelocities(object sender, IList<InteractionVelocity> velocities)
+        {
+            if (!ReferenceEquals(sender, _interactionObserver)) return;
+            var publishedIds = Interactions.Select(item => item.TouchId).ToHashSet();
+            foreach (var item in velocities)
+            {
+                if (item.IsPublished && !publishedIds.Contains(item.TouchId))
+                {
+                    item.IsPublished = false;
+                    item.SuppressionReason = "cluster";
+                }
+            }
+            VelocitiesUpdated?.Invoke(this, velocities);
+        }
         
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
         public void Dispose()
         {
-            if (_depthImageManager != null)
+            lock (_snapshotSync)
             {
-                _depthImageManager.PointcloudFiltered -= OnPointcloudChanged;
-                _depthImageManager.VectorfieldChanged -= OnVectorfieldChanged;
+                if (_disposed) return;
+                _disposed = true;
+                _pendingObservation = null;
+                _lastSnapshot = null;
+                _spareSnapshots.Clear();
             }
+
+            if (_snapshotSource != null)
+                _snapshotSource.SnapshotSourceReady -= OnSnapshotSourceReady;
+            else
+                _depthImageManager.ObservationReady -= OnObservationReady;
 
             if (_interactionObserver != null)
             {
                 _interactionObserver.NewInteractions -= OnNewInteractions;
+                _interactionObserver.NewVelocities -= OnNewVelocities;
                 _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
 
                 _performanceAggregator.UnregisterReporter(_interactionObserver as IPerformanceReporter);
             }
         }
 
-        private void OnPointcloudChanged(object sender, PointCloud3 source)
-        {
-            if (_interactionObserver != null)
-                _interactionObserver.PointCloud = source;
-        }
-
-        private void OnVectorfieldChanged(object sender, VectorField2 source)
-        {
-            if (_interactionObserver != null)
-                _interactionObserver.VectorField = source;
-        }
-
         private void OnNewInteractions(object sender, IList<Interaction> interactions)
         {
+            if (!ReferenceEquals(sender, _interactionObserver)) return;
             lock (interactions)
             {
                 var copy = interactions.Select(interaction => new Interaction(interaction)).ToList();
@@ -384,7 +634,8 @@ namespace Implementation.Components
         private IList<Interaction> RemoveClusteredInteractions(IList<Interaction> rawInteractions)
         {
             var filteredCopy = new List<Interaction>();
-            
+            rawInteractions = rawInteractions.OrderBy(item => item.TrackingState == InteractionTrackingState.Lost)
+                .ThenByDescending(item => item.Confidence).ThenBy(item => item.TouchId).ToList();
             for (var i = 0; i < rawInteractions.Count; i++)
             {
                 var currPt = rawInteractions[i];

@@ -421,6 +421,33 @@
     </p>
   </app-value-selection>
 
+  <div class="settings__item">
+    <div class="settings__item--content">
+      <label class="settings__item--label" for="settings-observation-snapshots-checkbox">
+        Observation Snapshots
+      </label>
+      <div class="slider checkbox">
+        <input
+          #observationSnapshots
+          type="checkbox"
+          id="settings-observation-snapshots-checkbox"
+          class="checkbox-toggle"
+          aria-describedby="settings-observation-snapshots-description"
+          [checked]="settings.processingSettingValues.useObservationSnapshots"
+          [disabled]="savingObservationSnapshots"
+          (change)="saveUseObservationSnapshots(observationSnapshots.checked)"
+        />
+        <label class="checkbox-toggle-label" for="settings-observation-snapshots-checkbox"
+          aria-hidden="true"><span class="on">ON</span><span class="off">OFF</span></label>
+      </div>
+    </div>
+    <div class="settings__item--info" id="settings-observation-snapshots-description">
+      Copy the point cloud and vector field for interaction processing.
+      When disabled, processing reads the live rasters and skips incoming
+      sensor frames while those rasters are in use.
+    </div>
+  </div>
+
   <!-- NumSamples -->
   <app-value-slider
     class="settings__item"
@@ -428,6 +455,7 @@
     elementId="settings-smoothing-numFrames"
     [min]="0"
     [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [step]="1"
     [(data)]="settings.filterSettingValues.smoothingValues.numSmoothingSamples"
     (onChange)="saveSmoothingValues()"
     unit="Frames"
@@ -454,23 +482,42 @@
     touch points (based on positional change between frames).
   </app-value-slider>
 
-  <!-- Empty Frames Threshold -->
+  <!-- Contact retention -->
   <app-value-slider
     class="settings__item"
-    elementTitle="Empty frames"
-    elementId="settings-maxEmptyFrames"
+    elementTitle="Contact retention"
+    elementId="settings-contactRetention"
     [min]="0"
-    [max]="settings.filterSettingValues.smoothingValues.interactionHistorySize"
+    [max]="2"
+    [step]="0.01"
     [(data)]="
-      settings.filterSettingValues.smoothingValues.maxNumEmptyFramesBetween
+      settings.filterSettingValues.smoothingValues.contactRetentionSeconds
     "
     (onChange)="saveSmoothingValues()"
-    unit="Frames"
+    unit="s"
   >
-    The number of frames a touch id is reconstructed before being filtered from
-    interactions list. Prevents flickering if measurements are unstable, however
-    higher values add significant lag, so that touches remain active after the
-    user has released the surface.
+    Retain a contact after a completed sensor observation no longer detects it.
+    Zero disables bridging of missing detections. This is separate from the sensor timeout.
+  </app-value-slider>
+
+  <app-value-slider class="settings__item" elementTitle="Observation timeout" elementId="settings-observationTimeout"
+    [min]="0" [max]="5" [step]="0.05" unit="s"
+    [data]="settings.filterSettingValues.smoothingValues.observationTimeoutSeconds ?? 1"
+    (dataChange)="settings.filterSettingValues.smoothingValues.observationTimeoutSeconds = $event"
+    (onChange)="saveSmoothingValues()">
+    Maximum wait for sensor processing or the next successful observation.
+    Slow frames within this timeout keep the contact ID. Older results are discarded.
+  </app-value-slider>
+
+  <app-value-slider class="settings__item" elementTitle="Confidence gain" elementId="settings-confidenceGain"
+    [min]="0" [max]="100" [step]="1" unit="/s"
+    [(data)]="settings.filterSettingValues.smoothingValues.confidenceGainPerSecond" (onChange)="saveSmoothingValues()">
+    Confidence gained per second between consecutive measurements. Missing observations earn no confidence.
+  </app-value-slider>
+  <app-value-slider class="settings__item" elementTitle="Confidence decay" elementId="settings-confidenceDecay"
+    [min]="0" [max]="100" [step]="1" unit="/s"
+    [(data)]="settings.filterSettingValues.smoothingValues.confidenceDecayPerSecond" (onChange)="saveSmoothingValues()">
+    Confidence lost per second without measurements. Zero disables decay.
   </app-value-slider>
 
   <!-- Merge Distance -->
@@ -571,6 +618,22 @@
   >
     The pixel radius in which points are sampled to check the type of the
     extremum.
+  </app-value-slider>
+
+  <app-value-slider
+    class="settings__item"
+    elementTitle="Extremum Merge Radius"
+    elementId="settings-extremum-mergeRadius"
+    [min]="0"
+    [max]="32"
+    [step]="1"
+    [data]="settings.filterSettingValues.extremumSettings.mergeRadius ?? 3"
+    (dataChange)="settings.filterSettingValues.extremumSettings.mergeRadius = $event"
+    (onChange)="saveExtremumValues()"
+    unit="px"
+  >
+    Combine nearby extrema of the same pressure type before assigning touch IDs.
+    This is a Euclidean radius in sensor pixels. 0 disables consolidation.
   </app-value-slider>
 
   <!-- FitPercentage -->

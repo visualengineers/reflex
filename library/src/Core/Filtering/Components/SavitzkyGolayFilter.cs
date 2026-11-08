@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
@@ -6,6 +6,8 @@ using ReFlex.Core.Common.Components;
 
 namespace ReFlex.Core.Filtering.Components
 {
+    /// <summary>Local polynomial smoothing for uniformly spaced samples. Edge outputs use the
+    /// first/last full window evaluated at the corresponding edge coordinate; short inputs are copied.</summary>
     public class SavitzkyGolayFilter : IPointFilter
     {
         private readonly int _sidePoints;
@@ -16,20 +18,20 @@ namespace ReFlex.Core.Filtering.Components
 
         public SavitzkyGolayFilter(int sidePoints, int polynomialOrder)
         {
+            if (sidePoints < 0 || sidePoints > (int.MaxValue - 1) / 2)
+                throw new ArgumentOutOfRangeException(nameof(sidePoints));
+            if (polynomialOrder < 0 || polynomialOrder >= 2 * sidePoints + 1)
+                throw new ArgumentOutOfRangeException(nameof(polynomialOrder));
             _sidePoints = sidePoints;
             Design(polynomialOrder);
         }
 
         public List<Point3> Process(List<Point3> samples)
         {
-            if (samples == null || samples.Count == 0)
-            {
-                return null;
-            }
-            
+            if (samples == null) return null;
             if (samples.Count < MinNumSamples)
-                return samples; 
-            
+                return samples.Select(point => (Point3)point.Copy()).ToList();
+
             var filteredX = ProcessRow(samples.Select(interaction => (double) interaction.X).ToArray());
             var filteredY = ProcessRow(samples.Select(interaction => (double) interaction.Y).ToArray());
             var filteredZ = ProcessRow(samples.Select(interaction => (double) interaction.Z).ToArray());
@@ -60,20 +62,20 @@ namespace ReFlex.Core.Filtering.Components
 
             for (var i = 0; i < _sidePoints; ++i)
             {
-                output[i] = _coefficients.Column(i).DotProduct(Vector<double>.Build.DenseOfArray(frame));
+                output[i] = _coefficients.Row(i).DotProduct(Vector<double>.Build.DenseOfArray(frame));
             }
 
             for (var i = _sidePoints; i < length - _sidePoints; ++i)
             {
                 Array.ConstrainedCopy(samples, i - _sidePoints, frame, 0, frameSize);
-                output[i] = _coefficients.Column(_sidePoints).DotProduct(Vector<double>.Build.DenseOfArray(frame));
+                output[i] = _coefficients.Row(_sidePoints).DotProduct(Vector<double>.Build.DenseOfArray(frame));
             }
 
             Array.ConstrainedCopy(samples, length - frameSize, frame, 0, frameSize);
 
             for (var i = 0; i < _sidePoints; ++i)
             {
-                output[length - _sidePoints + i] = _coefficients.Column(_sidePoints + 1 + i).DotProduct(Vector<double>.Build.Dense(frame));
+                output[length - _sidePoints + i] = _coefficients.Row(_sidePoints + 1 + i).DotProduct(Vector<double>.Build.Dense(frame));
             }
 
             return output;
@@ -88,12 +90,13 @@ namespace ReFlex.Core.Filtering.Components
             {
                 for (var i = 0; i <= polynomialOrder; ++i)
                 {
-                    a[m + _sidePoints, i] = System.Math.Pow(m, i);
+                    a[m + _sidePoints, i] = System.Math.Pow((double)m / System.Math.Max(1, _sidePoints), i);
                 }
             }
 
             var s = Matrix<double>.Build.DenseOfArray(a);
-            _coefficients = s.Multiply(s.TransposeThisAndMultiply(s).Inverse()).Multiply(s.Transpose());
+            // QR avoids explicitly inverting the normal equations (which square conditioning).
+            _coefficients = s * s.QR().Solve(Matrix<double>.Build.DenseIdentity(MinNumSamples));
         }
         
         

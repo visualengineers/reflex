@@ -109,7 +109,6 @@ export function setupTests(): void {
     settingsService.saveSettings.mockReturnValue(of(DEFAULT_SETTINGS));
 
     logService.sendErrorLog.mockReturnValue(undefined);
-
     fixture = TestBed.createComponent(ProcessingComponent);
     component = fixture.componentInstance;
   });
@@ -126,6 +125,8 @@ export function setupTests(): void {
     processingService.getRemoteProcessorSettings.mockClear();
     processingService.setRemoteProcessorSettings.mockClear();
 
+    settingsService.update.mockClear();
+    processingService.setPredictionSettings.mockReset();
     settingsService.getSettings.mockClear();
     settingsService.saveSettings.mockClear();
 

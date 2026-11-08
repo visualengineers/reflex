@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
+  Output,
+  SimpleChanges,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -17,12 +22,16 @@ import {
   ExtremumDescription,
   ExtremumType,
   FrameSizeDefinition,
-  Interaction
+  Interaction,
+  InteractionVelocity
 } from '@reflex/shared-types';
-import { Subscription } from 'rxjs';
+import { Subscription, exhaustMap, tap } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
+import { ProcessingService } from 'src/shared/services/processing.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
+import { InteractionsVelocityVisualizationComponent } from '../interactions-velocity-visualization/interactions-velocity-visualization.component';
+import { calibratePredictions } from './calibrate-predictions';
 import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 
 @Component({
@@ -30,12 +39,23 @@ import { HistoryVisualizationComponent } from '../history-visualization/history-
   templateUrl: './interactions-visualization.component.html',
   styleUrls: ['./interactions-visualization.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, HistoryVisualizationComponent]
+  imports: [CommonModule, FormsModule, HistoryVisualizationComponent, InteractionsVelocityVisualizationComponent]
 })
-export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
+export class InteractionsVisualizationComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
   @ViewChild('interactionVis')
   public container?: ElementRef<HTMLDivElement>;
+
+  @Input() public isProcessing = false;
+  @Input() public showPrediction = true;
+  @Input() public showMatching = true;
+  @Input() public showLinear = true;
+  @Input() public showAccelerated = true;
+  @Output() public predictionDataChange = new EventEmitter<Array<InteractionVelocity>>(true);
+  public viewportWidth = 500;
+  public viewportHeight = 400;
+  public predictionData: Array<InteractionVelocity> = [];
+  public predictionMessage = '';
 
   public interactions: CompleteInteractionData = {
     raw: [],
@@ -47,6 +67,9 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
 
   public fullScreen = false;
   public maxConfidence = 30;
+  private resizeObserver?: ResizeObserver;
+  private predictionSubscription?: Subscription;
+  private readonly processingService = inject(ProcessingService);
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
@@ -70,6 +93,46 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
     this.pEventId = value;
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (!('isProcessing' in changes) && !('showPrediction' in changes)) {
+      return;
+    }
+    if (!this.isProcessing || !this.showPrediction) {
+      this.predictionSubscription?.unsubscribe();
+      this.predictionSubscription = undefined;
+      this.predictionData = [];
+      this.predictionDataChange.emit([]);
+
+      return;
+    }
+    if (this.predictionSubscription && !this.predictionSubscription.closed) {
+      return;
+    }
+    this.predictionMessage = '';
+    this.predictionSubscription = this.processingService.getVelocities()
+      .pipe(
+        tap((data) => this.predictionDataChange.emit(data)),
+        exhaustMap((data) => calibratePredictions(data, this.calibrationService)),
+        markViewForCheck(this.changeDetector)
+      ).subscribe({
+        next: (data) => {
+          this.predictionData = data;
+        },
+        error: () => {
+          this.predictionMessage = 'Prediction stream or calibration unavailable.';
+          this.predictionData = [];
+          this.predictionDataChange.emit([]);
+        }
+      });
+  }
+
+  public ngAfterViewInit(): void {
+    this.resizeObserver = new ResizeObserver(() => this.updateCalibratedInteractions(this.interactions));
+    if (this.container) {
+      this.resizeObserver.observe(this.container.nativeElement);
+    }
+  }
+
   public ngOnInit(): void {
     this.frameSizeSubscription = this.calibrationService
       .getFrameSize()
@@ -77,6 +140,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           this.frameSize = result;
+          this.updateCalibratedInteractions(this.interactions);
         },
         (error) => {
           console.error(error);
@@ -86,6 +150,8 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
+    this.predictionSubscription?.unsubscribe();
     this.frameSizeSubscription?.unsubscribe();
   }
 
@@ -112,30 +178,22 @@ export class InteractionsVisualizationComponent implements OnInit, OnDestroy {
   public updateCalibratedInteractions(result: CompleteInteractionData): void {
     this.interactions = result;
 
-    this.calibratedInteractions = this.fullScreen
-      ? result.absolute
-      : result.normalized;
-
+    const width = this.container?.nativeElement.clientWidth ?? 0;
+    const height = this.container?.nativeElement.clientHeight ?? 0;
+    this.viewportWidth = this.fullScreen ? this.frameSize.width : width > 0 ? width : 500;
+    this.viewportHeight = this.fullScreen ? this.frameSize.height : height > 0 ? height : 400;
+    const source = this.fullScreen ? result.absolute : result.normalized;
+    this.calibratedInteractions = source.map((item) => ({
+      ...item,
+      position: {
+        ...item.position,
+        x: this.fullScreen ? item.position.x - this.frameSize.left : item.position.x * this.viewportWidth,
+        y: this.fullScreen ? item.position.y - this.frameSize.top : item.position.y * this.viewportHeight,
+        z: Math.abs(item.position.z) * 2
+      }
+    }));
     // Also used imperatively by ProcessingComponent through ViewChild.
     this.changeDetector.markForCheck();
-
-    if (this.container === undefined) {
-      return;
-    }
-
-    this.calibratedInteractions.forEach((int) => {
-      int.position.x = this.fullScreen
-        ? int.position.x - this.frameSize.left
-        : int.position.x
-          * ((this.container?.nativeElement as HTMLElement | undefined)
-            ?.clientWidth ?? 0);
-      int.position.y = this.fullScreen
-        ? int.position.y - this.frameSize.top
-        : int.position.y
-          * ((this.container?.nativeElement as HTMLElement | undefined)
-            ?.clientHeight ?? 0);
-      int.position.z = Math.abs(int.position.z) * 2;
-    });
   }
 
   public getClass(extremum: ExtremumDescription): string {

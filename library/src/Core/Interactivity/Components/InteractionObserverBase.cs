@@ -21,11 +21,12 @@ namespace ReFlex.Core.Interactivity.Components
         private readonly InteractionSmoothingBehaviour _smoothingBehaviour;
         private int _numSmoothingFrames = 5;
         private int _historySize = 25;
-        private int _maxNumEmptyFramesBetween = 3;
+        private double _contactRetentionSeconds = .1;
         private float _touchMergeDistance2d = 64f;
         private float _depthScale = 100.0f;
         private FilterType _filterType;
         private float _maxConfidence;
+        private float _extremumMergeRadius = ExtremumConsolidator.DefaultRadius;
         private int _extremumTypeCheckRadius;
         private int _extremumTypeCheckNumSamples;
 
@@ -100,47 +101,97 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         public ExtremumTypeCheckMethod ExtremumTypeCheckMethod { get; set; }
 
+        /// <summary>Euclidean radius in sensor pixels for consolidating same-type extrema before ID assignment; zero disables it.</summary>
+        public float ExtremumMergeRadius
+        {
+            get => _extremumMergeRadius;
+            set => _extremumMergeRadius = ExtremumConsolidator.ValidateRadius(value);
+        }
+
+        public double PredictionHorizonSeconds
+        {
+            get => _smoothingBehaviour.PredictionHorizonSeconds;
+            set => _smoothingBehaviour.PredictionHorizonSeconds = value;
+        }
+
+        public bool UseVelocityPrediction
+        {
+            get => _smoothingBehaviour.UseVelocityForMapping;
+            set => _smoothingBehaviour.UseVelocityForMapping = value;
+        }
+        public int NumFramesForPrediction
+        {
+            get => _smoothingBehaviour.NumFramesForPrediction;
+            set => _smoothingBehaviour.NumFramesForPrediction = value;
+        }
+        public bool UseSecondDerivation
+        {
+            get => _smoothingBehaviour.UseSecondDerivation;
+            set => _smoothingBehaviour.UseSecondDerivation = value;
+        }
+        public float SecondDerivationMagnitude
+        {
+            get => _smoothingBehaviour.SecondDerivationMagnitude;
+            set => _smoothingBehaviour.SecondDerivationMagnitude = value;
+        }
+
         public int InteractionHistorySize
         {
-            get => _historySize;
+            get => _smoothingBehaviour?.NumFramesHistory ?? _historySize;
             set
             {
-                _historySize = value;
+                _historySize = Math.Max(0, value);
                 if (_smoothingBehaviour != null)
                 {
-                    _smoothingBehaviour.NumFramesHistory = value;
+                    _smoothingBehaviour.NumFramesHistory = _historySize;
                     // update depending smoothing/filter values
                     NumSmoothingFrames = _numSmoothingFrames;
-                    MaxNumEmptyFramesBetween = _maxNumEmptyFramesBetween;
                 }
             }
         }
 
         public int NumSmoothingFrames
         {
-            get => _numSmoothingFrames;
+            get => _smoothingBehaviour?.NumFramesSmoothing ?? _numSmoothingFrames;
             set
             {
-                _numSmoothingFrames = value;
+                _numSmoothingFrames = Math.Clamp(value, 0, InteractionHistorySize);
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.NumFramesSmoothing = value < _smoothingBehaviour.NumFramesHistory
-                        ? _smoothingBehaviour.NumFramesHistory
-                        : value;
+                    _smoothingBehaviour.NumFramesSmoothing = _numSmoothingFrames;
             }
         }
 
-        // TODO: write tests for negative (!) values and values larger than history
-        public int MaxNumEmptyFramesBetween
+        private static double ValidateContactRetention(double value) =>
+            double.IsFinite(value) && value >= 0 ? value :
+                throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
+
+        public float ConfidenceGainPerSecond
         {
-            get => _maxNumEmptyFramesBetween;
+            get => _smoothingBehaviour.ConfidenceGainPerSecond;
+            set => _smoothingBehaviour.ConfidenceGainPerSecond = value;
+        }
+        public float ConfidenceDecayPerSecond
+        {
+            get => _smoothingBehaviour.ConfidenceDecayPerSecond;
+            set => _smoothingBehaviour.ConfidenceDecayPerSecond = value;
+        }
+
+        public double ContactRetentionSeconds
+        {
+            get => _smoothingBehaviour?.ContactRetentionSeconds ?? _contactRetentionSeconds;
             set
             {
-                _maxNumEmptyFramesBetween = value;
+                _contactRetentionSeconds = ValidateContactRetention(value);
                 if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.MaxNumEmptyFramesBetween = value < _smoothingBehaviour.NumFramesHistory
-                        ? _smoothingBehaviour.NumFramesHistory
-                        : value;
+                    _smoothingBehaviour.ContactRetentionSeconds = _contactRetentionSeconds;
             }
+        }
+
+        /// <summary>Maximum sensor/processing silence and acceptable observation age, in seconds.</summary>
+        public double ObservationTimeoutSeconds
+        {
+            get => _smoothingBehaviour.ObservationTimeoutSeconds;
+            set => _smoothingBehaviour.ObservationTimeoutSeconds = value;
         }
 
         public float TouchMergeDistance2D
@@ -159,9 +210,9 @@ namespace ReFlex.Core.Interactivity.Components
             get => _depthScale;
             set
             {
-                _depthScale = value;
                 if (_smoothingBehaviour != null)
                     _smoothingBehaviour.DepthScale = value;
+                _depthScale = value;
             }
         }
 
@@ -221,6 +272,7 @@ namespace ReFlex.Core.Interactivity.Components
         public abstract VectorField2 VectorField { get; set; }
 
         public event EventHandler<IList<Interaction>> NewInteractions;
+        public event EventHandler<IList<InteractionVelocity>> NewVelocities;
 
         public event EventHandler<PerformanceDataItem> PerformanceDataUpdated;
 
@@ -233,6 +285,13 @@ namespace ReFlex.Core.Interactivity.Components
         protected InteractionObserverBase()
         {
             _smoothingBehaviour = new InteractionSmoothingBehaviour(InteractionHistorySize);
+            ObservationTimeoutSeconds = 1;
+            NumSmoothingFrames = _numSmoothingFrames;
+            ContactRetentionSeconds = _contactRetentionSeconds;
+            TouchMergeDistance2D = _touchMergeDistance2d;
+            DepthScale = _depthScale;
+            MaxConfidence = _maxConfidence;
+            FilterType = _filterType;
         }
 
         #endregion
@@ -253,16 +312,56 @@ namespace ReFlex.Core.Interactivity.Components
           return Task.FromResult(new ProcessingResult(ProcessServiceStatus.Available));
         }
 
+        private double? _observationTime;
+        private readonly object _trackingSync = new();
+
+        public async Task<ProcessingResult> Update(TrackingObservation observation)
+        {
+            PointCloud = observation.PointCloud;
+            VectorField = observation.VectorField;
+            _observationTime = observation.TimestampSeconds;
+            try { return await Update(); }
+            finally { _observationTime = null; }
+        }
+
+        public void AdvanceTime(double timestampSeconds)
+        {
+            lock (_trackingSync) Publish(_smoothingBehaviour.OutputAt(timestampSeconds));
+        }
+
+        private void Publish(InteractionFrame frame)
+        {
+            var selected = SelectSmoothedInteractions(frame.Interactions).ToList();
+            var published = ApplyConfidenceFilter(selected).ToList();
+            var publishedIds = published.Select(item => item.TouchId).ToHashSet();
+            var selectedIds = selected.Select(item => item.TouchId).ToHashSet();
+            // Diagnostics include hidden tracks and are captured before any external callbacks.
+            var velocities = _smoothingBehaviour.GetVelocities(frame);
+            foreach (var velocity in velocities)
+            {
+                velocity.Width = PointCloud?.SizeX ?? 0;
+                velocity.Height = PointCloud?.SizeY ?? 0;
+                velocity.IsPublished = publishedIds.Contains(velocity.TouchId);
+                velocity.SuppressionReason = velocity.IsPublished ? "" :
+                    selectedIds.Contains(velocity.TouchId) ? "confidence" : "observer-selection";
+            }
+            OnNewInteractions(published);
+            NewVelocities?.Invoke(this, velocities);
+        }
+
         public virtual async Task<ProcessingResult> Update()
         {
             var processResult = await CheckInitialState();
 
             if (processResult.ServiceStatus != ProcessServiceStatus.Available)
             {
+              AdvanceTime(GetTimestampSeconds());
               UpdatePerformanceMetrics(new ProcessPerformance(), DateTime.Now.Ticks);
               return processResult;
             }
 
+            var timestampSeconds = _observationTime ?? GetTimestampSeconds();
+            var observationCloud = PointCloud;
             var processingDateTime = DateTime.Now.Ticks;
 
             if (MeasurePerformance)
@@ -301,7 +400,7 @@ namespace ReFlex.Core.Interactivity.Components
               _stopWatch.Start();
             }
 
-            var processedInteractions = ComputeExtremumType(interactions, PointCloud.AsJaggedArray());
+            var processedInteractions = ComputeExtremumType(interactions, observationCloud.AsJaggedArray());
 
             var cleanedUpInteractions = RemoveExtremumsBetweenTouches(processedInteractions);
 
@@ -318,23 +417,30 @@ namespace ReFlex.Core.Interactivity.Components
                 _stopWatch.Start();
             }
 
-            var frame = ComputeSmoothingValue(cleanedUpInteractions);
-
-            if (MeasurePerformance)
+            Task reportTask;
+            lock (_trackingSync)
             {
-                _stopWatch.Stop();
-                perfItem.Smoothing = _stopWatch.Elapsed;
-                _stopWatch.Reset();
+                var measurements = ConsolidateExtrema(cleanedUpInteractions);
+                var processedAt = Math.Max(timestampSeconds, GetTimestampSeconds());
+                // Reject an actually late result before it can mutate or revive tracking state.
+                var frame = _observationTime.HasValue && processedAt > timestampSeconds + ObservationTimeoutSeconds
+                    ? _smoothingBehaviour.OutputAt(processedAt)
+                    : ComputeSmoothingValue(measurements, timestampSeconds, processedAt);
+
+                if (MeasurePerformance)
+                {
+                    _stopWatch.Stop();
+                    perfItem.Smoothing = _stopWatch.Elapsed;
+                    _stopWatch.Reset();
+                }
+
+                // Populate optional remote stage timings before publishing the shared dictionary.
+                reportTask = MeasurePerformance ? ReportPerformance(perfItem) : Task.CompletedTask;
+                processResult.PerformanceMeasurement = perfItem;
+                UpdatePerformanceMetrics(perfItem, processingDateTime);
+
+                Publish(frame);
             }
-
-            var confidentInteractions = ApplyConfidenceFilter(SelectSmoothedInteractions(frame.Interactions));
-
-            // Populate optional remote stage timings before publishing the shared dictionary.
-            var reportTask = MeasurePerformance ? ReportPerformance(perfItem) : Task.CompletedTask;
-            processResult.PerformanceMeasurement = perfItem;
-            UpdatePerformanceMetrics(perfItem, processingDateTime);
-
-            OnNewInteractions(confidentInteractions.ToList());
 
             await reportTask;
 
@@ -345,9 +451,17 @@ namespace ReFlex.Core.Interactivity.Components
         protected virtual IEnumerable<Interaction> SelectSmoothedInteractions(IEnumerable<Interaction> interactions)
             => interactions;
 
-        protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions)
+        protected virtual IList<Interaction> ConsolidateExtrema(IList<Interaction> interactions)
+            => ExtremumConsolidator.Consolidate(interactions, ExtremumMergeRadius);
+
+        /// <summary>Monotonic observation time captured before Analyze, including remote work.</summary>
+        protected virtual double GetTimestampSeconds() => (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+
+        protected InteractionFrame ComputeSmoothingValue(IList<Interaction> rawInteractions, double? timestampSeconds = null,
+            double? processedTimestampSeconds = null)
         {
-            var result = _smoothingBehaviour.Update(rawInteractions);
+            var capturedAt = timestampSeconds ?? GetTimestampSeconds();
+            var result = _smoothingBehaviour.Update(rawInteractions, capturedAt, processedTimestampSeconds ?? capturedAt);
             InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
 
             return result;
@@ -527,23 +641,6 @@ namespace ReFlex.Core.Interactivity.Components
             PerformanceDataUpdated?.Invoke(this, pData);
         }
 
-        protected void UpdateInteractionFrames(List<Interaction> cleanedUpInteractions, InteractionFrame currentFrame)
-        {
-          currentFrame.Interactions.ForEach((interaction) =>
-          {
-            if (cleanedUpInteractions.FirstOrDefault((i) => i.TouchId == interaction.TouchId) == null)
-            {
-              if (interaction.Confidence > 0)
-                interaction.Confidence--;
-            }
-          });
-
-          currentFrame.Interactions.RemoveAll((interaction) => interaction.Confidence <= 0);
-
-          _smoothingBehaviour.UpdateCachedFrame(currentFrame);
-          InteractionHistoryUpdated?.Invoke(this, _smoothingBehaviour.InteractionsFramesCache);
-        }
-
         protected void OnNewInteractions(List<Interaction> args) => NewInteractions?.Invoke(this, args);
 
         /// <summary>
@@ -592,11 +689,19 @@ namespace ReFlex.Core.Interactivity.Components
 
             var min = (int)Math.Floor(0.5f * ExtremumTypeCheckRadius);
             var max = ExtremumTypeCheckRadius;
+            var range = max - min;
 
             for (var i = 0; i < ExtremumTypeCheckNumSamples; i++)
             {
-                var xStochastic = rnd.Next(min, max);
-                var yStochastic = rnd.Next(min, max);
+                // One draw per axis encodes both magnitude and sign. Map [-range, -1]
+                // to [-(max - 1), -min] and [0, range - 1] to [min, max - 1].
+                var x = rnd.Next(-range, range);
+                var y = rnd.Next(-range, range);
+                // A 0/-1 sign mask avoids an unpredictable branch for each axis.
+                var xSign = x >> 31;
+                var ySign = y >> 31;
+                var xStochastic = x + (min ^ xSign) - 2 * xSign;
+                var yStochastic = y + (min ^ ySign) - 2 * ySign;
 
                 result.Add(new Tuple<int, int>(xStochastic, yStochastic));
             }
@@ -610,7 +715,7 @@ namespace ReFlex.Core.Interactivity.Components
 
             for (var i = 0; i < ExtremumTypeCheckNumSamples; i++)
             {
-                var p = (float)i / ExtremumTypeCheckRadius;
+                var p = (double)i / ExtremumTypeCheckNumSamples;
                 var xFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Cos(p * 2 * Math.PI));
                 var yFixed = (int) Math.Floor(ExtremumTypeCheckRadius * Math.Sin(p * 2 * Math.PI));
 

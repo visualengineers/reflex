@@ -1,0 +1,13 @@
+:host { position: absolute; inset: 0; display: block; pointer-events: none; z-index: 1; }
+.prediction__canvas { display: block; width: 100%; height: 100%; overflow: hidden; }
+.prediction__canvas text { fill: #24364b; font-size: 12px; paint-order: stroke; stroke: white; stroke-width: 3px; }
+line, polyline, .forecast, .matching { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.measured { fill: #24364b; stroke: white; stroke-width: 1; }
+.smoothed { fill: #a65d00; stroke: white; stroke-width: 1; }
+.matching { stroke: #7138a8; }
+.matching-error { stroke: #7138a8; stroke-dasharray: 2 4; }
+.linear { stroke: #007d8a; }
+.accelerated { stroke: #bf285b; stroke-dasharray: 5 3; }
+.trail { stroke: #64748b; }
+.lost { stroke-dasharray: 3 3; }
+.suppressed { opacity: .75; }

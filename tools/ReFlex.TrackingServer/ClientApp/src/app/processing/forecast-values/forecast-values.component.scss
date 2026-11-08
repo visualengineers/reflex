@@ -1,0 +1,24 @@
+@use 'reflex' as reflex;
+
+:host { display: block; min-width: 0; }
+.forecast-values__table { overflow-x: auto; }
+table {
+  width: 100%;
+  min-width: 120rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  height: 3.8rem;
+  padding: .6rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid reflex.$color-grey-light-3;
+}
+th { white-space: normal; }
+caption { text-align: left; padding-block: .8rem; }
+tbody tr:hover { box-shadow: none; }
+.forecast-values__frame { font-variant-numeric: tabular-nums; }

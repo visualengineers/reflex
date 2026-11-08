@@ -76,6 +76,12 @@ curl -X POST "$BASE_URL/api/Settings/Threshold" \
 curl -X PUT "$BASE_URL/api/Tracking/SetDepthImagePreview" \
   -H "$JSON_HEADER" \
   -d 'false'
+
+curl "$BASE_URL/api/Processing/UseObservationSnapshots"
+
+curl -X POST "$BASE_URL/api/Processing/UseObservationSnapshots" \
+  -H "$JSON_HEADER" \
+  -d 'true'
 ```
 
 ### `JsonSimpleValue<T>` Bodies
@@ -124,6 +130,10 @@ curl -X POST "$BASE_URL/api/Network/StartBroadcast" \
 curl -X POST "$BASE_URL/api/Settings/PointCloudSettings" \
   -H "$JSON_HEADER" \
   -d '{"fullResolution":false,"updateInterval":100,"pointCloudSize":40000}'
+
+curl -X POST "$BASE_URL/api/Settings/Prediction" \
+  -H "$JSON_HEADER" \
+  -d '{"predictionHorizonSeconds":0.05,"useVelocityPrediction":true,"numFramesForPrediction":3,"useSecondDerivation":false,"secondDerivationMagnitude":0.5}'
 ```
 
 ### Endpoints with Path Parameters
@@ -231,6 +241,17 @@ __[⬆ back to top](#table-of-contents)__
 | `GET` | `/api/Settings/MeasurePerformance` | - | `JsonSimpleValue<bool>` | Returns whether performance measurement is active. Name: `MeasurePerformance`. |
 | `POST` | `/api/Settings/MeasurePerformance` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Sets performance measurement. Only `value` is used; return value: `{name:"success", value:true}`. |
 | `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Updates the point cloud settings. |
+| `POST` | `/api/Settings/Prediction` | Body: `PredictionSettings` | `PredictionSettings` or `400` | Applies and saves the motion prediction settings. Returns `400` for invalid numeric values (see below). |
+
+`PredictionSettings` contains the following fields. The defaults apply to omitted fields.
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `predictionHorizonSeconds` | `double` | `0.05` | Forecast horizon in seconds; must be finite and between `0` and `1` (inclusive). |
+| `useVelocityPrediction` | `bool` | `true` | Enables velocity-based prediction. |
+| `numFramesForPrediction` | `int` | `3` | Number of samples used for prediction; must be at least `2`. |
+| `useSecondDerivation` | `bool` | `false` | Enables the acceleration contribution to prediction. |
+| `secondDerivationMagnitude` | `float` | `0.5` | Acceleration weight; must be finite and between `0` and `1` (inclusive). |
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -247,6 +268,8 @@ __[⬆ back to top](#table-of-contents)__
 | `GET` | `/api/Processing/GetRemoteProcessorSettings` | - | `RemoteProcessingServiceSettings` | Returns the remote processing configuration. |
 | `GET` | `/api/Processing/GzipCompression` | - | `bool` | Returns the requested gzip setting. |
 | `POST` | `/api/Processing/GzipCompression` | Body: JSON `true` or `false` | `bool` or `400` | Enables/disables gzip for subsequent large remote requests. |
+| `GET` | `/api/Processing/UseObservationSnapshots` | - | `bool` | Returns whether observation snapshots are enabled (default `true`). |
+| `POST` | `/api/Processing/UseObservationSnapshots` | Body: JSON boolean | `bool` or `400` | Enables or disables observation snapshots and returns the requested value. |
 | `GET` | `/api/Processing/IsLoopRunning` | - | `JsonSimpleValue<bool>` | Returns whether the processing loop is running. Name: `IsLoopRunning`. |
 | `POST` | `/api/Processing/SetUpdateInterval` | Body: `JsonSimpleValue<int>` with `name = "UpdateInterval"` | `JsonSimpleValue<int>` or `400` | Sets the update interval. |
 | `POST` | `/api/Processing/SelectObserverType` | Body: `JsonSimpleValue<string>` with `name = "ObserverType"` | `JsonSimpleValue<string>`, `400` or `500` | Selects a new observer type. |
@@ -259,6 +282,12 @@ page's **gzip Compression** checkbox uses `SetRemoteProcessorSettings`; **Save**
 persists the current remote settings. The setting requests gzip for payloads of at
 least 64 KiB; peer compatibility fallback and the startup environment override
 `REFLEX_GRPC_REQUEST_COMPRESSION=identity` can still force identity encoding.
+
+Observation snapshots copy the point cloud and vector field for processing. When
+disabled, processing uses the source rasters without copying them. The POST endpoint
+applies the change immediately and updates
+`processingSettingValues.useObservationSnapshots` in the current configuration.
+Use `POST /api/Settings` to save the configuration to disk.
 
 __[⬆ back to top](#table-of-contents)__
 
