@@ -314,7 +314,8 @@ namespace TrackingServer
             var networkManager = new NetworkManager(_evtAggregator);
             _logger.Trace($"Created {typeof(NetworkManager).FullName} instance.");
 
-            var interactionManager = new InteractionManager(depthImageManager, remoteProcessor, performanceAggregator);
+            var trackingManager = new TrackingManager(_evtAggregator, depthImageManager);
+            var interactionManager = new InteractionManager(depthImageManager, remoteProcessor, performanceAggregator, trackingManager);
             var type = settings?.ProcessingSettingValues.InteractionType ?? ObserverType.None;
             interactionManager.Init(type);
 
@@ -375,7 +376,7 @@ namespace TrackingServer
             services.AddSingleton<CalibrationService>();
             _logger.Trace($"Sucessfully registered {typeof(CalibrationService).FullName} [Singleton].");
 
-            services.AddSingleton<ITrackingManager>(new TrackingManager(_evtAggregator, depthImageManager));
+            services.AddSingleton<ITrackingManager>(trackingManager);
             _logger.Trace($"Sucessfully registered {typeof(ITrackingManager).FullName} [Singleton].");
 
             services.AddSingleton(new CameraManager());

@@ -11,12 +11,15 @@ using ReFlex.Core.Common.Util;
 using ReFlex.Core.Interactivity.Components;
 using ReFlex.Core.Interactivity.Interfaces;
 using ReFlex.Core.Interactivity.Util;
+using ReFlex.Core.Events;
 
 namespace Implementation.Components
 {
     public class InteractionManager : IInteractionManager, IDisposable
     {
         private IInteractionObserver _interactionObserver;
+        private readonly object _publicationSync = new();
+        private readonly ITrackingManager _trackingManager;
         private readonly object _snapshotSync = new();
         private readonly Stack<TrackingObservation> _spareSnapshots = new(2);
         private readonly DepthImageManager _snapshotSource;
@@ -55,6 +58,7 @@ namespace Implementation.Components
         private float _confidenceDecayPerSecond = 30;
         private float _smoothingDistanceSquared = 64f;
         private float _depthScale = 100.0f;
+        private FilterType _filterType;
         private int _extremumTypeCheckNumSamples;
         private int _extremumTypeCheckRadius;
         private float _extremumMergeRadius = ExtremumConsolidator.DefaultRadius;
@@ -116,7 +120,12 @@ namespace Implementation.Components
         public ObserverType Type
         {
             get => _interactionObserver?.Type ?? ObserverType.None;
-            set => UpdateObserver(CreateObserver(value));
+            set
+            {
+                lock (_publicationSync)
+                lock (_snapshotSync)
+                    UpdateObserver(CreateObserver(value));
+            }
         }
 
         protected virtual IInteractionObserver CreateObserver(ObserverType type) => type switch
@@ -172,6 +181,7 @@ namespace Implementation.Components
             observer.ConfidenceGainPerSecond = _confidenceGainPerSecond;
             observer.ConfidenceDecayPerSecond = _confidenceDecayPerSecond;
             observer.DepthScale = _depthScale;
+            observer.FilterType = _filterType;
             observer.PredictionHorizonSeconds = _predictionHorizonSeconds;
             observer.UseVelocityPrediction = _useVelocityPrediction;
             observer.NumFramesForPrediction = _numFramesForPrediction;
@@ -192,7 +202,11 @@ namespace Implementation.Components
 
         private void OnHistoryUpdated(object sender, IList<InteractionFrame> e)
         {
-            InteractionHistoryUpdated?.Invoke(this, e);
+            lock (_publicationSync)
+            {
+                if (_disposed || !ReferenceEquals(sender, _interactionObserver)) return;
+                InteractionHistoryUpdated?.Invoke(this, e);
+            }
         }
 
         public float Distance
@@ -394,11 +408,12 @@ namespace Implementation.Components
         }
 
         public FilterType FilterType { 
-            get => _interactionObserver?.FilterType ?? FilterType.None;
+            get => _interactionObserver?.FilterType ?? _filterType;
             set
             {
                 if (_interactionObserver != null)
                     _interactionObserver.FilterType = value;
+                _filterType = value;
             }
         }
 
@@ -479,17 +494,22 @@ namespace Implementation.Components
 
         public float InputDistance { get; set; }
 
-        public InteractionManager(IDepthImageManager depthImageManager, IRemoteInteractionProcessorService service, IPerformanceAggregator performanceAggregator)
+        public InteractionManager(IDepthImageManager depthImageManager, IRemoteInteractionProcessorService service,
+            IPerformanceAggregator performanceAggregator, ITrackingManager trackingManager = null)
         {
             _depthImageManager = depthImageManager;
             _service = service;
             _performanceAggregator = performanceAggregator;
+            _trackingManager = trackingManager;
 
             _snapshotSource = depthImageManager as DepthImageManager;
             if (_snapshotSource != null)
                 _snapshotSource.SnapshotSourceReady += OnSnapshotSourceReady;
             else
                 depthImageManager.ObservationReady += OnObservationReady;
+
+            if (_trackingManager != null)
+                _trackingManager.TrackingStateChanged += OnTrackingStateChanged;
         }
 
         public bool UseObservationSnapshots
@@ -512,6 +532,30 @@ namespace Implementation.Components
             Type = type;
         }
 
+        private void OnTrackingStateChanged(object sender, TrackingStateChangedEventArgs args) => ResetTracking();
+
+        public void ResetTracking()
+        {
+            // Serialize publication with the reset, without waiting for remote analysis to finish.
+            lock (_publicationSync)
+            {
+                lock (_snapshotSync)
+                {
+                    if (_disposed) return;
+                    UpdateObserver(CreateObserver(Type));
+                    _pendingObservation = null;
+                    _lastSnapshot = null;
+                    _spareSnapshots.Clear();
+                    _lastSequence = -1;
+                    _lastObservationTime = double.NegativeInfinity;
+                    _interactions = new List<Interaction>();
+                }
+                InteractionsUpdated?.Invoke(this, _interactions);
+                VelocitiesUpdated?.Invoke(this, new List<InteractionVelocity>());
+                InteractionHistoryUpdated?.Invoke(this, new List<InteractionFrame>());
+            }
+        }
+
         public void AdvanceTime() => _interactionObserver?.AdvanceTime(GetTimestampSeconds());
 
         public async Task<ProcessServiceStatus> Update()
@@ -520,12 +564,13 @@ namespace Implementation.Components
             var reservedRasters = false;
             try
             {
-                var observer = _interactionObserver;
-                if (observer == null) return ProcessServiceStatus.Error;
+                IInteractionObserver observer;
                 TrackingObservation observation;
                 lock (_snapshotSync)
                 {
                     if (_disposed) return ProcessServiceStatus.Skipped;
+                    observer = _interactionObserver;
+                    if (observer == null) return ProcessServiceStatus.Error;
                     observation = _pendingObservation;
                     if (observation is { OwnsRasters: false } &&
                         !(reservedRasters = _snapshotSource.TryReserveRasters()))
@@ -540,16 +585,23 @@ namespace Implementation.Components
                         if (reservedRasters && observation.Sequence != _snapshotSource.RasterSequence)
                             observation = null;
                     }
+                    if (observation == null || observation.Sequence <= _lastSequence ||
+                        observation.TimestampSeconds <= _lastObservationTime)
+                    {
+                        RecycleSnapshot(observation);
+                        observation = null;
+                    }
+                    else
+                    {
+                        _lastSequence = observation.Sequence;
+                        _lastObservationTime = observation.TimestampSeconds;
+                    }
                 }
-                if (observation == null || observation.Sequence <= _lastSequence ||
-                    observation.TimestampSeconds <= _lastObservationTime)
+                if (observation == null)
                 {
-                    lock (_snapshotSync) RecycleSnapshot(observation);
                     observer.AdvanceTime(GetTimestampSeconds());
                     return ProcessServiceStatus.Skipped;
                 }
-                _lastSequence = observation.Sequence;
-                _lastObservationTime = observation.TimestampSeconds;
                 try { return (await observer.Update(observation)).ServiceStatus; }
                 catch (Exception exception)
                 {
@@ -564,8 +616,11 @@ namespace Implementation.Components
                     // Release the previous pair only after the new update has finished.
                     lock (_snapshotSync)
                     {
-                        RecycleSnapshot(_lastSnapshot);
-                        _lastSnapshot = _disposed || _snapshotSource == null || !observation.OwnsRasters ? null : observation;
+                        if (ReferenceEquals(observer, _interactionObserver))
+                        {
+                            RecycleSnapshot(_lastSnapshot);
+                            _lastSnapshot = _disposed || _snapshotSource == null || !observation.OwnsRasters ? null : observation;
+                        }
                     }
                 }
             }
@@ -616,57 +671,68 @@ namespace Implementation.Components
 
         private void OnNewVelocities(object sender, IList<InteractionVelocity> velocities)
         {
-            if (!ReferenceEquals(sender, _interactionObserver)) return;
-            var publishedIds = Interactions.Select(item => item.TouchId).ToHashSet();
-            foreach (var item in velocities)
+            lock (_publicationSync)
             {
-                if (item.IsPublished && !publishedIds.Contains(item.TouchId))
+                if (_disposed || !ReferenceEquals(sender, _interactionObserver)) return;
+                var publishedIds = Interactions.Select(item => item.TouchId).ToHashSet();
+                foreach (var item in velocities)
                 {
-                    item.IsPublished = false;
-                    item.SuppressionReason = "cluster";
+                    if (item.IsPublished && !publishedIds.Contains(item.TouchId))
+                    {
+                        item.IsPublished = false;
+                        item.SuppressionReason = "cluster";
+                    }
                 }
+                VelocitiesUpdated?.Invoke(this, velocities);
             }
-            VelocitiesUpdated?.Invoke(this, velocities);
         }
         
         public event EventHandler<IList<InteractionFrame>> InteractionHistoryUpdated;
 
         public void Dispose()
         {
-            lock (_snapshotSync)
+            lock (_publicationSync)
             {
-                if (_disposed) return;
-                _disposed = true;
-                _pendingObservation = null;
-                _lastSnapshot = null;
-                _spareSnapshots.Clear();
-            }
+                lock (_snapshotSync)
+                {
+                    if (_disposed) return;
+                    _disposed = true;
+                    _pendingObservation = null;
+                    _lastSnapshot = null;
+                    _spareSnapshots.Clear();
+                }
 
-            if (_snapshotSource != null)
-                _snapshotSource.SnapshotSourceReady -= OnSnapshotSourceReady;
-            else
-                _depthImageManager.ObservationReady -= OnObservationReady;
+                if (_snapshotSource != null)
+                    _snapshotSource.SnapshotSourceReady -= OnSnapshotSourceReady;
+                else
+                    _depthImageManager.ObservationReady -= OnObservationReady;
 
-            if (_interactionObserver != null)
-            {
-                _interactionObserver.NewInteractions -= OnNewInteractions;
-                _interactionObserver.NewVelocities -= OnNewVelocities;
-                _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
+                if (_interactionObserver != null)
+                {
+                    _interactionObserver.NewInteractions -= OnNewInteractions;
+                    _interactionObserver.NewVelocities -= OnNewVelocities;
+                    _interactionObserver.InteractionHistoryUpdated -= OnHistoryUpdated;
 
-                _performanceAggregator.UnregisterReporter(_interactionObserver as IPerformanceReporter);
+                    _performanceAggregator.UnregisterReporter(_interactionObserver as IPerformanceReporter);
+                }
+                if (_trackingManager != null)
+                    _trackingManager.TrackingStateChanged -= OnTrackingStateChanged;
             }
         }
 
         private void OnNewInteractions(object sender, IList<Interaction> interactions)
         {
-            if (!ReferenceEquals(sender, _interactionObserver)) return;
-            lock (interactions)
+            lock (_publicationSync)
             {
-                var copy = interactions.Select(interaction => new Interaction(interaction)).ToList();
-                _interactions = RemoveClusteredInteractions(copy);
-            }
+                if (_disposed || !ReferenceEquals(sender, _interactionObserver)) return;
+                lock (interactions)
+                {
+                    var copy = interactions.Select(interaction => new Interaction(interaction)).ToList();
+                    _interactions = RemoveClusteredInteractions(copy);
+                }
 
-            InteractionsUpdated?.Invoke(this, _interactions); 
+                InteractionsUpdated?.Invoke(this, _interactions);
+            }
         }
 
         private IList<Interaction> RemoveClusteredInteractions(IList<Interaction> rawInteractions)
