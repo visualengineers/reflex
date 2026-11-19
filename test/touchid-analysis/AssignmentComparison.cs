@@ -202,7 +202,7 @@ static class AssignmentComparison
                 source_sha256 = new[] {
                     "library/src/Core/Interactivity/Components/InteractionSmoothingBehaviour.cs",
                     "library/src/Core/Interactivity/Util/MinimumCostAssignment.cs",
-                    "scripts/touchid-analysis/AssignmentComparison.cs",
+                    "test/touchid-analysis/AssignmentComparison.cs",
                     "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json"
                 }.ToDictionary(path => path, path => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)))),
                 configuration = new { settings = settings.DeepClone(), prediction = "linear, 3 samples", gate = "strict Manhattan",

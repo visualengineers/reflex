@@ -3,10 +3,10 @@
 Run from the repository root with the recordings present in the TrackingServer's `wwwroot/recordings` directory. Requires the repository's .NET SDK and restored dependencies; the summarizer uses Python's standard library.
 
 ```sh
-dotnet run --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-analysis
-dotnet run --no-build --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-touchid-analysis
-dotnet run --no-build --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- --analyze /tmp/reflex-touchid-analysis
-python3 scripts/touchid-analysis/summarize.py /tmp/reflex-touchid-analysis test/analysis/touchid-3512
+dotnet run --project test/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-analysis
+dotnet run --no-build --project test/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-touchid-analysis
+dotnet run --no-build --project test/touchid-analysis/TouchIdAnalysis.csproj -- --analyze /tmp/reflex-touchid-analysis
+python3 test/touchid-analysis/summarize.py /tmp/reflex-touchid-analysis test/analysis/touchid-3512
 ```
 
 Captures use the actual ReplayCamera and production filter/observer/manager classes, with nominal timestamps to isolate association from machine speed. They process every frame once, without wrapping to the start. Existing capture files are reused; use a fresh directory to capture again. Files contain pre-assignment `measurements` with detector confidence, the assigned history (`clean`), diagnostics including suppression reasons, final interactions and a SingleTouch control. Raw candidate counts and confidence ranges are stored without retaining large lists of pixel candidates.
@@ -18,12 +18,12 @@ Captures use the actual ReplayCamera and production filter/observer/manager clas
 To inspect processing-age expiry with the real monotonic clock, run a short MultiTouch-only capture into a separate directory:
 
 ```sh
-REFLEX_WALL_CLOCK=1 REFLEX_FRAME_LIMIT=12 dotnet run --no-build --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-wall-production
+REFLEX_WALL_CLOCK=1 REFLEX_FRAME_LIMIT=12 dotnet run --no-build --project test/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-wall-production
 ```
 
 This measures a synchronous diagnostic pipeline in the selected build configuration, not full server timer/remote/network throughput. It includes filtering, vector-field computation, snapshot construction and interaction analysis. SingleTouch control updates are omitted in this mode. The nominal capture still runs both observer types. The default profile is deliberately `TrackingSettings_default.json`, whose 1.45 m plane matches ReplayCamera; the stored Kinect configuration does not.
 
-Original results: [analysis.md](../../test/analysis/touchid-3512/analysis.md). The implemented consolidation and confidence correction, including the before/after replay comparison and real-clock limitation, are described in [implementation.md](../../test/analysis/touchid-3512/implementation.md). Set `REFLEX_MERGE_RADIUS` when capturing to override the configured pixel radius (default 3, zero disables consolidation). Use a fresh output directory for every variant.
+Original results: [analysis.md](../analysis/touchid-3512/analysis.md). The implemented consolidation and confidence correction, including the before/after replay comparison and real-clock limitation, are described in [implementation.md](../analysis/touchid-3512/implementation.md). Set `REFLEX_MERGE_RADIUS` when capturing to override the configured pixel radius (default 3, zero disables consolidation). Use a fresh output directory for every variant.
 
 
 ## Paired greedy/global assignment comparison
@@ -36,11 +36,11 @@ trackers subsequently receive exactly these measurements with nominal observatio
 From the repository root, using a fresh capture directory:
 
 ```sh
-python3 scripts/touchid-analysis/prepare_greedy_baseline.py 1877755ef80934f5800eb3f5a717bb9d18d508cb /tmp/reflex-assignment-baseline/GreedyInteractionSmoothingBehaviour.cs
-dotnet build scripts/touchid-analysis/TouchIdAnalysis.csproj -c Release --no-restore -m:1 -nr:false -p:GreedyTrackerSource=/tmp/reflex-assignment-baseline/GreedyInteractionSmoothingBehaviour.cs
-dotnet run --no-build -c Release --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-assignment-new
-dotnet run --no-build -c Release --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-assignment-new
-dotnet run --no-build -c Release --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- --compare-assignment /tmp/reflex-assignment-new /tmp/reflex-assignment-results
+python3 test/touchid-analysis/prepare_greedy_baseline.py 1877755ef80934f5800eb3f5a717bb9d18d508cb /tmp/reflex-assignment-baseline/GreedyInteractionSmoothingBehaviour.cs
+dotnet build test/touchid-analysis/TouchIdAnalysis.csproj -c Release --no-restore -m:1 -nr:false -p:GreedyTrackerSource=/tmp/reflex-assignment-baseline/GreedyInteractionSmoothingBehaviour.cs
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-assignment-new
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-assignment-new
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-assignment /tmp/reflex-assignment-new /tmp/reflex-assignment-results
 ```
 
 `results.json` records metrics, build/input hashes and runtime information. `frames.csv` records
@@ -58,5 +58,5 @@ to inspect process-to-process variation.
 The three moving-contact recordings use the existing consecutive-active-output ID-change metric.
 Multi-Touch lacks finger annotations; its strongest-region representative changes are a diagnostic
 count, not physical finger ID switches. Created tracks include tentative, stationary and suppressed
-contacts. See [the replay comparison](../../test/analysis/touchid-3512/assignment-comparison.md)
+contacts. See [the replay comparison](../analysis/touchid-3512/assignment-comparison.md)
 for the measured results and limits.

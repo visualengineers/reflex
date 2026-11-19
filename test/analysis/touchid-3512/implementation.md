@@ -82,10 +82,10 @@ Global assignment, adaptive reversal estimation and Manhattan-parameter migratio
 From the repository root, using a fresh output directory:
 
 ```sh
-dotnet run --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-merged-r3
-dotnet run --no-build --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-touchid-merged-r3
-dotnet run --no-build --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- --analyze /tmp/reflex-touchid-merged-r3
-python3 scripts/touchid-analysis/summarize.py /tmp/reflex-touchid-merged-r3 docs/analysis/touchid-3512/after-consolidation
+dotnet run --project test/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-merged-r3
+dotnet run --no-build --project test/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-touchid-merged-r3
+dotnet run --no-build --project test/touchid-analysis/TouchIdAnalysis.csproj -- --analyze /tmp/reflex-touchid-merged-r3
+python3 test/touchid-analysis/summarize.py /tmp/reflex-touchid-merged-r3 test/analysis/touchid-3512/after-consolidation
 ```
 
 Capture JSONs remain local in `/tmp/reflex-touchid-merged-r3`; committed CSVs contain compact frame-level results. Set `REFLEX_MERGE_RADIUS` during capture to test another radius; 0 disables consolidation only, preserving the confidence fix. Existing captures are reused, so use a fresh directory for each variant.

@@ -164,6 +164,6 @@ Acceptance should measure pressure-region identity over continuous motion. Circl
 
 ## Reproduction and validation
 
-Tooling and commands: [scripts/touchid-analysis/README.md](../../../scripts/touchid-analysis/README.md). Full capture JSONs remain local in `/tmp/reflex-touchid-analysis`; the short real-clock run is in `/tmp/reflex-touchid-wall-production`.
+Tooling and commands: [test/touchid-analysis/README.md](../../touchid-analysis/README.md). Full capture JSONs remain local in `/tmp/reflex-touchid-analysis`; the short real-clock run is in `/tmp/reflex-touchid-wall-production`.
 
 Existing tests: `dotnet test test/Library/InteractionTests/InteractionTests.csproj --no-restore --verbosity quiet`: **245 passed, 0 failed, 0 skipped**. These verify individual contracts but do not adequately cover the demonstrated duplicate-track/cluster behavior as physical contact identity.

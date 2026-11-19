@@ -173,7 +173,7 @@ server recording directories. They are not newly committed. Use the exact shared
 bit-for-bit repeat; a fresh detector run can alter candidate enumeration and legacy measurement
 timestamps. Each new paired comparison still uses the same capture for both variants.
 
-See [the diagnostic README](../../../scripts/touchid-analysis/README.md#paired-greedyglobal-assignment-comparison)
+See [the diagnostic README](../../touchid-analysis/README.md#paired-greedyglobal-assignment-comparison)
 for the complete capture/build/compare commands. Run the comparison twice with separate output
 directories to reproduce two process campaigns. The baseline is pinned, while current-source
 hashes identify the tested working tree containing the global solver.
