@@ -2,6 +2,10 @@
 
 As of 3 November 2026, commit `dd00d29d`. Analysis and diagnostic tooling only; no tracking changes. The [PR #3512 description](https://github.com/visualengineers/reflex/pull/3512) was read through the GitHub API. See [implementation.md](implementation.md) for the subsequent changes and replay comparison.
 
+See [global-assignment.md](global-assignment.md) for the subsequent global assignment implementation, explicit miss/birth costs and remaining alternatives.
+
+See [assignment-comparison.md](assignment-comparison.md) for the measured greedy/global comparison on all four recordings.
+
 ## Findings
 
 IDs are assigned to individual extremum candidates. One physical pressure region can produce several neighboring candidates and competing tracks. Spatial suppression happens only **after** assignment and confidence filtering. When one extremum disappears, a previously hidden track can become the published contact, changing the ID during continuous motion.

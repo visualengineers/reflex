@@ -1,4 +1,5 @@
 using System;
+using Math = System.Math;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -57,6 +58,147 @@ public class ContactTrackingRegressionTest
             Assert.That(At(frame, 8).TouchId, Is.EqualTo(At(born, 0).TouchId));
             Assert.That(At(frame, 9).TouchId, Is.EqualTo(At(born, 20).TouchId));
         });
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void GlobalAssignmentAvoidsGreedyFragmentation(bool reverse)
+    {
+        var scene = new Scenario();
+        scene.Tracker.TouchMergeDistance2D = 81;
+        var born = scene.Step(0, 100);
+        var maxId = scene.Tracker.CurrentMaxId;
+        var frame = reverse ? scene.Step(120, 80) : scene.Step(80, 120);
+        Assert.Multiple(() =>
+        {
+            Assert.That(frame.Interactions, Has.Count.EqualTo(2));
+            Assert.That(At(frame, 80).TouchId, Is.EqualTo(At(born, 0).TouchId));
+            Assert.That(At(frame, 120).TouchId, Is.EqualTo(At(born, 100).TouchId));
+            Assert.That(frame.Interactions.All(item => item.TrackingState == InteractionTrackingState.Confirmed), Is.True);
+            Assert.That(scene.Tracker.CurrentMaxId, Is.EqualTo(maxId), "No replacement ID was allocated.");
+        });
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void GlobalAssignmentMinimizesTotalDistanceEvenWhenGreedyWouldMatchBoth(bool reverse)
+    {
+        var scene = new Scenario();
+        scene.Tracker.TouchMergeDistance2D = 10;
+        var born = scene.Step(0, 4);
+        var frame = reverse ? scene.Step(7, 3) : scene.Step(3, 7);
+        Assert.Multiple(() =>
+        {
+            Assert.That(At(frame, 3).TouchId, Is.EqualTo(At(born, 0).TouchId));
+            Assert.That(At(frame, 7).TouchId, Is.EqualTo(At(born, 4).TouchId));
+        });
+    }
+
+    [TestCase(.1f, .1f, false)]
+    [TestCase(.1f, .5f, true)]
+    [TestCase(.5f, .1f, true)]
+    [TestCase(0f, 0f, false)]
+    public void ExplicitMissAndBirthCostsDetermineWhetherToContinueAnAllowedPair(
+        float missCost, float birthCost, bool continued)
+    {
+        var scene = new Scenario();
+        scene.Tracker.TouchMergeDistance2D = 10;
+        scene.Tracker.AssignmentMissCost = missCost;
+        scene.Tracker.AssignmentBirthCost = birthCost;
+        var born = At(scene.Step(0), 0);
+        var frame = scene.Step(5); // Match cost .5; replacement cost miss + birth.
+        Assert.That(At(frame, 5).TouchId == born.TouchId, Is.EqualTo(continued));
+        if (!continued)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(frame.Interactions.Single(item => item.TouchId == born.TouchId).TrackingState,
+                    Is.EqualTo(InteractionTrackingState.Lost));
+                Assert.That(At(frame, 5).TrackingState, Is.EqualTo(InteractionTrackingState.Tentative));
+            });
+            scene.Tracker.AssignmentMissCost = .5f;
+            scene.Tracker.AssignmentBirthCost = .5f;
+            Assert.That(At(scene.Step(0, 5), 0).TouchId, Is.EqualTo(born.TouchId),
+                "Leaving a track unmatched must preserve its ordinary recovery lifecycle.");
+        }
+    }
+
+    [TestCase(9.999f, true)]
+    [TestCase(10f, false)]
+    [TestCase(10.001f, false)]
+    public void GlobalAssignmentPreservesStrictGateEvenWithHighMissAndBirthCosts(float x, bool continued)
+    {
+        var scene = new Scenario();
+        scene.Tracker.TouchMergeDistance2D = 10;
+        scene.Tracker.AssignmentMissCost = 100;
+        scene.Tracker.AssignmentBirthCost = 100;
+        var id = At(scene.Step(0), 0).TouchId;
+        Assert.That(At(scene.Step(x), x).TouchId == id, Is.EqualTo(continued));
+    }
+
+    [TestCase(-1f)]
+    [TestCase(float.NaN)]
+    [TestCase(float.PositiveInfinity)]
+    [TestCase(float.NegativeInfinity)]
+    public void AssignmentCostsRejectInvalidValues(float cost)
+    {
+        var scene = new Scenario();
+        Assert.Multiple(() =>
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => scene.Tracker.AssignmentMissCost = cost);
+            Assert.Throws<ArgumentOutOfRangeException>(() => scene.Tracker.AssignmentBirthCost = cost);
+        });
+    }
+
+    [Test]
+    public void GlobalAssignmentMatchesExhaustiveMinimumForSmallRectangularProblems()
+    {
+        var random = new Random(3512);
+        for (var trackCount = 0; trackCount <= 4; trackCount++)
+        for (var candidateCount = 0; candidateCount <= 4; candidateCount++)
+        for (var sample = 0; sample < 4; sample++)
+        {
+            var scene = new Scenario();
+            scene.Tracker.TouchMergeDistance2D = 30;
+            scene.Tracker.AssignmentMissCost = .1f + sample * .2f;
+            scene.Tracker.AssignmentBirthCost = .2f;
+            var oldPositions = Enumerable.Range(0, trackCount).Select(i => (float)(random.Next(8) * 10 + i)).ToArray();
+            var positions = Enumerable.Range(0, candidateCount).Select(i => (float)(random.Next(8) * 10 + i)).ToArray();
+            var born = scene.Step(oldPositions);
+            var original = born.Interactions.ToDictionary(item => item.TouchId, item => item.Position.X);
+            var frame = scene.Step(positions.Reverse().ToArray());
+            var used = new bool[trackCount];
+            // Independent oracle enumerates every partial matching, including births and misses.
+            double Minimum(int index)
+            {
+                if (index == positions.Length)
+                    return used.Count(value => !value) * (double)scene.Tracker.AssignmentMissCost;
+                var best = scene.Tracker.AssignmentBirthCost + Minimum(index + 1);
+                for (var track = 0; track < trackCount; track++)
+                {
+                    var distance = Math.Abs(positions[index] - oldPositions[track]);
+                    if (used[track] || distance >= 30)
+                        continue;
+                    used[track] = true;
+                    best = Math.Min(best, distance / 30.0 + Minimum(index + 1));
+                    used[track] = false;
+                }
+                return best;
+            }
+
+            var measured = frame.Interactions.Where(item => item.TrackingState != InteractionTrackingState.Lost).ToArray();
+            var continuedIds = measured.Where(item => original.ContainsKey(item.TouchId)).Select(item => item.TouchId).ToArray();
+            var actual = (trackCount - continuedIds.Length) * (double)scene.Tracker.AssignmentMissCost
+                + measured.Sum(item => original.TryGetValue(item.TouchId, out var x)
+                    ? Math.Abs(item.Position.X - x) / 30.0 : scene.Tracker.AssignmentBirthCost);
+            Assert.Multiple(() =>
+            {
+                Assert.That(measured, Has.Length.EqualTo(candidateCount));
+                Assert.That(continuedIds.Distinct().Count(), Is.EqualTo(continuedIds.Length));
+                Assert.That(actual, Is.EqualTo(Minimum(0)).Within(1e-7),
+                    $"tracks={trackCount}, candidates={candidateCount}, sample={sample}");
+            });
+        }
     }
 
     [Test]

@@ -16,13 +16,14 @@ using ReFlex.Server.Data.Config;
 // nominal recording time isolates association from machine speed and timer scheduling.
 if (args.FirstOrDefault() == "--inputs") { InputAnalysis.Run(args[1]); return; }
 if (args.FirstOrDefault() == "--analyze") { Analysis.Run(args[1]); return; }
+if (args.FirstOrDefault() == "--compare-assignment") { AssignmentComparison.Run(args[1], args[2]); return; }
 var root = Directory.GetCurrentDirectory();
 var output = Path.GetFullPath(args.FirstOrDefault() ?? Path.Combine(root, "artifacts/touchid-analysis"));
 Directory.CreateDirectory(output);
 var settingsPath = Path.Combine(root, "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json");
 var settings = JsonConvert.DeserializeObject<SettingsEnvelope>(File.ReadAllText(settingsPath)).FilterSettingValues;
 Directory.SetCurrentDirectory(Path.Combine(root, "tools/ReFlex.TrackingServer"));
-foreach (var name in new[] { "Half-Circle", "Line", "Circle" })
+foreach (var name in new[] { "Half-Circle", "Line", "Circle", "Multi-Touch" })
 {
     if (File.Exists(Path.Combine(output, name + ".json"))) { Console.WriteLine($"{name}: using saved capture"); continue; }
     var camera = new DepthStreamReplayCamera();

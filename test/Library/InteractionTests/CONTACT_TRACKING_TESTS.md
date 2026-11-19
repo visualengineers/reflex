@@ -61,16 +61,22 @@ See POSITION_PREDICTION_REVIEW.md for the clock and state contract.
 
 ## Assignment
 
-With prediction disabled, pairs are ranked by distance to each track's **last measurement**, not its oldest cached
-position. With prediction enabled, the target is its forecast at the current frame. Matching is greedy and one-to-one: a track and a measurement are each used at most
-once. Unassigned measurements receive fresh IDs rather than being discarded. Equal-cost
-pairs use track ID, candidate X/Y and input index as tie breakers. The existing strict distance
-threshold and Manhattan-distance implementation of `Squared2DDistance` are unchanged.
+With prediction disabled, pair distances use each track's **last measurement**, not its oldest cached
+position. With prediction enabled, the target is its forecast at the current frame. Matching globally minimizes
+normalized pair distances plus explicit penalties for unmatched tracks and measurements, with one-to-one
+constraints. `AssignmentMissCost` and `AssignmentBirthCost` each default to 0.5 and accept finite,
+non-negative floats. These tracker properties do not change retention or confidence and are not exposed
+as persisted server settings. Unassigned measurements receive fresh IDs rather than being discarded.
+The rectangular Hungarian solver orders tracks by ID and measurements by X/Y/input index for deterministic
+equal-cost traversal. The existing strict distance threshold and Manhattan-distance implementation of
+`Squared2DDistance` are unchanged. See [global-assignment.md](../../analysis/touchid-3512/global-assignment.md)
+for the objective, solver, alternatives and limitations.
 
-Greedy assignment is not globally optimal. With prediction disabled, there is no motion model. Exact/ambiguous crossings
-can exchange physical finger identities. The crossing test explicitly documents that limitation;
-it tests distinct observations and proximity semantics, not impossible identity recovery from
-identical position-only observations. The pre-existing 20-candidate cap also remains in place.
+Global optimality applies to the configured per-observation objective, not physical finger identity.
+With prediction disabled, there is no motion model. Exact/ambiguous crossings can exchange physical
+finger identities. The crossing test documents this limitation; it tests distinct observations and
+proximity semantics, not impossible identity recovery from identical position-only observations.
+The pre-existing 20-candidate cap also remains in place.
 The final cluster filter prefers real measurements over Lost contacts and reports suppression in diagnostics.
 
 ## Test organization and extensions

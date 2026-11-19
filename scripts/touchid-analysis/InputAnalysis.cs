@@ -8,7 +8,7 @@ static class InputAnalysis
     public static void Run(string directory)
     {
         Directory.SetCurrentDirectory("tools/ReFlex.TrackingServer");
-        foreach(var name in new[]{"Half-Circle","Line","Circle"})
+        foreach(var name in new[]{"Half-Circle","Line","Circle","Multi-Touch"})
         {
             var rows=new List<object>(); var frame=0;
             foreach(var path in RecordingUtils.GetFrames(name))
