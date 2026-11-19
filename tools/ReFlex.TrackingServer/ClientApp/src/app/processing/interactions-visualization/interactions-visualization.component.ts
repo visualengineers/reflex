@@ -7,7 +7,6 @@ import {
   ElementRef,
   EventEmitter,
   Output,
-  SimpleChanges,
   Input,
   OnChanges,
   OnDestroy,
@@ -16,6 +15,7 @@ import {
   inject
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { OptionCheckboxComponent, SettingsGroupComponent } from '@reflex/angular-components/dist';
 import {
   CompleteInteractionData,
   ElementPosition,
@@ -32,6 +32,7 @@ import { CalibrationService } from 'src/shared/services/calibration.service';
 import { markViewForCheck } from 'src/shared/util/mark-view-for-check';
 import { InteractionsVelocityVisualizationComponent } from '../interactions-velocity-visualization/interactions-velocity-visualization.component';
 import { calibratePredictions } from './calibrate-predictions';
+import { KalmanVisualizationComponent } from '../kalman-visualization/kalman-visualization.component';
 import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 
 @Component({
@@ -39,7 +40,15 @@ import { HistoryVisualizationComponent } from '../history-visualization/history-
   templateUrl: './interactions-visualization.component.html',
   styleUrls: ['./interactions-visualization.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, FormsModule, HistoryVisualizationComponent, InteractionsVelocityVisualizationComponent]
+  imports: [
+    CommonModule,
+    FormsModule,
+    HistoryVisualizationComponent,
+    InteractionsVelocityVisualizationComponent,
+    KalmanVisualizationComponent,
+    SettingsGroupComponent,
+    OptionCheckboxComponent
+  ]
 })
 export class InteractionsVisualizationComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
@@ -48,10 +57,18 @@ export class InteractionsVisualizationComponent implements OnInit, OnChanges, Af
 
   @Input() public isProcessing = false;
   @Input() public showPrediction = true;
+  @Input() public predictionEnabled = true;
+  @Input() public kalmanEnabled = false;
+  @Input() public accelerationEnabled = true;
+  @Output() public showPredictionChange = new EventEmitter<boolean>();
   @Input() public showMatching = true;
   @Input() public showLinear = true;
   @Input() public showAccelerated = true;
+  @Output() public showMatchingChange = new EventEmitter<boolean>();
+  @Output() public showLinearChange = new EventEmitter<boolean>();
+  @Output() public showAcceleratedChange = new EventEmitter<boolean>();
   @Output() public predictionDataChange = new EventEmitter<Array<InteractionVelocity>>(true);
+  public showKalman = true;
   public viewportWidth = 500;
   public viewportHeight = 400;
   public predictionData: Array<InteractionVelocity> = [];
@@ -84,6 +101,22 @@ export class InteractionsVisualizationComponent implements OnInit, OnChanges, Af
 
   private pEventId = 0;
 
+  public get predictionVisible(): boolean {
+    return this.predictionEnabled && this.showPrediction;
+  }
+
+  public get kalmanVisible(): boolean {
+    return this.kalmanEnabled && this.showKalman;
+  }
+
+  public get accelerationVisible(): boolean {
+    return this.predictionVisible && this.showAccelerated && this.accelerationEnabled && !this.kalmanEnabled;
+  }
+
+  public get hasUncertainty(): boolean {
+    return this.kalmanVisible && this.predictionData.some((item) => item.useKalmanFilter === true && (item.kalmanUncertainty?.length ?? 0) > 0);
+  }
+
   public get eventId(): number {
     return this.pEventId;
   }
@@ -93,11 +126,17 @@ export class InteractionsVisualizationComponent implements OnInit, OnChanges, Af
     this.pEventId = value;
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (!('isProcessing' in changes) && !('showPrediction' in changes)) {
-      return;
-    }
-    if (!this.isProcessing || !this.showPrediction) {
+  public ngOnChanges(): void {
+    this.updateVisualization();
+  }
+
+  public updatePredictionVisibility(): void {
+    this.showPredictionChange.emit(this.showPrediction);
+    this.updateVisualization();
+  }
+
+  public updateVisualization(): void {
+    if (!this.isProcessing || (!this.predictionVisible && !this.kalmanVisible)) {
       this.predictionSubscription?.unsubscribe();
       this.predictionSubscription = undefined;
       this.predictionData = [];
@@ -115,7 +154,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnChanges, Af
         exhaustMap((data) => calibratePredictions(data, this.calibrationService).pipe(
           catchError(() => {
             // A failed frame must not unsubscribe from subsequent velocity snapshots.
-            this.predictionMessage = 'Prediction stream or calibration unavailable.';
+            this.predictionMessage = 'Motion diagnostics or calibration unavailable.';
             this.predictionData = [];
             this.predictionDataChange.emit([]);
             this.changeDetector.markForCheck();
@@ -130,7 +169,7 @@ export class InteractionsVisualizationComponent implements OnInit, OnChanges, Af
           this.predictionData = data;
         },
         error: () => {
-          this.predictionMessage = 'Prediction stream or calibration unavailable.';
+          this.predictionMessage = 'Motion diagnostics or calibration unavailable.';
           this.predictionData = [];
           this.predictionDataChange.emit([]);
         }

@@ -1,5 +1,4 @@
 import { By } from '@angular/platform-browser';
-import { queryElement } from '../../../../../../test/helpers/dom';
 import { DEFAULT_SETTINGS, TrackingServerAppSettings } from '@reflex/shared-types';
 import { Subject, of, throwError } from 'rxjs';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
@@ -20,19 +19,18 @@ describe('Prediction options in ProcessingComponent', () => {
     expect(testComponent.forecastMilliseconds).toBe(120);
     expect(settingsService.update).toHaveBeenCalledOnce();
     const root = testFixture.nativeElement as HTMLElement;
-    const checkbox = queryElement<HTMLInputElement>(root, '#processing-showPrediction-checkbox');
     const visualization = testFixture.debugElement.query(By.directive(MockInteractionsVisualizationComponent))
       .componentInstance as InteractionsVisualizationComponent;
-    expect(checkbox.checked).toBe(true);
+    expect(visualization.predictionEnabled).toBe(false);
     expect(visualization.showPrediction).toBe(true);
-    checkbox.click();
+    visualization.showPredictionChange.emit(false);
     await testFixture.whenStable();
     expect(testComponent.showPrediction).toBe(false);
     expect(visualization.showPrediction).toBe(false);
     expect(testComponent.predictionSettings.useVelocityPrediction).toBe(false);
     expect(processingService.setPredictionSettings).not.toHaveBeenCalled();
     expect(root.querySelector('app-prediction-panel')).toBeNull();
-    expect(root.textContent).toContain('Matching target (current time)');
+    expect(root.querySelector('#processing-showPrediction-checkbox')).toBeNull();
   });
 
   it('places prediction settings and the collapsible forecast table in the left column and receives forecast snapshots', async () => {
@@ -40,7 +38,8 @@ describe('Prediction options in ProcessingComponent', () => {
     await testFixture.whenStable();
     const root = testFixture.nativeElement as HTMLElement;
     const columns = root.querySelectorAll('.processing > .content__element');
-    expect(columns[0].querySelector('#processing-showPrediction-checkbox')).not.toBeNull();
+    expect(columns[0].querySelector('#processing-showPrediction-checkbox')).toBeNull();
+    expect(columns[1].querySelector('app-interactions-visualization')).not.toBeNull();
     expect(columns[0].querySelector('app-history + app-forecast-values')).not.toBeNull();
     expect(columns[1].querySelector('app-forecast-values')).toBeNull();
     const visualization = testFixture.debugElement.query(By.directive(MockInteractionsVisualizationComponent))

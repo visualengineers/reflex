@@ -14,6 +14,7 @@ export class InteractionsVelocityVisualizationComponent implements OnChanges {
   @Input() public showLinear = true;
   @Input() public showAccelerated = true;
   @Input() public showMatching = true;
+  @Input() public showMeasurements = true;
   @Input() public width = 500;
   @Input() public height = 400;
   public trails = new Map<number, Array<Point3>>();

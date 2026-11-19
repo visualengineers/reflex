@@ -1,0 +1,5170 @@
+[
+  {
+    "scenario": "masked-pair",
+    "kalman": false,
+    "expected_allocated_ids": 2,
+    "outputs_identical": true,
+    "original": {
+      "allocated_ids": 2,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.4,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 0.7,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    },
+    "optimized": {
+      "allocated_ids": 2,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.4,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 0.7,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "crossing",
+    "kalman": false,
+    "expected_allocated_ids": 2,
+    "outputs_identical": true,
+    "original": {
+      "allocated_ids": 2,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 40.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 40.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.1,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.3,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 15.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 15.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 0.4,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 20.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 20.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 5,
+          "time": 0.5,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 6,
+          "time": 0.6,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 7,
+          "time": 0.7,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 17.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 17.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    },
+    "optimized": {
+      "allocated_ids": 2,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 40.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 40.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.1,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 23.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.3,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 15.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 15.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 29.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 0.4,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 20.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 20.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 5,
+          "time": 0.5,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 25.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 6,
+          "time": 0.6,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 30.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 7,
+          "time": 0.7,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 17.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 35.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 17.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "six-overlap",
+    "kalman": false,
+    "expected_allocated_ids": 6,
+    "outputs_identical": true,
+    "original": {
+      "allocated_ids": 6,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 0,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 0,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 0,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 0,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 2,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 2,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 2,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.5,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 1,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 1,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 1,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 1,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    },
+    "optimized": {
+      "allocated_ids": 6,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 0,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 0,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 0,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 0,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 2,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 2,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 2,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.5,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 1,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 1,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 2.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 1,
+              "Position": {
+                "X": 4.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 3,
+              "TrackingState": 1,
+              "Position": {
+                "X": 6.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 4,
+              "TrackingState": 1,
+              "Position": {
+                "X": 8.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 5,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 5.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "inclusive-deadline",
+    "kalman": false,
+    "expected_allocated_ids": 2,
+    "outputs_identical": true,
+    "original": {
+      "allocated_ids": 2,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.8,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 1.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    },
+    "optimized": {
+      "allocated_ids": 2,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.8,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 1.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 0.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "expired",
+    "kalman": false,
+    "expected_allocated_ids": 3,
+    "outputs_identical": true,
+    "original": {
+      "allocated_ids": 3,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.8,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 1.000001,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    },
+    "optimized": {
+      "allocated_ids": 3,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.8,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 1.000001,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "disabled",
+    "kalman": false,
+    "expected_allocated_ids": 3,
+    "outputs_identical": true,
+    "original": {
+      "allocated_ids": 3,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.4,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 0.7,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    },
+    "optimized": {
+      "allocated_ids": 3,
+      "frames": [
+        {
+          "frame": 0,
+          "time": 0.0,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 0,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 1,
+          "time": 0.05,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            },
+            {
+              "TouchId": 1,
+              "TrackingState": 2,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 18.5,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 21.5,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 2,
+          "time": 0.2,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 26.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 3,
+          "time": 0.4,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 5.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            }
+          ]
+        },
+        {
+          "frame": 4,
+          "time": 0.7,
+          "tracked": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ],
+          "raw": [
+            {
+              "TouchId": 0,
+              "TrackingState": 1,
+              "Position": {
+                "X": 10.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 30.0,
+              "Time": 0
+            },
+            {
+              "TouchId": 2,
+              "TrackingState": 0,
+              "Position": {
+                "X": 0.0,
+                "Y": 20.0,
+                "Z": -0.5,
+                "IsValid": true,
+                "IsFiltered": false
+              },
+              "Type": 1,
+              "ExtremumDescription": {
+                "Type": 2,
+                "NumFittingPoints": 0,
+                "PercentageFittingPoints": 0.0
+              },
+              "Confidence": 20.0,
+              "Time": 0
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

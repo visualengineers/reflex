@@ -22,6 +22,22 @@ describe('Assignment settings HTTP contract', () => {
 
   afterEach(() => http.verify());
 
+  it.each([true, false])('posts the Kalman switch as a JSON boolean: %s', (enabled) => {
+    service.setUseKalmanFilter(enabled).subscribe();
+    const request = http.expectOne('http://localhost/api/Settings/UseKalmanFilter');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toBe(enabled);
+    request.flush(enabled);
+  });
+
+  it.each([true, false])('posts the JPDA switch as a JSON boolean: %s', (enabled) => {
+    service.setUseJpda(enabled).subscribe();
+    const request = http.expectOne('http://localhost/api/Settings/UseJpda');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toBe(enabled);
+    request.flush(enabled);
+  });
+
   it('posts false as a JSON boolean', () => {
     let actual: boolean | undefined;
     service.setUseMinimumCostAssignment(false).subscribe((value) => {

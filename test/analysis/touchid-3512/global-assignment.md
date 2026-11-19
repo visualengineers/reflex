@@ -25,8 +25,8 @@ Possible approaches are complementary:
 2. **Better costs and prediction:** include motion uncertainty, direction, depth/pressure history,
    detection quality or track state. A Kalman estimator could supply position and uncertainty;
    uncertainty-aware distances could replace a fixed spatial score. Such models require tuning
-   against actual sensor data. Pressure type must not be made a hard constraint accidentally:
-   existing tracking permits type transitions while preserving IDs.
+   against actual sensor data. The later Kalman branch deliberately makes pressure type a hard constraint under the installation's
+   physical-contact assumption; opposite types receive separate IDs. See [kalman-filter.md](kalman-filter.md).
 3. **Temporal hypotheses:** retain alternative associations across observations, e.g. through
    multiple hypothesis tracking or probabilistic association such as JPDA. This can help at
    ambiguous crossings, at the expense of computation, more state and potentially delayed final
@@ -98,7 +98,8 @@ Assignments are computed before updating any track. Expiration is still checked 
 assignment; forecasts still target observation time. Matched measurements follow the existing
 confirmation and confidence rules. Unmatched measurements create tentative contacts; unmatched
 tracks follow the existing Lost, confidence-decay, recovery and expiration rules. Smoothing,
-pressure-type transitions and immutable frame snapshots retain their existing implementation.
+immutable frame snapshots retain their existing implementation. On the Kalman feature branch,
+pressure-type transitions deliberately create separate IDs; see [kalman-filter.md](kalman-filter.md).
 
 ## Regression coverage
 

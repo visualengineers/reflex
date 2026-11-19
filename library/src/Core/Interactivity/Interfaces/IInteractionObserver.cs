@@ -89,10 +89,14 @@ namespace ReFlex.Core.Interactivity.Interfaces
         
         /// <summary>
         /// Maximum elapsed seconds since the last measurement (inclusive), finite and non-negative.
-        /// Independent of history capacity. After expiry a returning contact receives a new ID.
+        /// Independent of history capacity. After expiry a returning contact receives a new ID,
+        /// except for bounded masked-ID recovery while UseJpda is enabled.
         /// </summary>
         double ContactRetentionSeconds { get; set; }
         double ObservationTimeoutSeconds { get; set; }
+        /// <summary>Opt-in joint probabilistic association with hard output and masked-ID recovery.</summary>
+        bool UseJpda { get; set; }
+        bool UseKalmanFilter { get; set; }
         bool UseMinimumCostAssignment { get; set; }
         float AssignmentMissCost { get; set; }
         float AssignmentBirthCost { get; set; }

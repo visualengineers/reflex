@@ -1,0 +1,408 @@
+{
+  "metadata": {
+    "measured_at_utc": "2026-11-19T12:58:28.688211+00:00",
+    "runtime": ".NET 10.0.14",
+    "os": "macOS 27.2.1",
+    "architecture": "Arm64",
+    "processors": 8,
+    "stopwatch_frequency": 1000000000,
+    "warmup_replays": 10,
+    "timing_repeats": 31,
+    "input_hashes": {
+      "Half-Circle.json": "13C753E9E78097D22B0B8033A1071541C1A8993BC38775EBE21DA1213CF32476",
+      "Half-Circle-input.json": "04EF19BB2F877F211B4B5F13514E8D9E0FBC9AC0086B147CC4A6FA5F69AD019A",
+      "Line.json": "F9A5CF14DD020AEBEF134CA43691E4822C1380E0E1890A01138715B0BD5919D0",
+      "Line-input.json": "DAAE25C8C4FAFF6BBB124484720BD210495B268B05541A9A54001BBF0896D23E",
+      "Circle.json": "F2780D750992D60980159E67030F08F7DA44160AE11D85EF171C74EFEABB93B0",
+      "Circle-input.json": "6A09222EFBECC5AEDD3897605A7779A1ED8B8DD3EB64E8736DA25601203668CB",
+      "Multi-Touch.json": "93DA64F76C65546F671859E51E36273768EC6F16AC7CBEAFF8D15F37FB84988B",
+      "Multi-Touch-input.json": "C0F30B01E00514591A720B56C1E10AA4D7F3D56D85C8846C43A2F10E58746696"
+    },
+    "source_sha256": {
+      "library/src/Core/Interactivity/Components/InteractionSmoothingBehaviour.cs": "05B80271BC938B93E4E0D31852F1D5F17422D9611E803B4EB32B3BE392E2DABC",
+      "library/src/Core/Interactivity/Util/KalmanContactMotion.cs": "220B5C83279ECDD9B37398D2114C782952A242BE77A3CB3D0B75B8F28761BDBE",
+      "library/src/Core/Interactivity/Util/ContactMotion.cs": "E62114B323FDB80EA1A5AAA371491420DBD613D4D3F3C67D5ADB2800C5E328AD",
+      "library/src/Core/Interactivity/Util/MinimumCostContactAssignment.cs": "74117D94C61FEB0976BEB71CB5C16DEBDCCD4D3E9AD13AFAD0AFECB495F3A000",
+      "library/src/Core/Interactivity/Util/MinimumCostAssignment.cs": "B8463793A20701EBC0DB12E01A2F943F09642BAEF1A27C7D6F0B475AB8030378",
+      "library/src/Core/Interactivity/Util/GreedyContactAssignment.cs": "C1D312A9AC62F831DBFC4B173E5B5DD7501957C5D79C918E65D942BDDCC3353F",
+      "library/src/Core/Common/Components/Point3.cs": "A542BC8C4D6C0D0D2FD2FC1DA4025B739B23836BD2570511926AA756FBF4424F",
+      "test/touchid-analysis/MotionComparison.cs": "2EC30EA902761B6F90F38E990DDF97F46967E6795BEA6EA00B438D3156674ACF",
+      "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json": "9F21D4F6C91B90E0D236C9B816DA0309C8D1537610E20E72735D69CC185FD0FD"
+    },
+    "configuration": {
+      "settings": {
+        "UseKalmanFilter": false,
+        "UseMinimumCostAssignment": true,
+        "AssignmentMissCost": 0.5,
+        "AssignmentBirthCost": 0.5,
+        "FilterSettingValues": {
+          "Threshold": 690.0,
+          "BorderValue": {
+            "Left": 0,
+            "Right": 640,
+            "Top": 0,
+            "Bottom": 480
+          },
+          "MinDistanceFromSensor": 0.47,
+          "LimitationFilterType": 0,
+          "FilterMask": [],
+          "UseOptimizedBoxFilter": false,
+          "AdvancedLimitationFilterThreshold": 0.06,
+          "AdvancedLimitationFilterSamples": 8,
+          "IsLimitationFilterEnabled": true,
+          "IsValueFilterEnabled": true,
+          "IsThresholdFilterEnabled": true,
+          "IsBoxFilterEnabled": true,
+          "MeasurePerformance": true,
+          "BoxFilterRadius": 10,
+          "BoxFilterNumPasses": 0,
+          "BoxFilterNumThreads": 0,
+          "DistanceValue": {
+            "Min": 0.05,
+            "Max": 0.53,
+            "Default": 1.45,
+            "InputDistance": 58.0
+          },
+          "Confidence": {
+            "Min": 0,
+            "Max": 30
+          },
+          "MinAngle": 0.6,
+          "SmoothingValues": {
+            "InteractionHistorySize": 15,
+            "NumSmoothingSamples": 3,
+            "ContactRetentionSeconds": 0.1,
+            "ObservationTimeoutSeconds": 1.0,
+            "ConfidenceGainPerSecond": 30.0,
+            "ConfidenceDecayPerSecond": 30.0,
+            "TouchMergeDistance2D": 81.0,
+            "DepthScale": 490.0,
+            "Type": 1
+          },
+          "ExtremumSettings": {
+            "NumSamples": 10,
+            "CheckRadius": 15,
+            "MergeRadius": 3.0,
+            "FitPercentage": 0.5,
+            "CheckMethod": 1
+          }
+        },
+        "CalibrationValues": {
+          "SourceValues": [
+            [
+              860,
+              207
+            ],
+            [
+              860,
+              690
+            ],
+            [
+              266,
+              690
+            ]
+          ],
+          "TargetValues": [
+            [
+              860,
+              207
+            ],
+            [
+              860,
+              690
+            ],
+            [
+              266,
+              690
+            ]
+          ],
+          "UpperThreshold": 1010,
+          "LowerThreshold": 960,
+          "LastUpdated": [
+            "2021-04-13T21:04:53.4082627+02:00",
+            "2021-04-13T21:04:53.4082644+02:00",
+            "2021-04-13T21:04:53.4082656+02:00"
+          ]
+        },
+        "FrameSize": {
+          "Width": 800,
+          "Height": 600,
+          "Left": 100,
+          "Top": 100
+        },
+        "IsAutoStartEnabled": true,
+        "DefaultCamera": "Emulator [127.0.0.1:40000/ReFlex]",
+        "CameraConfigurationValues": {
+          "Width": 640,
+          "Height": 480,
+          "Framerate": 30
+        },
+        "NetworkSettingValues": {
+          "NetworkInterfaceType": 1,
+          "Interval": 30.0,
+          "Address": "127.0.0.1",
+          "Port": 40001,
+          "Endpoint": "/ReFlex"
+        },
+        "PointCloudSettingValues": {
+          "FullResolution": false,
+          "UpdateInterval": 100,
+          "PointCloudSize": 40000
+        },
+        "PredictionSettings": {
+          "PredictionHorizonSeconds": 0.05,
+          "UseVelocityPrediction": true,
+          "NumFramesForPrediction": 3,
+          "UseSecondDerivation": false,
+          "SecondDerivationMagnitude": 0.5
+        },
+        "ProcessingSettingValues": {
+          "InteractionType": 2,
+          "IntervalDuration": 30,
+          "UseObservationSnapshots": true
+        },
+        "RemoteProcessingServiceSettingsValues": {
+          "Address": "http://localhost:50051",
+          "NumSkipValues": 0,
+          "CompleteDataSet": false,
+          "UseGzipCompression": true,
+          "CutOff": 2.0,
+          "Factor": 100.0,
+          "Algorithm": 0
+        },
+        "TuioSettingValues": {
+          "SensorWidth": 640,
+          "SensorHeight": 480,
+          "SensorDescription": "Emulator [127.0.0.1:40000/ReFlex]",
+          "SessionId": 10,
+          "ServerAddress": "127.0.0.1",
+          "ServerPort": 3333,
+          "Protocol": 0,
+          "Transport": 0,
+          "Interpretation": 0
+        }
+      },
+      "global_assignment": true,
+      "pressure_type_invariant": true,
+      "velocity_prediction": true,
+      "polynomial_samples": 3,
+      "polynomial_acceleration": false,
+      "horizon_seconds": 0.05,
+      "capture_times_are_nominal": true,
+      "kalman_changes_xy_smoothing": true,
+      "kalman_measurement_variance": 4,
+      "kalman_acceleration_spectral_density": 400,
+      "kalman_initial_velocity_variance": 10000
+    }
+  },
+  "results": [
+    {
+      "recording": "Half-Circle",
+      "mode": "linear3",
+      "frames": 258,
+      "measurements": 398,
+      "created_tracks": 4,
+      "id_changes_consecutive_active_outputs": 0,
+      "representative_changes": 0,
+      "raw_representative_changes": 0,
+      "active_input": 154,
+      "active_without_output": 10,
+      "published_target_ids": 3
+    },
+    {
+      "recording": "Half-Circle",
+      "mode": "kalman",
+      "frames": 258,
+      "measurements": 398,
+      "created_tracks": 6,
+      "id_changes_consecutive_active_outputs": 2,
+      "representative_changes": 2,
+      "raw_representative_changes": 2,
+      "active_input": 154,
+      "active_without_output": 10,
+      "published_target_ids": 5
+    },
+    {
+      "recording": "Half-Circle",
+      "mode": "linear3",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7998,
+      "update_median_us": 50.958,
+      "update_p95_us": 107.333,
+      "diagnostics_median_us": 39.459,
+      "diagnostics_p95_us": 94.167,
+      "combined_median_us": 91.459,
+      "combined_p95_us": 228.416
+    },
+    {
+      "recording": "Half-Circle",
+      "mode": "kalman",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7998,
+      "update_median_us": 11.458,
+      "update_p95_us": 16.666,
+      "diagnostics_median_us": 1.125,
+      "diagnostics_p95_us": 2.125,
+      "combined_median_us": 12.5,
+      "combined_p95_us": 18.375
+    },
+    {
+      "recording": "Line",
+      "mode": "linear3",
+      "frames": 340,
+      "measurements": 177,
+      "created_tracks": 9,
+      "id_changes_consecutive_active_outputs": 0,
+      "representative_changes": 0,
+      "raw_representative_changes": 3,
+      "active_input": 198,
+      "active_without_output": 25,
+      "published_target_ids": 7
+    },
+    {
+      "recording": "Line",
+      "mode": "kalman",
+      "frames": 340,
+      "measurements": 177,
+      "created_tracks": 14,
+      "id_changes_consecutive_active_outputs": 5,
+      "representative_changes": 5,
+      "raw_representative_changes": 8,
+      "active_input": 198,
+      "active_without_output": 25,
+      "published_target_ids": 12
+    },
+    {
+      "recording": "Line",
+      "mode": "linear3",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 10540,
+      "update_median_us": 11.0,
+      "update_p95_us": 29.917,
+      "diagnostics_median_us": 10.625,
+      "diagnostics_p95_us": 33.083,
+      "combined_median_us": 22.040999999999997,
+      "combined_p95_us": 60.084
+    },
+    {
+      "recording": "Line",
+      "mode": "kalman",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 10540,
+      "update_median_us": 1.25,
+      "update_p95_us": 3.125,
+      "diagnostics_median_us": 0.084,
+      "diagnostics_p95_us": 0.584,
+      "combined_median_us": 1.416,
+      "combined_p95_us": 3.5
+    },
+    {
+      "recording": "Circle",
+      "mode": "linear3",
+      "frames": 229,
+      "measurements": 229,
+      "created_tracks": 1,
+      "id_changes_consecutive_active_outputs": 0,
+      "representative_changes": 0,
+      "raw_representative_changes": 0,
+      "active_input": 229,
+      "active_without_output": 1,
+      "published_target_ids": 1
+    },
+    {
+      "recording": "Circle",
+      "mode": "kalman",
+      "frames": 229,
+      "measurements": 229,
+      "created_tracks": 22,
+      "id_changes_consecutive_active_outputs": 18,
+      "representative_changes": 18,
+      "raw_representative_changes": 21,
+      "active_input": 229,
+      "active_without_output": 1,
+      "published_target_ids": 18
+    },
+    {
+      "recording": "Circle",
+      "mode": "linear3",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7099,
+      "update_median_us": 17.042,
+      "update_p95_us": 31.167,
+      "diagnostics_median_us": 15.875,
+      "diagnostics_p95_us": 28.25,
+      "combined_median_us": 33.458,
+      "combined_p95_us": 58.75
+    },
+    {
+      "recording": "Circle",
+      "mode": "kalman",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7099,
+      "update_median_us": 1.334,
+      "update_p95_us": 3.0,
+      "diagnostics_median_us": 0.125,
+      "diagnostics_p95_us": 0.417,
+      "combined_median_us": 1.5,
+      "combined_p95_us": 3.334
+    },
+    {
+      "recording": "Multi-Touch",
+      "mode": "linear3",
+      "frames": 430,
+      "measurements": 1363,
+      "created_tracks": 24,
+      "id_changes_consecutive_active_outputs": null,
+      "representative_changes": 3,
+      "raw_representative_changes": 5,
+      "active_input": 407,
+      "active_without_output": 4,
+      "published_target_ids": 10
+    },
+    {
+      "recording": "Multi-Touch",
+      "mode": "kalman",
+      "frames": 430,
+      "measurements": 1363,
+      "created_tracks": 35,
+      "id_changes_consecutive_active_outputs": null,
+      "representative_changes": 7,
+      "raw_representative_changes": 6,
+      "active_input": 407,
+      "active_without_output": 4,
+      "published_target_ids": 17
+    },
+    {
+      "recording": "Multi-Touch",
+      "mode": "linear3",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 13330,
+      "update_median_us": 41.709,
+      "update_p95_us": 166.0,
+      "diagnostics_median_us": 39.917,
+      "diagnostics_p95_us": 166.5,
+      "combined_median_us": 82.75,
+      "combined_p95_us": 353.54200000000003
+    },
+    {
+      "recording": "Multi-Touch",
+      "mode": "kalman",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 13330,
+      "update_median_us": 2.833,
+      "update_p95_us": 8.167,
+      "diagnostics_median_us": 0.292,
+      "diagnostics_p95_us": 1.125,
+      "combined_median_us": 3.167,
+      "combined_p95_us": 9.25
+    }
+  ]
+}

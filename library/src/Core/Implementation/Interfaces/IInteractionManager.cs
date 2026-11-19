@@ -40,6 +40,9 @@ namespace Implementation.Interfaces
         
         double ContactRetentionSeconds { get; set; }
         double ObservationTimeoutSeconds { get; set; }
+        /// <summary>Opt-in joint probabilistic association and bounded masked-ID recovery.</summary>
+        bool UseJpda { get; set; }
+        bool UseKalmanFilter { get; set; }
         bool UseMinimumCostAssignment { get; set; }
         float AssignmentMissCost { get; set; }
         float AssignmentBirthCost { get; set; }

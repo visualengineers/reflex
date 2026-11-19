@@ -117,6 +117,62 @@ describe('Zoneless change detection: renders limitation-filter polling responses
 });
 
 
+describe('Kalman filter settings', () => {
+  setupZonelessTests();
+
+  it.each([undefined, false, true])('loads legacy or explicit Kalman switch: %s', async (enabled) => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.useKalmanFilter = enabled;
+    settings.getSettings.mockReturnValue(of(value));
+    const fixture = await mount(SettingsComponent);
+    expect(queryElement<HTMLInputElement>(fixture.nativeElement as HTMLElement, '#settings-useKalmanFilter-checkbox').checked)
+      .toBe(enabled ?? false);
+  });
+
+  it('submits activation and explicit deactivation without changing the assignment strategy', async () => {
+    settings.getSettings.mockReturnValue(of(structuredClone(DEFAULT_SETTINGS)));
+    settings.setUseKalmanFilter.mockReturnValue(of(true));
+    const fixture = await mount(SettingsComponent);
+    const checkbox = queryElement<HTMLInputElement>(fixture.nativeElement as HTMLElement, '#settings-useKalmanFilter-checkbox');
+    checkbox.click();
+    await fixture.whenStable();
+    expect(settings.setUseKalmanFilter.mock.calls).toContainEqual([true]);
+    settings.setUseKalmanFilter.mockReturnValue(of(false));
+    checkbox.click();
+    await fixture.whenStable();
+    expect(settings.setUseKalmanFilter.mock.calls).toContainEqual([false]);
+    expect(fixture.componentInstance.settings.useMinimumCostAssignment).toBe(true);
+  });
+});
+
+describe('JPDA identity recovery settings', () => {
+  setupZonelessTests();
+
+  it.each([undefined, false, true])('loads legacy or explicit Jpda switch: %s', async (enabled) => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.useJpda = enabled;
+    settings.getSettings.mockReturnValue(of(value));
+    const fixture = await mount(SettingsComponent);
+    expect(queryElement<HTMLInputElement>(fixture.nativeElement as HTMLElement, '#settings-useJpda-checkbox').checked)
+      .toBe(enabled ?? false);
+  });
+
+  it('submits activation and explicit deactivation without changing the assignment strategy', async () => {
+    settings.getSettings.mockReturnValue(of(structuredClone(DEFAULT_SETTINGS)));
+    settings.setUseJpda.mockReturnValue(of(true));
+    const fixture = await mount(SettingsComponent);
+    const checkbox = queryElement<HTMLInputElement>(fixture.nativeElement as HTMLElement, '#settings-useJpda-checkbox');
+    checkbox.click();
+    await fixture.whenStable();
+    expect(settings.setUseJpda.mock.calls).toContainEqual([true]);
+    settings.setUseJpda.mockReturnValue(of(false));
+    checkbox.click();
+    await fixture.whenStable();
+    expect(settings.setUseJpda.mock.calls).toContainEqual([false]);
+    expect(fixture.componentInstance.settings.useMinimumCostAssignment).toBe(true);
+  });
+});
+
 describe('Contact assignment settings', () => {
   setupZonelessTests();
 

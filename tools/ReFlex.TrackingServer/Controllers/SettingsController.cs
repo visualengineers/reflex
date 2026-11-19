@@ -67,6 +67,26 @@ namespace TrackingServer.Controllers
             Logger.Info($"Updated {nameof(TrackingServerAppSettings)}. Updated value: {value}.");
         }
 
+        [HttpGet("UseKalmanFilter")]
+        public ActionResult<bool> GetUseKalmanFilter() => _configManager.Settings.UseKalmanFilter;
+
+        [HttpPost("UseKalmanFilter")]
+        public ActionResult<bool> SetUseKalmanFilter([FromBody] bool value)
+        {
+            UpdateSettings(settings => settings.UseKalmanFilter = value);
+            return _configManager.Settings.UseKalmanFilter;
+        }
+
+        [HttpGet("UseJpda")]
+        public ActionResult<bool> GetUseJpda() => _configManager.Settings.UseJpda;
+
+        [HttpPost("UseJpda")]
+        public ActionResult<bool> SetUseJpda([FromBody] bool value)
+        {
+            UpdateSettings(settings => settings.UseJpda = value);
+            return _configManager.Settings.UseJpda;
+        }
+
         [HttpGet("UseMinimumCostAssignment")]
         public ActionResult<bool> GetUseMinimumCostAssignment() => _configManager.Settings.UseMinimumCostAssignment;
 

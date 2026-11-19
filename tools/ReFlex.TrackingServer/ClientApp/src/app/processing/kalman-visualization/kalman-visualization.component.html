@@ -1,0 +1,22 @@
+<svg class="kalman-canvas" [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="none"
+  role="img" aria-label="Kalman tracks, measurements and 95 percent position uncertainty">
+  @for (item of displayData; track item.touchId) {
+    <g [attr.data-touch-id]="item.touchId" [class.lost]="item.isPredicted" [class.suppressed]="!item.isPublished">
+      <title>Touch {{ item.touchId }} · {{ item.isPredicted ? 'coasting' : 'measured' }} · 95% model position uncertainty</title>
+      @if ((item.kalmanUncertainty?.length ?? 0) > 0) {
+        <polygon class="kalman-uncertainty" [attr.points]="path(item.kalmanUncertainty ?? [])" />
+      }
+      <polyline class="measurement-trail" [attr.points]="path(trails.get(item.touchId)?.measurements ?? [])" />
+      <polyline class="kalman-track" [attr.points]="path(trails.get(item.touchId)?.estimates ?? [])" />
+      @for (measurement of trails.get(item.touchId)?.measurements ?? []; track $index) {
+        <circle class="kalman-measurement" [attr.cx]="x(measurement)" [attr.cy]="y(measurement)" r="2.5" />
+      }
+      @if (!item.isPredicted) {
+        <line class="innovation" [attr.x1]="x(item.measuredPosition)" [attr.y1]="y(item.measuredPosition)"
+          [attr.x2]="x(item.kalmanPosition)" [attr.y2]="y(item.kalmanPosition)" />
+      }
+      <rect class="kalman-estimate" [attr.x]="x(item.kalmanPosition) - 4" [attr.y]="y(item.kalmanPosition) - 4" width="8" height="8" />
+      <text [attr.x]="x(item.kalmanPosition) + 12" [attr.y]="y(item.kalmanPosition) + 16">#{{ item.touchId }}{{ item.isPredicted ? ' · coasting' : '' }}</text>
+    </g>
+  }
+</svg>

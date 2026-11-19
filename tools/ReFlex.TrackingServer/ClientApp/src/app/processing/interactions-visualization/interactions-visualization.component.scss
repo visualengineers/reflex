@@ -81,3 +81,31 @@
         }
     }
 }
+
+.motion-display-settings {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: min(32rem, calc(100% - 7rem));
+    max-height: calc(100% - 2rem);
+    overflow-y: auto;
+    z-index: 5;
+    background: rgba(255, 255, 255, .94);
+}
+.motion-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem 1.8rem;
+    padding: 1rem 0;
+    font-size: 1.2rem;
+    span { display: inline-flex; align-items: center; gap: .5rem; }
+    .swatch { display: inline-block; width: .9rem; height: .9rem; border-radius: 50%; }
+    .symbol { min-width: 1.6rem; text-align: center; font-style: normal; }
+    .measured { color: #475569; }
+    .smoothed { color: #a65d00; }
+    .matching { color: #7138a8; }
+    .linear { color: #007d8a; }
+    .accelerated { color: #bf285b; }
+    .kalman, .uncertainty { color: #187556; }
+    .uncertainty { background: #e0f0e8; }
+}

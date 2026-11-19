@@ -14,6 +14,14 @@ export interface InteractionVelocity {
   isPredicted: boolean;
   isPublished: boolean;
   suppressionReason: string;
+  useKalmanFilter?: boolean;
+  useVelocityPrediction?: boolean;
+  kalmanPosition?: Point3 | null;
+  /** Position covariance in sensor pixel² before calibration. */
+  kalmanVarianceX?: number | null;
+  kalmanVarianceY?: number | null;
+  /** Calibrated 95% contour, generated for rendering without modifying raw covariance. */
+  kalmanUncertainty?: Array<Point3>;
   useSecondDerivation: boolean;
   width: number;
   height: number;

@@ -1,0 +1,53 @@
+{
+  "interaction_test_counts": {
+    "total": "361",
+    "executed": "361",
+    "passed": "361",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "server_test_counts": {
+    "total": "17",
+    "executed": "17",
+    "passed": "17",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "randomized_reference_examples": 192,
+  "tie_reference_examples": 2,
+  "dense_20_contact_allocations": {
+    "original_bytes": 9835728,
+    "optimized_bytes": 9976,
+    "reduction_percent": 99.89857385238795
+  },
+  "reference_revision": "4290171a",
+  "reference_original_sha256": "acf6b1d0487635894bf307e3299aab07dc34286f3a401e168ca5aad8fd36cb6d",
+  "source_sha256": {
+    "library/src/Core/Interactivity/Util/JpdaContactAssignment.cs": "8c02fc0cd2baced9ff0526a63d9a805a6b274b958c4dc234ea691db5739d4218",
+    "test/Library/InteractionTests/JpdaOptimizationTest.cs": "d215fad35f2ad88ac3d375b510358e561f4eebccd97a2637c843b497da1108f5",
+    "test/Library/InteractionTests/JpdaContactTest.cs": "cef32ff8cd55fb6f5586b3dd5067719382a1b8d9a232ca3507f69d9ffef0250d",
+    "test/Library/InteractionTests/Reference/JpdaContactAssignmentReference.cs": "95172efbac73d144a3d151d021922bbc201dad356c9f8fa25a35bf330a3b9d70"
+  }
+}

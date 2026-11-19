@@ -25,12 +25,14 @@ namespace ReFlex.Core.Interactivity.Components
             public List<(double Time, Interaction Measurement)> Samples { get; } = new();
             public Interaction Smoothed { get; set; }
             public ButterworthFilter Butterworth { get; set; }
+            public KalmanContactMotion Kalman { get; set; }
             public int LastSeenFrame { get; set; }
             public double LastSeenTime { get; set; }
             public double LastDetectedAt { get; set; }
             public double ConfidenceUpdatedAt { get; set; }
             public float Confidence { get; set; }
             public Point3 MatchingPosition { get; set; }
+            public double? OccludedUntil { get; set; }
         }
 
         private readonly Dictionary<int, Track> _tracks = new();
@@ -70,6 +72,51 @@ namespace ReFlex.Core.Interactivity.Components
         /// <summary>Use global minimum-cost assignment; false restores greedy one-to-one matching.
         /// Changing this strategy preserves all existing contact state and history.</summary>
         public bool UseMinimumCostAssignment { get; set; } = true;
+
+        public const double JpdaOcclusionRetentionSeconds = 1;
+        private bool _useJpda;
+        /// <summary>Opt-in probabilistic association and bounded recovery of masked IDs.
+        /// Takes precedence over the selected ordinary assignment strategy while enabled.</summary>
+        public bool UseJpda
+        {
+            get => _useJpda;
+            set
+            {
+                if (_useJpda == value) return;
+                _useJpda = value;
+                foreach (var pair in _tracks.ToArray())
+                {
+                    pair.Value.OccludedUntil = null;
+                    if (_processedTimestampSeconds.HasValue && IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId))
+                        _tracks.Remove(pair.Key);
+                }
+            }
+        }
+
+        private bool _useKalmanFilter;
+        /// <summary>Use a recursive XY constant-velocity Kalman filter. Enabling seeds it from
+        /// retained real measurements; switching never resets contact identity or confidence.
+        /// UseVelocityForMapping still controls extrapolation to the observation time.</summary>
+        public bool UseKalmanFilter
+        {
+            get => _useKalmanFilter;
+            set
+            {
+                if (_useKalmanFilter == value) return;
+                foreach (var track in _tracks.Values)
+                {
+                    track.Kalman = null;
+                    if (!value) continue;
+                    foreach (var sample in track.Samples)
+                    {
+                        if (track.Kalman == null)
+                            track.Kalman = new KalmanContactMotion(sample.Measurement.Position, sample.Time);
+                        else track.Kalman.Update(sample.Measurement.Position, sample.Time);
+                    }
+                }
+                _useKalmanFilter = value;
+            }
+        }
 
         /// <summary>Cost of leaving a live track unmatched for one observation. Distances are
         /// normalized by TouchMergeDistance2D; this does not change retention or confidence.</summary>
@@ -273,12 +320,18 @@ namespace ReFlex.Core.Interactivity.Components
             if (!double.IsFinite(processedTimestampSeconds) || processedTimestampSeconds < timestampSeconds ||
                 (_processedTimestampSeconds.HasValue && processedTimestampSeconds < _processedTimestampSeconds.Value))
                 throw new ArgumentOutOfRangeException(nameof(processedTimestampSeconds));
+            // A reserved identity must not survive a sensor outage just because the next
+            // successful Update advances the completion clock before association runs.
+            if (_processedTimestampSeconds.HasValue && processedTimestampSeconds > _processedTimestampSeconds.Value + ObservationTimeoutSeconds)
+                foreach (var track in _tracks.Values) track.OccludedUntil = null;
             _timestampSeconds = timestampSeconds;
             _processedTimestampSeconds = processedTimestampSeconds;
             _frameId++;
 
             // Only internal copies are assigned IDs or retained in the tracking history.
-            var candidates = rawInteractions.Take(20).Select(item => new Interaction(item)).ToList();
+            var candidates = rawInteractions.Take(20)
+                .Where(item => (!UseKalmanFilter && !UseJpda) || (float.IsFinite(item.Position.X) && float.IsFinite(item.Position.Y)))
+                .Select(item => new Interaction(item)).ToList();
             var mappedInteractionIds = MapClosestInteraction(candidates);
             var newFrame = new InteractionFrame(_frameId, mappedInteractionIds, timestampSeconds);
 
@@ -297,8 +350,9 @@ namespace ReFlex.Core.Interactivity.Components
                 var missingFrames = _frameId - pair.Value.LastSeenFrame;
                 if (IsExpired(pair.Value, processedTimestampSeconds, _frameId))
                 {
-                    // Ended tracks are removed permanently, even while their measurements remain cached.
-                    _tracks.Remove(pair.Key);
+                    // Publication still expires normally. Only probabilistically masked IDs
+                    // may retain an unpublished, bounded recovery state.
+                    if (!CanRecoverMasked(pair.Value, processedTimestampSeconds)) _tracks.Remove(pair.Key);
                     continue;
                 }
 
@@ -320,7 +374,7 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         /// <summary>Age publication without inventing a sensor observation or changing the measured
-        /// sample clock. Expiry is permanent; confidence during sensor gaps is projected from live state.</summary>
+        /// sample clock. Masked IDs may retain unpublished recovery state; ordinary expiry is permanent.</summary>
         public InteractionFrame OutputAt(double timestampSeconds, bool markLost = true)
         {
             if (!double.IsFinite(timestampSeconds) || (_processedTimestampSeconds.HasValue && timestampSeconds < _processedTimestampSeconds))
@@ -331,7 +385,7 @@ namespace ReFlex.Core.Interactivity.Components
                 var track = pair.Value;
                 if (IsExpired(track, timestampSeconds, _frameId))
                 {
-                    _tracks.Remove(pair.Key);
+                    if (!CanRecoverMasked(track, timestampSeconds)) _tracks.Remove(pair.Key);
                     continue;
                 }
                 var item = new Interaction(track.Smoothed ?? track.LastMeasurement);
@@ -403,8 +457,21 @@ namespace ReFlex.Core.Interactivity.Components
         /// <returns>Interaction (last entry in history) with smoothed position</returns>
         private Interaction SmoothInteraction(int touchId)
         {
+            var smooth = SmoothConfiguredInteraction(touchId);
             var track = _tracks[touchId];
-            // A type transition starts a new smoothing segment; motion in XY may remain continuous.
+            if (UseKalmanFilter && track.Kalman != null)
+            {
+                var estimate = track.Kalman.Predict(track.LastSeenTime, smooth.Position.Z).Position;
+                smooth.Position.X = estimate.X;
+                smooth.Position.Y = estimate.Y;
+            }
+            return smooth;
+        }
+
+        private Interaction SmoothConfiguredInteraction(int touchId)
+        {
+            var track = _tracks[touchId];
+            // Tracks retain a single pressure type for their entire lifetime.
             var samples = track.Samples.AsEnumerable().Reverse()
                 .TakeWhile(sample => sample.Measurement.Type == track.LastMeasurement.Type).Reverse().ToArray();
             var interactionsHistory = samples.Select(sample => new Interaction(sample.Measurement)).ToList();
@@ -452,7 +519,8 @@ namespace ReFlex.Core.Interactivity.Components
             // Explicitly missing detections use contact retention. A sensor/processing gap uses
             // its separate timeout, measured since the last successful completion, not capture.
             foreach (var id in _tracks.Where(pair =>
-                         IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId - 1))
+                         IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId - 1)
+                         && !CanRecoverMasked(pair.Value, _processedTimestampSeconds.Value))
                      .Select(pair => pair.Key).ToArray())
                 _tracks.Remove(id);
 
@@ -462,10 +530,17 @@ namespace ReFlex.Core.Interactivity.Components
             foreach (var track in _tracks.Values)
                 track.MatchingPosition = Predict(track, _timestampSeconds.Value);
 
-            var targets = _tracks.Select(pair => (TouchId: pair.Key, Position: pair.Value.MatchingPosition)).ToArray();
-            var assignedIds = UseMinimumCostAssignment
+            var targets = _tracks.Select(pair => (TouchId: pair.Key, Position: pair.Value.MatchingPosition, Type: pair.Value.LastMeasurement.Type)).ToArray();
+            var jpda = UseJpda && NumFramesHistory > 0 && targets.Length <= JpdaContactAssignment.MaxTracks
+                ? JpdaContactAssignment.Assign(candidates, targets, TouchMergeDistance2D, AssignmentMissCost, AssignmentBirthCost) : null;
+            var assignedIds = jpda?.AssignedIds ?? (UseMinimumCostAssignment
                 ? MinimumCostContactAssignment.Assign(candidates, targets, TouchMergeDistance2D, AssignmentMissCost, AssignmentBirthCost)
-                : GreedyContactAssignment.Assign(candidates, targets, TouchMergeDistance2D);
+                : GreedyContactAssignment.Assign(candidates, targets, TouchMergeDistance2D));
+            if (jpda != null)
+                foreach (var pair in _tracks)
+                    if (pair.Value.LastSeenFrame == _frameId - 1 && jpda.IsMasked(pair.Key))
+                        pair.Value.OccludedUntil = pair.Value.LastDetectedAt
+                            + Math.Max(ContactRetentionSeconds, JpdaOcclusionRetentionSeconds);
             for (var index = 0; index < candidates.Count; index++)
             {
                 var touchId = assignedIds[index];
@@ -495,9 +570,14 @@ namespace ReFlex.Core.Interactivity.Components
                 var matchingPosition = _tracks.TryGetValue(candidate.TouchId, out var previous)
                     ? previous.MatchingPosition : candidate.Position;
                 var current = previous ?? new Track();
-                if (previous != null && previous.LastMeasurement.Type != candidate.Type)
-                    current.Butterworth = null;
+                if (UseKalmanFilter)
+                {
+                    if (current.Kalman == null)
+                        current.Kalman = new KalmanContactMotion(candidate.Position, _timestampSeconds.Value);
+                    else current.Kalman.Update(candidate.Position, _timestampSeconds.Value);
+                }
                 current.LastMeasurement = candidate;
+                current.OccludedUntil = null;
                 current.LastSeenFrame = _frameId;
                 current.LastSeenTime = _timestampSeconds.Value;
                 current.LastDetectedAt = _processedTimestampSeconds.Value;
@@ -517,6 +597,10 @@ namespace ReFlex.Core.Interactivity.Components
             => now > track.LastDetectedAt + (track.LastSeenFrame == latestObservationFrame
                 ? ObservationTimeoutSeconds : ContactRetentionSeconds);
 
+        private bool CanRecoverMasked(Track track, double now) => UseJpda && NumFramesHistory > 0
+            && track.OccludedUntil.HasValue && now <= track.OccludedUntil.Value
+            && _processedTimestampSeconds.HasValue && now <= _processedTimestampSeconds.Value + ObservationTimeoutSeconds;
+
         private void DecayConfidence(Track track, double timestampSeconds)
         {
             track.Confidence = Math.Max(0, track.Confidence - (float)(ConfidenceDecayPerSecond *
@@ -526,6 +610,9 @@ namespace ReFlex.Core.Interactivity.Components
 
         private Point3 Predict(Track track, double targetTime)
         {
+            if (UseKalmanFilter && track.Kalman != null)
+                return track.Kalman.Predict(UseVelocityForMapping ? targetTime : track.LastSeenTime,
+                    track.LastMeasurement.Position.Z).Position;
             if (!UseVelocityForMapping)
                 return (Point3)track.LastMeasurement.Position.Copy();
             var motion = ContactMotion.Estimate(track.Samples, track.LastSeenTime, NumFramesForPrediction, UseSecondDerivation);
@@ -542,15 +629,36 @@ namespace ReFlex.Core.Interactivity.Components
         public List<InteractionVelocity> GetVelocities(InteractionFrame output)
         {
             var result = new List<InteractionVelocity>();
-            if (!UseVelocityForMapping)
+            if (!UseVelocityForMapping && !UseKalmanFilter)
                 return result;
             foreach (var interaction in output.Interactions)
             {
                 if (!_tracks.TryGetValue(interaction.TouchId, out var track))
                     continue;
-                var motion = ContactMotion.Estimate(track.Samples, track.LastSeenTime, NumFramesForPrediction, UseSecondDerivation);
-                var item = ContactMotion.Forecast(track.LastMeasurement.Position, motion,
-                    SecondDerivationMagnitude, (float)(output.TimestampSeconds + PredictionHorizonSeconds - track.LastSeenTime));
+                InteractionVelocity item;
+                int sampleCount;
+                if (UseKalmanFilter && track.Kalman != null)
+                {
+                    var posterior = track.Kalman.Predict(track.LastSeenTime, track.LastMeasurement.Position.Z).Position;
+                    item = new InteractionVelocity();
+                    item.Update(posterior, track.Kalman.Velocity, new Point3(), 0,
+                        (float)(output.TimestampSeconds + PredictionHorizonSeconds - track.LastSeenTime));
+                    item.MeasuredPosition = new Point3(track.LastMeasurement.Position);
+                    item.UseKalmanFilter = true;
+                    var currentEstimate = track.Kalman.Predict(output.TimestampSeconds, track.LastMeasurement.Position.Z);
+                    item.KalmanPosition = currentEstimate.Position;
+                    item.KalmanVarianceX = currentEstimate.VarianceX;
+                    item.KalmanVarianceY = currentEstimate.VarianceY;
+                    sampleCount = track.Kalman.MeasurementCount;
+                }
+                else
+                {
+                    var motion = ContactMotion.Estimate(track.Samples, track.LastSeenTime, NumFramesForPrediction, UseSecondDerivation);
+                    item = ContactMotion.Forecast(track.LastMeasurement.Position, motion,
+                        SecondDerivationMagnitude, (float)(output.TimestampSeconds + PredictionHorizonSeconds - track.LastSeenTime));
+                    sampleCount = motion.Count;
+                }
+                item.UseVelocityPrediction = UseVelocityForMapping;
                 item.TouchId = interaction.TouchId;
                 item.FrameId = _frameId;
                 item.LastMeasuredFrameId = track.LastSeenFrame;
@@ -559,9 +667,9 @@ namespace ReFlex.Core.Interactivity.Components
                 item.PredictionTimestampSeconds = output.TimestampSeconds + PredictionHorizonSeconds;
                 item.PredictionHorizonSeconds = PredictionHorizonSeconds;
                 item.Confidence = interaction.Confidence;
-                item.SampleCount = motion.Count;
+                item.SampleCount = sampleCount;
                 item.IsPredicted = interaction.TrackingState == InteractionTrackingState.Lost;
-                item.UseSecondDerivation = UseSecondDerivation;
+                item.UseSecondDerivation = !UseKalmanFilter && UseSecondDerivation;
                 item.SmoothedPosition = (Point3)interaction.Position.Copy();
                 item.MatchingPosition = !item.IsPredicted
                     ? (Point3)track.MatchingPosition.Copy() : Predict(track, output.TimestampSeconds);

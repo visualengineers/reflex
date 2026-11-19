@@ -57,6 +57,7 @@ __[⬆ back to top](#table-of-contents)__
 | `MinAngle` | Angular threshold for vector-field detection, relevant to the multi-touch strategy. |
 | `MinConfidence`, `MaxConfidence` | Threshold for accepting touches and upper bound for confidence accumulation. |
 | `InteractionHistorySize`, `NumSmoothingFrames`, `ContactRetentionSeconds`, `ObservationTimeoutSeconds` | History capacity, smoothing window, missed-detection retention and sensor/processing timeout. Lifetimes use seconds independently of history capacity. |
+| `UseJpda` | Optional probabilistic association and bounded recovery of IDs masked by overlap. Default false; takes precedence over the ordinary assignment choice. Custom observer/manager implementations must expose this boolean. |
 | `TouchMergeDistance2D`, `DepthScale`, `FilterType` | Strict Manhattan-distance gate in sensor pixels for associating touches across frames, depth scaling for smoothing and choice of smoothing filter. |
 | `ExtremumTypeCheckNumSamples`, `ExtremumTypeCheckRadius`, `ExtremumTypeCheckFittingPercentage`, `ExtremumTypeCheckMethod` | Sampling configuration used to distinguish minima, maxima and undefined extrema. |
 | `NewInteractions` | Publish an `IList<Interaction>` after processing a frame, including an empty list when no interactions remain. |

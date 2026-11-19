@@ -236,6 +236,10 @@ __[⬆ back to top](#table-of-contents)__
 | `PUT` | `/api/Settings/FilterPasses/{numPasses}` | Path: `numPasses` | `JsonSimpleValue<int>` | Sets the number of box filter passes. Name: `BoxFilterNumPasses`. |
 | `PUT` | `/api/Settings/FilterThreads/{numThreads}` | Path: `numThreads` | `JsonSimpleValue<int>` | Sets the number of box filter threads. Name: `BoxFilterNumThreads`. |
 | `POST` | `/api/Settings/UseOptimizedBoxFilter` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Enables or disables the optimized box filter. Only `value` is used. |
+| `GET` | `/api/Settings/UseJpda` | - | `bool` | Returns optional JPDA identity recovery (default `false`). |
+| `POST` | `/api/Settings/UseJpda` | Body: JSON boolean | `bool` | Applies and saves bounded recovery of IDs masked by overlapping contacts. |
+| `GET` | `/api/Settings/UseKalmanFilter` | - | `bool` | Returns the XY Kalman switch (default `false`). |
+| `POST` | `/api/Settings/UseKalmanFilter` | Body: JSON boolean | `bool` | Applies and saves optional XY Kalman filtering; preserves live IDs and history. |
 | `GET` | `/api/Settings/UseMinimumCostAssignment` | - | `boolean` | Returns the current value (default `true`). |
 | `POST` | `/api/Settings/UseMinimumCostAssignment` | Body: JSON boolean | `boolean` | Applies and saves the value. Enables global minimum-cost assignment; false selects the previous greedy one-to-one strategy. |
 | `GET` | `/api/Settings/AssignmentMissCost` | - | `number` | Returns the current value (default `0.5`). |
@@ -249,12 +253,30 @@ __[⬆ back to top](#table-of-contents)__
 | `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Updates the point cloud settings. |
 | `POST` | `/api/Settings/Prediction` | Body: `PredictionSettings` | `PredictionSettings` or `400` | Applies and saves the motion prediction settings. Returns `400` for invalid numeric values (see below). |
 
+`TrackingServerAppSettings.useJpda` enables probabilistic association and bounded recovery of
+masked contact IDs, default `false` for new and legacy settings. It takes precedence over the saved
+global/greedy choice while enabled; both miss/birth costs still apply. Normal publication expiry
+is unchanged, but an ambiguous unassigned ID can remain recoverable for one second after its last
+measurement (or the ordinary retention period, if longer). Sensor timeouts, reset and disabling
+JPDA discard recovery reservations. The dedicated boolean POST, full save/import, startup,
+backup/restore and reset paths include this value. See
+[JPDA identity recovery](../../../../test/analysis/touchid-3512/jpda.md) for the probability model,
+computation limits and identity limitations.
+
+`TrackingServerAppSettings.useKalmanFilter` is an independent top-level boolean, default `false`
+for new and legacy settings. Its dedicated POST endpoint applies and persists changes, and the
+full-settings save/import and backup/reset paths include it. While enabled, XY uses a recursive
+constant-velocity Kalman estimate and Z keeps the selected smoother. The existing prediction switch
+still controls extrapolation to observation time. Pressure types cannot share a track in either
+assignment strategy, independent of this switch. See
+[the Kalman model](../../../../test/analysis/touchid-3512/kalman-filter.md) for defaults and assumptions.
+
 Contact-assignment values are top-level fields of `TrackingServerAppSettings`, represented as
 `useMinimumCostAssignment`, `assignmentMissCost` and `assignmentBirthCost` in API JSON.
 Older settings files that omit these fields use `true`, `0.5` and `0.5`. Explicit `false` and `0`
 are preserved when loading, importing or saving settings. Costs must be finite and non-negative;
 invalid cost requests return `400` before changing runtime settings or files. Costs are ignored
-while minimum-cost assignment is disabled and remain saved for later use.
+only when both JPDA and minimum-cost assignment are disabled, and remain saved for later use.
 
 The three dedicated `POST` endpoints apply changes immediately and persist them using the standard
 configuration/backup mechanism. `GET /api/Settings` and the full-settings save/import endpoints also
@@ -411,3 +433,13 @@ __[⬆ back to top](#table-of-contents)__
 | `GET` | `/api/RecordRawDepth/CurrentRecordId` | - | `int` | Returns the ID of the current or most recent recording. |
 | `GET` | `/api/RecordRawDepth/CurrentSampleIdx` | - | `int` | Returns the current sample index within the running recording. |
 | `PUT` | `/api/RecordRawDepth/RecordSamples` | Body: `JsonSimpleValue<int>` | `JsonSimpleValue<int>` | Starts a raw data recording with a fixed length of 10 samples to `wwwroot/measurements/{id}`. Return name: `RecordId`. |
+
+
+### Kalman visualization diagnostics
+
+The existing `velocities` SignalR stream is available when Kalman filtering **or** velocity prediction
+is enabled. `InteractionVelocity` adds `useVelocityPrediction`, `kalmanPosition`, `kalmanVarianceX` and
+`kalmanVarianceY`. Kalman position and variance refer to `timestampSeconds`; variances are raw sensor
+pixel² and are null without Kalman. The Processing viewer calibrates a 95% joint position contour
+with the other positions and offers independent display switches. No ground-truth data is inferred
+or displayed. These are diagnostic additions; held touch publication is unchanged.

@@ -241,21 +241,24 @@ public class SensorPipelineTest
     {
         using var manager = new Manager(new Depth(), new Service(), new Clock())
         {
-            UseMinimumCostAssignment = false, AssignmentMissCost = 0, AssignmentBirthCost = .25f
+            UseKalmanFilter = true, UseMinimumCostAssignment = false, AssignmentMissCost = 0, AssignmentBirthCost = .25f
         };
         manager.Type = ObserverType.Remote;
         var first = manager.CurrentObserver;
         Assert.Multiple(() =>
         {
+            Assert.That(first.UseKalmanFilter, Is.True);
             Assert.That(first.UseMinimumCostAssignment, Is.False);
             Assert.That(first.AssignmentMissCost, Is.Zero);
             Assert.That(first.AssignmentBirthCost, Is.EqualTo(.25f));
         });
+        manager.UseKalmanFilter = false;
         manager.UseMinimumCostAssignment = true;
         manager.AssignmentMissCost = .75f;
         manager.AssignmentBirthCost = 0;
         Assert.Multiple(() =>
         {
+            Assert.That(first.UseKalmanFilter, Is.False);
             Assert.That(first.UseMinimumCostAssignment, Is.True);
             Assert.That(first.AssignmentMissCost, Is.EqualTo(.75f));
             Assert.That(first.AssignmentBirthCost, Is.Zero);
@@ -264,6 +267,7 @@ public class SensorPipelineTest
         Assert.Multiple(() =>
         {
             Assert.That(manager.CurrentObserver, Is.Not.SameAs(first));
+            Assert.That(manager.CurrentObserver.UseKalmanFilter, Is.False);
             Assert.That(manager.CurrentObserver.UseMinimumCostAssignment, Is.True);
             Assert.That(manager.CurrentObserver.AssignmentMissCost, Is.EqualTo(.75f));
             Assert.That(manager.CurrentObserver.AssignmentBirthCost, Is.Zero);

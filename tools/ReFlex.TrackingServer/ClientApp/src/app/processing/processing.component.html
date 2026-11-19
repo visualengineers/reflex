@@ -230,38 +230,6 @@
     <div class="content__body">
       <app-option-checkbox
         class="settings__item"
-        elementTitle="Show prediction"
-        elementId="processing-showPrediction"
-        [(data)]="showPrediction"
-      >
-        Show measured trajectories, smoothed positions and forecasts in calibrated interaction coordinates.
-      </app-option-checkbox>
-      <app-option-checkbox
-        class="settings__item"
-        elementTitle="Matching target (current time)"
-        elementId="processing-showMatching"
-        [(data)]="showMatching"
-      >
-        Show this prediction layer.
-      </app-option-checkbox>
-      <app-option-checkbox
-        class="settings__item"
-        elementTitle="Linear forecast"
-        elementId="processing-showLinear"
-        [(data)]="showLinear"
-      >
-        Show this prediction layer.
-      </app-option-checkbox>
-      <app-option-checkbox
-        class="settings__item"
-        elementTitle="Acceleration forecast"
-        elementId="processing-showAccelerated"
-        [(data)]="showAccelerated"
-      >
-        Show this prediction layer.
-      </app-option-checkbox>
-      <app-option-checkbox
-        class="settings__item"
         elementTitle="Use prediction for contact assignment"
         elementId="processing-useVelocityPrediction"
         [(data)]="predictionSettings.useVelocityPrediction"
@@ -345,53 +313,14 @@
       [eventId]="eventId"
       (predictionDataChange)="predictionData = $event"
       [isProcessing]="isInteractionProcessingActive"
-      [showPrediction]="showPrediction"
-      [showMatching]="showMatching"
-      [showLinear]="showLinear"
-      [showAccelerated]="showAccelerated"
+      [(showPrediction)]="showPrediction"
+      [predictionEnabled]="predictionEnabled"
+      [kalmanEnabled]="kalmanEnabled"
+      [accelerationEnabled]="accelerationEnabled"
+      [(showMatching)]="showMatching"
+      [(showLinear)]="showLinear"
+      [(showAccelerated)]="showAccelerated"
     ></app-interactions-visualization>
-    <div class="content__header">
-      <h2 class="heading-secondary">Legend</h2>
-    </div>
-    <div class="content__body">
-      <div class="legend-interaction">
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-maximum"></div>
-          <div class="legend-interaction-label">Maximum</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-minimum"></div>
-          <div class="legend-interaction-label">Minimum</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-undefined"></div>
-          <div class="legend-interaction-label">Undefined</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-circle interaction-invalid"></div>
-          <div class="legend-interaction-label">Invalid Type</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol legend-prediction-symbol--measured">●</div>
-          <div class="legend-interaction-label">Measured</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol legend-prediction-symbol--smoothed">■</div>
-          <div class="legend-interaction-label">Smoothed</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol legend-prediction-symbol--matching">◇</div>
-          <div class="legend-interaction-label">Matching target (current time)</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol legend-prediction-symbol--linear">○</div>
-          <div class="legend-interaction-label">Linear forecast</div>
-        </div>
-        <div class="legend-interaction-item">
-          <div class="legend-interaction-label legend-prediction-symbol legend-prediction-symbol--accelerated">○</div>
-          <div class="legend-interaction-label">Acceleration forecast</div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </div>
