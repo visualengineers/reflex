@@ -20,6 +20,23 @@
     <label for="visualization-toggle" class="fullscreen__button">
       <span class="fullscreen__icon">&nbsp;</span>
     </label>
+    <app-settings-group class="motion-display-settings" toggleId="motion-display-settings-toggle" elementTitle="Display Settings">
+      <app-option-checkbox class="settings__item-narrow" elementTitle="Show prediction" elementId="processing-showPrediction"
+        [data]="predictionVisible" (dataChange)="showPrediction = $event" [disabled]="!predictionEnabled" (onChange)="updatePredictionVisibility()">
+        {{ predictionEnabled ? 'Display forecasts without changing tracking settings.' : 'Enable velocity prediction to display forecasts.' }}
+      </app-option-checkbox>
+      <app-option-checkbox class="settings__item-narrow" elementTitle="Show Kalman filter" elementId="processing-showKalman"
+        [data]="kalmanVisible" (dataChange)="showKalman = $event" [disabled]="!kalmanEnabled" (onChange)="updateVisualization()">
+        {{ kalmanEnabled ? 'Measurements, filtered tracks and 95% model uncertainty.' : 'Enable Kalman filtering under Settings → Smoothing.' }}
+      </app-option-checkbox>
+      <app-option-checkbox class="settings__item-narrow" elementTitle="Matching target (current time)" elementId="processing-showMatching"
+        [data]="predictionVisible && showMatching" (dataChange)="showMatching = $event; showMatchingChange.emit($event)" [disabled]="!predictionVisible" />
+      <app-option-checkbox class="settings__item-narrow" elementTitle="Linear forecast" elementId="processing-showLinear"
+        [data]="predictionVisible && showLinear" (dataChange)="showLinear = $event; showLinearChange.emit($event)" [disabled]="!predictionVisible" />
+      <app-option-checkbox class="settings__item-narrow" elementTitle="Acceleration forecast" elementId="processing-showAccelerated"
+        [data]="accelerationVisible" (dataChange)="showAccelerated = $event; showAcceleratedChange.emit($event)"
+        [disabled]="!predictionVisible || !accelerationEnabled || kalmanEnabled" />
+    </app-settings-group>
     <app-history-visualization></app-history-visualization>
     @for (interaction of this.calibratedInteractions; track interaction; let idx
     = $index) {
@@ -92,16 +109,21 @@
       </div>
     </div>
     }
-    @if (showPrediction) {
+    @if (predictionVisible) {
       <app-interactions-velocity-visualization
         [data]="predictionData"
         [width]="viewportWidth"
         [height]="viewportHeight"
         [showMatching]="showMatching"
         [showLinear]="showLinear"
-        [showAccelerated]="showAccelerated"
+        [showAccelerated]="accelerationVisible"
+        [showMeasurements]="!kalmanVisible"
       />
     }
+    @if (kalmanVisible) {
+      <app-kalman-visualization [data]="predictionData" [width]="viewportWidth" [height]="viewportHeight" />
+    }
+
   </div>
   <div
     class="clearBg"
@@ -110,3 +132,32 @@
 </div>
 
 <p role="status">{{ predictionMessage }}</p>
+
+<div class="motion-legend" aria-label="Active visualization legend">
+  <span><i class="swatch interaction-maximum"></i> Maximum</span>
+  <span><i class="swatch interaction-minimum"></i> Minimum</span>
+  <span><i class="swatch interaction-undefined"></i> Undefined</span>
+  <span><i class="swatch interaction-invalid"></i> Invalid type</span>
+  @if (predictionVisible || kalmanVisible) {
+    <span><i class="symbol measured">●</i> Measurements</span>
+  }
+  @if (predictionVisible && !kalmanVisible) {
+    <span><i class="symbol smoothed">■</i> Smoothed</span>
+    <span><i class="symbol measured">┄</i> Measured trajectory</span>
+  }
+  @if (predictionVisible && showMatching) {
+    <span><i class="symbol matching">◇</i> Matching target (current time)</span>
+  }
+  @if (predictionVisible && showLinear) {
+    <span><i class="symbol linear">○</i> Linear forecast</span>
+  }
+  @if (accelerationVisible) {
+    <span><i class="symbol accelerated">○</i> Acceleration forecast</span>
+  }
+  @if (kalmanVisible) {
+    <span><i class="symbol kalman">━ ■</i> Kalman track / estimate</span>
+    @if (hasUncertainty) {
+      <span><i class="symbol uncertainty">⬭</i> 95% position uncertainty</span>
+    }
+  }
+</div>

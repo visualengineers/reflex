@@ -155,6 +155,7 @@ namespace PointCloud.Benchmark.Interactivity
 
         // TODO: write tests for negative (!) values and values larger than history
         // Shared-contract compatibility; this benchmark retains its historical tracker implementation.
+        public bool UseKalmanFilter { get; set; }
         public bool UseMinimumCostAssignment { get; set; } = true;
         public float AssignmentMissCost { get; set; } = .5f;
         public float AssignmentBirthCost { get; set; } = .5f;

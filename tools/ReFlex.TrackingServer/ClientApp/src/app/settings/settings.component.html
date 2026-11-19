@@ -462,7 +462,8 @@
   >
     The number of frames which are cached and used to smooth the interaction
     samples. A high number of frames means a smoother behavior, but also
-    increases latency. 0 means that smoothing is disabled.
+    increases latency. 0 disables this smoothing window; the independent Kalman
+    XY filter can remain enabled.
   </app-value-slider>
 
   <!-- Interaction History -->
@@ -519,6 +520,17 @@
     [(data)]="settings.filterSettingValues.smoothingValues.confidenceDecayPerSecond" (onChange)="saveSmoothingValues()">
     Confidence lost per second without measurements. Zero disables decay.
   </app-value-slider>
+
+  <app-option-checkbox class="settings__item"
+    elementTitle="Kalman filter" elementId="settings-useKalmanFilter"
+    [data]="settings.useKalmanFilter ?? false"
+    (dataChange)="settings.useKalmanFilter = $event"
+    (onChange)="saveUseKalmanFilter()">
+    Filter XY positions and estimate velocity with a constant-velocity Kalman model.
+    Replaces XY smoothing; depth keeps the selected smoothing filter.
+    Enable velocity prediction in the Prediction panel to use Kalman forecasts for assignment.
+    Acceleration settings do not affect this model. Switching preserves existing contact IDs. Disabled by default.
+  </app-option-checkbox>
 
   <app-option-checkbox class="settings__item"
     elementTitle="Minimum-cost assignment" elementId="settings-useMinimumCostAssignment"

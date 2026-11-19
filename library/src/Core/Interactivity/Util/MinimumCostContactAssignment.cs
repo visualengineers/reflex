@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReFlex.Core.Common.Components;
+using ReFlex.Core.Common.Util;
 
 namespace ReFlex.Core.Interactivity.Util;
 
 /// <summary>Assigns measurements to matching positions without mutating contact lifecycle state.</summary>
 internal static class MinimumCostContactAssignment
 {
-    public static int[] Assign(List<Interaction> candidates, IReadOnlyList<(int TouchId, Point3 Position)> targets,
+    public static int[] Assign(List<Interaction> candidates, IReadOnlyList<(int TouchId, Point3 Position, InteractionType Type)> targets,
         float distanceLimit, float missCost, float birthCost)
     {
         var tracks = targets.OrderBy(pair => pair.TouchId).ToArray();
@@ -21,11 +22,12 @@ internal static class MinimumCostContactAssignment
         {
             for (var column = 0; column < tracks.Length; column++)
             {
-                var distance = Point3.Squared2DDistance(orderedCandidates[row].Candidate.Position,
+                var distance = Point3.Manhattan2DDistance(orderedCandidates[row].Candidate.Position,
                     tracks[column].Position);
                 // The full objective includes tracks.Length * missCost. Matching a
                 // track removes its miss cost; omitting that constant gives this rectangular problem.
-                costs[row, column] = float.IsFinite(distance) && distance < distanceLimit
+                costs[row, column] = orderedCandidates[row].Candidate.Type == tracks[column].Type
+                    && float.IsFinite(distance) && distance < distanceLimit
                     ? (double)distance / distanceLimit - missCost
                     : double.PositiveInfinity;
             }

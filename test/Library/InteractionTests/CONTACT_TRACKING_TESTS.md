@@ -28,7 +28,9 @@ capacity/smoothing windows still count samples. Tests pass explicit timestamps; 
 - Expiry becomes visible on the next measurement or timer aging tick. No terminal event is emitted.
   Timer aging continues even while a remote request is pending; it never creates measured samples.
 - Track-owned measurement history and held smoothing survive eviction from the diagnostic frame cache.
-- Type changes start a new smoothing segment, keeping Push/Pull consistent with signed depth.
+- Pressure type is fixed for a contact lifetime. Opposite-type detections cannot reuse the ID,
+  in either assignment strategy and regardless of Kalman activation. This is the installation's
+  physical-contact assumption; classification errors consequently split identity.
 
 With retention `.1`, a measurement at `10.0` may be reassociated at `10.1`, but a measurement
 at `10.1001` starts a new ID. This holds at every frame rate and with any number of empty updates.
@@ -118,3 +120,19 @@ Run from the repository root:
 dotnet test test/Library/InteractionTests/InteractionTests.csproj
 dotnet test test/Library/Common.Test/Common.Test.csproj
 ```
+
+
+## Optional Kalman model
+
+`UseKalmanFilter` defaults to false, is persisted at the top level of server settings and is exposed
+under Smoothing and at `GET`/`POST /api/Settings/UseKalmanFilter`. While enabled it replaces XY
+smoothing with a per-track constant-velocity Kalman estimate; Z retains the configured filter.
+Velocity prediction remains the independent gate for extrapolating association targets.
+Only actual associated measurements update the state; Lost outputs hold the last published position.
+Enabling bootstraps retained real samples, and switching preserves IDs/history/confidence.
+See [kalman-filter.md](../../analysis/touchid-3512/kalman-filter.md) for equations, assumptions,
+noise defaults, pressure-type compatibility changes and distance-metric reasoning.
+
+Kalman diagnostics remain available when `UseKalmanFilter` is true even if association velocity
+prediction is off. They expose the read-only current state and raw XY position variances at the
+output timestamp. Coasting grows uncertainty without adding observations or changing held outputs.

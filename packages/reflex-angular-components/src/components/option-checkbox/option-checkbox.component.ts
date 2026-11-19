@@ -5,13 +5,12 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-option-checkbox',
   templateUrl: './option-checkbox.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [FormsModule]
+  imports: []
 })
 export class OptionCheckboxComponent {
   @Input()

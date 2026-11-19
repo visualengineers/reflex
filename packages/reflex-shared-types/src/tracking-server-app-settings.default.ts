@@ -98,6 +98,7 @@ const defaultPointCloudSettingValues: PointCloudSettings = {
 };
 
 const values: TrackingServerAppSettings = {
+  useKalmanFilter: false,
   useMinimumCostAssignment: true,
   assignmentMissCost: 0.5,
   assignmentBirthCost: 0.5,

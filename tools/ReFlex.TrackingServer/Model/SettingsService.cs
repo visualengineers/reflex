@@ -124,6 +124,7 @@ public class SettingsService
         _interactionManager.InputDistance = distance.InputDistance;
       }
 
+      _interactionManager.UseKalmanFilter = _configManager.Settings.UseKalmanFilter;
       _interactionManager.UseMinimumCostAssignment = _configManager.Settings.UseMinimumCostAssignment;
       _interactionManager.AssignmentMissCost = _configManager.Settings.AssignmentMissCost;
       _interactionManager.AssignmentBirthCost = _configManager.Settings.AssignmentBirthCost;

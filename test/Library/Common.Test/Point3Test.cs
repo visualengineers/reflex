@@ -392,6 +392,20 @@ public class Point3Test
     /// <summary>
     /// Test that 2D Distance is computed correctly.
     /// </summary>
+    [TestCase(10f, 0f, 10f)]
+    [TestCase(7f, 7f, 14f)]
+    [TestCase(-7f, -7f, 14f)]
+    public void ManhattanDistanceHasExplicitNameAndKeepsLegacyAlias(float x, float y, float expected)
+    {
+        var a = new Point3(0, 0, 100);
+        var b = new Point3(x, y, -100);
+        Assert.Multiple(() =>
+        {
+            Assert.That(Point3.Manhattan2DDistance(a, b), Is.EqualTo(expected));
+            Assert.That(Point3.Squared2DDistance(a, b), Is.EqualTo(expected));
+        });
+    }
+
     [Test]
     public void TestDistance2D()
     {

@@ -411,6 +411,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       );
   }
 
+  public saveUseKalmanFilter(): void {
+    this.saveAssignmentRequest(this.settingsService.setUseKalmanFilter(this.settings.useKalmanFilter ?? false));
+  }
+
   public saveUseMinimumCostAssignment(): void {
     this.saveAssignmentRequest(this.settingsService.setUseMinimumCostAssignment(this.settings.useMinimumCostAssignment ?? true));
   }
@@ -871,6 +875,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private validateSettings(
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
+    settings.useKalmanFilter ??= false;
     settings.useMinimumCostAssignment ??= true;
     settings.assignmentMissCost ??= 0.5;
     settings.assignmentBirthCost ??= 0.5;

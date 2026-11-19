@@ -2,15 +2,16 @@
     <label [for]="elementId + '-checkbox'" class="settings__item--label">{{elementTitle}}</label>
     <div class="slider checkbox">
       <input
+        #checkboxInput
         type="checkbox"
         value="None"
         id="{{elementId}}-checkbox"
         class="checkbox-toggle"
         [attr.name]="elementId + '-checkbox'"
         [attr.aria-labelledby]="elementId + '-label'"
-        [(ngModel)]="data"
-        (ngModelChange)="onModelChange($event)"
-        [attr.disabled]="disabled ? true : null"
+        [checked]="data"
+        (change)="onModelChange(checkboxInput.checked)"
+        [disabled]="disabled"
       />
       <label class="checkbox-toggle-label"
         for="{{elementId}}-checkbox"

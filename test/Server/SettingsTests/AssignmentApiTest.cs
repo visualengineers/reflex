@@ -36,7 +36,7 @@ public class AssignmentApiTest
         Directory.CreateDirectory(_directory);
         var legacy = JObject.Parse(File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory,
             "TrackingSettings_default.json")));
-        foreach (var key in new[] { "UseMinimumCostAssignment", "AssignmentMissCost", "AssignmentBirthCost" })
+        foreach (var key in new[] { "UseKalmanFilter", "UseMinimumCostAssignment", "AssignmentMissCost", "AssignmentBirthCost" })
             legacy.Remove(key);
         legacy["FilterSettingValues"]!["FilterMask"] = null;
         File.WriteAllText(Path.Combine(_directory, "settings.json"), legacy.ToString());
@@ -67,6 +67,28 @@ public class AssignmentApiTest
 
     private ConfigurationManager Configuration() => new(_environment, _events,
         "settings.json", "defaults.json", "backup.json");
+
+    [Test]
+    public void KalmanTogglePersistsReloadsAndRestoresDefaults()
+    {
+        Assert.That(_controller.GetUseKalmanFilter().Value, Is.False, "Legacy settings are opt-in.");
+        _controller.SetUseKalmanFilter(true);
+        Assert.That(_manager.UseKalmanFilter, Is.True);
+        Assert.That(Configuration().Settings.UseKalmanFilter, Is.True);
+        _manager.Type = ObserverType.SingleTouch;
+        Assert.That(_manager.UseKalmanFilter, Is.True);
+        var reloaded = Configuration();
+        _manager.UseKalmanFilter = false;
+        var startup = new SettingsService(reloaded, _filter, _manager, _performance, new EventAggregator());
+        startup.Init();
+        Assert.That(_manager.UseKalmanFilter, Is.True);
+        _controller.SetUseKalmanFilter(false);
+        Assert.That(Configuration().Settings.UseKalmanFilter, Is.False);
+        _controller.Restore();
+        Assert.That(_manager.UseKalmanFilter, Is.True);
+        _controller.Reset();
+        Assert.That(_manager.UseKalmanFilter, Is.False);
+    }
 
     [Test]
     public void IndividualEndpointsApplyPersistAndReloadExplicitFalseAndZero()
@@ -146,15 +168,19 @@ public class AssignmentApiTest
     public void FullSettingsSaveAndImportApplyAssignmentValues()
     {
         var value = Configuration().Settings;
+        value.UseKalmanFilter = true;
         value.UseMinimumCostAssignment = false;
         value.AssignmentMissCost = .25f;
         value.AssignmentBirthCost = 0;
         _controller.Post(value);
         Assert.That(Configuration().Settings.AssignmentBirthCost, Is.Zero);
         Assert.That(_manager.UseMinimumCostAssignment, Is.False);
+        Assert.That(Configuration().Settings.UseKalmanFilter, Is.True);
+        value.UseKalmanFilter = false;
         value.UseMinimumCostAssignment = true;
         value.AssignmentMissCost = 0;
         _controller.LoadSettings(value);
+        Assert.That(_manager.UseKalmanFilter, Is.False);
         Assert.That(_manager.UseMinimumCostAssignment, Is.True);
         Assert.That(_manager.AssignmentMissCost, Is.Zero);
     }

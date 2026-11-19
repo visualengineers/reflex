@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -67,6 +68,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
 
   public predictionData: Array<InteractionVelocity> = [];
   public showPrediction = true;
+  public predictionEnabled = false;
+  public kalmanEnabled = false;
+  public accelerationEnabled = false;
   public showMatching = true;
   public showLinear = true;
   public showAccelerated = true;
@@ -244,6 +248,8 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector)).subscribe({
         next: (settings) => {
           this.predictionSettings = settings;
+          this.predictionEnabled = settings.useVelocityPrediction;
+          this.accelerationEnabled = settings.useSecondDerivation;
           this.predictionMessage = 'Prediction settings saved.';
         },
         error: () => {
@@ -352,6 +358,9 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector)).subscribe({
         next: (settings) => {
           this.predictionSettings = { ...this.predictionSettings, ...settings.predictionSettings };
+          this.predictionEnabled = this.predictionSettings.useVelocityPrediction;
+          this.accelerationEnabled = this.predictionSettings.useSecondDerivation;
+          this.kalmanEnabled = settings.useKalmanFilter ?? false;
           this.predictionHistorySize = Math.max(0, settings.filterSettingValues.smoothingValues.interactionHistorySize);
         },
         error: () => {
