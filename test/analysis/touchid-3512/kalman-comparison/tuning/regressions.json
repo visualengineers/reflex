@@ -1,0 +1,154 @@
+{
+  "baseline_q": 400,
+  "tuned_q": 400000,
+  "measurement_variance": 4,
+  "initial_velocity_variance": 10000,
+  "baseline_targeted_run": {
+    "counts": {
+      "total": "8",
+      "executed": "8",
+      "passed": "0",
+      "failed": "8",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "tests": [
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,False,True)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 28\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,False,False)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 14\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,True,True)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 9\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,False,False)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 28\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,True,False)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 9\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,True,True)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 18\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,True,False)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 18\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      },
+      {
+        "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,False,True)",
+        "outcome": "Failed",
+        "message": "  Lost/new track at frame 14\nAssert.That(result.Interactions, Has.Count.EqualTo(1))\n  Expected: property Count equal to 1\n  But was:  2\n",
+        "stdout": null
+      }
+    ]
+  },
+  "tuned_full_suite_counts": {
+    "total": "327",
+    "executed": "327",
+    "passed": "327",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "tuned_fast_motion_tests": [
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,False,False)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,False,True)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,False,False)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,True,True)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,True,False)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,True,True)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(60,False,True)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    },
+    {
+      "test": "FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(30,True,False)",
+      "outcome": "Passed",
+      "message": null,
+      "stdout": null
+    }
+  ],
+  "tuned_noise_test": {
+    "test": "RepeatedNoisyMeasurementsHaveLowerPositionErrorThanRawInput",
+    "outcome": "Passed",
+    "message": null,
+    "stdout": "Controlled alternating-noise squared-error ratio: 0,407171"
+  },
+  "source_sha256": {
+    "test/Library/InteractionTests/KalmanContactTest.cs": "44f00ba3bdb688f380c6de6667193797a2e92673d4d897cb93749716baf55c13",
+    "library/src/Core/Interactivity/Util/KalmanContactMotion.cs": "e93db71c73e7527541485cb34e27772019af37c2b512819cf520044ba3088988"
+  }
+}

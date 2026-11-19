@@ -8,7 +8,9 @@ namespace ReFlex.Core.Interactivity.Util;
 internal sealed class KalmanContactMotion
 {
     internal const double MeasurementVariance = 4; // pixel², measurement standard deviation 2 px
-    internal const double AccelerationSpectralDensity = 400; // pixel²/s³
+    // Replay-tuned for fast turns while retaining noise attenuation. At 30 Hz this adds
+    // 4.94 pixel² of predicted position variance per step (previously 0.00494).
+    internal const double AccelerationSpectralDensity = 400000; // pixel²/s³
     internal const double InitialVelocityVariance = 10000; // (pixel/s)²
 
     private sealed class Axis

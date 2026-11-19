@@ -20,7 +20,7 @@ static class MotionComparison
     private const int Repeats = 31;
     private sealed record Frame(int Index, double Time, IList<Interaction> Measurements, JObject Input);
 
-    public static void Run(string directory, string output)
+    public static void Run(string directory, string output, bool qualityOnly = false)
     {
         Directory.CreateDirectory(output);
         var settingsPath = "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json";
@@ -103,6 +103,7 @@ static class MotionComparison
                     births += newTracks;
                     var target = Nearest(published, frame);
                     var rawTarget = Nearest(raw, frame);
+                    var rawDiagnostic = rawTarget == null ? null : diagnostics.SingleOrDefault(d => d.TouchId == rawTarget.TouchId);
                     var inputActive = (bool)frame.Input["aboveThreshold"];
                     var changed = inputActive && previousActive && previousId >= 0 && target != null && target.TouchId != previousId;
                     var rawChanged = inputActive && previousActive && previousRawId >= 0 && rawTarget != null && rawTarget.TouchId != previousRawId;
@@ -142,6 +143,10 @@ static class MotionComparison
                         representative_x = target?.Position.X, representative_y = target?.Position.Y,
                         representative_change_consecutive_active_outputs = changed,
                         raw_representative_id = rawTarget?.TouchId, raw_representative_change = rawChanged,
+                        raw_is_birth = rawTarget?.TrackingState == InteractionTrackingState.Tentative,
+                        raw_matching_x = rawDiagnostic?.MatchingPosition.X, raw_matching_y = rawDiagnostic?.MatchingPosition.Y,
+                        raw_matching_distance = rawDiagnostic == null ? (float?)null
+                            : Point3.Manhattan2DDistance(rawTarget.Position, rawDiagnostic.MatchingPosition),
                         published_ids = string.Join(" ", published.Select(i => i.TouchId)),
                         raw_assigned_ids = string.Join(" ", raw.Select(i => i.TouchId)) });
                     // Compact raw association trace supports later inspection without retaining full pixel detections.
@@ -158,6 +163,7 @@ static class MotionComparison
                     active_input = active, active_without_output = missing, published_target_ids = publishedIds.Count });
             }
 
+            if (qualityOnly) continue;
             // Warm both complete paths; construction and all JSON/reference work are outside the timing.
             for (var warmup = 0; warmup < Warmups; warmup++)
                 foreach (var kalman in Modes)
@@ -221,13 +227,15 @@ static class MotionComparison
             metadata = new { measured_at_utc = DateTimeOffset.UtcNow,
                 runtime = RuntimeInformation.FrameworkDescription, os = RuntimeInformation.OSDescription,
                 architecture = RuntimeInformation.ProcessArchitecture.ToString(), processors = Environment.ProcessorCount,
-                stopwatch_frequency = Stopwatch.Frequency, warmup_replays = Warmups, timing_repeats = Repeats,
+                stopwatch_frequency = Stopwatch.Frequency, warmup_replays = qualityOnly ? 0 : Warmups,
+                timing_repeats = qualityOnly ? 0 : Repeats, quality_only = qualityOnly,
                 input_hashes = hashes, source_sha256 = sources.ToDictionary(p => p, Hash),
                 configuration = new { settings, global_assignment = true, pressure_type_invariant = true,
                     velocity_prediction = true, polynomial_samples = 3, polynomial_acceleration = false,
                     horizon_seconds = .05, capture_times_are_nominal = true,
-                    kalman_changes_xy_smoothing = true, kalman_measurement_variance = 4,
-                    kalman_acceleration_spectral_density = 400, kalman_initial_velocity_variance = 10000 } },
+                    kalman_changes_xy_smoothing = true, kalman_measurement_variance = KalmanConstant("MeasurementVariance"),
+                    kalman_acceleration_spectral_density = KalmanConstant("AccelerationSpectralDensity"),
+                    kalman_initial_velocity_variance = KalmanConstant("InitialVelocityVariance") } },
             results = summaries }, Formatting.Indented) + "\n");
         WriteCsv(Path.Combine(output, "frames.csv"), frameRows);
         WriteCsv(Path.Combine(output, "timing-replays.csv"), timingRows);
@@ -236,6 +244,11 @@ static class MotionComparison
     }
 
     private static string Mode(bool kalman) => kalman ? "kalman" : "linear3";
+    // Read compiled values, so metadata cannot silently retain pre-tuning defaults.
+    private static double KalmanConstant(string name) => (double)typeof(InteractionSmoothingBehaviour).Assembly
+        .GetType("ReFlex.Core.Interactivity.Util.KalmanContactMotion", throwOnError: true)
+        .GetField(name, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+        .GetRawConstantValue();
     private static string Hash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
     private static double Quantile(IEnumerable<double> values, double probability)
     {
@@ -245,6 +258,7 @@ static class MotionComparison
     private static void WriteCsv(string path, List<object> rows)
     {
         using var writer = new StreamWriter(path);
+        if (rows.Count == 0) return;
         var objects = rows.Select(JObject.FromObject).ToArray();
         var keys = objects[0].Properties().Select(p => p.Name).ToArray();
         writer.WriteLine(string.Join(",", keys));

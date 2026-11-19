@@ -44,7 +44,7 @@ F(dt) = [[1, dt], [0, 1]]
 H = [1, 0]
 Q(dt) = q * [[dt³/3, dt²/2], [dt²/2, dt]]
 R = 4 pixel²
-q = 400 pixel²/second³
+q = 400000 pixel²/second³
 P(initial) = diag(4 pixel², 10000 (pixel/second)²)
 ```
 
@@ -54,9 +54,11 @@ actual elapsed observation time, then corrects position, velocity and covariance
 double precision and the Joseph covariance form `(I-KH) P (I-KH)' + K R K'`.
 
 `R` corresponds to an initial measurement standard deviation of 2 px. The process spectral density
-permits velocity changes; it is not a fitted acceleration term. These are implementation defaults,
-not sensor-calibrated uncertainty estimates, and currently have no separate UI or persisted noise
-controls. Their suitability for a particular sensor/pressure profile requires measurement.
+permits velocity changes; it is not a fitted acceleration term. Initially `q` was 400; the subsequent
+[replay tuning](kalman-comparison.md) increased it to 400000 to avoid lag-induced identity splits
+during fast turns. R and initial velocity variance remain unchanged. These are implementation
+defaults, not sensor-calibrated uncertainty estimates, and currently have no separate UI or persisted
+noise controls. Tuning on the available recordings does not establish accuracy on unseen sensor data.
 
 Forecast queries do not mutate the filter. Empty observations, Lost publication and timer ticks
 never become corrections, samples or confirmations. State expires with the existing track and is
@@ -144,11 +146,12 @@ and 23 targeted frontend tests passed. Shared TypeScript types and the TrackingS
 built successfully; changed frontend files pass ESLint. The server assembly was built by the
 integration suite.
 
-The subsequent [Kalman/linear replay comparison](kalman-comparison.md) evaluates the implemented
-switch on all four recordings: created tracks increase from 38 to 77 and published single-target
-ID changes from 0 to 25, while tracking-stage computation becomes faster. Current defaults therefore
-do not demonstrate improved identity stability. Kalman remains opt-in; no parameter tuning or
-production behavior changes were made for that evaluation.
+The [Kalman/linear replay comparison and tuning](kalman-comparison.md) evaluates the implemented
+switch on all four recordings. Initial defaults produced 77 tracks and 25 published single-target
+ID changes, compared with 38 tracks and zero changes for linear prediction. Increasing q to 400000
+restores 38 tracks and zero single-target changes, while retaining faster tracking-stage computation.
+Kalman remains opt-in. Multi-Touch has no annotated physical finger identities; replay tuning is
+exploratory and is not independent validation.
 
 No real-sensor position-accuracy or full-pipeline performance improvement is claimed. The earlier
 [greedy/global replay results](assignment-comparison.md) predate this Kalman branch and must not be

@@ -99,4 +99,25 @@ processing, publication filtering, calibration and UI rendering are excluded. Ru
 finite outputs/covariances and identical birth counts across quality and timed replays.
 
 See [the Kalman replay report](../analysis/touchid-3512/kalman-comparison.md) for results,
-parameter assumptions, adverse ID-stability findings and interpretation limits.
+parameter assumptions, the initial ID-stability regression, tuned results and interpretation limits.
+
+For an offline parameter sweep, use the production tracker with timing disabled:
+
+```sh
+python3 test/touchid-analysis/tune_kalman.py /tmp/reflex-motion-capture /tmp/reflex-kalman-noise-grid.json
+```
+
+The default grid has eight process spectral densities (400 through 4000000) and three measurement
+variances (1, 4, 16), with initial velocity variance fixed at 10000. Explicit `--q`, `--r` and
+`--velocity-variance` lists can override the grid. The script temporarily edits the three production
+constants, builds each candidate with shared compilation disabled, then calls `--compare-motion`
+with `--quality-only`. Compiled constants are checked against each requested candidate; result
+metadata reads the actual compiled constants rather than hardcoded analysis defaults.
+Every candidate's quality metrics, settings and hashes are retained in the grid JSON. The original
+source is restored and rebuilt on normal or exception exit; abrupt process termination cannot run
+that cleanup. Do not concurrently edit the Kalman source or build the same projects during a sweep.
+No mutable tuning controls are added to the application.
+
+The repeat comparison with selected production defaults is stored separately in the report's
+`kalman-comparison/tuned/process-1` and `process-2` directories; original results are preserved.
+Use the full comparison command without `--quality-only` to measure timing after choosing defaults.

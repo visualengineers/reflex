@@ -24,11 +24,11 @@ public class KalmanContactTest
     {
         var filter = new KalmanContactMotion(new Point3(0, 0, -.5f), 10);
         filter.Update(new Point3(8, -4, -.5f), 11);
-        // P0=diag(4,10000), F=[[1,1],[0,1]], Q=400*[[1/3,1/2],[1/2,1]].
-        var predictedVariance = 4 + 10000 + 400.0 / 3;
+        // P0=diag(4,10000), F=[[1,1],[0,1]], Q=400000*[[1/3,1/2],[1/2,1]].
+        var predictedVariance = 4 + 10000 + 400000.0 / 3;
         var innovationVariance = predictedVariance + 4;
         var expectedPosition = 8 * predictedVariance / innovationVariance;
-        var expectedVelocity = 8 * (10000 + 200) / innovationVariance;
+        var expectedVelocity = 8 * (10000 + 200000) / innovationVariance;
         var estimate = filter.Predict(11, -.5f);
         Assert.Multiple(() =>
         {
@@ -92,7 +92,36 @@ public class KalmanContactTest
             rawError += noise * noise;
             filteredError += Math.Pow(result.Interactions.Single().Position.X - truth, 2);
         }
+        TestContext.Out.WriteLine($"Controlled alternating-noise squared-error ratio: {filteredError / rawError:F6}");
         Assert.That(filteredError, Is.LessThan(rawError * .5));
+    }
+
+    [TestCase(30, false, false)]
+    [TestCase(30, false, true)]
+    [TestCase(30, true, false)]
+    [TestCase(30, true, true)]
+    [TestCase(60, false, false)]
+    [TestCase(60, false, true)]
+    [TestCase(60, true, false)]
+    [TestCase(60, true, true)]
+    public void FastReversalsAndCurvesKeepOneIdentityWithMeasurementNoise(int rate, bool circular, bool minimumCost)
+    {
+        var tracker = Tracker();
+        tracker.UseMinimumCostAssignment = minimumCost;
+        // Independent synthetic trajectories, not samples from the tuning recordings.
+        // 900 px/s with abrupt reversals, or a 110 px radius at 10 rad/s; ±1 px XY noise.
+        for (var frame = 0; frame < rate * 6; frame++)
+        {
+            var time = frame / (double)rate;
+            var phase = time % .8;
+            var noise = frame % 2 == 0 ? 1 : -1;
+            var x = circular ? 300 + 110 * Math.Cos(10 * time) : 100 + 900 * Math.Min(phase, .8 - phase);
+            var y = circular ? 220 + 110 * Math.Sin(10 * time) : 200;
+            var result = tracker.Update(new[] { Point((float)x + noise, (float)y + noise) }, time);
+            Assert.That(result.Interactions, Has.Count.EqualTo(1), $"Lost/new track at frame {frame}");
+            Assert.That(result.Interactions.Single().TouchId, Is.Zero, $"Identity changed at frame {frame}");
+        }
+        Assert.That(tracker.CurrentMaxId, Is.EqualTo(1));
     }
 
     [Test]
