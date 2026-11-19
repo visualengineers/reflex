@@ -4,4 +4,5 @@ export interface ProcessingSettings {
 
   interactionType: ObserverType;
   intervalDuration: number;
+  useObservationSnapshots: boolean;
 }

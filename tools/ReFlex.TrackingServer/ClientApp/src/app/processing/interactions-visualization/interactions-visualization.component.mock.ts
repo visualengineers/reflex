@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { InteractionsVisualizationComponent } from './interactions-visualization.component';
 
 @Component({
@@ -8,6 +8,13 @@ import { InteractionsVisualizationComponent } from './interactions-visualization
 })
 export class MockInteractionsVisualizationComponent
 implements Partial<InteractionsVisualizationComponent> {
+  @Output() public predictionDataChange = new EventEmitter();
+  @Input() public isProcessing = false;
+  @Input() public showPrediction = true;
+  @Input() public showMatching = true;
+  @Input() public showLinear = true;
+  @Input() public showAccelerated = true;
+
   public get eventId(): number {
     return 0;
   }

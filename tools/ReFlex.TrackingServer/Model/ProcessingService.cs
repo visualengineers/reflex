@@ -1,4 +1,4 @@
-﻿using Implementation.Interfaces;
+using Implementation.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using ReFlex.Core.Common.Components;
@@ -20,6 +20,9 @@ namespace TrackingServer.Model
         private readonly ITimerLoop _timerLoop;
         private readonly IInteractionManager _interactionManager;
         private readonly CalibrationService _calibrationService;
+        private readonly object _snapshotSettingsSync = new();
+
+        private readonly HubGroupSubscriptionManager<IList<InteractionVelocity>> _velocitySubscriptions;
 
         private readonly HubGroupSubscriptionManager<IList<Interaction>>
             _interactionSubscriptions;
@@ -52,11 +55,26 @@ namespace TrackingServer.Model
             get => _timerLoop.IntervalLength;
             set => _timerLoop.IntervalLength = value;
         }
+        public bool UseObservationSnapshots
+        {
+            get => _interactionManager.UseObservationSnapshots;
+            set
+            {
+                lock (_snapshotSettingsSync)
+                {
+                    _interactionManager.UseObservationSnapshots = value;
+                    _configManager.Settings.ProcessingSettingValues.UseObservationSnapshots = value;
+                }
+            }
+        }
+
         public ObserverType ObserverType
         {
             get => _interactionManager.Type;
             set => _interactionManager.Type = value;
         }
+
+        public IHubGroupSubscriptionManager InteractionVelocitySubscriptionManager => _velocitySubscriptions;
 
         public IHubGroupSubscriptionManager InteractionSubscriptionManager => _interactionSubscriptions;
 
@@ -93,6 +111,12 @@ namespace TrackingServer.Model
                 hubContext,
                 ProcessingHub.InteractionsGroup
                 );
+
+            _velocitySubscriptions = new HubGroupSubscriptionManager<IList<InteractionVelocity>>("velocities");
+            _velocitySubscriptions.Setup(
+                handler => _interactionManager.VelocitiesUpdated += handler,
+                handler => _interactionManager.VelocitiesUpdated -= handler,
+                hubContext, ProcessingHub.InteractionVelocitiesGroup);
 
             _interactionFrameSubscriptions = new HubGroupSubscriptionManager<IList<InteractionFrame>>("frames");
             _interactionFrameSubscriptions.Setup<ProcessingHub, IList<InteractionFrame>>(
@@ -153,6 +177,7 @@ namespace TrackingServer.Model
         {
             _timerLoop.IntervalLength = _configManager.Settings.ProcessingSettingValues.IntervalDuration;
             ObserverType = _configManager.Settings.ProcessingSettingValues.InteractionType;
+            UseObservationSnapshots = _configManager.Settings.ProcessingSettingValues.UseObservationSnapshots;
 
             if (_configManager?.Settings?.FilterSettingValues != null)
             {
@@ -180,7 +205,7 @@ namespace TrackingServer.Model
         private InteractionHistory[] RetrieveHistory(IEnumerable<InteractionFrame> frames)
         {
             var calibratedFrames = frames.Select(rawFrame => new InteractionFrame(rawFrame.FrameId,
-                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList()));
+                _calibrationService.GetCalibratedInteractions(rawFrame.Interactions).ToList(), rawFrame.TimestampSeconds));
 
             return InteractionHistory.RetrieveHistoryFromInteractionFrames(calibratedFrames).ToArray();
 

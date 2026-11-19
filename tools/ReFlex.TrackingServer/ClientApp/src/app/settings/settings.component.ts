@@ -30,7 +30,7 @@ import {
   PerformanceDataItem,
   TrackingServerAppSettings
 } from '@reflex/shared-types';
-import { Subscription, combineLatest, interval } from 'rxjs';
+import { Observable, Subscription, combineLatest, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -61,6 +61,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public settings: TrackingServerAppSettings = DEFAULT_SETTINGS;
 
   public canRestore = false;
+  public savingObservationSnapshots = false;
   public isTrackingActive = false;
   public isCurrentlyInitializingLimitationFilter = false;
   public isLimitationFilterInitialized = false;
@@ -410,6 +411,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
       );
   }
 
+  public saveUseMinimumCostAssignment(): void {
+    this.saveAssignmentRequest(this.settingsService.setUseMinimumCostAssignment(this.settings.useMinimumCostAssignment ?? true));
+  }
+
+  public saveAssignmentMissCost(): void {
+    this.saveAssignmentRequest(this.settingsService.setAssignmentMissCost(this.settings.assignmentMissCost ?? 0.5));
+  }
+
+  public saveAssignmentBirthCost(): void {
+    this.saveAssignmentRequest(this.settingsService.setAssignmentBirthCost(this.settings.assignmentBirthCost ?? 0.5));
+  }
+
   public saveSmoothingValues(): void {
     this.settingsService
       .setSmoothingValues(this.settings.filterSettingValues.smoothingValues)
@@ -426,6 +439,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.logService.sendErrorLog(`${error}`);
         }
       );
+  }
+
+  public saveUseObservationSnapshots(enabled: boolean): void {
+    const previous = this.settings.processingSettingValues.useObservationSnapshots;
+    this.settings.processingSettingValues.useObservationSnapshots = enabled;
+    this.savingObservationSnapshots = true;
+    this.settingsService
+      .setUseObservationSnapshots(enabled)
+      .pipe(markViewForCheck(this.changeDetector))
+      .subscribe({
+        next: (value) => {
+          this.settings.processingSettingValues.useObservationSnapshots = value;
+          this.savingObservationSnapshots = false;
+        },
+        error: (error) => {
+          this.settings.processingSettingValues.useObservationSnapshots = previous;
+          this.savingObservationSnapshots = false;
+          this.logService.sendErrorLog(`${error}`);
+        }
+      });
   }
 
   public saveExtremumValues(): void {
@@ -822,13 +855,29 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .slice(-200);
   }
 
+  private saveAssignmentRequest(request: Observable<boolean | number>): void {
+    request.pipe(markViewForCheck(this.changeDetector)).subscribe({
+      next: () => this.settingsService.update(),
+      error: (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        this.settingsService.update();
+      }
+    });
+  }
+
   /**
    * checks if parts of the config are null/undefined and replaces these parts with default values
    */
   private validateSettings(
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
+    settings.useMinimumCostAssignment ??= true;
+    settings.assignmentMissCost ??= 0.5;
+    settings.assignmentBirthCost ??= 0.5;
     settings.filterSettingValues ??= DEFAULT_SETTINGS.filterSettingValues;
+    settings.filterSettingValues.extremumSettings ??= { ...DEFAULT_SETTINGS.filterSettingValues.extremumSettings };
+    settings.filterSettingValues.extremumSettings.mergeRadius ??= 3;
+    settings.filterSettingValues.smoothingValues.observationTimeoutSeconds ??= 1;
 
     settings.calibrationValues ??= DEFAULT_SETTINGS.calibrationValues;
 
@@ -836,7 +885,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     settings.networkSettingValues ??= DEFAULT_SETTINGS.networkSettingValues;
 
-    settings.processingSettingValues ??= DEFAULT_SETTINGS.processingSettingValues;
+    settings.processingSettingValues ??= { ...DEFAULT_SETTINGS.processingSettingValues };
+    settings.processingSettingValues.useObservationSnapshots ??= true;
 
     settings.remoteProcessingServiceSettingsValues ??= DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues;
 

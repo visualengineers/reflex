@@ -63,6 +63,17 @@ namespace TrackingServer.Controllers
             return enabled;
         }
 
+        [HttpGet("UseObservationSnapshots")]
+        public bool GetUseObservationSnapshots() => _service.UseObservationSnapshots;
+
+        [HttpPost("UseObservationSnapshots")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public ActionResult<bool> SetUseObservationSnapshots([FromBody] bool enabled)
+        {
+            _service.UseObservationSnapshots = enabled;
+            return enabled;
+        }
+
         // GET: api/Processing/GetObserverType
         [Route("GetObserverType")]
         [HttpGet]

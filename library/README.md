@@ -33,7 +33,7 @@ Core Library for Development of applications for __Elastic Displays__. Created i
 | ------------------------ | ------- | ---------------------------------------------------------------- |
 | __Prism.Core__           | 9.0.537 | Dedpendency Injection / Commanding / Event Aggregation utilities |
 | __Newtonsoft.Json__      | 13.0.4  | JSON-Serializer                                                  |
-| __NLog__                 | 6.1.0   | Universal logging framework for .NET                             |
+| __NLog__                 | 6.1.3   | Universal logging framework for .NET                             |
 | __SixLabors.ImageSharp__ | 3.1.12  | platform-independent graphics library                            |
 | __MathNet.Filtering__    | 0.7.0   | filter algorithms                                                |
 | __MathNet.Numerics__     | 5.0.0   | matrix operations                                                |

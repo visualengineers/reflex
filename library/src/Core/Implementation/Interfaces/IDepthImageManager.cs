@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Tracking.Util;
 
@@ -6,6 +6,8 @@ namespace Implementation.Interfaces
 {
     public interface IDepthImageManager
     {
+        event EventHandler<TrackingObservation> ObservationReady;
+
         PointCloud3 PointCloud { get; }
 
         VectorField2 VectorField { get; }

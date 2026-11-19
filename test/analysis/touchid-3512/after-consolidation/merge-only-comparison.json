@@ -1,0 +1,62 @@
+[
+  {
+    "recording": "Line",
+    "mode": "linear3",
+    "frames": 340,
+    "born": 32,
+    "emptyDespiteDetection": 8,
+    "noTargetDetection": 163,
+    "noTargetOutput": 154,
+    "representativeSwitches": 28
+  },
+  {
+    "recording": "Line",
+    "mode": "linear3-merge3",
+    "frames": 340,
+    "born": 9,
+    "emptyDespiteDetection": 8,
+    "noTargetDetection": 163,
+    "noTargetOutput": 153,
+    "representativeSwitches": 6
+  },
+  {
+    "recording": "Circle",
+    "mode": "linear3",
+    "frames": 229,
+    "born": 50,
+    "emptyDespiteDetection": 1,
+    "noTargetDetection": 0,
+    "noTargetOutput": 1,
+    "representativeSwitches": 40
+  },
+  {
+    "recording": "Circle",
+    "mode": "linear3-merge3",
+    "frames": 229,
+    "born": 1,
+    "emptyDespiteDetection": 1,
+    "noTargetDetection": 0,
+    "noTargetOutput": 1,
+    "representativeSwitches": 0
+  },
+  {
+    "recording": "Half-Circle",
+    "mode": "linear3",
+    "frames": 258,
+    "born": 33,
+    "emptyDespiteDetection": 3,
+    "noTargetDetection": 118,
+    "noTargetOutput": 113,
+    "representativeSwitches": 28
+  },
+  {
+    "recording": "Half-Circle",
+    "mode": "linear3-merge3",
+    "frames": 258,
+    "born": 4,
+    "emptyDespiteDetection": 3,
+    "noTargetDetection": 118,
+    "noTargetOutput": 112,
+    "representativeSwitches": 2
+  }
+]

@@ -1,3 +1,4 @@
+import { PredictionSettings } from './config/prediction-settings';
 import { Calibration } from './config/calibration';
 import { CameraConfiguration } from './config/camera-configuration';
 import { FilterSettings } from './config/filter-settings';
@@ -9,11 +10,17 @@ import { TuioConfiguration } from './config/tuio-configuration';
 
 export interface TrackingServerAppSettings {
 
+  /** Global assignment is enabled when absent in legacy settings. */
+  useMinimumCostAssignment?: boolean;
+  /** Normalized per-observation costs; legacy settings default to 0.5 each. */
+  assignmentMissCost?: number;
+  assignmentBirthCost?: number;
   filterSettingValues: FilterSettings;
   calibrationValues: Calibration;
   cameraConfigurationValues: CameraConfiguration;
   networkSettingValues: NetworkSettings;
   pointCloudSettingValues: PointCloudSettings;
+  predictionSettings?: PredictionSettings;
   processingSettingValues: ProcessingSettings;
   remoteProcessingServiceSettingsValues: RemoteProcessingServiceSettings;
   tuioSettingValues: TuioConfiguration;

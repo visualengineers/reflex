@@ -78,7 +78,7 @@ describe('ProcessingComponent', () => {
       1
     );
 
-    expect(settingsService.getSettings).toHaveBeenCalledTimes(1);
+    expect(settingsService.getSettings).toHaveBeenCalledTimes(2);
 
     expect(settingsService.saveSettings).not.toHaveBeenCalled();
 

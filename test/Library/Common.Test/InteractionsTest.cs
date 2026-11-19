@@ -1,10 +1,40 @@
-﻿using ReFlex.Core.Common.Components;
+using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 
 namespace Common.Test;
 
 public class InteractionsTest
 {
+    /// <summary>Both copy constructors own their mutable data and preserve tracking metadata.</summary>
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CopiesAreIndependentSnapshots(bool replacePosition)
+    {
+        var source = new Interaction
+        {
+            TouchId = 42,
+            TrackingState = InteractionTrackingState.Lost,
+            Time = 123,
+            Position = new Point3(1, 2, 3) { IsValid = false, IsFiltered = true },
+            ExtremumDescription = new ExtremumDescription { NumFittingPoints = 7 }
+        };
+        var position = new Point3(4, 5, 6) { IsValid = false, IsFiltered = true };
+        var copy = replacePosition ? new Interaction(position, source) : new Interaction(source);
+        copy.Position.X = 100;
+        copy.ExtremumDescription.NumFittingPoints = 99;
+        Assert.Multiple(() =>
+        {
+            Assert.That(source.Position.X, Is.EqualTo(1));
+            Assert.That(position.X, Is.EqualTo(4));
+            Assert.That(source.ExtremumDescription.NumFittingPoints, Is.EqualTo(7));
+            Assert.That(copy.Position.IsValid, Is.False);
+            Assert.That(copy.Position.IsFiltered, Is.True);
+            Assert.That(copy.TouchId, Is.EqualTo(42));
+            Assert.That(copy.Time, Is.EqualTo(123));
+            Assert.That(copy.TrackingState, Is.EqualTo(InteractionTrackingState.Lost));
+        });
+    }
+
     [SetUp]
     public void Setup()
     {

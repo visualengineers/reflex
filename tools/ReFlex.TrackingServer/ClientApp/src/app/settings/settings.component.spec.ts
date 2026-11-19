@@ -56,6 +56,29 @@ describe('Zoneless change detection: renders performance stream updates in the f
   });
 });
 
+describe('Observation snapshot settings', () => {
+  setupZonelessTests();
+
+  it('enables snapshots for older settings and submits an explicit false when switched off', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    Reflect.deleteProperty(value.processingSettingValues, 'useObservationSnapshots');
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setUseObservationSnapshots.mockReturnValue(of(false));
+    const fixture = await mount(SettingsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const checkbox = queryElement<HTMLInputElement>(
+      fixture.nativeElement as HTMLElement,
+      '#settings-observation-snapshots-checkbox'
+    );
+    expect(checkbox.checked).toBe(true);
+    checkbox.click();
+    await fixture.whenStable();
+    expect(settings.setUseObservationSnapshots.mock.calls).toContainEqual([false]);
+    expect(fixture.componentInstance.settings.processingSettingValues.useObservationSnapshots).toBe(false);
+  });
+});
+
 describe('Zoneless change detection: renders limitation-filter polling responses', () => {
   setupZonelessTests();
 
@@ -90,6 +113,120 @@ describe('Zoneless change detection: renders limitation-filter polling responses
     response.next({ name: 'initializing', value: true });
     await fixture.whenStable();
     expect(button.classList).toContain('button-disabled');
+  });
+});
+
+
+describe('Contact assignment settings', () => {
+  setupZonelessTests();
+
+  it.each([undefined, false, true])('loads legacy/default or explicit assignment settings: %s', async (enabled) => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.useMinimumCostAssignment = enabled;
+    value.assignmentMissCost = enabled === undefined ? undefined : 0;
+    value.assignmentBirthCost = enabled === undefined ? undefined : 1.25;
+    settings.getSettings.mockReturnValue(of(value));
+    const fixture = await mount(SettingsComponent);
+    const root = fixture.nativeElement as HTMLElement;
+    expect(queryElement<HTMLInputElement>(root, '#settings-useMinimumCostAssignment-checkbox').checked).toBe(enabled ?? true);
+    expect(queryElement<HTMLInputElement>(root, 'app-value-slider[elementid="settings-assignmentMissCost"] input.custom-input').value)
+      .toBe(String(enabled === undefined ? 0.5 : 0));
+    expect(queryElement<HTMLInputElement>(root, 'app-value-slider[elementid="settings-assignmentBirthCost"] input.custom-input').value)
+      .toBe(String(enabled === undefined ? 0.5 : 1.25));
+  });
+
+  it('submits an explicit false and fractional/zero costs through the assignment endpoints', async () => {
+    settings.getSettings.mockReturnValue(of(structuredClone(DEFAULT_SETTINGS)));
+    settings.setUseMinimumCostAssignment.mockReturnValue(of(false));
+    settings.setAssignmentMissCost.mockReturnValue(of(0));
+    settings.setAssignmentBirthCost.mockReturnValue(of(1.25));
+    const fixture = await mount(SettingsComponent);
+    const root = fixture.nativeElement as HTMLElement;
+    queryElement<HTMLInputElement>(root, '#settings-useMinimumCostAssignment-checkbox').click();
+    await fixture.whenStable();
+    expect(settings.setUseMinimumCostAssignment.mock.calls).toContainEqual([false]);
+    for (const [id, value] of [['assignmentMissCost', '0'], ['assignmentBirthCost', '1.25']]) {
+      const input = queryElement<HTMLInputElement>(root, `app-value-slider[elementid="settings-${id}"] input.custom-input`);
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('change'));
+    }
+    await fixture.whenStable();
+    fixture.componentInstance.saveAssignmentMissCost();
+    fixture.componentInstance.saveAssignmentBirthCost();
+    expect(settings.setAssignmentMissCost.mock.calls).toContainEqual([0]);
+    expect(settings.setAssignmentBirthCost.mock.calls).toContainEqual([1.25]);
+  });
+});
+
+describe('Contact retention settings', () => {
+  setupZonelessTests();
+
+  it('displays fractional seconds independently of history capacity and saves the duration', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.smoothingValues.contactRetentionSeconds = 0.25;
+    value.filterSettingValues.smoothingValues.interactionHistorySize = 1;
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setSmoothingValues.mockReturnValue(of(value.filterSettingValues.smoothingValues));
+    const fixture = await mount(SettingsComponent);
+    const control = queryElement(
+      fixture.nativeElement as HTMLElement,
+      'app-value-slider[elementid="settings-contactRetention"]'
+    );
+    const input = queryElement<HTMLInputElement>(control, 'input.custom-input');
+    expect(input.value).toBe('0.25');
+    expect(control.textContent).toContain('Contact retention');
+    expect(control.textContent).toContain('separate from the sensor timeout');
+    input.value = '0.35';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    fixture.componentInstance.saveSmoothingValues();
+    expect(settings.setSmoothingValues.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ contactRetentionSeconds: 0.35 }));
+  });
+  it('saves confidence rates in units per second', async () => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setSmoothingValues.mockReturnValue(of(value.filterSettingValues.smoothingValues));
+    const fixture = await mount(SettingsComponent);
+    for (const [id, rate] of [['confidenceGain', '12'], ['confidenceDecay', '18']]) {
+      const input = queryElement<HTMLInputElement>(
+        fixture.nativeElement as HTMLElement,
+        `app-value-slider[elementid="settings-${id}"] input.custom-input`
+      );
+      input.value = rate;
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('change'));
+    }
+    await fixture.whenStable();
+    fixture.componentInstance.saveSmoothingValues();
+    expect(settings.setSmoothingValues.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({
+      confidenceGainPerSecond: 12, confidenceDecayPerSecond: 18
+    }));
+  });
+
+});
+
+describe('Extremum consolidation settings', () => {
+  setupZonelessTests();
+
+  it.each([undefined, 0, 5])('loads a legacy or explicit merge radius: %s', async (radius) => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.filterSettingValues.extremumSettings.mergeRadius = radius;
+    settings.getSettings.mockReturnValue(of(value));
+    settings.setExtremumSettings.mockReturnValue(of(value.filterSettingValues.extremumSettings));
+    const fixture = await mount(SettingsComponent);
+    const input = queryElement<HTMLInputElement>(
+      fixture.nativeElement as HTMLElement,
+      'app-value-slider[elementid="settings-extremum-mergeRadius"] input.custom-input'
+    );
+    expect(input.value).toBe(String(radius ?? 3));
+    input.value = '4';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('change'));
+    await fixture.whenStable();
+    fixture.componentInstance.saveExtremumValues();
+    expect(settings.setExtremumSettings.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({ mergeRadius: 4 }));
   });
 });
 

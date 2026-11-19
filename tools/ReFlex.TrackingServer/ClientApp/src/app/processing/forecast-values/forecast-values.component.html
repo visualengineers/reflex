@@ -1,0 +1,49 @@
+<div class="content__header">
+  <h2 class="heading-secondary">Forecast values</h2>
+</div>
+<app-settings-group toggleId="forecast-values-toggle" elementTitle="Forecast values">
+  @if (data.length) {
+    <p class="forecast-values__frame">Frame {{ data[0].frameId }} · forecast +{{ data[0].predictionHorizonSeconds * 1000 | number:'1.0-1' }} ms · target t={{ data[0].predictionTimestampSeconds | number:'1.3-3' }} s (monotonic)</p>
+  }
+  @if (!data.length) {
+    <p role="status">No prediction data. Enable prediction and processing, then move a contact.</p>
+  }
+  <div class="forecast-values__table">
+    <table>
+      <caption>Forecast values in sensor coordinates; velocity in pixels/s and acceleration in pixels/s².</caption>
+      <thead>
+      <tr>
+        <th scope="col">ID / state</th>
+        <th scope="col">Samples</th>
+        <th scope="col">Confidence</th>
+        <th scope="col">Measurement age (ms)</th>
+        <th scope="col">Measured X/Y</th>
+        <th scope="col">Velocity X/Y (px/s)</th>
+        <th scope="col">Acceleration X/Y (px/s²)</th>
+        <th scope="col">Matching target X/Y</th>
+        <th scope="col">Forecast X/Y</th>
+        <th scope="col">Publication</th>
+      </tr>
+    </thead>
+      <tbody>
+        @for (item of sortedData; track item.touchId) {
+          <tr><td>#{{ item.touchId }} · {{ item.isPredicted ? 'lost' : 'measured' }}</td><td>{{ item.sampleCount }}</td>
+            <td>{{ item.confidence | number:'1.1-1' }}</td>
+            <td>{{ (item.timestampSeconds - item.lastMeasuredTimestampSeconds) * 1000 | number:'1.0-1' }}</td>
+            <td>{{ item.measuredPosition.x | number:'1.1-1' }} / {{ item.measuredPosition.y | number:'1.1-1' }}</td>
+            <td>{{ item.firstDerivation.x | number:'1.1-1' }} / {{ item.firstDerivation.y | number:'1.1-1' }}</td>
+            <td>{{ item.secondDerivation.x | number:'1.1-1' }} / {{ item.secondDerivation.y | number:'1.1-1' }}</td>
+            <td>{{ item.matchingPosition.x | number:'1.1-1' }} / {{ item.matchingPosition.y | number:'1.1-1' }}</td>
+            <td>{{ (item.useSecondDerivation ? item.predictedPositionAdvanced.x : item.predictedPositionBasic.x) | number:'1.1-1' }} / {{ (item.useSecondDerivation ? item.predictedPositionAdvanced.y : item.predictedPositionBasic.y) | number:'1.1-1' }} ({{ item.useSecondDerivation ? 'acceleration' : 'linear' }})</td>
+            <td [attr.title]="item.isPublished ? 'published' : 'hidden: ' + item.suppressionReason">{{ item.isPublished ? 'published' : 'hidden: ' + item.suppressionReason }}</td>
+          </tr>
+        }
+        @for (row of emptyRows; track $index) {
+          <tr class="forecast-values__empty-row" aria-hidden="true">
+            @for (column of columns; track $index) { <td>&nbsp;</td> }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-settings-group>

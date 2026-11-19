@@ -10,6 +10,7 @@ export const logService = {
 };
 
 export const settingsService = {
+  update: vi.fn(),
   getSettings: vi.fn().mockName('fakeSettingsService.getSettings'),
   saveSettings: vi.fn().mockName('fakeSettingsService.saveSettings')
 };
@@ -22,6 +23,7 @@ export const calibrationService = {
 };
 
 export const processingService = {
+  setPredictionSettings: vi.fn(),
   getFrames: vi.fn().mockName('fakeProcessingService.getFrames'),
   getStatus: vi.fn().mockName('fakeProcessingService.getStatus'),
   getObserverTypes: vi.fn().mockName('fakeProcessingService.getObserverTypes'),

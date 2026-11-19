@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReFlex.Core.Common.Components;
@@ -28,10 +28,23 @@ namespace Implementation.Interfaces
         float InputDistance { get; set; } // @todo könnte int sein
         
         int InteractionHistorySize { get; set; }
+        double PredictionHorizonSeconds { get; set; }
+        bool UseVelocityPrediction { get; set; }
+        /// <summary>Sets a preserved request; gets effective capacity from the current observer (limited by history).</summary>
+        int NumFramesForPrediction { get; set; }
+        bool UseSecondDerivation { get; set; }
+        float SecondDerivationMagnitude { get; set; }
+        event EventHandler<IList<InteractionVelocity>> VelocitiesUpdated;
         
         int NumSmoothingFrames { get; set; }
         
-        int MaxNumEmptyFramesBetween { get; set; }
+        double ContactRetentionSeconds { get; set; }
+        double ObservationTimeoutSeconds { get; set; }
+        bool UseMinimumCostAssignment { get; set; }
+        float AssignmentMissCost { get; set; }
+        float AssignmentBirthCost { get; set; }
+        float ConfidenceGainPerSecond { get; set; }
+        float ConfidenceDecayPerSecond { get; set; }
         
         float TouchMergeDistance2D { get; set; }
         
@@ -40,6 +53,8 @@ namespace Implementation.Interfaces
        int ExtremumTypeCheckNumSamples { get; set; }
         
         int ExtremumTypeCheckRadius{ get; set; }
+
+        float ExtremumMergeRadius { get; set; }
 
         float ExtremumTypeCheckFittingPercentage{ get; set; }
 
@@ -50,6 +65,10 @@ namespace Implementation.Interfaces
         void Init(ObserverType type);
 
         Task<ProcessServiceStatus> Update();
+
+        void AdvanceTime();
+
+        bool UseObservationSnapshots { get; set; }
 
         float ComputeZeroPlaneDistance();
 

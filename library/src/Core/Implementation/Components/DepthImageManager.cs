@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Diagnostics;
+using System.Threading;
 using Implementation.Interfaces;
 using NLog;
 using ReFlex.Core.Common.Components;
@@ -25,7 +27,23 @@ namespace Implementation.Components
 
         public int ImageHeight { get; private set; }
 
-        private bool _isUpdating;
+        private readonly object _rasterSync = new();
+        private int _isUpdating;
+        private long _sequence;
+        internal volatile bool UseObservationSnapshots = true;
+        internal long RasterSequence => _sequence;
+
+        // Live readers share the producer gate and keep it until their async analysis finishes.
+        internal bool TryReserveRasters() => Interlocked.CompareExchange(ref _isUpdating, 1, 0) == 0;
+        internal void ReleaseRasters() => Volatile.Write(ref _isUpdating, 0);
+        internal T ReadRasters<T>(Func<T> read)
+        {
+            lock (_rasterSync) return read();
+        }
+
+        // Internal consumers may copy now or reserve the live rasters before reading them later.
+        internal event Action<long, double, PointCloud3, VectorField2> SnapshotSourceReady;
+        public event EventHandler<TrackingObservation> ObservationReady;
 
         public DepthImageManager(IFilterManager filterManager)
         {
@@ -34,42 +52,48 @@ namespace Implementation.Components
 
         public void Initialize(int sizeX, int sizeY)
         {
-            PointCloud = new PointCloud3(sizeX, sizeY);
-            OnPointcloudFiltered(this, PointCloud);
-
-            VectorField = new VectorField2(sizeX, sizeY);
-            OnVectorfieldChanged(this, VectorField);
-
-            ImageWidth = sizeX;
-            ImageHeight = sizeY;
+            var cloud = new PointCloud3(sizeX, sizeY);
+            var vectors = new VectorField2(sizeX, sizeY);
+            lock (_rasterSync)
+            {
+                PointCloud = cloud;
+                VectorField = vectors;
+                ImageWidth = sizeX;
+                ImageHeight = sizeY;
+            }
+            OnPointcloudFiltered(this, cloud);
+            OnVectorfieldChanged(this, vectors);
         }
 
         public void Update(DepthCameraFrame frame)
         {
-            // skip current frame if pointcloud is still being processed...
-            if (_isUpdating)
-                return;
-
-            _isUpdating = true;
-
-            var depthData = frame.Depth;
-
-            // send raw data
-            RawDepthFrameReceived?.Invoke(this, frame);
-
-            _filterManager.FilterAndUpdate(depthData, PointCloud);
+            if (!TryReserveRasters()) return;
+            var sequence = ++_sequence;
+            var timestamp = (double)Stopwatch.GetTimestamp() / Stopwatch.Frequency;
             try
             {
-                OnPointcloudFiltered(this, PointCloud);
+                RawDepthFrameReceived?.Invoke(this, frame);
+                PointCloud3 cloud;
+                VectorField2 vectors;
+                lock (_rasterSync)
+                {
+                    cloud = PointCloud;
+                    vectors = VectorField;
+                    _filterManager.FilterAndUpdate(frame.Depth, cloud);
+                    vectors.Populate(cloud);
+                }
+                SnapshotSourceReady?.Invoke(sequence, timestamp, cloud, vectors);
+                var handlers = ObservationReady;
+                if (UseObservationSnapshots && handlers != null)
+                    handlers(this, new TrackingObservation(sequence, timestamp, cloud, vectors));
+                OnPointcloudFiltered(this, cloud);
+                OnVectorfieldChanged(this, vectors);
             }
             catch (Exception exc)
             {
                 Logger.Error(exc);
             }
-
-            PopulateVectorfield();
-
-            _isUpdating = false;
+            finally { ReleaseRasters(); }
         }
 
         public void Update(ImageByteArray depthImage)
@@ -84,17 +108,5 @@ namespace Implementation.Components
         protected virtual void OnVectorfieldChanged(object sender, VectorField2 vectorfield) =>
             VectorfieldChanged?.Invoke(sender, vectorfield);
 
-        private void PopulateVectorfield()
-        {
-            try
-            {
-                VectorField?.Populate(PointCloud);
-                OnVectorfieldChanged(this, VectorField);
-            }
-            catch (Exception exc)
-            {
-                Logger.Error(exc);
-            }
-        }
     }
 }

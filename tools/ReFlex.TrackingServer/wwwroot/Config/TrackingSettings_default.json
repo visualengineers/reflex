@@ -1,4 +1,7 @@
 {
+  "UseMinimumCostAssignment": true,
+  "AssignmentMissCost": 0.5,
+  "AssignmentBirthCost": 0.5,
   "FilterSettingValues": {
     "Threshold": 690.0,
     "BorderValue": {
@@ -35,7 +38,7 @@
     "SmoothingValues": {
       "InteractionHistorySize": 15,
       "NumSmoothingSamples": 3,
-      "MaxNumEmptyFramesBetween":3,
+      "ContactRetentionSeconds":0.1,
       "TouchMergeDistance2D": 81.0,
       "DepthScale": 490.0,
       "Type": 1

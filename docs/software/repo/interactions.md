@@ -21,11 +21,28 @@ title: Interactions Format
 | Property            | Type (.NET)                                       | Description                                                                                                                                                    |
 | ------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TouchId             | int                                               | unique identifier to map position to finger, e.g. to detect gestures                                                                                           |
+| TrackingState       | ReFlex.Core.Common.Util.InteractionTrackingState | Numeric lifecycle: 0 Tentative, 1 Confirmed, 2 Lost. Missing on older servers. |
 | Position            | ReFlex.Core.Common.Components.Point3              | Position in normalized coordinates, plus flags for filter / validity                                                                                           |
 | Type                | ReFlex.Core.Common.Util.InteractionType           | 0: None, 1: Push, 2: Pull                                                                                                                                      |
 | ExtremumDescription | ReFlex.Core.Common.Components.ExtremumDescription | Description of the type of the detected Extremum                                                                                                               |
-| Confidence          | int                                               | longest period of frames which this touch has been observed without interruption. If a touchpoint gets lost, this is decremented each frame                    |
+| Confidence          | float | Accumulated evidence, gained between consecutive detections and decayed during missing intervals using elapsed seconds. |
 | Time                | long                                              | .NET Timestamp for the frame capture (number of 100-nanosecond intervals that have elapsed since 12:00:00 midnight, January 1, 0001 in the Gregorian calendar) |
+
+### Tracking-state compatibility
+
+The shared TypeScript package exports `InteractionTrackingState` with explicit numeric values matching C#: `Tentative = 0`, `Confirmed = 1`, `Lost = 2`. A new contact is tentative; a second associated measurement confirms it. A retained contact without a current measurement is lost. Ended contacts are omitted rather than assigned another state.
+
+The TypeScript property is optional (`trackingState?: InteractionTrackingState`) so clients can consume older server payloads and existing producers can still construct interactions without it. An omitted field means **unknown/unavailable**, not tentative or confirmed. Do not synthesize a state from confidence or position. Consumers may continue their existing interaction handling when state is absent; features that require a known lifecycle must explicitly check it. Unknown future numeric values should likewise fall back to an unknown display/behavior.
+
+SignalR/HTTP payloads using camel case expose `trackingState`; the network JSON example below uses Pascal case (`TrackingState`). The enum stays numeric. Check for `undefined` or compare enum values explicitly: `Tentative` is `0` and must not be tested through truthiness.
+
+```ts
+import { Interaction, InteractionTrackingState } from '@reflex/shared-types';
+
+function isRetainedLostContact(interaction: Interaction): boolean {
+  return interaction.trackingState === InteractionTrackingState.Lost;
+}
+```
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -71,6 +88,7 @@ __[⬆ back to top](#table-of-contents)__
 [
     {
       "TouchId":0,
+      "TrackingState":1,
       "Position": {
         "X":0.3944792,
         "Y":0.38191035,

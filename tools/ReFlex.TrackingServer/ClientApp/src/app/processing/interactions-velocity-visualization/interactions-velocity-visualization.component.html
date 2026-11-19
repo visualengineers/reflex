@@ -1,0 +1,23 @@
+<svg class="prediction__canvas" [attr.viewBox]="viewBox" preserveAspectRatio="none" role="img" aria-label="Measured trajectories, smoothed positions and forecasts">
+    @for (item of displayData; track item.touchId) {
+      <g [attr.data-touch-id]="item.touchId" [class.lost]="item.isPredicted" [class.suppressed]="!item.isPublished">
+        <title>Touch {{ item.touchId }} — {{ item.isPredicted ? 'temporarily lost' : 'measured' }} — {{ item.sampleCount }} samples</title>
+        <polyline class="trail" [attr.points]="path(item.touchId)" />
+        @if (showMatching) {
+          <line class="matching-error" [attr.x1]="item.matchingPosition.x" [attr.y1]="item.matchingPosition.y" [attr.x2]="item.measuredPosition.x" [attr.y2]="item.measuredPosition.y" />
+          <path class="matching" [attr.d]="'M ' + item.matchingPosition.x + ' ' + (item.matchingPosition.y - 5) + ' l 5 5 -5 5 -5 -5 Z'" />
+        }
+        @if (showLinear) {
+          <line class="linear" [attr.x1]="item.measuredPosition.x" [attr.y1]="item.measuredPosition.y" [attr.x2]="item.predictedPositionBasic.x" [attr.y2]="item.predictedPositionBasic.y" />
+          <circle class="linear forecast" [attr.cx]="item.predictedPositionBasic.x" [attr.cy]="item.predictedPositionBasic.y" r="6" />
+        }
+        @if (showAccelerated) {
+          <line class="accelerated" [attr.x1]="item.measuredPosition.x" [attr.y1]="item.measuredPosition.y" [attr.x2]="item.predictedPositionAdvanced.x" [attr.y2]="item.predictedPositionAdvanced.y" />
+          <circle class="accelerated forecast" [attr.cx]="item.predictedPositionAdvanced.x" [attr.cy]="item.predictedPositionAdvanced.y" r="9" />
+        }
+        <rect class="smoothed" [attr.x]="item.smoothedPosition.x - 3" [attr.y]="item.smoothedPosition.y - 3" width="6" height="6" />
+        <circle class="measured" [attr.cx]="item.measuredPosition.x" [attr.cy]="item.measuredPosition.y" r="3" />
+        <text [attr.x]="item.measuredPosition.x + 12" [attr.y]="item.measuredPosition.y - 12">#{{ item.touchId }}{{ item.isPredicted ? ' · lost' : '' }}{{ !item.isPublished ? ' · hidden' : '' }}</text>
+      </g>
+    }
+  </svg>

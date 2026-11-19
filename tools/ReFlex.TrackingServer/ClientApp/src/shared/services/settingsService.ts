@@ -65,6 +65,22 @@ export class SettingsService {
       .subscribe((result) => this.settingsSubject.next(result));
   }
 
+  public setUseObservationSnapshots(enabled: boolean): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}api/Processing/UseObservationSnapshots`, enabled);
+  }
+
+  public setUseMinimumCostAssignment(value: boolean): Observable<boolean> {
+    return this.http.post<boolean>(`${this.settingsRoute}/UseMinimumCostAssignment`, value);
+  }
+
+  public setAssignmentMissCost(value: number): Observable<number> {
+    return this.http.post<number>(`${this.settingsRoute}/AssignmentMissCost`, value);
+  }
+
+  public setAssignmentBirthCost(value: number): Observable<number> {
+    return this.http.post<number>(`${this.settingsRoute}/AssignmentBirthCost`, value);
+  }
+
   public setBorder(border: Border): Observable<Border> {
     return this.http.post<Border>(this.setBorderRoute, border);
   }

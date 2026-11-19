@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <!-- Diagnostic-only historical tracker, generated outside the repository. -->
+    <Compile Include="$(GreedyTrackerSource)" Condition="'$(GreedyTrackerSource)' != ''" />
+    <EmbeddedResource Include="$(GreedyTrackerSource)" LogicalName="GreedyBaselineSource" WithCulture="false" Condition="'$(GreedyTrackerSource)' != ''" />
+    <EmbeddedResource Include="$(GreedyTrackerSource).json" LogicalName="GreedyBaselineMetadata" WithCulture="false" Condition="'$(GreedyTrackerSource)' != ''" />
+    <ProjectReference Include="../../library/src/Core/Implementation/Implementation.csproj" />
+    <ProjectReference Include="../../library/src/Sensor/EmulatorModule/EmulatorModule.csproj" />
+    <ProjectReference Include="../../library/src/Server/Data/Data.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,284 @@
+{
+  "metadata": {
+    "captured_at_utc": "2026-11-19T09:24:01.242585+00:00",
+    "baseline": {
+      "revision": "1877755ef80934f5800eb3f5a717bb9d18d508cb",
+      "path": "library/src/Core/Interactivity/Components/InteractionSmoothingBehaviour.cs",
+      "originalSha256": "fbc7f623f5b871b01599c85899dedfa52ac018c6c52716c19b0f128634349fe9",
+      "generatedSha256": "43704749d25053b8eebb6749f1ca3039ff524f1a7cbdd38ce17f5eaccb7e8a23"
+    },
+    "source_sha256": {
+      "library/src/Core/Interactivity/Components/InteractionSmoothingBehaviour.cs": "CA1241589CD75717B732878A505F5AEF6764D7BF1884A2C29EF50AC31D22CDC6",
+      "library/src/Core/Interactivity/Util/MinimumCostAssignment.cs": "B8463793A20701EBC0DB12E01A2F943F09642BAEF1A27C7D6F0B475AB8030378",
+      "scripts/touchid-analysis/AssignmentComparison.cs": "E5F29BCFEE4C311F775591C3C3D63F254AAE838C6FAA7A3DABAB74BA669F3117",
+      "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json": "1664DE4CB9C4260DC7FA2892E0EC9EFB480D42A995DCBF040EE1117497393344"
+    },
+    "configuration": {
+      "settings": {
+        "Threshold": 690.0,
+        "BorderValue": {
+          "Left": 0,
+          "Right": 640,
+          "Top": 0,
+          "Bottom": 480
+        },
+        "MinDistanceFromSensor": 0.47,
+        "LimitationFilterType": 0,
+        "FilterMask": [],
+        "UseOptimizedBoxFilter": false,
+        "AdvancedLimitationFilterThreshold": 0.06,
+        "AdvancedLimitationFilterSamples": 8,
+        "IsLimitationFilterEnabled": true,
+        "IsValueFilterEnabled": true,
+        "IsThresholdFilterEnabled": true,
+        "IsBoxFilterEnabled": true,
+        "MeasurePerformance": true,
+        "BoxFilterRadius": 10,
+        "BoxFilterNumPasses": 0,
+        "BoxFilterNumThreads": 0,
+        "DistanceValue": {
+          "Min": 0.05,
+          "Max": 0.53,
+          "Default": 1.45,
+          "InputDistance": 58.0
+        },
+        "Confidence": {
+          "Min": 0,
+          "Max": 30
+        },
+        "MinAngle": 0.6,
+        "SmoothingValues": {
+          "InteractionHistorySize": 15,
+          "NumSmoothingSamples": 3,
+          "ContactRetentionSeconds": 0.1,
+          "TouchMergeDistance2D": 81.0,
+          "DepthScale": 490.0,
+          "Type": 1
+        },
+        "ExtremumSettings": {
+          "NumSamples": 10,
+          "CheckRadius": 15,
+          "FitPercentage": 0.5,
+          "CheckMethod": 1
+        }
+      },
+      "prediction": "linear, 3 samples",
+      "gate": "strict Manhattan",
+      "nominal_hz": 30,
+      "consolidation_radius_px": 3
+    },
+    "runtime": ".NET 10.0.14",
+    "os": "macOS 27.2.1",
+    "architecture": "Arm64",
+    "processors": 8,
+    "stopwatch_frequency": 1000000000,
+    "warmup_replays": 10,
+    "timing_repeats": 31,
+    "miss_cost": 0.5,
+    "birth_cost": 0.5,
+    "input_hashes": {
+      "Half-Circle.json": "13C753E9E78097D22B0B8033A1071541C1A8993BC38775EBE21DA1213CF32476",
+      "Half-Circle-input.json": "04EF19BB2F877F211B4B5F13514E8D9E0FBC9AC0086B147CC4A6FA5F69AD019A",
+      "Line.json": "F9A5CF14DD020AEBEF134CA43691E4822C1380E0E1890A01138715B0BD5919D0",
+      "Line-input.json": "DAAE25C8C4FAFF6BBB124484720BD210495B268B05541A9A54001BBF0896D23E",
+      "Circle.json": "F2780D750992D60980159E67030F08F7DA44160AE11D85EF171C74EFEABB93B0",
+      "Circle-input.json": "6A09222EFBECC5AEDD3897605A7779A1ED8B8DD3EB64E8736DA25601203668CB",
+      "Multi-Touch.json": "93DA64F76C65546F671859E51E36273768EC6F16AC7CBEAFF8D15F37FB84988B",
+      "Multi-Touch-input.json": "C0F30B01E00514591A720B56C1E10AA4D7F3D56D85C8846C43A2F10E58746696"
+    }
+  },
+  "results": [
+    {
+      "recording": "Half-Circle",
+      "variant": "greedy",
+      "frames": 258,
+      "measurements": 398,
+      "created_tracks": 4,
+      "id_changes_consecutive_active_outputs": 0,
+      "strongest_region_representative_changes": 0,
+      "active_input": 154,
+      "active_without_output": 10,
+      "published_target_ids": 3,
+      "production_output_mismatches": null,
+      "tracker_output_frames_differing_from_greedy": null
+    },
+    {
+      "recording": "Half-Circle",
+      "variant": "global",
+      "frames": 258,
+      "measurements": 398,
+      "created_tracks": 4,
+      "id_changes_consecutive_active_outputs": 0,
+      "strongest_region_representative_changes": 0,
+      "active_input": 154,
+      "active_without_output": 10,
+      "published_target_ids": 3,
+      "production_output_mismatches": 0,
+      "tracker_output_frames_differing_from_greedy": 0
+    },
+    {
+      "recording": "Half-Circle",
+      "variant": "greedy",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7998,
+      "update_median_us": 61.125,
+      "update_p95_us": 94.5,
+      "replay_total_median_us": 14758.040000000003
+    },
+    {
+      "recording": "Half-Circle",
+      "variant": "global",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7998,
+      "update_median_us": 62.75,
+      "update_p95_us": 86.125,
+      "replay_total_median_us": 15622.131000000001
+    },
+    {
+      "recording": "Line",
+      "variant": "greedy",
+      "frames": 340,
+      "measurements": 177,
+      "created_tracks": 9,
+      "id_changes_consecutive_active_outputs": 0,
+      "strongest_region_representative_changes": 0,
+      "active_input": 198,
+      "active_without_output": 25,
+      "published_target_ids": 7,
+      "production_output_mismatches": null,
+      "tracker_output_frames_differing_from_greedy": null
+    },
+    {
+      "recording": "Line",
+      "variant": "global",
+      "frames": 340,
+      "measurements": 177,
+      "created_tracks": 9,
+      "id_changes_consecutive_active_outputs": 0,
+      "strongest_region_representative_changes": 0,
+      "active_input": 198,
+      "active_without_output": 25,
+      "published_target_ids": 7,
+      "production_output_mismatches": 0,
+      "tracker_output_frames_differing_from_greedy": 0
+    },
+    {
+      "recording": "Line",
+      "variant": "greedy",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 10540,
+      "update_median_us": 21.625,
+      "update_p95_us": 37.958,
+      "replay_total_median_us": 6683.277000000005
+    },
+    {
+      "recording": "Line",
+      "variant": "global",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 10540,
+      "update_median_us": 21.917,
+      "update_p95_us": 39.958,
+      "replay_total_median_us": 6628.6990000000005
+    },
+    {
+      "recording": "Circle",
+      "variant": "greedy",
+      "frames": 229,
+      "measurements": 229,
+      "created_tracks": 1,
+      "id_changes_consecutive_active_outputs": 0,
+      "strongest_region_representative_changes": 0,
+      "active_input": 229,
+      "active_without_output": 1,
+      "published_target_ids": 1,
+      "production_output_mismatches": null,
+      "tracker_output_frames_differing_from_greedy": null
+    },
+    {
+      "recording": "Circle",
+      "variant": "global",
+      "frames": 229,
+      "measurements": 229,
+      "created_tracks": 1,
+      "id_changes_consecutive_active_outputs": 0,
+      "strongest_region_representative_changes": 0,
+      "active_input": 229,
+      "active_without_output": 1,
+      "published_target_ids": 1,
+      "production_output_mismatches": 0,
+      "tracker_output_frames_differing_from_greedy": 0
+    },
+    {
+      "recording": "Circle",
+      "variant": "greedy",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7099,
+      "update_median_us": 19.208,
+      "update_p95_us": 28.625,
+      "replay_total_median_us": 4994.909
+    },
+    {
+      "recording": "Circle",
+      "variant": "global",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 7099,
+      "update_median_us": 19.542,
+      "update_p95_us": 37.875,
+      "replay_total_median_us": 4966.462999999998
+    },
+    {
+      "recording": "Multi-Touch",
+      "variant": "greedy",
+      "frames": 430,
+      "measurements": 1363,
+      "created_tracks": 24,
+      "id_changes_consecutive_active_outputs": null,
+      "strongest_region_representative_changes": 3,
+      "active_input": 407,
+      "active_without_output": 4,
+      "published_target_ids": 10,
+      "production_output_mismatches": null,
+      "tracker_output_frames_differing_from_greedy": null
+    },
+    {
+      "recording": "Multi-Touch",
+      "variant": "global",
+      "frames": 430,
+      "measurements": 1363,
+      "created_tracks": 24,
+      "id_changes_consecutive_active_outputs": null,
+      "strongest_region_representative_changes": 3,
+      "active_input": 407,
+      "active_without_output": 4,
+      "published_target_ids": 10,
+      "production_output_mismatches": 0,
+      "tracker_output_frames_differing_from_greedy": 8
+    },
+    {
+      "recording": "Multi-Touch",
+      "variant": "greedy",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 13330,
+      "update_median_us": 51.625,
+      "update_p95_us": 176.625,
+      "replay_total_median_us": 27204.366000000013
+    },
+    {
+      "recording": "Multi-Touch",
+      "variant": "global",
+      "timing": true,
+      "repeats": 31,
+      "measured_updates": 13330,
+      "update_median_us": 52.0,
+      "update_p95_us": 171.708,
+      "replay_total_median_us": 27142.15199999999
+    }
+  ]
+}

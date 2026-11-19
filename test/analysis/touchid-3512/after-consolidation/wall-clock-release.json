@@ -1,0 +1,26 @@
+[
+  {
+    "recording": "Half-Circle",
+    "frames": 30,
+    "min_processing_ms": 142.1026,
+    "median_processing_ms": 227.17919999999998,
+    "max_processing_ms": 301.1063,
+    "empty_outputs": 30
+  },
+  {
+    "recording": "Line",
+    "frames": 30,
+    "min_processing_ms": 151.9944,
+    "median_processing_ms": 229.471,
+    "max_processing_ms": 465.2428,
+    "empty_outputs": 30
+  },
+  {
+    "recording": "Circle",
+    "frames": 30,
+    "min_processing_ms": 146.5919,
+    "median_processing_ms": 269.26324999999997,
+    "max_processing_ms": 483.38,
+    "empty_outputs": 30
+  }
+]

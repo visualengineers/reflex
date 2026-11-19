@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -103,7 +103,11 @@ namespace ReFlex.Core.Interactivity.Components
         /// </summary>
         private void InitializeConfidenceMatrix()
         {
-            if (VectorField != null && !_isProcessing)
+            // Observations own fresh raster snapshots. Reference changes do not invalidate
+            // accumulated evidence; only a different raster size requires a new matrix.
+            if (VectorField != null && !_isProcessing &&
+                (_confidenceMat == null || _confidenceMat.Length != VectorField.SizeX ||
+                 (_confidenceMat.Length > 0 && _confidenceMat[0].Length != VectorField.SizeY)))
                 ArrayUtils.InitializeArray(out _confidenceMat, VectorField.SizeX, VectorField.SizeY);
         }
 
@@ -130,14 +134,9 @@ namespace ReFlex.Core.Interactivity.Components
                     if (!vCenter.IsValid)
                         continue;
 
-                    var vectorX = vCenter.Add(vectorField[x + stride][y]);
-                    var vectorX2 = vCenter.Add(vectorField[x - stride][y]);
-                    var vectorY = vCenter.Add(vectorField[x][y + stride]);
-                    var vectorY2 = vCenter.Add(vectorField[x][y - stride]);
-
-                    var angleX = vectorX.AngleBetween(vectorX2);
-                    var angleY = vectorY.AngleBetween(vectorY2);
-                    var angle = angleX + angleY / 2f;
+                    var angleX = SumCosine(vCenter, vectorField[x + stride][y], vectorField[x - stride][y]);
+                    var angleY = SumCosine(vCenter, vectorField[x][y + stride], vectorField[x][y - stride]);
+                    var angle = (angleX + angleY) / 2f;
 
                     var confidence = _confidenceMat[x][y];
                     if (float.IsNaN(angle) || angle > MinAngle)
@@ -153,6 +152,7 @@ namespace ReFlex.Core.Interactivity.Components
                                 confidence));
                         }
 
+                        // Saturation only caps growth; the measurement above is emitted even at the cap.
                         if (confidence < MaxConfidence)
                             _confidenceMat[x][y]++;
                     }
@@ -162,6 +162,17 @@ namespace ReFlex.Core.Interactivity.Components
             _isProcessing = false;
 
             return Task.FromResult(new Tuple<IEnumerable<Interaction>, ProcessPerformance>(result.ToArray(), performance));
+        }
+
+        private static float SumCosine(Vector2 center, Vector2 plus, Vector2 minus)
+        {
+            var ax = center.X + plus.X;
+            var ay = center.Y + plus.Y;
+            var bx = center.X + minus.X;
+            var by = center.Y + minus.Y;
+            var aLength = (float)System.Math.Sqrt(ax * ax + ay * ay);
+            var bLength = (float)System.Math.Sqrt(bx * bx + by * by);
+            return (ax * bx + ay * by) / (aLength * bLength);
         }
 
     }

@@ -6,9 +6,11 @@ import {
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { NEVER, Observable, of } from 'rxjs';
+import { InteractionVelocity } from '@reflex/shared-types';
 import { LogService } from 'src/app/log/log.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
+import { ProcessingService } from 'src/shared/services/processing.service';
 import { BASE_URL } from 'src/shared/tokens/base-url.token';
 import { HistoryVisualizationComponent } from '../history-visualization/history-visualization.component';
 import { MockHistoryVisualizationComponent } from '../history-visualization/history-visualization.component.mock';
@@ -24,6 +26,7 @@ export function setupTests(): void {
     await TestBed.configureTestingModule({
       imports: [FormsModule, InteractionsVisualizationComponent],
       providers: [
+        { provide: ProcessingService, useValue: { getVelocities: (): Observable<Array<InteractionVelocity>> => NEVER } },
         {
           provide: CalibrationService,
           useValue: calibrationService

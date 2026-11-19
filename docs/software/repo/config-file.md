@@ -18,6 +18,7 @@ title: Server Configuration
 9. [ProcessingSettingValues](#processingsettingvalues)
 10. [RemoteProcessingServiceSettingsValues](#remoteprocessingservicesettingsvalues)
 11. [TuioSettingValues](#tuiosettingvalues)
+12. [Contact Assignment and Prediction](#contact-assignment-and-prediction)
 
 ## Introduction
 
@@ -76,7 +77,7 @@ Depth normalization and separation of detected interactions.
 | `Min` | `float` | `0.04` | Minimum deformation distance from the zero plane. |
 | `Max` | `float` | `0.24` | Maximum deformation distance used for depth normalization. |
 | `Default` | `float` | `0.77` | Sensor distance of the undeformed surface (zero plane); also the box-filter default value. |
-| `InputDistance` | `float` | `40.0` | Clustering threshold compared directly with squared 2D distance between interactions, not a linear distance. |
+| `InputDistance` | `float` | `40.0` | Clustering threshold compared with Manhattan distance (`abs(dx) + abs(dy)`) in sensor pixels. The legacy helper is named `Squared2DDistance`, but does not square the distance. |
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -99,10 +100,17 @@ Interaction history, matching and temporal smoothing (`SmoothingParameter`).
 | --- | --- | --- | --- |
 | `InteractionHistorySize` | `int` | `15` | Number of frames retained in the interaction history. |
 | `NumSmoothingSamples` | `int` | `9` | Number of samples used for temporal smoothing. |
-| `MaxNumEmptyFramesBetween` | `int` | `3` | Allowed gap of empty frames when matching touches. |
-| `TouchMergeDistance2D` | `float` | `72.0` | Distance threshold for matching touches across frames. |
+| `ContactRetentionSeconds` | `double` | `0.1` | Retention after a completed observation misses a contact. Finite and non-negative; default `0.1`. |
+| `ObservationTimeoutSeconds` | `double` | `1.0` | Maximum sensor/processing silence and acceptable observation age, in seconds. Finite and non-negative; default `1`. |
+| `ConfidenceGainPerSecond` | `float` | `30.0` | Confidence gained per second between consecutive detections; default `30`. |
+| `ConfidenceDecayPerSecond` | `float` | `30.0` | Confidence lost per second without measurements; `0` disables decay. Default `30`. |
+| `TouchMergeDistance2D` | `float` | `72.0` | Strict Manhattan-distance gate in sensor pixels for matching touches across frames. |
 | `DepthScale` | `float` | `490.0` | Scale factor for depth in interaction smoothing/matching. |
 | `Type` | `FilterType` | `2` | `0`: None; `1`: MovingAverage; `2`: WeightedMovingAverage; `3`: SavitzkyGolay; `4`: PolynomialFit; `5`: WeightedPolynomialFit; `6`: Butterworth. |
+
+Legacy JSON containing `MaxNumEmptyFramesBetween` is still accepted: the value is divided by `30` to obtain seconds. An explicit `ContactRetentionSeconds` wins regardless of JSON property order. New saves omit the legacy field. This migration assumes 30 Hz; review the retention time for installations previously using another cadence. It only preserves JSON loading: custom C# callers and observer/manager implementations must migrate the removed frame-count API as described in [Migrating custom observers and managers]({{ site.baseurl }}/software/recipes/interaction-processor.html#migrating-custom-observers-and-managers).
+
+History size limits stored frames and the smoothing/prediction sample counts; it does not set contact lifetime. A history size of `0` disables tracking and smoothing and assigns fresh IDs to each observation. Missing observations do not become smoothing or motion samples.
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -114,6 +122,7 @@ Sampling parameters for classifying local extrema.
 | --- | --- | --- | --- |
 | `NumSamples` | `int` | `10` | Number of surrounding samples. |
 | `CheckRadius` | `int` | `20` | Sampling radius around the extremum. |
+| `MergeRadius` | `float` | `3` | Euclidean radius in sensor pixels for consolidating same-type extrema before tracking. Range `0`–`32`; `0` disables consolidation. Default `3`. |
 | `FitPercentage` | `float` | `0.9` | Required fraction of samples supporting the classification, in [0, 1]. |
 | `CheckMethod` | `ExtremumTypeCheckMethod` | `1` | `0`: Global; `1`: FixedRadius; `2`: StochasticStatic; `3`: StochasticDynamic. Static random samples are reused; dynamic samples are regenerated. |
 
@@ -203,6 +212,7 @@ Interaction processing configuration (`ProcessingSettings`).
 | --- | --- | --- | --- |
 | `InteractionType` | `ObserverType` | `2` | `0`: None; `1`: SingleTouch; `2`: MultiTouch; `3`: Remote. This selects the observer, not the push/pull interaction type. |
 | `IntervalDuration` | `int` | `50` | Processing update interval in milliseconds. |
+| `UseObservationSnapshots` | `bool` | `true` | Copy paired point-cloud/vector-field observations for processing. When false, reserve the live rasters during analysis and skip incoming sensor updates while reserved. Default `true`. |
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -243,5 +253,33 @@ __[⬆ back to top](#table-of-contents)__
 The [TUIO REST endpoints]({{ site.baseurl }}/software/apps/server/rest-api.html#tuio) provide configuration, start/stop and persistence operations. Broadcasting is toggled with `PUT /api/Tuio/ToggleBroadcast`; the current configuration is available through `GET /api/Tuio/GetTuioConfiguration`.
 
 The [SignalR interface]({{ site.baseurl }}/software/apps/server/signal-r.html#list-of-signalr-hubs) exposes `/tuiohub`: `startState` subscribes to the broadcast state and `startPackageDetails` subscribes to package details for monitoring.
+
+__[⬆ back to top](#table-of-contents)__
+
+## Contact Assignment and Prediction
+
+The assignment properties live at the root of `TrackingServerAppSettings`. Omitted fields use these defaults:
+
+| Property | Default | Meaning |
+| --- | --- | --- |
+| `UseMinimumCostAssignment` | `true` | Globally minimize one-to-one assignment costs. False selects greedy one-to-one matching. Switching preserves existing tracks. |
+| `AssignmentMissCost` | `0.5` | Cost of leaving a track unmatched. Must be finite and non-negative. |
+| `AssignmentBirthCost` | `0.5` | Cost of creating a new track. Must be finite and non-negative. |
+
+Matching costs use Manhattan distance divided by `TouchMergeDistance2D`. The strict distance gate applies independently of the costs. Miss and birth costs affect only minimum-cost assignment; retention and confidence remain separate controls.
+
+`PredictionSettings` is another root-level object:
+
+| Property | Default | Meaning |
+| --- | --- | --- |
+| `PredictionHorizonSeconds` | `0.05` | Diagnostic forecast horizon, from `0` to `1` seconds. Assignment uses the actual observation time instead. |
+| `UseVelocityPrediction` | `true` | Predict matching positions and produce motion diagnostics. |
+| `NumFramesForPrediction` | `3` | Requested number of real measurements for motion fitting. The request is preserved in configuration and the running tracker across history changes; effective capacity is `min(requested, history capacity)`. Growing history restores the request without recreating discarded measurements. The REST endpoint requires at least `2`. |
+| `UseSecondDerivation` | `false` | Fit acceleration when at least three measurements are available. |
+| `SecondDerivationMagnitude` | `0.5` | Acceleration weight from `0` to `1`; `0.5` gives `p + v*h + 0.5*a*h²`. |
+
+Motion fits use monotonic capture times in seconds. Diagnostic X/Y positions are sensor pixels, velocity is pixels/s, and acceleration is pixels/s². Z uses normalized interaction depth. The display calibrates positions; the forecast-value table retains sensor coordinates.
+
+See [Motion prediction]({{ site.baseurl }}/software/apps/server/processing-view.html#motion-prediction) for the controls and [REST settings]({{ site.baseurl }}/software/apps/server/rest-api.html#settings) for requests.
 
 __[⬆ back to top](#table-of-contents)__

@@ -1,0 +1,4085 @@
+[
+  {
+    "recording": "Multi-Touch",
+    "frame": 283,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49983,
+          "Z": 0.10123129,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 25.0,
+        "Time": 639306804984446780
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984453450
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 160.01035,
+          "Y": 198.0,
+          "Z": -0.0068569174,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 165.29483,
+          "Y": 198.0,
+          "Z": -0.005858291,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 1.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 1,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.83328,
+          "Z": 0.09997223,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984446780
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.0659998,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984453450
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 1,
+        "Position": {
+          "X": 165.29483,
+          "Y": 198.0,
+          "Z": -0.005858291,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 1,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 1.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 0,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 0,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 1,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.83328,
+          "Z": 0.09997223,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984446780
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.0659998,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984453450
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 1,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 1.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 1,
+        "Position": {
+          "X": 160.01035,
+          "Y": 198.0,
+          "Z": -0.0068569174,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 0,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 0,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 0,
+        "TrackingState": 1,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.83328,
+          "Z": 0.09997223,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984446780
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.0659998,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984453450
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 0,
+        "TrackingState": 1,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.83328,
+          "Z": 0.09997223,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984446780
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.0659998,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804984453450
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 284,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49988,
+          "Z": 0.10144836,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 26.0,
+        "Time": 639306804985690400
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985694470
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.66656,
+          "Z": 0.10083236,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985690400
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985694470
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 2,
+        "Position": {
+          "X": 165.29483,
+          "Y": 198.0,
+          "Z": -0.005858291,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 2,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 2,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 2,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.66656,
+          "Z": 0.10083236,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985690400
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985694470
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 2,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 2,
+        "Position": {
+          "X": 160.01035,
+          "Y": 198.0,
+          "Z": -0.0068569174,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 2,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 2,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.66656,
+          "Z": 0.10083236,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985690400
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985694470
+      },
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306804984440480
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.66656,
+          "Z": 0.10083236,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985690400
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804985694470
+      },
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306804984441090
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 285,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49991,
+          "Z": 0.10162568,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306804987036310
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987045520
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49988,
+          "Z": 0.10143511,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987036310
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987045520
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 2,
+        "Position": {
+          "X": 165.29483,
+          "Y": 198.0,
+          "Z": -0.005858291,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 2,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 2,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 2,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49988,
+          "Z": 0.10143511,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987036310
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987045520
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 2,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 2,
+        "Position": {
+          "X": 160.01035,
+          "Y": 198.0,
+          "Z": -0.0068569174,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 2,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 2,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49988,
+          "Z": 0.10143511,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987036310
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987045520
+      },
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306804984440480
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 139.0,
+          "Y": 248.49988,
+          "Z": 0.10143511,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987036310
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804987045520
+      },
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306804984441090
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 286,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 138.66669,
+          "Y": 248.33322,
+          "Z": 0.102143,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306804988100980
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988108500
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 138.8889,
+          "Y": 248.44434,
+          "Z": 0.10173901,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988100980
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988108500
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 2,
+        "Position": {
+          "X": 165.29483,
+          "Y": 198.0,
+          "Z": -0.005858291,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 2,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 2,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 2,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306804984441090
+      },
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 138.8889,
+          "Y": 248.44434,
+          "Z": 0.10173901,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988100980
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988108500
+      },
+      {
+        "TouchId": 6,
+        "TrackingState": 2,
+        "Position": {
+          "X": 168.32167,
+          "Y": 198.0,
+          "Z": -0.00236074,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984441330
+      },
+      {
+        "TouchId": 7,
+        "TrackingState": 2,
+        "Position": {
+          "X": 160.01035,
+          "Y": 198.0,
+          "Z": -0.0068569174,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984440480
+      },
+      {
+        "TouchId": 8,
+        "TrackingState": 2,
+        "Position": {
+          "X": 154.76501,
+          "Y": 198.0,
+          "Z": -0.00549967,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984454230
+      },
+      {
+        "TouchId": 9,
+        "TrackingState": 2,
+        "Position": {
+          "X": 151.77594,
+          "Y": 198.0,
+          "Z": -0.0017155196,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306804984453760
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 138.8889,
+          "Y": 248.44434,
+          "Z": 0.10173901,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988100980
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988108500
+      },
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 183.16985,
+          "Y": 207.33464,
+          "Z": -0.0554915,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306804984440480
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 138.8889,
+          "Y": 248.44434,
+          "Z": 0.10173901,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988100980
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 1,
+        "Position": {
+          "X": 364.0,
+          "Y": 269.0,
+          "Z": -0.06599988,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306804988108500
+      },
+      {
+        "TouchId": 0,
+        "TrackingState": 2,
+        "Position": {
+          "X": 184.93134,
+          "Y": 207.33464,
+          "Z": -0.055158623,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306804984441090
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 320,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 144.0,
+          "Y": 246.0,
+          "Z": 0.10150722,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031973600
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 95.0,
+          "Y": 220.95157,
+          "Z": -0.017705709,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 95.0,
+          "Y": 215.56485,
+          "Z": -0.016743094,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 95.0,
+          "Y": 211.66194,
+          "Z": -0.013206551,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 123.43128,
+          "Y": 194.32451,
+          "Z": -0.009277611,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 117.55936,
+          "Y": 195.0,
+          "Z": -0.008719563,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 95.0,
+          "Y": 209.0,
+          "Z": -0.007209578,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031969070
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 113.529366,
+          "Y": 195.0,
+          "Z": -0.006887713,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031972640
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 128.06969,
+          "Y": 194.0,
+          "Z": -0.0057527414,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 0.0,
+        "Time": 639306805031977060
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 140.49997,
+          "Y": 247.33333,
+          "Z": 0.10272597,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031973600
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 2,
+        "Position": {
+          "X": 192.0,
+          "Y": 262.5018,
+          "Z": -0.002181926,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805029635630
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 1,
+        "Position": {
+          "X": 124.11012,
+          "Y": 196.77484,
+          "Z": -0.021401197,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 1,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 1,
+        "Position": {
+          "X": 128.29395,
+          "Y": 196.66667,
+          "Z": -0.017325316,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031977060
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.543304,
+          "Y": 197.0,
+          "Z": -0.02077485,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031972640
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 1,
+        "Position": {
+          "X": 119.868065,
+          "Y": 203.85495,
+          "Z": -0.016566679,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 1,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 1,
+        "Position": {
+          "X": 102.68995,
+          "Y": 201.66667,
+          "Z": -0.013299849,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969070
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 1,
+        "Position": {
+          "X": 122.171,
+          "Y": 205.65053,
+          "Z": -0.01112875,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969090
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 140.49997,
+          "Y": 247.33333,
+          "Z": 0.10272597,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031973600
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 2,
+        "Position": {
+          "X": 192.0,
+          "Y": 262.5018,
+          "Z": -0.002181926,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805029635630
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 1,
+        "Position": {
+          "X": 114.633026,
+          "Y": 203.85495,
+          "Z": -0.02388969,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 1,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 1,
+        "Position": {
+          "X": 126.74782,
+          "Y": 196.77484,
+          "Z": -0.018500272,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.543304,
+          "Y": 197.0,
+          "Z": -0.02077485,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031972640
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 1,
+        "Position": {
+          "X": 119.868065,
+          "Y": 205.65053,
+          "Z": -0.016887551,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 1,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 1,
+        "Position": {
+          "X": 102.68995,
+          "Y": 201.66667,
+          "Z": -0.013299849,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969070
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 1,
+        "Position": {
+          "X": 133.19423,
+          "Y": 196.66667,
+          "Z": -0.007144427,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031977060
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 140.49997,
+          "Y": 247.33333,
+          "Z": 0.10272597,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031973600
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 1,
+        "Position": {
+          "X": 124.11012,
+          "Y": 196.77484,
+          "Z": -0.021401197,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 2,
+        "Position": {
+          "X": 192.0,
+          "Y": 262.5018,
+          "Z": -0.002181926,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805029635630
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 140.49997,
+          "Y": 247.33333,
+          "Z": 0.10272597,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031973600
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 1,
+        "Position": {
+          "X": 114.633026,
+          "Y": 203.85495,
+          "Z": -0.02388969,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 4,
+        "TrackingState": 2,
+        "Position": {
+          "X": 192.0,
+          "Y": 262.5018,
+          "Z": -0.002181926,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805029635630
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 321,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 113.0,
+          "Y": 216.51308,
+          "Z": -0.10316959,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 161.0,
+          "Y": 233.49661,
+          "Z": 0.10013879,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805033262950
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 113.0,
+          "Y": 212.54161,
+          "Z": -0.09786353,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805033267000
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 148.0,
+          "Y": 242.49887,
+          "Z": 0.10167941,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033262950
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 2,
+        "Position": {
+          "X": 124.11012,
+          "Y": 196.77484,
+          "Z": -0.021401197,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 2,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 2,
+        "Position": {
+          "X": 128.29395,
+          "Y": 196.66667,
+          "Z": -0.017325316,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031977060
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.36012,
+          "Y": 201.8472,
+          "Z": -0.044120505,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033267000
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 2,
+        "Position": {
+          "X": 119.868065,
+          "Y": 203.85495,
+          "Z": -0.016566679,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 1,
+        "Position": {
+          "X": 104.84516,
+          "Y": 207.83769,
+          "Z": -0.042179212,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 2,
+        "Position": {
+          "X": 122.171,
+          "Y": 205.65053,
+          "Z": -0.01112875,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031969090
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 148.0,
+          "Y": 242.49887,
+          "Z": 0.10167941,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033262950
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 2,
+        "Position": {
+          "X": 114.633026,
+          "Y": 203.85495,
+          "Z": -0.02388969,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 2,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 2,
+        "Position": {
+          "X": 126.74782,
+          "Y": 196.77484,
+          "Z": -0.018500272,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.36012,
+          "Y": 201.8472,
+          "Z": -0.044120505,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033267000
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 2,
+        "Position": {
+          "X": 119.868065,
+          "Y": 205.65053,
+          "Z": -0.016887551,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 1,
+        "Position": {
+          "X": 104.84516,
+          "Y": 207.83769,
+          "Z": -0.042179212,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 2,
+        "Position": {
+          "X": 133.19423,
+          "Y": 196.66667,
+          "Z": -0.007144427,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 29.0,
+        "Time": 639306805031977060
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 148.0,
+          "Y": 242.49887,
+          "Z": 0.10167941,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033262950
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.36012,
+          "Y": 201.8472,
+          "Z": -0.044120505,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033267000
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 148.0,
+          "Y": 242.49887,
+          "Z": 0.10167941,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033262950
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.36012,
+          "Y": 201.8472,
+          "Z": -0.044120505,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805033267000
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 322,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 114.0,
+          "Y": 218.00243,
+          "Z": -0.10633087,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805034591830
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 180.0,
+          "Y": 220.0,
+          "Z": 0.0987495,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805034594590
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 178.977,
+          "Y": 276.0,
+          "Z": -0.030100744,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805034590710
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 161.66667,
+          "Y": 233.16554,
+          "Z": 0.10013184,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034594590
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 2,
+        "Position": {
+          "X": 124.11012,
+          "Y": 196.77484,
+          "Z": -0.021401197,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 2,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 2,
+        "Position": {
+          "X": 128.29395,
+          "Y": 196.66667,
+          "Z": -0.017325316,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031977060
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.50979,
+          "Y": 208.51468,
+          "Z": -0.070360705,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034591830
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 2,
+        "Position": {
+          "X": 119.868065,
+          "Y": 203.85495,
+          "Z": -0.016566679,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.84516,
+          "Y": 207.83769,
+          "Z": -0.042179212,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 2,
+        "Position": {
+          "X": 122.171,
+          "Y": 205.65053,
+          "Z": -0.01112875,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": 18,
+        "TrackingState": 0,
+        "Position": {
+          "X": 178.977,
+          "Y": 276.0,
+          "Z": -0.030100744,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805034590710
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 161.66667,
+          "Y": 233.16554,
+          "Z": 0.10013184,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034594590
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 2,
+        "Position": {
+          "X": 114.633026,
+          "Y": 203.85495,
+          "Z": -0.02388969,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 2,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 2,
+        "Position": {
+          "X": 126.74782,
+          "Y": 196.77484,
+          "Z": -0.018500272,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.50979,
+          "Y": 208.51468,
+          "Z": -0.070360705,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034591830
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 2,
+        "Position": {
+          "X": 119.868065,
+          "Y": 205.65053,
+          "Z": -0.016887551,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.84516,
+          "Y": 207.83769,
+          "Z": -0.042179212,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 29.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 2,
+        "Position": {
+          "X": 133.19423,
+          "Y": 196.66667,
+          "Z": -0.007144427,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 28.0,
+        "Time": 639306805031977060
+      },
+      {
+        "TouchId": 18,
+        "TrackingState": 0,
+        "Position": {
+          "X": 178.977,
+          "Y": 276.0,
+          "Z": -0.030100744,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805034590710
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 161.66667,
+          "Y": 233.16554,
+          "Z": 0.10013184,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034594590
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.50979,
+          "Y": 208.51468,
+          "Z": -0.070360705,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034591830
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 161.66667,
+          "Y": 233.16554,
+          "Z": 0.10013184,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034594590
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 113.50979,
+          "Y": 208.51468,
+          "Z": -0.070360705,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805034591830
+      }
+    ]
+  },
+  {
+    "recording": "Multi-Touch",
+    "frame": 323,
+    "measurements": [
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 117.0,
+          "Y": 218.50024,
+          "Z": -0.11146779,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805035825730
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 213.3366,
+          "Y": 196.33043,
+          "Z": 0.09911856,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805035831390
+      },
+      {
+        "TouchId": -1,
+        "TrackingState": 0,
+        "Position": {
+          "X": 176.49777,
+          "Y": 267.0,
+          "Z": -0.061336562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 0.0,
+        "Time": 639306805035826010
+      }
+    ],
+    "greedy_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 184.77887,
+          "Y": 216.60901,
+          "Z": 0.09933562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035831390
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 2,
+        "Position": {
+          "X": 124.11012,
+          "Y": 196.77484,
+          "Z": -0.021401197,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 2,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 2,
+        "Position": {
+          "X": 128.29395,
+          "Y": 196.66667,
+          "Z": -0.017325316,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031977060
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 114.666664,
+          "Y": 216.3481,
+          "Z": -0.105220735,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035825730
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 2,
+        "Position": {
+          "X": 119.868065,
+          "Y": 203.85495,
+          "Z": -0.016566679,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.84516,
+          "Y": 207.83769,
+          "Z": -0.042179212,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 2,
+        "Position": {
+          "X": 122.171,
+          "Y": 205.65053,
+          "Z": -0.01112875,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": 18,
+        "TrackingState": 1,
+        "Position": {
+          "X": 176.49777,
+          "Y": 267.0,
+          "Z": -0.061336562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306805035826010
+      }
+    ],
+    "global_tracks": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 184.77887,
+          "Y": 216.60901,
+          "Z": 0.09933562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035831390
+      },
+      {
+        "TouchId": 10,
+        "TrackingState": 2,
+        "Position": {
+          "X": 114.633026,
+          "Y": 203.85495,
+          "Z": -0.02388969,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 11,
+        "TrackingState": 2,
+        "Position": {
+          "X": 118.51442,
+          "Y": 197.0,
+          "Z": -0.022521516,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031973070
+      },
+      {
+        "TouchId": 12,
+        "TrackingState": 2,
+        "Position": {
+          "X": 126.74782,
+          "Y": 196.77484,
+          "Z": -0.018500272,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031976010
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 114.666664,
+          "Y": 216.3481,
+          "Z": -0.105220735,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035825730
+      },
+      {
+        "TouchId": 14,
+        "TrackingState": 2,
+        "Position": {
+          "X": 119.868065,
+          "Y": 205.65053,
+          "Z": -0.016887551,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031969090
+      },
+      {
+        "TouchId": 15,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.73188,
+          "Y": 202.55399,
+          "Z": -0.019892206,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031969080
+      },
+      {
+        "TouchId": 16,
+        "TrackingState": 2,
+        "Position": {
+          "X": 104.84516,
+          "Y": 207.83769,
+          "Z": -0.042179212,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 28.0,
+        "Time": 639306805033267010
+      },
+      {
+        "TouchId": 17,
+        "TrackingState": 2,
+        "Position": {
+          "X": 133.19423,
+          "Y": 196.66667,
+          "Z": -0.007144427,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 9,
+          "PercentageFittingPoints": 0.9
+        },
+        "Confidence": 27.0,
+        "Time": 639306805031977060
+      },
+      {
+        "TouchId": 18,
+        "TrackingState": 1,
+        "Position": {
+          "X": 176.49777,
+          "Y": 267.0,
+          "Z": -0.061336562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306805035826010
+      }
+    ],
+    "greedy_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 184.77887,
+          "Y": 216.60901,
+          "Z": 0.09933562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035831390
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 114.666664,
+          "Y": 216.3481,
+          "Z": -0.105220735,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035825730
+      },
+      {
+        "TouchId": 18,
+        "TrackingState": 1,
+        "Position": {
+          "X": 176.49777,
+          "Y": 267.0,
+          "Z": -0.061336562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306805035826010
+      }
+    ],
+    "global_published": [
+      {
+        "TouchId": 2,
+        "TrackingState": 1,
+        "Position": {
+          "X": 184.77887,
+          "Y": 216.60901,
+          "Z": 0.09933562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 2,
+        "ExtremumDescription": {
+          "Type": 1,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035831390
+      },
+      {
+        "TouchId": 13,
+        "TrackingState": 1,
+        "Position": {
+          "X": 114.666664,
+          "Y": 216.3481,
+          "Z": -0.105220735,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 30.0,
+        "Time": 639306805035825730
+      },
+      {
+        "TouchId": 18,
+        "TrackingState": 1,
+        "Position": {
+          "X": 176.49777,
+          "Y": 267.0,
+          "Z": -0.061336562,
+          "IsValid": true,
+          "IsFiltered": false
+        },
+        "Type": 1,
+        "ExtremumDescription": {
+          "Type": 0,
+          "NumFittingPoints": 10,
+          "PercentageFittingPoints": 1.0
+        },
+        "Confidence": 1.0,
+        "Time": 639306805035826010
+      }
+    ]
+  }
+]

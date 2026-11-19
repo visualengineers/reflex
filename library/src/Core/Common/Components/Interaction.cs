@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ReFlex.Core.Common.Util;
 
@@ -13,6 +13,12 @@ namespace ReFlex.Core.Common.Components
         /// Id for tracking a touch point over time
         /// </summary>
         public int TouchId { get; set; } = -1;
+
+        /// <summary>
+        /// Tracking status. Lost outputs retain the last measurement's timestamp but have decaying confidence;
+        /// they are not new measurements. Ended contacts are omitted from subsequent frames.
+        /// </summary>
+        public InteractionTrackingState TrackingState { get; set; } = InteractionTrackingState.Tentative;
 
         /// <summary>
         /// Gets the position.
@@ -67,14 +73,9 @@ namespace ReFlex.Core.Common.Components
         /// <summary>
         /// Initializes a new instance of the <see cref="Interaction"/> class.
         /// </summary>
-        public Interaction(Point3 position, Interaction source)
+        public Interaction(Point3 position, Interaction source) : this(source)
         {
-            Position = position;
-            Type = source.Type;
-            Confidence = source.Confidence;
-            ExtremumDescription = source.ExtremumDescription;
-            Time = source.Time;
-            TouchId = source.TouchId;
+            Position = position == null ? null : (Point3)position.Copy();
         }
 
         /// <summary>
@@ -98,9 +99,15 @@ namespace ReFlex.Core.Common.Components
         public Interaction(Interaction source)
         {
             TouchId = source.TouchId;
-            Position = source.Position;
+            TrackingState = source.TrackingState;
+            Position = source.Position == null ? null : (Point3)source.Position.Copy();
             Type = source.Type;
-            ExtremumDescription = source.ExtremumDescription;
+            ExtremumDescription = source.ExtremumDescription == null ? null : new ExtremumDescription
+            {
+                Type = source.ExtremumDescription.Type,
+                NumFittingPoints = source.ExtremumDescription.NumFittingPoints,
+                PercentageFittingPoints = source.ExtremumDescription.PercentageFittingPoints
+            };
             Confidence = source.Confidence;
             Time = source.Time;
         }
