@@ -108,7 +108,7 @@ Interaction history, matching and temporal smoothing (`SmoothingParameter`).
 | `DepthScale` | `float` | `490.0` | Scale factor for depth in interaction smoothing/matching. |
 | `Type` | `FilterType` | `2` | `0`: None; `1`: MovingAverage; `2`: WeightedMovingAverage; `3`: SavitzkyGolay; `4`: PolynomialFit; `5`: WeightedPolynomialFit; `6`: Butterworth. |
 
-Legacy JSON containing `MaxNumEmptyFramesBetween` is still accepted: the value is divided by `30` to obtain seconds. An explicit `ContactRetentionSeconds` wins regardless of JSON property order. New saves omit the legacy field. This migration assumes 30 Hz; review the retention time for installations previously using another cadence.
+Legacy JSON containing `MaxNumEmptyFramesBetween` is still accepted: the value is divided by `30` to obtain seconds. An explicit `ContactRetentionSeconds` wins regardless of JSON property order. New saves omit the legacy field. This migration assumes 30 Hz; review the retention time for installations previously using another cadence. It only preserves JSON loading: custom C# callers and observer/manager implementations must migrate the removed frame-count API as described in [Migrating custom observers and managers]({{ site.baseurl }}/software/recipes/interaction-processor.html#migrating-custom-observers-and-managers).
 
 History size limits stored frames and the smoothing/prediction sample counts; it does not set contact lifetime. A history size of `0` disables tracking and smoothing and assigns fresh IDs to each observation. Missing observations do not become smoothing or motion samples.
 

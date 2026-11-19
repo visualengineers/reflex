@@ -84,3 +84,4 @@ export {
 
 export { PredictionSettings } from './config/prediction-settings';
 export { InteractionVelocity } from './processing/interaction-velocity';
+export { InteractionTrackingState } from './processing/interaction-tracking-state';

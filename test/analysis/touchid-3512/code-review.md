@@ -87,7 +87,7 @@ The duplicated Butterworth transition equations in `ProcessSample` and `Smooth` 
 
 ### Finish public-contract and artifact housekeeping separately
 
-`Interaction.TrackingState` is new in C#, but absent from the shared TypeScript `Interaction` model. Add the corresponding enum/property with a deliberate compatibility policy for older servers, and document the removal of the old frame-count setter for custom observer/manager implementations. JSON configuration migration alone does not provide source compatibility for those interfaces.
+Addressed in the public-contract follow-up: the shared package exports `InteractionTrackingState` (`Tentative = 0`, `Confirmed = 1`, `Lost = 2`) and optional `Interaction.trackingState`. Missing values from older servers mean unknown/unavailable; clients must not infer a state or use truthiness for the zero-valued tentative state. The interaction-format documentation describes this policy. The custom-processor recipe now documents the removed `MaxNumEmptyFramesBetween` API, conversion to seconds, the separate observation timeout, rebuilding custom implementations, and the distinction between JSON migration and C# source/binary compatibility. Package type checking, package lint and a temporary strict TypeScript compatibility check passed.
 
 The branch also includes generated `tsconfig.tsbuildinfo` changes and large historical replay/benchmark outputs. Keep evidence reproducible, but consider storing future generated outputs as CI artifacts with a small checked-in manifest and summary. Do not rewrite historical data as part of this review. A whole-branch `git diff --check` reports CRLF CSV rows and whitespace in benchmark markdown; the working-tree review edits themselves pass `git diff --check`.
 

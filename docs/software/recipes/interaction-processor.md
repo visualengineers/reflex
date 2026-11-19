@@ -15,7 +15,8 @@ title: "ReFlex Library: How to implement an Interaction Processor"
 6. [Step 2: Implement the observer](#step-2-implement-the-observer)
 7. [Step 3: Register the observer](#step-3-register-the-observer)
 8. [Step 4: Verify the behaviour](#step-4-verify-the-behaviour)
-9. [Further reading](#further-reading)
+9. [Migrating custom observers and managers](#migrating-custom-observers-and-managers)
+10. [Further reading](#further-reading)
 
 ## General approach
 
@@ -55,8 +56,8 @@ __[⬆ back to top](#table-of-contents)__
 | `Distance`, `MinDistance`, `MaxDistance` | Sensor distance of the undeformed surface, dead zone around it, and maximum deformation used for depth conversion. Use the same units as the point cloud's Z values. |
 | `MinAngle` | Angular threshold for vector-field detection, relevant to the multi-touch strategy. |
 | `MinConfidence`, `MaxConfidence` | Threshold for accepting touches and upper bound for confidence accumulation. |
-| `InteractionHistorySize`, `NumSmoothingFrames`, `MaxNumEmptyFramesBetween` | History length, smoothing window and tolerance for missing detections. |
-| `TouchMergeDistance2D`, `DepthScale`, `FilterType` | Squared lateral distance threshold for associating touches across frames, depth scaling for smoothing and choice of smoothing filter. |
+| `InteractionHistorySize`, `NumSmoothingFrames`, `ContactRetentionSeconds`, `ObservationTimeoutSeconds` | History capacity, smoothing window, missed-detection retention and sensor/processing timeout. Lifetimes use seconds independently of history capacity. |
+| `TouchMergeDistance2D`, `DepthScale`, `FilterType` | Strict Manhattan-distance gate in sensor pixels for associating touches across frames, depth scaling for smoothing and choice of smoothing filter. |
 | `ExtremumTypeCheckNumSamples`, `ExtremumTypeCheckRadius`, `ExtremumTypeCheckFittingPercentage`, `ExtremumTypeCheckMethod` | Sampling configuration used to distinguish minima, maxima and undefined extrema. |
 | `NewInteractions` | Publish an `IList<Interaction>` after processing a frame, including an empty list when no interactions remain. |
 | `InteractionHistoryUpdated` | Publish the current `IList<InteractionFrame>` when the history changes. The base class raises this through its history helpers. |
@@ -102,7 +103,7 @@ The template method `Update()` executes the following sequence:
 
 `SelectSmoothedInteractions()`, `Update()`, `CheckInitialState()` and the single-point `ComputeExtremumType()` are virtual. `Analyze()` is abstract; the remaining processing helpers above are non-virtual. Most alternatives only implement `Analyze()` and readiness checks. For a different classifier, override the single-point overload. Only override `Update()` when the shared processing sequence itself must change, and preserve history updates, performance reporting and event publication explicitly in that case.
 
-**Configuration detail:** The current setters of `NumSmoothingFrames` and `MaxNumEmptyFramesBetween` forward at least the history length to the smoothing behaviour, even if a smaller value was requested. A value of zero therefore does not reliably disable smoothing through that setter. Use `FilterType.None` to disable the smoothing filter, and verify disappearance timing with the actual history settings. Set `MaxConfidence` explicitly; do not rely on all observer defaults being propagated to the internal smoothing behaviour at construction time.
+**Configuration detail:** `NumSmoothingFrames` is clamped to `[0, InteractionHistorySize]`; zero disables smoothing. History size zero disables tracking and smoothing and assigns fresh IDs on each observation. `ContactRetentionSeconds` and `ObservationTimeoutSeconds` control lifetime independently of history capacity. Set `MaxConfidence` explicitly for custom observers and keep it above `MinConfidence`.
 
 __[⬆ back to top](#table-of-contents)__
 
@@ -226,6 +227,30 @@ Use the sensor emulator or a recorded point cloud to make the checks reproducibl
 * **Depth and type:** Test both sides of `Distance`, the dead-zone boundary and values beyond `MaxDistance`. Use an accepted local minimum for Push and a local maximum for Pull with the configured sampling method. Push produces negative Z, Pull positive Z, and output stays within [-1, 1].
 * **Tracking:** A stationary touch keeps its ID across frames and exceeds `MinConfidence` after enough observations. Check disappearance timing with empty frames and the configured history; also test moving from one candidate to another.
 * **Integration:** Select the strategy through the server configuration, observe `NewInteractions`/history updates and check that clients receive calibrated X/Y in [0, 1]. Enable performance measurement to inspect analysis timings.
+
+__[⬆ back to top](#table-of-contents)__
+
+## Migrating custom observers and managers
+
+The elapsed-time tracking update is a **source and binary breaking API change** for integrations using `IInteractionObserver`, `IInteractionManager`, `InteractionObserverBase`, `InteractionManager` or `InteractionSmoothingBehaviour`. Rebuild custom implementations and callers against the updated assemblies.
+
+`MaxNumEmptyFramesBetween` has been removed from these tracking APIs. Replace calls and implementation members with `ContactRetentionSeconds` (`double`, finite and non-negative). Also implement/configure `ObservationTimeoutSeconds`: missed detections after a completed observation use contact retention, while sensor/processing silence and late results use the observation timeout. These settings are independent of history capacity.
+
+For example, a former setting of three empty frames at 30 Hz becomes:
+
+```csharp
+// Applies to an updated observer or manager.
+observer.ContactRetentionSeconds = 3 / 30.0;
+observer.ObservationTimeoutSeconds = 1.0;
+```
+
+Use the cadence of the previous installation for this conversion (three frames at 60 Hz become `0.05` seconds). The timeout is a separate policy choice, not another conversion of the empty-frame count. In direct implementations, measure elapsed time with a monotonic clock and continue aging contacts during skipped/failed observations. `InteractionObserverBase` already provides these lifecycle operations and synchronizes tracker-setting access with frame processing.
+
+JSON migration is separate: `SmoothingParameter.MaxNumEmptyFramesBetween` remains a deserialization-only legacy setter assuming 30 Hz. It does **not** restore the removed members on the observer, manager or tracker APIs. Old JSON may load successfully even when custom C# code needs changes.
+
+Direct interface implementations must also satisfy the newly added prediction, assignment-cost, confidence-rate and extremum-consolidation properties and diagnostic events. Review the current interface definitions when rebuilding. `IInteractionObserver.Update(TrackingObservation)` has a default adapter to `Update()`, and `AdvanceTime(double)` defaults to no action; implement them for observation-aware processing and contact expiry. Finish reading reserved rasters before the update task completes and copy any data retained for later work. Custom managers must implement `AdvanceTime()` and `UseObservationSnapshots` as required by `IInteractionManager`.
+
+See the [configuration reference]({{ site.baseurl }}/software/repo/config-file.html#smoothingvalues) for defaults and JSON precedence, and the [interaction format]({{ site.baseurl }}/software/repo/interactions.html#tracking-state-compatibility) for clients consuming older server payloads.
 
 __[⬆ back to top](#table-of-contents)__
 
