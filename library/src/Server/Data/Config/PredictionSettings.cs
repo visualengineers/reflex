@@ -5,6 +5,7 @@ public class PredictionSettings
 {
     public double PredictionHorizonSeconds { get; set; } = .05;
     public bool UseVelocityPrediction { get; set; } = true;
+    /// <summary>Requested capacity, preserved even when history currently permits fewer samples.</summary>
     public int NumFramesForPrediction { get; set; } = 3;
     public bool UseSecondDerivation { get; set; }
     public float SecondDerivationMagnitude { get; set; } = .5f;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using MathNet.Numerics;
 using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
@@ -37,7 +36,7 @@ namespace ReFlex.Core.Interactivity.Components
         private readonly Dictionary<int, Track> _tracks = new();
         private int _numFramesHistory;
         private int _numFramesSmoothing;
-        private int _numFramesForPrediction = 3;
+        private int _requestedNumFramesForPrediction = 3;
         private float _secondDerivationMagnitude = .5f;
         private double _contactRetentionSeconds = .1;
 
@@ -97,7 +96,6 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 _numFramesHistory = Math.Max(0, value);
                 NumFramesSmoothing = _numFramesSmoothing;
-                NumFramesForPrediction = _numFramesForPrediction;
                 UpdateInteractionFramesList();
                 if (_numFramesHistory == 0)
                     _tracks.Clear();
@@ -139,10 +137,11 @@ namespace ReFlex.Core.Interactivity.Components
 
         public bool UseVelocityForMapping { get; set; }
         public bool UseSecondDerivation { get; set; }
+        /// <summary>Effective sample capacity. Preserve the requested value so history growth restores it.</summary>
         public int NumFramesForPrediction
         {
-            get => _numFramesForPrediction;
-            set => _numFramesForPrediction = Math.Clamp(value, Math.Min(2, NumFramesHistory), NumFramesHistory);
+            get => Math.Min(_requestedNumFramesForPrediction, NumFramesHistory);
+            set => _requestedNumFramesForPrediction = Math.Max(2, value);
         }
         public float SecondDerivationMagnitude
         {
@@ -463,8 +462,10 @@ namespace ReFlex.Core.Interactivity.Components
             foreach (var track in _tracks.Values)
                 track.MatchingPosition = Predict(track, _timestampSeconds.Value);
 
+            var targets = _tracks.Select(pair => (TouchId: pair.Key, Position: pair.Value.MatchingPosition)).ToArray();
             var assignedIds = UseMinimumCostAssignment
-                ? AssignMinimumCost(candidates) : AssignGreedy(candidates);
+                ? MinimumCostContactAssignment.Assign(candidates, targets, TouchMergeDistance2D, AssignmentMissCost, AssignmentBirthCost)
+                : GreedyContactAssignment.Assign(candidates, targets, TouchMergeDistance2D);
             for (var index = 0; index < candidates.Count; index++)
             {
                 var touchId = assignedIds[index];
@@ -512,63 +513,6 @@ namespace ReFlex.Core.Interactivity.Components
             return candidates.OrderBy(candidate => candidate.TouchId).ToList();
         }
 
-        private int[] AssignMinimumCost(List<Interaction> candidates)
-        {
-            var tracks = _tracks.OrderBy(pair => pair.Key).ToArray();
-            // Canonical order makes equal-cost decisions independent of detector enumeration.
-            var orderedCandidates = candidates.Select((candidate, index) => (Candidate: candidate, Index: index))
-                .OrderBy(item => item.Candidate.Position.X)
-                .ThenBy(item => item.Candidate.Position.Y)
-                .ThenBy(item => item.Index).ToArray();
-            var costs = new double[orderedCandidates.Length, tracks.Length + orderedCandidates.Length];
-            for (var row = 0; row < orderedCandidates.Length; row++)
-            {
-                for (var column = 0; column < tracks.Length; column++)
-                {
-                    var distance = Point3.Squared2DDistance(orderedCandidates[row].Candidate.Position,
-                        tracks[column].Value.MatchingPosition);
-                    // The full objective includes tracks.Length * AssignmentMissCost. Matching a
-                    // track removes its miss cost; omitting that constant gives this rectangular problem.
-                    costs[row, column] = float.IsFinite(distance) && distance < TouchMergeDistance2D
-                        ? (double)distance / TouchMergeDistance2D - AssignmentMissCost
-                        : double.PositiveInfinity;
-                }
-                for (var column = tracks.Length; column < costs.GetLength(1); column++)
-                    costs[row, column] = column == tracks.Length + row
-                        ? AssignmentBirthCost : double.PositiveInfinity;
-            }
-
-            var assignment = MinimumCostAssignment.Solve(costs);
-            var ids = Enumerable.Repeat(-1, candidates.Count).ToArray();
-            for (var row = 0; row < orderedCandidates.Length; row++)
-                if (assignment[row] < tracks.Length)
-                    ids[orderedCandidates[row].Index] = tracks[assignment[row]].Key;
-            return ids;
-        }
-
-        private int[] AssignGreedy(List<Interaction> candidates)
-        {
-            // Preserve the previous algorithm, including its gate and deterministic pair ordering.
-            var pairs = candidates.SelectMany((candidate, index) => _tracks.Select(track => new
-                {
-                    CandidateIndex = index,
-                    TouchId = track.Key,
-                    Distance = Point3.Squared2DDistance(candidate.Position, track.Value.MatchingPosition)
-                }))
-                .Where(pair => pair.Distance < TouchMergeDistance2D)
-                .OrderBy(pair => pair.Distance)
-                .ThenBy(pair => pair.TouchId)
-                .ThenBy(pair => candidates[pair.CandidateIndex].Position.X)
-                .ThenBy(pair => candidates[pair.CandidateIndex].Position.Y)
-                .ThenBy(pair => pair.CandidateIndex);
-            var ids = Enumerable.Repeat(-1, candidates.Count).ToArray();
-            var assignedTracks = new HashSet<int>();
-            foreach (var pair in pairs)
-                if (ids[pair.CandidateIndex] < 0 && assignedTracks.Add(pair.TouchId))
-                    ids[pair.CandidateIndex] = pair.TouchId;
-            return ids;
-        }
-
         private bool IsExpired(Track track, double now, int latestObservationFrame)
             => now > track.LastDetectedAt + (track.LastSeenFrame == latestObservationFrame
                 ? ObservationTimeoutSeconds : ContactRetentionSeconds);
@@ -580,37 +524,12 @@ namespace ReFlex.Core.Interactivity.Components
             track.ConfidenceUpdatedAt = timestampSeconds;
         }
 
-        private (Point3 Velocity, Point3 Acceleration, int Count) EstimateMotion(Track track)
-        {
-            var samples = track.Samples.TakeLast(NumFramesForPrediction)
-                .Select(sample => (sample.Time, Position: sample.Measurement.Position)).ToArray();
-            if (samples.Length < 2)
-                return (new Point3(), new Point3(), samples.Length);
-
-            // Center times at the newest measurement: the fitted linear coefficient is v(now),
-            // not the average velocity half-way between measurements. Gaps retain their duration.
-            var span = track.LastSeenTime - samples[0].Time;
-            // Normalize the independent variable for well-conditioned fits, then recover derivatives per second.
-            var times = samples.Select(sample => (sample.Time - track.LastSeenTime) / span).ToArray();
-            var order = UseSecondDerivation && samples.Length >= 3 ? 2 : 1;
-            var x = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.X).ToArray(), order);
-            var y = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Y).ToArray(), order);
-            var z = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Z).ToArray(), order);
-            var velocity = new Point3((float)(x[1] / span), (float)(y[1] / span), (float)(z[1] / span));
-            var acceleration = order == 2
-                ? new Point3((float)(2 * x[2] / (span * span)),
-                    (float)(2 * y[2] / (span * span)), (float)(2 * z[2] / (span * span)))
-                : new Point3();
-            return (velocity, acceleration, samples.Length);
-        }
-
         private Point3 Predict(Track track, double targetTime)
         {
             if (!UseVelocityForMapping)
                 return (Point3)track.LastMeasurement.Position.Copy();
-            var motion = EstimateMotion(track);
-            var forecast = new InteractionVelocity();
-            forecast.Update(track.LastMeasurement.Position, motion.Velocity, motion.Acceleration,
+            var motion = ContactMotion.Estimate(track.Samples, track.LastSeenTime, NumFramesForPrediction, UseSecondDerivation);
+            var forecast = ContactMotion.Forecast(track.LastMeasurement.Position, motion,
                 SecondDerivationMagnitude, (float)(targetTime - track.LastSeenTime));
             return UseSecondDerivation ? forecast.PredictedPositionAdvanced : forecast.PredictedPositionBasic;
         }
@@ -629,9 +548,8 @@ namespace ReFlex.Core.Interactivity.Components
             {
                 if (!_tracks.TryGetValue(interaction.TouchId, out var track))
                     continue;
-                var motion = EstimateMotion(track);
-                var item = new InteractionVelocity();
-                item.Update(track.LastMeasurement.Position, motion.Velocity, motion.Acceleration,
+                var motion = ContactMotion.Estimate(track.Samples, track.LastSeenTime, NumFramesForPrediction, UseSecondDerivation);
+                var item = ContactMotion.Forecast(track.LastMeasurement.Position, motion,
                     SecondDerivationMagnitude, (float)(output.TimestampSeconds + PredictionHorizonSeconds - track.LastSeenTime));
                 item.TouchId = interaction.TouchId;
                 item.FrameId = _frameId;

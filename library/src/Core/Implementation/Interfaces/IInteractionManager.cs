@@ -30,6 +30,7 @@ namespace Implementation.Interfaces
         int InteractionHistorySize { get; set; }
         double PredictionHorizonSeconds { get; set; }
         bool UseVelocityPrediction { get; set; }
+        /// <summary>Sets a preserved request; gets effective capacity from the current observer (limited by history).</summary>
         int NumFramesForPrediction { get; set; }
         bool UseSecondDerivation { get; set; }
         float SecondDerivationMagnitude { get; set; }

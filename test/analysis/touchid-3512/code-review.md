@@ -77,13 +77,13 @@ This follows directly from the subscription/error path; the current tests verify
 
 A second temporary controller probe established that requesting `100` samples with history capacity `3` returns `100`, while `InteractionManager.NumFramesForPrediction` is `3`. This is consistent with the current documented clamping, so it is not listed as an independent correctness defect. However, the saved-success message and slider do not show the actual limit.
 
-Either expose requested and effective counts separately, or validate/clamp before saving and return the effective value. If preserving the requested count is intentional so it can take effect after history grows, retain it and show “100 requested, 3 effective.” Add a test for history shrinking and growing, including the acceleration requirement of three actual measurements.
+Implemented with the preserve policy: configuration and the tracker retain the request, while `NumFramesForPrediction` getters expose the effective history-limited capacity. The Processing view displays requested and effective counts separately, plus history capacity. Growing history restores the request automatically. Diagnostics continue reporting actual available sample counts. Regression tests cover shrinking/growing/disabled history, accumulation of real samples before acceleration resumes, persisted requests, observer replacement, startup reload and the UI display.
 
 ### Reduce responsibilities without changing the algorithms
 
-After functional fixes, extract motion fitting/forecast creation and the two assignment strategies behind small internal types. Keep lifetime and confidence transitions in the tracker. Use the current timed regression fixtures to assert identical outputs before/after extraction. Avoid introducing a service abstraction for every data object or changing folder structure merely for symmetry.
+Implemented: `ContactMotion`, `MinimumCostContactAssignment` and `GreedyContactAssignment` are small internal utilities. The tracker retains lifecycle, confidence and sample ownership. Assignment ordering, distance gates, costs and polynomial fitting are unchanged; the existing timed analytic, crossing and assignment regressions validate their outputs.
 
-The duplicated Butterworth transition equations in `ProcessSample` and `Smooth` can likewise share a private scalar transition helper, with the existing filter tests verifying numerical equivalence.
+Implemented: batch and persistent Butterworth paths share a private scalar transition helper. Existing analytic ramp/step tests remain; an additional irregular three-axis sequence checks batch/streaming equivalence. Follow-up validation passed: 297 interaction/filter tests, 15 server settings tests, 187 UI tests, frontend lint and whitespace checks.
 
 ### Finish public-contract and artifact housekeeping separately
 

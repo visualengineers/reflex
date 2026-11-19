@@ -274,7 +274,7 @@ Matching costs use Manhattan distance divided by `TouchMergeDistance2D`. The str
 | --- | --- | --- |
 | `PredictionHorizonSeconds` | `0.05` | Diagnostic forecast horizon, from `0` to `1` seconds. Assignment uses the actual observation time instead. |
 | `UseVelocityPrediction` | `true` | Predict matching positions and produce motion diagnostics. |
-| `NumFramesForPrediction` | `3` | Requested number of real measurements for motion fitting; the running tracker limits this to history capacity. The REST endpoint requires at least `2`. |
+| `NumFramesForPrediction` | `3` | Requested number of real measurements for motion fitting. The request is preserved in configuration and the running tracker across history changes; effective capacity is `min(requested, history capacity)`. Growing history restores the request without recreating discarded measurements. The REST endpoint requires at least `2`. |
 | `UseSecondDerivation` | `false` | Fit acceleration when at least three measurements are available. |
 | `SecondDerivationMagnitude` | `0.5` | Acceleration weight from `0` to `1`; `0.5` gives `p + v*h + 0.5*a*h²`. |
 

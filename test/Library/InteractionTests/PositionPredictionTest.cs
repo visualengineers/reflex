@@ -26,6 +26,48 @@ public class PositionPredictionTest
     private static InteractionFrame Step(InteractionSmoothingBehaviour tracker, params float[] x) =>
         tracker.Update(x.Select(value => new Interaction(new Point3(value, 10, -.5f), InteractionType.Push, 1)).ToList(), tracker.CurrentFrameId);
 
+    [Test]
+    public void HistoryShrinkAndGrowthPreserveRequestedSamplesAndRequireRealAccelerationSamples()
+    {
+        var tracker = Tracker(acceleration: true, samples: 5);
+        for (var t = 0; t < 5; t++) Step(tracker, 10 + t * t);
+        Assert.That(tracker.NumFramesForPrediction, Is.EqualTo(5));
+
+        tracker.NumFramesHistory = 2;
+        var limited = tracker.GetVelocities(Step(tracker, 35)).Single(); // t=5
+        Assert.That(tracker.NumFramesForPrediction, Is.EqualTo(2));
+        Assert.That(limited.SampleCount, Is.EqualTo(2));
+        Assert.That(limited.SecondDerivation.X, Is.Zero);
+        Assert.That(limited.PredictedPositionAdvanced.X, Is.EqualTo(limited.PredictedPositionBasic.X));
+
+        tracker.NumFramesHistory = 8;
+        Assert.That(tracker.NumFramesForPrediction, Is.EqualTo(5), "Growth restores the request, not the shrunken count.");
+        // Capacity growth alone does not invent observations or enable acceleration.
+        var unchanged = tracker.GetVelocities(tracker.OutputAt(5, markLost: false)).Single();
+        Assert.That(unchanged.SampleCount, Is.EqualTo(2));
+        Assert.That(unchanged.SecondDerivation.X, Is.Zero);
+        var recovered = tracker.GetVelocities(Step(tracker, 46)).Single(); // t=6
+        Assert.That(recovered.SampleCount, Is.EqualTo(3));
+        Assert.That(recovered.SecondDerivation.X, Is.EqualTo(2).Within(.0001));
+        Step(tracker, 59);
+        var full = tracker.GetVelocities(Step(tracker, 74)).Single();
+        Assert.That(full.SampleCount, Is.EqualTo(5));
+        Assert.That(full.SecondDerivation.X, Is.EqualTo(2).Within(.0001));
+    }
+
+    [Test]
+    public void RequestConfiguredWithSmallOrDisabledHistorySurvivesHistoryGrowth()
+    {
+        var tracker = Tracker(samples: 7);
+        tracker.NumFramesHistory = 1;
+        tracker.NumFramesForPrediction = 9;
+        Assert.That(tracker.NumFramesForPrediction, Is.EqualTo(1));
+        tracker.NumFramesHistory = 0;
+        Assert.That(tracker.NumFramesForPrediction, Is.Zero);
+        tracker.NumFramesHistory = 12;
+        Assert.That(tracker.NumFramesForPrediction, Is.EqualTo(9));
+    }
+
     [TestCase(2f)]
     [TestCase(-2f)]
     [TestCase(0f)]

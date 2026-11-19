@@ -282,22 +282,27 @@
       </app-value-slider>
       <app-value-slider
         class="settings__item"
-        elementTitle="Measured samples"
+        elementTitle="Requested samples"
         elementId="processing-predictionSamples"
         [min]="2"
         [max]="100"
         [step]="1"
         [(data)]="predictionSettings.numFramesForPrediction"
       >
-        The sample count is limited by the tracking history.
+        The requested sample count is preserved independently of history capacity.
       </app-value-slider>
+      <p class="settings__item" role="status">
+        {{ predictionSettings.numFramesForPrediction }} requested, {{ effectivePredictionSamples }} effective
+        (history capacity: {{ predictionHistorySize }}). Apply and save to update the request.
+        Actual measured samples are shown in Forecast values.
+      </p>
       <app-option-checkbox
         class="settings__item"
         elementTitle="Include acceleration"
         elementId="processing-useSecondDerivation"
         [(data)]="predictionSettings.useSecondDerivation"
       >
-        Requires at least 3 samples.
+        Requires at least 3 actual measurements. When fewer are available, the model uses a linear fallback.
       </app-option-checkbox>
       <app-value-slider
         class="settings__item"

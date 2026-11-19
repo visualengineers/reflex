@@ -75,6 +75,8 @@ namespace ReFlex.Core.Interactivity.Interfaces
         int InteractionHistorySize { get; set; }
         double PredictionHorizonSeconds { get; set; }
         bool UseVelocityPrediction { get; set; }
+        /// <summary>Gets effective capacity limited by history; sets the requested capacity, preserved across history changes.
+        /// Actual motion fitting uses only available real measurements; acceleration needs at least three.</summary>
         int NumFramesForPrediction { get; set; }
         bool UseSecondDerivation { get; set; }
         float SecondDerivationMagnitude { get; set; }

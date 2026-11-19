@@ -36,22 +36,9 @@ namespace ReFlex.Core.Filtering.Components
             {
                 var previous = new[] { (double)_lastInput.X, _lastInput.Y, _lastInput.Z };
                 var dt = timestampSeconds - _lastTime.Value;
-                var omega = 2 * Math.PI * _cutoffHz;
-                var alpha = omega / Math.Sqrt(2);
-                var decay = Math.Exp(-alpha * dt);
-                var cos = Math.Cos(alpha * dt);
-                var sin = Math.Sin(alpha * dt);
                 for (var axis = 0; axis < 3; axis++)
-                {
-                    var slope = (values[axis] - previous[axis]) / dt;
-                    var offset = 2 * alpha * slope / (omega * omega);
-                    var error = _state[axis] - previous[axis] + offset;
-                    var errorDerivative = _derivative[axis] - slope;
-                    _state[axis] = values[axis] - offset + decay *
-                        (error * cos + (errorDerivative + alpha * error) / alpha * sin);
-                    _derivative[axis] = slope + decay * (errorDerivative * cos -
-                        (alpha * errorDerivative + omega * omega * error) / alpha * sin);
-                }
+                    (_state[axis], _derivative[axis]) = Transition(
+                        _state[axis], _derivative[axis], previous[axis], values[axis], dt);
             }
             _lastInput = new Point3(input);
             _lastTime = timestampSeconds;
@@ -70,28 +57,33 @@ namespace ReFlex.Core.Filtering.Components
 
         private double[] Smooth(double[] input)
         {
-            var omega = 2 * Math.PI * _cutoffHz;
-            var alpha = omega / Math.Sqrt(2);
-            var beta = alpha;
             var result = new double[input.Length];
             result[0] = input[0];
             var derivative = 0d;
             for (var i = 1; i < input.Length; i++)
             {
                 var dt = TimesSeconds[i] - TimesSeconds[i - 1];
-                var slope = (input[i] - input[i - 1]) / dt;
-                // Particular solution for a linear input plus the exact damped homogeneous state.
-                var offset = 2 * alpha * slope / (omega * omega);
-                var error = result[i - 1] - input[i - 1] + offset;
-                var errorDerivative = derivative - slope;
-                var decay = Math.Exp(-alpha * dt);
-                var cos = Math.Cos(beta * dt);
-                var sin = Math.Sin(beta * dt);
-                result[i] = input[i] - offset + decay * (error * cos + (errorDerivative + alpha * error) / beta * sin);
-                derivative = slope + decay * (errorDerivative * cos -
-                    (alpha * errorDerivative + omega * omega * error) / beta * sin);
+                (result[i], derivative) = Transition(result[i - 1], derivative, input[i - 1], input[i], dt);
             }
             return result;
+        }
+
+        /// <summary>Exact damped state transition for a linearly changing input over dt seconds.</summary>
+        private (double Value, double Derivative) Transition(double value, double derivative,
+            double previousInput, double input, double dt)
+        {
+            var omega = 2 * Math.PI * _cutoffHz;
+            var alpha = omega / Math.Sqrt(2);
+            var slope = (input - previousInput) / dt;
+            var offset = 2 * alpha * slope / (omega * omega);
+            var error = value - previousInput + offset;
+            var errorDerivative = derivative - slope;
+            var decay = Math.Exp(-alpha * dt);
+            var cos = Math.Cos(alpha * dt);
+            var sin = Math.Sin(alpha * dt);
+            return (input - offset + decay * (error * cos + (errorDerivative + alpha * error) / alpha * sin),
+                slope + decay * (errorDerivative * cos -
+                    (alpha * errorDerivative + omega * omega * error) / alpha * sin));
         }
     }
 }

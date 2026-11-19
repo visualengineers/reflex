@@ -1,6 +1,6 @@
 import { By } from '@angular/platform-browser';
 import { queryElement } from '../../../../../../test/helpers/dom';
-import { DEFAULT_SETTINGS } from '@reflex/shared-types';
+import { DEFAULT_SETTINGS, TrackingServerAppSettings } from '@reflex/shared-types';
 import { Subject, of, throwError } from 'rxjs';
 import { InteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component';
 import { MockInteractionsVisualizationComponent } from './interactions-visualization/interactions-visualization.component.mock';
@@ -89,6 +89,37 @@ describe('Prediction options in ProcessingComponent', () => {
     testFixture.destroy();
     expect(settings.observed).toBe(false);
     expect(save.observed).toBe(false);
+  });
+
+});
+
+describe('Prediction sample capacity', () => {
+  setupTests();
+
+  it('preserves requested samples and shows the effective count as history shrinks and grows', async () => {
+    const settings = new Subject<TrackingServerAppSettings>();
+    settingsService.getSettings.mockReturnValue(settings);
+    testFixture.detectChanges();
+    const saved = { ...testComponent.predictionSettings, numFramesForPrediction: 100, useSecondDerivation: true };
+    for (const history of [3, 2, 0, 120]) {
+      settings.next({
+        ...DEFAULT_SETTINGS,
+        predictionSettings: saved,
+        filterSettingValues: {
+          ...DEFAULT_SETTINGS.filterSettingValues,
+          smoothingValues: { ...DEFAULT_SETTINGS.filterSettingValues.smoothingValues, interactionHistorySize: history }
+        }
+      });
+      await testFixture.whenStable();
+      const effective = Math.min(100, history);
+      expect(testComponent.predictionSettings.numFramesForPrediction).toBe(100);
+      expect(testComponent.effectivePredictionSamples).toBe(effective);
+      expect((testFixture.nativeElement as HTMLElement).textContent).toContain(`100 requested, ${effective} effective`);
+    }
+    processingService.setPredictionSettings.mockReturnValue(of(saved));
+    testComponent.savePrediction();
+    expect(processingService.setPredictionSettings).toHaveBeenCalledWith(saved);
+    expect(testComponent.predictionSettings.numFramesForPrediction).toBe(100);
   });
 
 });

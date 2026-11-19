@@ -186,6 +186,30 @@ public class AssignmentApiTest
         Assert.That(_manager.PredictionHorizonSeconds, Is.EqualTo(original));
     }
 
+    [Test]
+    public void RequestedPredictionSamplesPersistWhileRuntimeCapacityShrinksAndGrows()
+    {
+        _manager.InteractionHistorySize = 3;
+        var response = _controller.SetPrediction(new PredictionSettings { NumFramesForPrediction = 100 });
+        Assert.That(response.Value!.NumFramesForPrediction, Is.EqualTo(100));
+        // Applying saved settings may restore the configured history; explicitly change runtime capacity.
+        _manager.InteractionHistorySize = 3;
+        Assert.That(_manager.NumFramesForPrediction, Is.EqualTo(3));
+        _manager.InteractionHistorySize = 2;
+        Assert.That(_manager.NumFramesForPrediction, Is.EqualTo(2));
+        _manager.InteractionHistorySize = 120;
+        Assert.That(_manager.NumFramesForPrediction, Is.EqualTo(100));
+        Assert.That(Configuration().Settings.PredictionSettings.NumFramesForPrediction, Is.EqualTo(100));
+        _manager.Type = ObserverType.SingleTouch;
+        Assert.That(_manager.NumFramesForPrediction, Is.EqualTo(100), "Observer replacement preserves the request.");
+
+        var reloaded = Configuration();
+        var startup = new SettingsService(reloaded, _filter, _manager, _performance, new EventAggregator());
+        startup.Init();
+        _manager.InteractionHistorySize = 120;
+        Assert.That(_manager.NumFramesForPrediction, Is.EqualTo(100), "Startup restores the persisted request.");
+    }
+
     [TestCase(-.1, 3, .5f)]
     [TestCase(1.1, 3, .5f)]
     [TestCase(double.NaN, 3, .5f)]

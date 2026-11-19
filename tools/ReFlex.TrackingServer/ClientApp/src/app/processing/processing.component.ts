@@ -79,6 +79,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
     ...DEFAULT_SETTINGS.predictionSettings
   };
 
+  public predictionHistorySize = 0;
   public predictionMessage = '';
   public statusText = '';
   public eventId = 0;
@@ -86,9 +87,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   public interval = 0;
   public processors: Array<string> = [];
   public isInteractionProcessingActive = false;
-  public remoteSettings: RemoteProcessingServiceSettings = {
-    ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues
-  };
+  public remoteSettings: RemoteProcessingServiceSettings = { ...DEFAULT_SETTINGS.remoteProcessingServiceSettingsValues };
 
   public remoteAddress = '';
   public remotePort = 0;
@@ -99,7 +98,6 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   private readonly processingService = inject(ProcessingService);
   private readonly calibrationService = inject(CalibrationService);
   private readonly logService = inject(LogService);
-
   private predictionSettingsSubscription?: Subscription;
   private predictionSaveSubscription?: Subscription;
   private selectedProcessorSubscription?: Subscription;
@@ -110,7 +108,6 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   private saveSettingsSubscription?: Subscription;
   private statusSubscription?: Subscription;
   private readonly saveSettings$: Observable<TrackingServerAppSettings>;
-
   public constructor() {
     this.saveSettings$ = this.settingsService.getSettings().pipe(
       map((result) => {
@@ -122,6 +119,11 @@ export class ProcessingComponent implements OnInit, OnDestroy {
         this.settingsService.saveSettings(updatedSettings);
       })
     );
+  }
+
+  /** Capacity after applying the requested count; actual observations are listed in Forecast values. */
+  public get effectivePredictionSamples(): number {
+    return Math.min(Math.max(2, this.predictionSettings.numFramesForPrediction), this.predictionHistorySize);
   }
 
   public get forecastMilliseconds(): number {
@@ -350,6 +352,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
       .pipe(markViewForCheck(this.changeDetector)).subscribe({
         next: (settings) => {
           this.predictionSettings = { ...this.predictionSettings, ...settings.predictionSettings };
+          this.predictionHistorySize = Math.max(0, settings.filterSettingValues.smoothingValues.interactionHistorySize);
         },
         error: () => {
           this.predictionMessage = 'Could not load prediction settings.';
@@ -359,9 +362,7 @@ export class ProcessingComponent implements OnInit, OnDestroy {
   }
 
   private updateStatusText(): void {
-    this.statusText = this.isInteractionProcessingActive
-      ? 'Active'
-      : 'Inactive';
+    this.statusText = this.isInteractionProcessingActive ? 'Active' : 'Inactive';
   }
 
   private updateProcessor(idx: number): void {

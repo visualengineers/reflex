@@ -276,7 +276,7 @@ curl -X POST "$BASE_URL/api/Settings/AssignmentBirthCost" \
 |---|---|---|---|
 | `predictionHorizonSeconds` | `double` | `0.05` | Forecast horizon in seconds; must be finite and between `0` and `1` (inclusive). |
 | `useVelocityPrediction` | `bool` | `true` | Enables velocity-based prediction. |
-| `numFramesForPrediction` | `int` | `3` | Number of samples used for prediction; must be at least `2`. |
+| `numFramesForPrediction` | `int` | `3` | Requested sample capacity; must be at least `2`. Saved and returned without clamping to history size. Effective capacity is limited by history and automatically increases again when history grows. |
 | `useSecondDerivation` | `bool` | `false` | Enables the acceleration contribution to prediction. |
 | `secondDerivationMagnitude` | `float` | `0.5` | Acceleration weight; must be finite and between `0` and `1` (inclusive). |
 

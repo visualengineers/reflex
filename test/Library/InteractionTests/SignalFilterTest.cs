@@ -169,6 +169,22 @@ public class SignalFilterTest
         Assert.That(batch.Last().X, Is.EqualTo(1).Within(.00001));
     }
 
+    [Test]
+    public void ButterworthBatchAndStreamingAgreeForIrregularThreeAxisMeasurements()
+    {
+        var times = new[] { 1d, 1.01, 1.04, 1.05, 1.2, 1.7, 2.5 };
+        var points = times.Select((t, i) => new Point3((float)(t * t), i % 2 == 0 ? -3 : 4, (float)(2 - t))).ToList();
+        var batch = new ButterworthFilter().Process(points, times);
+        var streaming = new ButterworthFilter();
+        for (var i = 0; i < points.Count; i++)
+        {
+            var actual = streaming.ProcessSample(points[i], times[i]);
+            Assert.That(actual.X, Is.EqualTo(batch[i].X).Within(.00001));
+            Assert.That(actual.Y, Is.EqualTo(batch[i].Y).Within(.00001));
+            Assert.That(actual.Z, Is.EqualTo(batch[i].Z).Within(.00001));
+        }
+    }
+
     [TestCase(-1, 0)]
     [TestCase(1, -1)]
     [TestCase(1, 3)]
