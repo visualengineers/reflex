@@ -4,8 +4,9 @@ namespace ReFlex.Core.Common.Components
 {
     /// <summary>
     /// Motion in raster coordinates per second (Z is normalized depth); acceleration is units/s².
-    /// Both forecasts target PredictionTimestampSeconds. MeasuredPosition and SmoothedPosition belong
-    /// to FrameId; a Lost contact retains its last real measurement. Diagnostics are never fed
+    /// Both forecasts target PredictionTimestampSeconds. FrameId identifies the latest processed
+    /// observation; LastMeasuredFrameId identifies the contact's last real measurement. Lost contacts
+    /// retain that measurement and its smoothed position. Diagnostics are never fed
     /// back as measurements. Derivatives are evaluated at the last measurement time.
     /// </summary>
     public class InteractionVelocity

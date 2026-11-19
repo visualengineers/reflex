@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using NLog;
 using System.Diagnostics;
+using System.Linq;
 using MathNet.Numerics;
+using NLog;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Util;
 using ReFlex.Core.Filtering.Components;
@@ -62,6 +62,10 @@ namespace ReFlex.Core.Interactivity.Components
 
         #region Properties
 
+        /// <summary>
+        /// Strict Manhattan-distance gate in sensor pixels. The legacy helper named
+        /// Point3.Squared2DDistance computes |dx| + |dy|, not squared Euclidean distance.
+        /// </summary>
         public float TouchMergeDistance2D { get; set; } = 64f;
 
         /// <summary>Use global minimum-cost assignment; false restores greedy one-to-one matching.
@@ -592,8 +596,11 @@ namespace ReFlex.Core.Interactivity.Components
             var x = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.X).ToArray(), order);
             var y = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Y).ToArray(), order);
             var z = Fit.Polynomial(times, samples.Select(sample => (double)sample.Position.Z).ToArray(), order);
-            var velocity = new Point3((float)(x[1]/span), (float)(y[1]/span), (float)(z[1]/span));
-            var acceleration = order == 2 ? new Point3((float)(2*x[2]/(span*span)), (float)(2*y[2]/(span*span)), (float)(2*z[2]/(span*span))) : new Point3();
+            var velocity = new Point3((float)(x[1] / span), (float)(y[1] / span), (float)(z[1] / span));
+            var acceleration = order == 2
+                ? new Point3((float)(2 * x[2] / (span * span)),
+                    (float)(2 * y[2] / (span * span)), (float)(2 * z[2] / (span * span)))
+                : new Point3();
             return (velocity, acceleration, samples.Length);
         }
 

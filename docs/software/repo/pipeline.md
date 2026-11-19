@@ -49,12 +49,12 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Analysis Layer
 
-The detecting observers share the template pipeline in `InteractionObserverBase.Update()`. `CheckInitialState()` first validates readiness; `Error` or `Skipped` stops processing without analysis or publication. The remaining stages are:
+The detecting observers share the template pipeline in `InteractionObserverBase.Update()`. `CheckInitialState()` first validates readiness; `Error` or `Skipped` stops analysis and ages existing contacts through `AdvanceTime`, which can publish retained contacts or an empty result. The remaining stages are:
 
 1. **Candidate extraction (`Analyze`)**: SingleTouch selects the valid point with the greatest absolute deviation from the zero plane. MultiTouch searches the vector field for local extrema. Remote sends a regularly sampled 2D depth raster to the Python gRPC service, which applies spatial SOS filtering and returns geometric candidates. Remote preparation preserves missing positions and request-local sampling geometry; see the [gRPC recipe]({{ site.baseurl }}/software/recipes/grpc-service.html).
 2. **Depth conversion (`ConvertDepthValue`)**: Reject non-finite values and points within the inclusive `MinDistance` dead zone. Classify absolute depth below `Distance` as Push and above it as Pull, then normalise Z to [-1, 1]. Candidate X/Y are sensor-array indices at this stage, not world coordinates.
 3. **Extremum classification and filtering**: Classify using the original point cloud before smoothing. `Global` uses absolute depth relative to the zero plane; local methods examine neighbouring pixels. Remove undefined and opposite extrema before they enter the history. This stage applies to all detecting observers, including Remote and SingleTouch.
-4. **History and smoothing (`ComputeSmoothingValue`)**: Associate touch IDs and update temporal history and smoothing. Earlier touch IDs may remain in the history.
+4. **Consolidation, tracking and smoothing**: Consolidate nearby same-type extrema, assign touch IDs and update timestamped samples through `ComputeSmoothingValue`. Track lifetime uses elapsed time independently of history capacity. Observations older than the configured timeout age existing tracks instead of contributing measurements.
 5. **Output selection (`SelectSmoothedInteractions`)**: The default keeps all smoothed points. SingleTouch selects at most one: the most recent point, with the highest touch ID on timestamp ties. This selection leaves the history unchanged.
 6. **Confidence and publication**: Keep selected points with `Confidence > MinConfidence`, then publish `NewInteractions` exactly once for a successful update, including an empty result. In SingleTouch, a selected point that fails confidence is not replaced by an older point. Remote candidates can require several frames to build sufficient confidence.
 

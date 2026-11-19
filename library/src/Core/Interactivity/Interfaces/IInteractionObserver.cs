@@ -98,7 +98,8 @@ namespace ReFlex.Core.Interactivity.Interfaces
         float ConfidenceDecayPerSecond { get; set; }
         
         /// <summary>
-        /// defines the squared distance to closest points to be recognized as same point
+        /// Strict Manhattan-distance gate in sensor pixels for recognizing the same contact.
+        /// The legacy Point3.Squared2DDistance helper computes abs(dx) + abs(dy).
         /// </summary>
         float TouchMergeDistance2D { get; set; }
         

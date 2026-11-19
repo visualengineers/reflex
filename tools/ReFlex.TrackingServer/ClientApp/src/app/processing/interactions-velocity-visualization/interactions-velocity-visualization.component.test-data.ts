@@ -25,4 +25,3 @@ export const predictionSnapshot = (frame = 3): InteractionVelocity => ({
   predictedPositionBasic: point(105),
   predictedPositionAdvanced: point(106)
 });
-

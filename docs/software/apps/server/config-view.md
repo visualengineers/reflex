@@ -9,6 +9,7 @@
 4. [Confidence](#confidence)
 5. [Filter](#filter)
 6. [Extremum Classification](#extremum-classification)
+   - [Tracking and Smoothing](#tracking-and-smoothing)
 7. [Additional Settings](#additional-settings)
 8. [Performance Visualization](#performance-visualization)
 
@@ -63,8 +64,9 @@ __[⬆ back to top](#table-of-contents)__
 
 ## Confidence
 
-Confidence describes to which extent an interaction is based on a measurement error (e.g. jitter) or can be categorized as stable touch detection. To compute the value, on each frame, the associated touch point is recognized, the confidence value is increased (to a maximum value specified by `Maximum`). When an interaction is not recognized anymore, the confidence value is decreased for every frame the interaction is not detected (until the confidence value is 0).
-This prevents flickering in case a touch point is not recognized anymore by some frames, but also introduces a certain lag, as the interaction is still "valid" when not touching the display, until the confidence value falls below the `Minimal` value. The lag also occurs if the `Minimal` value is rather high, as the interaction needs to be detected for the number of consecutive frames, before the interaction is marked as valid.
+Confidence describes the temporal evidence for a tracked contact. Consecutive detections gain confidence according to elapsed capture time and **Confidence gain** (units/s), up to **Maximum**. Missing intervals never earn confidence; **Confidence decay** reduces confidence over elapsed time without measurements. A contact is published only while its confidence is strictly greater than **Minimal**.
+
+Contact retention and observation timeout separately limit contact lifetime. Reaching maximum confidence does not end a measured contact. Higher publication thresholds can delay initial visibility; longer retention can keep a released contact visible briefly.
 
 ![Configuration for Distances](/reflex/assets/img/server/config-view_confidence.png)
 
@@ -89,6 +91,18 @@ Settings in this section specify option for several aspects in regard of process
 | Box-Filter passes | [0,10] | Number of iterations the box-blur is applied. A larger number of iterations results in a better filter result, but with decreased performance. | - |
 | Box-Filter Threads | [0, 32] | Max Number of Threads to use for filtering. Best value is usually less or equal the number of logical processors. When providing `0`, the system decides which is the best value, `1` means single core performance. | - |
 | Minimum angle | [0, 5] | Minimum angle between neighboring vectors for extremum detection. Used to filter low frequency noise. | Degrees |
+
+__[⬆ back to top](#table-of-contents)__
+
+## Tracking and Smoothing
+
+**Contact retention** bridges missed detections after a completed sensor observation, in seconds. **Observation timeout** limits sensor/processing silence and rejects observations that complete too late. These replace frame-count-based lifetime handling; stored history length only controls sample capacity.
+
+**Minimum-cost assignment** optimizes all contact associations together. **Missing contact cost** and **New contact cost** use distance normalized by the assignment limit. Turning the strategy off selects greedy one-to-one matching and preserves current IDs/history. The assignment gate uses Manhattan distance in sensor pixels; the separate **Extremum Merge Radius** uses Euclidean distance and combines same-type extrema before assignment.
+
+**Observation Snapshots** copies paired sensor rasters for analysis. Disabling it reserves the live rasters until analysis finishes, so incoming sensor frames are skipped during that interval.
+
+See the [configuration reference]({{ site.baseurl }}/software/repo/config-file.html#smoothingvalues) for defaults, validation and migration of older configuration files.
 
 __[⬆ back to top](#table-of-contents)__
 

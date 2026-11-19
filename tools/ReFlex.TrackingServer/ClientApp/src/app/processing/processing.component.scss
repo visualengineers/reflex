@@ -36,4 +36,26 @@
     line-height: 1.8rem;
 }
 
-.processing > .content__element { min-width: 0; }
+.processing > .content__element {
+    min-width: 0;
+}
+
+.legend-prediction-symbol--measured {
+    color: #24364b;
+}
+
+.legend-prediction-symbol--smoothed {
+    color: #a65d00;
+}
+
+.legend-prediction-symbol--matching {
+    color: #7138a8;
+}
+
+.legend-prediction-symbol--linear {
+    color: #007d8a;
+}
+
+.legend-prediction-symbol--accelerated {
+    color: #bf285b;
+}
