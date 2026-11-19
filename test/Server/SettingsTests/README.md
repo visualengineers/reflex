@@ -6,7 +6,9 @@ directories; property-only substitutes remove sensor, network and filter-mask de
 
 Coverage includes legacy defaults, dedicated GET/POST operations, immediate runtime application,
 file persistence, startup reload, full-settings save/import, backup restore, reset and rejection
-of invalid costs without changing memory or disk.
+of invalid costs without changing memory or disk. Prediction regressions additionally verify
+copy-before-save backups, restoration of all prediction fields, reset, persisted values and
+invalid requests leaving runtime settings, saved configuration and backup unchanged.
 
 Run on an ARM64 host from the repository root:
 

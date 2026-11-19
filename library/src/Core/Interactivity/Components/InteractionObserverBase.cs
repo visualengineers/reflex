@@ -18,6 +18,8 @@ namespace ReFlex.Core.Interactivity.Components
 
         private readonly Stopwatch _stopWatch = new();
 
+        // Configuration access shares the frame/publication lock. Never hold it across Analyze awaits.
+        private readonly object _trackingSync = new();
         private readonly InteractionSmoothingBehaviour _smoothingBehaviour;
         private int _numSmoothingFrames = 5;
         private int _historySize = 25;
@@ -104,60 +106,66 @@ namespace ReFlex.Core.Interactivity.Components
         /// <summary>Euclidean radius in sensor pixels for consolidating same-type extrema before ID assignment; zero disables it.</summary>
         public float ExtremumMergeRadius
         {
-            get => _extremumMergeRadius;
-            set => _extremumMergeRadius = ExtremumConsolidator.ValidateRadius(value);
+            get { lock (_trackingSync) return _extremumMergeRadius; }
+            set { lock (_trackingSync) _extremumMergeRadius = ExtremumConsolidator.ValidateRadius(value); }
         }
 
         public double PredictionHorizonSeconds
         {
-            get => _smoothingBehaviour.PredictionHorizonSeconds;
-            set => _smoothingBehaviour.PredictionHorizonSeconds = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.PredictionHorizonSeconds; }
+            set { lock (_trackingSync) _smoothingBehaviour.PredictionHorizonSeconds = value; }
         }
 
         public bool UseVelocityPrediction
         {
-            get => _smoothingBehaviour.UseVelocityForMapping;
-            set => _smoothingBehaviour.UseVelocityForMapping = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.UseVelocityForMapping; }
+            set { lock (_trackingSync) _smoothingBehaviour.UseVelocityForMapping = value; }
         }
         public int NumFramesForPrediction
         {
-            get => _smoothingBehaviour.NumFramesForPrediction;
-            set => _smoothingBehaviour.NumFramesForPrediction = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.NumFramesForPrediction; }
+            set { lock (_trackingSync) _smoothingBehaviour.NumFramesForPrediction = value; }
         }
         public bool UseSecondDerivation
         {
-            get => _smoothingBehaviour.UseSecondDerivation;
-            set => _smoothingBehaviour.UseSecondDerivation = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.UseSecondDerivation; }
+            set { lock (_trackingSync) _smoothingBehaviour.UseSecondDerivation = value; }
         }
         public float SecondDerivationMagnitude
         {
-            get => _smoothingBehaviour.SecondDerivationMagnitude;
-            set => _smoothingBehaviour.SecondDerivationMagnitude = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.SecondDerivationMagnitude; }
+            set { lock (_trackingSync) _smoothingBehaviour.SecondDerivationMagnitude = value; }
         }
 
         public int InteractionHistorySize
         {
-            get => _smoothingBehaviour?.NumFramesHistory ?? _historySize;
+            get { lock (_trackingSync) return _smoothingBehaviour?.NumFramesHistory ?? _historySize; }
             set
             {
-                _historySize = Math.Max(0, value);
-                if (_smoothingBehaviour != null)
+                lock (_trackingSync)
                 {
-                    _smoothingBehaviour.NumFramesHistory = _historySize;
-                    // update depending smoothing/filter values
-                    NumSmoothingFrames = _numSmoothingFrames;
+                    _historySize = Math.Max(0, value);
+                    if (_smoothingBehaviour != null)
+                    {
+                        _smoothingBehaviour.NumFramesHistory = _historySize;
+                        // update depending smoothing/filter values
+                        NumSmoothingFrames = _numSmoothingFrames;
+                    }
                 }
             }
         }
 
         public int NumSmoothingFrames
         {
-            get => _smoothingBehaviour?.NumFramesSmoothing ?? _numSmoothingFrames;
+            get { lock (_trackingSync) return _smoothingBehaviour?.NumFramesSmoothing ?? _numSmoothingFrames; }
             set
             {
-                _numSmoothingFrames = Math.Clamp(value, 0, InteractionHistorySize);
-                if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.NumFramesSmoothing = _numSmoothingFrames;
+                lock (_trackingSync)
+                {
+                    _numSmoothingFrames = Math.Clamp(value, 0, InteractionHistorySize);
+                    if (_smoothingBehaviour != null)
+                        _smoothingBehaviour.NumFramesSmoothing = _numSmoothingFrames;
+                }
             }
         }
 
@@ -167,81 +175,93 @@ namespace ReFlex.Core.Interactivity.Components
 
         public bool UseMinimumCostAssignment
         {
-            get => _smoothingBehaviour.UseMinimumCostAssignment;
-            set => _smoothingBehaviour.UseMinimumCostAssignment = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.UseMinimumCostAssignment; }
+            set { lock (_trackingSync) _smoothingBehaviour.UseMinimumCostAssignment = value; }
         }
 
         public float AssignmentMissCost
         {
-            get => _smoothingBehaviour.AssignmentMissCost;
-            set => _smoothingBehaviour.AssignmentMissCost = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.AssignmentMissCost; }
+            set { lock (_trackingSync) _smoothingBehaviour.AssignmentMissCost = value; }
         }
 
         public float AssignmentBirthCost
         {
-            get => _smoothingBehaviour.AssignmentBirthCost;
-            set => _smoothingBehaviour.AssignmentBirthCost = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.AssignmentBirthCost; }
+            set { lock (_trackingSync) _smoothingBehaviour.AssignmentBirthCost = value; }
         }
 
         public float ConfidenceGainPerSecond
         {
-            get => _smoothingBehaviour.ConfidenceGainPerSecond;
-            set => _smoothingBehaviour.ConfidenceGainPerSecond = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.ConfidenceGainPerSecond; }
+            set { lock (_trackingSync) _smoothingBehaviour.ConfidenceGainPerSecond = value; }
         }
         public float ConfidenceDecayPerSecond
         {
-            get => _smoothingBehaviour.ConfidenceDecayPerSecond;
-            set => _smoothingBehaviour.ConfidenceDecayPerSecond = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.ConfidenceDecayPerSecond; }
+            set { lock (_trackingSync) _smoothingBehaviour.ConfidenceDecayPerSecond = value; }
         }
 
         public double ContactRetentionSeconds
         {
-            get => _smoothingBehaviour?.ContactRetentionSeconds ?? _contactRetentionSeconds;
+            get { lock (_trackingSync) return _smoothingBehaviour?.ContactRetentionSeconds ?? _contactRetentionSeconds; }
             set
             {
-                _contactRetentionSeconds = ValidateContactRetention(value);
-                if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.ContactRetentionSeconds = _contactRetentionSeconds;
+                lock (_trackingSync)
+                {
+                    _contactRetentionSeconds = ValidateContactRetention(value);
+                    if (_smoothingBehaviour != null)
+                        _smoothingBehaviour.ContactRetentionSeconds = _contactRetentionSeconds;
+                }
             }
         }
 
         /// <summary>Maximum sensor/processing silence and acceptable observation age, in seconds.</summary>
         public double ObservationTimeoutSeconds
         {
-            get => _smoothingBehaviour.ObservationTimeoutSeconds;
-            set => _smoothingBehaviour.ObservationTimeoutSeconds = value;
+            get { lock (_trackingSync) return _smoothingBehaviour.ObservationTimeoutSeconds; }
+            set { lock (_trackingSync) _smoothingBehaviour.ObservationTimeoutSeconds = value; }
         }
 
         public float TouchMergeDistance2D
         {
-            get => _touchMergeDistance2d;
+            get { lock (_trackingSync) return _touchMergeDistance2d; }
             set
             {
-                _touchMergeDistance2d = value;
-                if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.TouchMergeDistance2D = value;
+                lock (_trackingSync)
+                {
+                    _touchMergeDistance2d = value;
+                    if (_smoothingBehaviour != null)
+                        _smoothingBehaviour.TouchMergeDistance2D = value;
+                }
             }
         }
 
         public float DepthScale
         {
-            get => _depthScale;
+            get { lock (_trackingSync) return _depthScale; }
             set
             {
-                if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.DepthScale = value;
-                _depthScale = value;
+                lock (_trackingSync)
+                {
+                    if (_smoothingBehaviour != null)
+                        _smoothingBehaviour.DepthScale = value;
+                    _depthScale = value;
+                }
             }
         }
 
         public FilterType FilterType
         {
-            get => _filterType;
+            get { lock (_trackingSync) return _filterType; }
             set
             {
-                _filterType = value;
-                if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.UpdateFilterType(_filterType);
+                lock (_trackingSync)
+                {
+                    _filterType = value;
+                    if (_smoothingBehaviour != null)
+                        _smoothingBehaviour.UpdateFilterType(_filterType);
+                }
             }
         }
 
@@ -270,12 +290,15 @@ namespace ReFlex.Core.Interactivity.Components
         /// </value>
         public virtual float MaxConfidence
         {
-            get => _maxConfidence;
+            get { lock (_trackingSync) return _maxConfidence; }
             set
             {
-                _maxConfidence = value;
-                if (_smoothingBehaviour != null)
-                    _smoothingBehaviour.MaxConfidence = (int) MaxConfidence;
+                lock (_trackingSync)
+                {
+                    _maxConfidence = value;
+                    if (_smoothingBehaviour != null)
+                        _smoothingBehaviour.MaxConfidence = (int) MaxConfidence;
+                }
             }
         }
 
@@ -331,7 +354,6 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         private double? _observationTime;
-        private readonly object _trackingSync = new();
 
         public async Task<ProcessingResult> Update(TrackingObservation observation)
         {

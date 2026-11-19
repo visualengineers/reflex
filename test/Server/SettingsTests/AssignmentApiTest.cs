@@ -10,6 +10,7 @@ using Prism.Events;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
+using ReFlex.Server.Data.Config;
 using TrackingServer.Controllers;
 using TrackingServer.Model;
 
@@ -156,6 +157,58 @@ public class AssignmentApiTest
         _controller.LoadSettings(value);
         Assert.That(_manager.UseMinimumCostAssignment, Is.True);
         Assert.That(_manager.AssignmentMissCost, Is.Zero);
+    }
+
+    [Test]
+    public void PredictionSavePreservesBackupAndRestoreAppliesPreviousValues()
+    {
+        var original = _manager.PredictionHorizonSeconds;
+        _controller.SetPrediction(new PredictionSettings
+        {
+            PredictionHorizonSeconds = .25, UseVelocityPrediction = false,
+            NumFramesForPrediction = 4, UseSecondDerivation = true, SecondDerivationMagnitude = .75f
+        });
+        Assert.That(_manager.PredictionHorizonSeconds, Is.EqualTo(.25));
+        Assert.That(Configuration().Settings.PredictionSettings.PredictionHorizonSeconds, Is.EqualTo(.25));
+        var backup = JObject.Parse(File.ReadAllText(Path.Combine(_directory, "backup.json")));
+        Assert.That((double)backup["PredictionSettings"]!["PredictionHorizonSeconds"]!, Is.EqualTo(original));
+        _controller.Restore();
+        Assert.Multiple(() =>
+        {
+            Assert.That(_manager.PredictionHorizonSeconds, Is.EqualTo(original));
+            Assert.That(_manager.UseVelocityPrediction, Is.True);
+            Assert.That(_manager.NumFramesForPrediction, Is.EqualTo(3));
+            Assert.That(_manager.UseSecondDerivation, Is.False);
+            Assert.That(_manager.SecondDerivationMagnitude, Is.EqualTo(.5f));
+        });
+        _controller.SetPrediction(new PredictionSettings { PredictionHorizonSeconds = .75 });
+        _controller.Reset();
+        Assert.That(_manager.PredictionHorizonSeconds, Is.EqualTo(original));
+    }
+
+    [TestCase(-.1, 3, .5f)]
+    [TestCase(1.1, 3, .5f)]
+    [TestCase(double.NaN, 3, .5f)]
+    [TestCase(.05, 1, .5f)]
+    [TestCase(.05, 3, -1f)]
+    [TestCase(.05, 3, float.PositiveInfinity)]
+    public void InvalidPredictionDoesNotChangeRuntimeSettingsOrBackup(double horizon, int samples, float weight)
+    {
+        _controller.SetPrediction(new PredictionSettings { PredictionHorizonSeconds = .25 });
+        var settings = File.ReadAllText(Path.Combine(_directory, "settings.json"));
+        var backup = File.ReadAllText(Path.Combine(_directory, "backup.json"));
+        var response = _controller.SetPrediction(new PredictionSettings
+        {
+            PredictionHorizonSeconds = horizon, NumFramesForPrediction = samples, SecondDerivationMagnitude = weight
+        });
+        Assert.Multiple(() =>
+        {
+            Assert.That(response.Result, Is.TypeOf<BadRequestObjectResult>());
+            Assert.That(_manager.PredictionHorizonSeconds, Is.EqualTo(.25));
+            Assert.That(_configuration.Settings.PredictionSettings.PredictionHorizonSeconds, Is.EqualTo(.25));
+            Assert.That(File.ReadAllText(Path.Combine(_directory, "settings.json")), Is.EqualTo(settings));
+            Assert.That(File.ReadAllText(Path.Combine(_directory, "backup.json")), Is.EqualTo(backup));
+        });
     }
 
     // Small property-only substitutes avoid hardware/network dependencies. Unexpected commands fail.

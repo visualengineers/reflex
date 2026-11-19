@@ -315,6 +315,44 @@ describe('Prediction stream lifecycle', () => {
     expect(stream.observed).toBe(false);
   });
 
+  it('recovers on the next frame after calibration fails without resubscribing', async () => {
+    const stream = new Subject<Array<InteractionVelocity>>();
+    processing.getVelocities.mockReturnValue(stream);
+    calibration.computeCalibratedPosition.mockReturnValueOnce(throwError(() => new Error('temporary failure')));
+    const fixture = await mount(InteractionsVisualizationComponent);
+    fixture.componentRef.setInput('isProcessing', true);
+    await fixture.whenStable();
+    stream.next([predictionSnapshot()]);
+    await fixture.whenStable();
+    expect(fixture.componentInstance.predictionData).toEqual([]);
+    expect(fixture.componentInstance.predictionMessage).not.toBe('');
+    expect(stream.observed).toBe(true);
+    stream.next([predictionSnapshot()]);
+    await fixture.whenStable();
+    expect(fixture.componentInstance.predictionData).toHaveLength(1);
+    expect(fixture.componentInstance.predictionMessage).toBe('');
+    expect(processing.getVelocities.mock.calls).toHaveLength(1);
+    fixture.destroy();
+    expect(stream.observed).toBe(false);
+  });
+
+  it('cancels pending calibration when predictions are hidden', async () => {
+    const stream = new Subject<Array<InteractionVelocity>>();
+    const pending = new Subject<HttpResponse<Array<Interaction>>>();
+    processing.getVelocities.mockReturnValue(stream);
+    calibration.computeCalibratedPosition.mockReturnValue(pending);
+    const fixture = await mount(InteractionsVisualizationComponent);
+    fixture.componentRef.setInput('isProcessing', true);
+    await fixture.whenStable();
+    stream.next([predictionSnapshot()]);
+    expect(pending.observed).toBe(true);
+    fixture.componentRef.setInput('showPrediction', false);
+    await fixture.whenStable();
+    expect(pending.observed).toBe(false);
+    expect(stream.observed).toBe(false);
+    expect(fixture.componentInstance.predictionData).toEqual([]);
+  });
+
   it('clears predictions and displays a stream failure', async () => {
     const stream = new Subject<Array<InteractionVelocity>>();
     processing.getVelocities.mockReturnValue(stream);

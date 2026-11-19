@@ -73,7 +73,7 @@ namespace TrackingServer.Controllers
         [HttpPost("UseMinimumCostAssignment")]
         public ActionResult<bool> SetUseMinimumCostAssignment([FromBody] bool value)
         {
-            UpdateAssignmentSettings(settings => settings.UseMinimumCostAssignment = value);
+            UpdateSettings(settings => settings.UseMinimumCostAssignment = value);
             return _configManager.Settings.UseMinimumCostAssignment;
         }
 
@@ -85,7 +85,7 @@ namespace TrackingServer.Controllers
         {
             if (!float.IsFinite(value) || value < 0)
                 return BadRequest("Assignment costs must be finite and non-negative.");
-            UpdateAssignmentSettings(settings => settings.AssignmentMissCost = value);
+            UpdateSettings(settings => settings.AssignmentMissCost = value);
             return _configManager.Settings.AssignmentMissCost;
         }
 
@@ -97,7 +97,7 @@ namespace TrackingServer.Controllers
         {
             if (!float.IsFinite(value) || value < 0)
                 return BadRequest("Assignment costs must be finite and non-negative.");
-            UpdateAssignmentSettings(settings => settings.AssignmentBirthCost = value);
+            UpdateSettings(settings => settings.AssignmentBirthCost = value);
             return _configManager.Settings.AssignmentBirthCost;
         }
 
@@ -108,13 +108,7 @@ namespace TrackingServer.Controllers
                 value.NumFramesForPrediction < 2 || !float.IsFinite(value.SecondDerivationMagnitude) ||
                 value.SecondDerivationMagnitude < 0 || value.SecondDerivationMagnitude > 1)
                 return BadRequest("Use at least two samples, a forecast horizon of 0 to 1 seconds and an acceleration weight between 0 and 1.");
-            _interactionManager.PredictionHorizonSeconds = value.PredictionHorizonSeconds;
-            _interactionManager.UseVelocityPrediction = value.UseVelocityPrediction;
-            _interactionManager.NumFramesForPrediction = value.NumFramesForPrediction;
-            _interactionManager.UseSecondDerivation = value.UseSecondDerivation;
-            _interactionManager.SecondDerivationMagnitude = value.SecondDerivationMagnitude;
-            _configManager.Settings.PredictionSettings = value;
-            _configManager.Update(_configManager.Settings);
+            UpdateSettings(settings => settings.PredictionSettings = value);
             return value;
         }
 
@@ -475,7 +469,7 @@ namespace TrackingServer.Controllers
         }
 
 
-        private void UpdateAssignmentSettings(Action<TrackingServerAppSettings> update)
+        private void UpdateSettings(Action<TrackingServerAppSettings> update)
         {
             // Keep the previous configuration intact until Update has written its backup.
             var settings = JsonConvert.DeserializeObject<TrackingServerAppSettings>(

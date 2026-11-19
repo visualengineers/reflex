@@ -7,6 +7,18 @@ Reviewed on 2026-11-19. Branch: `fix/interaction-smoothing-behaviour`.
 - Scope: `git diff main...HEAD`, 164 changed files. PR #3512 metadata/comments could not be retrieved; this review uses repository contents.
 - The initial working tree was clean. Review edits are uncommitted and limited to documentation, comments and presentation/style cleanup. Functional changes below are proposals.
 
+## Follow-up implementation
+
+The three findings below have been addressed in the subsequent working-tree changes:
+
+- Tracker configuration getters/setters share the observer's frame/publication lock. This implements the incremental locking fix proposed below, without introducing a new public configuration API. No monitor is held across remote analysis awaits. Barrier-based regression cases cover history reset/re-enabling, smoothing, filter, prediction and assignment changes during an in-flight frame.
+- Prediction saves use the common copy-before-update helper and the normal configuration-update path. Integration tests cover backup contents, restore/reset, persistence and invalid requests without mutation.
+- Calibration errors are handled inside the per-frame observable, preserving the velocity subscription. The next successful frame clears the error. Tests cover failure followed by success without toggling and cancellation of a pending calibration when hiding predictions.
+
+Follow-up verification: 294 interaction tests, 14 server settings tests (ARM64), and 186 UI tests passed; frontend lint and the working-tree whitespace check passed. This adds 14 regression cases across the three findings. Existing compiler/package warnings remain.
+
+The original review and reproduction evidence are retained below for context.
+
 ## Findings requiring functional changes
 
 ### P1: Apply live tracker configuration under the tracking lock

@@ -25,7 +25,7 @@ import {
   Interaction,
   InteractionVelocity
 } from '@reflex/shared-types';
-import { Subscription, exhaustMap, tap } from 'rxjs';
+import { EMPTY, Subscription, catchError, exhaustMap, tap } from 'rxjs';
 import { LogService } from 'src/app/log/log.service';
 import { ProcessingService } from 'src/shared/services/processing.service';
 import { CalibrationService } from 'src/shared/services/calibration.service';
@@ -112,10 +112,21 @@ export class InteractionsVisualizationComponent implements OnInit, OnChanges, Af
     this.predictionSubscription = this.processingService.getVelocities()
       .pipe(
         tap((data) => this.predictionDataChange.emit(data)),
-        exhaustMap((data) => calibratePredictions(data, this.calibrationService)),
+        exhaustMap((data) => calibratePredictions(data, this.calibrationService).pipe(
+          catchError(() => {
+            // A failed frame must not unsubscribe from subsequent velocity snapshots.
+            this.predictionMessage = 'Prediction stream or calibration unavailable.';
+            this.predictionData = [];
+            this.predictionDataChange.emit([]);
+            this.changeDetector.markForCheck();
+
+            return EMPTY;
+          })
+        )),
         markViewForCheck(this.changeDetector)
       ).subscribe({
         next: (data) => {
+          this.predictionMessage = '';
           this.predictionData = data;
         },
         error: () => {
