@@ -76,7 +76,6 @@ namespace ReFlex.Frontend.ServerWPF
             containerRegistry.RegisterSingleton(typeof(IFilterManager), typeof(FilterManager));
             containerRegistry.RegisterSingleton(typeof(INetworkManager), typeof(NetworkManager));
             containerRegistry.RegisterSingleton(typeof(ICalibrationManager), typeof(CalibrationManager));
-            containerRegistry.RegisterSingleton(typeof(IInteractionManager), typeof(InteractionManager));
             containerRegistry.RegisterSingleton(typeof(ITimerLoop), typeof(TimerLoop));
             containerRegistry.RegisterSingleton(typeof(IPerformanceAggregator), typeof(PerformanceAggregator));
 
@@ -90,7 +89,12 @@ namespace ReFlex.Frontend.ServerWPF
             containerRegistry.RegisterSingleton(typeof(IRemoteInteractionProcessorService),
                 typeof(MockRemoteInteractionProcessorService));
             
-            var interactionManager = Container.Resolve<IInteractionManager>();
+            var interactionManager = new InteractionManager(
+                Container.Resolve<IDepthImageManager>(),
+                Container.Resolve<IRemoteInteractionProcessorService>(),
+                Container.Resolve<IPerformanceAggregator>(),
+                Container.Resolve<ITrackingManager>());
+            containerRegistry.RegisterInstance<IInteractionManager>(interactionManager);
             interactionManager.Init(savedInteractionType);
 
             DispatcherUnhandledException += OnUnhandledException;

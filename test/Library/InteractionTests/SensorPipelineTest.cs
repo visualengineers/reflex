@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Implementation.Components;
 using Implementation.Interfaces;
 using NUnit.Framework;
+using Prism.Events;
 using ReFlex.Core.Common.Components;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Core.Common.Util;
@@ -12,6 +13,7 @@ using ReFlex.Core.Interactivity.Components;
 using ReFlex.Core.Interactivity.Interfaces;
 using ReFlex.Core.Interactivity.Util;
 using ReFlex.Core.Tracking.Util;
+using ReFlex.Core.Tracking.Interfaces;
 
 namespace InteractionTests;
 
@@ -24,8 +26,8 @@ public class SensorPipelineTest
     {
         protected override double GetTimestampSeconds() => clock.Now;
     }
-    private sealed class Manager(Depth depth, Service service, Clock clock)
-        : InteractionManager(depth, service, new Performance())
+    private sealed class Manager(Depth depth, Service service, Clock clock, ITrackingManager tracking = null)
+        : InteractionManager(depth, service, new Performance(), tracking)
     {
         protected override double GetTimestampSeconds() => clock.Now;
         public IInteractionObserver CurrentObserver;
@@ -38,10 +40,20 @@ public class SensorPipelineTest
         public Depth Depth = new();
         public Service Service = new();
         public Manager Manager;
+        public TrackingManager Tracking;
         public IList<InteractionVelocity> Diagnostics = new List<InteractionVelocity>();
-        public Scene()
+        public IList<InteractionFrame> History = new List<InteractionFrame>();
+        public Scene(bool withTracking = false)
         {
-            Manager = new Manager(Depth, Service, Clock)
+            if (withTracking)
+            {
+                Tracking = new TrackingManager(new EventAggregator(), Depth);
+                var camera = new Camera();
+                Tracking.ChooseCamera(camera);
+                Tracking.ChooseConfiguration(camera.StreamParameter);
+                Tracking.TrackingState = true;
+            }
+            Manager = new Manager(Depth, Service, Clock, Tracking)
             {
                 Distance = 1, MinDistance = .125f, MaxDistance = .5f,
                 MaxConfidence = 100, MinConfidence = 0, InteractionHistorySize = 4,
@@ -52,6 +64,7 @@ public class SensorPipelineTest
             };
             Manager.Type = ObserverType.Remote;
             Manager.VelocitiesUpdated += (_, items) => Diagnostics = items;
+            Manager.InteractionHistoryUpdated += (_, items) => History = items;
         }
         public TrackingObservation Emit(long sequence)
         {
@@ -59,7 +72,168 @@ public class SensorPipelineTest
             Depth.Emit(observation);
             return observation;
         }
-        public void Dispose() => Manager.Dispose();
+        public void Dispose()
+        {
+            Manager.Dispose();
+            Tracking?.Dispose();
+        }
+    }
+
+    [TestCase("disable")]
+    [TestCase("enable")]
+    [TestCase("switch")]
+    public async Task SensorActionsClearTrackingAndRestartTouchIds(string action)
+    {
+        using var scene = new Scene(withTracking: true);
+        scene.Emit(1);
+        await scene.Manager.Update();
+        Assert.That(scene.Manager.Interactions.Single().TouchId, Is.Zero);
+        scene.Clock.Now += .3;
+        scene.Manager.AdvanceTime();
+        scene.Emit(2);
+        await scene.Manager.Update();
+        Assert.That(scene.Manager.Interactions.Single().TouchId, Is.EqualTo(1),
+            "Without a sensor action the counter must continue increasing.");
+        Assert.That(scene.History, Is.Not.Empty);
+        Assert.That(scene.Diagnostics, Is.Not.Empty);
+        scene.Manager.FilterType = FilterType.MovingAverage;
+        var previous = scene.Manager.CurrentObserver;
+        scene.Emit(3); // A queued observation from the old session must also be discarded.
+
+        switch (action)
+        {
+            case "disable": scene.Tracking.TrackingState = false; break;
+            case "enable": scene.Tracking.TrackingState = true; break;
+            case "switch": scene.Tracking.ChooseCamera(new Camera()); break;
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(scene.Manager.Interactions, Is.Empty);
+            Assert.That(scene.History, Is.Empty);
+            Assert.That(scene.Diagnostics, Is.Empty);
+            Assert.That(scene.Manager.CurrentObserver, Is.Not.SameAs(previous));
+            Assert.That(scene.Manager.FilterType, Is.EqualTo(FilterType.MovingAverage));
+            Assert.That(scene.Manager.CurrentObserver.ContactRetentionSeconds, Is.EqualTo(.25));
+            Assert.That(scene.Manager.CurrentObserver.UseVelocityPrediction, Is.True);
+            Assert.That(scene.Manager.CurrentObserver.TouchMergeDistance2D, Is.EqualTo(64));
+        });
+        Assert.That(await scene.Manager.Update(), Is.EqualTo(ProcessServiceStatus.Skipped));
+        Assert.That(scene.Service.Calls, Is.EqualTo(2));
+        scene.Clock.Now += .01;
+        scene.Emit(1); // A new sensor is allowed to restart its observation sequence.
+        await scene.Manager.Update();
+        Assert.That(scene.Manager.Interactions.Single().TouchId, Is.Zero);
+    }
+
+    [Test]
+    public async Task ResetRejectsInFlightRemotePublicationAndHistory()
+    {
+        using var scene = new Scene();
+        scene.Emit(1);
+        await scene.Manager.Update();
+        var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        scene.Service.Wait = completion.Task;
+        scene.Clock.Now += .01;
+        scene.Emit(2);
+        var processing = scene.Manager.Update();
+        scene.Manager.ResetTracking();
+        var publications = 0;
+        scene.Manager.InteractionsUpdated += (_, _) => publications++;
+        scene.Manager.InteractionHistoryUpdated += (_, _) => publications++;
+        scene.Manager.VelocitiesUpdated += (_, _) => publications++;
+        completion.SetResult(true);
+        await processing;
+        Assert.Multiple(() =>
+        {
+            Assert.That(publications, Is.Zero);
+            Assert.That(scene.Manager.Interactions, Is.Empty);
+            Assert.That(scene.History, Is.Empty);
+            Assert.That(scene.Diagnostics, Is.Empty);
+        });
+        scene.Service.Wait = Task.CompletedTask;
+        scene.Clock.Now += .01;
+        scene.Emit(1);
+        await scene.Manager.Update();
+        Assert.That(scene.Manager.Interactions.Single().TouchId, Is.Zero);
+    }
+
+    [Test]
+    public void DisposedManagerUnsubscribesFromSensorActions()
+    {
+        using var scene = new Scene(withTracking: true);
+        scene.Manager.Dispose();
+        var previous = scene.Manager.CurrentObserver;
+        var publications = 0;
+        scene.Manager.InteractionsUpdated += (_, _) => publications++;
+        scene.Tracking.TrackingState = false;
+        Assert.That(scene.Manager.CurrentObserver, Is.SameAs(previous));
+        Assert.That(publications, Is.Zero);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ResetDuringProductionAnalysisKeepsNewSessionRasters(bool snapshots)
+    {
+        var depth = new DepthImageManager(new FilterManager { MeasurePerformance = false });
+        depth.Initialize(30, 30);
+        var service = new Service();
+        using var manager = new InteractionManager(depth, service, new Performance())
+        {
+            Distance = 1, MinDistance = .125f, MaxDistance = .5f, MaxConfidence = 100,
+            InteractionHistorySize = 4, ObservationTimeoutSeconds = 30,
+            UseObservationSnapshots = snapshots, ExtremumTypeCheckMethod = ExtremumTypeCheckMethod.Global
+        };
+        manager.Init(ObserverType.Remote);
+        void Emit(float value) => depth.Update(new DepthCameraFrame
+        {
+            Depth = Enumerable.Range(0, 900)
+                .Select(i => new Point3(i % 30, i / 30, i == 310 ? value : 1)).ToArray()
+        });
+
+        var release = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        service.Wait = release.Task;
+        Emit(.75f);
+        var processing = manager.Update();
+        try
+        {
+            manager.ResetTracking();
+            Assert.That(manager.Interactions, Is.Empty);
+            Assert.That(service.InFlight[10, 10].Z, Is.EqualTo(.75f));
+            if (snapshots) Emit(.6f); // Queue the next session before the old request completes.
+        }
+        finally
+        {
+            release.SetResult(true);
+            await processing;
+        }
+        Assert.That(manager.Interactions, Is.Empty);
+        service.Wait = Task.CompletedTask;
+        if (!snapshots) Emit(.6f); // Live rasters remain reserved until processing completes.
+        await manager.Update();
+        Assert.That(manager.Interactions.Single().TouchId, Is.Zero);
+        Assert.That(service.Received[10, 10].Z, Is.EqualTo(.6f));
+        Emit(.7f);
+        await manager.Update();
+        Assert.That(manager.Interactions.Single().TouchId, Is.Zero);
+        Assert.That(service.Received[10, 10].Z, Is.EqualTo(.7f));
+    }
+
+    private sealed class Camera : IDepthCamera
+    {
+        public string Id => "test";
+        public CameraType CameraType => default;
+        public string ModelDescription => "test";
+        public DepthCameraState State => default;
+        public StreamParameter StreamParameter { get; } = new(30, 30, 30);
+        public event EventHandler<DepthCameraState> StateChanged { add { } remove { } }
+        public event EventHandler<DepthCameraFrame> FrameReady { add { } remove { } }
+        public event EventHandler<ImageByteArray> DepthImageReady { add { } remove { } }
+        public void Initialize() { }
+        public void EnableStream(StreamParameter parameter) { }
+        public IList<StreamParameter> GetPossibleConfigurations() => new[] { StreamParameter };
+        public void StartStream() { }
+        public void StopStream() { }
     }
 
     [Test]

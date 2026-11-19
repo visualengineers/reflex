@@ -64,6 +64,9 @@ namespace Implementation.Interfaces
 
         void Init(ObserverType type);
 
+        /// <summary>Clears contacts and history and restarts touch IDs at zero.</summary>
+        void ResetTracking();
+
         Task<ProcessServiceStatus> Update();
 
         void AdvanceTime();
