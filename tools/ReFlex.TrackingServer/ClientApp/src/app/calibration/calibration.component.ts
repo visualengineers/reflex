@@ -526,31 +526,55 @@ export class CalibrationComponent implements OnInit, OnDestroy {
 
     if (this.currentlyActiveStage < 0 || this.currentlyActiveStage > 2) {
       this.resetSelectedInteraction();
-
-      return;
     }
 
-    const usedTouchIds = new Set(
-      this.calibratedTargets.map((target) => target.touchId)
-    );
-    const candidates = this.interactions.filter(
-      (touch) => touch.touchId >= 0 && !usedTouchIds.has(touch.touchId)
-    );
-    const selectedTouchId = this.selectedValue[this.currentlyActiveStage]?.touchId;
-    const selected = candidates.find((touch) => touch.touchId === selectedTouchId)
-      ?? candidates.sort((a, b) => b.confidence - a.confidence)[0];
-
-    if (selected === undefined) {
-      this.selectedValue[this.currentlyActiveStage] = this.getDefaultInteraction();
+    // check if touch with current id has been set as target in another stage...
+    const alreadySelectedIds = this.selectedValue
+      .filter(
+        (elem, idx) => elem.touchId >= 0 && idx !== this.currentlyActiveStage
+      )
+      .map((i) => i.touchId);
+    if (
+      this.interactions.length <= 0
+      || alreadySelectedIds.find((id) => id === this.interactions[0].touchId)
+        !== undefined
+    ) {
+      this.selectedValue[this.currentlyActiveStage]
+        = this.getDefaultInteraction();
       this.selectedIdx = -1;
 
       return;
     }
 
-    this.selectedValue[this.currentlyActiveStage] = selected;
-    this.selectedIdx = this.interactions.indexOf(selected);
+    let restore: Interaction | undefined;
 
-    if (selected.confidence >= this.maxConfidence) {
+    // restore index of selected touch id
+    if (this.selectedValue[this.currentlyActiveStage]?.touchId >= 0) {
+      restore = this.interactions.find(
+        (touch) =>
+          touch.touchId
+          === this.selectedValue[this.currentlyActiveStage]?.touchId
+      );
+    }
+
+    if (restore !== undefined) {
+      this.selectedIdx = this.interactions.indexOf(restore);
+      this.selectedValue[this.currentlyActiveStage] = restore;
+    } else {
+      [this.selectedValue[this.currentlyActiveStage]] = this.interactions;
+      this.selectedIdx = 0;
+    }
+
+    // auto save point with highest confidence if point with this touch id is not already used for calibration
+    if (
+      this.selectedValue[this.currentlyActiveStage].confidence
+        >= this.maxConfidence
+      && this.calibratedTargets.filter(
+        (elem) =>
+          elem.touchId
+          === this.selectedValue[this.currentlyActiveStage]?.touchId
+      ).length === 0
+    ) {
       this.submit();
     }
   }
