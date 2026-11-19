@@ -121,3 +121,47 @@ No mutable tuning controls are added to the application.
 The repeat comparison with selected production defaults is stored separately in the report's
 `kalman-comparison/tuned/process-1` and `process-2` directories; original results are preserved.
 Use the full comparison command without `--quality-only` to measure timing after choosing defaults.
+
+## Paired global/JPDA comparison
+
+`--compare-jpda` toggles only `UseJpda` on the current production tracker. Both variants retain
+`UseMinimumCostAssignment=true`; JPDA overrides that selection in the enabled variant. The default
+comparison uses linear prediction without Kalman. `--kalman` enables the tuned Kalman model in
+**both** variants. Input measurements, motion settings, costs and publication logic are shared.
+
+Reuse a capture directory containing all four pre-assignment `*.json` files and their
+`*-input.json` references, or generate one using the capture/`--inputs` commands above. From the
+repository root:
+
+```sh
+dotnet build test/touchid-analysis/TouchIdAnalysis.csproj -c Release --no-restore -m:1 -nr:false -p:UseSharedCompilation=false
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/linear/process-1
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/kalman/process-1 --kalman
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/linear/process-2
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/kalman/process-2 --kalman
+python3 test/touchid-analysis/verify_jpda_comparison.py /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison
+```
+
+Run measurement processes sequentially, without concurrent builds/tests. Each performs ten complete
+warm-up replays and 31 alternating AB/BA measured replays per recording, with fresh state each time.
+The timing scope is unchanged: separate `Tracker.Update` and `GetVelocities` intervals, excluding
+publication filtering, inspection, metrics, serialization, detector processing and UI/network work.
+`--quality-only` skips warm-up/timing for exploratory checks.
+
+Additional diagnostics:
+
+- `reassociations.csv` records actual reuse of an ID after a measurement gap and whether it exceeds
+  ordinary retention. This is distinct from merely reserving a masked ID.
+- `frames.csv` records active reservations and joint-event approximation/fallback flags. Untimed
+  reflection reads the actual private matching targets/reservations; the pure joint calculation is
+  independently rerun and its hard assignments must reproduce the actual update.
+- `differences.json` retains complete assigned/tracked/published differences and matching targets.
+- `results.json` includes per-variant overrides, compiled JPDA/Kalman constants, input/source hashes,
+  quality metrics, frame-difference counts and separate/combined timing quantiles.
+- The Python verifier reconstructs metrics independently from saved tracks and source-image
+  references, validates hashes, replay totals and process agreement, and writes `summary.json` with
+  weighted timing means and output-deviation details. It intentionally checks the archived 81 px
+  gate, 0.5 costs and 0.1 s ordinary retention. Use `--skip-source-check` only to audit an archived
+  result after its measured source files have changed; artifact/input checks still run.
+
+See [the JPDA replay report](../analysis/touchid-3512/jpda-comparison.md) for results and limitations.

@@ -143,6 +143,15 @@ JPDA cannot recover information that the measurements do not contain. Preserving
 also risks reusing its ID for a genuinely new nearby same-type touch within the recovery window.
 No improvement on annotated real multi-finger trajectories or end-to-end throughput is claimed.
 
+The subsequent [paired replay comparison](jpda-comparison.md) evaluates all four recordings with
+linear prediction and tuned Kalman, each with JPDA off/on. Created tracks remain 38 and published
+single-target ID changes remain zero in every configuration. Multi-Touch reserves masked IDs in
+61 frames but produces no actual recovery beyond ordinary retention; its outputs do differ.
+Tracking-update mean cost increases by 36–39% with linear prediction and 216–233% with Kalman,
+with a pronounced Multi-Touch timing tail. These recordings do not demonstrate the extended
+recovery benefit and support retaining the opt-in default. The report preserves all four process
+campaigns, full differences, hashes and an independent verifier.
+
 Validation on 19 November 2026:
 
 - **349 InteractionTests passed**, including 19 JPDA association/lifecycle cases and three new
