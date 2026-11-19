@@ -1,88 +1,85 @@
-# Umsetzung: Extremum-Zusammenführung und Snapshot-Confidence
+# Implementation: extremum consolidation and snapshot confidence
 
-3. November 2026. Ausgangspunkt: Commit `a1d26b5f` und die [vorherige Analyse](analysis.md).
+3 November 2026. Based on commit `a1d26b5f` and the [initial analysis](analysis.md).
 
-## Änderungen
+## Changes
 
-Vor der TouchId-Zuweisung und der Begrenzung auf 20 Messungen werden bereits klassifizierte Extrema zusammengeführt. Der neue `ExtremumConsolidator` verwendet einen eigenständigen **euklidischen Radius in Sensorpixeln**, standardmäßig 3 Pixel. Damit hängt die neue Stufe nicht von der irreführend benannten bestehenden Manhattan-Distanzfunktion ab.
+The new `ExtremumConsolidator` merges classified extrema before TouchId assignment and the 20-measurement limit. It uses a separate **Euclidean radius in sensor pixels**, defaulting to 3, independent of the existing misnamed Manhattan-distance helper.
 
-Die stärkste Druckmessung bildet den Startpunkt einer Gruppe. Nur Kandidaten derselben Druckrichtung innerhalb ihres Radius gehören dazu. Die Position wird als nach Druckbetrag gewichtetes Zentrum berechnet; Druckhöhe und Extremum-Beschreibung stammen vom stärksten Kandidaten. Die Confidence ist das Maximum der Gruppenmitglieder, keine Summe. So erzeugt ein zusätzliches Pixelminimum weder einen zusätzlichen Track noch künstlich höhere Confidence. Schwächere Nachbarn erweitern den Gruppenradius nicht transitiv; eine Kette von Extrema kann nicht beliebig weit voneinander entfernte Druckstellen verbinden. Die Reihenfolge wird unabhängig von der parallelen Kandidatenerzeugung festgelegt. Eingabemessungen werden nicht verändert.
+The strongest pressure measurement seeds each group. Only candidates with the same pressure direction within the seed's radius join it. Position is the pressure-magnitude-weighted centroid; pressure and extremum description come from the strongest candidate. Confidence is the maximum, not the sum. Extra pixel minima therefore add neither tracks nor artificial confidence. Grouping is non-transitive: weaker neighbors cannot extend the radius into a chain. Ordering is independent of parallel candidate generation, and input measurements are preserved.
 
-Die Stufe gilt in der gemeinsamen Observer-Pipeline, also auch für Remote-Extrema. SingleTouch hat normalerweise nur einen Kandidaten und bleibt dadurch unverändert. Die bestehende Clusterfilterung bei der Veröffentlichung bleibt als zusätzliche Ausgaberegel erhalten.
+Consolidation runs in the shared observer pipeline, including remote extrema. SingleTouch normally has one candidate and is unaffected. Publication-time cluster filtering remains an additional output rule.
 
-Die MultiTouch-Confidence-Matrix wird bei neuen Snapshot-Objekten gleicher Rastergröße nicht mehr gelöscht. Eine neue Breite oder Höhe initialisiert die Matrix weiterhin neu. Die Regression prüft ausdrücklich frische `TrackingObservation`-Kopien und beide Arten von Größenwechseln. Die Unterscheidung zwischen räumlicher Erkennungsgüte und zeitlicher Track-Bestätigung bleibt erhalten; die zeitabhängigen Confidence-Raten wurden nicht verändert.
+The MultiTouch confidence matrix now survives snapshot replacement at unchanged dimensions. Changing width or height still resets it; regression tests cover fresh `TrackingObservation` copies and both dimension changes. Spatial detection quality remains separate from temporal track confirmation, whose rates are unchanged.
 
-Konfiguration: `FilterSettingValues.ExtremumSettings.MergeRadius`, im Frontend `filterSettingValues.extremumSettings.mergeRadius`. Alte Dateien ohne dieses Feld verwenden 3; explizit 0 deaktiviert die Zusammenführung. Gültiger Bereich: 0–32, endlich. Der Wert wird vom SettingsService an den Manager und beim Observer-Wechsel an den neuen Observer weitergegeben. Die Oberfläche bietet dafür „Extremum Merge Radius“ mit der Einheit px.
+Configuration: `FilterSettingValues.ExtremumSettings.MergeRadius`, exposed as `filterSettingValues.extremumSettings.mergeRadius`. Missing fields default to 3; explicit 0 disables consolidation. Valid values are finite and within 0–32. SettingsService propagates the value to the manager and newly selected observers. The UI labels it “Extremum Merge Radius” in px.
 
-## Vollständiger Replay-Vergleich
+## Full replay comparison
 
-Alle 827 Frames wurden erneut mit der echten Replay-Camera und den Produktionsklassen verarbeitet. Profil, nominelle Beobachtungszeit, Prognose, Glättung und Auswertungsregeln entsprechen der Ausgangsanalyse. Insbesondere bleiben InputDistance 58, TouchMergeDistance2D 81 und ContactRetentionSeconds 0,1 unverändert. Das gespeicherte Kinect-Profil wurde nicht überschrieben.
+All 827 frames were reprocessed through the actual replay camera and production classes using the initial profile, nominal observation times, prediction, smoothing and evaluation rules. InputDistance 58, TouchMergeDistance2D 81 and ContactRetentionSeconds 0.1 remain unchanged. The saved Kinect profile was preserved.
 
-| Aufnahme | ID-Wechsel vorher → nachher | Aktive Frames ohne Ausgabe vorher → nachher | Veröffentlichte Ziel-IDs vorher → nachher | Angelegte Tracks vorher → nachher |
+| Recording | ID switches before → after | Active frames without output before → after | Published target IDs before → after | Created tracks before → after |
 | --- | ---: | ---: | ---: | ---: |
-| Half-Circle, bewegter Kontakt | 26 → **0** | 12 → **10** | 14 → **3** | 33 → **4** |
+| Half-Circle, moving contact | 26 → **0** | 12 → **10** | 14 → **3** | 33 → **4** |
 | Line | 22 → **0** | 29 → **25** | 15 → **7** | 32 → **9** |
 | Circle | 40 → **0** | 1 → **1** | 21 → **1** | 50 → **1** |
 
-„ID-Wechsel“ zählt weiterhin nur unmittelbar aufeinanderfolgende aktive Eingangsframes mit einer Ziel-Ausgabe in beiden Frames. Fehlende Ausgaben werden dadurch nicht als stabile Identität gewertet, sondern separat gezählt. Die Zahl der Tracks enthält auch unterdrückte Kontakte und bei Half-Circle die stationäre Druckstelle.
+Switches count only consecutive active input frames with target output in both; missing output is counted separately. Track totals include suppressed contacts and Half-Circle's stationary region.
 
-Circle hat während der gesamten Aufnahme einen aktiven Eingang: Hier folgt jetzt genau ein Track der Druckbewegung. In Half-Circle und Line liegen echte Kontaktpausen vor, sodass mehrere IDs über die gesamte Aufnahme zu erwarten sind. Die Zahl der Rohkandidaten ist in jedem der 827 Frames exakt dieselbe wie vorher. Die neue Stufe entfernt ausschließlich redundante Kandidaten vor dem Tracking; sie verändert die Erkennung oder Klassifizierung nicht.
+Circle has active input throughout and now uses exactly one track. Half-Circle and Line contain real contact pauses, so multiple IDs over the full recording are expected. Raw candidate counts match the baseline in every frame: consolidation removes redundancy before tracking without changing detection or classification.
 
-Die verbleibenden klassifizierungsseitigen Lücken bei aktivem Eingang sind unverändert: Half-Circle 14, Line 21, Circle 0 Frames. Lost-Tracks überbrücken einen Teil dieser Lücken. Der erste neue Kontakt startet nach wie vor mit der tatsächlichen Erkennungs-Confidence; bei 0 bleibt er bis zur Bestätigung unsichtbar. Das erklärt den einen fehlenden ersten Circle-Frame. Es wurde keine sofortige Veröffentlichung unbestätigter Kandidaten eingeführt.
+Classification gaps during active input remain 14 / 21 / 0 frames. Lost tracks bridge some gaps. New contacts still start at their actual detection confidence; at 0 they remain hidden until confirmed, explaining Circle's missing first output. Unconfirmed candidates are not published immediately.
 
-[Vergleich als CSV](after-consolidation/comparison.csv), [Kennzahlen](after-consolidation/summary.csv), [Einzelframes](after-consolidation/frames.csv).
+Data: [comparison](after-consolidation/comparison.csv), [summary](after-consolidation/summary.csv), [frames](after-consolidation/frames.csv).
 
-Vorher:
+Before:
 
-![Vorherige Ausgabe-IDs](timeline.svg)
+![Output IDs before consolidation](timeline.svg)
 
-Nachher:
+After:
 
-![Ausgabe-IDs nach der Zusammenführung](after-consolidation/timeline.svg)
+![Output IDs after consolidation](after-consolidation/timeline.svg)
 
-Rot: aktiver Eingang ohne Ziel-Ausgabe. Grau: Kontaktpause in der Quelle. Farben: IDs mit zyklischer Palette, daher kein Identitätsbeweis allein durch gleiche Farbe.
+Red: active input without target output. Gray: source contact pause. ID colors cycle, so matching colors alone do not prove identity.
 
-## Isolierter Effekt der Zusammenführung
+## Isolated consolidation effect
 
-Zusätzlich wurden die ursprünglichen, noch nicht zusammengeführten Kandidaten aus der Ausgangsmessung erneut verarbeitet, mit der damaligen Roh-Confidence 0. Dadurch lässt sich die Wirkung der Zusammenführung von der Korrektur der Snapshot-Confidence unterscheiden. Dies ist eine Gegenprobe auf aufgezeichneten Messungen, kein zweiter Bildverarbeitungslauf.
+The original candidates were reprocessed with their original raw confidence of 0 to separate consolidation from the snapshot-confidence fix. This reuses recorded measurements rather than repeating image processing.
 
-| Aufnahme | Angelegte Tracks ohne Zusammenführung | Nur Zusammenführung | Vollständiger neuer Replay-Lauf |
+| Recording | Created tracks without consolidation | Consolidation only | Full new replay |
 | --- | ---: | ---: | ---: |
 | Half-Circle | 33 | 4 | 4 |
 | Line | 32 | 9 | 9 |
 | Circle | 50 | 1 | 1 |
 
-Die Zusammenführung beseitigt hier die Doppeltracks. Der Erhalt der räumlichen Confidence beeinflusst zusätzlich die Sichtbarkeit neuer beziehungsweise wieder auftauchender Kontakte: Bei Line sinken in der Messungs-Gegenprobe leere Ausgaben trotz vorhandener Kandidaten von 8 auf 4, bei Half-Circle von 3 auf 2. Das sind andere Metriken als „aktiver Eingang ohne Ausgabe“ aus der Haupttabelle.
+Consolidation removes duplicate tracks. Preserving spatial confidence additionally affects new/reappearing contacts: compared with the measurement-only rerun, empty outputs despite available candidates fall from 8 to 4 for Line and from 3 to 2 for Half-Circle. These differ from the main table's “active input without output” metric.
 
-Daten: [merge-only-comparison.json](after-consolidation/merge-only-comparison.json). Der Diagnosemodus `linear3-merge3` konsolidiert nur alte Captures ohne das neue `measurements`-Feld. Bei neuen Captures entspricht er `linear3`, weil die Messungen bereits zusammengeführt sind.
+Data: [merge-only-comparison.json](after-consolidation/merge-only-comparison.json). Diagnostic mode `linear3-merge3` consolidates only legacy captures lacking `measurements`. For new captures it matches `linear3`, since measurements are already consolidated.
 
-## Reale Uhr und verbleibende Grenze
+## Real clock and remaining limits
 
-Der separate [Performance-Vergleich mit `main`](pipeline-performance.md) erfasst die lokale Verarbeitung mit vier vollständigen Recordings und nominellen Beobachtungszeitpunkten.
+The separate [performance comparison with `main`](pipeline-performance.md) measures local processing using four full recordings and nominal observation times.
 
-Ein zusätzlicher Release-Kontrolllauf mit den ersten 30 Frames jeder Aufnahme verwendet reale monotone Beobachtungszeiten und ausschließlich MultiTouch im Verarbeitungspfad. Auch nach der Änderung überschreitet die Pipeline auf diesem Rechner die unveränderte Haltezeit von 100 ms:
+An additional Release control run used the first 30 frames per recording, real monotonic observation times and MultiTouch only. Processing still exceeded the unchanged 100 ms retention on this machine:
 
-| Aufnahme | Verarbeitung min / Median / max | Leere Ausgaben |
+| Recording | Processing min / median / max | Empty outputs |
 | --- | --- | ---: |
 | Half-Circle | 142 / 227 / 301 ms | 30/30 |
 | Line | 152 / 230 / 465 ms | 30/30 |
 | Circle | 147 / 269 / 483 ms | 30/30 |
 
-Die Kontakte laufen dadurch bereits vor Veröffentlichung ab. Diese Messung enthält Filterung, Vektorfeld, Sensor-Snapshot und Analyse im synchronen Diagnosepfad. Sie ist kein Vergleich mit einem unveränderten Release-Build und kein Benchmark des vollständigen Servers. Während des Kontrolllaufs lief auch die vollständige Replay-Auswertung; die Zahlen dürfen daher insbesondere nicht als isolierte Performance-Regression interpretiert werden.
+Contacts consequently expired before publication. This synchronous diagnostic path includes filtering, vector fields, sensor snapshots and analysis. The full replay evaluation ran concurrently, so these timings are neither an isolated regression measurement nor a full-server benchmark. **The nominal-time ID improvement is demonstrated; live operation at these processing times is not.** Publication-latency/retention coupling and processing costs require separate work. Freshness checks and retention were preserved. Data: [wall-clock-release.json](after-consolidation/wall-clock-release.json).
 
-**Die ID-Verbesserung bei nominellen Beobachtungszeiten ist belegt; ein funktionierender Live-Betrieb unter dieser Verarbeitungszeit ist damit nicht belegt.** Die Kopplung von Publikationslatenz und Kontakt-Haltezeit sowie die Verarbeitungskosten bleiben gesondert zu bearbeiten. Die Frischeprüfung wurde nicht entfernt und die Haltezeit nicht stillschweigend vergrößert. Rohwerte: [wall-clock-release.json](after-consolidation/wall-clock-release.json).
+Global assignment, adaptive reversal estimation and Manhattan-parameter migration are outside this first implementation. Real multi-finger crossings, overlapping pressure regions and sensor recordings still need evaluation. An excessive merge radius can combine genuine neighboring contacts, so the default is small and consolidation can be disabled.
 
-Auch globale Zuordnung, adaptive Bewegungsschätzung bei Richtungswechseln und eine Migration der bestehenden Manhattan-Distanzparameter sind nicht Bestandteil dieser ersten Implementierungsstufe. Die Zusammenführung behebt den dominanten Doppeltrack-Effekt, ohne diese unabhängigen Verträge gleichzeitig zu verändern. Echte Mehrfinger-Kreuzungen, überlagerte Druckregionen und reale Sensoraufnahmen bleiben wichtige weitere Gegenproben. Ein zu groß gewählter Merge-Radius kann echte benachbarte Druckstellen zusammenführen; deshalb ist der Standard bewusst klein und abschaltbar.
+## Validation and reproduction
 
-## Validierung und Reproduktion
+- InteractionTests: **256 passed**, including 11 new cases for consolidation, confidence retention, resizing, configuration bounds, weak bridges, separate fingers and alternating duplicate extrema with reversal.
+- SettingsComponent: **10 passed**, including legacy configuration, explicit 0 and radius persistence.
+- TrackingServer, diagnostic tool (Debug/Release), benchmark project and shared types built successfully. ESLint found no issues in changed TypeScript/template files.
+- All 827 replay frames completed with unchanged per-frame raw candidate counts.
 
-- InteractionTests: **256 bestanden**, darunter 11 neue Fälle für Zusammenführung, Confidence-Erhalt, Größenwechsel, Konfigurationsgrenzen, schwache Brücken, getrennte Finger und alternierende Doppel-Extrema mit Richtungswechsel.
-- SettingsComponent: **10 bestanden**, einschließlich alter Konfiguration, explizit 0 und Speichern des Radius.
-- TrackingServer, Diagnosewerkzeug (Debug/Release) und Benchmark-Projekt bauen erfolgreich.
-- Shared Types bauen erfolgreich; ESLint für die geänderten TypeScript-/Template-Dateien ohne Befunde.
-- Alle 827 Replay-Frames vollständig verarbeitet; Rohkandidatenzahlen gegenüber dem Ausgangslauf je Frame identisch.
-
-Vom Repository-Root, mit frischem Zielverzeichnis:
+From the repository root, using a fresh output directory:
 
 ```sh
 dotnet run --project scripts/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-touchid-merged-r3
@@ -91,4 +88,4 @@ dotnet run --no-build --project scripts/touchid-analysis/TouchIdAnalysis.csproj 
 python3 scripts/touchid-analysis/summarize.py /tmp/reflex-touchid-merged-r3 docs/analysis/touchid-3512/after-consolidation
 ```
 
-Die Capture-JSONs liegen lokal unter `/tmp/reflex-touchid-merged-r3`. Die gesicherten CSVs enthalten die kompakte Einzelbild-Auswertung. Für einen anderen Radius kann beim Capture `REFLEX_MERGE_RADIUS` gesetzt werden; 0 schaltet nur die Zusammenführung ab, nicht die Confidence-Korrektur. Vorhandene Capture-Dateien werden weiterverwendet, daher für neue Varianten jeweils ein neues Verzeichnis verwenden.
+Capture JSONs remain local in `/tmp/reflex-touchid-merged-r3`; committed CSVs contain compact frame-level results. Set `REFLEX_MERGE_RADIUS` during capture to test another radius; 0 disables consolidation only, preserving the confidence fix. Existing captures are reused, so use a fresh directory for each variant.
