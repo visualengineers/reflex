@@ -671,14 +671,14 @@ async function verifySelectedInteractionStage1({ obs, reduced1, reduced1conv, re
 }
 
 function verifySelectedInteractionStage2(): void {
-  expect(testComponent.selectedIdx).toBe(0);
+  expect(testComponent.selectedIdx).toBe(2);
   expect(
     testComponent.selectedValue[testComponent['currentlyActiveStage']]
   ).toBeDefined();
   expect(testComponent.selectedValue[testComponent['currentlyActiveStage']]).toEqual(
-    testInteractionData.raw[0]
+    testInteractionData.raw[2]
   );
-  testComponent.select(0);
+  testComponent.select(2);
   expect(testComponent.selectedIdx).toBe(-1);
   expect(testComponent.selectedValue).toHaveLength(3);
   expect(testComponent.selectedValue[0]).toEqual(defaultSelectedInteraction);
@@ -981,6 +981,7 @@ function verifyConfidenceStage1({ calibPoint1, resp1, calibPoint2, resp2, calibP
   obs.next(calib1);
   testFixture.detectChanges();
   testComponent.display(0);
+  obs.next(calib1);
   expect(testComponent['currentlyActiveStage']).toBe(0);
   expect(testComponent.selectedIdx).toBe(0);
 }
@@ -1143,7 +1144,7 @@ function verifyInvalidSubmissionStage2(mat1: CalibrationTransform, obs: Behavior
   testComponent.display(0);
   expect(testComponent['currentlyActiveStage']).toBe(0);
   obs.next(calib1);
-  testComponent.select(0);
+  expect(testComponent.selectedIdx).toBe(-1);
   expect(testComponent.selectedValue).toHaveLength(3);
   expect(testComponent.selectedValue[0]).toEqual(defaultSelectedInteraction);
   expect(testComponent.selectedValue[1]).toEqual(defaultSelectedInteraction);
@@ -1542,5 +1543,130 @@ describe('CalibrationComponent', () => {
     expect(testComponent.calibratedInteractions).toEqual([]);
 
     expect(vi.spyOn(testComponent, 'submit')).not.toHaveBeenCalled();
+  });
+});
+
+
+function contact(touchId: number, confidence = 30): Interaction {
+  return {
+    ...structuredClone(testInteractionData.raw[0]),
+    touchId,
+    confidence
+  };
+}
+
+function setupAutomaticContactSelection(): Subject<Array<Interaction>> {
+  const frames = new Subject<Array<Interaction>>();
+  processingService.getInteractions.mockReturnValue(frames);
+  calibrationService.computeCalibratedAbsolutePosition.mockImplementation(
+    (raw: Array<Interaction>) => of({ raw, normalized: raw, absolute: raw })
+  );
+  calibrationService.updateCalibrationPoint.mockReturnValue(
+    of(new HttpResponse<CalibrationTransform>({ body: identityCalibrationMatrix }))
+  );
+  testFixture.detectChanges();
+  testComponent.calibratedTargets = structuredClone(targetPoints);
+  testComponent.update = true;
+  testComponent.display(0);
+
+  return frames;
+}
+
+describe('CalibrationComponent automatic contact selection', () => {
+  setupTests();
+
+  let frames: Subject<Array<Interaction>>;
+
+  beforeEach(() => {
+    frames = setupAutomaticContactSelection();
+  });
+
+  it.each([false, true])('advances through all three points with used contacts first: %s', (usedFirst) => {
+    const first = contact(100);
+    const second = contact(101);
+    const third = contact(102);
+    frames.next([first]);
+    expect(testComponent['currentlyActiveStage']).toBe(1);
+
+    frames.next(usedFirst ? [first, second] : [second, first]);
+    expect(testComponent['currentlyActiveStage']).toBe(2);
+
+    frames.next(usedFirst ? [first, second, third] : [third, second, first]);
+    expect(testComponent['currentlyActiveStage']).toBe(-1);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(3);
+    [first, second, third].forEach((touch, stage) => {
+      expect(calibrationService.updateCalibrationPoint).toHaveBeenNthCalledWith(
+        stage + 1,
+        stage,
+        { positionX: touch.position.x, positionY: touch.position.y, touchId: touch.touchId }
+      );
+    });
+
+    frames.next([third]);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(3);
+    expect(testComponent.selectedIdx).toBe(-1);
+  });
+
+  it('waits when only used contacts or an empty frame remain', () => {
+    const first = contact(100);
+    frames.next([first]);
+    frames.next([first]);
+    frames.next([]);
+    expect(testComponent['currentlyActiveStage']).toBe(1);
+    expect(testComponent.selectedIdx).toBe(-1);
+    expect(testComponent.selectedValue[1]).toEqual(defaultSelectedInteraction);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(1);
+
+    frames.next([contact(101)]);
+    expect(testComponent['currentlyActiveStage']).toBe(2);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(2);
+  });
+
+  it('selects the highest confidence candidate and preserves its displayed index', () => {
+    const first = contact(100);
+    const lower = contact(101, 10);
+    const higher = contact(102, 29);
+    frames.next([first]);
+    frames.next([first, lower, higher]);
+    expect(testComponent.interactions).toEqual([first, lower, higher]);
+    expect(testComponent.selectedValue[1]).toEqual(higher);
+    expect(testComponent.selectedIdx).toBe(2);
+    expect(testComponent['currentlyActiveStage']).toBe(1);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(1);
+
+    frames.next([first, lower, { ...higher, confidence: 30 }]);
+    expect(testComponent['currentlyActiveStage']).toBe(2);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(2);
+  });
+
+  it('preserves a selected eligible contact when frames are reordered', () => {
+    const selected = contact(100, 10);
+    frames.next([selected]);
+    frames.next([contact(101), { ...selected, confidence: 20 }]);
+    expect(testComponent.selectedValue[0].touchId).toBe(selected.touchId);
+    expect(testComponent.selectedValue[0].confidence).toBe(20);
+    expect(testComponent.selectedIdx).toBe(1);
+    expect(calibrationService.updateCalibrationPoint).not.toHaveBeenCalled();
+  });
+
+  it('keeps frame order when candidates have equal confidence', () => {
+    const first = contact(100, 20);
+    frames.next([first, contact(101, 20)]);
+    expect(testComponent.selectedValue[0]).toEqual(first);
+    expect(testComponent.selectedIdx).toBe(0);
+    expect(calibrationService.updateCalibrationPoint).not.toHaveBeenCalled();
+  });
+
+  it('does not select or submit contacts without an active stage', () => {
+    testComponent.display(-1);
+    frames.next([contact(100)]);
+    expect(testComponent.selectedIdx).toBe(-1);
+    expect(Object.keys(testComponent.selectedValue)).toEqual(['0', '1', '2']);
+    expect(testComponent.selectedValue).toEqual([
+      defaultSelectedInteraction,
+      defaultSelectedInteraction,
+      defaultSelectedInteraction
+    ]);
+    expect(calibrationService.updateCalibrationPoint).not.toHaveBeenCalled();
   });
 });
