@@ -114,6 +114,21 @@ strategy. That observation creates no new JPDA reservations; any existing reserv
 their original bounded deadlines. This also bounds the bitset used for joint-event exclusivity.
 History size zero bypasses JPDA and retains the existing fresh-ID-per-observation behavior.
 
+### Runtime optimization without changed recovery semantics
+
+The [runtime optimization and repeated replay comparison](jpda-optimization.md) replaces allocated
+expansion objects/path copies with a bounded heap and call-local stack buffers. Stable event
+ordering, probabilities, the 256-event beam and all masking/lifecycle parameters remain unchanged.
+Differential reference checks and complete original/optimized replay output agree, including
+reserved-ID sets and pruning flags. Positive masked-pair, crossing and six-contact recovery
+controls also produce identical old/new output. The current suite passes 361 InteractionTests
+and 17 server integration tests.
+
+Paired measurements show 15.5–17.3% lower mean Update time with linear prediction, 30.5–39.2% lower
+with Kalman, and 34–42% lower Multi-Touch p95. Fresh global/optimized-JPDA controls still show a
+mean Update overhead of 14.5–20.7% with linear prediction and 71.8–101.2% with Kalman. JPDA remains
+opt-in; the existing recordings still do not demonstrate actual beyond-retention ID recovery.
+
 ## Settings and API
 
 - C# / stored JSON: `TrackingServerAppSettings.UseJpda`, default `false`.
@@ -143,7 +158,7 @@ JPDA cannot recover information that the measurements do not contain. Preserving
 also risks reusing its ID for a genuinely new nearby same-type touch within the recovery window.
 No improvement on annotated real multi-finger trajectories or end-to-end throughput is claimed.
 
-The subsequent [paired replay comparison](jpda-comparison.md) evaluates all four recordings with
+The initial [paired replay comparison](jpda-comparison.md) evaluates the unoptimized implementation on all four recordings with
 linear prediction and tuned Kalman, each with JPDA off/on. Created tracks remain 38 and published
 single-target ID changes remain zero in every configuration. Multi-Touch reserves masked IDs in
 61 frames but produces no actual recovery beyond ordinary retention; its outputs do differ.
@@ -152,7 +167,7 @@ with a pronounced Multi-Touch timing tail. These recordings do not demonstrate t
 recovery benefit and support retaining the opt-in default. The report preserves all four process
 campaigns, full differences, hashes and an independent verifier.
 
-Validation on 19 November 2026:
+Initial implementation validation on 19 November 2026 (subsequent optimization validation is linked above):
 
 - **349 InteractionTests passed**, including 19 JPDA association/lifecycle cases and three new
   JPDA settings serialization cases alongside the existing Kalman/assignment regressions.

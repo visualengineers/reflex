@@ -165,3 +165,41 @@ Additional diagnostics:
   result after its measured source files have changed; artifact/input checks still run.
 
 See [the JPDA replay report](../analysis/touchid-3512/jpda-comparison.md) for results and limitations.
+
+## JPDA runtime optimization comparison
+
+The optimized implementation retains the same beam, event scores, stable tie ordering and recovery
+rules. To compare its runtime fairly, the diagnostic executable can also compile the original
+tracker and private motion/assignment helpers from commit `4290171a`. The preparation script only
+prefixes type names with `Baseline`; production projects never compile those generated sources.
+Embedded source hashes are checked at runtime, and the verifier reconstructs them from git.
+
+```sh
+python3 test/touchid-analysis/prepare_jpda_baseline.py 4290171a /tmp/reflex-jpda-original
+dotnet build test/touchid-analysis/TouchIdAnalysis.csproj -c Release --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -p:JpdaBaselineDirectory=/tmp/reflex-jpda-original
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda-optimization /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/optimized/original-vs-optimized/linear/process-1
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda-optimization /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/optimized/original-vs-optimized/kalman/process-1 --kalman
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda-optimization /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/optimized/original-vs-optimized/linear/process-2
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-jpda-optimization /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/optimized/original-vs-optimized/kalman/process-2 --kalman
+python3 test/touchid-analysis/verify_jpda_comparison.py /tmp/reflex-assignment-20261119 test/analysis/touchid-3512/jpda-comparison/optimized/original-vs-optimized --optimization
+```
+
+The same build supports `--compare-jpda` for a fresh global/optimized-JPDA control. Repeat the four
+commands from the preceding section with output rooted at `jpda-comparison/optimized/global`,
+then run the verifier on that root without `--optimization`. The recorded campaign order is
+original/optimized linear P1, original/optimized Kalman P1, global/optimized linear P1,
+global/optimized Kalman P1, then those four campaigns for P2. Run sequentially.
+
+Both implementations use identically typed delegates bound once outside timing. Existing warm-up,
+AB/BA, input, publication and motion-profile controls remain unchanged. Managed allocation counters
+surround `Update` plus `GetVelocities` **outside** the stopwatch intervals; collection bookkeeping,
+construction and quality inspection are excluded from that count.
+
+For original/optimized comparisons, `recovery-controls.json` additionally records six deterministic
+control scenarios: masked pair, moving crossing, six-way overlap, inclusive deadline, expired
+deadline and JPDA disabled. Their complete raw/tracked output must match, with the expected ID
+allocation counts. These controls are separate from real replay metrics. The verifier checks their
+equality and requires zero differences in replay output, targets, reservations and pruning flags.
+
+The original replay artifacts remain unchanged. See
+[the optimization report](../analysis/touchid-3512/jpda-optimization.md) for the repeated measurements.

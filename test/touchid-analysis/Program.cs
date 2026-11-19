@@ -16,6 +16,7 @@ using ReFlex.Server.Data.Config;
 // nominal recording time isolates association from machine speed and timer scheduling.
 if (args.FirstOrDefault() == "--inputs") { InputAnalysis.Run(args[1]); return; }
 if (args.FirstOrDefault() == "--analyze") { Analysis.Run(args[1]); return; }
+if (args.FirstOrDefault() == "--compare-jpda-optimization") { MotionComparison.RunJpdaOptimization(args[1], args[2], args.Contains("--kalman"), args.Contains("--quality-only")); return; }
 if (args.FirstOrDefault() == "--compare-jpda") { MotionComparison.RunJpda(args[1], args[2], args.Contains("--kalman"), args.Contains("--quality-only")); return; }
 if (args.FirstOrDefault() == "--compare-motion") { MotionComparison.Run(args[1], args[2], args.Contains("--quality-only")); return; }
 if (args.FirstOrDefault() == "--compare-assignment") { AssignmentComparison.Run(args[1], args[2]); return; }

@@ -9,6 +9,8 @@ import json
 import math
 from pathlib import Path
 import struct
+import re
+import subprocess
 
 
 def digest(path):
@@ -41,8 +43,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("capture", type=Path)
     parser.add_argument("results", type=Path)
+    parser.add_argument("--optimization", action="store_true", help="Audit the pinned original/optimized JPDA pair.")
     parser.add_argument("--skip-source-check", action="store_true", help="Audit an archive after its measured sources changed.")
     args = parser.parse_args()
+    modes = ("jpda-original", "jpda-optimized") if args.optimization else ("global", "jpda")
+    comparison_name = "/".join(modes)
     original = json.loads(Path("test/analysis/touchid-3512/assignment-comparison/results.json").read_text())
     summary = {"verification_script_sha256": digest(Path(__file__)), "profiles": {}, "derived_from_sha256": {}}
     for model in ("linear", "kalman"):
@@ -55,7 +60,16 @@ def main():
             metadata = data["metadata"]
             assert metadata["input_hashes"] == original["metadata"]["input_hashes"]
             assert metadata["configuration"]["fixed_kalman"] == (model == "kalman")
-            assert metadata["comparison"] == "global/jpda" and not metadata["quality_only"]
+            assert metadata["comparison"] == comparison_name and not metadata["quality_only"]
+            if args.optimization:
+                package = metadata["baseline_metadata"]
+                assert package["revision"].startswith("4290171a")
+                classes = [Path(f["path"]).stem for f in package["files"].values()]
+                for filename, info in package["files"].items():
+                    source = subprocess.check_output(["git", "show", package["revision"] + ":" + info["path"]])
+                    assert hashlib.sha256(source).hexdigest() == info["original_sha256"]
+                    generated = re.sub(r"\b(" + "|".join(classes) + r")\b", lambda m: "Baseline" + m[0], source.decode()).encode()
+                    assert hashlib.sha256(generated).hexdigest() == info["generated_sha256"], filename
             config = metadata["configuration"]
             smooth = config["settings"]["FilterSettingValues"]["SmoothingValues"]
             # The archived analysis intentionally fixes these values; do not silently apply
@@ -77,7 +91,7 @@ def main():
             assert len(frames) == len(tracks) == 2514 and len(timing) == 248
             if previous_quality is not None:
                 assert quality == previous_quality and data["comparisons"] == previous_comparisons
-                for filename in ("frames.csv", "tracks.json", "differences.json", "reassociations.csv", "association-changes.csv"):
+                for filename in ("frames.csv", "tracks.json", "differences.json", "reassociations.csv", "association-changes.csv") + (("recovery-controls.json",) if args.optimization else ()):
                     assert digest(base / filename) == digest(args.results / model / "process-1" / filename), filename
             previous_quality, previous_comparisons = quality, data["comparisons"]
             for result in quality:
@@ -127,30 +141,51 @@ def main():
                 for stage in ("assigned", "tracked", "published"):
                     assert sum(r[f"{stage}_changed"] for r in subset) == comparison[f"{stage}_frames_different"]
             aggregate = {}
-            for mode in ("global", "jpda"):
+            for mode in modes:
                 rows = [r for r in timing if r["mode"] == mode]
                 assert len(rows) == 124 and sum(int(r["frames"]) for r in rows) == 38967
                 for row in rows:
                     assert math.isclose(float(row["combined_total_us"]), float(row["update_total_us"]) + float(row["diagnostics_total_us"]))
                     repeat = int(row["repeat"])
-                    assert row["order"] == ("global/jpda" if repeat % 2 == 0 else "jpda/global")
+                    assert row["order"] == (comparison_name if repeat % 2 == 0 else "/".join(reversed(modes)))
                 for name in ("Half-Circle", "Line", "Circle", "Multi-Touch"):
                     assert sorted(int(r["repeat"]) for r in rows if r["recording"] == name) == list(range(31))
                 aggregate[mode] = {stage + "_mean_us": sum(float(r[stage + "_total_us"]) for r in rows) / 38967
                                    for stage in ("update", "diagnostics", "combined")}
-            aggregate["overhead_percent"] = {stage: (aggregate["jpda"][stage + "_mean_us"] / aggregate["global"][stage + "_mean_us"] - 1) * 100
+                if all("update_and_diagnostics_allocated_bytes" in r for r in rows):
+                    aggregate[mode]["combined_allocated_mean_bytes"] = sum(int(r["update_and_diagnostics_allocated_bytes"]) for r in rows) / 38967
+            aggregate["overhead_percent"] = {stage: (aggregate[modes[1]][stage + "_mean_us"] / aggregate[modes[0]][stage + "_mean_us"] - 1) * 100
                                                for stage in ("update", "combined")}
+            if "combined_allocated_mean_bytes" in aggregate[modes[0]]:
+                aggregate["allocation_change_percent"] = (aggregate[modes[1]]["combined_allocated_mean_bytes"]
+                    / aggregate[modes[0]]["combined_allocated_mean_bytes"] - 1) * 100
+            if args.optimization:
+                assert differences == []
+                assert all(all(c[key] == 0 for key in ("assigned_frames_different", "tracked_frames_different", "published_frames_different", "diagnostic_frames_different")) for c in data["comparisons"])
+                for name in ("Half-Circle", "Line", "Circle", "Multi-Touch"):
+                    pair = [r for r in quality if r["recording"] == name]
+                    assert {k:v for k,v in pair[0].items() if k != "mode"} == {k:v for k,v in pair[1].items() if k != "mode"}
+                controls = json.loads((base / "recovery-controls.json").read_text())
+                assert len(controls) == 6
+                for control in controls:
+                    assert control["original"] == control["optimized"]
+                    assert control["optimized"]["allocated_ids"] == control["expected_allocated_ids"]
             profile["processes"][str(process)] = aggregate
             for filename in ("results.json", "frames.csv", "tracks.json", "differences.json", "reassociations.csv", "association-changes.csv", "timing-replays.csv"):
                 summary["derived_from_sha256"][str(base / filename)] = digest(base / filename)
+            if args.optimization:
+                summary["derived_from_sha256"][str(base / "recovery-controls.json")] = digest(base / "recovery-controls.json")
             print(f"{model}/process-{process}: hashes, 2514 frames, 248 replay totals, identities, births, gaps and process agreement verified")
         profile["quality"] = previous_quality
         profile["comparisons"] = previous_comparisons
-        first = differences[0]
-        assert first["baseline"]["targets"] == first["candidate"]["targets"]
-        profile["first_difference"] = {"recording": first["recording"], "frame": first["frame"],
-            "jpda_approximate": first["candidate"]["jpda_approximate"],
-            "baseline_cost": objective(first["baseline"]), "jpda_cost": objective(first["candidate"])}
+        if differences:
+            first = differences[0]
+            assert first["baseline"]["targets"] == first["candidate"]["targets"]
+            profile["first_difference"] = {"recording": first["recording"], "frame": first["frame"],
+                "jpda_approximate": first["candidate"]["jpda_approximate"],
+                "baseline_cost": objective(first["baseline"]), "jpda_cost": objective(first["candidate"])}
+        else:
+            profile["first_difference"] = None
         maximum = (0, None, None)
         ordered_changes, set_changes = 0, 0
         for frame in differences:

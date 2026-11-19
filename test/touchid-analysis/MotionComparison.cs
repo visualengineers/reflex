@@ -26,9 +26,37 @@ static class MotionComparison
     public static void RunJpda(string directory, string output, bool useKalmanFilter, bool qualityOnly = false)
         => RunCore(directory, output, qualityOnly, true, useKalmanFilter);
 
-    private static void RunCore(string directory, string output, bool qualityOnly, bool compareJpda, bool fixedKalman)
+    public static void RunJpdaOptimization(string directory, string output, bool useKalmanFilter, bool qualityOnly = false)
+        => RunCore(directory, output, qualityOnly, true, useKalmanFilter, true);
+
+    private sealed class Tracker
     {
-        string Mode(bool variant) => compareJpda ? (variant ? "jpda" : "global") : (variant ? "kalman" : "linear3");
+        public object Instance { get; }
+        public Type RuntimeType { get; }
+        public Func<IList<Interaction>, double, InteractionFrame> Update { get; }
+        public Func<InteractionFrame, List<InteractionVelocity>> GetVelocities { get; }
+        public int CurrentMaxId => Property<int>("CurrentMaxId");
+        public InteractionFrame[] InteractionsFramesCache => Property<InteractionFrame[]>("InteractionsFramesCache");
+        public T Property<T>(string name) => (T)RuntimeType.GetProperty(name).GetValue(Instance);
+        public Tracker(Type type, int history, Dictionary<string, object> settings, FilterType filter)
+        {
+            RuntimeType = type;
+            Instance = Activator.CreateInstance(type, history);
+            foreach (var (property, value) in settings) type.GetProperty(property).SetValue(Instance, value);
+            type.GetMethod("UpdateFilterType").Invoke(Instance, new object[] { filter });
+            // Identical typed delegates for both implementations; bind outside timing.
+            Update = type.GetMethod("Update", new[] { typeof(IList<Interaction>), typeof(double) })
+                .CreateDelegate<Func<IList<Interaction>, double, InteractionFrame>>(Instance);
+            GetVelocities = type.GetMethod("GetVelocities").CreateDelegate<Func<InteractionFrame, List<InteractionVelocity>>>(Instance);
+        }
+    }
+
+    private static void RunCore(string directory, string output, bool qualityOnly, bool compareJpda, bool fixedKalman, bool compareOriginalJpda = false)
+    {
+        var baselineMetadata = compareOriginalJpda ? ReadBaselineMetadata() : null;
+        var baselineType = compareOriginalJpda ? typeof(MotionComparison).Assembly.GetType(
+            "ReFlex.Core.Interactivity.Components.BaselineInteractionSmoothingBehaviour", true) : null;
+        string Mode(bool variant) => compareOriginalJpda ? (variant ? "jpda-optimized" : "jpda-original") : compareJpda ? (variant ? "jpda" : "global") : (variant ? "kalman" : "linear3");
         Directory.CreateDirectory(output);
         var settingsPath = "tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json";
         var settings = JsonConvert.DeserializeObject<TrackingServerAppSettings>(File.ReadAllText(settingsPath));
@@ -63,23 +91,23 @@ static class MotionComparison
                 throw new InvalidOperationException($"Invalid frame/time alignment: {name}");
             var timeout = (double)data[0]["observationTimeoutSeconds"];
 
-            InteractionSmoothingBehaviour Create(bool variant)
+            Tracker Create(bool variant)
             {
-                var tracker = new InteractionSmoothingBehaviour(smooth.InteractionHistorySize)
+                var type = compareOriginalJpda && !variant ? baselineType : typeof(InteractionSmoothingBehaviour);
+                var properties = new Dictionary<string, object>
                 {
-                    UseKalmanFilter = compareJpda ? fixedKalman : variant,
-                    UseJpda = compareJpda && variant, UseMinimumCostAssignment = true,
-                    UseVelocityForMapping = true, NumFramesForPrediction = 3, UseSecondDerivation = false,
-                    AssignmentMissCost = settings.AssignmentMissCost, AssignmentBirthCost = settings.AssignmentBirthCost,
-                    MaxConfidence = filter.Confidence.Max, TouchMergeDistance2D = smooth.TouchMergeDistance2D,
-                    ContactRetentionSeconds = smooth.ContactRetentionSeconds, ObservationTimeoutSeconds = timeout,
-                    ConfidenceGainPerSecond = smooth.ConfidenceGainPerSecond,
-                    ConfidenceDecayPerSecond = smooth.ConfidenceDecayPerSecond,
-                    NumFramesSmoothing = smooth.NumSmoothingSamples, DepthScale = smooth.DepthScale,
-                    PredictionHorizonSeconds = .05
+                    ["UseKalmanFilter"] = compareJpda ? fixedKalman : variant,
+                    ["UseJpda"] = compareJpda && (compareOriginalJpda || variant), ["UseMinimumCostAssignment"] = true,
+                    ["UseVelocityForMapping"] = true, ["NumFramesForPrediction"] = 3, ["UseSecondDerivation"] = false,
+                    ["AssignmentMissCost"] = settings.AssignmentMissCost, ["AssignmentBirthCost"] = settings.AssignmentBirthCost,
+                    ["MaxConfidence"] = filter.Confidence.Max, ["TouchMergeDistance2D"] = smooth.TouchMergeDistance2D,
+                    ["ContactRetentionSeconds"] = smooth.ContactRetentionSeconds, ["ObservationTimeoutSeconds"] = timeout,
+                    ["ConfidenceGainPerSecond"] = smooth.ConfidenceGainPerSecond,
+                    ["ConfidenceDecayPerSecond"] = smooth.ConfidenceDecayPerSecond,
+                    ["NumFramesSmoothing"] = smooth.NumSmoothingSamples, ["DepthScale"] = smooth.DepthScale,
+                    ["PredictionHorizonSeconds"] = .05
                 };
-                tracker.UpdateFilterType(smooth.Type);
-                return tracker;
+                return new Tracker(type, smooth.InteractionHistorySize, properties, smooth.Type);
             }
             List<Interaction> Publish(InteractionFrame result)
             {
@@ -99,7 +127,7 @@ static class MotionComparison
 
             var expectedBirths = new Dictionary<bool, int>();
             var baselineFrames = new Dictionary<int, JObject>();
-            int assignedDifferences = 0, trackedDifferences = 0, publishedDifferences = 0;
+            int assignedDifferences = 0, trackedDifferences = 0, publishedDifferences = 0, diagnosticDifferences = 0;
             foreach (var variant in Modes)
             {
                 var tracker = Create(variant);
@@ -119,7 +147,7 @@ static class MotionComparison
                     var published = Publish(result);
                     // Untimed inspection reproduces the pure joint calculation from the actual stored
                     // matching targets, and verifies its assignments against the real update.
-                    var audit = compareJpda ? InspectJpda(tracker, frame, raw, allocatedBefore, variant) : null;
+                    var audit = compareJpda ? InspectJpda(tracker, frame, raw, allocatedBefore, compareOriginalJpda || variant) : null;
                     if (audit?.Approximate == true) approximationFrames++;
                     if (audit?.Fallback == true) fallbackFrames++;
                     if (audit?.Reserved.Length > 0) reservationFrames++;
@@ -190,12 +218,16 @@ static class MotionComparison
                         var assignedChanged = !JToken.DeepEquals(baseline["assigned"], snapshot["assigned"]);
                         var trackedChanged = !JToken.DeepEquals(baseline["tracked"], snapshot["tracked"]);
                         var publishedChanged = !JToken.DeepEquals(baseline["published"], snapshot["published"]);
+                        var diagnosticsChanged = !JToken.DeepEquals(baseline["targets"], snapshot["targets"])
+                            || !JToken.DeepEquals(baseline["reserved_ids"], snapshot["reserved_ids"])
+                            || !JToken.DeepEquals(baseline["jpda_approximate"], snapshot["jpda_approximate"]);
+                        if (diagnosticsChanged) diagnosticDifferences++;
                         if (assignedChanged) assignedDifferences++;
                         if (trackedChanged) trackedDifferences++;
                         if (publishedChanged) publishedDifferences++;
-                        if (assignedChanged || trackedChanged || publishedChanged)
+                        if (assignedChanged || trackedChanged || publishedChanged || (compareOriginalJpda && diagnosticsChanged))
                             differences.Add(new { recording = name, frame = frame.Index,
-                                assigned_changed = assignedChanged, tracked_changed = trackedChanged,
+                                assigned_changed = assignedChanged, tracked_changed = trackedChanged, diagnostics_changed = diagnosticsChanged,
                                 published_changed = publishedChanged, baseline, candidate = snapshot });
                     }
                     frameRows.Add(new { recording = name, mode = Mode(variant), frame = frame.Index,
@@ -233,7 +265,7 @@ static class MotionComparison
 
             comparisons.Add(new { recording = name, baseline = Mode(false), candidate = Mode(true),
                 assigned_frames_different = assignedDifferences, tracked_frames_different = trackedDifferences,
-                published_frames_different = publishedDifferences });
+                published_frames_different = publishedDifferences, diagnostic_frames_different = diagnosticDifferences });
             if (qualityOnly) continue;
             // Warm both complete paths; construction and all JSON/reference work are outside the timing.
             for (var warmup = 0; warmup < Warmups; warmup++)
@@ -243,19 +275,23 @@ static class MotionComparison
                     foreach (var frame in frames) tracker.GetVelocities(tracker.Update(frame.Measurements, frame.Time));
                 }
             var times = Modes.ToDictionary(k => k, _ => new List<(double Update, double Diagnostics)>());
+            var allocations = Modes.ToDictionary(k => k, _ => 0L);
             for (var repeat = 0; repeat < Repeats; repeat++)
             {
                 foreach (var variant in repeat % 2 == 0 ? Modes : Modes.Reverse().ToArray())
                 {
                     var tracker = Create(variant);
                     double updateTotal = 0, diagnosticsTotal = 0;
+                    long allocatedTotal = 0;
                     foreach (var frame in frames)
                     {
+                        var allocatedBeforeCall = GC.GetAllocatedBytesForCurrentThread();
                         var start = Stopwatch.GetTimestamp();
                         var result = tracker.Update(frame.Measurements, frame.Time);
                         var middle = Stopwatch.GetTimestamp();
                         var diagnostics = tracker.GetVelocities(result);
                         var end = Stopwatch.GetTimestamp();
+                        allocatedTotal += GC.GetAllocatedBytesForCurrentThread() - allocatedBeforeCall;
                         var update = (middle - start) * 1_000_000.0 / Stopwatch.Frequency;
                         var diagnostic = (end - middle) * 1_000_000.0 / Stopwatch.Frequency;
                         GC.KeepAlive(result);
@@ -266,10 +302,12 @@ static class MotionComparison
                     }
                     if (tracker.CurrentMaxId != expectedBirths[variant])
                         throw new InvalidOperationException("Timed replay produced different births than metric replay.");
+                    allocations[variant] += allocatedTotal;
                     timingRows.Add(new { recording = name, mode = Mode(variant), repeat,
                         order = repeat % 2 == 0 ? $"{Mode(false)}/{Mode(true)}" : $"{Mode(true)}/{Mode(false)}", frames = frames.Length,
                         update_total_us = updateTotal, diagnostics_total_us = diagnosticsTotal,
-                        combined_total_us = updateTotal + diagnosticsTotal });
+                        combined_total_us = updateTotal + diagnosticsTotal,
+                        update_and_diagnostics_allocated_bytes = allocatedTotal });
                 }
             }
             foreach (var variant in Modes)
@@ -280,7 +318,8 @@ static class MotionComparison
                     update_median_us = Quantile(values.Select(t => t.Update), .5), update_p95_us = Quantile(values.Select(t => t.Update), .95),
                     diagnostics_median_us = Quantile(values.Select(t => t.Diagnostics), .5), diagnostics_p95_us = Quantile(values.Select(t => t.Diagnostics), .95),
                     combined_median_us = Quantile(values.Select(t => t.Update + t.Diagnostics), .5),
-                    combined_p95_us = Quantile(values.Select(t => t.Update + t.Diagnostics), .95) });
+                    combined_p95_us = Quantile(values.Select(t => t.Update + t.Diagnostics), .95),
+                    combined_allocated_mean_bytes = (double)allocations[variant] / values.Count });
             }
             Console.WriteLine($"{name}: {frames.Length} frames, {expectedBirths[false]} → {expectedBirths[true]} births; {Repeats} paired timing replays complete");
         }
@@ -293,7 +332,8 @@ static class MotionComparison
             "library/src/Core/Interactivity/Util/GreedyContactAssignment.cs",
             "library/src/Core/Common/Components/Point3.cs",
             "library/src/Core/Interactivity/Util/JpdaContactAssignment.cs",
-            "test/touchid-analysis/Program.cs", "test/touchid-analysis/MotionComparison.cs", settingsPath
+            "test/touchid-analysis/Program.cs", "test/touchid-analysis/MotionComparison.cs",
+            "test/touchid-analysis/TouchIdAnalysis.csproj", "test/touchid-analysis/prepare_jpda_baseline.py", settingsPath
         };
         File.WriteAllText(Path.Combine(output, "results.json"), JsonConvert.SerializeObject(new {
             metadata = new { measured_at_utc = DateTimeOffset.UtcNow,
@@ -302,11 +342,13 @@ static class MotionComparison
                 stopwatch_frequency = Stopwatch.Frequency, warmup_replays = qualityOnly ? 0 : Warmups,
                 timing_repeats = qualityOnly ? 0 : Repeats, quality_only = qualityOnly,
                 input_hashes = hashes, source_sha256 = sources.ToDictionary(p => p, Hash),
-                comparison = compareJpda ? "global/jpda" : "linear3/kalman",
+                baseline_metadata = baselineMetadata,
+                allocation_scope = "Managed current-thread allocations in Update + GetVelocities; counters are outside timing intervals.",
+                comparison = compareOriginalJpda ? "jpda-original/jpda-optimized" : compareJpda ? "global/jpda" : "linear3/kalman",
                 configuration = new { settings, global_assignment = true, pressure_type_invariant = true,
-                    varied_setting = compareJpda ? "UseJpda" : "UseKalmanFilter",
+                    varied_setting = compareOriginalJpda ? "JPDA implementation" : compareJpda ? "UseJpda" : "UseKalmanFilter",
                     fixed_kalman = compareJpda ? (bool?)fixedKalman : null,
-                    variants = Modes.Select(v => new { mode = Mode(v), use_jpda = compareJpda && v,
+                    variants = Modes.Select(v => new { mode = Mode(v), use_jpda = compareJpda && (compareOriginalJpda || v),
                         use_kalman_filter = compareJpda ? fixedKalman : v }).ToArray(),
                     jpda_overrides_global_when_enabled = compareJpda,
                     jpda_occlusion_retention_seconds = InteractionSmoothingBehaviour.JpdaOcclusionRetentionSeconds,
@@ -326,16 +368,71 @@ static class MotionComparison
         WriteCsv(Path.Combine(output, "reassociations.csv"), recoveryRows);
         File.WriteAllText(Path.Combine(output, "differences.json"), JsonConvert.SerializeObject(differences, Formatting.Indented) + "\n");
         File.WriteAllText(Path.Combine(output, "tracks.json"), JsonConvert.SerializeObject(numericFrames) + "\n");
+        if (compareOriginalJpda)
+            File.WriteAllText(Path.Combine(output, "recovery-controls.json"),
+                JsonConvert.SerializeObject(RecoveryControls(baselineType, fixedKalman), Formatting.Indented) + "\n");
+    }
+
+    private static object[] RecoveryControls(Type baselineType, bool kalman)
+    {
+        var results = new List<object>();
+        foreach (var name in new[] { "masked-pair", "crossing", "six-overlap", "inclusive-deadline", "expired", "disabled" })
+        {
+            var split = name == "inclusive-deadline" ? 1d : name == "expired" ? 1.000001 : .7;
+            var sequence = name == "crossing"
+                ? new[] { (0d, new[] { 0f, 40f }), (.1, new[] { 5f, 35f }), (.2, new[] { 10f, 30f }),
+                    (.3, new[] { 15f, 25f }), (.4, new[] { 20f }), (.5, new[] { 25f }), (.6, new[] { 30f }), (.7, new[] { 35f, 5f }) }
+                : name == "six-overlap"
+                    ? new[] { (0d, new[] { 0f, 2f, 4f, 6f, 8f, 10f }), (.05, new[] { 5f }), (.2, new[] { 5f }), (.5, new[] { 0f, 2f, 4f, 6f, 8f, 10f }) }
+                    : new[] { (0d, new[] { 0f, 10f }), (.05, new[] { 5f }), (.2, new[] { 5f }),
+                        (split >= 1 ? .8 : .4, new[] { 5f }), (split, new[] { 0f, 10f }) };
+            var frames = sequence.Select((sample, index) => new Frame(index, sample.Item1,
+                sample.Item2.Select(x => new Interaction(new Point3(x, 20, -.5f), InteractionType.Push, 20) { Time = 0 }).ToArray(), new JObject())).ToArray();
+            var properties = new Dictionary<string, object> { ["UseJpda"] = name != "disabled",
+                ["UseKalmanFilter"] = kalman, ["UseMinimumCostAssignment"] = true,
+                ["UseVelocityForMapping"] = name == "crossing", ["NumFramesForPrediction"] = 3,
+                ["TouchMergeDistance2D"] = 40f, ["ContactRetentionSeconds"] = .1,
+                ["ObservationTimeoutSeconds"] = 1d, ["MaxConfidence"] = 30 };
+            var snapshots = new List<JObject>();
+            int allocated = 0;
+            foreach (var type in new[] { baselineType, typeof(InteractionSmoothingBehaviour) })
+            {
+                var tracker = new Tracker(type, 2, properties, FilterType.None);
+                var current = new List<object>();
+                foreach (var frame in frames)
+                {
+                    var output = tracker.Update(frame.Measurements, frame.Time);
+                    current.Add(new { frame = frame.Index, time = frame.Time, tracked = output.Interactions,
+                        raw = tracker.InteractionsFramesCache.Single(f => f.FrameId == output.FrameId).Interactions });
+                }
+                allocated = tracker.CurrentMaxId;
+                snapshots.Add(JObject.FromObject(new { allocated_ids = allocated, frames = current }));
+            }
+            if (!JToken.DeepEquals(snapshots[0], snapshots[1]))
+                throw new InvalidOperationException("Recovery control differs: " + name);
+            var expected = name == "six-overlap" ? 6 : name == "expired" || name == "disabled" ? 3 : 2;
+            if (allocated != expected) throw new InvalidOperationException("Recovery control allocated wrong IDs: " + name);
+            if (name == "crossing")
+            {
+                var last = (JArray)snapshots[1]["frames"].Last["raw"];
+                if ((int)last.Single(i => (float)i["Position"]["X"] == 35)["TouchId"] != 0
+                    || (int)last.Single(i => (float)i["Position"]["X"] == 5)["TouchId"] != 1)
+                    throw new InvalidOperationException("Crossing identities were not recovered.");
+            }
+            results.Add(new { scenario = name, kalman, expected_allocated_ids = expected,
+                outputs_identical = true, original = snapshots[0], optimized = snapshots[1] });
+        }
+        return results.ToArray();
     }
 
     private sealed record JpdaInspection((int TouchId, Point3 Position, InteractionType Type)[] Targets,
         int[] Reserved, bool? Approximate, bool Fallback);
 
-    private static JpdaInspection InspectJpda(InteractionSmoothingBehaviour tracker, Frame frame,
+    private static JpdaInspection InspectJpda(Tracker tracker, Frame frame,
         IList<Interaction> raw, int allocatedBefore, bool enabled)
     {
         const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
-        var states = (System.Collections.IDictionary)typeof(InteractionSmoothingBehaviour).GetField("_tracks", flags).GetValue(tracker);
+        var states = (System.Collections.IDictionary)tracker.RuntimeType.GetField("_tracks", flags).GetValue(tracker.Instance);
         var targets = new List<(int TouchId, Point3 Position, InteractionType Type)>();
         var reserved = new List<int>();
         foreach (System.Collections.DictionaryEntry entry in states)
@@ -353,9 +450,10 @@ static class MotionComparison
         if (enabled && !fallback)
         {
             var inputs = frame.Measurements.Take(20).Where(i => float.IsFinite(i.Position.X) && float.IsFinite(i.Position.Y)).ToArray();
-            var type = typeof(InteractionSmoothingBehaviour).Assembly.GetType("ReFlex.Core.Interactivity.Util.JpdaContactAssignment", true);
+            var name = tracker.RuntimeType == typeof(InteractionSmoothingBehaviour) ? "JpdaContactAssignment" : "BaselineJpdaContactAssignment";
+            var type = tracker.RuntimeType.Assembly.GetType("ReFlex.Core.Interactivity.Util." + name, true);
             var joint = type.GetMethod("Assign").Invoke(null, new object[] { inputs, ordered,
-                tracker.TouchMergeDistance2D, tracker.AssignmentMissCost, tracker.AssignmentBirthCost });
+                tracker.Property<float>("TouchMergeDistance2D"), tracker.Property<float>("AssignmentMissCost"), tracker.Property<float>("AssignmentBirthCost") });
             approximate = (bool)joint.GetType().GetProperty("Approximate").GetValue(joint);
             var ids = (int[])joint.GetType().GetProperty("AssignedIds").GetValue(joint);
             var nextId = allocatedBefore;
@@ -365,6 +463,24 @@ static class MotionComparison
             if (!expected.SequenceEqual(actual)) throw new InvalidOperationException("JPDA inspection does not reproduce the actual association.");
         }
         return new JpdaInspection(ordered, reserved.Order().ToArray(), approximate, fallback);
+    }
+
+    private static JObject ReadBaselineMetadata()
+    {
+        var assembly = typeof(MotionComparison).Assembly;
+        using var metadata = assembly.GetManifestResourceStream("JpdaBaselineMetadata")
+            ?? throw new InvalidOperationException("Build with -p:JpdaBaselineDirectory=<generated baseline directory>.");
+        using var reader = new StreamReader(metadata);
+        var result = JObject.Parse(reader.ReadToEnd());
+        foreach (var file in ((JObject)result["files"]).Properties())
+        {
+            using var source = assembly.GetManifestResourceStream("JpdaBaseline." + file.Name)
+                ?? throw new InvalidOperationException("Missing embedded baseline source: " + file.Name);
+            var actual = Convert.ToHexString(SHA256.HashData(source));
+            if (!actual.Equals((string)file.Value["generated_sha256"], StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Baseline source hash mismatch: " + file.Name);
+        }
+        return result;
     }
 
     // Read compiled values, so metadata cannot silently retain pre-tuning defaults.

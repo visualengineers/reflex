@@ -2,6 +2,10 @@
 
 19 November 2026. Production code: `4290171a` on `feature/jpda`.
 
+This report preserves the **original, unoptimized** implementation's results. See the subsequent
+[runtime optimization and repeated comparison](jpda-optimization.md) for the current implementation,
+paired original/optimized timings and recovery-preservation checks.
+
 **The available recordings show no reduction in single-target ID changes or created tracks from
 JPDA.** Both strategies create **38 tracks**, with **zero published ID changes** in the three
 single-target recordings, with either linear prediction or the tuned Kalman model. No ID is
