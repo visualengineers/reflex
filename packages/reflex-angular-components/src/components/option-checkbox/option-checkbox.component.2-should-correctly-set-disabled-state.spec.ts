@@ -4,11 +4,12 @@ import { component, fixture, setupTests } from './option-checkbox.component.test
 describe('OptionCheckboxComponent', () => {
   setupTests();
 
-  it('should correctly set disabled state', () => {
+  it('should correctly set disabled state', async () => {
     const newState = true;
     fixture.componentRef.setInput('disabled', newState);
 
     fixture.detectChanges();
+    await fixture.whenStable();
 
     const inputElem = fixture.debugElement.query(By.css('.checkbox-toggle'));
     expect((inputElem.nativeElement as HTMLInputElement).disabled).toEqual(newState);

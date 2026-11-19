@@ -32,3 +32,23 @@ describe('Zoneless change detection: propagates checkbox and panel events throug
     ).toContain('true / false');
   });
 });
+
+describe('Initially disabled option checkbox', () => {
+  it('keeps a disabled input inactive after ngModel initializes and supports later activation', async () => {
+    const fixture = TestBed.createComponent(OptionCheckboxComponent);
+    fixture.componentRef.setInput('disabled', true);
+    fixture.componentRef.setInput('data', true);
+    await fixture.whenStable();
+    const input = queryElement<HTMLInputElement>(fixture.nativeElement as HTMLElement, 'input');
+    expect(input.disabled).toBe(true);
+    input.click();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.data).toBe(true);
+    fixture.componentRef.setInput('disabled', false);
+    await fixture.whenStable();
+    expect(input.disabled).toBe(false);
+    input.click();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.data).toBe(false);
+  });
+});

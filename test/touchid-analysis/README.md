@@ -60,3 +60,64 @@ Multi-Touch lacks finger annotations; its strongest-region representative change
 count, not physical finger ID switches. Created tracks include tentative, stationary and suppressed
 contacts. See [the replay comparison](../analysis/touchid-3512/assignment-comparison.md)
 for the measured results and limits.
+
+## Paired linear prediction/Kalman comparison
+
+`--compare-motion` compares the current production tracker with `UseKalmanFilter=false/true`.
+Both variants use global assignment and the current hard pressure-type constraint. Only the Kalman
+switch changes; this also changes published XY smoothing. Prediction is enabled with three samples
+and no acceleration in the legacy mode. All other settings and explicit overrides are recorded in
+`results.json`. The historical greedy tracker is not needed for this comparison.
+
+From the repository root, after building Release:
+
+```sh
+dotnet build test/touchid-analysis/TouchIdAnalysis.csproj -c Release --no-restore -m:1 -nr:false
+# Capture only if an existing capture with pre-assignment measurements is not available.
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- /tmp/reflex-motion-capture
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --inputs /tmp/reflex-motion-capture
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-motion /tmp/reflex-motion-capture /tmp/reflex-motion-results/process-1
+dotnet run --no-build -c Release --project test/touchid-analysis/TouchIdAnalysis.csproj -- --compare-motion /tmp/reflex-motion-capture /tmp/reflex-motion-results/process-2
+```
+
+Run the two measurement processes sequentially. The documented comparison reuses
+`/tmp/reflex-assignment-20261119`, whose eight input hashes match the earlier assignment comparison.
+New captures may have different hashes if preprocessing changed; both variants must always receive
+the same captured measurements. Nominal 30 Hz capture times isolate association from execution speed.
+
+`frames.csv` records published and raw representative ID changes and births; `tracks.json` retains
+compact assigned/published trajectories. `association-changes.csv` records the current measurement
+and previous ID's matching forecast when the raw representative changes. A previous Lost track's
+forecast is queried at the current observation time, without a correction; if the previous track
+is no longer available, its diagnostic fields are empty. Multi-Touch changes are representative
+diagnostics, not annotated physical finger switches.
+
+Timing measures `Tracker.Update` and `GetVelocities` separately, after ten whole-replay warmups,
+with 31 alternating AB/BA replays per recording and fresh state for each replay. Combined per-frame
+median/p95 include both calls; replay totals are stored in `timing-replays.csv`. Parsing, image
+processing, publication filtering, calibration and UI rendering are excluded. Runtime checks validate
+finite outputs/covariances and identical birth counts across quality and timed replays.
+
+See [the Kalman replay report](../analysis/touchid-3512/kalman-comparison.md) for results,
+parameter assumptions, the initial ID-stability regression, tuned results and interpretation limits.
+
+For an offline parameter sweep, use the production tracker with timing disabled:
+
+```sh
+python3 test/touchid-analysis/tune_kalman.py /tmp/reflex-motion-capture /tmp/reflex-kalman-noise-grid.json
+```
+
+The default grid has eight process spectral densities (400 through 4000000) and three measurement
+variances (1, 4, 16), with initial velocity variance fixed at 10000. Explicit `--q`, `--r` and
+`--velocity-variance` lists can override the grid. The script temporarily edits the three production
+constants, builds each candidate with shared compilation disabled, then calls `--compare-motion`
+with `--quality-only`. Compiled constants are checked against each requested candidate; result
+metadata reads the actual compiled constants rather than hardcoded analysis defaults.
+Every candidate's quality metrics, settings and hashes are retained in the grid JSON. The original
+source is restored and rebuilt on normal or exception exit; abrupt process termination cannot run
+that cleanup. Do not concurrently edit the Kalman source or build the same projects during a sweep.
+No mutable tuning controls are added to the application.
+
+The repeat comparison with selected production defaults is stored separately in the report's
+`kalman-comparison/tuned/process-1` and `process-2` directories; original results are preserved.
+Use the full comparison command without `--quality-only` to measure timing after choosing defaults.

@@ -24,6 +24,12 @@ namespace ReFlex.Core.Common.Components
         public bool IsPublished { get; set; }
         public string SuppressionReason { get; set; } = "";
         public bool UseSecondDerivation { get; set; }
+        public bool UseKalmanFilter { get; set; }
+        public bool UseVelocityPrediction { get; set; }
+        /// <summary>Kalman state at TimestampSeconds, in raw raster pixels. Null without Kalman.</summary>
+        public Point3 KalmanPosition { get; set; }
+        public double? KalmanVarianceX { get; set; }
+        public double? KalmanVarianceY { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public Point3 MeasuredPosition { get; set; } = new Point3();

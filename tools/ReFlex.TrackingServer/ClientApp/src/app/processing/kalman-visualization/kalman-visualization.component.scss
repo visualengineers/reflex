@@ -1,0 +1,11 @@
+:host { position: absolute; inset: 0; display: block; pointer-events: none; z-index: 2; }
+.kalman-canvas { width: 100%; height: 100%; overflow: hidden; }
+.kalman-uncertainty { fill: #2e916d; fill-opacity: .14; stroke: #187556; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.kalman-track { fill: none; stroke: #187556; stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.measurement-trail { fill: none; stroke: #536779; stroke-opacity: .35; stroke-dasharray: 2 4; }
+.kalman-measurement { fill: #475569; fill-opacity: .75; stroke: white; stroke-width: .75; }
+.kalman-estimate { fill: #187556; stroke: white; stroke-width: 1.5; }
+.innovation { stroke: #187556; stroke-dasharray: 2 3; stroke-opacity: .6; }
+text { fill: #13563f; font-size: 12px; paint-order: stroke; stroke: white; stroke-width: 3px; }
+.lost .kalman-uncertainty { stroke-dasharray: 4 3; }
+.suppressed { opacity: .65; }

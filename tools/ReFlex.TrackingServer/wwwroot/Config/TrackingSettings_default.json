@@ -1,4 +1,5 @@
 {
+  "UseKalmanFilter": false,
   "UseMinimumCostAssignment": true,
   "AssignmentMissCost": 0.5,
   "AssignmentBirthCost": 0.5,

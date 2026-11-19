@@ -164,13 +164,19 @@ namespace ReFlex.Core.Common.Components
             return (float)System.Math.Sqrt((lenX * lenX) + (lenY * lenY) + (lenZ * lenZ));
         }
 
-        public static float Squared2DDistance(Point3 point1, Point3 point2)
+        /// <summary>XY Manhattan distance |dx| + |dy| in sensor pixels; Z is ignored.</summary>
+        public static float Manhattan2DDistance(Point3 point1, Point3 point2)
         {
             var lenX = point2.X - point1.X;
             var lenY = point2.Y - point1.Y;
 
             return System.Math.Abs(lenX) + System.Math.Abs(lenY);
         }
+
+        /// <summary>Compatibility alias. Historically this name computed Manhattan distance,
+        /// not squared Euclidean distance. Prefer Manhattan2DDistance in new code.</summary>
+        public static float Squared2DDistance(Point3 point1, Point3 point2)
+            => Manhattan2DDistance(point1, point2);
 
         /// <summary>
         /// Compares [this] instance with the input.

@@ -29,6 +29,21 @@ public class AssignmentSettingsTest
         }
     }
 
+    [TestCase("{}", false)]
+    [TestCase("{\"UseKalmanFilter\":false}", false)]
+    [TestCase("{\"UseKalmanFilter\":true}", true)]
+    public void KalmanSwitchSurvivesBothJsonRoundTrips(string json, bool enabled)
+    {
+        var fromFile = JsonConvert.DeserializeObject<TrackingServerAppSettings>(json);
+        var fromApi = System.Text.Json.JsonSerializer.Deserialize<TrackingServerAppSettings>(json);
+        Assert.That(fromFile.UseKalmanFilter, Is.EqualTo(enabled));
+        Assert.That(fromApi.UseKalmanFilter, Is.EqualTo(enabled));
+        Assert.That(JsonConvert.DeserializeObject<TrackingServerAppSettings>(JsonConvert.SerializeObject(fromFile)).UseKalmanFilter,
+            Is.EqualTo(enabled));
+        Assert.That(System.Text.Json.JsonSerializer.Deserialize<TrackingServerAppSettings>(
+            System.Text.Json.JsonSerializer.Serialize(fromApi)).UseKalmanFilter, Is.EqualTo(enabled));
+    }
+
     [Test]
     public void TrackerAndServerShareAssignmentDefaults()
     {
@@ -36,6 +51,7 @@ public class AssignmentSettingsTest
         var tracker = new InteractionSmoothingBehaviour(15);
         Assert.Multiple(() =>
         {
+            Assert.That(settings.UseKalmanFilter, Is.EqualTo(tracker.UseKalmanFilter).And.False);
             Assert.That(settings.UseMinimumCostAssignment, Is.EqualTo(tracker.UseMinimumCostAssignment).And.True);
             Assert.That(settings.AssignmentMissCost, Is.EqualTo(tracker.AssignmentMissCost));
             Assert.That(settings.AssignmentBirthCost, Is.EqualTo(tracker.AssignmentBirthCost));

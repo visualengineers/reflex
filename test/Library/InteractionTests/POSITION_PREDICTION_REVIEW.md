@@ -1,3 +1,7 @@
+> Kalman feature-branch update: pressure-type transitions within one ID are now excluded by the
+> installation's physical-contact assumption. Optional Kalman XY filtering and its switch semantics
+> are documented in [kalman-filter.md](../../analysis/touchid-3512/kalman-filter.md).
+
 # Position prediction: PR #1233 integration and temporal model
 
 Source: `feature/#412_velocity-based-prediction`, commit

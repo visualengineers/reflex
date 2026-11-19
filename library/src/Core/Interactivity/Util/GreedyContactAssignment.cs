@@ -1,21 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using ReFlex.Core.Common.Components;
+using ReFlex.Core.Common.Util;
 
 namespace ReFlex.Core.Interactivity.Util;
 
 /// <summary>Assigns measurements to matching positions without mutating contact lifecycle state.</summary>
 internal static class GreedyContactAssignment
 {
-    public static int[] Assign(List<Interaction> candidates, IReadOnlyList<(int TouchId, Point3 Position)> targets,
+    public static int[] Assign(List<Interaction> candidates, IReadOnlyList<(int TouchId, Point3 Position, InteractionType Type)> targets,
         float distanceLimit)
     {
         // Preserve the previous algorithm, including its gate and deterministic pair ordering.
-        var pairs = candidates.SelectMany((candidate, index) => targets.Select(track => new
+        var pairs = candidates.SelectMany((candidate, index) => targets.Where(track => track.Type == candidate.Type).Select(track => new
             {
                 CandidateIndex = index,
                 TouchId = track.TouchId,
-                Distance = Point3.Squared2DDistance(candidate.Position, track.Position)
+                Distance = Point3.Manhattan2DDistance(candidate.Position, track.Position)
             }))
             .Where(pair => pair.Distance < distanceLimit)
             .OrderBy(pair => pair.Distance)

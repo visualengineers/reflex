@@ -278,7 +278,7 @@ describe('Integrated prediction visualization', () => {
     stream.next([predictionSnapshot()]);
     await fixture.whenStable();
     expect(fixture.componentInstance.predictionData).toEqual([]);
-    expect(text(fixture)).toContain('Prediction stream or calibration unavailable.');
+    expect(text(fixture)).toContain('Motion diagnostics or calibration unavailable.');
   });
 
 });
@@ -363,6 +363,6 @@ describe('Prediction stream lifecycle', () => {
     stream.error(new Error('disconnected'));
     await fixture.whenStable();
     expect(fixture.componentInstance.predictionData).toEqual([]);
-    expect(text(fixture)).toContain('Prediction stream or calibration unavailable.');
+    expect(text(fixture)).toContain('Motion diagnostics or calibration unavailable.');
   });
 });

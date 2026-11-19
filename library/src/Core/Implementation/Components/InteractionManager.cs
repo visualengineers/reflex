@@ -48,6 +48,7 @@ namespace Implementation.Components
         private int _interactionHistorySize;
         private double _contactRetentionSeconds = .1;
         private double _observationTimeoutSeconds = 1;
+        private bool _useKalmanFilter;
         private bool _useMinimumCostAssignment = true;
         private float _assignmentMissCost = InteractionSmoothingBehaviour.DefaultAssignmentMissCost;
         private float _assignmentBirthCost = InteractionSmoothingBehaviour.DefaultAssignmentBirthCost;
@@ -166,6 +167,7 @@ namespace Implementation.Components
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.ContactRetentionSeconds = _contactRetentionSeconds;
             observer.ObservationTimeoutSeconds = _observationTimeoutSeconds;
+            observer.UseKalmanFilter = _useKalmanFilter;
             observer.UseMinimumCostAssignment = _useMinimumCostAssignment;
             observer.AssignmentMissCost = _assignmentMissCost;
             observer.AssignmentBirthCost = _assignmentBirthCost;
@@ -291,6 +293,16 @@ namespace Implementation.Components
             }
         }
         
+        public bool UseKalmanFilter
+        {
+            get => _useKalmanFilter;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseKalmanFilter = value;
+                _useKalmanFilter = value;
+            }
+        }
+
         public bool UseMinimumCostAssignment
         {
             get => _useMinimumCostAssignment;
@@ -677,7 +689,7 @@ namespace Implementation.Components
             for (var i = 0; i < rawInteractions.Count; i++)
             {
                 var currPt = rawInteractions[i];
-                var distances = filteredCopy.Select(inter => Point3.Squared2DDistance(inter.Position, currPt.Position)).ToList();
+                var distances = filteredCopy.Select(inter => Point3.Manhattan2DDistance(inter.Position, currPt.Position)).ToList();
 
                 var addPoint = true;
                 

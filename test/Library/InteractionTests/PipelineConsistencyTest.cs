@@ -68,7 +68,8 @@ public class PipelineConsistencyTest
         tracker.UpdateFilterType(FilterType.MovingAverage);
         tracker.Update(new[] { Point(10, -1) }, 0);
         tracker.Update(new[] { Point(10, -1) }, .01);
-        var contact = tracker.Update(new[] { Point(10, .1f) }, .02).Interactions.Single();
+        var frame = tracker.Update(new[] { Point(10, .1f) }, .02);
+        var contact = frame.Interactions.Single(item => item.TrackingState != InteractionTrackingState.Lost);
         Assert.That(contact.Type, Is.EqualTo(InteractionType.Pull));
         Assert.That(contact.Position.Z, Is.GreaterThan(0));
     }
