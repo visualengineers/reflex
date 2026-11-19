@@ -29,6 +29,7 @@ import { NEVER, Observable, Subscription } from 'rxjs';
 import {
   catchError,
   concatMap,
+  finalize,
   startWith,
   switchMap,
   tap
@@ -115,6 +116,7 @@ export class CalibrationComponent implements OnInit, OnDestroy {
 
   private currentlyActiveStage = -1;
   private selectedBorderIndex = -1;
+  private isCalibrationPointPending = false;
 
   private interactionsSubscription?: Subscription;
   private calibrationSubscription?: Subscription;
@@ -321,7 +323,8 @@ export class CalibrationComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     if (
-      this.selectedIdx < 0
+      this.isCalibrationPointPending
+      || this.selectedIdx < 0
       || this.currentlyActiveStage < 0
       || this.currentlyActiveStage > 2
       || this.selectedValue.length < this.currentlyActiveStage + 1
@@ -330,21 +333,25 @@ export class CalibrationComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const stage = this.currentlyActiveStage;
     const pos: CalibrationPoint = {
-      positionX: this.selectedValue[this.currentlyActiveStage].position.x,
-      positionY: this.selectedValue[this.currentlyActiveStage].position.y,
+      positionX: Math.round(this.selectedValue[stage].position.x),
+      positionY: Math.round(this.selectedValue[stage].position.y),
       touchId: this.selectedValue[this.currentlyActiveStage].touchId
     };
 
-    this.calibratedTargets[this.currentlyActiveStage] = pos;
-
-    // todo: never returns ???
+    this.isCalibrationPointPending = true;
     this.calibrationSubscription = this.calibrationService
-      .updateCalibrationPoint(this.currentlyActiveStage, pos)
-      .pipe(markViewForCheck(this.changeDetector))
+      .updateCalibrationPoint(stage, pos)
+      .pipe(
+        finalize(() => {
+          this.isCalibrationPointPending = false;
+        }),
+        markViewForCheck(this.changeDetector)
+      )
       .subscribe(
         (result: HttpResponse<CalibrationTransform>) => {
-          this.handleUpdatedCalibration(result);
+          this.handleUpdatedCalibration(result, stage, pos);
         },
         (error: unknown) => {
           this.logService.sendErrorLog(`${error}`);
@@ -624,21 +631,27 @@ export class CalibrationComponent implements OnInit, OnDestroy {
   }
 
   private handleUpdatedCalibration(
-    result: HttpResponse<CalibrationTransform>
+    result: HttpResponse<CalibrationTransform>,
+    stage: number,
+    point: CalibrationPoint
   ): void {
-    const trans = result.body as CalibrationTransform;
-    if (trans !== undefined) {
-      this.calibrationMatrix = trans.transformation;
-      if (this.currentlyActiveStage < 2 && this.currentlyActiveStage >= 0) {
-        this.currentlyActiveStage += 1;
-        this.selectedValue[this.currentlyActiveStage]
-          = this.getDefaultInteraction();
-      } else {
-        this.currentlyActiveStage = -1;
-        this.selectedValue = this.getDefaultSelectedValues();
-      }
+    if (!result.ok || !result.body) {
+      return;
+    }
+
+    this.calibratedTargets[stage] = point;
+    this.calibrationMatrix = result.body.transformation;
+
+    if (this.currentlyActiveStage !== stage) {
+      return;
+    }
+
+    if (stage < 2) {
+      this.currentlyActiveStage = stage + 1;
+      this.selectedValue[this.currentlyActiveStage] = this.getDefaultInteraction();
     } else {
-      this.resetTarget(this.currentlyActiveStage);
+      this.currentlyActiveStage = -1;
+      this.selectedValue = this.getDefaultSelectedValues();
     }
   }
 

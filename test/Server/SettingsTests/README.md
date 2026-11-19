@@ -1,4 +1,4 @@
-# Tracking settings integration tests
+# Tracking server integration tests
 
 These tests call the production settings controller, configuration manager and settings service
 with a real interaction manager. Configuration files and backups live in isolated temporary
@@ -9,6 +9,10 @@ file persistence, startup reload, full-settings save/import, backup restore, res
 of invalid costs without changing memory or disk. Prediction regressions additionally verify
 copy-before-save backups, restoration of all prediction fields, reset, persisted values and
 invalid requests leaving runtime settings, saved configuration and backup unchanged.
+
+Calibration coverage calls the production calibration controller, service and manager. It verifies
+that `Apply` immediately updates calibrated positions without another `Save Area`, that matrix
+preview leaves the active mapping unchanged, and that applying does not persist settings.
 
 Run on an ARM64 host from the repository root:
 

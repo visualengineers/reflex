@@ -64,8 +64,7 @@ namespace TrackingServer.Controllers
         [HttpGet]
         public ActionResult<CalibrationTransform> ApplyCalibration()
         {
-            // TODO: something to validate ?
-            _calibrationService.ComputeTransformation();
+            _calibrationService.ApplyCalibration();
 
             var result = _calibrationService.TransformationMatrix;
 

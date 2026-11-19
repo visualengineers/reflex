@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Keep all test scenarios for this component in one spec file. */
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { CalibrationTransform, DEFAULT_SETTINGS, FrameSizeDefinition, Interaction } from '@reflex/shared-types';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
@@ -1542,5 +1542,142 @@ describe('CalibrationComponent', () => {
     expect(testComponent.calibratedInteractions).toEqual([]);
 
     expect(vi.spyOn(testComponent, 'submit')).not.toHaveBeenCalled();
+  });
+});
+
+
+function emitSmoothedCalibrationFrame(
+  frames: Subject<Array<Interaction>>,
+  touchId = 100,
+  x = 100 + (1 / 3),
+  y = 150 + (2 / 3)
+): void {
+  const touch = structuredClone(testInteractionData.raw[0]);
+  touch.touchId = touchId;
+  touch.confidence = DEFAULT_SETTINGS.filterSettingValues.confidence.max;
+  touch.position.x = x;
+  touch.position.y = y;
+  frames.next([touch]);
+}
+
+function expectVisibleCalibrationPoint(stage: number): void {
+  testFixture.detectChanges();
+  const points = testFixture.debugElement.queryAll(By.css('.calibration__point--source'));
+  expect(points.map((point) => (point.nativeElement as HTMLElement).style.visibility))
+    .toEqual([0, 1, 2].map((index) => index === stage ? 'visible' : 'collapse'));
+}
+
+describe('CalibrationComponent smoothed point submission', () => {
+  setupTests();
+
+  let frames: Subject<Array<Interaction>>;
+  let response: Subject<HttpResponse<CalibrationTransform>>;
+
+  beforeEach(() => {
+    frames = new Subject<Array<Interaction>>();
+    response = new Subject<HttpResponse<CalibrationTransform>>();
+    processingService.getInteractions.mockReturnValue(frames);
+    calibrationService.computeCalibratedAbsolutePosition.mockImplementation(
+      (raw: Array<Interaction>) => of({ raw, normalized: raw, absolute: raw })
+    );
+    calibrationService.updateCalibrationPoint.mockReturnValue(response);
+    testFixture.detectChanges();
+    testComponent.calibratedTargets = structuredClone(targetPoints);
+    testComponent.update = true;
+    testComponent.display(0);
+  });
+
+  it('rounds moving smoothed coordinates and advances the visible point only after success', () => {
+    const previousTargets = structuredClone(testComponent.calibratedTargets);
+    emitSmoothedCalibrationFrame(frames);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledWith(
+      0,
+      { positionX: 100, positionY: 151, touchId: 100 }
+    );
+    expect(testComponent.calibratedTargets).toEqual(previousTargets);
+    expectVisibleCalibrationPoint(0);
+
+    emitSmoothedCalibrationFrame(frames, 100, 101.25, 149.75);
+    testComponent.submit();
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(1);
+
+    response.next(new HttpResponse({ body: defaultCalibrationMatrix }));
+    response.complete();
+    expect(testComponent.calibratedTargets[0]).toEqual({
+      positionX: 100, positionY: 151, touchId: 100
+    });
+    expect(testComponent.calibrationMatrix).toEqual(defaultCalibrationMatrix.transformation);
+    expectVisibleCalibrationPoint(1);
+  });
+
+  it('retries the same touch after an HTTP error without consuming its ID', () => {
+    const previousTargets = structuredClone(testComponent.calibratedTargets);
+    emitSmoothedCalibrationFrame(frames);
+    response.error(new HttpErrorResponse({ status: 400, statusText: 'Bad Request' }));
+    expect(testComponent.calibratedTargets).toEqual(previousTargets);
+    expect(testComponent.calibrationMatrix).toEqual(identityCalibrationMatrix.transformation);
+    expectVisibleCalibrationPoint(0);
+    expect(logService.sendErrorLog).toHaveBeenCalledTimes(1);
+
+    calibrationService.updateCalibrationPoint.mockReturnValue(
+      of(new HttpResponse({ body: identityCalibrationMatrix }))
+    );
+    emitSmoothedCalibrationFrame(frames, 100, 101.25, 149.75);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(2);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenLastCalledWith(
+      0,
+      { positionX: 101, positionY: 150, touchId: 100 }
+    );
+    expectVisibleCalibrationPoint(1);
+  });
+
+  it.each([
+    new HttpResponse<CalibrationTransform>(),
+    new HttpResponse<CalibrationTransform>({ status: 500, body: identityCalibrationMatrix })
+  ])('does not consume a point for an unusable response ($status, $body)', (result) => {
+    const previousTargets = structuredClone(testComponent.calibratedTargets);
+    emitSmoothedCalibrationFrame(frames);
+    response.next(result);
+    response.complete();
+    expect(testComponent.calibratedTargets).toEqual(previousTargets);
+    expectVisibleCalibrationPoint(0);
+
+    calibrationService.updateCalibrationPoint.mockReturnValue(
+      of(new HttpResponse({ body: identityCalibrationMatrix }))
+    );
+    emitSmoothedCalibrationFrame(frames);
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(2);
+    expectVisibleCalibrationPoint(1);
+  });
+});
+
+describe('CalibrationComponent complete smoothed calibration', () => {
+  setupTests();
+
+  it('automatically submits all three fractional points and finishes calibration', () => {
+    const frames = new Subject<Array<Interaction>>();
+    processingService.getInteractions.mockReturnValue(frames);
+    calibrationService.computeCalibratedAbsolutePosition.mockImplementation(
+      (raw: Array<Interaction>) => of({ raw, normalized: raw, absolute: raw })
+    );
+    calibrationService.updateCalibrationPoint.mockReturnValue(
+      of(new HttpResponse({ body: identityCalibrationMatrix }))
+    );
+    testFixture.detectChanges();
+    testComponent.calibratedTargets = structuredClone(targetPoints);
+    testComponent.update = true;
+    testComponent.display(0);
+
+    for (let stage = 0; stage < 3; stage++) {
+      emitSmoothedCalibrationFrame(frames, 100 + stage, 100.25 + stage, 150.75 + stage);
+      expect(calibrationService.updateCalibrationPoint).toHaveBeenNthCalledWith(
+        stage + 1,
+        stage,
+        { positionX: 100 + stage, positionY: 151 + stage, touchId: 100 + stage }
+      );
+      expect(testComponent['currentlyActiveStage']).toBe(stage < 2 ? stage + 1 : -1);
+      expectVisibleCalibrationPoint(stage < 2 ? stage + 1 : -1);
+    }
+    expect(calibrationService.updateCalibrationPoint).toHaveBeenCalledTimes(3);
   });
 });
