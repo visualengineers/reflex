@@ -36,7 +36,7 @@ public class AssignmentApiTest
         Directory.CreateDirectory(_directory);
         var legacy = JObject.Parse(File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory,
             "TrackingSettings_default.json")));
-        foreach (var key in new[] { "UseKalmanFilter", "UseMinimumCostAssignment", "AssignmentMissCost", "AssignmentBirthCost" })
+        foreach (var key in new[] { "UseJpda", "UseKalmanFilter", "UseMinimumCostAssignment", "AssignmentMissCost", "AssignmentBirthCost" })
             legacy.Remove(key);
         legacy["FilterSettingValues"]!["FilterMask"] = null;
         File.WriteAllText(Path.Combine(_directory, "settings.json"), legacy.ToString());
@@ -88,6 +88,28 @@ public class AssignmentApiTest
         Assert.That(_manager.UseKalmanFilter, Is.True);
         _controller.Reset();
         Assert.That(_manager.UseKalmanFilter, Is.False);
+    }
+
+    [Test]
+    public void JpdaTogglePersistsReloadsAndRestoresDefaults()
+    {
+        Assert.That(_controller.GetUseJpda().Value, Is.False, "Legacy settings are opt-in.");
+        _controller.SetUseJpda(true);
+        Assert.That(_manager.UseJpda, Is.True);
+        Assert.That(Configuration().Settings.UseJpda, Is.True);
+        _manager.Type = ObserverType.SingleTouch;
+        Assert.That(_manager.UseJpda, Is.True);
+        var reloaded = Configuration();
+        _manager.UseJpda = false;
+        var startup = new SettingsService(reloaded, _filter, _manager, _performance, new EventAggregator());
+        startup.Init();
+        Assert.That(_manager.UseJpda, Is.True);
+        _controller.SetUseJpda(false);
+        Assert.That(Configuration().Settings.UseJpda, Is.False);
+        _controller.Restore();
+        Assert.That(_manager.UseJpda, Is.True);
+        _controller.Reset();
+        Assert.That(_manager.UseJpda, Is.False);
     }
 
     [Test]
@@ -168,6 +190,7 @@ public class AssignmentApiTest
     public void FullSettingsSaveAndImportApplyAssignmentValues()
     {
         var value = Configuration().Settings;
+        value.UseJpda = true;
         value.UseKalmanFilter = true;
         value.UseMinimumCostAssignment = false;
         value.AssignmentMissCost = .25f;
@@ -176,10 +199,14 @@ public class AssignmentApiTest
         Assert.That(Configuration().Settings.AssignmentBirthCost, Is.Zero);
         Assert.That(_manager.UseMinimumCostAssignment, Is.False);
         Assert.That(Configuration().Settings.UseKalmanFilter, Is.True);
+        Assert.That(Configuration().Settings.UseJpda, Is.True);
+        Assert.That(_manager.UseJpda, Is.True);
+        value.UseJpda = false;
         value.UseKalmanFilter = false;
         value.UseMinimumCostAssignment = true;
         value.AssignmentMissCost = 0;
         _controller.LoadSettings(value);
+        Assert.That(_manager.UseJpda, Is.False);
         Assert.That(_manager.UseKalmanFilter, Is.False);
         Assert.That(_manager.UseMinimumCostAssignment, Is.True);
         Assert.That(_manager.AssignmentMissCost, Is.Zero);

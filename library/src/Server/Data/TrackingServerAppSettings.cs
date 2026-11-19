@@ -9,6 +9,9 @@ namespace ReFlex.Server.Data
         /// <summary>XY Kalman filtering is opt-in; omitted legacy values preserve existing behavior.</summary>
         public bool UseKalmanFilter { get; set; }
 
+        /// <summary>Probabilistic identity recovery after overlap is opt-in.</summary>
+        public bool UseJpda { get; set; }
+
         public bool UseMinimumCostAssignment { get; set; } = true;
 
         private float _assignmentMissCost = InteractionSmoothingBehaviour.DefaultAssignmentMissCost;
@@ -58,6 +61,7 @@ namespace ReFlex.Server.Data
             result += $"{CameraConfigurationValues.GetCameraDefinitionString()}";
             result += $"{nameof(IsAutoStartEnabled)}: {IsAutoStartEnabled}{Environment.NewLine}";
             result += $"{nameof(UseKalmanFilter)}: {UseKalmanFilter} | ";
+            result += $"{nameof(UseJpda)}: {UseJpda} | ";
             result += $"{nameof(UseMinimumCostAssignment)}: {UseMinimumCostAssignment} | ";
             result += $"{nameof(AssignmentMissCost)}: {AssignmentMissCost} | ";
             result += $"{nameof(AssignmentBirthCost)}: {AssignmentBirthCost}{Environment.NewLine}";

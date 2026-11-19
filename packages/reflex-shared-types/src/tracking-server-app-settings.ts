@@ -12,6 +12,8 @@ export interface TrackingServerAppSettings {
 
   /** Recursive XY Kalman filtering; legacy configurations default to false. */
   useKalmanFilter?: boolean;
+  /** Bounded recovery of contact IDs masked by overlap; opt-in for legacy configurations. */
+  useJpda?: boolean;
   /** Global assignment is enabled when absent in legacy settings. */
   useMinimumCostAssignment?: boolean;
   /** Normalized per-observation costs; legacy settings default to 0.5 each. */

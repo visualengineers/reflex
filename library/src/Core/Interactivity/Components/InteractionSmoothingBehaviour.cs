@@ -32,6 +32,7 @@ namespace ReFlex.Core.Interactivity.Components
             public double ConfidenceUpdatedAt { get; set; }
             public float Confidence { get; set; }
             public Point3 MatchingPosition { get; set; }
+            public double? OccludedUntil { get; set; }
         }
 
         private readonly Dictionary<int, Track> _tracks = new();
@@ -71,6 +72,26 @@ namespace ReFlex.Core.Interactivity.Components
         /// <summary>Use global minimum-cost assignment; false restores greedy one-to-one matching.
         /// Changing this strategy preserves all existing contact state and history.</summary>
         public bool UseMinimumCostAssignment { get; set; } = true;
+
+        public const double JpdaOcclusionRetentionSeconds = 1;
+        private bool _useJpda;
+        /// <summary>Opt-in probabilistic association and bounded recovery of masked IDs.
+        /// Takes precedence over the selected ordinary assignment strategy while enabled.</summary>
+        public bool UseJpda
+        {
+            get => _useJpda;
+            set
+            {
+                if (_useJpda == value) return;
+                _useJpda = value;
+                foreach (var pair in _tracks.ToArray())
+                {
+                    pair.Value.OccludedUntil = null;
+                    if (_processedTimestampSeconds.HasValue && IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId))
+                        _tracks.Remove(pair.Key);
+                }
+            }
+        }
 
         private bool _useKalmanFilter;
         /// <summary>Use a recursive XY constant-velocity Kalman filter. Enabling seeds it from
@@ -299,13 +320,17 @@ namespace ReFlex.Core.Interactivity.Components
             if (!double.IsFinite(processedTimestampSeconds) || processedTimestampSeconds < timestampSeconds ||
                 (_processedTimestampSeconds.HasValue && processedTimestampSeconds < _processedTimestampSeconds.Value))
                 throw new ArgumentOutOfRangeException(nameof(processedTimestampSeconds));
+            // A reserved identity must not survive a sensor outage just because the next
+            // successful Update advances the completion clock before association runs.
+            if (_processedTimestampSeconds.HasValue && processedTimestampSeconds > _processedTimestampSeconds.Value + ObservationTimeoutSeconds)
+                foreach (var track in _tracks.Values) track.OccludedUntil = null;
             _timestampSeconds = timestampSeconds;
             _processedTimestampSeconds = processedTimestampSeconds;
             _frameId++;
 
             // Only internal copies are assigned IDs or retained in the tracking history.
             var candidates = rawInteractions.Take(20)
-                .Where(item => !UseKalmanFilter || (float.IsFinite(item.Position.X) && float.IsFinite(item.Position.Y)))
+                .Where(item => (!UseKalmanFilter && !UseJpda) || (float.IsFinite(item.Position.X) && float.IsFinite(item.Position.Y)))
                 .Select(item => new Interaction(item)).ToList();
             var mappedInteractionIds = MapClosestInteraction(candidates);
             var newFrame = new InteractionFrame(_frameId, mappedInteractionIds, timestampSeconds);
@@ -325,8 +350,9 @@ namespace ReFlex.Core.Interactivity.Components
                 var missingFrames = _frameId - pair.Value.LastSeenFrame;
                 if (IsExpired(pair.Value, processedTimestampSeconds, _frameId))
                 {
-                    // Ended tracks are removed permanently, even while their measurements remain cached.
-                    _tracks.Remove(pair.Key);
+                    // Publication still expires normally. Only probabilistically masked IDs
+                    // may retain an unpublished, bounded recovery state.
+                    if (!CanRecoverMasked(pair.Value, processedTimestampSeconds)) _tracks.Remove(pair.Key);
                     continue;
                 }
 
@@ -348,7 +374,7 @@ namespace ReFlex.Core.Interactivity.Components
         }
 
         /// <summary>Age publication without inventing a sensor observation or changing the measured
-        /// sample clock. Expiry is permanent; confidence during sensor gaps is projected from live state.</summary>
+        /// sample clock. Masked IDs may retain unpublished recovery state; ordinary expiry is permanent.</summary>
         public InteractionFrame OutputAt(double timestampSeconds, bool markLost = true)
         {
             if (!double.IsFinite(timestampSeconds) || (_processedTimestampSeconds.HasValue && timestampSeconds < _processedTimestampSeconds))
@@ -359,7 +385,7 @@ namespace ReFlex.Core.Interactivity.Components
                 var track = pair.Value;
                 if (IsExpired(track, timestampSeconds, _frameId))
                 {
-                    _tracks.Remove(pair.Key);
+                    if (!CanRecoverMasked(track, timestampSeconds)) _tracks.Remove(pair.Key);
                     continue;
                 }
                 var item = new Interaction(track.Smoothed ?? track.LastMeasurement);
@@ -493,7 +519,8 @@ namespace ReFlex.Core.Interactivity.Components
             // Explicitly missing detections use contact retention. A sensor/processing gap uses
             // its separate timeout, measured since the last successful completion, not capture.
             foreach (var id in _tracks.Where(pair =>
-                         IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId - 1))
+                         IsExpired(pair.Value, _processedTimestampSeconds.Value, _frameId - 1)
+                         && !CanRecoverMasked(pair.Value, _processedTimestampSeconds.Value))
                      .Select(pair => pair.Key).ToArray())
                 _tracks.Remove(id);
 
@@ -504,9 +531,16 @@ namespace ReFlex.Core.Interactivity.Components
                 track.MatchingPosition = Predict(track, _timestampSeconds.Value);
 
             var targets = _tracks.Select(pair => (TouchId: pair.Key, Position: pair.Value.MatchingPosition, Type: pair.Value.LastMeasurement.Type)).ToArray();
-            var assignedIds = UseMinimumCostAssignment
+            var jpda = UseJpda && NumFramesHistory > 0 && targets.Length <= JpdaContactAssignment.MaxTracks
+                ? JpdaContactAssignment.Assign(candidates, targets, TouchMergeDistance2D, AssignmentMissCost, AssignmentBirthCost) : null;
+            var assignedIds = jpda?.AssignedIds ?? (UseMinimumCostAssignment
                 ? MinimumCostContactAssignment.Assign(candidates, targets, TouchMergeDistance2D, AssignmentMissCost, AssignmentBirthCost)
-                : GreedyContactAssignment.Assign(candidates, targets, TouchMergeDistance2D);
+                : GreedyContactAssignment.Assign(candidates, targets, TouchMergeDistance2D));
+            if (jpda != null)
+                foreach (var pair in _tracks)
+                    if (pair.Value.LastSeenFrame == _frameId - 1 && jpda.IsMasked(pair.Key))
+                        pair.Value.OccludedUntil = pair.Value.LastDetectedAt
+                            + Math.Max(ContactRetentionSeconds, JpdaOcclusionRetentionSeconds);
             for (var index = 0; index < candidates.Count; index++)
             {
                 var touchId = assignedIds[index];
@@ -543,6 +577,7 @@ namespace ReFlex.Core.Interactivity.Components
                     else current.Kalman.Update(candidate.Position, _timestampSeconds.Value);
                 }
                 current.LastMeasurement = candidate;
+                current.OccludedUntil = null;
                 current.LastSeenFrame = _frameId;
                 current.LastSeenTime = _timestampSeconds.Value;
                 current.LastDetectedAt = _processedTimestampSeconds.Value;
@@ -561,6 +596,10 @@ namespace ReFlex.Core.Interactivity.Components
         private bool IsExpired(Track track, double now, int latestObservationFrame)
             => now > track.LastDetectedAt + (track.LastSeenFrame == latestObservationFrame
                 ? ObservationTimeoutSeconds : ContactRetentionSeconds);
+
+        private bool CanRecoverMasked(Track track, double now) => UseJpda && NumFramesHistory > 0
+            && track.OccludedUntil.HasValue && now <= track.OccludedUntil.Value
+            && _processedTimestampSeconds.HasValue && now <= _processedTimestampSeconds.Value + ObservationTimeoutSeconds;
 
         private void DecayConfidence(Track track, double timestampSeconds)
         {

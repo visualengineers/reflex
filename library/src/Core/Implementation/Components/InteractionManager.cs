@@ -48,6 +48,7 @@ namespace Implementation.Components
         private int _interactionHistorySize;
         private double _contactRetentionSeconds = .1;
         private double _observationTimeoutSeconds = 1;
+        private bool _useJpda;
         private bool _useKalmanFilter;
         private bool _useMinimumCostAssignment = true;
         private float _assignmentMissCost = InteractionSmoothingBehaviour.DefaultAssignmentMissCost;
@@ -167,6 +168,7 @@ namespace Implementation.Components
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.ContactRetentionSeconds = _contactRetentionSeconds;
             observer.ObservationTimeoutSeconds = _observationTimeoutSeconds;
+            observer.UseJpda = _useJpda;
             observer.UseKalmanFilter = _useKalmanFilter;
             observer.UseMinimumCostAssignment = _useMinimumCostAssignment;
             observer.AssignmentMissCost = _assignmentMissCost;
@@ -293,6 +295,16 @@ namespace Implementation.Components
             }
         }
         
+        public bool UseJpda
+        {
+            get => _useJpda;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseJpda = value;
+                _useJpda = value;
+            }
+        }
+
         public bool UseKalmanFilter
         {
             get => _useKalmanFilter;

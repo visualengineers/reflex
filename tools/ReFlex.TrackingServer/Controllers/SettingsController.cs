@@ -77,6 +77,16 @@ namespace TrackingServer.Controllers
             return _configManager.Settings.UseKalmanFilter;
         }
 
+        [HttpGet("UseJpda")]
+        public ActionResult<bool> GetUseJpda() => _configManager.Settings.UseJpda;
+
+        [HttpPost("UseJpda")]
+        public ActionResult<bool> SetUseJpda([FromBody] bool value)
+        {
+            UpdateSettings(settings => settings.UseJpda = value);
+            return _configManager.Settings.UseJpda;
+        }
+
         [HttpGet("UseMinimumCostAssignment")]
         public ActionResult<bool> GetUseMinimumCostAssignment() => _configManager.Settings.UseMinimumCostAssignment;
 

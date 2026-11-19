@@ -236,6 +236,8 @@ __[⬆ back to top](#table-of-contents)__
 | `PUT` | `/api/Settings/FilterPasses/{numPasses}` | Path: `numPasses` | `JsonSimpleValue<int>` | Sets the number of box filter passes. Name: `BoxFilterNumPasses`. |
 | `PUT` | `/api/Settings/FilterThreads/{numThreads}` | Path: `numThreads` | `JsonSimpleValue<int>` | Sets the number of box filter threads. Name: `BoxFilterNumThreads`. |
 | `POST` | `/api/Settings/UseOptimizedBoxFilter` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Enables or disables the optimized box filter. Only `value` is used. |
+| `GET` | `/api/Settings/UseJpda` | - | `bool` | Returns optional JPDA identity recovery (default `false`). |
+| `POST` | `/api/Settings/UseJpda` | Body: JSON boolean | `bool` | Applies and saves bounded recovery of IDs masked by overlapping contacts. |
 | `GET` | `/api/Settings/UseKalmanFilter` | - | `bool` | Returns the XY Kalman switch (default `false`). |
 | `POST` | `/api/Settings/UseKalmanFilter` | Body: JSON boolean | `bool` | Applies and saves optional XY Kalman filtering; preserves live IDs and history. |
 | `GET` | `/api/Settings/UseMinimumCostAssignment` | - | `boolean` | Returns the current value (default `true`). |
@@ -251,6 +253,16 @@ __[⬆ back to top](#table-of-contents)__
 | `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Updates the point cloud settings. |
 | `POST` | `/api/Settings/Prediction` | Body: `PredictionSettings` | `PredictionSettings` or `400` | Applies and saves the motion prediction settings. Returns `400` for invalid numeric values (see below). |
 
+`TrackingServerAppSettings.useJpda` enables probabilistic association and bounded recovery of
+masked contact IDs, default `false` for new and legacy settings. It takes precedence over the saved
+global/greedy choice while enabled; both miss/birth costs still apply. Normal publication expiry
+is unchanged, but an ambiguous unassigned ID can remain recoverable for one second after its last
+measurement (or the ordinary retention period, if longer). Sensor timeouts, reset and disabling
+JPDA discard recovery reservations. The dedicated boolean POST, full save/import, startup,
+backup/restore and reset paths include this value. See
+[JPDA identity recovery](../../../../test/analysis/touchid-3512/jpda.md) for the probability model,
+computation limits and identity limitations.
+
 `TrackingServerAppSettings.useKalmanFilter` is an independent top-level boolean, default `false`
 for new and legacy settings. Its dedicated POST endpoint applies and persists changes, and the
 full-settings save/import and backup/reset paths include it. While enabled, XY uses a recursive
@@ -264,7 +276,7 @@ Contact-assignment values are top-level fields of `TrackingServerAppSettings`, r
 Older settings files that omit these fields use `true`, `0.5` and `0.5`. Explicit `false` and `0`
 are preserved when loading, importing or saving settings. Costs must be finite and non-negative;
 invalid cost requests return `400` before changing runtime settings or files. Costs are ignored
-while minimum-cost assignment is disabled and remain saved for later use.
+only when both JPDA and minimum-cost assignment are disabled, and remain saved for later use.
 
 The three dedicated `POST` endpoints apply changes immediately and persist them using the standard
 configuration/backup mechanism. `GET /api/Settings` and the full-settings save/import endpoints also

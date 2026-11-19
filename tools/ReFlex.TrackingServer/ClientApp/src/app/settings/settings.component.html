@@ -531,6 +531,16 @@
     Enable velocity prediction in the Prediction panel to use Kalman forecasts for assignment.
     Acceleration settings do not affect this model. Switching preserves existing contact IDs. Disabled by default.
   </app-option-checkbox>
+  <app-option-checkbox class="settings__item"
+    elementTitle="JPDA identity recovery" elementId="settings-useJpda"
+    [data]="settings.useJpda ?? false"
+    (dataChange)="settings.useJpda = $event"
+    (onChange)="saveUseJpda()">
+    Use probabilistic one-to-one association and attempt to recover masked contact IDs after overlap.
+    Extends masked-ID recovery to one second after the last measurement; normal retention is preserved.
+    Overrides the assignment strategy while enabled. Ambiguous crossings cannot guarantee identity.
+    Disabled by default.
+  </app-option-checkbox>
 
   <app-option-checkbox class="settings__item"
     elementTitle="Minimum-cost assignment" elementId="settings-useMinimumCostAssignment"
@@ -538,7 +548,7 @@
     (dataChange)="settings.useMinimumCostAssignment = $event"
     (onChange)="saveUseMinimumCostAssignment()">
     Optimize all contact assignments together. When disabled, use the previous greedy
-    one-to-one assignment. Existing contact IDs and history are retained when switching.
+    one-to-one assignment. JPDA takes precedence while enabled. Existing contact IDs and history are retained when switching.
   </app-option-checkbox>
 
   <app-value-slider class="settings__item"
@@ -548,7 +558,7 @@
     (dataChange)="settings.assignmentMissCost = $event"
     (onChange)="saveAssignmentMissCost()">
     Cost of leaving an existing contact without a measurement in this observation.
-    Uses distance normalized by the assignment distance limit. Applies when minimum-cost assignment is enabled.
+    Uses distance normalized by the assignment distance limit. Applies when minimum-cost assignment or JPDA is enabled.
   </app-value-slider>
 
   <app-value-slider class="settings__item"
@@ -558,7 +568,7 @@
     (dataChange)="settings.assignmentBirthCost = $event"
     (onChange)="saveAssignmentBirthCost()">
     Cost of starting a new contact instead of assigning a measurement to an existing contact.
-    Uses the same normalized units as the missing contact cost. Applies when minimum-cost assignment is enabled.
+    Uses the same normalized units as the missing contact cost. Applies when minimum-cost assignment or JPDA is enabled.
   </app-value-slider>
 
   <!-- Merge Distance -->

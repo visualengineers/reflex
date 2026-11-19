@@ -44,6 +44,21 @@ public class AssignmentSettingsTest
             System.Text.Json.JsonSerializer.Serialize(fromApi)).UseKalmanFilter, Is.EqualTo(enabled));
     }
 
+    [TestCase("{}", false)]
+    [TestCase("{\"UseJpda\":false}", false)]
+    [TestCase("{\"UseJpda\":true}", true)]
+    public void JpdaSwitchSurvivesBothJsonRoundTrips(string json, bool enabled)
+    {
+        var fromFile = JsonConvert.DeserializeObject<TrackingServerAppSettings>(json);
+        var fromApi = System.Text.Json.JsonSerializer.Deserialize<TrackingServerAppSettings>(json);
+        Assert.That(fromFile.UseJpda, Is.EqualTo(enabled));
+        Assert.That(fromApi.UseJpda, Is.EqualTo(enabled));
+        Assert.That(JsonConvert.DeserializeObject<TrackingServerAppSettings>(JsonConvert.SerializeObject(fromFile)).UseJpda,
+            Is.EqualTo(enabled));
+        Assert.That(System.Text.Json.JsonSerializer.Deserialize<TrackingServerAppSettings>(
+            System.Text.Json.JsonSerializer.Serialize(fromApi)).UseJpda, Is.EqualTo(enabled));
+    }
+
     [Test]
     public void TrackerAndServerShareAssignmentDefaults()
     {
@@ -51,6 +66,7 @@ public class AssignmentSettingsTest
         var tracker = new InteractionSmoothingBehaviour(15);
         Assert.Multiple(() =>
         {
+            Assert.That(settings.UseJpda, Is.EqualTo(tracker.UseJpda).And.False);
             Assert.That(settings.UseKalmanFilter, Is.EqualTo(tracker.UseKalmanFilter).And.False);
             Assert.That(settings.UseMinimumCostAssignment, Is.EqualTo(tracker.UseMinimumCostAssignment).And.True);
             Assert.That(settings.AssignmentMissCost, Is.EqualTo(tracker.AssignmentMissCost));

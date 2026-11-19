@@ -73,6 +73,10 @@ export class SettingsService {
     return this.http.post<boolean>(`${this.settingsRoute}/UseKalmanFilter`, value);
   }
 
+  public setUseJpda(value: boolean): Observable<boolean> {
+    return this.http.post<boolean>(`${this.settingsRoute}/UseJpda`, value);
+  }
+
   public setUseMinimumCostAssignment(value: boolean): Observable<boolean> {
     return this.http.post<boolean>(`${this.settingsRoute}/UseMinimumCostAssignment`, value);
   }

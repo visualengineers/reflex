@@ -173,6 +173,12 @@ namespace ReFlex.Core.Interactivity.Components
             double.IsFinite(value) && value >= 0 ? value :
                 throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
 
+        public bool UseJpda
+        {
+            get { lock (_trackingSync) return _smoothingBehaviour.UseJpda; }
+            set { lock (_trackingSync) _smoothingBehaviour.UseJpda = value; }
+        }
+
         public bool UseKalmanFilter
         {
             get { lock (_trackingSync) return _smoothingBehaviour.UseKalmanFilter; }

@@ -415,6 +415,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.saveAssignmentRequest(this.settingsService.setUseKalmanFilter(this.settings.useKalmanFilter ?? false));
   }
 
+  public saveUseJpda(): void {
+    this.saveAssignmentRequest(this.settingsService.setUseJpda(this.settings.useJpda ?? false));
+  }
+
   public saveUseMinimumCostAssignment(): void {
     this.saveAssignmentRequest(this.settingsService.setUseMinimumCostAssignment(this.settings.useMinimumCostAssignment ?? true));
   }
@@ -876,6 +880,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
     settings.useKalmanFilter ??= false;
+    settings.useJpda ??= false;
     settings.useMinimumCostAssignment ??= true;
     settings.assignmentMissCost ??= 0.5;
     settings.assignmentBirthCost ??= 0.5;

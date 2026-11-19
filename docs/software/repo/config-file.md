@@ -262,11 +262,20 @@ The assignment properties live at the root of `TrackingServerAppSettings`. Omitt
 
 | Property | Default | Meaning |
 | --- | --- | --- |
+| `UseJpda` | `false` | Probabilistic association and bounded recovery of masked contact IDs; takes precedence while enabled. |
 | `UseMinimumCostAssignment` | `true` | Globally minimize one-to-one assignment costs. False selects greedy one-to-one matching. Switching preserves existing tracks. |
 | `AssignmentMissCost` | `0.5` | Cost of leaving a track unmatched. Must be finite and non-negative. |
 | `AssignmentBirthCost` | `0.5` | Cost of creating a new track. Must be finite and non-negative. |
 
-Matching costs use Manhattan distance divided by `TouchMergeDistance2D`. The strict distance gate applies independently of the costs. Miss and birth costs affect only minimum-cost assignment; retention and confidence remain separate controls.
+Matching costs use Manhattan distance divided by `TouchMergeDistance2D`. The strict distance gate applies independently of the costs. Miss and birth costs affect minimum-cost assignment and JPDA; retention and confidence remain separate controls.
+
+### Optional JPDA identity recovery
+
+Top-level `UseJpda` is a boolean, default `false`. The frontend exposes it under **Smoothing**.
+It is loaded and saved with the full settings, including startup, import, backup/restore and reset.
+While enabled, JPDA association overrides the saved global/greedy choice and can recover IDs masked
+by pressure-region overlap within a bounded window. See
+[JPDA identity recovery](../../../test/analysis/touchid-3512/jpda.md) for lifecycle and limitations.
 
 `PredictionSettings` is another root-level object:
 
