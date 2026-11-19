@@ -94,7 +94,12 @@ export class CalibrationService extends SignalRBaseService<string> {
   ): Observable<HttpResponse<FrameSizeDefinition>> {
     return this.http.post<FrameSizeDefinition>(
       this.baseUrl + this.updateFrameSizeRoute,
-      newSize,
+      {
+        width: Math.round(newSize.width),
+        height: Math.round(newSize.height),
+        left: Math.round(newSize.left),
+        top: Math.round(newSize.top)
+      },
       { observe: 'response' }
     );
   }
@@ -105,7 +110,11 @@ export class CalibrationService extends SignalRBaseService<string> {
   ): Observable<HttpResponse<CalibrationTransform>> {
     return this.http.post<CalibrationTransform>(
       `${this.baseUrl}${this.updateCalibrationPointRoute}${idx}`,
-      target,
+      {
+        ...target,
+        positionX: Math.round(target.positionX),
+        positionY: Math.round(target.positionY)
+      },
       { observe: 'response' }
     );
   }
