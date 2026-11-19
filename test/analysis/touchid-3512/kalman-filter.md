@@ -144,10 +144,16 @@ and 23 targeted frontend tests passed. Shared TypeScript types and the TrackingS
 built successfully; changed frontend files pass ESLint. The server assembly was built by the
 integration suite.
 
-No new real-sensor accuracy, replay-identity or full-pipeline performance improvement is claimed.
-The earlier [greedy/global replay results](assignment-comparison.md) predate this Kalman branch and
-must not be used as Kalman evaluation. Annotated trajectories and calibrated noise are needed for
-physical accuracy claims, particularly during reversals, pressure-region overlap and detection gaps.
+The subsequent [Kalman/linear replay comparison](kalman-comparison.md) evaluates the implemented
+switch on all four recordings: created tracks increase from 38 to 77 and published single-target
+ID changes from 0 to 25, while tracking-stage computation becomes faster. Current defaults therefore
+do not demonstrate improved identity stability. Kalman remains opt-in; no parameter tuning or
+production behavior changes were made for that evaluation.
+
+No real-sensor position-accuracy or full-pipeline performance improvement is claimed. The earlier
+[greedy/global replay results](assignment-comparison.md) predate this Kalman branch and must not be
+used as Kalman evaluation. Annotated trajectories and calibrated noise are needed for physical
+accuracy claims, particularly during reversals, pressure-region overlap and detection gaps.
 
 References:
 
