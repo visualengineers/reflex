@@ -124,6 +124,10 @@ public class SettingsService
         _interactionManager.InputDistance = distance.InputDistance;
       }
 
+      _interactionManager.UseMinimumCostAssignment = _configManager.Settings.UseMinimumCostAssignment;
+      _interactionManager.AssignmentMissCost = _configManager.Settings.AssignmentMissCost;
+      _interactionManager.AssignmentBirthCost = _configManager.Settings.AssignmentBirthCost;
+
       var prediction = _configManager.Settings.PredictionSettings ?? new PredictionSettings();
       _interactionManager.PredictionHorizonSeconds = prediction.PredictionHorizonSeconds;
       _interactionManager.UseVelocityPrediction = prediction.UseVelocityPrediction;

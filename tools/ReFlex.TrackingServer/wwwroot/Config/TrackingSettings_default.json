@@ -1,4 +1,7 @@
 {
+  "UseMinimumCostAssignment": true,
+  "AssignmentMissCost": 0.5,
+  "AssignmentBirthCost": 0.5,
   "FilterSettingValues": {
     "Threshold": 690.0,
     "BorderValue": {

@@ -91,6 +91,9 @@ namespace ReFlex.Core.Interactivity.Interfaces
         /// </summary>
         double ContactRetentionSeconds { get; set; }
         double ObservationTimeoutSeconds { get; set; }
+        bool UseMinimumCostAssignment { get; set; }
+        float AssignmentMissCost { get; set; }
+        float AssignmentBirthCost { get; set; }
         float ConfidenceGainPerSecond { get; set; }
         float ConfidenceDecayPerSecond { get; set; }
         

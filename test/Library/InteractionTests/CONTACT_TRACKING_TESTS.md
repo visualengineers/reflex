@@ -65,8 +65,10 @@ With prediction disabled, pair distances use each track's **last measurement**, 
 position. With prediction enabled, the target is its forecast at the current frame. Matching globally minimizes
 normalized pair distances plus explicit penalties for unmatched tracks and measurements, with one-to-one
 constraints. `AssignmentMissCost` and `AssignmentBirthCost` each default to 0.5 and accept finite,
-non-negative floats. These tracker properties do not change retention or confidence and are not exposed
-as persisted server settings. Unassigned measurements receive fresh IDs rather than being discarded.
+non-negative floats. These properties do not change retention or confidence. All three values,
+including `UseMinimumCostAssignment` (default true), are persisted at the top level of server settings
+and exposed through the settings REST API and Smoothing UI. False selects the original greedy
+one-to-one strategy, ignoring the costs. Switching preserves live tracks and history. Unassigned measurements receive fresh IDs rather than being discarded.
 The rectangular Hungarian solver orders tracks by ID and measurements by X/Y/input index for deterministic
 equal-cost traversal. The existing strict distance threshold and Manhattan-distance implementation of
 `Squared2DDistance` are unchanged. See [global-assignment.md](../../analysis/touchid-3512/global-assignment.md)

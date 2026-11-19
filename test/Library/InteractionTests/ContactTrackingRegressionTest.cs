@@ -60,6 +60,53 @@ public class ContactTrackingRegressionTest
         });
     }
 
+    [TestCase(true)]
+    [TestCase(false)]
+    public void AssignmentSwitchSelectsGlobalOrOriginalGreedyBehaviour(bool minimumCost)
+    {
+        var scene = new Scenario();
+        scene.Tracker.TouchMergeDistance2D = 81;
+        scene.Tracker.UseMinimumCostAssignment = minimumCost;
+        var born = scene.Step(0, 100);
+        var frame = scene.Step(80, 120);
+        Assert.Multiple(() =>
+        {
+            Assert.That(frame.Interactions, Has.Count.EqualTo(minimumCost ? 2 : 3));
+            Assert.That(At(frame, 80).TouchId,
+                Is.EqualTo(At(born, minimumCost ? 0 : 100).TouchId));
+            if (!minimumCost)
+            {
+                Assert.That(At(frame, 120).TrackingState, Is.EqualTo(InteractionTrackingState.Tentative));
+                Assert.That(frame.Interactions.Single(item => item.TouchId == At(born, 0).TouchId).TrackingState,
+                    Is.EqualTo(InteractionTrackingState.Lost));
+            }
+        });
+    }
+
+    [Test]
+    public void SwitchingAssignmentPreservesLiveTracksHistoryAndConfidenceAndGreedyIgnoresCosts()
+    {
+        var scene = new Scenario();
+        var id = At(scene.Step(0), 0).TouchId;
+        var confirmed = At(scene.Step(1), 1);
+        scene.Tracker.UseMinimumCostAssignment = false;
+        scene.Tracker.AssignmentMissCost = 0;
+        scene.Tracker.AssignmentBirthCost = 0;
+        var greedy = At(scene.Step(2), 2);
+        scene.Tracker.UseMinimumCostAssignment = true;
+        scene.Tracker.AssignmentMissCost = .5f;
+        scene.Tracker.AssignmentBirthCost = .5f;
+        var global = At(scene.Step(3), 3);
+        Assert.Multiple(() =>
+        {
+            Assert.That(greedy.TouchId, Is.EqualTo(id));
+            Assert.That(global.TouchId, Is.EqualTo(id));
+            Assert.That(greedy.Confidence, Is.GreaterThanOrEqualTo(confirmed.Confidence));
+            Assert.That(global.TrackingState, Is.EqualTo(InteractionTrackingState.Confirmed));
+            Assert.That(scene.Tracker.InteractionsFramesCache, Has.Length.EqualTo(4));
+        });
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void GlobalAssignmentAvoidsGreedyFragmentation(bool reverse)

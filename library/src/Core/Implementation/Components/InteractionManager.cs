@@ -48,6 +48,9 @@ namespace Implementation.Components
         private int _interactionHistorySize;
         private double _contactRetentionSeconds = .1;
         private double _observationTimeoutSeconds = 1;
+        private bool _useMinimumCostAssignment = true;
+        private float _assignmentMissCost = InteractionSmoothingBehaviour.DefaultAssignmentMissCost;
+        private float _assignmentBirthCost = InteractionSmoothingBehaviour.DefaultAssignmentBirthCost;
         private float _confidenceGainPerSecond = 30;
         private float _confidenceDecayPerSecond = 30;
         private float _smoothingDistanceSquared = 64f;
@@ -163,6 +166,9 @@ namespace Implementation.Components
             observer.TouchMergeDistance2D = _smoothingDistanceSquared;
             observer.ContactRetentionSeconds = _contactRetentionSeconds;
             observer.ObservationTimeoutSeconds = _observationTimeoutSeconds;
+            observer.UseMinimumCostAssignment = _useMinimumCostAssignment;
+            observer.AssignmentMissCost = _assignmentMissCost;
+            observer.AssignmentBirthCost = _assignmentBirthCost;
             observer.ConfidenceGainPerSecond = _confidenceGainPerSecond;
             observer.ConfidenceDecayPerSecond = _confidenceDecayPerSecond;
             observer.DepthScale = _depthScale;
@@ -285,6 +291,38 @@ namespace Implementation.Components
             }
         }
         
+        public bool UseMinimumCostAssignment
+        {
+            get => _useMinimumCostAssignment;
+            set
+            {
+                if (_interactionObserver != null) _interactionObserver.UseMinimumCostAssignment = value;
+                _useMinimumCostAssignment = value;
+            }
+        }
+
+        public float AssignmentMissCost
+        {
+            get => _assignmentMissCost;
+            set
+            {
+                if (!float.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.AssignmentMissCost = value;
+                _assignmentMissCost = value;
+            }
+        }
+
+        public float AssignmentBirthCost
+        {
+            get => _assignmentBirthCost;
+            set
+            {
+                if (!float.IsFinite(value) || value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                if (_interactionObserver != null) _interactionObserver.AssignmentBirthCost = value;
+                _assignmentBirthCost = value;
+            }
+        }
+
         public float ConfidenceGainPerSecond
         {
             get => _confidenceGainPerSecond;

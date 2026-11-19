@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <Configurations>Debug;Release;CI</Configurations>
+    <Platforms>x64;ARM64;AnyCPU</Platforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="NUnit" Version="4.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.1.0" />
+    <ProjectReference Include="../../../tools/ReFlex.TrackingServer/ReFlex.TrackingServer.csproj" />
+    <Content Include="../../../tools/ReFlex.TrackingServer/wwwroot/Config/TrackingSettings_default.json"
+      Link="TrackingSettings_default.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

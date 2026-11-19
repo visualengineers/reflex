@@ -28,7 +28,9 @@ public class SensorPipelineTest
         : InteractionManager(depth, service, new Performance())
     {
         protected override double GetTimestampSeconds() => clock.Now;
-        protected override IInteractionObserver CreateObserver(ObserverType type) => new Remote(service, clock);
+        public IInteractionObserver CurrentObserver;
+        protected override IInteractionObserver CreateObserver(ObserverType type)
+            => CurrentObserver = new Remote(service, clock);
     }
     private sealed class Scene : IDisposable
     {
@@ -58,6 +60,40 @@ public class SensorPipelineTest
             return observation;
         }
         public void Dispose() => Manager.Dispose();
+    }
+
+    [Test]
+    public void AssignmentSettingsReachCurrentAndReplacementObservers()
+    {
+        using var manager = new Manager(new Depth(), new Service(), new Clock())
+        {
+            UseMinimumCostAssignment = false, AssignmentMissCost = 0, AssignmentBirthCost = .25f
+        };
+        manager.Type = ObserverType.Remote;
+        var first = manager.CurrentObserver;
+        Assert.Multiple(() =>
+        {
+            Assert.That(first.UseMinimumCostAssignment, Is.False);
+            Assert.That(first.AssignmentMissCost, Is.Zero);
+            Assert.That(first.AssignmentBirthCost, Is.EqualTo(.25f));
+        });
+        manager.UseMinimumCostAssignment = true;
+        manager.AssignmentMissCost = .75f;
+        manager.AssignmentBirthCost = 0;
+        Assert.Multiple(() =>
+        {
+            Assert.That(first.UseMinimumCostAssignment, Is.True);
+            Assert.That(first.AssignmentMissCost, Is.EqualTo(.75f));
+            Assert.That(first.AssignmentBirthCost, Is.Zero);
+        });
+        manager.Type = ObserverType.Remote;
+        Assert.Multiple(() =>
+        {
+            Assert.That(manager.CurrentObserver, Is.Not.SameAs(first));
+            Assert.That(manager.CurrentObserver.UseMinimumCostAssignment, Is.True);
+            Assert.That(manager.CurrentObserver.AssignmentMissCost, Is.EqualTo(.75f));
+            Assert.That(manager.CurrentObserver.AssignmentBirthCost, Is.Zero);
+        });
     }
 
     [Test]

@@ -47,8 +47,10 @@ namespace ReFlex.Core.Interactivity.Components
         private double _predictionHorizonSeconds = .05;
         private float _confidenceDecayPerSecond = 30;
         private float _confidenceGainPerSecond = 30;
-        private float _assignmentMissCost = .5f;
-        private float _assignmentBirthCost = .5f;
+        public const float DefaultAssignmentMissCost = .5f;
+        public const float DefaultAssignmentBirthCost = .5f;
+        private float _assignmentMissCost = DefaultAssignmentMissCost;
+        private float _assignmentBirthCost = DefaultAssignmentBirthCost;
         private int _frameId = 0;
         private int _maxTouchId = 0;
         private FilterType _type = FilterType.None;
@@ -61,6 +63,10 @@ namespace ReFlex.Core.Interactivity.Components
         #region Properties
 
         public float TouchMergeDistance2D { get; set; } = 64f;
+
+        /// <summary>Use global minimum-cost assignment; false restores greedy one-to-one matching.
+        /// Changing this strategy preserves all existing contact state and history.</summary>
+        public bool UseMinimumCostAssignment { get; set; } = true;
 
         /// <summary>Cost of leaving a live track unmatched for one observation. Distances are
         /// normalized by TouchMergeDistance2D; this does not change retention or confidence.</summary>
@@ -433,7 +439,7 @@ namespace ReFlex.Core.Interactivity.Components
 
 
         /// <summary>
-        /// Minimum-cost one-to-one assignment to forecasts, including explicit missed-track and birth costs.
+        /// One-to-one assignment to forecasts using the selected minimum-cost or legacy greedy strategy.
         /// A candidate and a track may each participate in only one pair. Unmatched candidates
         /// start new tracks; unmatched tracks may bridge the configured elapsed time.
         /// With prediction disabled or insufficient samples, falls back to the last measurement.
@@ -453,37 +459,14 @@ namespace ReFlex.Core.Interactivity.Components
             foreach (var track in _tracks.Values)
                 track.MatchingPosition = Predict(track, _timestampSeconds.Value);
 
-            var tracks = _tracks.OrderBy(pair => pair.Key).ToArray();
-            // Canonical order makes equal-cost decisions independent of detector enumeration.
-            var orderedCandidates = candidates.Select((candidate, index) => (Candidate: candidate, Index: index))
-                .OrderBy(item => item.Candidate.Position.X)
-                .ThenBy(item => item.Candidate.Position.Y)
-                .ThenBy(item => item.Index).ToArray();
-            var costs = new double[orderedCandidates.Length, tracks.Length + orderedCandidates.Length];
-            for (var row = 0; row < orderedCandidates.Length; row++)
+            var assignedIds = UseMinimumCostAssignment
+                ? AssignMinimumCost(candidates) : AssignGreedy(candidates);
+            for (var index = 0; index < candidates.Count; index++)
             {
-                for (var column = 0; column < tracks.Length; column++)
-                {
-                    var distance = Point3.Squared2DDistance(orderedCandidates[row].Candidate.Position,
-                        tracks[column].Value.MatchingPosition);
-                    // The full objective includes tracks.Length * AssignmentMissCost. Matching a
-                    // track removes its miss cost; omitting that constant gives this rectangular problem.
-                    costs[row, column] = float.IsFinite(distance) && distance < TouchMergeDistance2D
-                        ? (double)distance / TouchMergeDistance2D - AssignmentMissCost
-                        : double.PositiveInfinity;
-                }
-                for (var column = tracks.Length; column < costs.GetLength(1); column++)
-                    costs[row, column] = column == tracks.Length + row
-                        ? AssignmentBirthCost : double.PositiveInfinity;
-            }
-
-            var assignment = MinimumCostAssignment.Solve(costs);
-            for (var row = 0; row < orderedCandidates.Length; row++)
-            {
-                if (assignment[row] >= tracks.Length)
+                var touchId = assignedIds[index];
+                if (touchId < 0)
                     continue;
-                var candidate = orderedCandidates[row].Candidate;
-                var touchId = tracks[assignment[row]].Key;
+                var candidate = candidates[index];
                 candidate.TouchId = touchId;
                 candidate.TrackingState = InteractionTrackingState.Confirmed;
                 var track = _tracks[touchId];
@@ -523,6 +506,63 @@ namespace ReFlex.Core.Interactivity.Components
                 _tracks[candidate.TouchId] = current;
             }
             return candidates.OrderBy(candidate => candidate.TouchId).ToList();
+        }
+
+        private int[] AssignMinimumCost(List<Interaction> candidates)
+        {
+            var tracks = _tracks.OrderBy(pair => pair.Key).ToArray();
+            // Canonical order makes equal-cost decisions independent of detector enumeration.
+            var orderedCandidates = candidates.Select((candidate, index) => (Candidate: candidate, Index: index))
+                .OrderBy(item => item.Candidate.Position.X)
+                .ThenBy(item => item.Candidate.Position.Y)
+                .ThenBy(item => item.Index).ToArray();
+            var costs = new double[orderedCandidates.Length, tracks.Length + orderedCandidates.Length];
+            for (var row = 0; row < orderedCandidates.Length; row++)
+            {
+                for (var column = 0; column < tracks.Length; column++)
+                {
+                    var distance = Point3.Squared2DDistance(orderedCandidates[row].Candidate.Position,
+                        tracks[column].Value.MatchingPosition);
+                    // The full objective includes tracks.Length * AssignmentMissCost. Matching a
+                    // track removes its miss cost; omitting that constant gives this rectangular problem.
+                    costs[row, column] = float.IsFinite(distance) && distance < TouchMergeDistance2D
+                        ? (double)distance / TouchMergeDistance2D - AssignmentMissCost
+                        : double.PositiveInfinity;
+                }
+                for (var column = tracks.Length; column < costs.GetLength(1); column++)
+                    costs[row, column] = column == tracks.Length + row
+                        ? AssignmentBirthCost : double.PositiveInfinity;
+            }
+
+            var assignment = MinimumCostAssignment.Solve(costs);
+            var ids = Enumerable.Repeat(-1, candidates.Count).ToArray();
+            for (var row = 0; row < orderedCandidates.Length; row++)
+                if (assignment[row] < tracks.Length)
+                    ids[orderedCandidates[row].Index] = tracks[assignment[row]].Key;
+            return ids;
+        }
+
+        private int[] AssignGreedy(List<Interaction> candidates)
+        {
+            // Preserve the previous algorithm, including its gate and deterministic pair ordering.
+            var pairs = candidates.SelectMany((candidate, index) => _tracks.Select(track => new
+                {
+                    CandidateIndex = index,
+                    TouchId = track.Key,
+                    Distance = Point3.Squared2DDistance(candidate.Position, track.Value.MatchingPosition)
+                }))
+                .Where(pair => pair.Distance < TouchMergeDistance2D)
+                .OrderBy(pair => pair.Distance)
+                .ThenBy(pair => pair.TouchId)
+                .ThenBy(pair => candidates[pair.CandidateIndex].Position.X)
+                .ThenBy(pair => candidates[pair.CandidateIndex].Position.Y)
+                .ThenBy(pair => pair.CandidateIndex);
+            var ids = Enumerable.Repeat(-1, candidates.Count).ToArray();
+            var assignedTracks = new HashSet<int>();
+            foreach (var pair in pairs)
+                if (ids[pair.CandidateIndex] < 0 && assignedTracks.Add(pair.TouchId))
+                    ids[pair.CandidateIndex] = pair.TouchId;
+            return ids;
         }
 
         private bool IsExpired(Track track, double now, int latestObservationFrame)

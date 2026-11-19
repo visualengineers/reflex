@@ -165,6 +165,24 @@ namespace ReFlex.Core.Interactivity.Components
             double.IsFinite(value) && value >= 0 ? value :
                 throw new ArgumentOutOfRangeException(nameof(value), "Contact retention must be finite and non-negative seconds.");
 
+        public bool UseMinimumCostAssignment
+        {
+            get => _smoothingBehaviour.UseMinimumCostAssignment;
+            set => _smoothingBehaviour.UseMinimumCostAssignment = value;
+        }
+
+        public float AssignmentMissCost
+        {
+            get => _smoothingBehaviour.AssignmentMissCost;
+            set => _smoothingBehaviour.AssignmentMissCost = value;
+        }
+
+        public float AssignmentBirthCost
+        {
+            get => _smoothingBehaviour.AssignmentBirthCost;
+            set => _smoothingBehaviour.AssignmentBirthCost = value;
+        }
+
         public float ConfidenceGainPerSecond
         {
             get => _smoothingBehaviour.ConfidenceGainPerSecond;

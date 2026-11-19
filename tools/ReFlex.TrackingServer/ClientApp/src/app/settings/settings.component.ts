@@ -30,7 +30,7 @@ import {
   PerformanceDataItem,
   TrackingServerAppSettings
 } from '@reflex/shared-types';
-import { Subscription, combineLatest, interval } from 'rxjs';
+import { Observable, Subscription, combineLatest, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { PerformanceService } from 'src/shared/services/performance.service';
 import { SettingsService } from 'src/shared/services/settingsService';
@@ -409,6 +409,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.logService.sendErrorLog(`${error}`);
         }
       );
+  }
+
+  public saveUseMinimumCostAssignment(): void {
+    this.saveAssignmentRequest(this.settingsService.setUseMinimumCostAssignment(this.settings.useMinimumCostAssignment ?? true));
+  }
+
+  public saveAssignmentMissCost(): void {
+    this.saveAssignmentRequest(this.settingsService.setAssignmentMissCost(this.settings.assignmentMissCost ?? 0.5));
+  }
+
+  public saveAssignmentBirthCost(): void {
+    this.saveAssignmentRequest(this.settingsService.setAssignmentBirthCost(this.settings.assignmentBirthCost ?? 0.5));
   }
 
   public saveSmoothingValues(): void {
@@ -843,12 +855,25 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .slice(-200);
   }
 
+  private saveAssignmentRequest(request: Observable<boolean | number>): void {
+    request.pipe(markViewForCheck(this.changeDetector)).subscribe({
+      next: () => this.settingsService.update(),
+      error: (error: unknown) => {
+        this.logService.sendErrorLog(`${error}`);
+        this.settingsService.update();
+      }
+    });
+  }
+
   /**
    * checks if parts of the config are null/undefined and replaces these parts with default values
    */
   private validateSettings(
     settings: TrackingServerAppSettings
   ): TrackingServerAppSettings {
+    settings.useMinimumCostAssignment ??= true;
+    settings.assignmentMissCost ??= 0.5;
+    settings.assignmentBirthCost ??= 0.5;
     settings.filterSettingValues ??= DEFAULT_SETTINGS.filterSettingValues;
     settings.filterSettingValues.extremumSettings ??= { ...DEFAULT_SETTINGS.filterSettingValues.extremumSettings };
     settings.filterSettingValues.extremumSettings.mergeRadius ??= 3;

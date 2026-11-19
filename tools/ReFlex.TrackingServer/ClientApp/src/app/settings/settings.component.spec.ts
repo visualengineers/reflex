@@ -74,7 +74,7 @@ describe('Observation snapshot settings', () => {
     expect(checkbox.checked).toBe(true);
     checkbox.click();
     await fixture.whenStable();
-    expect(settings.setUseObservationSnapshots).toHaveBeenCalledWith(false);
+    expect(settings.setUseObservationSnapshots.mock.calls).toContainEqual([false]);
     expect(fixture.componentInstance.settings.processingSettingValues.useObservationSnapshots).toBe(false);
   });
 });
@@ -116,6 +116,48 @@ describe('Zoneless change detection: renders limitation-filter polling responses
   });
 });
 
+
+describe('Contact assignment settings', () => {
+  setupZonelessTests();
+
+  it.each([undefined, false, true])('loads legacy/default or explicit assignment settings: %s', async (enabled) => {
+    const value = structuredClone(DEFAULT_SETTINGS);
+    value.useMinimumCostAssignment = enabled;
+    value.assignmentMissCost = enabled === undefined ? undefined : 0;
+    value.assignmentBirthCost = enabled === undefined ? undefined : 1.25;
+    settings.getSettings.mockReturnValue(of(value));
+    const fixture = await mount(SettingsComponent);
+    const root = fixture.nativeElement as HTMLElement;
+    expect(queryElement<HTMLInputElement>(root, '#settings-useMinimumCostAssignment-checkbox').checked).toBe(enabled ?? true);
+    expect(queryElement<HTMLInputElement>(root, 'app-value-slider[elementid="settings-assignmentMissCost"] input.custom-input').value)
+      .toBe(String(enabled === undefined ? 0.5 : 0));
+    expect(queryElement<HTMLInputElement>(root, 'app-value-slider[elementid="settings-assignmentBirthCost"] input.custom-input').value)
+      .toBe(String(enabled === undefined ? 0.5 : 1.25));
+  });
+
+  it('submits an explicit false and fractional/zero costs through the assignment endpoints', async () => {
+    settings.getSettings.mockReturnValue(of(structuredClone(DEFAULT_SETTINGS)));
+    settings.setUseMinimumCostAssignment.mockReturnValue(of(false));
+    settings.setAssignmentMissCost.mockReturnValue(of(0));
+    settings.setAssignmentBirthCost.mockReturnValue(of(1.25));
+    const fixture = await mount(SettingsComponent);
+    const root = fixture.nativeElement as HTMLElement;
+    queryElement<HTMLInputElement>(root, '#settings-useMinimumCostAssignment-checkbox').click();
+    await fixture.whenStable();
+    expect(settings.setUseMinimumCostAssignment.mock.calls).toContainEqual([false]);
+    for (const [id, value] of [['assignmentMissCost', '0'], ['assignmentBirthCost', '1.25']]) {
+      const input = queryElement<HTMLInputElement>(root, `app-value-slider[elementid="settings-${id}"] input.custom-input`);
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('change'));
+    }
+    await fixture.whenStable();
+    fixture.componentInstance.saveAssignmentMissCost();
+    fixture.componentInstance.saveAssignmentBirthCost();
+    expect(settings.setAssignmentMissCost.mock.calls).toContainEqual([0]);
+    expect(settings.setAssignmentBirthCost.mock.calls).toContainEqual([1.25]);
+  });
+});
 
 describe('Contact retention settings', () => {
   setupZonelessTests();

@@ -98,6 +98,9 @@ const defaultPointCloudSettingValues: PointCloudSettings = {
 };
 
 const values: TrackingServerAppSettings = {
+  useMinimumCostAssignment: true,
+  assignmentMissCost: 0.5,
+  assignmentBirthCost: 0.5,
   filterSettingValues: defaultFilter,
   calibrationValues: defaultCalibration,
   cameraConfigurationValues: defaultCameraConfig,

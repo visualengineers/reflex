@@ -236,12 +236,39 @@ __[⬆ back to top](#table-of-contents)__
 | `PUT` | `/api/Settings/FilterPasses/{numPasses}` | Path: `numPasses` | `JsonSimpleValue<int>` | Sets the number of box filter passes. Name: `BoxFilterNumPasses`. |
 | `PUT` | `/api/Settings/FilterThreads/{numThreads}` | Path: `numThreads` | `JsonSimpleValue<int>` | Sets the number of box filter threads. Name: `BoxFilterNumThreads`. |
 | `POST` | `/api/Settings/UseOptimizedBoxFilter` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Enables or disables the optimized box filter. Only `value` is used. |
+| `GET` | `/api/Settings/UseMinimumCostAssignment` | - | `boolean` | Returns the current value (default `true`). |
+| `POST` | `/api/Settings/UseMinimumCostAssignment` | Body: JSON boolean | `boolean` | Applies and saves the value. Enables global minimum-cost assignment; false selects the previous greedy one-to-one strategy. |
+| `GET` | `/api/Settings/AssignmentMissCost` | - | `number` | Returns the current value (default `0.5`). |
+| `POST` | `/api/Settings/AssignmentMissCost` | Body: JSON number | `number` or `400` | Applies and saves the value. Cost of an unmatched live track, normalized to the assignment distance limit. |
+| `GET` | `/api/Settings/AssignmentBirthCost` | - | `number` | Returns the current value (default `0.5`). |
+| `POST` | `/api/Settings/AssignmentBirthCost` | Body: JSON number | `number` or `400` | Applies and saves the value. Cost of starting a new track, in the same normalized units. |
 | `POST` | `/api/Settings/Smoothing` | Body: `SmoothingParameter` | `SmoothingParameter` | Updates the smoothing settings. |
 | `POST` | `/api/Settings/ExtremumsCheck` | Body: `ExtremumDescriptionSettings` | `ExtremumDescriptionSettings` | Updates extremum detection. |
 | `GET` | `/api/Settings/MeasurePerformance` | - | `JsonSimpleValue<bool>` | Returns whether performance measurement is active. Name: `MeasurePerformance`. |
 | `POST` | `/api/Settings/MeasurePerformance` | Body: `JsonSimpleValue<bool>` | `JsonSimpleValue<bool>` | Sets performance measurement. Only `value` is used; return value: `{name:"success", value:true}`. |
 | `POST` | `/api/Settings/PointCloudSettings` | Body: `PointCloudSettings` | `PointCloudSettings` | Updates the point cloud settings. |
 | `POST` | `/api/Settings/Prediction` | Body: `PredictionSettings` | `PredictionSettings` or `400` | Applies and saves the motion prediction settings. Returns `400` for invalid numeric values (see below). |
+
+Contact-assignment values are top-level fields of `TrackingServerAppSettings`, represented as
+`useMinimumCostAssignment`, `assignmentMissCost` and `assignmentBirthCost` in API JSON.
+Older settings files that omit these fields use `true`, `0.5` and `0.5`. Explicit `false` and `0`
+are preserved when loading, importing or saving settings. Costs must be finite and non-negative;
+invalid cost requests return `400` before changing runtime settings or files. Costs are ignored
+while minimum-cost assignment is disabled and remain saved for later use.
+
+The three dedicated `POST` endpoints apply changes immediately and persist them using the standard
+configuration/backup mechanism. `GET /api/Settings` and the full-settings save/import endpoints also
+include these fields. Switching assignment preserves live track IDs, confidence and history; it can
+change subsequent association decisions. The Settings UI exposes all three values under Smoothing.
+
+```sh
+curl -X POST "$BASE_URL/api/Settings/UseMinimumCostAssignment" \
+  -H 'Content-Type: application/json' -d 'false'
+curl -X POST "$BASE_URL/api/Settings/AssignmentMissCost" \
+  -H 'Content-Type: application/json' -d '0.25'
+curl -X POST "$BASE_URL/api/Settings/AssignmentBirthCost" \
+  -H 'Content-Type: application/json' -d '0.5'
+```
 
 `PredictionSettings` contains the following fields. The defaults apply to omitted fields.
 

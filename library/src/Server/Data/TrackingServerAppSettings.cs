@@ -1,3 +1,4 @@
+using ReFlex.Core.Interactivity.Components;
 using ReFlex.Core.Tuio.Util;
 using ReFlex.Server.Data.Config;
 
@@ -5,6 +6,25 @@ namespace ReFlex.Server.Data
 {
     public class TrackingServerAppSettings
     {
+        public bool UseMinimumCostAssignment { get; set; } = true;
+
+        private float _assignmentMissCost = InteractionSmoothingBehaviour.DefaultAssignmentMissCost;
+        private float _assignmentBirthCost = InteractionSmoothingBehaviour.DefaultAssignmentBirthCost;
+
+        public float AssignmentMissCost
+        {
+            get => _assignmentMissCost;
+            set => _assignmentMissCost = float.IsFinite(value) && value >= 0
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        public float AssignmentBirthCost
+        {
+            get => _assignmentBirthCost;
+            set => _assignmentBirthCost = float.IsFinite(value) && value >= 0
+                ? value : throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
         public FilterSettings FilterSettingValues { get; set; } = new();
 
         public ReFlex.Core.Calibration.Util.Calibration CalibrationValues { get; set; }
@@ -34,6 +54,9 @@ namespace ReFlex.Server.Data
             var result = $"{DefaultCamera} | ";
             result += $"{CameraConfigurationValues.GetCameraDefinitionString()}";
             result += $"{nameof(IsAutoStartEnabled)}: {IsAutoStartEnabled}{Environment.NewLine}";
+            result += $"{nameof(UseMinimumCostAssignment)}: {UseMinimumCostAssignment} | ";
+            result += $"{nameof(AssignmentMissCost)}: {AssignmentMissCost} | ";
+            result += $"{nameof(AssignmentBirthCost)}: {AssignmentBirthCost}{Environment.NewLine}";
             result += FrameSize.GetFrameSizeDefinitionString();
             result += FilterSettingValues.GetFilterSettingsString();
             result += CalibrationValues.GetCalibrationValuesString();

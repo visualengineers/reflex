@@ -51,7 +51,13 @@ Only finite distances strictly below `TouchMergeDistance2D` are allowed. The exi
 Euclidean units. Neither the metric nor the gate is migrated in this change.
 
 Both costs default to **0.5** and accept finite, non-negative floats. They are public tracker
-properties, not new persisted server settings or UI controls. Zero is supported. They are
+properties and are also persisted as top-level `TrackingServerAppSettings` fields. REST endpoints
+and controls under Settings → Smoothing expose both costs and `UseMinimumCostAssignment`.
+The switch defaults to true; false restores the previous greedy one-to-one algorithm without
+resetting live track state. Missing legacy fields use true/0.5/0.5; explicit false/zero survive
+round trips. Costs remain saved but are ignored in greedy mode. See the
+[REST API documentation](../../../docs/software/apps/server/rest-api.md) for the endpoints.
+Zero is supported. They are
 per-observation association penalties, not changes to elapsed-time confidence or retention.
 All currently live tracks have the same miss cost, including tracks recovering from a gap.
 

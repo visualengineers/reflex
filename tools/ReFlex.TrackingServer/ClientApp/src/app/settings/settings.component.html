@@ -520,6 +520,35 @@
     Confidence lost per second without measurements. Zero disables decay.
   </app-value-slider>
 
+  <app-option-checkbox class="settings__item"
+    elementTitle="Minimum-cost assignment" elementId="settings-useMinimumCostAssignment"
+    [data]="settings.useMinimumCostAssignment ?? true"
+    (dataChange)="settings.useMinimumCostAssignment = $event"
+    (onChange)="saveUseMinimumCostAssignment()">
+    Optimize all contact assignments together. When disabled, use the previous greedy
+    one-to-one assignment. Existing contact IDs and history are retained when switching.
+  </app-option-checkbox>
+
+  <app-value-slider class="settings__item"
+    elementTitle="Missing contact cost" elementId="settings-assignmentMissCost"
+    [min]="0" [max]="5" [step]="0.05"
+    [data]="settings.assignmentMissCost ?? 0.5"
+    (dataChange)="settings.assignmentMissCost = $event"
+    (onChange)="saveAssignmentMissCost()">
+    Cost of leaving an existing contact without a measurement in this observation.
+    Uses distance normalized by the assignment distance limit. Applies when minimum-cost assignment is enabled.
+  </app-value-slider>
+
+  <app-value-slider class="settings__item"
+    elementTitle="New contact cost" elementId="settings-assignmentBirthCost"
+    [min]="0" [max]="5" [step]="0.05"
+    [data]="settings.assignmentBirthCost ?? 0.5"
+    (dataChange)="settings.assignmentBirthCost = $event"
+    (onChange)="saveAssignmentBirthCost()">
+    Cost of starting a new contact instead of assigning a measurement to an existing contact.
+    Uses the same normalized units as the missing contact cost. Applies when minimum-cost assignment is enabled.
+  </app-value-slider>
+
   <!-- Merge Distance -->
   <app-value-slider
     class="settings__item"

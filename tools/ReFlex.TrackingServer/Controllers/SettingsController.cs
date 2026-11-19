@@ -1,6 +1,7 @@
 using Implementation.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using Newtonsoft.Json;
 using ReFlex.Core.Common.Interfaces;
 using ReFlex.Server.Data;
 using ReFlex.Server.Data.Config;
@@ -66,6 +67,40 @@ namespace TrackingServer.Controllers
             Logger.Info($"Updated {nameof(TrackingServerAppSettings)}. Updated value: {value}.");
         }
 
+        [HttpGet("UseMinimumCostAssignment")]
+        public ActionResult<bool> GetUseMinimumCostAssignment() => _configManager.Settings.UseMinimumCostAssignment;
+
+        [HttpPost("UseMinimumCostAssignment")]
+        public ActionResult<bool> SetUseMinimumCostAssignment([FromBody] bool value)
+        {
+            UpdateAssignmentSettings(settings => settings.UseMinimumCostAssignment = value);
+            return _configManager.Settings.UseMinimumCostAssignment;
+        }
+
+        [HttpGet("AssignmentMissCost")]
+        public ActionResult<float> GetAssignmentMissCost() => _configManager.Settings.AssignmentMissCost;
+
+        [HttpPost("AssignmentMissCost")]
+        public ActionResult<float> SetAssignmentMissCost([FromBody] float value)
+        {
+            if (!float.IsFinite(value) || value < 0)
+                return BadRequest("Assignment costs must be finite and non-negative.");
+            UpdateAssignmentSettings(settings => settings.AssignmentMissCost = value);
+            return _configManager.Settings.AssignmentMissCost;
+        }
+
+        [HttpGet("AssignmentBirthCost")]
+        public ActionResult<float> GetAssignmentBirthCost() => _configManager.Settings.AssignmentBirthCost;
+
+        [HttpPost("AssignmentBirthCost")]
+        public ActionResult<float> SetAssignmentBirthCost([FromBody] float value)
+        {
+            if (!float.IsFinite(value) || value < 0)
+                return BadRequest("Assignment costs must be finite and non-negative.");
+            UpdateAssignmentSettings(settings => settings.AssignmentBirthCost = value);
+            return _configManager.Settings.AssignmentBirthCost;
+        }
+
         [HttpPost("Prediction")]
         public ActionResult<PredictionSettings> SetPrediction([FromBody] PredictionSettings value)
         {
@@ -95,6 +130,7 @@ namespace TrackingServer.Controllers
         public ActionResult<TrackingServerAppSettings> Restore()
         {
             _configManager.RestoreBackup();
+            UpdateConfig();
             RestoreFilterMask();
             return _configManager.Settings;
         }
@@ -104,6 +140,7 @@ namespace TrackingServer.Controllers
         public ActionResult<TrackingServerAppSettings> Reset()
         {
             _configManager.RestoreDefaults();
+            UpdateConfig();
             RestoreFilterMask();
             return new ActionResult<TrackingServerAppSettings>(_configManager.Settings);
         }
@@ -437,6 +474,16 @@ namespace TrackingServer.Controllers
             return _configManager.Settings;
         }
 
+
+        private void UpdateAssignmentSettings(Action<TrackingServerAppSettings> update)
+        {
+            // Keep the previous configuration intact until Update has written its backup.
+            var settings = JsonConvert.DeserializeObject<TrackingServerAppSettings>(
+                JsonConvert.SerializeObject(_configManager.Settings))!;
+            update(settings);
+            _configManager.Update(settings);
+            UpdateConfig();
+        }
 
         private void UpdateConfig()
         {
