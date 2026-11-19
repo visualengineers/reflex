@@ -157,6 +157,12 @@ namespace TrackingServer.Model
             _calibrator.ComputeTransformation();
         }
 
+        public void ApplyCalibration()
+        {
+            ComputeTransformation();
+            _calibrationManager.CalibrationMatrix = _calibrator.CalibrationMatrix;
+        }
+
         public void AddCalibrationPoint(int targetX, int targetY, int id)
         {
             _calibrator.AddTargetValue(targetX, targetY, id);
